@@ -98,7 +98,7 @@
 		<link>
 			<name>Config_Files/user_config.h</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/MQX_OS/MQX_PSP/User_Config/user_config.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/MQX_OS/rtos/mqx/config/board/net869/user_config.h</locationURI>
 		</link>
 		<link>
 			<name>Debug_console/fsl_debug_console.c</name>
@@ -129,7 +129,7 @@
 	<variableList>
 		<variable>
 			<name>PROJECT_KSDK_PATH</name>
-			<value>file:/D:/Freescale/KSDK_1.3.0</value>
+			<value>file:/home/ruslans/bin/KSDK_1.3.0</value>
 		</variable>
 	</variableList>
 </projectDescription>

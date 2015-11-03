@@ -1268,7 +1268,7 @@
 	<variableList>
 		<variable>
 			<name>PROJECT_KSDK_PATH</name>
-			<value>file:/D:/Freescale/KSDK_1.3.0</value>
+			<value>file:/home/ruslans/bin/KSDK_1.3.0</value>
 		</variable>
 	</variableList>
 </projectDescription>

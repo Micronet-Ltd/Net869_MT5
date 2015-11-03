@@ -4,7 +4,7 @@
 		<cconfiguration id="ilg.gnuarmeclipse.managedbuild.cross.config.lib.debug.660039418">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="ilg.gnuarmeclipse.managedbuild.cross.config.lib.debug.660039418" moduleId="org.eclipse.cdt.core.settings" name="debug">
 				<macros>
-					<stringMacro name="PROJECT_KSDK_PATH" type="VALUE_PATH_ANY" value="D:\Freescale\KSDK_1.3.0"/>
+					<stringMacro name="PROJECT_KSDK_PATH" type="VALUE_PATH_ANY" value="/home/ruslans/bin/KSDK_1.3.0"/>
 				</macros>
 				<externalSettings>
 					<externalSetting>
@@ -95,7 +95,7 @@
 									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/drivers/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/system/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/osa/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../..\rtos\mqx\config\mcu\MK20D10&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../rtos/mqx/config/mcu/MK20D10&quot;"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.2502143116" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="DEBUG"/>
