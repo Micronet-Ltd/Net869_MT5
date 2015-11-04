@@ -368,7 +368,7 @@
 	<variableList>
 		<variable>
 			<name>PROJECT_KSDK_PATH</name>
-			<value>file:/home/ruslans/bin/KSDK_1.3.0</value>
+			<value>file:/d:/Freescale/KSDK_1.3.0</value>
 		</variable>
 		<variable>
 			<name>copy_PARENT</name>
