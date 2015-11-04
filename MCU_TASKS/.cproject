@@ -47,8 +47,8 @@
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.1189500931" name="Cross ARM GNU Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler">
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor.1372145837" name="Use preprocessor" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor" value="true" valueType="boolean"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths.1900287496" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10/startup&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\devices\MK20D10\startup&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\devices&quot;"/>
 								</option>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input.1597522711" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input"/>
 							</tool>
@@ -87,9 +87,22 @@
 									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/system/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/hal/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/drivers/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/adapter/sources&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/adapter/sources/sdk&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/classes/cdc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/classes/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/classes/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/classes/include/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/controller/khci&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/controller&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/hal&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Board_Files&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/usb&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/rtos/mqx/config/mcu/MK20D10&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/usb/usb_core/device/include/net869&quot;"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.2042530595" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="CPU_MK20DX256VLQ10=1"/>
@@ -97,6 +110,8 @@
 									<listOptionValue builtIn="false" value="__STRICT_ANSI__=1"/>
 									<listOptionValue builtIn="false" value="_AEABI_LC_CTYPE=C"/>
 									<listOptionValue builtIn="false" value="_DEBUG=1"/>
+									<listOptionValue builtIn="false" value="TWR_K60D100M"/>
+									<listOptionValue builtIn="false" value="TOWER"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other.1654136395" name="Other compiler flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other" useByScannerDiscovery="true" value="" valueType="string"/>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.449331763" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
@@ -123,8 +138,9 @@
 									<listOptionValue builtIn="false" value="../../MQX_OS/MQX_LIB/debug"/>
 									<listOptionValue builtIn="false" value="../../MQX_OS/MQX_STDLIB/debug"/>
 									<listOptionValue builtIn="false" value="../../MQX_OS/MQX_PSP/debug"/>
+									<listOptionValue builtIn="false" value="../../MQX_OS/MQX_USB_DEVICE/debug/"/>
 								</option>
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.other.388332916" name="Other linker flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.other" value="-Xlinker -static -Xlinker -z -Xlinker muldefs -Xlinker --undefined=__isr_vector -Xlinker --defsym=__stack_size__=0x400 -Xlinker --defsym=__heap_size__=0x200 " valueType="string"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.other.388332916" name="Other linker flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.other" value="-Xlinker -static -Xlinker -z -Xlinker muldefs -Xlinker --undefined=__isr_vector -Xlinker --defsym=__stack_size__=0x1000 -Xlinker --defsym=__heap_size__=0x1000" valueType="string"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile.2097469110" name="Script files (-T)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.scriptfile" valueType="stringList">
 									<listOptionValue builtIn="false" value="${PROJECT_KSDK_PATH}/platform/devices/MK20D10/linker/gcc/MK20DX256xxx10_flash.ld"/>
 								</option>
@@ -132,9 +148,10 @@
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nodeflibs.2060331691" name="Do not use default libraries (-nodefaultlibs)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.nodeflibs" value="true" valueType="boolean"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.cref.893096678" name="Cross reference (-Xlinker --cref)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.cref" value="true" valueType="boolean"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs.675106423" name="Other objects" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs" valueType="userObjs">
-									<listOptionValue builtIn="false" value="../../MQX_OS/MQX_LIB/debug/lib_mqx.a"/>
-									<listOptionValue builtIn="false" value="../../MQX_OS/MQX_STDLIB/debug/lib_mqx_stdlib.a"/>
-									<listOptionValue builtIn="false" value="../../MQX_OS/MQX_PSP/debug/lib_mqx_psp.a"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../MQX_OS/MQX_LIB/debug/lib_mqx.a"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../MQX_OS/MQX_STDLIB/debug/lib_mqx_stdlib.a"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../MQX_OS/MQX_PSP/debug/lib_mqx_psp.a"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../MQX_OS/MQX_USB_DEVICE/debug/lib_mqx_usb_device.a"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs.1530776165" name="Libraries (-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="_mqx_stdlib"/>

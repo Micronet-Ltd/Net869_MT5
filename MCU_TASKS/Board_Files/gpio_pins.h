@@ -70,7 +70,7 @@ enum _gpio_pins_pinNames{
 
 	// CAN BUS INTERFACE
 	CAN_ENABLE							= GPIO_MAKE_PIN(GPIOA_IDX,  1),
-	CAN1_TERM_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX, 18),
+//	CAN1_TERM_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX, xx),
 	CAN2_TERM_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX, 10),
 	CAN2_SWC_SELECT						= GPIO_MAKE_PIN(GPIOC_IDX,  6),
 	J1708_ENABLE						= GPIO_MAKE_PIN(GPIOA_IDX,  9),
@@ -165,5 +165,7 @@ enum _gpio_pins_pinNames{
 #define I2C_SCL_GPIO_PORT			PORTB
 #define I2C_SCL_GPIO_PIN			2
 
+#define EXTAL0_PORT   				PORTA
+#define EXTAL0_PIN    				18
 #endif
 

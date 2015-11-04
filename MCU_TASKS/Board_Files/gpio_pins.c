@@ -5,7 +5,7 @@
 
 const gpio_output_pin_user_config_t outputPins[] = {
 	// Power Rail Control
-  {.pinName = POWER_3V3_ENABLE, 		.config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
+//  {.pinName = POWER_3V3_ENABLE, 		.config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
   {.pinName = POWER_5V0_ENABLE, 		.config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
   {.pinName = POWER_CHARGE_ENABLE, 		.config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
   {.pinName = POWER_DISCHARGE_ENABLE, 	.config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
@@ -23,6 +23,14 @@ const gpio_output_pin_user_config_t outputPins[] = {
   {.pinName = LED_BLUE, 				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
   {.pinName = ACC_ENABLE,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+//  {.pinName = FPGA_PWR_ENABLE,			.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+
+
+  {.pinName = USB_ENABLE,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+  {.pinName = USB_HUB_RSTN,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+  {.pinName = USB_OTG_OE,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+  {.pinName = USB_OTG_SEL,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+
 //  {.pinName = I2C_SCL, 				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
   {.pinName = GPIO_PINS_OUT_OF_RANGE                                                                                                                                                               }
@@ -62,6 +70,8 @@ void GPIO_Config (void)
 	PORT_HAL_SetMuxMode      (I2C_SCL_GPIO_PORT, I2C_SCL_GPIO_PIN, kPortMuxAlt2);
 	PORT_HAL_SetOpenDrainCmd (I2C_SCL_GPIO_PORT, I2C_SCL_GPIO_PIN, true);
 
+	// external OSC
+	PORT_HAL_SetMuxMode      (EXTAL0_PORT,       EXTAL0_PIN,       kPortPinDisabled);
 }
 
 #endif

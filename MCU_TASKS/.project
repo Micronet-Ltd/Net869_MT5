@@ -68,7 +68,7 @@
 		<link>
 			<name>BSP_Files/mqx_main.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx/source/bsp/mqx_main.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/MQX_OS/rtos/mqx/mqx/source/bsp/mqx_main.c</locationURI>
 		</link>
 		<link>
 			<name>Common/lite_config.h</name>
@@ -129,7 +129,7 @@
 	<variableList>
 		<variable>
 			<name>PROJECT_KSDK_PATH</name>
-			<value>file:/D:/Freescale/KSDK_1.3.0</value>
+			<value>file:/d:/Freescale/KSDK_1.3.0</value>
 		</variable>
 	</variableList>
 </projectDescription>
