@@ -89,7 +89,7 @@ const clock_manager_user_config_t g_defaultClockConfigRun =
 
         .pll0EnableInFllMode        = false,  // PLL0 disable
         .pll0EnableInStop  = false,  // PLL0 disalbe in STOP mode
-        .prdiv0            = 0x18U,
+        .prdiv0            = 12,	// support input clock of 26MHz
         .vdiv0             = 0x18U,
     },
     .simConfig =
@@ -111,7 +111,7 @@ const clock_manager_user_config_t g_defaultClockConfigRun =
 /* Function to initialize OSC0 base on board configuration. */
 void BOARD_InitOsc0(void)
 {
-#if 0
+#if 1
     // OSC0 configuration.
     osc_user_config_t osc0Config =
     {
@@ -132,7 +132,7 @@ void BOARD_InitOsc0(void)
 /* Function to initialize RTC external clock base on board configuration. */
 void BOARD_InitRtcOsc(void)
 {
-#if 0
+#if 1
     rtc_osc_user_config_t rtcOscConfig =
     {
         .freq                = RTC_XTAL_FREQ,
@@ -149,7 +149,7 @@ void BOARD_InitRtcOsc(void)
 
 static void CLOCK_SetBootConfig(clock_manager_user_config_t const* config)
 {
-#if 0
+#if 1
     CLOCK_SYS_SetSimConfigration(&config->simConfig);
 
     CLOCK_SYS_SetOscerConfigration(0, &config->oscerConfig);
@@ -170,7 +170,7 @@ void BOARD_ClockInit(void)
 
     /* Set allowed power mode, allow all. */
     SMC_HAL_SetProtection(SMC, kAllowPowerModeAll);
-#if 0
+#if 1
     /* Setup board clock source. */
     // Setup OSC0 if used.
     // Configure OSC0 pin mux.

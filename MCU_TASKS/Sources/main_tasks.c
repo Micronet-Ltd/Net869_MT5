@@ -32,24 +32,43 @@ void Main_task (uint32_t initial_data)
 	registerInit ();
 #endif
 
-    hardware_init();
+	// board Initialization
+//  hardware_init();
+//	OSA_Init();
 	GPIO_Config();
-	OSA_Init();
 
+	// I2C0 Initialization
 	NVIC_SetPriority(I2C0_IRQn, 6U);
 	OSA_InstallIntHandler(I2C0_IRQn, MQX_I2C0_IRQHandler);
-
 	I2C_DRV_MasterInit   (I2C0_IDX, &i2c_master);
 
-	GPIO_DRV_SetPinOutput   (POWER_3V3_ENABLE);
-	GPIO_DRV_SetPinOutput   (POWER_5V0_ENABLE);
-	GPIO_DRV_SetPinOutput   (ACC_ENABLE      );
+	// turn on device
+	GPIO_DRV_SetPinOutput   (POWER_3V3_ENABLE );
+	GPIO_DRV_SetPinOutput   (POWER_5V0_ENABLE );
+	GPIO_DRV_SetPinOutput   (ACC_ENABLE       );
 
+	// FPGA Enable
+	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE  );
+
+//	BOARD_InitOsc0();
+//	CLOCK_SetBootConfig_Run ();
+
+	// Enable USB for DEBUG
+	GPIO_DRV_ClearPinOutput (USB_ENABLE       );
+	GPIO_DRV_ClearPinOutput (USB_HUB_RSTN     );
+	GPIO_DRV_SetPinOutput   (USB_OTG_OE       );	// disable USB MUX
+	GPIO_DRV_SetPinOutput   (USB_OTG_SEL      );	// disable USB MUX
+
+
+	_time_delay (10);
+	GPIO_DRV_SetPinOutput   (USB_HUB_RSTN     );
+	GPIO_DRV_SetPinOutput   (USB_ENABLE       );
 
 //	_msgpool_create (sizeof(APPLICATION_MESSAGE), NUM_CLIENTS, 0, 0);
 //	main_qid = _msgq_open(MAIN_QUEUE, 0);
 
 	_task_create(0, ACC_TASK  , 0 );
+	_task_create(0, USB_TASK  , 0 );
 
 #if 0
 	ids[0] = _task_create(0, USB_TASK  , 0 );

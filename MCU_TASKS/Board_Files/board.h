@@ -53,7 +53,7 @@
 #endif
 
 /* OSC0 configuration. */
-#define OSC0_XTAL_FREQ 50000000U
+#define OSC0_XTAL_FREQ 26000000U
 #define OSC0_SC2P_ENABLE_CONFIG  false
 #define OSC0_SC4P_ENABLE_CONFIG  false
 #define OSC0_SC8P_ENABLE_CONFIG  false
