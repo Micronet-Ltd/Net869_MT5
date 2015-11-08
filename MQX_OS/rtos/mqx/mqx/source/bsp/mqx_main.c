@@ -104,7 +104,7 @@ int main
 	GPIO_HAL_WritePinOutput (GPIOA, 13, 1);
 
 	// config EXTAL0 to be input clock
-	PORT_HAL_SetMuxMode     (GPIOA, 18, kPortPinDisabled);
+	PORT_HAL_SetMuxMode     (PORTA, 18, kPortPinDisabled);
 
 
     _mqx( (MQX_INITIALIZATION_STRUCT_PTR) &MQX_init_struct );

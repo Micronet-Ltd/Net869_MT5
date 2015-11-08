@@ -10,6 +10,13 @@
 #define NUM_CLIENTS			 10
 
 typedef enum {
+	//Regular priority tasks
+	MAIN_TASK_PRIOR = 5,
+	USB_TASK_PRIOR = 8
+
+}PRIORITY_TASK_INDEX_T;
+
+typedef enum {
 	MAIN_TASK   =   5,
 	USB_TASK         ,
 	CAN_TASK         ,
