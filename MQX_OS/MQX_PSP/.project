@@ -45,6 +45,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>osa</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>CMSIS/core_cm4.h</name>
 			<type>1</type>
 			<locationURI>PROJECT_KSDK_PATH/platform/CMSIS/Include/core_cm4.h</locationURI>
@@ -493,6 +498,21 @@
 			<name>Peripheral_NIO_Drivers/nio_tty</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>osa/fsl_os_abstraction.h</name>
+			<type>1</type>
+			<locationURI>PROJECT_KSDK_PATH1/platform/osa/inc/fsl_os_abstraction.h</locationURI>
+		</link>
+		<link>
+			<name>osa/fsl_os_abstraction_mqx.c</name>
+			<type>1</type>
+			<locationURI>PROJECT_KSDK_PATH12/platform/osa/src/fsl_os_abstraction_mqx.c</locationURI>
+		</link>
+		<link>
+			<name>osa/fsl_os_abstraction_mqx.h</name>
+			<type>1</type>
+			<locationURI>PROJECT_KSDK_PATH123/platform/osa/inc/fsl_os_abstraction_mqx.h</locationURI>
 		</link>
 		<link>
 			<name>MQX_Generic/include/asm_mac.h</name>
@@ -1069,6 +1089,18 @@
 		<variable>
 			<name>PROJECT_KSDK_PATH</name>
 			<value>file:/d:/Freescale/KSDK_1.3.0</value>
+		</variable>
+		<variable>
+			<name>PROJECT_KSDK_PATH1</name>
+			<value>$%7BPROJECT_KSDK_PATH%7D</value>
+		</variable>
+		<variable>
+			<name>PROJECT_KSDK_PATH12</name>
+			<value>$%7BPROJECT_KSDK_PATH%7D</value>
+		</variable>
+		<variable>
+			<name>PROJECT_KSDK_PATH123</name>
+			<value>$%7BPROJECT_KSDK_PATH1%7D</value>
 		</variable>
 		<variable>
 			<name>copy_PARENT1</name>

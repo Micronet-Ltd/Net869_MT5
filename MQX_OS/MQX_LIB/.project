@@ -25,26 +25,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>osa</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>osa/fsl_os_abstraction.h</name>
-			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/platform/osa/inc/fsl_os_abstraction.h</locationURI>
-		</link>
-		<link>
-			<name>osa/fsl_os_abstraction_mqx.c</name>
-			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/platform/osa/src/fsl_os_abstraction_mqx.c</locationURI>
-		</link>
-		<link>
-			<name>osa/fsl_os_abstraction_mqx.h</name>
-			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/platform/osa/inc/fsl_os_abstraction_mqx.h</locationURI>
-		</link>
-		<link>
 			<name>platform/flexbus</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
