@@ -67,8 +67,8 @@ void Main_task (uint32_t initial_data)
 //	_msgpool_create (sizeof(APPLICATION_MESSAGE), NUM_CLIENTS, 0, 0);
 //	main_qid = _msgq_open(MAIN_QUEUE, 0);
 
-//RS 	_task_create(0, ACC_TASK  , 0 );
-	main_qid = _task_create(0, USB_TASK  , 0 );
+	OS_Task_create(Usb_task, NULL, 0L, 1000L, "USB_TASK", NULL);
+    OSA_Start();
 
 #if 0
 	ids[0] = _task_create(0, USB_TASK  , 0 );
