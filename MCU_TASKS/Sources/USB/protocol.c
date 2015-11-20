@@ -28,8 +28,10 @@ void j1708_recv(uint8_t * data, uint32_t size)
 
 }
 
-int process_receive_slcan(uint8_t * data, uint32_t size)
+int process_receive_slcan(int contex, uint8_t * data, uint32_t size)
 {
+	// CONTEXT_SLCAN_0_EP
+	// CONTEXT_SLCAN_1_EP
 	// TODO: Send data to SLCAN parser
 	return 0;
 
@@ -131,9 +133,10 @@ int protocol_process_receive_data(int context, uint8_t * data, uint32_t size)
 			frame = &g_j1708_frame;
 			break;
 
-		case CONTEXT_SLCAN_EP:
+		case CONTEXT_SLCAN_0_EP:
+		case CONTEXT_SLCAN_1_EP:
 			//FIXME: may need to have caller call this function instead to save stack space
-			return process_receive_slcan(data, size);
+			return process_receive_slcan(context, data, size);
 
 		default:
 			return -1;
