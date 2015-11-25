@@ -68,6 +68,7 @@ void Main_task (uint32_t initial_data)
 //	main_qid = _msgq_open(MAIN_QUEUE, 0);
 
 	OS_Task_create(Usb_task, NULL, 0L, 1000L, "USB_TASK", NULL);
+	OS_Task_create(Acc_task, NULL, 0L, 1000L, "ACC_TASK", NULL);
     OSA_Start();
 
 #if 0

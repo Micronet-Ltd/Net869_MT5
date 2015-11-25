@@ -24,6 +24,8 @@
 
 #define TIME_OUT					100		//  in miliseconds
 
+#define DEBUG						TRUE
+
 static i2c_device_t acc_device = {.address = ACC_DEVICE_ADDRESS,    .baudRate_kbps = I2C_BAUD_RATE};
 
 /**************************************************************************************
@@ -43,53 +45,71 @@ void acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size);
 
 void Acc_task (uint32_t initial_data)
 {
-//	TIME_STRUCT time;
-//	APPLICATION_MESSAGE *msg;
-//	APPLICATION_MESSAGE *acc_msg;
-//	_queue_id acc_qid        = _msgq_get_id (0, ACC_QUEUE       );
-//	_queue_id usb_qid        = _msgq_get_id (0, USB_QUEUE       );
-//	_queue_id powerMgmt_qid  = _msgq_get_id (0, POWER_MGMT_QUEUE);
+	TIME_STRUCT time;
+	APPLICATION_MESSAGE_T *msg;
+	APPLICATION_MESSAGE_T *acc_msg;
+	APPLICATION_MESSAGE_T test_acc_msg;
+	const _queue_id acc_qid        = _msgq_get_id (0, ACC_QUEUE       );
+	const _queue_id usb_qid        = _msgq_get_id (0, USB_QUEUE       );
+	const _queue_id power_mgmt_qid  = _msgq_get_id (0, POWER_MGMT_QUEUE);
 	
+	//TODO: Remote Test acc message
+	test_acc_msg.header.SOURCE_QID = acc_qid;
+
 	uint8_t buffer [100]  = {0};
 	printf("\nACC Task: Start \n");
 
 	// try to initialize accelerometer every 10 seconds
-	while (accInit () == false) {
+	while (accInit () == false)
+	{
 		_time_delay (10000);
 	}
 
-	while (1) {
-#if 0
-		msg = _msgq_receive(acc_qid, 10000);												// wait 10 second for message 
-		if (msg == NULL) {																	// if message not recieved
+	while (1)
+	{
+#if DEBUG
+		msg = _msgq_receive(acc_qid, 10000); // wait 10 second for message
+		//TODO: Test code to fake a message
+		msg = &test_acc_msg;
+		if (msg == NULL)	// if message not received
+		{
 			printf("\nACC Task: Info: Message not received in last 10 Seconds \n");
 			continue;
 		}
 
-		switch (msg->header.SOURCE_QID) {
-				case powerMgmt_qid:
-					if (msg->DATA == ACC_ENABLE)					AccEnable  ();
-					else											AccDisable ();
-					break;
-					
-				case acc_qid:
-					if ((acc_msg = _msg_alloc_system (sizeof(*acc_msg))) == NULL) {
-						printf ("ACC Task: ERROR: message allocation failed\n");
-						break;
+		if (msg->header.SOURCE_QID != NULL)
+		{
+				if (msg->header.SOURCE_QID == power_mgmt_qid)
+				{
+					if (*msg->data == ACC_ENABLE)
+					{
+						AccEnable();
 					}
-					
-					acc_fifo_read (&(acc_msg->data), sizeof ((acc_msg->data)));
-					_time_get(&time);
-					acc_msg->timestamp0 = 0;
-					acc_msg->timestamp1 = time.MILLISECONDS;
-					acc_msg->header.SOURCE_QID = acc_qid;
-					acc_msg->header.TARGET_QID = usb_qid;
-					_msgq_send (acc_msg);
-					break;
-
-				default:
-					printf ("ACC Task: Unexpected message - Source id %d\n", msg->HEADER.SOURCE_QID);
-					break;
+					else
+					{
+						AccDisable();
+					}
+				}
+				else if (msg->header.SOURCE_QID == acc_qid)
+				{
+					if ((acc_msg = _msg_alloc_system (sizeof(acc_msg))) == NULL)
+					{
+						printf ("ACC Task: ERROR: message allocation failed\n");
+					}
+					else
+					{
+						acc_fifo_read (&(acc_msg->data), sizeof ((acc_msg->data)));
+						_time_get(&time);
+						acc_msg->timestamp = time;
+						acc_msg->header.SOURCE_QID = acc_qid;
+						acc_msg->header.TARGET_QID = usb_qid;
+						_msgq_send (acc_msg);
+					}
+				}
+				else
+				{
+					printf ("ACC Task: Unexpected message - Source id %d\n", msg->header.SOURCE_QID);
+				}
 			}
 		}
 		_msg_free(msg);
@@ -97,11 +117,10 @@ void Acc_task (uint32_t initial_data)
 		acc_fifo_read (buffer, sizeof (buffer));
 		_time_delay (1000);
 #endif
-	}
-	
-	// should never get here
-	printf("\nACC Task: End \n");
-	_task_block();
+
+		// should never get here
+		printf("\nACC Task: End \n");
+		_task_block();
 }
 
 
@@ -114,8 +133,11 @@ bool accInit (void)
 	write_data[0] = ACC_REG_WHO_AM_I   ;
 	if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
 	if (read_data == ACC_VALUE_ID)
+	{
 		printf ("ACC Task: Device detected\n");
-	else {
+	}
+	else
+	{
 		printf ("ACC Task: Device NOT detected\n");
 		goto _ACC_CONFIG_FAIL;
 	}
@@ -126,7 +148,7 @@ bool accInit (void)
     if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
     OSA_TimeDelay(1);
 
-	// set CTRL_REG1 to STANDBY Normal mode with 1.56Hz sample rates redas at SLEEP mode and 800Hz at ACTIVE mode
+	// set CTRL_REG1 to STANDBY Normal mode with 1.56Hz sample rates reads at SLEEP mode and 800Hz at ACTIVE mode
 	write_data[0] = ACC_REG_CTRL_REG1   ;
 	write_data[1] = 0x00 ;
     if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
@@ -140,8 +162,8 @@ bool accInit (void)
 	write_data[1] = 0x18 ;
     if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
 
-	// configure interrupt source to FIFO interrupt on INT1 pin with watter mark of 10 samples
-	// when FIFO sample count exceeding the watermark event does not stop the FIFO from accepting new data
+	// configure interrupt source to FIFO interrupt on INT1 pin with water mark of 10 samples
+	// when FIFO sample count exceeding the water mark event does not stop the FIFO from accepting new data
 	// FIFO always contains the most recent samples when overflowed (FMODE = 01)
 	write_data[0] = ACC_REG_CTRL_REG5   ;
 	write_data[1] = 0x40 ;

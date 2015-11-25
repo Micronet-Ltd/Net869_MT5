@@ -34,13 +34,15 @@ typedef enum {
 	J1708_QUEUE      ,
 	ACC_QUEUE        ,
 	VIB_SENSOR_QUEUE ,
-	REG_QUEUE   
+	REG_QUEUE   	 ,
+	POWER_MGMT_QUEUE ,
 } APPLICATION_QUEUE_T;
 
 typedef struct {
-	MESSAGE_HEADER_STRUCT 		HEADER;
-	uint8_t						DATA[MAX_MSG_DATA_LEN];
-} APPLICATION_MESSAGE;
+	MESSAGE_HEADER_STRUCT 		header;
+	uint8_t						data[MAX_MSG_DATA_LEN];
+	TIME_STRUCT					timestamp;
+} APPLICATION_MESSAGE_T;
 
 extern void Main_task        (uint32_t);
 
