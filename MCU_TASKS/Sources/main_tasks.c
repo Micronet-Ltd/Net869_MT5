@@ -16,7 +16,7 @@ static i2c_master_state_t i2c_master;
 
 void Main_task (uint32_t initial_data)
 {
-//	_task_id   ids[10] = {0};
+	_task_id   ids[NUM_TASKS] = {0};
 	_queue_id  main_qid;	//, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
 //	APPLICATION_MESSAGE *msg;
 
@@ -67,8 +67,16 @@ void Main_task (uint32_t initial_data)
 //	_msgpool_create (sizeof(APPLICATION_MESSAGE), NUM_CLIENTS, 0, 0);
 //	main_qid = _msgq_open(MAIN_QUEUE, 0);
 
-	OS_Task_create(Usb_task, NULL, 0L, 1000L, "USB_TASK", NULL);
-	OS_Task_create(Acc_task, NULL, 0L, 1000L, "ACC_TASK", NULL);
+	ids[USB_TASK] = _task_create(0, USB_TASK, 0);
+	if (ids[USB_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create USB_TASK\n");
+	}
+	ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
+	if (ids[ACC_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create ACC_TASK\n");
+	}
     OSA_Start();
 
 #if 0

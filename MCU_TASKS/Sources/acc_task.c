@@ -22,11 +22,16 @@
 #define ACC_REG_CTRL_REG4			0x2D
 #define ACC_REG_CTRL_REG5			0x2E
 
+#define MAX_FIFO_SIZE				192
+#define ACC_MAX_POOL_SIZE			10
+
 #define TIME_OUT					100		//  in miliseconds
 
 #define DEBUG						TRUE
 
 static i2c_device_t acc_device = {.address = ACC_DEVICE_ADDRESS,    .baudRate_kbps = I2C_BAUD_RATE};
+bool acc_enabled_g = false;
+_pool_id   acc_message_pool_g;
 
 /**************************************************************************************
 * The accelerometer is connected to MCU I2C interface. When device is powered, the    *
@@ -49,14 +54,20 @@ void Acc_task (uint32_t initial_data)
 	APPLICATION_MESSAGE_T *msg;
 	APPLICATION_MESSAGE_T *acc_msg;
 	APPLICATION_MESSAGE_T test_acc_msg;
-	const _queue_id acc_qid        = _msgq_get_id (0, ACC_QUEUE       );
-	const _queue_id usb_qid        = _msgq_get_id (0, USB_QUEUE       );
-	const _queue_id power_mgmt_qid  = _msgq_get_id (0, POWER_MGMT_QUEUE);
+	const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
+	const _queue_id usb_qid        = _msgq_open ((_queue_number)USB_QUEUE, 0);
+	const _queue_id power_mgmt_qid  = _msgq_open ((_queue_number)POWER_MGMT_QUEUE, 0);
 	
-	//TODO: Remote Test acc message
-	test_acc_msg.header.SOURCE_QID = acc_qid;
+	/* create a message pool */
+	acc_message_pool_g = _msgpool_create(sizeof(APPLICATION_MESSAGE_T),
+			ACC_MAX_POOL_SIZE, 0, 0);
 
-	uint8_t buffer [100]  = {0};
+   if (acc_message_pool_g == MSGPOOL_NULL_POOL_ID)
+   {
+	  printf("\nCould not create a message pool\n");
+	  _task_block();
+   }
+
 	printf("\nACC Task: Start \n");
 
 	// try to initialize accelerometer every 10 seconds
@@ -65,11 +76,16 @@ void Acc_task (uint32_t initial_data)
 		_time_delay (10000);
 	}
 
+	//TODO hack Enabling sensor by default
+	AccEnable();
+
+	//TODO: Remote Test acc message
+	test_acc_msg.header.SOURCE_QID = acc_qid;
 	while (1)
 	{
 #if DEBUG
-		msg = _msgq_receive(acc_qid, 10000); // wait 10 second for message
-		//TODO: Test code to fake a message
+		msg = _msgq_receive(acc_qid, 1000); // wait 1 second for message
+		//TODO: hack Test code to fake a message
 		msg = &test_acc_msg;
 		if (msg == NULL)	// if message not received
 		{
@@ -92,35 +108,44 @@ void Acc_task (uint32_t initial_data)
 				}
 				else if (msg->header.SOURCE_QID == acc_qid)
 				{
-					if ((acc_msg = _msg_alloc_system (sizeof(acc_msg))) == NULL)
+					if (acc_enabled_g)
 					{
-						printf ("ACC Task: ERROR: message allocation failed\n");
+						if ((acc_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (acc_message_pool_g)) == NULL)
+						{
+							printf("ACC Task: ERROR: message allocation failed\n");
+							_task_block();
+						}
+						else
+						{
+							memset(acc_msg->data, 0, MAX_MSG_DATA_LEN);
+							acc_fifo_read (&(acc_msg->data), sizeof ((acc_msg->data)));
+							_time_get(&time);
+							acc_msg->timestamp = time;
+							acc_msg->header.SOURCE_QID = acc_qid;
+							acc_msg->header.TARGET_QID = usb_qid;
+							_msgq_send (acc_msg);
+						}
 					}
 					else
 					{
-						acc_fifo_read (&(acc_msg->data), sizeof ((acc_msg->data)));
-						_time_get(&time);
-						acc_msg->timestamp = time;
-						acc_msg->header.SOURCE_QID = acc_qid;
-						acc_msg->header.TARGET_QID = usb_qid;
-						_msgq_send (acc_msg);
+						printf("ACC Task: Accelerometer is disabled \n");
 					}
 				}
 				else
 				{
 					printf ("ACC Task: Unexpected message - Source id %d\n", msg->header.SOURCE_QID);
 				}
-			}
 		}
-		_msg_free(msg);
+	}
+	_msg_free(msg);
 #else
-		acc_fifo_read (buffer, sizeof (buffer));
-		_time_delay (1000);
+	acc_fifo_read (buffer, sizeof (buffer));
+	_time_delay (1000);
 #endif
 
-		// should never get here
-		printf("\nACC Task: End \n");
-		_task_block();
+	// should never get here
+	printf("\nACC Task: End \n");
+	_task_block();
 }
 
 
@@ -207,6 +232,7 @@ void AccEnable (void)
 	write_data[1] = read_data |= 0x1;
 	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)			goto _ACC_ENABLE_FAIL;
 	printf ("ACC Task: Accelerometer Enabled \n");
+	acc_enabled_g = TRUE;
 	return;
 
 _ACC_ENABLE_FAIL:
@@ -226,6 +252,7 @@ void AccDisable (void)
 	write_data[1] = read_data &= ~0x1;
 	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)			goto _ACC_DISABLE_FAIL;
 	printf ("ACC Task: Accelerometer Disabled \n");
+	acc_enabled_g = FALSE;
 	return;
 
 _ACC_DISABLE_FAIL:
@@ -243,7 +270,7 @@ void acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 	if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT*10) != kStatus_I2C_Success)		goto _ACC_FIFO_READ_FAIL;
 
 	u8ByteCnt  = (read_data & ACC_VALUE_STATUS_WATERMARK);				// get amount of samples in FIFO
-	u8ByteCnt *= 6;														// read 2 Bytes per Sample (each sample is 12 bits)
+	u8ByteCnt *= 6;														// read 2 Bytes per Sample (each sample is 12 bits): Max 192 Samples
 	
 	if (u8ByteCnt > max_buffer_size)
 		u8ByteCnt = max_buffer_size;
