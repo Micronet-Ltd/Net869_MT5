@@ -206,11 +206,12 @@ bool BOARD_IsSDCardDetected(void)
         return false;
     }
 #endif
+    return false;
 }
 
 void dbg_uart_init(void)
 {
-#if 0
+#if 1
     configure_uart_pins(BOARD_DEBUG_UART_INSTANCE);
 
     DbgConsole_Init(BOARD_DEBUG_UART_INSTANCE, BOARD_DEBUG_UART_BAUD, kDebugConsoleUART);
