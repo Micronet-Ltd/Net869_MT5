@@ -49,6 +49,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
+
+/*Micronet Includes */
+#include "tasks_list.h"
+
 #if USBCFG_DEV_KEEP_ALIVE_MODE
 #include "fsl_usb_khci_hal.h"
 
@@ -433,20 +437,20 @@ void APP_init(void)
  *   @return      None
  **                
  *****************************************************************************/
-void APP_task(void)
-{
-    while (TRUE)
-    {
-        /* call the periodic task function */
-        USB_CDC_Periodic_Task();
-
-        /*check whether enumeration is complete or not */
-        if ((start_app == TRUE) && (start_transactions == TRUE))
-        {
-            Virtual_Com_App();
-        }
-    }/* Endwhile */
-}
+//void APP_task(void)
+//{
+//    while (TRUE)
+//    {
+//        /* call the periodic task function */
+//        USB_CDC_Periodic_Task();
+//
+//        /*check whether enumeration is complete or not */
+//        if ((start_app == TRUE) && (start_transactions == TRUE))
+//        {
+//            Virtual_Com_App();
+//        }
+//    }/* Endwhile */
+//}
 
 /******************************************************************************
  * 
@@ -461,20 +465,21 @@ void APP_task(void)
  *****************************************************************************/
 void Virtual_Com_App(void)
 {
+	char test_data[] ="12345678\r\n";
     /* User Code */
-    if ((0 != g_recv_size) && (0xFFFFFFFF != g_recv_size))
-    {
-        int32_t i;
-
-        /* Copy Buffer to Send Buff */
-        for (i = 0; i < g_recv_size; i++)
-        {
-            //USB_PRINTF("Copied: %c\n", g_curr_recv_buf[i]);
-            g_curr_send_buf[g_send_size++] = g_curr_recv_buf[i];
-        }
-        g_recv_size = 0;
-    }
-
+//    if ((0 != g_recv_size) && (0xFFFFFFFF != g_recv_size))
+//    {
+//        int32_t i;
+//
+//        /* Copy Buffer to Send Buff */
+//        for (i = 0; i < g_recv_size; i++)
+//        {
+//            //USB_PRINTF("Copied: %c\n", g_curr_recv_buf[i]);
+//            g_curr_send_buf[g_send_size++] = g_curr_recv_buf[i];
+//        }
+//        g_recv_size = 0;
+//    }
+	g_send_size = 10;
     if (g_send_size)
     {
         uint8_t error;
@@ -482,12 +487,13 @@ void Virtual_Com_App(void)
         g_send_size = 0;
 
         error = USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT,
-            g_curr_send_buf, size);
+        		test_data, size);
 
         if (error != USB_OK)
         {
             /* Failure to send Data Handling code here */
         }
+        //_time_delay(10);
     }
 #if USBCFG_DEV_KEEP_ALIVE_MODE
 #if (OS_ADAPTER_ACTIVE_OS == OS_ADAPTER_SDK)
@@ -695,22 +701,75 @@ uint8_t USB_App_Class_Callback
     return error;
 }
 
-
-void Usb_task (void *arg)
+void Usb_task(void *arg)
 {
+	char test_data[] ="12345678\r\n";
+	const _queue_id usb_qid = _msgq_open ((_queue_number)USB_QUEUE, 0);
+	APPLICATION_MESSAGE_PTR_T msg_ptr;
+	uint8_t error;
     APP_init();
-    while (TRUE) {
+    uint32_t time_count = 0;
+    uint32_t time_count_error = 0;
+    uint32_t data_count = 0;
+    uint32_t data_count_error = 0;
+    uint32_t null_pointer_error = 0;
+    APP_init();
+    while (TRUE)
+    {
 		/* call the periodic task function */
 		USB_CDC_Periodic_Task();
 
 		/*check whether enumeration is complete or not */
 		if ((start_app == TRUE) && (start_transactions == TRUE))
-			Virtual_Com_App();
+		{
+			//Virtual_Com_App();
 
-		_time_delay (1);
+			msg_ptr = _msgq_receive(_msgq_get_id(0, USB_QUEUE), 1);
+			if (msg_ptr == NULL)
+			{
+				printf("\nCould not receive a message\n");
+				null_pointer_error++;
+				continue;
+				//_task_block();
+			}
+
+			error = USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT,
+					(uint8_t *)&msg_ptr->timestamp, 8);
+			if (error != USB_OK)
+			{
+				/* Failure to send Data Handling code here */
+				time_count_error++;
+			}
+			else
+			{
+				time_count++;
+			}
+			error = USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT,
+					msg_ptr->data, 16);
+
+			if (error != USB_OK)
+			{
+				/* Failure to send Data Handling code here */
+				data_count_error++;
+			}
+			else
+			{
+				data_count++;
+			}
+
+
+//			error = USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT,
+//					test_data, 10);
+//
+//			if (error != USB_OK)
+//			{
+//				/* Failure to send Data Handling code here */
+//			}
+		    _msg_free(msg_ptr);
+		}
+		_time_delay(1);
     }
 }
-
 
 /* EOF */
 
