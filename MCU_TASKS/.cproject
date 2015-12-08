@@ -100,9 +100,11 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/rtos/mqx/config/mcu/MK20D10&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/usb/usb_core/device/include/net869&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/USB&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/FlexCAN&quot;"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.2042530595" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="CPU_MK20DX256VLQ10=1"/>
+									<listOptionValue builtIn="false" value="NET869_CAN"/>
 									<listOptionValue builtIn="false" value="FSL_RTOS_MQX=1"/>
 									<listOptionValue builtIn="false" value="__STRICT_ANSI__=1"/>
 									<listOptionValue builtIn="false" value="_AEABI_LC_CTYPE=C"/>
@@ -120,9 +122,11 @@
 									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/CMSIS/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/FlexCAN&quot;"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs.1098758205" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="CPU_MK20DX256VLQ10=1"/>
+									<listOptionValue builtIn="false" value="NET869_CAN"/>
 								</option>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.71150534" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input"/>
 							</tool>

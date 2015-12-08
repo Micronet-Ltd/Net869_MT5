@@ -2,10 +2,16 @@
 #include <mqx.h>
 #include <bsp.h>
 
+#include <fsl_flexcan_driver.h>
+#include <fsl_flexcan_hal.h>
+#include <lwmsgq.h>
+
 #include "fsl_i2c_master_driver.h"
 
 #include "tasks_list.h"
 #include "gpio_pins.h"
+
+#include "FlexCanDevice.h"
 
 void MQX_I2C0_IRQHandler(void);
 
@@ -16,7 +22,7 @@ static i2c_master_state_t i2c_master;
 
 void Main_task (uint32_t initial_data)
 {
-//	_task_id   ids[10] = {0};
+    _task_id   ids[NUM_TASKS] = {0};
 	_queue_id  main_qid;	//, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
 //	APPLICATION_MESSAGE *msg;
 
@@ -67,7 +73,68 @@ void Main_task (uint32_t initial_data)
 //	_msgpool_create (sizeof(APPLICATION_MESSAGE), NUM_CLIENTS, 0, 0);
 //	main_qid = _msgq_open(MAIN_QUEUE, 0);
 
-	OS_Task_create(Usb_task, NULL, 0L, 1000L, "USB_TASK", NULL);
+	ids[USB_TASK] = _task_create(0, USB_TASK, 0);
+	if (ids[USB_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create USB_TASK\n");
+	}
+
+#if 1
+
+	//Enable CAN power pereferials
+	//temporary disabled for board version 1
+	//GPIO_DRV_SetPinOutput ( CAN_ENABLE );
+
+	//Disable CAN termination
+	GPIO_DRV_ClearPinOutput ( CAN1_TERM_ENABLE );
+	GPIO_DRV_ClearPinOutput ( CAN2_TERM_ENABLE );
+
+    //Initialize CAN sample
+    configure_can_pins(0);
+    configure_can_pins(1);
+
+    {
+        flexcandevice_initparams_t initCan0, initCan1;
+        flexcan_device_status_t ret;
+
+        initCan0.flexcanMode        = fdFlexCanNormalMode;
+        initCan0.instanceBitrate    = fdBitrate_125_kHz;
+        initCan0.is_rx_fifo_needed  = false;
+        initCan0.max_num_mb         = MAX_MB_NUMBER;
+        initCan0.num_id_filters     = kFlexCanRxFifoIDFilters_8;
+        initCan0.RX_queue_num       = RX_FLEXCAN_MSGQ_MESAGES;
+        initCan0.TX_queue_num       = TX_FLEXCAN_MSGQ_MESAGES;
+
+        initCan1.flexcanMode        = fdFlexCanNormalMode;
+        initCan1.instanceBitrate    = fdBitrate_125_kHz;
+        initCan1.is_rx_fifo_needed  = false;
+        initCan1.max_num_mb         = MAX_MB_NUMBER;
+        initCan1.num_id_filters     = kFlexCanRxFifoIDFilters_8;
+        initCan1.RX_queue_num       = RX_FLEXCAN_MSGQ_MESAGES;
+        initCan1.TX_queue_num       = TX_FLEXCAN_MSGQ_MESAGES;
+
+        ret = FlexCanDevice_Init ( &initCan0, &initCan1 );
+
+        printf ("FlexCanDevice_Init( ) return %d\n", ret);
+
+        ret = FlexCanDevice_Start ( can_Device_0 );
+        printf ("FlexCanDevice_Start( ) return %d\n", ret);
+
+		ret = FlexCanDevice_SetTermination( can_Device_0, true );
+		printf ("FlexCanDevice_SetTermination( ) return %d\n", ret);
+
+		ret = FlexCanDevice_setMailbox( can_Device_0, kFlexCanMsgIdStd, 8, 0x123, true );
+		printf ("FlexCanDevice_setMailbox( ) return %d\n", ret);
+    }
+
+    ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, BSP_CAN_DEVICE_0);
+	if (ids[USB_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create CAN_TASK_RX_0\n");
+	}
+
+
+#endif
     OSA_Start();
 
 #if 0
@@ -124,10 +191,10 @@ void Main_task (uint32_t initial_data)
 		}
 		_time_delay(MAIN_TASK_SLEEP_PERIOD);			// contact switch
 #else
-		GPIO_DRV_ClearPinOutput (LED_GREEN);
+		//GPIO_DRV_ClearPinOutput (LED_GREEN);
 		_time_delay (1000);
 
-		GPIO_DRV_SetPinOutput   (LED_GREEN);
+		//GPIO_DRV_SetPinOutput   (LED_GREEN);
 		_time_delay (1000);
 #endif
 	}

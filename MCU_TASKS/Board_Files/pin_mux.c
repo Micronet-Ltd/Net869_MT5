@@ -59,7 +59,7 @@
 
 void configure_can_pins(uint32_t instance)
 {
-#if 0
+#if 1
   switch(instance) {
     case CAN0_IDX:                       /* CAN0 */
       /* Affects PORTB_PCR19 register */

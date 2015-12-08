@@ -19,11 +19,15 @@ typedef enum {
 typedef enum {
 	MAIN_TASK   =   5,
 	USB_TASK         ,
-	CAN_TASK         ,
+	CAN_TASK_RX_0    ,
+	CAN_TASK_TX_0    ,
+	CAN_TASK_RX_1    ,
+	CAN_TASK_TX_1    ,
 	J1708_TASK       ,
 	ACC_TASK         ,
 	VIB_SENSOR_TASK  ,
-	REG_TASK        
+	REG_TASK		 ,
+	NUM_TASKS		 ,
 } TASK_TEMPLATE_INDEX_T;
 
 typedef enum {
@@ -46,6 +50,9 @@ extern void Main_task        (uint32_t);
 
 extern void Acc_task         (uint32_t);
 extern void Usb_task         (uint32_t);
+
+extern void FLEXCAN_Tx_Task( uint32_t param );
+extern void FLEXCAN_Rx_Task( uint32_t param ); 
 
 /*
 extern void Usb_task         (uint32_t);

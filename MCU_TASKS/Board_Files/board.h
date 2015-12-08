@@ -137,7 +137,9 @@
 #define BOARD_DAC_DEMO_ADC_CHANNEL      10U
 
 /* The CAN instance used for board */
-#define BOARD_CAN_INSTANCE              1
+#define BOARD_CAN_INSTANCE              2
+#define BSP_CAN_DEVICE_0				0
+#define BSP_CAN_DEVICE_1				1
 
 /* The i2c instance used for i2c DAC demo */
 #define BOARD_DAC_I2C_INSTANCE          1
