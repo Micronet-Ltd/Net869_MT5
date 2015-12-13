@@ -343,19 +343,19 @@ flexcan_device_status_t FlexCanDevice_SetTermination( pflexcanInstance_t pinstan
     //Add here configuration of termination set up
     if ( BSP_CAN_DEVICE_0 == pinstance->instance ) {
         if ( isSet ) {
-            GPIO_DRV_SetPinOutput ( CAN1_TERM_ENABLE );
+            GPIO_DRV_ClearPinOutput ( CAN1_TERM_ENABLE );
             return ret;
         }
-        GPIO_DRV_ClearPinOutput ( CAN1_TERM_ENABLE );
+        GPIO_DRV_SetPinOutput ( CAN1_TERM_ENABLE );
         return ret;
     }
 
     if ( BSP_CAN_DEVICE_1 == pinstance->instance ) {
         if ( isSet ) {
-            GPIO_DRV_SetPinOutput ( CAN2_TERM_ENABLE );
+            GPIO_DRV_ClearPinOutput ( CAN2_TERM_ENABLE );
             return ret;
         }
-        GPIO_DRV_ClearPinOutput ( CAN2_TERM_ENABLE );
+        GPIO_DRV_SetPinOutput ( CAN2_TERM_ENABLE );
         return ret;
     }
 
