@@ -65,14 +65,14 @@
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor.1630960224" name="Use preprocessor" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor" value="true" valueType="boolean"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths.3742384005" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../rtos/mqx/config/mcu/MK20D10&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/psp/cortex_m&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/psp/cortex_m/compiler/gcc_arm&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/psp/cortex_m/core/M4&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/config/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10/startup&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/psp/cortex_m&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/psp/cortex_m/compiler/gcc_arm&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/psp/cortex_m/core/M4&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/config/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices/MK20D10&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices/MK20D10/startup&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices/MK20D10/include&quot;"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.defs.1551863335" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.defs" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="CPU_MK20DX256VMC10=1"/>
@@ -87,38 +87,38 @@
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.352548074" name="Cross ARM C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler">
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.8281483558" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../rtos/mqx/config/mcu/MK20D10&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/psp/cortex_m&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/psp/cortex_m/compiler/gcc_arm&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/psp/cortex_m/cpu&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/nio&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/nio/src&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/nio/fs&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/nio/drivers/nio_dummy&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/nio/drivers/nio_mem&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/nio/drivers/nio_null&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/nio/drivers/nio_pipe&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/nio/drivers/nio_serial&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/nio/drivers/nio_tfs&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/nio/drivers/nio_tty&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/tad&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx_stdlib/source/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx_stdlib/source/stdio&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/config/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10/startup&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/CMSIS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/osa/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/system/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/hal/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/drivers/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/drivers/src/mpu&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/drivers/src/uart&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/middleware/filesystem/mfs/source/mfs_sdcard/nio_esdhc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/psp/cortex_m&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/psp/cortex_m/compiler/gcc_arm&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/psp/cortex_m/cpu&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/nio&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/nio/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/nio/fs&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/nio/drivers/nio_dummy&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/nio/drivers/nio_mem&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/nio/drivers/nio_null&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/nio/drivers/nio_pipe&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/nio/drivers/nio_serial&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/nio/drivers/nio_tfs&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/nio/drivers/nio_tty&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/tad&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx_stdlib/source/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx_stdlib/source/stdio&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/config/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices/MK20D10&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices/MK20D10/startup&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices/MK20D10/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/CMSIS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/osa/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/system/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/hal/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/drivers/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/drivers/src/mpu&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/drivers/src/uart&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/middleware/filesystem/mfs/source/mfs_sdcard/nio_esdhc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../rtos/mqx/config/board/net869&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/utilities/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/utilities/inc&quot;"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.9275096230" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="CPU_MK20DX256VMC10=1"/>

@@ -80,20 +80,20 @@
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std.931641730" name="Language standard" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std.gnu99" valueType="enumerated"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.4888480017" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../rtos/mqx/config/mcu/MK20D10&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/psp/cortex_m/compiler/gcc_arm&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/config/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/psp/cortex_m&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/CMSIS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10/startup&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/utilities/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/hal/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/drivers/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/system/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/osa/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/psp/cortex_m/compiler/gcc_arm&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/config/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/psp/cortex_m&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/CMSIS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices/MK20D10/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices/MK20D10/startup&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/utilities/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/hal/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/drivers/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/system/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/osa/inc&quot;"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.2502143116" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="DEBUG"/>
