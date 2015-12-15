@@ -45,7 +45,8 @@ void Main_task (uint32_t initial_data)
 	// turn on device
 	GPIO_DRV_SetPinOutput   (POWER_3V3_ENABLE );
 	GPIO_DRV_SetPinOutput   (POWER_5V0_ENABLE );
-	GPIO_DRV_SetPinOutput   (ACC_ENABLE       );
+	//GPIO_DRV_SetPinOutput   (ACC_ENABLE       );
+	GPIO_DRV_ClearPinOutput(ACC_ENABLE       );
 
 	// FPGA Enable
 	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE  );
@@ -133,10 +134,10 @@ void Main_task (uint32_t initial_data)
 		}
 		_time_delay(MAIN_TASK_SLEEP_PERIOD);			// contact switch
 #else
-		GPIO_DRV_ClearPinOutput (LED_GREEN);
+		//GPIO_DRV_ClearPinOutput (LED_GREEN);
 		_time_delay (1000);
 
-		GPIO_DRV_SetPinOutput   (LED_GREEN);
+		//GPIO_DRV_SetPinOutput   (LED_GREEN);
 		_time_delay (1000);
 #endif
 	}

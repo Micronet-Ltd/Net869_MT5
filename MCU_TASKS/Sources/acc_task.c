@@ -1,4 +1,13 @@
+#include <mqx.h>
+#include <bsp.h>
+#include <message.h>
+#include <mutex.h>
+//#include <sem.h>
 
+#include <event.h>
+
+//extern const gpio_input_pin_user_config_t inputPins *;
+#include "gpio_pins.h"
 #include "tasks_list.h"
 
 #include "fsl_i2c_master_driver.h"
@@ -48,6 +57,37 @@ void AccEnable     (void);
 void ISR_accIrq    (void* param);
 void acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size);
 
+void * g_acc_event_h;
+
+void acc_irq(void)
+{
+	GPIO_DRV_ClearPinIntFlag(ACC_INT);
+	// Signal main task to read acc
+	_event_set(g_acc_event_h, 1);
+}
+
+void AccIntEnable()
+{
+	uint32_t port;
+
+	const gpio_input_pin_user_config_t inputPin =
+			{
+					  .pinName = ACC_INT,
+					  .config.isPullEnable = false,
+					  .config.pullSelect = kPortPullUp,
+					  .config.isPassiveFilterEnabled = false,
+					  .config.interrupt = kPortIntFallingEdge,
+			  };
+
+	// FIXME: hardcoded index
+	port = GPIO_EXTRACT_PORT(ACC_INT);
+	NVIC_SetPriority(g_portIrqId[port], 6U);
+	OSA_InstallIntHandler(g_portIrqId[port], acc_irq);
+
+	GPIO_DRV_InputPinInit(&inputPin);
+
+}
+
 void Acc_task (uint32_t initial_data)
 {
 	TIME_STRUCT time;
@@ -59,6 +99,19 @@ void Acc_task (uint32_t initial_data)
 	
 	uint8_t acc_good_count = 0;
 	uint32_t acc_bad_count = 0;
+
+	/* */
+	_mqx_uint event_result;
+
+
+	event_result = _event_create("event.AccInt");
+	if(MQX_OK != event_result){	}
+
+	event_result = _event_open("event.AccInt", &g_acc_event_h);
+	if(MQX_OK != event_result){	}
+
+	/* */
+
 
 	/* create a message pool */
 	acc_message_pool_g = _msgpool_create(sizeof(APPLICATION_MESSAGE_T),
@@ -72,22 +125,38 @@ void Acc_task (uint32_t initial_data)
 
 	printf("\nACC Task: Start \n");
 
+
+
+	GPIO_DRV_SetPinOutput   (ACC_ENABLE       );
+	_time_delay(100);
+	AccIntEnable();
 	// try to initialize accelerometer every 10 seconds
 	while (accInit () == false)
 	{
 		_time_delay (10000);
 	}
 
+
+
 	//TODO hack Enabling sensor by default
 	AccEnable();
+
+
 
 	//TODO: Remote Test acc message
 	test_acc_msg.header.SOURCE_QID = acc_qid;
 	test_acc_msg.header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
 	test_acc_msg.header.SIZE = sizeof(MESSAGE_HEADER_STRUCT) + strlen((char *)msg->data) + 1;
+	acc_msg = &test_acc_msg;
 	while (1)
 	{
-#if DEBUG
+		_event_wait_all(g_acc_event_h, 1, 0);
+		_event_clear(g_acc_event_h, 1);
+		acc_fifo_read (&(acc_msg->data), sizeof ((acc_msg->data)));
+		_time_delay (1);
+
+//#if DEBUG
+#if 0
 		msg = _msgq_receive(acc_qid, 1); // wait 1 ms for message
 		//TODO: hack Test code to fake a message from the USB task for data
 		msg = &test_acc_msg;
@@ -148,9 +217,10 @@ void Acc_task (uint32_t initial_data)
 	//_time_delay(1);
 
 #else
-	acc_fifo_read (buffer, sizeof (buffer));
-	_time_delay (1000);
+	//acc_fifo_read (buffer, sizeof (buffer));
+
 #endif
+}
 
 	// should never get here
 	printf("\nACC Task: End \n");
