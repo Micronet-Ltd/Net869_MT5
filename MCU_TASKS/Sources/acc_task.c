@@ -91,14 +91,14 @@ void AccIntEnable()
 void Acc_task (uint32_t initial_data)
 {
 	TIME_STRUCT time;
-	APPLICATION_MESSAGE_T *msg;
-	APPLICATION_MESSAGE_T *acc_msg;
+	//APPLICATION_MESSAGE_T *msg;
+
 	APPLICATION_MESSAGE_T test_acc_msg;
 	const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
 	const _queue_id power_mgmt_qid  = _msgq_open ((_queue_number)POWER_MGMT_QUEUE, 0);
 	
-	uint8_t acc_good_count = 0;
-	uint32_t acc_bad_count = 0;
+	//uint8_t acc_good_count = 0;
+	//uint32_t acc_bad_count = 0;
 
 	/* */
 	_mqx_uint event_result;
@@ -144,16 +144,36 @@ void Acc_task (uint32_t initial_data)
 
 
 	//TODO: Remote Test acc message
-	test_acc_msg.header.SOURCE_QID = acc_qid;
-	test_acc_msg.header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
-	test_acc_msg.header.SIZE = sizeof(MESSAGE_HEADER_STRUCT) + strlen((char *)msg->data) + 1;
-	acc_msg = &test_acc_msg;
+	//test_acc_msg.header.SOURCE_QID = acc_qid;
+	//test_acc_msg.header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
+	//test_acc_msg.header.SIZE = sizeof(MESSAGE_HEADER_STRUCT) + strlen((char *)msg->data) + 1;
+	//acc_msg = &test_acc_msg;
 	while (1)
 	{
+		APPLICATION_MESSAGE_T *acc_msg;
+
+		// TODO: add pm code
+		if ((acc_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (acc_message_pool_g)) == NULL)
+		{
+			printf("ACC Task: ERROR: message allocation failed\n");
+			//continue;
+		}
+
+
 		_event_wait_all(g_acc_event_h, 1, 0);
 		_event_clear(g_acc_event_h, 1);
-		acc_fifo_read (&(acc_msg->data), sizeof ((acc_msg->data)));
-		_time_delay (1);
+
+		if(acc_msg) {
+			acc_fifo_read (&(acc_msg->data), sizeof ((acc_msg->data)));
+			_time_get(&time);
+			acc_msg->timestamp = time;
+			acc_msg->header.SOURCE_QID = acc_qid;
+			acc_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
+			_msgq_send (acc_msg);
+		}
+
+
+		//_time_delay (1);
 
 //#if DEBUG
 #if 0

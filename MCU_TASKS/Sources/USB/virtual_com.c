@@ -591,7 +591,7 @@ uint8_t USB_App_Class_Callback
 const char * hello_text = "HELLO\r\n";
 void Usb_task(void *arg)
 {
-	char test_data[] ="12345678\r\n";
+	char test_data[] ="12345678123456789012345678901234567890123456789012345678901234XY\r\n";
 	const _queue_id usb_qid = _msgq_open ((_queue_number)USB_QUEUE, 0);
 	APPLICATION_MESSAGE_PTR_T msg_ptr;
 	uint8_t error;
@@ -607,10 +607,16 @@ void Usb_task(void *arg)
 		/* call the periodic task function */
 		USB_CDC_Periodic_Task();
 
+		msg_ptr = _msgq_receive(_msgq_get_id(0, USB_QUEUE), 1);
+		if(NULL == msg_ptr) { _time_delay(1); continue; }
+
+		if( !((start_app == TRUE) && (start_transactions == TRUE) && g_send_ready))
+			_msg_free(msg_ptr);
+
 		/*check whether enumeration is complete or not */
 		if ((start_app == TRUE) && (start_transactions == TRUE) && g_send_ready)
 		{
-
+#if 0
 			_time_delay(100);
 
 			g_send_ready = 0;
@@ -643,10 +649,27 @@ void Usb_task(void *arg)
 				x = 1;
 			}
 
+#else
 
+
+			static int iter = 0;
+			iter = (iter+1)%10;
+			test_data[7] = '0' + iter;
+			error = USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT,
+					test_data, sizeof(test_data)-1
+					);
+			if(error != USB_OK) { GPIO_DRV_SetPinOutput(LED_RED); }
+			else { GPIO_DRV_ClearPinOutput(LED_RED); }
+			static x = 0;
+			if(x) { GPIO_DRV_ClearPinOutput (LED_GREEN); x = 0; }
+			else { GPIO_DRV_SetPinOutput(LED_GREEN); x = 1; }
+			_msg_free(msg_ptr);
+
+#endif
 		}
-		else
+		else {
 			_time_delay(1);
+		}
     }
 }
 
