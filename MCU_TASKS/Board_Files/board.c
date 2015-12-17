@@ -206,7 +206,7 @@ bool BOARD_IsSDCardDetected(void)
         return false;
     }
 #endif
-    return true;
+    return false;
 }
 
 void dbg_uart_init(void)

@@ -83,8 +83,8 @@
 #define BOARD_RTC_CLK_FREQUENCY     32768U;
 /* The UART to use for debug messages. */
 #ifndef BOARD_DEBUG_UART_INSTANCE
-    #define BOARD_DEBUG_UART_INSTANCE   5
-    #define BOARD_DEBUG_UART_BASEADDR   UART5
+    #define BOARD_DEBUG_UART_INSTANCE  4 
+    #define BOARD_DEBUG_UART_BASEADDR   UART4
 #endif
 #ifndef BOARD_DEBUG_UART_BAUD
     #define BOARD_DEBUG_UART_BAUD       115200
@@ -94,8 +94,8 @@
 #define BOARD_LOW_POWER_UART_BAUD       9600
 
 #define BOARD_USE_UART
-#define PM_DBG_UART_IRQ_HANDLER         UART5_RX_TX_IRQHandler
-#define PM_DBG_UART_IRQn                UART5_RX_TX_IRQn
+#define PM_DBG_UART_IRQ_HANDLER         UART4_RX_TX_IRQHandler
+#define PM_DBG_UART_IRQn                UART4_RX_TX_IRQn
 
 /* Define feature for the low_power_demo */
 #define FSL_FEATURE_HAS_VLLS2 (1)
