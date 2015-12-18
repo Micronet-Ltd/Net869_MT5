@@ -39,7 +39,7 @@
 #include "usb_device_stack_interface.h"
 #include "virtual_com.h"
 
-#if (OS_ADAPTER_ACTIVE_OS == OS_ADAPTER_SDK)
+/////
 #include "fsl_device_registers.h"
 #include "fsl_clock_manager.h"
 #include "board.h"
@@ -49,64 +49,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
+/////
 
 /*Micronet Includes */
 #include "tasks_list.h"
 
-#if USBCFG_DEV_KEEP_ALIVE_MODE
-#include "fsl_usb_khci_hal.h"
+#include "frame.h"
 
-#if (FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED == 0)
-    #error The keep alive feature can not be enabled in this platform, due to the SOC unsupports this feature.
-#endif
-#include "fsl_power_manager.h"
-#endif
-#endif
 
-#if USBCFG_DEV_KEEP_ALIVE_MODE
-#if (OS_ADAPTER_ACTIVE_OS == OS_ADAPTER_SDK)
-static uint8_t waitfordatareceive =0;
-static uint8_t comopen = 0;
-
-typedef enum lpmode_number
-{
-    kDemoWait,
-    kDemoStop,
-    kDemoVlpr,
-    kDemoVlpw,
-    kDemoVlps,
-    kDemoLls,
-    kDemoVlls0,
-    kDemoVlls1,
-#if FSL_FEATURE_SMC_HAS_STOP_SUBMODE2
-    kDemoVlls2,
-#endif
-    kDemoVlls3,
-}lpmode_number_t;
-
-power_manager_user_config_t vlprConfig;
-power_manager_user_config_t vlpwConfig;
-power_manager_user_config_t vlls0Config;
-power_manager_user_config_t vlls1Config;
-#if FSL_FEATURE_SMC_HAS_STOP_SUBMODE2
-power_manager_user_config_t vlls2Config;
-#endif
-power_manager_user_config_t vlls3Config;
-power_manager_user_config_t llsConfig;
-power_manager_user_config_t vlpsConfig;
-power_manager_user_config_t waitConfig;
-power_manager_user_config_t stopConfig;
-
-power_manager_user_config_t const *powerConfigs[] =
-{   &waitConfig, &stopConfig,
-    &vlprConfig, &vlpwConfig, &vlpsConfig, &llsConfig, &vlls0Config,
-    &vlls1Config,
-#if FSL_FEATURE_SMC_HAS_STOP_SUBMODE2
-    &vlls2Config,
-#endif
-    &vlls3Config};
-#endif
-#endif
 /*****************************************************************************
  * Constant and Macro's - None
  *****************************************************************************/
@@ -397,31 +347,6 @@ void APP_init(void)
     g_send_size = 0;
 }
 
-/*****************************************************************************
- *  
- *   @name        APP_task
- * 
- *   @brief       This function runs APP task.
- *   @param       None
- * 
- *   @return      None
- **                
- *****************************************************************************/
-//void APP_task(void)
-//{
-//    while (TRUE)
-//    {
-//        /* call the periodic task function */
-//        USB_CDC_Periodic_Task();
-//
-//        /*check whether enumeration is complete or not */
-//        if ((start_app == TRUE) && (start_transactions == TRUE))
-//        {
-//            Virtual_Com_App();
-//        }
-//    }/* Endwhile */
-//}
-
 
 
 /******************************************************************************
@@ -525,14 +450,14 @@ uint8_t USB_App_Class_Callback
         if (start_app == TRUE)
         {
             start_transactions = TRUE;
-            GPIO_DRV_SetPinOutput (LED_BLUE);
+            //GPIO_DRV_SetPinOutput (LED_BLUE);
         }
         break;
     case USB_APP_CDC_DTE_DEACTIVATED:
         if (start_app == TRUE)
         {
             start_transactions = FALSE;
-            GPIO_DRV_ClearPinOutput (LED_BLUE);
+            //GPIO_DRV_ClearPinOutput (LED_BLUE);
         }
         break;
     case USB_DEV_EVENT_DATA_RECEIVED:
@@ -574,100 +499,83 @@ uint8_t USB_App_Class_Callback
         break;
     case USB_APP_CDC_SERIAL_STATE_NOTIF:
         {
-        /* User: add your own code for serial_state notify event */
-    }
+			/* User: add your own code for serial_state notify event */
+		}
         break;
     default:
         {
-        error = USBERR_INVALID_REQ_TYPE;
-        break;
-    }
+			error = USBERR_INVALID_REQ_TYPE;
+			break;
+		}
 
     }
 
     return error;
 }
 
-const char * hello_text = "HELLO\r\n";
+
 void Usb_task(void *arg)
 {
-	char test_data[] ="12345678123456789012345678901234567890123456789012345678901234XY\r\n";
-	const _queue_id usb_qid = _msgq_open ((_queue_number)USB_QUEUE, 0);
+
+	// TODO: SErial abstraction layer
+	// This is for accelerometer only testing
+#define ACC_MSG_SIZE (8 + 6 * 10)
+	uint8_t frame_encoded[ACC_MSG_SIZE * 2 + 2];
+	uint8_t payload[ACC_MSG_SIZE];
 	APPLICATION_MESSAGE_PTR_T msg_ptr;
 	uint8_t error;
+
+	const _queue_id usb_qid = _msgq_open ((_queue_number)USB_QUEUE, 0);
+
+
+
+
     APP_init();
-    uint32_t time_count = 0;
-    uint32_t time_count_error = 0;
-    uint32_t data_count = 0;
-    uint32_t data_count_error = 0;
-    uint32_t null_pointer_error = 0;
-    APP_init();
-    while (TRUE)
+
+    while (1)
     {
 		/* call the periodic task function */
 		USB_CDC_Periodic_Task();
 
-		msg_ptr = _msgq_receive(_msgq_get_id(0, USB_QUEUE), 1);
+		msg_ptr = _msgq_receive(usb_qid, 1);
 		if(NULL == msg_ptr) { _time_delay(1); continue; }
 
+		// FIXME: bad predicate
 		if( !((start_app == TRUE) && (start_transactions == TRUE) && g_send_ready))
-			_msg_free(msg_ptr);
-
-		/*check whether enumeration is complete or not */
-		if ((start_app == TRUE) && (start_transactions == TRUE) && g_send_ready)
 		{
-#if 0
-			_time_delay(100);
+			_msg_free(msg_ptr);
+			_time_delay(1);
+		}
+		/*check whether enumeration is complete or not */
+		else if ((start_app == TRUE) && (start_transactions == TRUE) && g_send_ready)
+		{
+			uint32_t frame_len;
+			uint64_t ts = (msg_ptr->timestamp.SECONDS * 1000) + msg_ptr->timestamp.MILLISECONDS;
+
+			// FIXME: endian assumption
+			memcpy(payload, &ts, 8);
+			// FIXME: no single point definition of actual payload size here
+			memcpy(payload + 8, msg_ptr->data, sizeof(payload) - 8);
+			frame_len = frame_encode(payload, frame_encoded, sizeof(payload));
 
 			g_send_ready = 0;
-
-
-			//error = USB_OK;
-
-			static int iter = 0;
-			iter = (iter+1)%10;
-			test_data[7] = '0' + iter;
-			error = USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT,
-					test_data, sizeof(test_data)-1
-					);
-
+			error = USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT, frame_encoded, frame_len);
 
 			if(error != USB_OK)
 			{
-				//failed
-				GPIO_DRV_SetPinOutput(LED_RED);
+				//GPIO_DRV_SetPinOutput(LED_RED);
 			}
-			else
-				GPIO_DRV_ClearPinOutput(LED_RED);
-			static x = 1;
-			if(x) {
-				GPIO_DRV_ClearPinOutput (LED_GREEN);
-				x = 0;
-			}
-			else {
-				GPIO_DRV_SetPinOutput(LED_GREEN);
-				x = 1;
-			}
-
-#else
-
-
-			static int iter = 0;
-			iter = (iter+1)%10;
-			test_data[7] = '0' + iter;
-			error = USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT,
-					test_data, sizeof(test_data)-1
-					);
-			if(error != USB_OK) { GPIO_DRV_SetPinOutput(LED_RED); }
+			/*
 			else { GPIO_DRV_ClearPinOutput(LED_RED); }
 			static x = 0;
 			if(x) { GPIO_DRV_ClearPinOutput (LED_GREEN); x = 0; }
 			else { GPIO_DRV_SetPinOutput(LED_GREEN); x = 1; }
+			*/
 			_msg_free(msg_ptr);
 
-#endif
 		}
-		else {
+		else
+		{
 			_time_delay(1);
 		}
     }
