@@ -6,22 +6,27 @@
 
 #include "tasks_list.h"
 #include "gpio_pins.h"
+#include "J1708_task.h"
+#include "fpga_api.h"
 
 void MQX_I2C0_IRQHandler(void);
+void MQX_PORTC_IRQHandler(void);
 
 #define	MAIN_TASK_SLEEP_PERIOD	10			// 10 mSec sleep
 #define TIME_ONE_SECOND_PERIOD	((int) (1000 / MAIN_TASK_SLEEP_PERIOD))
 
 static i2c_master_state_t i2c_master;
+_pool_id   message_pool;
 
 void Main_task (uint32_t initial_data)
 {
 //	_task_id   ids[10] = {0};
 	_queue_id  main_qid;	//, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
-//	APPLICATION_MESSAGE *msg;
+	_queue_id  j1708_rx_qid;
+	APPLICATION_MESSAGE *msg;
 
 	uint8_t u8mainTaskLoopCnt = 0;
-
+	_time_delay (10);
 
 	printf("\nMain Task: Start \n");
 #if 0
@@ -36,6 +41,8 @@ void Main_task (uint32_t initial_data)
 //  hardware_init();
 //	OSA_Init();
 	GPIO_Config();
+
+	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 
 	// I2C0 Initialization
 	NVIC_SetPriority(I2C0_IRQn, 6U);
@@ -60,15 +67,34 @@ void Main_task (uint32_t initial_data)
 	GPIO_DRV_SetPinOutput   (USB_OTG_SEL      );	// disable USB MUX
 
 
-	_time_delay (10);
 	GPIO_DRV_SetPinOutput   (USB_HUB_RSTN     );
 	GPIO_DRV_SetPinOutput   (USB_ENABLE       );
 
-//	_msgpool_create (sizeof(APPLICATION_MESSAGE), NUM_CLIENTS, 0, 0);
-//	main_qid = _msgq_open(MAIN_QUEUE, 0);
+	message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE), NUM_CLIENTS, 0, 0);
+	main_qid = _msgq_open(MAIN_QUEUE, 0);
 
-	_task_create(0, ACC_TASK  , 0 );
-	_task_create(0, USB_TASK  , 0 );
+//	_task_create(0, ACC_TASK  , 0 );
+//	_task_create(0, USB_TASK  , 0 );
+	_time_delay (1000);
+
+	FPGA_init ();
+
+	J1708_enable  (7);
+
+	{
+		uint8_t Br, R,G,B;
+		uint8_t Br1, R1,G1,B1;
+		G = B = Br = 255;
+		R = 100;
+		R1 = G1 = B1 = Br1 = 0x55;
+		FPGA_write_led_status (LED_RIGHT, &Br, &R, &G, &B);
+		FPGA_read_led_status  (LED_RIGHT, &Br1, &R1, &G1, &B1);
+	}
+
+
+	_task_create(0, J1708_TX_TASK, 0 );
+	_task_create(0, J1708_RX_TASK, 0 );
+	_task_create(0, FPGA_UART_RX_TASK, 0 );
 
 #if 0
 	ids[0] = _task_create(0, USB_TASK  , 0 );
@@ -140,4 +166,30 @@ void Main_task (uint32_t initial_data)
 void MQX_I2C0_IRQHandler(void)
 {
 	I2C_DRV_MasterIRQHandler(0);
+}
+
+
+void MQX_PORTC_IRQHandler(void)
+{
+	APPLICATION_MESSAGE *msg;
+	_queue_id J1708_rx_qid = _msgq_get_id (0, J1708_RX_QUEUE);
+	_queue_id J1708_tx_qid = _msgq_get_id (0, J1708_TX_QUEUE);
+
+	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO0)) {
+		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+		msg = _msg_alloc (message_pool);
+		msg->HEADER.SOURCE_QID = J1708_rx_qid;
+		msg->HEADER.TARGET_QID = J1708_rx_qid;
+		_msgq_send (msg);
+	}
+
+#if 0
+	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO1)) {
+		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO1);
+		msg = _msg_alloc (message_pool);
+		msg->HEADER.SOURCE_QID = J1708_tx_qid;
+		msg->HEADER.TARGET_QID = J1708_rx_qid;
+		_msgq_send (msg);
+	}
+#endif
 }

@@ -38,16 +38,7 @@ const gpio_output_pin_user_config_t outputPins[] = {
 
 
 const gpio_input_pin_user_config_t inputPins[] = {
-#if 0
-  {.pinName = POWER_3V3_ENABLE,    .config.isPullEnable = false,    .config.pullSelect = kPortPullUp,    .config.isPassiveFilterEnabled = false,    .config.interrupt = kPortIntDisabled  },
-  {
-    .pinName = kGpioSW2,
-    .config.isPullEnable = true,
-    .config.pullSelect = kPortPullUp,
-    .config.isPassiveFilterEnabled = false,
-    .config.interrupt = kPortIntDisabled
-  },
-#endif
+  {.pinName = FPGA_GPIO0,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge},
   {.pinName = GPIO_PINS_OUT_OF_RANGE                                                                                                                                                               }
 };
 
@@ -69,6 +60,10 @@ void GPIO_Config (void)
 
 	PORT_HAL_SetMuxMode      (I2C_SCL_GPIO_PORT, I2C_SCL_GPIO_PIN, kPortMuxAlt2);
 	PORT_HAL_SetOpenDrainCmd (I2C_SCL_GPIO_PORT, I2C_SCL_GPIO_PIN, true);
+
+	// UART1 configuration
+	PORT_HAL_SetMuxMode(UART_MCU_FPGA_TX_PORT, UART_MCU_FPGA_TX_PIN, kPortMuxAlt3);
+	PORT_HAL_SetMuxMode(UART_MCU_FPGA_RX_PORT, UART_MCU_FPGA_RX_PIN, kPortMuxAlt3);
 
 	// external OSC
 	PORT_HAL_SetMuxMode      (EXTAL0_PORT,       EXTAL0_PIN,       kPortPinDisabled);

@@ -58,6 +58,7 @@
 									<listOptionValue builtIn="false" value="..\Sources"/>
 									<listOptionValue builtIn="false" value="..\Board_Files"/>
 									<listOptionValue builtIn="false" value="..\Sources\usb"/>
+									<listOptionValue builtIn="false" value="..\Sources\J1708"/>
 									<listOptionValue builtIn="false" value="&quot;../..\MQX_OS\rtos\mqx\config\mcu\MK20D10&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\CMSIS\Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\devices\MK20D10\startup&quot;"/>
@@ -182,6 +183,98 @@
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize.932114239" name="Cross ARM GNU Print Size" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize">
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format.1947614393" name="Size format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format"/>
 							</tool>
+						</toolChain>
+					</folderInfo>
+					<folderInfo id="ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.1644632232.983287426" name="/" resourcePath="Sources">
+						<toolChain id="ilg.gnuarmeclipse.managedbuild.cross.toolchain.elf.debug.1522751890" name="Cross ARM GCC" superClass="ilg.gnuarmeclipse.managedbuild.cross.toolchain.elf.debug" unusedChildren="">
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.187056531.1006711607" name="Optimization Level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.187056531"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength.840768244.2072700944" name="Message length (-fmessage-length=0)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength.840768244"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar.1475385903.2118845785" name="'char' is signed (-fsigned-char)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar.1475385903"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections.1140014779.745759957" name="Function sections (-ffunction-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections.1140014779"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections.906872882.1073776597" name="Data sections (-fdata-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections.906872882"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.249774227.1762481794" name="Debug level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.249774227"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.173704941.1157344193" name="Debug format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.173704941"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family.1193894689.657051825" name="ARM family" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family.1193894689"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name.194454437.1127100395" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name.194454437"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix.2018298312.266122561" name="Prefix" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix.2018298312"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.c.2065901787.1038551497" name="C compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.c.2065901787"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp.2143289992.89960496" name="C++ compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp.2143289992"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy.1938810284.237127036" name="Hex/Bin converter" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy.1938810284"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump.1085797855.1213557987" name="Listing generator" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump.1085797855"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.size.2005127909.888262883" name="Size command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.size.2005127909"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.make.2003971765.2010831356" name="Build command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.make.2003971765"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm.242073945.659636556" name="Remove command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm.242073945"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar.160860390.1574820660" name="Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar.160860390"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.581898609.1109804609" name="Print size" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.581898609"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn.1086330387.1200357068" name="Enable all common warnings (-Wall)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn.1086330387"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash.446663976.603352300" name="Create flash image" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash.446663976"/>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.1636838137" name="Cross ARM GNU Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.1189500931">
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input.1163851011" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.263916610" name="Cross ARM C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1233451735">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.1077385563" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="..\Sources"/>
+									<listOptionValue builtIn="false" value="..\Board_Files"/>
+									<listOptionValue builtIn="false" value="..\Sources\usb"/>
+									<listOptionValue builtIn="false" value="..\Sources\J1708"/>
+									<listOptionValue builtIn="false" value="..\Sources\FPGA_API"/>
+									<listOptionValue builtIn="false" value="&quot;../..\MQX_OS\rtos\mqx\config\mcu\MK20D10&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\CMSIS\Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\devices\MK20D10\startup&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\devices&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\devices\MK20D10\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\devices\MK20D10\startup\gcc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\nio\drivers\nio_serial&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\string&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\config\common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\psp\cortex_m\core\M4&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx_stdlib\source\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\kernel&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\nio\src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\bsp&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\nio\drivers\nio_serial\src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\nio&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx_stdlib\source\strings&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\psp\cortex_m&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\nio\drivers\nio_tty\src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\nio\drivers\nio_dummy\src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\psp\cortex_m\cpu&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\nio\fs&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx_stdlib\source\stdio&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\nio\drivers\nio_tty&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\psp\cortex_m\compiler\gcc_arm&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\nio\drivers\nio_dummy&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\rtos\mqx\mqx\source\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\utilities\inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\utilities\src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\osa\inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\system\inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\hal\inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}\platform\drivers\inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/adapter/sources&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/adapter/sources/sdk&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/classes/cdc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/classes/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/classes/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/classes/include/config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/controller/khci&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/device/sources/controller&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/hal&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/usb/usb_core/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Freescale\KSDK_1.3.0\usb\usb_core\device\include\MK20D10&quot;"/>
+								</option>
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.1152708070" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.2116228795" name="Cross ARM C++ Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.397461226">
+								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.50148936" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input"/>
+							</tool>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.1243386020" name="Cross ARM C Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.843011663"/>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.1671496939" name="Cross ARM C++ Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.971357687"/>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver.176175204" name="Cross ARM GNU Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver.537166460"/>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash.577403599" name="Cross ARM GNU Create Flash Image" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash.827891179"/>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting.1558746525" name="Cross ARM GNU Create Listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting.1057136516"/>
+							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize.1276634911" name="Cross ARM GNU Print Size" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize.932114239"/>
 						</toolChain>
 					</folderInfo>
 				</configuration>
