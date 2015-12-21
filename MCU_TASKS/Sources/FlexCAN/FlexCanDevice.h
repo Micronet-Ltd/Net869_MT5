@@ -60,8 +60,8 @@ typedef struct _flexcan_device_msgRX {
 typedef struct _flexcan_device_MailboxConfig {
     uint8_t                    	iD;             // MB id
     bool                        isEnable;       // Is MB configured as RX and enabled
-    //bool                        isTXConfigure;
-    flexcan_msgbuff_id_type_t   iD_type;        // Standard or extended 
+                                                //bool                        isTXConfigure;
+    flexcan_msgbuff_id_type_t   iD_type;        // Standard or extended
     uint32_t                    iD_Mask;        // Mask configuration
 }flexcan_device_MailboxConfig_t, *pflexcan_device_MailboxConfig_t;
 
@@ -74,7 +74,7 @@ typedef struct flexcanInstance {
     uint32_t                        iScanInstanceStarted;       // Indicate that Instance is started
     uint32_t                        canPeClk;                   // HW clock value
     uint32_t                        *pRX_queue;                 // Recieve queue
-    uint32_t                        *pTX_queue;					// Transmit queue
+    uint32_t                        *pTX_queue;                 // Transmit queue
     flexcan_device_MailboxConfig_t  MB_config[MAX_MB_NUMBER];   // MB configuration
     flexcan_msgbuff_t               MB_msgbuff[MAX_MB_NUMBER];  // MB message buffer for HW
     MUTEX_STRUCT                    mutex_MB_sync;              // sync MB configuration

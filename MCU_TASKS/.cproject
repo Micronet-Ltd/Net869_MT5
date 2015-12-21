@@ -148,6 +148,8 @@
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.cref.893096678" name="Cross reference (-Xlinker --cref)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.cref" value="true" valueType="boolean"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs.675106423" name="Other objects" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.otherobjs" valueType="userObjs">
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../MQX_OS/MQX_USB_DEVICE/debug/lib_mqx_usb_device.a"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/MQX_LIB/debug/lib_mqx.a&quot;"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../MQX_OS/MQX_PSP/debug/lib_mqx_psp.a"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../MQX_OS/MQX_STDLIB/debug/lib_mqx_stdlib.a"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs.1530776165" name="Libraries (-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.libs" valueType="libs">

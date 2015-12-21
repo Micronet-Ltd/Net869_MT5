@@ -5,11 +5,13 @@
  *      Author: ruslans
  */
 
+#include "print_prv.h"
+//#include "print_scan.h"
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 
-#include "print_prv.h"
+
 #include "Uart_debugTerminal.h"
 
 #define MAX_DEBUG_OUT_STR_SIZE  0x80
