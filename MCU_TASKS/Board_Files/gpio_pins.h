@@ -165,6 +165,13 @@ enum _gpio_pins_pinNames {
 #define I2C_SCL_GPIO_PORT			PORTB
 #define I2C_SCL_GPIO_PIN			2
 
+//	UART MCU FPGA INTERFACE  - CHANNEL 1
+#define UART_MCU_FPGA_TX_PORT			PORTE
+#define UART_MCU_FPGA_TX_PIN			0
+
+#define UART_MCU_FPGA_RX_PORT			PORTE
+#define UART_MCU_FPGA_RX_PIN			1
+
 #define EXTAL0_PORT   				PORTA
 #define EXTAL0_PIN    				18
 

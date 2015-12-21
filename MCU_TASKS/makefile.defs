@@ -1,0 +1,4 @@
+$(shell rm ObjectList)
+$(foreach obj, $(OBJS), $(shell echo. $(obj) >> ObjectList))
+$(shell echo. $(USR_OBJS) >> ObjectList)
+
