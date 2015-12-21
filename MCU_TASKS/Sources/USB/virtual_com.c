@@ -39,7 +39,7 @@
 #include "usb_device_stack_interface.h"
 #include "virtual_com.h"
 
-#if (OS_ADAPTER_ACTIVE_OS == OS_ADAPTER_SDK)
+/////
 #include "fsl_device_registers.h"
 #include "fsl_clock_manager.h"
 #include "board.h"
@@ -49,60 +49,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
-#if USBCFG_DEV_KEEP_ALIVE_MODE
-#include "fsl_usb_khci_hal.h"
+/////
 
-#if (FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED == 0)
-    #error The keep alive feature can not be enabled in this platform, due to the SOC unsupports this feature.
-#endif
-#include "fsl_power_manager.h"
-#endif
-#endif
+/*Micronet Includes */
+#include "tasks_list.h"
 
-#if USBCFG_DEV_KEEP_ALIVE_MODE
-#if (OS_ADAPTER_ACTIVE_OS == OS_ADAPTER_SDK)
-static uint8_t waitfordatareceive =0;
-static uint8_t comopen = 0;
+#include "frame.h"
 
-typedef enum lpmode_number
-{
-    kDemoWait,
-    kDemoStop,
-    kDemoVlpr,
-    kDemoVlpw,
-    kDemoVlps,
-    kDemoLls,
-    kDemoVlls0,
-    kDemoVlls1,
-#if FSL_FEATURE_SMC_HAS_STOP_SUBMODE2
-    kDemoVlls2,
-#endif
-    kDemoVlls3,
-}lpmode_number_t;
 
-power_manager_user_config_t vlprConfig;
-power_manager_user_config_t vlpwConfig;
-power_manager_user_config_t vlls0Config;
-power_manager_user_config_t vlls1Config;
-#if FSL_FEATURE_SMC_HAS_STOP_SUBMODE2
-power_manager_user_config_t vlls2Config;
-#endif
-power_manager_user_config_t vlls3Config;
-power_manager_user_config_t llsConfig;
-power_manager_user_config_t vlpsConfig;
-power_manager_user_config_t waitConfig;
-power_manager_user_config_t stopConfig;
-
-power_manager_user_config_t const *powerConfigs[] =
-{   &waitConfig, &stopConfig,
-    &vlprConfig, &vlpwConfig, &vlpsConfig, &llsConfig, &vlls0Config,
-    &vlls1Config,
-#if FSL_FEATURE_SMC_HAS_STOP_SUBMODE2
-    &vlls2Config,
-#endif
-    &vlls3Config};
-#endif
-#endif
 /*****************************************************************************
  * Constant and Macro's - None
  *****************************************************************************/
@@ -128,7 +82,7 @@ cdc_handle_t g_app_handle;
  *****************************************************************************/
 void USB_App_Device_Callback(uint8_t event_type, void* val, void* arg);
 uint8_t USB_App_Class_Callback(uint8_t event, uint16_t value, uint8_t ** data, uint32_t* size, void* arg);
-void Virtual_Com_App(void);
+//void Virtual_Com_App(void);
 /*****************************************************************************
  * Local Variables 
  *****************************************************************************/
@@ -159,7 +113,7 @@ static bool start_app = FALSE;
 static bool start_transactions = FALSE;
 
 static uint8_t g_curr_recv_buf[DATA_BUFF_SIZE];
-static uint8_t g_curr_send_buf[DATA_BUFF_SIZE];
+//static uint8_t g_curr_send_buf[DATA_BUFF_SIZE];
 
 static uint32_t g_recv_size;
 static uint32_t g_send_size;
@@ -371,6 +325,7 @@ uint8_t USB_Set_Country_Setting(uint32_t handle,
  *****************************************************************************/
 void APP_init(void)
 {
+	// TODO: add composite devices here, we can support at least 2 CDC classes
     cdc_config_struct_t cdc_config;
     cdc_config.cdc_application_callback.callback = USB_App_Device_Callback;
     cdc_config.cdc_application_callback.arg = &g_app_handle;
@@ -390,125 +345,9 @@ void APP_init(void)
     USB_Class_CDC_Init(CONTROLLER_ID, &cdc_config, &g_app_handle);
     g_recv_size = 0;
     g_send_size = 0;
-#if USBCFG_DEV_KEEP_ALIVE_MODE
-#if (OS_ADAPTER_ACTIVE_OS == OS_ADAPTER_SDK)
-    uint32_t powerModeAmount=sizeof(powerConfigs)/
-    sizeof(power_manager_user_config_t *);
-
-    vlprConfig.mode = kPowerManagerVlpr;
-    //vlprConfig.policy = kPowerManagerPolicyAgreement;
-
-    vlprConfig.sleepOnExitValue = false;
-
-    vlpwConfig = vlprConfig;
-    vlpwConfig.mode = kPowerManagerVlpw;
-
-    vlpsConfig = vlprConfig;
-    vlpsConfig.mode = kPowerManagerVlps;
-
-    stopConfig = vlprConfig;
-    stopConfig.mode = kPowerManagerStop;
-
-    POWER_SYS_Init((power_manager_user_config_t const ** )&powerConfigs, powerModeAmount, NULL, 1U);
-#if(defined FRDM_KL27Z)
-    PORTA_PCR4 = 0;
-    PORTA_PCR13 = 0;
-    PORTB_PCR18 = 0;
-    PORTB_PCR19 = 0;
-    PORTC_PCR1 = 0;
-    PORTC_PCR2 = 0;
-    PORTC_PCR3 = 0;
-#endif
-#endif
-#endif    
 }
 
-/*****************************************************************************
- *  
- *   @name        APP_task
- * 
- *   @brief       This function runs APP task.
- *   @param       None
- * 
- *   @return      None
- **                
- *****************************************************************************/
-void APP_task(void)
-{
-    while (TRUE)
-    {
-        /* call the periodic task function */
-        USB_CDC_Periodic_Task();
 
-        /*check whether enumeration is complete or not */
-        if ((start_app == TRUE) && (start_transactions == TRUE))
-        {
-            Virtual_Com_App();
-        }
-    }/* Endwhile */
-}
-
-/******************************************************************************
- * 
- *    @name       Virtual_Com_App
- *    
- *    @brief      
- *                  
- *    @param      None
- * 
- *    @return     None
- *    
- *****************************************************************************/
-void Virtual_Com_App(void)
-{
-    /* User Code */
-    if ((0 != g_recv_size) && (0xFFFFFFFF != g_recv_size))
-    {
-        int32_t i;
-
-        /* Copy Buffer to Send Buff */
-        for (i = 0; i < g_recv_size; i++)
-        {
-            //USB_PRINTF("Copied: %c\n", g_curr_recv_buf[i]);
-            g_curr_send_buf[g_send_size++] = g_curr_recv_buf[i];
-        }
-        g_recv_size = 0;
-    }
-
-    if (g_send_size)
-    {
-        uint8_t error;
-        uint32_t size = g_send_size;
-        g_send_size = 0;
-
-        error = USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT,
-            g_curr_send_buf, size);
-
-        if (error != USB_OK)
-        {
-            /* Failure to send Data Handling code here */
-        }
-    }
-#if USBCFG_DEV_KEEP_ALIVE_MODE
-#if (OS_ADAPTER_ACTIVE_OS == OS_ADAPTER_SDK)
-    if( (waitfordatareceive))
-    {
-        if(comopen == 1)
-        {
-            OS_Time_delay(30);
-            comopen = 0;
-        }
-        USB_PRINTF("Enter lowpower\r\n");
-        usb_hal_khci_disable_interrupts((uint32_t)USB0, INTR_TOKDNE);
-        POWER_SYS_SetMode(kDemoVlps, kPowerManagerPolicyAgreement);
-        waitfordatareceive = 0;
-        usb_hal_khci_enable_interrupts((uint32_t)USB0,INTR_TOKDNE);
-        USB_PRINTF("Exit  lowpower\r\n");
-    }
-#endif
-#endif
-    return;
-}
 
 /******************************************************************************
  * 
@@ -558,6 +397,7 @@ void USB_App_Device_Callback(uint8_t event_type, void* val, void* arg)
     return;
 }
 
+int g_send_ready = 1;
 /******************************************************************************
  * 
  *    @name        USB_App_Class_Callback
@@ -610,20 +450,14 @@ uint8_t USB_App_Class_Callback
         if (start_app == TRUE)
         {
             start_transactions = TRUE;
-#if USBCFG_DEV_KEEP_ALIVE_MODE
-#if (OS_ADAPTER_ACTIVE_OS == OS_ADAPTER_SDK)
-            waitfordatareceive = 1;
-            usb_hal_khci_disable_interrupts((uint32_t)USB0, INTR_SOFTOK);
-            comopen = 1;
-            USB_PRINTF("USB_APP_CDC_DTE_ACTIVATED\r\n");
-#endif
-#endif
+            //GPIO_DRV_SetPinOutput (LED_BLUE);
         }
         break;
     case USB_APP_CDC_DTE_DEACTIVATED:
         if (start_app == TRUE)
         {
             start_transactions = FALSE;
+            //GPIO_DRV_ClearPinOutput (LED_BLUE);
         }
         break;
     case USB_DEV_EVENT_DATA_RECEIVED:
@@ -631,23 +465,12 @@ uint8_t USB_App_Class_Callback
         if ((start_app == TRUE) && (start_transactions == TRUE))
         {
             g_recv_size = *size;
-#if USBCFG_DEV_KEEP_ALIVE_MODE
-#if (OS_ADAPTER_ACTIVE_OS == OS_ADAPTER_SDK)
-            waitfordatareceive = 0;
-            usb_hal_khci_enable_interrupts((uint32_t)USB0, INTR_SOFTOK);
-#endif
-#endif
+
 
             if (!g_recv_size)
             {
                 /* Schedule buffer for next receive event */
                 USB_Class_CDC_Recv_Data(handle, DIC_BULK_OUT_ENDPOINT, g_curr_recv_buf, g_bulk_out_max_packet_size);
-#if USBCFG_DEV_KEEP_ALIVE_MODE
-#if (OS_ADAPTER_ACTIVE_OS == OS_ADAPTER_SDK)
-                waitfordatareceive = 1;
-                usb_hal_khci_disable_interrupts((uint32_t)USB0, INTR_SOFTOK);
-#endif
-#endif
             }
         }
     }
@@ -660,35 +483,30 @@ uint8_t USB_App_Class_Callback
              ** meaning that we want to inform the host that we do not have any additional
              ** data, so it can flush the output.
              */
-            USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT, NULL, 0);
+        	USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT, NULL, 0);
         }
         else if ((start_app == TRUE) && (start_transactions == TRUE))
         {
             if ((*data != NULL) || ((*data == NULL) && (*size == 0)))
             {
+            	g_send_ready = 1;
                 /* User: add your own code for send complete event */
                 /* Schedule buffer for next receive event */
-                USB_Class_CDC_Recv_Data(handle, DIC_BULK_OUT_ENDPOINT, g_curr_recv_buf, g_bulk_out_max_packet_size);
-#if USBCFG_DEV_KEEP_ALIVE_MODE
-#if (OS_ADAPTER_ACTIVE_OS == OS_ADAPTER_SDK)
-                waitfordatareceive = 1;
-                usb_hal_khci_disable_interrupts((uint32_t)USB0, INTR_SOFTOK);
-#endif
-#endif
+                //USB_Class_CDC_Recv_Data(handle, DIC_BULK_OUT_ENDPOINT, g_curr_recv_buf, g_bulk_out_max_packet_size);
             }
         }
     }
         break;
     case USB_APP_CDC_SERIAL_STATE_NOTIF:
         {
-        /* User: add your own code for serial_state notify event */
-    }
+			/* User: add your own code for serial_state notify event */
+		}
         break;
     default:
         {
-        error = USBERR_INVALID_REQ_TYPE;
-        break;
-    }
+			error = USBERR_INVALID_REQ_TYPE;
+			break;
+		}
 
     }
 
@@ -696,21 +514,72 @@ uint8_t USB_App_Class_Callback
 }
 
 
-void Usb_task (void *arg)
+void Usb_task(void *arg)
 {
+
+	// TODO: SErial abstraction layer
+	// This is for accelerometer only testing
+#define ACC_MSG_SIZE (8 + 6 * 10)
+	uint8_t frame_encoded[ACC_MSG_SIZE * 2 + 2];
+	uint8_t payload[ACC_MSG_SIZE];
+	APPLICATION_MESSAGE_PTR_T msg_ptr;
+	uint8_t error;
+
+	const _queue_id usb_qid = _msgq_open ((_queue_number)USB_QUEUE, 0);
+
+
+
+
     APP_init();
-    while (TRUE) {
+
+    while (1)
+    {
 		/* call the periodic task function */
 		USB_CDC_Periodic_Task();
 
-		/*check whether enumeration is complete or not */
-		if ((start_app == TRUE) && (start_transactions == TRUE))
-			Virtual_Com_App();
+		msg_ptr = _msgq_receive(usb_qid, 1);
+		if(NULL == msg_ptr) { _time_delay(1); continue; }
 
-		_time_delay (1);
+		// FIXME: bad predicate
+		if( !((start_app == TRUE) && (start_transactions == TRUE) && g_send_ready))
+		{
+			_msg_free(msg_ptr);
+			_time_delay(1);
+		}
+		/*check whether enumeration is complete or not */
+		else if ((start_app == TRUE) && (start_transactions == TRUE) && g_send_ready)
+		{
+			uint32_t frame_len;
+			uint64_t ts = (msg_ptr->timestamp.SECONDS * 1000) + msg_ptr->timestamp.MILLISECONDS;
+
+			// FIXME: endian assumption
+			memcpy(payload, &ts, 8);
+			// FIXME: no single point definition of actual payload size here
+			memcpy(payload + 8, msg_ptr->data, sizeof(payload) - 8);
+			frame_len = frame_encode(payload, frame_encoded, sizeof(payload));
+
+			g_send_ready = 0;
+			error = USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT, frame_encoded, frame_len);
+
+			if(error != USB_OK)
+			{
+				//GPIO_DRV_SetPinOutput(LED_RED);
+			}
+			/*
+			else { GPIO_DRV_ClearPinOutput(LED_RED); }
+			static x = 0;
+			if(x) { GPIO_DRV_ClearPinOutput (LED_GREEN); x = 0; }
+			else { GPIO_DRV_SetPinOutput(LED_GREEN); x = 1; }
+			*/
+			_msg_free(msg_ptr);
+
+		}
+		else
+		{
+			_time_delay(1);
+		}
     }
 }
-
 
 /* EOF */
 

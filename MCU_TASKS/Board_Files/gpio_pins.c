@@ -65,6 +65,13 @@ const gpio_input_pin_user_config_t inputPins[] = {
         .config.interrupt = kPortIntDisabled
     },
 #endif
+  {
+		  .pinName = ACC_INT,
+		  .config.isPullEnable = true,
+		  .config.pullSelect = kPortPullUp,
+		  .config.isPassiveFilterEnabled = false,
+		  .config.interrupt = kPortIntFallingEdge,
+  },
     { .pinName = GPIO_PINS_OUT_OF_RANGE                                                                                                                                                               }
 };
 

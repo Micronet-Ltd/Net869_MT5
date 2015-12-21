@@ -6,7 +6,7 @@
 #include <message.h>
 #include <stdio.h>
 
-#define MAX_MSG_DATA_LEN	256
+#define MAX_MSG_DATA_LEN	 0xFF
 #define NUM_CLIENTS			 10
 
 typedef enum {
@@ -38,24 +38,25 @@ typedef enum {
 	J1708_QUEUE      ,
 	ACC_QUEUE        ,
 	VIB_SENSOR_QUEUE ,
-	REG_QUEUE   
+	REG_QUEUE   	 ,
+	POWER_MGMT_QUEUE ,
 } APPLICATION_QUEUE_T;
 
 typedef struct {
-	MESSAGE_HEADER_STRUCT 		HEADER;
-	uint8_t						DATA[MAX_MSG_DATA_LEN];
-} APPLICATION_MESSAGE;
+	MESSAGE_HEADER_STRUCT 		header;
+	uint8_t						data[MAX_MSG_DATA_LEN];
+	TIME_STRUCT					timestamp;
+} APPLICATION_MESSAGE_T, *APPLICATION_MESSAGE_PTR_T;
 
 extern void Main_task        (uint32_t);
 
 extern void Acc_task         (uint32_t);
-extern void Usb_task         (uint32_t);
+extern void Usb_task         (void *arg);
 
 extern void FLEXCAN_Tx_Task( uint32_t param );
 extern void FLEXCAN_Rx_Task( uint32_t param ); 
 
 /*
-extern void Usb_task         (uint32_t);
 extern void Can_task         (uint32_t);
 extern void J1708_task       (uint32_t);
 extern void Acc_task         (uint32_t);

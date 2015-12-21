@@ -27,6 +27,7 @@ static i2c_master_state_t i2c_master;
 void _test_CANFLEX( void );
 
 void Main_task( uint32_t initial_data ) {
+
     _task_id   ids[NUM_TASKS] = { 0 };
     _queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
 //	APPLICATION_MESSAGE *msg;
@@ -56,7 +57,7 @@ void Main_task( uint32_t initial_data ) {
     // turn on device
     GPIO_DRV_SetPinOutput(POWER_3V3_ENABLE);
     GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
-    GPIO_DRV_SetPinOutput(ACC_ENABLE);
+	GPIO_DRV_ClearPinOutput(ACC_ENABLE       );
 
     // FPGA Enable
     GPIO_DRV_SetPinOutput(FPGA_PWR_ENABLE);
@@ -170,76 +171,75 @@ void MQX_I2C0_IRQHandler( void ) {
 }
 
 void _test_CANFLEX( void ) {
-#if 0
+#if 1
     //	ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, BSP_CAN_DEVICE_0);
     //    if ( ids[USB_TASK] == MQX_NULL_TASK_ID ) {
     //        MIC_DEBUG_UART_PRINTF("\nMain Could not create CAN_TASK_RX_0\n");
     //    }
 
 
-    {
-        flexcandevice_initparams_t initCan0, initCan1;
-        flexcan_device_status_t ret;
+	flexcandevice_initparams_t initCan0, initCan1;
+	flexcan_device_status_t ret;
 
-        initCan0.flexcanMode        = fdFlexCanNormalMode;
-        initCan0.instanceBitrate    = fdBitrate_1_mHz;
-        initCan0.is_rx_fifo_needed  = false;
-        initCan0.max_num_mb         = MAX_MB_NUMBER;
-        initCan0.num_id_filters     = kFlexCanRxFifoIDFilters_8;
-        initCan0.RX_queue_num       = RX_FLEXCAN_MSGQ_MESAGES;
-        initCan0.TX_queue_num       = TX_FLEXCAN_MSGQ_MESAGES;
+	initCan0.flexcanMode        = fdFlexCanNormalMode;
+	initCan0.instanceBitrate    = fdBitrate_1_mHz;
+	initCan0.is_rx_fifo_needed  = false;
+	initCan0.max_num_mb         = MAX_MB_NUMBER;
+	initCan0.num_id_filters     = kFlexCanRxFifoIDFilters_8;
+	initCan0.RX_queue_num       = RX_FLEXCAN_MSGQ_MESAGES;
+	initCan0.TX_queue_num       = TX_FLEXCAN_MSGQ_MESAGES;
 
-        initCan1.flexcanMode        = fdFlexCanNormalMode;
-        initCan1.instanceBitrate    = fdBitrate_1_mHz;
-        initCan1.is_rx_fifo_needed  = false;
-        initCan1.max_num_mb         = MAX_MB_NUMBER;
-        initCan1.num_id_filters     = kFlexCanRxFifoIDFilters_8;
-        initCan1.RX_queue_num       = RX_FLEXCAN_MSGQ_MESAGES;
-        initCan1.TX_queue_num       = TX_FLEXCAN_MSGQ_MESAGES;
+	initCan1.flexcanMode        = fdFlexCanNormalMode;
+	initCan1.instanceBitrate    = fdBitrate_1_mHz;
+	initCan1.is_rx_fifo_needed  = false;
+	initCan1.max_num_mb         = MAX_MB_NUMBER;
+	initCan1.num_id_filters     = kFlexCanRxFifoIDFilters_8;
+	initCan1.RX_queue_num       = RX_FLEXCAN_MSGQ_MESAGES;
+	initCan1.TX_queue_num       = TX_FLEXCAN_MSGQ_MESAGES;
 
-        ret = FlexCanDevice_Init(&initCan0, &initCan1);
+	ret = FlexCanDevice_Init(&initCan0, &initCan1);
 
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_Init( ) return %d\n", ret);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_Init( ) return %d\n", ret);
 
-        ret = FlexCanDevice_Start(can_Device_0);
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_Start( ) return %d\n", ret);
+	ret = FlexCanDevice_Start(can_Device_0);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_Start( ) return %d\n", ret);
 
-        ret = FlexCanDevice_SetTermination(can_Device_0, true);
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetTermination( ) return %d\n", ret);
+	ret = FlexCanDevice_SetTermination(can_Device_0, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetTermination( ) return %d\n", ret);
 
-        ret = FlexCanDevice_SetRxMaskType(can_Device_0, false);
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
+	ret = FlexCanDevice_SetRxMaskType(can_Device_0, false);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
 
 //        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdStd, 8, 0x7FF, true);
 //        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
-        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 5, 0x3, true);
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 5, 0x3, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
-        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 6, 0x3, true);
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 6, 0x3, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
-        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 7, 0x3, true);
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 7, 0x3, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
-        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 8, 0x3, true);
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 8, 0x3, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 //        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdStd, 9, 0x7FF, true);
 //        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
-        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 9, 0xC, true);
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 9, 0xC, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
-        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 10, 0xC, true);
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 10, 0xC, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
-        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 11, 0xC, true);
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 11, 0xC, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
-        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 12, 0xC, true);
-        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
-    }
+	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 12, 0xC, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 #endif
 
 }
+
