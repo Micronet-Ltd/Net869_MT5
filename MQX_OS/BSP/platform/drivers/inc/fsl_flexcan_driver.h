@@ -26,6 +26,9 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+    - 14/12/2015 Ruslan Sirota Micronet
+        -- Add support for multiple MB recieve operation
  */
 #ifndef __FSL_FLEXCAN_DRIVER_H__
 #define __FSL_FLEXCAN_DRIVER_H__
@@ -66,16 +69,19 @@ extern const IRQn_Type g_flexcanOredMessageBufferIrqId[];
  *      future releases.
  */
 typedef struct FlexCANState {
-    flexcan_msgbuff_t *fifo_message;           /*!< The FlexCAN receive FIFO data*/
-    flexcan_msgbuff_t *mb_message;		      /*!< The FlexCAN receive MB data*/
-    volatile uint32_t rx_mb_idx;          /*!< Index of the message buffer for receiving*/
-    volatile uint32_t tx_mb_idx;          /*!< Index of the message buffer for transmitting*/
-    semaphore_t txIrqSync;                /*!< Used to wait for ISR to complete its TX business.*/
-    semaphore_t rxIrqSync;                /*!< Used to wait for ISR to complete its RX business.*/
-    volatile bool isTxBusy;        /*!< True if there is an active transmit. */
-    volatile bool isRxBusy;        /*!< True if there is an active receive. */
-    volatile bool isTxBlocking;    /*!< True if transmit is blocking transaction. */
-    volatile bool isRxBlocking;    /*!< True if receive is blocking transaction. */
+    flexcan_msgbuff_t   *fifo_message;                  /*!< The FlexCAN receive FIFO data*/
+    flexcan_msgbuff_t   *mb_message[CAN_CS_COUNT];	    /*!< The FlexCAN receive MB data*/
+    volatile uint32_t   rx_mb_idx;                      /*!< Index of the message buffer for receiving*/
+    volatile uint32_t   tx_mb_idx;                      /*!< Index of the message buffer for transmitting*/
+    semaphore_t         txIrqSync;                      /*!< Used to wait for ISR to complete its TX business.*/
+    semaphore_t         rxIrqSync;                      /*!< Used to wait for ISR to complete its RX business.*/
+    volatile bool       isTxBusy;                       /*!< True if there is an active transmit. */
+    volatile bool       isRxBusyFIFO;                   /*!< True if there is an active receive on FIFO. */
+    volatile bool       isRxBusyMB[CAN_CS_COUNT];       /*!< True if there is an active receive on MB. */
+    volatile bool       isTxBlocking;                   /*!< True if transmit is blocking transaction. */
+    volatile bool       isRxBlockingFIFO;               /*!< True if receive is blocking transaction on FIFO. */
+    volatile bool       isRxBlockingMB[CAN_CS_COUNT];   /*!< True if receive is blocking transaction on MB. */
+    LWEVENT_STRUCT      event_ISR;                      /*!< Event signaling interrupt occure. */ 
 } flexcan_state_t;
 
 /*! @brief FlexCAN data info from user*/
@@ -391,11 +397,29 @@ flexcan_status_t FLEXCAN_DRV_GetTransmitStatus(uint32_t instance);
  * @param instance The FLEXCAN module base address.
  * @param bytesRemaining A pointer to a value that is filled in with the number of bytes which
  *                       still need to be received in the active transfer.
+ * @param   mb_idx     Index of the message buffer
  * @return The receive status.
  * @retval kStatus_FLEXCAN_Success The receive has completed successfully.
  * @retval kStatus_FLEXCAN_RxBusy The receive is still in progress.
  */
-flexcan_status_t FLEXCAN_DRV_GetReceiveStatus(uint32_t instance);
+flexcan_status_t FLEXCAN_DRV_GetReceiveStatus(uint32_t instance, uint32_t mb_idx);
+
+/*!
+ * @brief Returns whether the previous FLEXCAN receive is complete.
+ *
+ * When performing an async receive, call this function to find out the state of the
+ * current receive progress: in progress (or busy) or complete (success).
+ *
+ * @param instance The FLEXCAN module base address.
+ * @param bytesRemaining A pointer to a value that is filled in with the number of bytes which
+ *                       still need to be received in the active transfer.
+ * @param   pmb_ready_idx     Bit mask of the ready message buffer
+ * @param   timeout_ms        A timeout for the transfer in milliseconds.
+ * @return The receive status.
+ * @retval kStatus_FLEXCAN_Success The receive has completed successfully.
+ * @retval kStatus_FLEXCAN_RxBusy The receive is still in progress.
+ */
+flexcan_status_t FLEXCAN_DRV_GetReceiveStatusBlocking(uint32_t instance, uint32_t *pmb_ready_idx, uint32_t timeout_ms);
 
 #ifdef __cplusplus
 }

@@ -64,7 +64,7 @@ static flexcan_status_t FLEXCAN_DRV_StartRxMessageFifoData(
                     flexcan_msgbuff_t *data
                     );
 static void FLEXCAN_DRV_CompleteSendData(uint32_t instance);
-static void FLEXCAN_DRV_CompleteRxMessageBufferData(uint32_t instance);
+static void FLEXCAN_DRV_CompleteRxMessageBufferData(uint32_t instance, uint32_t mb_idx);
 static void FLEXCAN_DRV_CompleteRxMessageFifoData(uint32_t instance);
 
 /*******************************************************************************
@@ -285,12 +285,19 @@ flexcan_status_t FLEXCAN_DRV_Init(
     INT_SYS_EnableIRQ(g_flexcanOredMessageBufferIrqId[instance]);
 
     state->isTxBusy = false;
-    state->isRxBusy = false;
+    state->isRxBusyFIFO = false;
+    _mem_zero((void*)( state->isRxBusyMB ), sizeof(state->isRxBusyMB)); 
     state->fifo_message = NULL;
     state->rx_mb_idx = 0;
     state->tx_mb_idx = 0;
     /* Save runtime structure pointers so irq handler can point to the correct state structure */
     g_flexcanStatePtr[instance] = state;
+
+    if (MQX_OK != _lwevent_create(&(state->event_ISR), LWEVENT_AUTO_CLEAR)) // Not set auto clean bits
+    {
+        //printf("Make event failed\n");
+        return ( kStatus_FLEXCAN_Fail );
+    }
 
     return (kStatus_FLEXCAN_Success);
 }
@@ -436,13 +443,14 @@ flexcan_status_t FLEXCAN_DRV_ConfigRxMb(
     uint32_t msg_id)
 {
     assert(instance < CAN_INSTANCE_COUNT);
+    assert( rx_info );
 
     flexcan_status_t result;
     flexcan_msgbuff_code_status_t cs;
     CAN_Type * base = g_flexcanBase[instance];
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
-    state->rx_mb_idx = mb_idx;
+    state->rx_mb_idx |= (1 << mb_idx );
     cs.dataLen = rx_info->data_length;
     cs.msgIdType = rx_info->msg_id_type;
 
@@ -515,7 +523,7 @@ flexcan_status_t FLEXCAN_DRV_RxMessageBufferBlocking(
     flexcan_state_t * state = g_flexcanStatePtr[instance];
     osa_status_t syncStatus;
 
-    state->isRxBlocking = true;
+    state->isRxBlockingMB[mb_idx] = true;
 
     result = FLEXCAN_DRV_StartRxMessageBufferData(instance, mb_idx, data);
     if(result == kStatus_FLEXCAN_Success)
@@ -551,7 +559,7 @@ flexcan_status_t FLEXCAN_DRV_RxMessageBuffer(
     flexcan_status_t result;
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
-    state->isRxBlocking = false;
+    state->isRxBlockingMB[mb_idx] = false;
 
     result = FLEXCAN_DRV_StartRxMessageBufferData(instance, mb_idx, data);
 
@@ -577,7 +585,7 @@ flexcan_status_t FLEXCAN_DRV_RxFifoBlocking(
     flexcan_state_t * state = g_flexcanStatePtr[instance];
     osa_status_t syncStatus;
 
-    state->isRxBlocking = true;
+    state->isRxBlockingFIFO = true;
     result = FLEXCAN_DRV_StartRxMessageFifoData(instance, data);
     if(result == kStatus_FLEXCAN_Success)
     {
@@ -612,7 +620,7 @@ flexcan_status_t FLEXCAN_DRV_RxFifo(
     flexcan_status_t result;
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
-    state->isRxBlocking = false;
+    state->isRxBlockingFIFO = false;
     result = FLEXCAN_DRV_StartRxMessageFifoData(instance, data);
 
     return result;
@@ -647,6 +655,13 @@ uint32_t FLEXCAN_DRV_Deinit(uint8_t instance)
 
     /* Disable clock gate to FlexCAN module */
     CLOCK_SYS_DisableFlexcanClock(instance);
+
+	if (MQX_OK != _lwevent_destroy(&(state->event_ISR)))
+	{
+		//printf("_lwevent_destroy event failed\n");
+		return ( kStatus_FLEXCAN_Fail );
+	}
+
     return 0;
 }
 /*FUNCTION**********************************************************************
@@ -657,10 +672,11 @@ uint32_t FLEXCAN_DRV_Deinit(uint8_t instance)
  * This is not a public API as it is called whenever an interrupt occurs.
  *
  *END**************************************************************************/
+extern uint32_t g_flexacandevice_PacketCountRX1;
 void FLEXCAN_DRV_IRQHandler(uint8_t instance)
 {
     volatile uint32_t flag_reg;
-    uint32_t temp;
+    uint32_t temp, temp1, i;
     CAN_Type * base = g_flexcanBase[instance];
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
@@ -685,19 +701,35 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
         else
         {
            /* Check mailbox completed reception*/
-            temp = (1 << state->rx_mb_idx);
-            if (temp & flag_reg)
+            temp1 = temp = state->rx_mb_idx & flag_reg;
+            if (temp)
             {
-                /* Unlock RX message buffer and RX FIFO*/
-                FLEXCAN_HAL_LockRxMsgBuff(base, state->rx_mb_idx);
-                /* Get RX MB field values*/
-                FLEXCAN_HAL_GetMsgBuff(base, state->rx_mb_idx, state->mb_message);
-                /* Unlock RX message buffer and RX FIFO*/
-                FLEXCAN_HAL_UnlockRxMsgBuff(base);
+                for (i = 0; temp && (CAN_CS_COUNT > i); i++)
+                {
+                	if (temp & 0x00000001)
+                    {
+                        /* Unlock RX message buffer and RX FIFO*/
+                        FLEXCAN_HAL_LockRxMsgBuff(base, i);
+                        /* Get RX MB field values*/
+                        FLEXCAN_HAL_GetMsgBuff(base, i, state->mb_message[i]);
+                        /* Unlock RX message buffer and RX FIFO*/
+                        FLEXCAN_HAL_UnlockRxMsgBuff(base);
 
-                /* Complete receive data */
-                FLEXCAN_DRV_CompleteRxMessageBufferData(instance);
-                FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, temp & flag_reg);
+                        /* Complete receive data */
+                        FLEXCAN_DRV_CompleteRxMessageBufferData(instance, i);
+                        FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, (1 << i));
+
+                        g_flexacandevice_PacketCountRX1++; //Test counter
+                    }
+                    temp >>= 1;
+                }// end for
+                // Add set data to queue
+
+                //Set event for task notification
+                if (MQX_OK != _lwevent_set( &(state->event_ISR), temp1))
+                {
+                    //printf ( "Error _lwevent_set set ISR event %x", temp1 );
+                }
             }
             /* Check mailbox completed transmission*/
             temp = (1 << state->tx_mb_idx);
@@ -753,13 +785,63 @@ flexcan_status_t FLEXCAN_DRV_GetTransmitStatus(uint32_t instance)
  * or complete (success).
  *
  *END**************************************************************************/
-flexcan_status_t FLEXCAN_DRV_GetReceiveStatus(uint32_t instance)
+flexcan_status_t FLEXCAN_DRV_GetReceiveStatus(uint32_t instance, uint32_t mb_idx)
 {
     assert(instance < CAN_INSTANCE_COUNT);
 
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
-    return (state->isRxBusy ? kStatus_FLEXCAN_RxBusy : kStatus_FLEXCAN_Success);
+    return (state->isRxBusyMB[mb_idx] ? kStatus_FLEXCAN_RxBusy : kStatus_FLEXCAN_Success);
+}
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : FLEXCAN_DRV_GetReceiveStatusBlocking
+ * Description   : This function returns whether the previous FLEXCAN receive is
+ *                 completed.
+ * When performing a non-blocking receive, the user can call this function to
+ * ascertain the state of the current receive progress: in progress (or busy)
+ * or complete (success).
+ *
+ *END**************************************************************************/
+flexcan_status_t FLEXCAN_DRV_GetReceiveStatusBlocking(uint32_t instance, uint32_t *pmb_ready_idx, uint32_t timeout_ms)
+{
+    flexcan_status_t res;
+
+    assert(instance < CAN_INSTANCE_COUNT);
+    assert (pmb_ready_idx);
+
+    flexcan_state_t * state = g_flexcanStatePtr[instance];
+
+    if ( 0 != timeout_ms)
+    {
+        MQX_TICK_STRUCT tick;
+        _time_get_ticks ( &tick );
+        _time_add_msec_to_ticks( &tick, timeout_ms );
+        res = _lwevent_wait_for ( &(state->event_ISR), 0xffffffff, false, &tick );
+    }
+    else
+        res = _lwevent_wait_for ( &(state->event_ISR), 0xffffffff, false, NULL );
+
+    if ( MQX_OK == res )
+    {
+        *pmb_ready_idx = _lwevent_get_signalled( );
+        return kStatus_FLEXCAN_Success;
+    }
+    else
+    {
+        if (LWEVENT_WAIT_TIMEOUT == res)
+        {
+            res = kStatus_FLEXCAN_TimeOut;
+        }
+        else
+        {
+            //printf("FLEXCAN_DRV_GetReceiveStatusBlocking error %x\n", res );
+            res = kStatus_FLEXCAN_Fail;
+        }
+    }
+
+    return res;
 }
 
 /*FUNCTION**********************************************************************
@@ -799,17 +881,23 @@ flexcan_status_t FLEXCAN_DRV_AbortSendingData(uint32_t instance)
  *END**************************************************************************/
 flexcan_status_t FLEXCAN_DRV_AbortReceivingData(uint32_t instance)
 {
+	uint32_t i;
+
     assert(instance < CAN_INSTANCE_COUNT);
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
-    /* Check if a transfer is running. */
-    if (!state->isRxBusy)
+    for ( i = 0; i < CAN_CS_COUNT ; i++)
     {
-        return kStatus_FLEXCAN_NoReceiveInProgress;
-    }
+		/* Check if a transfer is running. */
+		if (!state->isRxBlockingMB[i])
+		{
+			continue;
+			//return kStatus_FLEXCAN_NoReceiveInProgress;
+		}
 
-    /* Stop the running transfer. */
-    FLEXCAN_DRV_CompleteRxMessageBufferData(instance);
+		/* Stop the running transfer. */
+		FLEXCAN_DRV_CompleteRxMessageBufferData(instance, i);
+    }
 
     return kStatus_FLEXCAN_Success;
 }
@@ -870,13 +958,18 @@ static flexcan_status_t FLEXCAN_DRV_StartRxMessageBufferData(
     CAN_Type * base = g_flexcanBase[instance];
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
+    if ( CAN_CS_COUNT <= mb_idx )
+    {
+        return kStatus_FLEXCAN_OutOfRange;
+    }
+
     /* Start receiving mailbox */
-    if(state->isRxBusy)
+    if(state->isRxBusyMB[mb_idx])
     {
         return kStatus_FLEXCAN_RxBusy;
     }
-    state->isRxBusy = true;
-    state->mb_message = data;
+    state->isRxBusyMB[mb_idx] = true;
+    state->mb_message[mb_idx] = data;
 
     /* Enable MB interrupt*/
     result = FLEXCAN_HAL_SetMsgBuffIntCmd(base, mb_idx, true);
@@ -905,11 +998,11 @@ static flexcan_status_t FLEXCAN_DRV_StartRxMessageFifoData(
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
     /* Start receiving fifo */
-    if(state->isRxBusy)
+    if(state->isRxBusyFIFO)
     {
         return kStatus_FLEXCAN_RxBusy;
     }
-    state->isRxBusy = true;
+    state->isRxBusyFIFO = true;
 
     /* This will get filled by the interrupt handler */
     state->fifo_message = data;
@@ -966,24 +1059,29 @@ static void FLEXCAN_DRV_CompleteSendData(uint32_t instance)
  * This is not a public API as it is called from other driver functions.
  *
  *END**************************************************************************/
-static void FLEXCAN_DRV_CompleteRxMessageBufferData(uint32_t instance)
+static void FLEXCAN_DRV_CompleteRxMessageBufferData(uint32_t instance, uint32_t mb_idx)
 {
     assert(instance < CAN_INSTANCE_COUNT);
 
     CAN_Type * base = g_flexcanBase[instance];
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
-    FLEXCAN_HAL_SetMsgBuffIntCmd(base, state->rx_mb_idx, false);
-	/* Disable error interrupts */
-	FLEXCAN_HAL_SetErrIntCmd(base,kFlexCanIntErr,false);
+    FLEXCAN_HAL_SetMsgBuffIntCmd(base, mb_idx, false);
+    state->rx_mb_idx &= ~(1 << mb_idx ); //Clear bit mask index of relevant MB
+
+	/* Disable error interrupts only if no pending MB */
+    if ( 0 == state->rx_mb_idx)
+    {
+        FLEXCAN_HAL_SetErrIntCmd(base, kFlexCanIntErr, false);
+    }
 
     /* Signal the synchronous completion object. */
-    if (state->isRxBlocking)
+    if (state->isRxBlockingMB[mb_idx])
     {
         OSA_SemaPost(&state->rxIrqSync);
     }
     /* Update the information of the module driver state */
-    state->isRxBusy = false;
+    state->isRxBusyMB[mb_idx] = false;
 }
 
 /*FUNCTION**********************************************************************
@@ -1013,9 +1111,9 @@ static void FLEXCAN_DRV_CompleteRxMessageFifoData(uint32_t instance)
     state->fifo_message = NULL;
 
     /* Update status for receive by using fifo*/
-    state->isRxBusy = false;
+    state->isRxBusyFIFO = false;
 
-    if(state->isRxBlocking)
+    if(state->isRxBlockingFIFO)
     {
         OSA_SemaPost(&state->rxIrqSync);
     }
