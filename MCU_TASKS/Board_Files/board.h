@@ -53,7 +53,7 @@
 #endif
 
 /* OSC0 configuration. */
-#define OSC0_XTAL_FREQ 50000000U
+#define OSC0_XTAL_FREQ 26000000U
 #define OSC0_SC2P_ENABLE_CONFIG  false
 #define OSC0_SC4P_ENABLE_CONFIG  false
 #define OSC0_SC8P_ENABLE_CONFIG  false
@@ -83,8 +83,8 @@
 #define BOARD_RTC_CLK_FREQUENCY     32768U;
 /* The UART to use for debug messages. */
 #ifndef BOARD_DEBUG_UART_INSTANCE
-    #define BOARD_DEBUG_UART_INSTANCE   5
-    #define BOARD_DEBUG_UART_BASEADDR   UART5
+    #define BOARD_DEBUG_UART_INSTANCE  4 
+    #define BOARD_DEBUG_UART_BASEADDR   UART4
 #endif
 #ifndef BOARD_DEBUG_UART_BAUD
     #define BOARD_DEBUG_UART_BAUD       115200
@@ -94,8 +94,8 @@
 #define BOARD_LOW_POWER_UART_BAUD       9600
 
 #define BOARD_USE_UART
-#define PM_DBG_UART_IRQ_HANDLER         UART5_RX_TX_IRQHandler
-#define PM_DBG_UART_IRQn                UART5_RX_TX_IRQn
+#define PM_DBG_UART_IRQ_HANDLER         UART4_RX_TX_IRQHandler
+#define PM_DBG_UART_IRQn                UART4_RX_TX_IRQn
 
 /* Define feature for the low_power_demo */
 #define FSL_FEATURE_HAS_VLLS2 (1)
@@ -137,7 +137,9 @@
 #define BOARD_DAC_DEMO_ADC_CHANNEL      10U
 
 /* The CAN instance used for board */
-#define BOARD_CAN_INSTANCE              1
+#define BOARD_CAN_INSTANCE              2
+#define BSP_CAN_DEVICE_0				0
+#define BSP_CAN_DEVICE_1				1
 
 /* The i2c instance used for i2c DAC demo */
 #define BOARD_DAC_I2C_INSTANCE          1
