@@ -56,6 +56,8 @@ void Main_task( uint32_t initial_data ) {
     OSA_Init();
     GPIO_Config();
 
+    OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
+
     // I2C0 Initialization
     NVIC_SetPriority(I2C0_IRQn, 6U);
     OSA_InstallIntHandler(I2C0_IRQn, MQX_I2C0_IRQHandler);
@@ -97,12 +99,11 @@ void Main_task( uint32_t initial_data ) {
 
 	{
 		uint8_t Br, R,G,B;
-		uint8_t Br1, R1,G1,B1;
-		G = B = Br = 255;
-		R = 100;
-		R1 = G1 = B1 = Br1 = 0x55;
-		FPGA_write_led_status (LED_RIGHT, &Br, &R, &G, &B);
-		FPGA_read_led_status  (LED_RIGHT, &Br1, &R1, &G1, &B1);
+		R = G = B = 255;
+		Br = 10;
+
+		FPGA_write_led_status (LED_RIGHT,  &Br, &R, &G, &B);
+		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
 	}
 
 
