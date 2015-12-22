@@ -32,12 +32,12 @@
 		<link>
 			<name>adapter/adapter.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/adapter/sources/adapter.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/adapter/sources/adapter.h</locationURI>
 		</link>
 		<link>
 			<name>adapter/adapter_types.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/adapter/sources/adapter_types.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/adapter/sources/adapter_types.h</locationURI>
 		</link>
 		<link>
 			<name>adapter/sdk</name>
@@ -52,17 +52,17 @@
 		<link>
 			<name>adapter/sdk/adapter_cfg.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/adapter/sources/sdk/adapter_cfg.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/adapter/sources/sdk/adapter_cfg.h</locationURI>
 		</link>
 		<link>
 			<name>adapter/sdk/adapter_sdk.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/adapter/sources/sdk/adapter_sdk.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/adapter/sources/sdk/adapter_sdk.c</locationURI>
 		</link>
 		<link>
 			<name>adapter/sdk/adapter_sdk.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT/adapter/sources/sdk/adapter_sdk.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/adapter/sources/sdk/adapter_sdk.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/include</name>
@@ -72,42 +72,42 @@
 		<link>
 			<name>usb_core/include/compiler.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/include/compiler.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/include/compiler.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/include/types.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/include/types.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/include/types.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/include/usb.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/include/usb.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/include/usb.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/include/usb_desc.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/include/usb_desc.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/include/usb_desc.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/include/usb_error.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/include/usb_error.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/include/usb_error.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/include/usb_misc.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/include/usb_misc.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/include/usb_misc.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/include/usb_opt.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/include/usb_opt.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/include/usb_opt.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/include/usb_types.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT1/include/usb_types.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/include/usb_types.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/include/usb_device_config.h</name>
@@ -117,7 +117,7 @@
 		<link>
 			<name>usb_core/device/include/usb_device_stack_interface.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/include/usb_device_stack_interface.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/include/usb_device_stack_interface.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/bsp</name>
@@ -187,200 +187,182 @@
 		<link>
 			<name>usb_core/device/sources/controller_driver/usb_dev.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/controller/usb_dev.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/controller/usb_dev.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/controller_driver/usb_dev.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/controller/usb_dev.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/controller/usb_dev.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/controller_driver/usb_framework.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/controller/usb_framework.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/controller/usb_framework.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/controller_driver/usb_framework.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/controller/usb_framework.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/controller/usb_framework.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/audio/usb_audio.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/audio/usb_audio.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/audio/usb_audio.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/audio/usb_audio.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/audio/usb_audio.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/audio/usb_audio.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/cdc/usb_cdc.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/cdc/usb_cdc.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/cdc/usb_cdc.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/cdc/usb_cdc.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/cdc/usb_cdc.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/cdc/usb_cdc.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/cdc/usb_cdc_pstn.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/cdc/usb_cdc_pstn.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/cdc/usb_cdc_pstn.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/cdc/usb_cdc_pstn.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/cdc/usb_cdc_pstn.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/cdc/usb_cdc_pstn.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/common/usb_class.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/common/usb_class.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/common/usb_class.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/common/usb_class_internal.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/common/usb_class_internal.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/common/usb_class_internal.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/composite/usb_composite.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/composite/usb_composite.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/composite/usb_composite.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/composite/usb_composite.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/composite/usb_composite.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/composite/usb_composite.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/hid/usb_hid.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/hid/usb_hid.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/hid/usb_hid.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/hid/usb_hid.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/hid/usb_hid.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/hid/usb_hid.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/include/usb_class.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/include/usb_class.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/include/usb_class.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/include/usb_class_audio.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/include/usb_class_audio.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/include/usb_class_audio.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/include/usb_class_cdc.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/include/usb_class_cdc.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/include/usb_class_cdc.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/include/usb_class_composite.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/include/usb_class_composite.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/include/usb_class_composite.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/include/usb_class_hid.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/include/usb_class_hid.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/include/usb_class_hid.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/include/usb_class_msc.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/include/usb_class_msc.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/include/usb_class_msc.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/include/usb_class_phdc.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/include/usb_class_phdc.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/include/usb_class_phdc.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/include/usb_class_video.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/include/usb_class_video.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/include/usb_class_video.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/msd/usb_msc.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/msd/usb_msc.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/msd/usb_msc.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/msd/usb_msc.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/msd/usb_msc.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/msd/usb_msc.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/msd/usb_msc_scsi.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/msd/usb_msc_scsi.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/msd/usb_msc_scsi.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/msd/usb_msc_scsi.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/msd/usb_msc_scsi.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/msd/usb_msc_scsi.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/phdc/usb_phdc.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/phdc/usb_phdc.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/phdc/usb_phdc.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/phdc/usb_phdc.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/phdc/usb_phdc.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/phdc/usb_phdc.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/video/usb_video.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/video/usb_video.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/video/usb_video.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/class_driver/video/usb_video.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/classes/video/usb_video.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/classes/video/usb_video.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/controller_driver/khci/device_khci_interface.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/controller/khci/device_khci_interface.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/controller/khci/device_khci_interface.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/controller_driver/khci/khci_dev.c</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/controller/khci/khci_dev.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/controller/khci/khci_dev.c</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/controller_driver/khci/khci_dev.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/controller/khci/khci_dev.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/controller/khci/khci_dev.h</locationURI>
 		</link>
 		<link>
 			<name>usb_core/device/sources/controller_driver/khci/khci_dev_misc.h</name>
 			<type>1</type>
-			<locationURI>copy_PARENT12/sources/controller/khci/khci_dev_misc.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/usb/usb_core/device/sources/controller/khci/khci_dev_misc.h</locationURI>
 		</link>
 	</linkedResources>
-	<variableList>
-		<variable>
-			<name>PROJECT_KSDK_PATH</name>
-			<value>file:/D:/Freescale/KSDK_1.3.0</value>
-		</variable>
-		<variable>
-			<name>copy_PARENT</name>
-			<value>$%7BPROJECT_KSDK_PATH%7D/usb</value>
-		</variable>
-		<variable>
-			<name>copy_PARENT1</name>
-			<value>$%7Bcopy_PARENT%7D/usb_core</value>
-		</variable>
-		<variable>
-			<name>copy_PARENT12</name>
-			<value>$%7Bcopy_PARENT1%7D/device</value>
-		</variable>
-	</variableList>
 </projectDescription>

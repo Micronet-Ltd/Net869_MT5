@@ -4,7 +4,7 @@
 		<cconfiguration id="ilg.gnuarmeclipse.managedbuild.cross.config.lib.debug.660039418">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="ilg.gnuarmeclipse.managedbuild.cross.config.lib.debug.660039418" moduleId="org.eclipse.cdt.core.settings" name="debug">
 				<macros>
-					<stringMacro name="PROJECT_KSDK_PATH" type="VALUE_PATH_ANY" value="D:\Freescale\KSDK_1.3.0"/>
+					<stringMacro name="PROJECT_KSDK_PATH" type="VALUE_TEXT" value="c:\Freescale\KSDK_1.3.0"/>
 				</macros>
 				<externalSettings>
 					<externalSetting>
@@ -36,8 +36,8 @@
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections.327624870" name="Data sections (-fdata-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections" value="true" valueType="boolean"/>
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn.1894971827" name="Enable all common warnings (-Wall)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn" value="true" valueType="boolean"/>
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.1926468949" name="Debug level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level" value="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.max" valueType="enumerated"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.1681563755" name="Debug format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format" value="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.default" valueType="enumerated"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name.1427498781" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name" value="Custom" valueType="string"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.1681563755" name="Debug format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format" value="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.dwarf2" valueType="enumerated"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name.1427498781" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name" value="GNU Tools for ARM Embedded Processors" valueType="string"/>
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.179033776" name="Architecture" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.architecture" value="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.arm" valueType="enumerated"/>
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family.1027107248" name="ARM family" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.mcpu.cortex-m4" valueType="enumerated"/>
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.1939022964" name="Instruction set" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset" value="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.thumb" valueType="enumerated"/>
@@ -66,6 +66,7 @@
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.agreggatereturn.9040811600" name="Warn if struct is returned (-Wagreggate-return)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.agreggatereturn" value="false" valueType="boolean"/>
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.missingdeclaration.8366534227" name="Warn on undeclared global function (-Wmissing-declaration)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.missingdeclaration" value="false" valueType="boolean"/>
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.toerrors.540104576" name="Generate errors instead of warnings (-Werror)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.toerrors" value="false" valueType="boolean"/>
+							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.other.1983023766" name="Other debugging flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.other" value="-gstrict-dwarf -gstrict-dwarf" valueType="string"/>
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform.192879027" isAbstract="false" osList="all" superClass="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform"/>
 							<builder buildPath="${workspace_loc:/libtemplatestatic}/debug" id="ilg.gnuarmeclipse.managedbuild.cross.builder.99665444" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" stopOnErr="false" superClass="ilg.gnuarmeclipse.managedbuild.cross.builder"/>
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.707313748" name="Cross ARM GNU Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler">
@@ -81,21 +82,21 @@
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1836014414" name="Cross ARM C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler">
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std.931641730" name="Language standard" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std.gnu99" valueType="enumerated"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.4888480017" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/psp/cortex_m/compiler/gcc_arm&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/config/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/rtos/mqx/mqx/source/psp/cortex_m&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/CMSIS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/devices/MK20D10/startup&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/utilities/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/hal/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/drivers/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/system/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${PROJECT_KSDK_PATH}/platform/osa/inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../..\rtos\mqx\config\mcu\MK20D10&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../rtos/mqx/config/mcu/MK20D10&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/psp/cortex_m/compiler/gcc_arm&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/config/common&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/rtos/mqx/mqx/source/psp/cortex_m&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/CMSIS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices/MK20D10/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/devices/MK20D10/startup&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/utilities/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/hal/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/drivers/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/system/inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../BSP/platform/osa/inc&quot;"/>
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.2502143116" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="DEBUG"/>
@@ -104,6 +105,7 @@
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.nostdinc.1821407712" name="Do not search system directories (-nostdinc)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.nostdinc" useByScannerDiscovery="true" value="false" valueType="boolean"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other.6636879719" name="Other compiler flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other" useByScannerDiscovery="true" value="-fno-common  -ffreestanding  -fno-builtin  -mapcs" valueType="string"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.asmlisting.665975998" name="Generate assembler listing (-Wa,-adhlns=&quot;$@.lst&quot;)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.asmlisting" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.147729232" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
 							</tool>
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.513430167" name="Cross ARM C++ Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler"/>
