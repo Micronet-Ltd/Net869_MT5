@@ -31,7 +31,11 @@ const gpio_output_pin_user_config_t outputPins[] = {
   {.pinName = USB_OTG_OE,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
   {.pinName = USB_OTG_SEL,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
+  {.pinName = CAN_ENABLE,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+  {.pinName = J1708_ENABLE,				.config.outputLogic = 1,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+
 //  {.pinName = I2C_SCL, 				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+//  {.pinName = I2C_SDA, 				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
   {.pinName = GPIO_PINS_OUT_OF_RANGE                                                                                                                                                               }
 };
@@ -39,6 +43,9 @@ const gpio_output_pin_user_config_t outputPins[] = {
 
 const gpio_input_pin_user_config_t inputPins[] = {
   {.pinName = FPGA_GPIO0,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge},
+  {.pinName = SWITCH1   ,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
+  {.pinName = SWITCH2   ,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
+
   {.pinName = GPIO_PINS_OUT_OF_RANGE                                                                                                                                                               }
 };
 

@@ -79,16 +79,16 @@ void Main_task (uint32_t initial_data)
 
 	FPGA_init ();
 
+	GPIO_DRV_SetPinOutput   (CAN_ENABLE       );
+
 	J1708_enable  (7);
 
 	{
 		uint8_t Br, R,G,B;
-		uint8_t Br1, R1,G1,B1;
-		G = B = Br = 255;
-		R = 100;
-		R1 = G1 = B1 = Br1 = 0x55;
-		FPGA_write_led_status (LED_RIGHT, &Br, &R, &G, &B);
-		FPGA_read_led_status  (LED_RIGHT, &Br1, &R1, &G1, &B1);
+		R = G = B = 255;
+		Br = 10;
+		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
+		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
 	}
 
 
@@ -150,11 +150,20 @@ void Main_task (uint32_t initial_data)
 		}
 		_time_delay(MAIN_TASK_SLEEP_PERIOD);			// contact switch
 #else
+		GPIO_DRV_ClearPinOutput (LED_RED);
 		GPIO_DRV_ClearPinOutput (LED_GREEN);
+		GPIO_DRV_ClearPinOutput (LED_BLUE);
+		_time_delay (1000);
+
+		GPIO_DRV_SetPinOutput   (LED_RED);
 		_time_delay (1000);
 
 		GPIO_DRV_SetPinOutput   (LED_GREEN);
 		_time_delay (1000);
+
+		GPIO_DRV_SetPinOutput   (LED_BLUE);
+		_time_delay (1000);
+
 #endif
 	}
 
@@ -162,6 +171,39 @@ void Main_task (uint32_t initial_data)
    _task_block();		// should never get here
 
 }
+
+#if 0
+void OTG_CONTROL (void)
+{
+	uint8_t user_switch_status =  (GPIO_DRV_ReadPinInput (SWITCH2) << 1) + GPIO_DRV_ReadPinInput (SWITCH1);
+
+	if (user_switch_status == user_switch)
+		return;
+
+	user_switch = user_switch_status;
+	GPIO_DRV_SetPinOutput (USB_OTG_OE);
+	_time_delay (1000);
+
+	// disable OTG Switch
+
+	case (user_switch) {
+		OTG_CPU_CONNECTION :
+
+
+			// select channel
+
+			break;
+
+		OTG_HUB_CONNECTION :
+			break;
+
+		default            : break;
+
+		// enable OTG Switch
+		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+	}
+}
+#endif
 
 void MQX_I2C0_IRQHandler(void)
 {

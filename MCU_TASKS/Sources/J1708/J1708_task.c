@@ -182,12 +182,16 @@ void J1708_enable (uint8_t priority)
 	else
 		printf ("\nJ1708: ERROR: J1708 NOT Enabled !!!\n");
 
+	GPIO_DRV_ClearPinOutput (J1708_ENABLE);
+
 	J1708_state = J1708_ENABLED;
 	J1708_priority = priority;
 }		
 
 void J1708_disable (void)
 {
+	GPIO_DRV_SetPinOutput   (J1708_ENABLE);
+
 	if (FPGA_clear_irq (FPGA_REG_J1708_RX_IRQ_BIT))
 		printf ("\nJ1708: Clear FPGA J1708 Rx IRQ\n");
 	else
