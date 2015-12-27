@@ -36,6 +36,7 @@ void Main_task( uint32_t initial_data ) {
 
     _task_id   ids[NUM_TASKS] = { 0 };
     _queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
+	_queue_id  j1708_rx_qid;
 	APPLICATION_MESSAGE_T *msg;
 
     uint8_t u8mainTaskLoopCnt = 0;
@@ -105,8 +106,7 @@ void Main_task( uint32_t initial_data ) {
 		uint8_t Br, R,G,B;
 		R = G = B = 255;
 		Br = 10;
-
-		FPGA_write_led_status (LED_RIGHT,  &Br, &R, &G, &B);
+		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
 		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
 	}
 
@@ -114,6 +114,12 @@ void Main_task( uint32_t initial_data ) {
 	_task_create(0, J1708_TX_TASK, 0 );
 	_task_create(0, J1708_RX_TASK, 0 );
 	_task_create(0, FPGA_UART_RX_TASK, 0 );
+
+	ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
+	if (ids[ACC_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create ACC_TASK\n");
+	}
 
     ids[USB_TASK] = _task_create(0, USB_TASK, 0);
     if ( ids[USB_TASK] == MQX_NULL_TASK_ID ) {
@@ -186,11 +192,20 @@ void Main_task( uint32_t initial_data ) {
     }
     _time_delay(MAIN_TASK_SLEEP_PERIOD);            // contact switch
 #else
-        //GPIO_DRV_ClearPinOutput (LED_GREEN);
-        _time_delay(1000);
+		GPIO_DRV_ClearPinOutput (LED_RED);
+		GPIO_DRV_ClearPinOutput (LED_GREEN);
+		GPIO_DRV_ClearPinOutput (LED_BLUE);
+		_time_delay (1000);
 
-        //GPIO_DRV_SetPinOutput   (LED_GREEN);
-        _time_delay(1000);
+		GPIO_DRV_SetPinOutput   (LED_RED);
+		_time_delay (1000);
+
+		GPIO_DRV_SetPinOutput   (LED_GREEN);
+		_time_delay (1000);
+
+		GPIO_DRV_SetPinOutput   (LED_BLUE);
+		_time_delay (1000);
+
 #endif
     }
 
@@ -198,6 +213,39 @@ void Main_task( uint32_t initial_data ) {
     _task_block();       // should never get here
 
 }
+
+#if 0
+void OTG_CONTROL (void)
+{
+	uint8_t user_switch_status =  (GPIO_DRV_ReadPinInput (SWITCH2) << 1) + GPIO_DRV_ReadPinInput (SWITCH1);
+
+	if (user_switch_status == user_switch)
+		return;
+
+	user_switch = user_switch_status;
+	GPIO_DRV_SetPinOutput (USB_OTG_OE);
+	_time_delay (1000);
+
+	// disable OTG Switch
+
+	case (user_switch) {
+		OTG_CPU_CONNECTION :
+
+
+			// select channel
+
+			break;
+
+		OTG_HUB_CONNECTION :
+			break;
+
+		default            : break;
+
+		// enable OTG Switch
+		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+	}
+}
+#endif
 
 void MQX_I2C0_IRQHandler( void ) {
     I2C_DRV_MasterIRQHandler(0);

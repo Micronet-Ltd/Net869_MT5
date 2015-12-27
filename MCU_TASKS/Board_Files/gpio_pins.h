@@ -77,7 +77,6 @@ enum _gpio_pins_pinNames {
     SWC_ENABLE							= GPIO_MAKE_PIN(GPIOA_IDX,  8),
     SWC_MODE0							= GPIO_MAKE_PIN(GPIOC_IDX, 12),
     SWC_MODE1							= GPIO_MAKE_PIN(GPIOC_IDX, 13),
-    //QBRIDGE_RESET						= GPIO_MAKE_PIN(GPIOC_IDX,  0),
 
     CAN1_RX_MCU							= GPIO_MAKE_PIN(GPIOB_IDX, 19),
     CAN1_TX_MCU							= GPIO_MAKE_PIN(GPIOB_IDX, 18),
