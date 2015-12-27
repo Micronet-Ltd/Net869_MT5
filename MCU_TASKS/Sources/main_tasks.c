@@ -74,11 +74,15 @@ void Main_task( uint32_t initial_data ) {
 //	BOARD_InitOsc0();
 //	CLOCK_SetBootConfig_Run ();
 
+	//Enable CAN
+	GPIO_DRV_SetPinOutput(CAN_ENABLE);
+
     // Enable USB for DEBUG
     GPIO_DRV_ClearPinOutput(USB_ENABLE);
     GPIO_DRV_ClearPinOutput(USB_HUB_RSTN);
-    GPIO_DRV_SetPinOutput(USB_OTG_OE);    // disable USB MUX
-    GPIO_DRV_SetPinOutput(USB_OTG_SEL);    // disable USB MUX
+    GPIO_DRV_ClearPinOutput(USB_OTG_OE); //Enable OTG/MCU switch
+    GPIO_DRV_ClearPinOutput(USB_OTG_SEL);    // Connect D1 <-> D MCU or HUB
+    //GPIO_DRV_SetPinOutput(USB_OTG_SEL);    // Connect D2 <-> D A8 OTG
 
 
     _time_delay(10);
@@ -126,7 +130,7 @@ void Main_task( uint32_t initial_data ) {
 
     _test_CANFLEX();
 
-    OSA_Start();
+    //OSA_Start();
 
 #if 0
     ids[0] = _task_create(0, USB_TASK  , 0 );
@@ -224,7 +228,7 @@ void MQX_PORTC_IRQHandler(void)
 #endif
 }
 
-void _test_CANFLEX( void ) {
+void _test_CANFLEX( ) {
 #if 1
     //	ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, BSP_CAN_DEVICE_0);
     //    if ( ids[USB_TASK] == MQX_NULL_TASK_ID ) {
@@ -236,7 +240,7 @@ void _test_CANFLEX( void ) {
 	flexcan_device_status_t ret;
 
 	initCan0.flexcanMode        = fdFlexCanNormalMode;
-	initCan0.instanceBitrate    = fdBitrate_1_mHz;
+	initCan0.instanceBitrate    = fdBitrate_125_kHz;
 	initCan0.is_rx_fifo_needed  = false;
 	initCan0.max_num_mb         = MAX_MB_NUMBER;
 	initCan0.num_id_filters     = kFlexCanRxFifoIDFilters_8;
@@ -244,7 +248,7 @@ void _test_CANFLEX( void ) {
 	initCan0.TX_queue_num       = TX_FLEXCAN_MSGQ_MESAGES;
 
 	initCan1.flexcanMode        = fdFlexCanNormalMode;
-	initCan1.instanceBitrate    = fdBitrate_1_mHz;
+	initCan1.instanceBitrate    = fdBitrate_125_kHz;
 	initCan1.is_rx_fifo_needed  = false;
 	initCan1.max_num_mb         = MAX_MB_NUMBER;
 	initCan1.num_id_filters     = kFlexCanRxFifoIDFilters_8;
@@ -259,6 +263,9 @@ void _test_CANFLEX( void ) {
 	MIC_DEBUG_UART_PRINTF("FlexCanDevice_Start( ) return %d\n", ret);
 
 	ret = FlexCanDevice_SetTermination(can_Device_0, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetTermination( ) return %d\n", ret);
+
+	ret = FlexCanDevice_SetTermination(can_Device_1, false);
 	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetTermination( ) return %d\n", ret);
 
 	ret = FlexCanDevice_SetRxMaskType(can_Device_0, false);
@@ -292,6 +299,31 @@ void _test_CANFLEX( void ) {
 	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 12, 0xC, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+
+	//CAN1
+	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 5, 0x3, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+
+	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 6, 0x3, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+
+	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 7, 0x3, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+
+	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 8, 0x3, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+
+	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 9, 0xC, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+
+	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 10, 0xC, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+
+	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 11, 0xC, true);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+
+	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 12, 0xC, true);
 	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
 #endif
 

@@ -70,14 +70,14 @@ enum _gpio_pins_pinNames {
 
     // CAN BUS INTERFACE
     CAN_ENABLE							= GPIO_MAKE_PIN(GPIOC_IDX,  0), // Will be changed in version 2 to PTC0 on version 1 should be shorted
-    CAN1_TERM_ENABLE					= GPIO_MAKE_PIN(GPIOE_IDX, 24), //changed from GPIOA pin 18
+    CAN1_TERM_ENABLE					= GPIO_MAKE_PIN(GPIOE_IDX, 24), //changed from GPIOA pin 18 on HW 2 
     CAN2_TERM_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX, 10),
     CAN2_SWC_SELECT						= GPIO_MAKE_PIN(GPIOC_IDX,  6),
     J1708_ENABLE						= GPIO_MAKE_PIN(GPIOA_IDX,  9),
     SWC_ENABLE							= GPIO_MAKE_PIN(GPIOA_IDX,  8),
     SWC_MODE0							= GPIO_MAKE_PIN(GPIOC_IDX, 12),
     SWC_MODE1							= GPIO_MAKE_PIN(GPIOC_IDX, 13),
-    QBRIDGE_RESET						= GPIO_MAKE_PIN(GPIOC_IDX,  0),
+    //QBRIDGE_RESET						= GPIO_MAKE_PIN(GPIOC_IDX,  0),
 
     CAN1_RX_MCU							= GPIO_MAKE_PIN(GPIOB_IDX, 19),
     CAN1_TX_MCU							= GPIO_MAKE_PIN(GPIOB_IDX, 18),

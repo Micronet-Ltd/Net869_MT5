@@ -55,7 +55,7 @@ typedef struct {
 extern void Main_task        (uint32_t);
 
 extern void Acc_task         (uint32_t);
-extern void Usb_task         (void *arg);
+extern void Usb_task         (uint32_t);
 
 extern void J1708_Tx_task     (uint32_t);
 extern void J1708_Rx_task     (uint32_t);

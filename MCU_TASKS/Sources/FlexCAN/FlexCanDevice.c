@@ -66,7 +66,7 @@ flexcan_time_segment_t bitRateTable75Mhz[] = {
 
 flexcanInstance_t g_flexcanDeviceInstance[BOARD_CAN_INSTANCE];
 pflexcanInstance_t can_Device_0 = &g_flexcanDeviceInstance[BSP_CAN_DEVICE_0];
-pflexcanInstance_t can_device_1 = &g_flexcanDeviceInstance[BSP_CAN_DEVICE_1];
+pflexcanInstance_t can_Device_1 = &g_flexcanDeviceInstance[BSP_CAN_DEVICE_1];
 
 uint32_t g_flexacandeviceSeted = 0;
 

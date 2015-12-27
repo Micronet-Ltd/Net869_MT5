@@ -69,7 +69,7 @@ static int packet_recieve(int context, uint8_t * data, uint32_t size)
 		}
 		else
 		{
-			if( (last_seq+1)&0xff != data[1] )
+			if( ((last_seq+1)&0xff) != data[1] )
 			{
 				// TODO: set error state
 				last_seq = -1;

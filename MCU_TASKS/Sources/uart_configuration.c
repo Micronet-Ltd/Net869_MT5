@@ -4,6 +4,11 @@
 
 #include "uart_configuration.h"
 
+/*******************************************************************************
+ * Prototypes
+ ******************************************************************************/
+extern void UART_DRV_IRQHandler(uint32_t instance);
+
 static uart_state_t  uartState [UART_INSTANCE_COUNT];
 
 void UART_Enable  (uint8_t port, const uart_user_config_t *uartConfig) 

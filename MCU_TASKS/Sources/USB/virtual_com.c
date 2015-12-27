@@ -514,7 +514,7 @@ uint8_t USB_App_Class_Callback
 }
 
 
-void Usb_task(void *arg)
+void Usb_task(uint32_t arg)
 {
 
 	// TODO: SErial abstraction layer
