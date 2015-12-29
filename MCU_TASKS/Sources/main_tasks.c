@@ -192,6 +192,8 @@ void Main_task( uint32_t initial_data ) {
     }
     _time_delay(MAIN_TASK_SLEEP_PERIOD);            // contact switch
 #else
+
+#if 0
 		GPIO_DRV_ClearPinOutput (LED_RED);
 		GPIO_DRV_ClearPinOutput (LED_GREEN);
 		GPIO_DRV_ClearPinOutput (LED_BLUE);
@@ -205,7 +207,8 @@ void Main_task( uint32_t initial_data ) {
 
 		GPIO_DRV_SetPinOutput   (LED_BLUE);
 		_time_delay (1000);
-
+#endif
+	    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
 #endif
     }
 
@@ -310,6 +313,9 @@ void _test_CANFLEX( ) {
 	ret = FlexCanDevice_Start(can_Device_0);
 	MIC_DEBUG_UART_PRINTF("FlexCanDevice_Start( ) return %d\n", ret);
 
+	ret = FlexCanDevice_Start(can_Device_1);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_Start( ) return %d\n", ret);
+
 	ret = FlexCanDevice_SetTermination(can_Device_0, true);
 	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetTermination( ) return %d\n", ret);
 
@@ -317,6 +323,9 @@ void _test_CANFLEX( ) {
 	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetTermination( ) return %d\n", ret);
 
 	ret = FlexCanDevice_SetRxMaskType(can_Device_0, false);
+	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
+
+	ret = FlexCanDevice_SetRxMaskType(can_Device_1, false);
 	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
 
 //        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdStd, 8, 0x7FF, true);

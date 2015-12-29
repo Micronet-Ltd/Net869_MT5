@@ -82,7 +82,7 @@
 <booleanAttribute key="com.pemicro.debug.gdbjtag.pne.ml.PROVIDE_POWER" value="false"/>
 <intAttribute key="com.pemicro.debug.gdbjtag.pne.ml.REGULATOR_VOLTAGE" value="0"/>
 <stringAttribute key="com.pemicro.debug.gdbjtag.pne.ml.RESET_DELAY" value="0"/>
-<stringAttribute key="com.pemicro.debug.gdbjtag.pne.ml.SHIFT_FREQ" value="5000"/>
+<stringAttribute key="com.pemicro.debug.gdbjtag.pne.ml.SHIFT_FREQ" value="100000"/>
 <booleanAttribute key="com.pemicro.debug.gdbjtag.pne.ml.SPECIFY_IP" value="false"/>
 <booleanAttribute key="com.pemicro.debug.gdbjtag.pne.ml.SPECIFY_NETWORK_CARD" value="false"/>
 <booleanAttribute key="com.pemicro.debug.gdbjtag.pne.ml.STARTUP_USE_SWD" value="true"/>
