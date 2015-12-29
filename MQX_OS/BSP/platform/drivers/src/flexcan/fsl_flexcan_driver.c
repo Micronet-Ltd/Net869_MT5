@@ -293,11 +293,11 @@ flexcan_status_t FLEXCAN_DRV_Init(
     /* Save runtime structure pointers so irq handler can point to the correct state structure */
     g_flexcanStatePtr[instance] = state;
 
-    if (MQX_OK != _lwevent_create(&(state->event_ISR), LWEVENT_AUTO_CLEAR)) // Not set auto clean bits
-    {
-        //printf("Make event failed\n");
-        return ( kStatus_FLEXCAN_Fail );
-    }
+//    if (MQX_OK != _lwevent_create(&(state->event_ISR), 0 )) // LWEVENT_AUTO_CLEAR)) // Not set auto clean bits
+//    {
+//        //printf("Make event failed\n");
+//        return ( kStatus_FLEXCAN_Fail );
+//    }
 
     return (kStatus_FLEXCAN_Success);
 }
@@ -656,11 +656,11 @@ uint32_t FLEXCAN_DRV_Deinit(uint8_t instance)
     /* Disable clock gate to FlexCAN module */
     CLOCK_SYS_DisableFlexcanClock(instance);
 
-	if (MQX_OK != _lwevent_destroy(&(state->event_ISR)))
-	{
-		//printf("_lwevent_destroy event failed\n");
-		return ( kStatus_FLEXCAN_Fail );
-	}
+//	if (MQX_OK != _lwevent_destroy(&(state->event_ISR)))
+//	{
+//		//printf("_lwevent_destroy event failed\n");
+//		return ( kStatus_FLEXCAN_Fail );
+//	}
 
     return 0;
 }
