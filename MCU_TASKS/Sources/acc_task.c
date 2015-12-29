@@ -88,6 +88,8 @@ void AccIntEnable()
 
 }
 
+#define MIC_LED_TEST
+
 void Acc_task (uint32_t initial_data)
 {
 	TIME_STRUCT time;
@@ -136,6 +138,9 @@ void Acc_task (uint32_t initial_data)
 		_time_delay (10000);
 	}
 
+#ifdef MIC_LED_TEST
+	GPIO_DRV_SetPinOutput(LED_GREEN);
+#endif
 
 
 	//TODO hack Enabling sensor by default

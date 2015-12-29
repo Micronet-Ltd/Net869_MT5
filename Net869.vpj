@@ -86,16 +86,32 @@
                     <F N="MCU_TASKS/Sources/FlexCAN/FlexCanDevice.h"/>
                     <F N="MCU_TASKS/Sources/FlexCAN/FlexCanDevice_IRQ.c"/>
                 </Folder>
+                <Folder Name="FPGA_API">
+                    <F N="MCU_TASKS/Sources/FPGA_API/fpga_API.c"/>
+                    <F N="MCU_TASKS/Sources/FPGA_API/fpga_API.h"/>
+                </Folder>
+                <Folder Name="J1708">
+                    <F N="MCU_TASKS/Sources/J1708/J1708_task.c"/>
+                    <F N="MCU_TASKS/Sources/J1708/J1708_task.h"/>
+                </Folder>
                 <Folder Name="USB">
+                    <F N="MCU_TASKS/Sources/USB/frame.c"/>
+                    <F N="MCU_TASKS/Sources/USB/frame.h"/>
+                    <F N="MCU_TASKS/Sources/USB/protocol.c"/>
+                    <F N="MCU_TASKS/Sources/USB/protocol.h"/>
                     <F N="MCU_TASKS/Sources/USB/usb_descriptor.c"/>
                     <F N="MCU_TASKS/Sources/USB/usb_descriptor.h"/>
                     <F N="MCU_TASKS/Sources/USB/virtual_com.c"/>
                     <F N="MCU_TASKS/Sources/USB/virtual_com.h"/>
                 </Folder>
                 <F N="MCU_TASKS/Sources/acc_task.c"/>
+                <F N="MCU_TASKS/Sources/i2c_configuration.c"/>
+                <F N="MCU_TASKS/Sources/i2c_configuration.h"/>
                 <F N="MCU_TASKS/Sources/main_tasks.c"/>
                 <F N="MCU_TASKS/Sources/tasks_list.c"/>
                 <F N="MCU_TASKS/Sources/tasks_list.h"/>
+                <F N="MCU_TASKS/Sources/uart_configuration.c"/>
+                <F N="MCU_TASKS/Sources/uart_configuration.h"/>
             </Folder>
             <F N="MCU_TASKS/.cproject"/>
             <F N="MCU_TASKS/.cwGeneratedFileSetLog"/>

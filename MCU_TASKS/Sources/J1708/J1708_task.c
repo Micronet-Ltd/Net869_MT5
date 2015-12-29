@@ -94,13 +94,15 @@ void J1708_Tx_task (uint32_t initial_data)
 	_task_block();
 }
 
+#define MIC_LED_TEST
+
 void J1708_Rx_task (uint32_t initial_data)
 {
 	APPLICATION_MESSAGE_T *msg;
 	_queue_id     J1708_rx_qid  = _msgq_open (J1708_RX_QUEUE, 0);
 	// _queue_id     USB_qid    = _msgq_get_id (0, USB_QUEUE     );
 	_queue_id     USB_qid       = _msgq_get_id (0, J1708_TX_QUEUE     );		// loop for test only
-	
+
 	bool    J1708_rx_status;
 	uint8_t J1708_rx_len;
 
@@ -149,6 +151,10 @@ void J1708_Rx_task (uint32_t initial_data)
 
 		// add header size to message length
 		msg->header.SIZE  += sizeof (MESSAGE_HEADER_STRUCT);
+#ifdef MIC_LED_TEST
+		GPIO_DRV_SetPinOutput(LED_BLUE);
+#endif
+
 		_msgq_send (msg);
 	}
 	
