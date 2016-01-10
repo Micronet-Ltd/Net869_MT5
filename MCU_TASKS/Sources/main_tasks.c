@@ -82,8 +82,8 @@ void Main_task( uint32_t initial_data ) {
     GPIO_DRV_ClearPinOutput(USB_ENABLE);
     GPIO_DRV_ClearPinOutput(USB_HUB_RSTN);
     GPIO_DRV_ClearPinOutput(USB_OTG_OE); //Enable OTG/MCU switch
-    GPIO_DRV_ClearPinOutput(USB_OTG_SEL);    // Connect D1 <-> D MCU or HUB
-    //GPIO_DRV_SetPinOutput(USB_OTG_SEL);    // Connect D2 <-> D A8 OTG
+    //GPIO_DRV_ClearPinOutput(USB_OTG_SEL);    // Connect D1 <-> D MCU or HUB
+    GPIO_DRV_SetPinOutput(USB_OTG_SEL);    // Connect D2 <-> D A8 OTG
 
 
     _time_delay(10);
