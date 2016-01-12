@@ -81,10 +81,10 @@ void Main_task( uint32_t initial_data ) {
     // Enable USB for DEBUG
     GPIO_DRV_ClearPinOutput(USB_ENABLE);
     GPIO_DRV_ClearPinOutput(USB_HUB_RSTN);
-    GPIO_DRV_ClearPinOutput(USB_OTG_OE); //Enable OTG/MCU switch
-    //GPIO_DRV_ClearPinOutput(USB_OTG_SEL);    // Connect D1 <-> D MCU or HUB
-    GPIO_DRV_SetPinOutput(USB_OTG_SEL);    // Connect D2 <-> D A8 OTG
 
+    GPIO_DRV_ClearPinOutput(USB_OTG_SEL);    // Connect D1 <-> D MCU or HUB
+    //GPIO_DRV_SetPinOutput(USB_OTG_SEL);    // Connect D2 <-> D A8 OTG
+    GPIO_DRV_ClearPinOutput(USB_OTG_OE); //Enable OTG/MCU switch
 
     _time_delay(10);
     GPIO_DRV_SetPinOutput(USB_HUB_RSTN);
@@ -96,18 +96,31 @@ void Main_task( uint32_t initial_data ) {
 	message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
 	main_qid = _msgq_open(MAIN_QUEUE, 0);
 
-	_time_delay (1000);
-
 	FPGA_init ();
 
 	J1708_enable  (7);
+
+
+#if 1
+	GPIO_DRV_SetPinOutput   (LED_BLUE);
+
+    GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+    _time_delay (3000);
+    GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+
+    GPIO_DRV_ClearPinOutput   (LED_BLUE);
+#else
+    _time_delay (1000);
+#endif
 
 	{
 		uint8_t Br, R,G,B;
 		R = G = B = 255;
 		Br = 10;
 		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
+		_time_delay (10);
 		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
+		_time_delay (10);
 	}
 
 
@@ -134,6 +147,8 @@ void Main_task( uint32_t initial_data ) {
     configure_can_pins(0);
     configure_can_pins(1);
 
+    _time_delay (1000);
+
     _test_CANFLEX();
 
     //OSA_Start();
@@ -149,6 +164,8 @@ void Main_task( uint32_t initial_data ) {
 
 
     MIC_DEBUG_UART_PRINTF("\nMain Task: Loop \n");
+
+
     while ( 1 ) {
 #if 0
 
