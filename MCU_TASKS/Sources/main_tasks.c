@@ -90,6 +90,12 @@ void Main_task( uint32_t initial_data ) {
     GPIO_DRV_SetPinOutput(USB_HUB_RSTN);
     GPIO_DRV_SetPinOutput(USB_ENABLE);
 
+    _time_delay(20);
+    ids[USB_TASK] = _task_create(0, USB_TASK, 0);
+	if ( ids[USB_TASK] == MQX_NULL_TASK_ID ) {
+		MIC_DEBUG_UART_PRINTF("\nMain Could not create USB_TASK\n");
+	}
+
     //Enable UART
     GPIO_DRV_SetPinOutput(UART_ENABLE);
     GPIO_DRV_SetPinOutput(FTDI_RSTN);
@@ -121,10 +127,6 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create ACC_TASK\n");
 	}
 
-    ids[USB_TASK] = _task_create(0, USB_TASK, 0);
-    if ( ids[USB_TASK] == MQX_NULL_TASK_ID ) {
-        MIC_DEBUG_UART_PRINTF("\nMain Could not create USB_TASK\n");
-    }
 
     //Disable CAN termination
     GPIO_DRV_ClearPinOutput(CAN1_TERM_ENABLE);
