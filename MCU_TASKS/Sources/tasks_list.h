@@ -27,7 +27,7 @@ typedef enum {
 	J1708_RX_TASK    ,
 	FPGA_UART_RX_TASK,
 	ACC_TASK         ,
-	VIB_SENSOR_TASK  ,
+	POWER_MGM_TASK   ,
 	REG_TASK		 ,
 	NUM_TASKS		 ,
 } TASK_TEMPLATE_INDEX_T;
@@ -41,9 +41,8 @@ typedef enum {
 	J1708_RX_QUEUE   ,
 	FPGA_UART_RX_QUEUE,
 	ACC_QUEUE        ,
-	VIB_SENSOR_QUEUE ,
+	POWER_MGM_QUEUE  ,
 	REG_QUEUE   	 ,
-	POWER_MGMT_QUEUE ,
 } APPLICATION_QUEUE_T;
 
 typedef struct {
@@ -53,6 +52,7 @@ typedef struct {
 } APPLICATION_MESSAGE_T, *APPLICATION_MESSAGE_PTR_T;
 
 extern void Main_task        (uint32_t);
+extern void Power_MGM_task   (uint32_t);
 
 extern void Acc_task         (uint32_t);
 extern void Usb_task         (uint32_t);
@@ -64,11 +64,12 @@ extern void FPGA_UART_Rx_task (uint32_t );
 extern void FLEXCAN_Tx_Task( uint32_t param );
 extern void FLEXCAN_Rx_Task( uint32_t param ); 
 
+
+
 /*
 extern void Can_task         (uint32_t);
 extern void J1708_task       (uint32_t);
 extern void Acc_task         (uint32_t);
-extern void Vib_sensor_task  (uint32_t);
 extern void Reg_task         (uint32_t);
 */
 

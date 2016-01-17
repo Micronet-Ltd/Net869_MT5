@@ -11,5 +11,7 @@ TASK_TEMPLATE_STRUCT MQX_template_list[] =
 	{ J1708_RX_TASK,		J1708_Rx_task,		1500,		11,		"J1708_RX_TASK",		0,							0,				0 },
 	{ J1708_TX_TASK,		J1708_Tx_task,		1500,		11,		"J1708_TX_TASK",		0,							0,				0 },
 	{ FPGA_UART_RX_TASK,	FPGA_UART_Rx_task,	1500,		12,		"FPGA_UART_RX_TASK",	0,							0,				0 },
+	{ POWER_MGM_TASK,		Power_MGM_task,		1500,		5,		"POWER_MGM_TASK",		0,							0,				0 },
+
 	{ 0	}
 };

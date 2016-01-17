@@ -19,7 +19,8 @@
 
 #include "FlexCanDevice.h"
 
-void MQX_I2C0_IRQHandler( void );
+void MQX_I2C0_IRQHandler (void);
+void MQX_PORTA_IRQHandler(void);
 void MQX_PORTC_IRQHandler(void);
 
 #define	MAIN_TASK_SLEEP_PERIOD	10			// 10 mSec sleep
@@ -28,6 +29,7 @@ void MQX_PORTC_IRQHandler(void);
 static i2c_master_state_t i2c_master;
 _pool_id   message_pool;
 
+extern uint32_t wiggle_sensor_cnt;
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
@@ -40,6 +42,8 @@ void Main_task( uint32_t initial_data ) {
 	APPLICATION_MESSAGE_T *msg;
 
     uint8_t u8mainTaskLoopCnt = 0;
+
+    wiggle_sensor_cnt = 0;
     _time_delay (10);
 
 
@@ -57,6 +61,7 @@ void Main_task( uint32_t initial_data ) {
     OSA_Init();
     GPIO_Config();
 
+    OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
     OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 
     // I2C0 Initialization
@@ -101,7 +106,7 @@ void Main_task( uint32_t initial_data ) {
 	J1708_enable  (7);
 
 
-#if 1
+#if 0
 	GPIO_DRV_SetPinOutput   (LED_BLUE);
 
     GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
@@ -124,16 +129,18 @@ void Main_task( uint32_t initial_data ) {
 	}
 
 
-	_task_create(0, J1708_TX_TASK, 0 );
-	_task_create(0, J1708_RX_TASK, 0 );
+	_task_create(0, J1708_TX_TASK    , 0 );
+	_task_create(0, J1708_RX_TASK    , 0 );
 	_task_create(0, FPGA_UART_RX_TASK, 0 );
+	_task_create(0, POWER_MGM_TASK   , 0 );
 
+#if 0
 	ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
 	if (ids[ACC_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create ACC_TASK\n");
 	}
-
+#endif
     ids[USB_TASK] = _task_create(0, USB_TASK, 0);
     if ( ids[USB_TASK] == MQX_NULL_TASK_ID ) {
         MIC_DEBUG_UART_PRINTF("\nMain Could not create USB_TASK\n");
@@ -269,6 +276,14 @@ void OTG_CONTROL (void)
 
 void MQX_I2C0_IRQHandler( void ) {
     I2C_DRV_MasterIRQHandler(0);
+}
+
+void MQX_PORTA_IRQHandler(void)
+{
+	if (GPIO_DRV_IsPinIntPending (VIB_SENS)) {
+		GPIO_DRV_ClearPinIntFlag(VIB_SENS);
+		wiggle_sensor_cnt++;
+	}
 }
 
 void MQX_PORTC_IRQHandler(void)
