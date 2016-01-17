@@ -98,7 +98,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 	if (MQX_OK != _lwevent_create(&(pinstance->canState.event_ISR), LWEVENT_AUTO_CLEAR)) // Not set auto clean bits
     {
         //printf("Make event failed\n");
-        return ( kStatus_FLEXCAN_Fail );
+        return;;// ( kStatus_FLEXCAN_Fail );
     }
 
 	do {
@@ -170,7 +170,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 	if (MQX_OK != _lwevent_destroy(&(pinstance->canState.event_ISR)))
 	{
 		//printf("_lwevent_destroy event failed\n");
-		return ( kStatus_FLEXCAN_Fail );
+		return;// ( kStatus_FLEXCAN_Fail );
 	}
 }
 

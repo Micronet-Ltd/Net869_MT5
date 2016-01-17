@@ -312,7 +312,7 @@ static usb_composite_info_struct_t g_usb_composite_info = {
 	usb_dec_class
 };
 
-uint8_t const g_device_descriptor[DEVICE_DESCRIPTOR_SIZE] =
+uint8_t g_device_descriptor[DEVICE_DESCRIPTOR_SIZE] =
 {
 	/* "Device Descriptor Size */
 	DEVICE_DESCRIPTOR_SIZE,
@@ -344,7 +344,7 @@ uint8_t const g_device_descriptor[DEVICE_DESCRIPTOR_SIZE] =
 	DEVICE_DESC_NUM_CONFIG_SUPPORTED
 };
 
-uint8_t const g_config_descriptor[CONFIG_DESC_SIZE] =
+uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 {
 	CONFIG_ONLY_DESC_SIZE,              /*  Configuration Descriptor Size - always 9 bytes*/
 	USB_CONFIG_DESCRIPTOR,              /* "Configuration" type of descriptor */
@@ -1337,8 +1337,8 @@ uint8_t USB_Set_Configuration ( cdc_handle_t handle, uint8_t config )
 		switch ( g_usb_composite_info.class_handle[i].type )
 		{
 		case USB_CLASS_COMMUNICATION:
-			usb_dec_class[i].interfaces = usb_CDC_configuration[config - 1];
-				break;
+			usb_dec_class[i].interfaces = usb_CDC_configuration[i];
+			break;
 		default:
 			break;
 		}

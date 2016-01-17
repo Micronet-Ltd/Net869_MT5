@@ -818,10 +818,10 @@ flexcan_status_t FLEXCAN_DRV_GetReceiveStatusBlocking(uint32_t instance, uint32_
         MQX_TICK_STRUCT tick;
         _time_get_ticks ( &tick );
         _time_add_msec_to_ticks( &tick, timeout_ms );
-        res = _lwevent_wait_for ( &(state->event_ISR), 0xffffffff, false, &tick );
+        res = (flexcan_status_t)_lwevent_wait_for ( &(state->event_ISR), 0xffffffff, false, &tick );
     }
     else
-        res = _lwevent_wait_for ( &(state->event_ISR), 0xffffffff, false, NULL );
+        res = (flexcan_status_t)_lwevent_wait_for ( &(state->event_ISR), 0xffffffff, false, NULL );
 
     if ( MQX_OK == res )
     {
@@ -830,11 +830,11 @@ flexcan_status_t FLEXCAN_DRV_GetReceiveStatusBlocking(uint32_t instance, uint32_
     }
     else
     {
-        if (LWEVENT_WAIT_TIMEOUT == res)
-        {
-            res = kStatus_FLEXCAN_TimeOut;
-        }
-        else
+ //       if (((flexcan_status_t))(LWEVENT_WAIT_TIMEOUT) == res)
+ //       {
+ //           res = kStatus_FLEXCAN_TimeOut;
+ //       }
+ //       else
         {
             //printf("FLEXCAN_DRV_GetReceiveStatusBlocking error %x\n", res );
             res = kStatus_FLEXCAN_Fail;

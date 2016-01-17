@@ -78,7 +78,7 @@
  * 1 supported
  * 0 not supported
  */
-#define USBCFG_DEV_AUDIO                  1
+#define USBCFG_DEV_AUDIO                  0
 
 /* if CDC device supported 
  * 1 supported
@@ -90,13 +90,13 @@
  * 1 supported
  * 0 not supported
  */
-#define USBCFG_DEV_MSC                    1
+#define USBCFG_DEV_MSC                    0
 
 /* if Video device supported 
  * 1 supported
  * 0 not supported
  */
-#define USBCFG_DEV_VIDEO                  1
+#define USBCFG_DEV_VIDEO                  0
 
 /* if device is self powered 
  * 1 self power
@@ -111,10 +111,10 @@
 #define USBCFG_DEV_REMOTE_WAKEUP          0
 
 /* how many endpoints are supported */
-#define USBCFG_DEV_MAX_ENDPOINTS          (6) 
+#define USBCFG_DEV_MAX_ENDPOINTS          (16) 
 
 /* how many XDs are supported at most */
-#define USBCFG_DEV_MAX_XDS                (12)
+#define USBCFG_DEV_MAX_XDS                (16)
 
 /* how many instance should be supported for one class type device */
 #define USBCFG_DEV_MAX_CLASS_OBJECT       (1)

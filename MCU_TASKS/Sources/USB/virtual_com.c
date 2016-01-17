@@ -117,7 +117,7 @@ uint8_t g_country_code[COMM_FEATURE_DATA_SIZE] =
 //static bool start_app = FALSE;
 //static bool start_transactions = FALSE;
 
-static uint8_t g_curr_recv_buf[DATA_BUFF_SIZE];
+//static uint8_t g_curr_recv_buf[DATA_BUFF_SIZE];
 //static uint8_t g_curr_send_buf[DATA_BUFF_SIZE];
 
 //static uint32_t g_recv_size;
@@ -352,6 +352,7 @@ void cdc_vcom_preinit(cdc_struct_t* param)
 void APP_init(void)
 {
     uint8_t i;
+    composite_device_struct_t *l_compositeDevice = NULL;
 
     USB_init_memory_Desc (  );
 	class_config_struct_t* cdc_vcom_config_callback_handle;

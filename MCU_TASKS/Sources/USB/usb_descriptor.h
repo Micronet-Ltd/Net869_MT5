@@ -63,7 +63,7 @@
 #define DATA_CLASS_SUPPORT               	(1)/*TRUE*/
 #define CIC_NOTIF_ELEM_SUPPORT           	(1)/*TRUE*/
 
-#define MIC_USB_CDC_INF_COUNT				(2) //Number of configured CDC interfaces
+#define MIC_USB_CDC_INF_COUNT				(5) //Number of configured CDC interfaces
 
 /* Communication Class SubClass Codes */
 #define DIRECT_LINE_CONTROL_MODEL           (0x01)
