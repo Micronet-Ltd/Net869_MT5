@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <gpio_pins.h>
+#include "fsl_port_hal.h"
 
 #include "wiggle_sensor.h"
 
@@ -28,9 +30,30 @@ void Wiggle_sensor_init (uint32_t delay_period, uint32_t vibration_threshold)
 	sensor.enable              = true;
 }
 
-void Wiggle_sensor_start    (void) {sensor.enable = true ;}
-void Wiggle_sensor_stop     (void) {sensor.enable = false;}
-bool Wiggle_sensor_cross_TH (void) {return sensor.status ;}
+void Wiggle_sensor_start (void)
+{
+    uint32_t port = GPIO_EXTRACT_PORT(VIB_SENS);
+    uint32_t pin  = GPIO_EXTRACT_PIN(VIB_SENS);
+    PORT_Type *portBase = g_portBase[port];
+
+	sensor.enable = true;
+	PORT_HAL_SetPinIntMode (portBase, pin, kPortIntFallingEdge);
+}
+
+void Wiggle_sensor_stop (void)
+{
+    uint32_t port = GPIO_EXTRACT_PORT(VIB_SENS);
+    uint32_t pin  = GPIO_EXTRACT_PIN(VIB_SENS);
+    PORT_Type *portBase = g_portBase[port];
+
+	sensor.enable = false;
+	PORT_HAL_SetPinIntMode (portBase, pin, kPortIntDisabled);
+}
+
+bool Wiggle_sensor_cross_TH (void)
+{
+	return sensor.status;
+}
 
 void Wiggle_sensor_set_vibration_TH  (uint32_t vibration_threshold)
 {
@@ -42,12 +65,13 @@ void Wiggle_sensor_set_vibration_TH  (uint32_t vibration_threshold)
 
 void Wiggle_sensor_update (void)
 {
+	sensor.status = false;
+
 	if (sensor.enable == false)
 		return;
 	
 	if (sensor.time < WIGGLE_SENSOR_SAMPLE_PERIOD) {
 		sensor.time  += sensor.delay_period;
-		sensor.status = false;
 		return;
 	}
 		
