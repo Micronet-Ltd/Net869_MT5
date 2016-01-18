@@ -72,7 +72,8 @@ void Main_task( uint32_t initial_data ) {
     // turn on device
     GPIO_DRV_SetPinOutput(POWER_3V3_ENABLE);
     GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
-	GPIO_DRV_ClearPinOutput(ACC_ENABLE       );
+//	GPIO_DRV_ClearPinOutput(ACC_ENABLE       );
+	GPIO_DRV_SetPinOutput(ACC_ENABLE       );
 
     // FPGA Enable
     GPIO_DRV_SetPinOutput(FPGA_PWR_ENABLE);
