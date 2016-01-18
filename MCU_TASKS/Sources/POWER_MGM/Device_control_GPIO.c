@@ -52,15 +52,11 @@ void Device_control_GPIO (void)
 		return;
 		
 	if (device_control_gpio.time <	device_control_gpio.time_threshold) {
-		GPIO_DRV_ClearPinOutput (LED_RED);
 		GPIO_DRV_SetPinOutput   (LED_BLUE);
-
 		GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
 		device_control_gpio.time += device_control_gpio.delay_period;
 	} else {
-		GPIO_DRV_SetPinOutput   (LED_RED);
 		GPIO_DRV_ClearPinOutput (LED_BLUE);
-	
 		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
 		device_control_gpio.time = 0;
 		device_control_gpio.enable = false;		
