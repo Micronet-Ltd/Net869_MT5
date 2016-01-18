@@ -470,7 +470,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_CLASS,                              /* Communication Interface Class */
 	CIC_SUBCLASS_CODE,
 	CIC_PROTOCOL_CODE,
-	0x00, /* Interface Description String Index*/
+	0x00, 									/* Interface Description String Index*/
 
 	/* CDC Class-Specific descriptor */
 	CDC_HEADER_FUNC_DESC_SIZE,              /* size of Functional Desc in bytes */
@@ -495,8 +495,8 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_UNION_FUNC_DESC_SIZE,               /* size of Functional Desc in bytes */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	UNION_FUNC_DESC,
-	0x00,                                   /* Interface Number of Control */
-	0x01                                    /* Interface Number of Subordinate (Data Class) Interface */
+	0x02,                                   /* Interface Number of Control */
+	0x03                                    /* Interface Number of Subordinate (Data Class) Interface */
 
 #if CIC_NOTIF_ELEM_SUPPORT                  /*Endpoint descriptor */
 	, /* Comma Added if NOTIF ELEM IS TO BE ADDED */
@@ -513,11 +513,11 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	, /* Comma Added if DATA_CLASS_DESC IS TO BE ADDED */
 	IFACE_ONLY_DESC_SIZE,
 	USB_IFACE_DESCRIPTOR,
-	(uint8_t)(0x02 + DATA_CLASS_SUPPORT),     /* bInterfaceNumber */
-	0x00,                                   /* bAlternateSetting */
-	DIC_ENDP_COUNT,                         /* notification element included */
-	0x0A,                                   /* DATA Interface Class */
-	0x00,                                   /* Data Interface SubClass Code */
+	(uint8_t)(0x02 + DATA_CLASS_SUPPORT),     	/* bInterfaceNumber */
+	0x00,                                   	/* bAlternateSetting */
+	DIC_ENDP_COUNT,                         	/* notification element included */
+	0x0A,                                   	/* DATA Interface Class */
+	0x00,                                   	/* Data Interface SubClass Code */
 	DIC_PROTOCOL_CODE,
 	0x00, /* Interface Description String Index*/
 
@@ -588,8 +588,8 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_UNION_FUNC_DESC_SIZE,               /* size of Functional Desc in bytes */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	UNION_FUNC_DESC,
-	0x00,                                   /* Interface Number of Control */
-	0x01                                    /* Interface Number of Subordinate (Data Class) Interface */
+	0x04,                                   /* Interface Number of Control */
+	0x05                                    /* Interface Number of Subordinate (Data Class) Interface */
 
 #if CIC_NOTIF_ELEM_SUPPORT                  /*Endpoint descriptor */
 	, /* Comma Added if NOTIF ELEM IS TO BE ADDED */
@@ -681,8 +681,8 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_UNION_FUNC_DESC_SIZE,               /* size of Functional Desc in bytes */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	UNION_FUNC_DESC,
-	0x00,                                   /* Interface Number of Control */
-	0x01                                    /* Interface Number of Subordinate (Data Class) Interface */
+	0x06,                                   /* Interface Number of Control */
+	0x07                                    /* Interface Number of Subordinate (Data Class) Interface */
 
 #if CIC_NOTIF_ELEM_SUPPORT                  /*Endpoint descriptor */
 	, /* Comma Added if NOTIF ELEM IS TO BE ADDED */
@@ -774,8 +774,8 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_UNION_FUNC_DESC_SIZE,               /* size of Functional Desc in bytes */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	UNION_FUNC_DESC,
-	0x00,                                   /* Interface Number of Control */
-	0x01                                    /* Interface Number of Subordinate (Data Class) Interface */
+	0x08,                                   /* Interface Number of Control */
+	0x09                                    /* Interface Number of Subordinate (Data Class) Interface */
 
 #if CIC_NOTIF_ELEM_SUPPORT                  /*Endpoint descriptor */
 	, /* Comma Added if NOTIF ELEM IS TO BE ADDED */
@@ -942,15 +942,15 @@ uint8_t g_other_speed_config_descriptor[OTHER_SPEED_CONFIG_DESCRIPTOR_SIZE] =
 };
 #endif
 
-uint8_t USB_STR_0[USB_STR_0_SIZE + USB_STR_DESC_SIZE] =
-{ sizeof(USB_STR_0),
+uint8_t USB_STR_0[] = { //[USB_STR_0_SIZE + USB_STR_DESC_SIZE] = {
+	0x00, //sizeof(USB_STR_0),
 	USB_STRING_DESCRIPTOR,
 	0x09,
 	0x04 /*equivalent to 0x0409*/
 };
 
-uint8_t USB_STR_1[USB_STR_1_SIZE + USB_STR_DESC_SIZE] = 
-{ 	sizeof(USB_STR_1),
+uint8_t USB_STR_1[] = { //[USB_STR_1_SIZE + USB_STR_DESC_SIZE] = {
+	0x00, //sizeof(USB_STR_1),
 	USB_STRING_DESCRIPTOR,
 	'M', 0,
 	'I', 0,
@@ -964,11 +964,11 @@ uint8_t USB_STR_1[USB_STR_1_SIZE + USB_STR_DESC_SIZE] =
 	'L', 0,
 	'T', 0,
 	'D', 0,
-	'.', 0,
+	'.', 0
 };
 
-uint8_t USB_STR_2[USB_STR_2_SIZE + USB_STR_DESC_SIZE] = 
-{ 	sizeof(USB_STR_2),
+uint8_t USB_STR_2[] = { //[USB_STR_2_SIZE + USB_STR_DESC_SIZE] = { 	
+	0x00,//sizeof(USB_STR_2),
 	USB_STRING_DESCRIPTOR,
 	'M', 0,
 	'C', 0,
@@ -986,11 +986,11 @@ uint8_t USB_STR_2[USB_STR_2_SIZE + USB_STR_DESC_SIZE] =
 	'O', 0,
 	'M', 0,
 	'S', 0,
-	'.', 0,
+	'.', 0
 };
 
-uint8_t USB_STR_n[USB_STR_n_SIZE + USB_STR_DESC_SIZE] = 
-{ 	sizeof(USB_STR_n),
+uint8_t USB_STR_n[] = { //[USB_STR_n_SIZE + USB_STR_DESC_SIZE] = 
+ 	0x00,//sizeof(USB_STR_n),
 	USB_STRING_DESCRIPTOR,
 	'B', 0,
 	'A', 0,
@@ -1001,7 +1001,7 @@ uint8_t USB_STR_n[USB_STR_n_SIZE + USB_STR_DESC_SIZE] =
 	'R', 0,
 	'I', 0,
 	'N', 0,
-	'G', 0,
+	'G', 0
 };
 
 uint16_t g_std_desc_size[USB_MAX_STD_DESCRIPTORS + 1] =
@@ -1021,8 +1021,7 @@ uint16_t g_std_desc_size[USB_MAX_STD_DESCRIPTORS + 1] =
 #endif
 };
 
-uint8_t *g_std_descriptors[USB_MAX_STD_DESCRIPTORS + 1] =
-{
+uint8_t *g_std_descriptors[USB_MAX_STD_DESCRIPTORS + 1] = {
 	NULL,
 	g_device_descriptor,
 	g_config_descriptor,
@@ -1038,15 +1037,15 @@ uint8_t *g_std_descriptors[USB_MAX_STD_DESCRIPTORS + 1] =
 #endif
 };
 
-uint8_t g_string_desc_size[USB_MAX_STRING_DESCRIPTORS + 1] =
-{ 	sizeof(USB_STR_0),
+uint8_t g_string_desc_size[USB_MAX_STRING_DESCRIPTORS + 1] = { 	
+	sizeof(USB_STR_0),
 	sizeof(USB_STR_1),
 	sizeof(USB_STR_2),
 	sizeof(USB_STR_n)
 };
 
-uint8_t *g_string_descriptors[USB_MAX_STRING_DESCRIPTORS + 1] =
-{ 	USB_STR_0,
+uint8_t *g_string_descriptors[USB_MAX_STRING_DESCRIPTORS + 1] = {
+	USB_STR_0,
 	USB_STR_1,
 	USB_STR_2,
 	USB_STR_n
@@ -1061,7 +1060,9 @@ usb_language_t usb_lang[USB_MAX_LANGUAGES_SUPPORTED] =
 	},
 };
 
-usb_all_languages_t g_languages = { USB_STR_0, sizeof(USB_STR_0),
+usb_all_languages_t g_languages = { 
+	USB_STR_0, 
+	sizeof(USB_STR_0),
 	USB_MAX_LANGUAGES_SUPPORTED,
 	usb_lang
 };
@@ -1116,7 +1117,7 @@ uint8_t USB_Desc_Get_Descriptor( uint32_t handle,
 									uint8_t **descriptor,
 									uint32_t *size )
 {
-	//UNUSED_ARGUMENT(handle)
+	UNUSED_ARGUMENT(handle)
 
 	/* string descriptors are handled separately */
 	if ( type == USB_STRING_DESCRIPTOR )
@@ -1188,7 +1189,7 @@ uint8_t USB_Desc_Get_Descriptor( uint32_t handle,
 	} 
 	else /* invalid descriptor */
 	{
-			return USBERR_INVALID_REQ_TYPE;
+		return USBERR_INVALID_REQ_TYPE;
 	}
 	return USB_OK;
 }
@@ -1210,7 +1211,7 @@ uint8_t USB_Desc_Get_Interface( uint32_t handle,
 								uint8_t interface,
 								uint8_t *alt_interface )
 {
-	//UNUSED_ARGUMENT(handle)
+	UNUSED_ARGUMENT(handle)
 
 	/* if interface valid */
 	if ( interface < USB_MAX_SUPPORTED_INTERFACES )
@@ -1244,7 +1245,7 @@ uint8_t USB_Desc_Set_Interface( uint32_t handle,
 									uint8_t interface,
 									uint8_t alt_interface )
 {
-	//UNUSED_ARGUMENT(handle)
+	UNUSED_ARGUMENT(handle)
 
 	/* if interface valid */
 	if ( interface < USB_MAX_SUPPORTED_INTERFACES )
@@ -1278,7 +1279,7 @@ bool USB_Desc_Valid_Configation( uint32_t handle, uint16_t config_val )
 {
 	uint8_t loop_index = 0;
 
-	//UNUSED_ARGUMENT(handle)
+	UNUSED_ARGUMENT(handle)
 
 	/* check with only supported val right now */
 	while ( loop_index < (USB_MAX_CONFIG_SUPPORTED + 1) )
@@ -1622,6 +1623,14 @@ void USB_init_memory_Desc( )
 		_mem_copy((void *)g_MIC_usb_configuration, (void *)usb_configuration, sizeof(usb_configuration));
 	}
 #endif
+}
+
+void USB_prepare_descroptors ( void )
+{
+	USB_STR_0[0] = sizeof( USB_STR_0 );
+	USB_STR_1[0] = sizeof ( USB_STR_1 );
+	USB_STR_2[0] = sizeof ( USB_STR_2 );
+	USB_STR_n[0] = sizeof ( USB_STR_n );
 }
 
 /* EOF */

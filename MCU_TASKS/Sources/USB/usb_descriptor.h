@@ -266,7 +266,7 @@
 
 #define CDC_CLASS                              (0x02)
 #define DEVICE_DESC_DEVICE_CLASS               (0x02)
-#define DEVICE_DESC_DEVICE_SUBCLASS            (0x00)
+#define DEVICE_DESC_DEVICE_SUBCLASS            (0X03)//(0x00)
 #define DEVICE_DESC_DEVICE_PROTOCOL            (0x00)
 #define DEVICE_DESC_NUM_CONFIG_SUPPORTED       (0x01)
 /* Keep the following macro Zero if you don't Support Other Speed Configuration
@@ -276,9 +276,9 @@
 #define CONFIG_DESC_CURRENT_DRAWN              	(0x32)
 
 /* Notifications Support */
-#define PSTN_SUBCLASS_NOTIF_SUPPORT   (1)/*TRUE*/
-#define WMC_SUBCLASS_NOTIF_SUPPORT    (0)/*FALSE*/
-#define CDC_CLASS_NOTIF_SUPPORT       (0)/*FALSE*/
+#define PSTN_SUBCLASS_NOTIF_SUPPORT   			(1)/*TRUE*/
+#define WMC_SUBCLASS_NOTIF_SUPPORT    			(0)/*FALSE*/
+#define CDC_CLASS_NOTIF_SUPPORT       			(0)/*FALSE*/
 
 #define CDC_DESC_ENDPOINT_COUNT       (CIC_ENDP_COUNT+(DATA_CLASS_SUPPORT & 0x01) * DIC_ENDP_COUNT)
 
@@ -287,36 +287,6 @@ typedef uint32_t composite_handle_t;
 /******************************************************************************
  * Types
  *****************************************************************************/
-
-/*!
-  * @brief Structure used to configure composite class by APP.
-  *
-  * Define the structure of the composite class configuration. 
-  *
-  */
-//typedef struct _class_config_struct
-//{
-//	usb_application_callback_struct_t          	composite_application_callback;           /*!< application callback function to handle the Device status related event for the specified type of class*/
-//	usb_vendor_req_callback_struct_t           	vendor_req_callback;                      /*!< application callback function to handle the vendor request related event, reserved for future use*/
-//	usb_class_specific_callback_struct_t       	class_specific_callback;                  /*!< application callback function to handle all the class related event for the specified type of class*/
-//	usb_desc_request_notify_struct_t			*desc_callback_ptr;                        /*!< related callback function data structure for the specified type of class*/
-//	usb_board_init_callback_struct_t           	board_init_callback;                      /*!< application callback function to handle board init*/
-//	uint32_t                                   	class_handle;                             /*!< the handle of the class*/
-//	uint8_t                                    	type;                                     /*!< class type*/
-//}class_config_struct_t;
-
-
-/*!
- * @brief Structure used to hold the detailed information about the composite class configuration.
- *
- * Define the structure of detailed information of the composite class.
- *
- */
-//typedef struct _composite_config_struct
-//{
-//	uint8_t                                    	count;               /*!< Number of class support */
-//	class_config_struct_t 						*class_app_callback;  /*!< Array of Endpoints Structures */
-//}composite_config_struct_t;
 
 /*****************************************************************************
  * Global variables
@@ -381,6 +351,7 @@ extern uint8_t USB_Set_Country_Setting( uint32_t handle,
 										uint8_t **feature_data );
 
 extern void USB_init_memory_Desc( void );
+extern void USB_prepare_descroptors ( void );
 uint8_t USB_Desc_Get_feature( uint32_t handle, int32_t cmd, uint8_t in_data, uint8_t **out_buf );
 uint8_t USB_Desc_Set_feature( uint32_t handle, int32_t cmd, uint8_t in_data, uint8_t **in_buf );
 

@@ -354,6 +354,7 @@ void APP_init(void)
     uint8_t i;
     composite_device_struct_t *l_compositeDevice = NULL;
 
+    USB_prepare_descroptors (  );
     USB_init_memory_Desc (  );
 	class_config_struct_t* cdc_vcom_config_callback_handle;
 
