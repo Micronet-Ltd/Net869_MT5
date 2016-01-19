@@ -69,6 +69,10 @@
  * Global Functions Prototypes
  *****************************************************************************/
 void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr );
+void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr );
+void CDC2_send ( APPLICATION_MESSAGE_PTR_T msg_ptr );
+void CDC3_send ( APPLICATION_MESSAGE_PTR_T msg_ptr );
+void CDC4_send ( APPLICATION_MESSAGE_PTR_T msg_ptr );
 
 /****************************************************************************
  * Global Variables
@@ -605,34 +609,55 @@ void Usb_task(uint32_t arg)
 
         switch (msg_ptr->portNum)
         {
-        case MIC_CDC_USB_1: //Acc function
+        case MIC_CDC_USB_1: //Control function
             CDC0_send ( msg_ptr );
             break;
+        case MIC_CDC_USB_2: //Acc function
+            CDC1_send ( msg_ptr );
+            break;
+        case MIC_CDC_USB_3: //CAN0 function
+            CDC2_send ( msg_ptr );
+            break;
+        case MIC_CDC_USB_4: //CAN1 function
+            CDC3_send ( msg_ptr );
+            break;
+        case MIC_CDC_USB_5: //J1708 function
+            CDC4_send ( msg_ptr );
+            break;
         default:
+            _msg_free(msg_ptr);
+            _time_delay(1);
             break;
         }
-
     }
 }
 
 void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 {
+    _msg_free(msg_ptr);
+    _time_delay(1);
+}
+
+void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
+{
     uint8_t payload[ACC_MSG_SIZE];
     uint8_t error;
 
+#if COMPOSITE_CFG_MAX > 1
     // FIXME: bad predicate
-    if( ( TRUE != g_app_composite_device.cdc_vcom[0].start_app ) &&
-    		( TRUE != g_app_composite_device.cdc_vcom[0].start_transactions ) &&
-			!g_app_composite_device.cdc_vcom[0].send_ready )
+    if( ( TRUE != g_app_composite_device.cdc_vcom[1].start_app ) &&
+    		( TRUE != g_app_composite_device.cdc_vcom[1].start_transactions ) &&
+			!g_app_composite_device.cdc_vcom[1].send_ready )
     {
         _msg_free(msg_ptr);
         _time_delay(1);
         return;
     }
+
     /*check whether enumeration is complete or not */
-    else if ( ( TRUE == g_app_composite_device.cdc_vcom[0].start_app ) &&
-    		( TRUE == g_app_composite_device.cdc_vcom[0].start_transactions ) &&
-			g_app_composite_device.cdc_vcom[0].send_ready)
+    else if ( ( TRUE == g_app_composite_device.cdc_vcom[1].start_app ) &&
+    		( TRUE == g_app_composite_device.cdc_vcom[1].start_transactions ) &&
+			g_app_composite_device.cdc_vcom[1].send_ready)
     {
         uint32_t frame_len;
         uint64_t ts = (msg_ptr->timestamp.SECONDS * 1000) + msg_ptr->timestamp.MILLISECONDS;
@@ -643,14 +668,14 @@ void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         memcpy(payload + 8, msg_ptr->data, sizeof(payload) - 8);
 
         g_app_composite_device.cdc_vcom[0].send_size = sizeof(payload);
-        frame_len = frame_encode(payload, g_app_composite_device.cdc_vcom[0].curr_send_buf, g_app_composite_device.cdc_vcom[0].send_size);
+        frame_len = frame_encode(payload, g_app_composite_device.cdc_vcom[1].curr_send_buf, g_app_composite_device.cdc_vcom[1].send_size);
         
 
         g_app_composite_device.cdc_vcom[0].send_ready = FALSE;
-        error = USB_Class_CDC_Send_Data(g_app_composite_device.cdc_vcom[0].cdc_handle,
-                                        g_app_composite_device.cdc_vcom[0].in_endpoint,
-                                        g_app_composite_device.cdc_vcom[0].curr_send_buf, 
-                                        g_app_composite_device.cdc_vcom[0].send_size);
+        error = USB_Class_CDC_Send_Data(g_app_composite_device.cdc_vcom[1].cdc_handle,
+                                        g_app_composite_device.cdc_vcom[1].in_endpoint,
+                                        g_app_composite_device.cdc_vcom[1].curr_send_buf, 
+                                        g_app_composite_device.cdc_vcom[1].send_size);
 
         if(error != USB_OK)
         {
@@ -665,10 +690,40 @@ void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         _msg_free(msg_ptr);
     }
     else
+#endif
     {
     	_msg_free(msg_ptr);
     	_time_delay(1);
     }
+
+}
+
+void CDC2_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
+{
+#if COMPOSITE_CFG_MAX > 2
+    //The function body add here
+#endif
+    _msg_free(msg_ptr);
+    _time_delay(1);
+}
+
+void CDC3_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
+{
+#if COMPOSITE_CFG_MAX > 3
+    //The function body add here
+#endif
+    _msg_free(msg_ptr);
+    _time_delay(1);
+
+}
+
+void CDC4_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
+{
+#if COMPOSITE_CFG_MAX > 4
+    //The function body add here
+#endif
+    _msg_free(msg_ptr);
+    _time_delay(1);
 
 }
 

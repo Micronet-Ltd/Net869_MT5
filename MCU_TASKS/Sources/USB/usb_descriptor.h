@@ -39,7 +39,6 @@
  * Includes
  *****************************************************************************/
 #include "usb_device_stack_interface.h"
-//#include "usb_class_composite.h"
 #include "usb_class_cdc.h"
 /******************************************************************************
  * Constants - None
@@ -360,3 +359,4 @@ uint8_t USB_Desc_Set_Speed( uint32_t handle, uint16_t speed );
 #endif
 
 /* EOF */
+

@@ -20,11 +20,11 @@
  * Macro's
  *****************************************************************************/
 
-#define MIC_CDC_USB_1			(1)
-#define MIC_CDC_USB_2			(2)
-#define MIC_CDC_USB_3			(3)
-#define MIC_CDC_USB_4			(4)
-#define MIC_CDC_USB_5			(5)
+#define MIC_CDC_USB_1			(1) // ttyACM0 control serial port
+#define MIC_CDC_USB_2			(2) // ttyACM1 Accelerometer
+#define MIC_CDC_USB_3			(3) // ttyACM2 CAN0
+#define MIC_CDC_USB_4			(4) // ttyACM3 CAN1
+#define MIC_CDC_USB_5			(5) // ttyACM4 J1708
 
 #endif //~_MIC_TYPEDEFS_H__
 

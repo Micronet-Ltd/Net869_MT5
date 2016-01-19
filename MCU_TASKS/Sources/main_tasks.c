@@ -28,13 +28,13 @@ void MQX_PORTC_IRQHandler(void);
 static i2c_master_state_t i2c_master;
 _pool_id   message_pool;
 
+_task_id   g_TASK_ids[NUM_TASKS] = { 0 };
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
 
 void Main_task( uint32_t initial_data ) {
 
-    _task_id   ids[NUM_TASKS] = { 0 };
     _queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
 	_queue_id  j1708_rx_qid;
 	APPLICATION_MESSAGE_T *msg;
@@ -91,14 +91,16 @@ void Main_task( uint32_t initial_data ) {
     GPIO_DRV_SetPinOutput(USB_ENABLE);
 
     _time_delay(20);
-    ids[USB_TASK] = _task_create(0, USB_TASK, 0);
-	if ( ids[USB_TASK] == MQX_NULL_TASK_ID ) {
+    g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
+	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
 		MIC_DEBUG_UART_PRINTF("\nMain Could not create USB_TASK\n");
 	}
 
     //Enable UART
     GPIO_DRV_SetPinOutput(UART_ENABLE);
     GPIO_DRV_SetPinOutput(FTDI_RSTN);
+
+
 	message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
 	main_qid = _msgq_open(MAIN_QUEUE, 0);
 
@@ -117,12 +119,26 @@ void Main_task( uint32_t initial_data ) {
 	}
 
 
-	_task_create(0, J1708_TX_TASK, 0 );
-	_task_create(0, J1708_RX_TASK, 0 );
-	_task_create(0, FPGA_UART_RX_TASK, 0 );
+	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
+	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create J1708_TX_TASK\n");
+	}
 
-	ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
-	if (ids[ACC_TASK] == MQX_NULL_TASK_ID)
+	g_TASK_ids[J1708_RX_TASK] = _task_create(0, J1708_RX_TASK, 0 );
+	if (g_TASK_ids[J1708_RX_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create J1708_RX_TASK\n");
+	}
+
+	g_TASK_ids[FPGA_UART_RX_TASK] = _task_create(0, FPGA_UART_RX_TASK, 0 );
+	if (g_TASK_ids[FPGA_UART_RX_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create FPGA_UART_RX_TASK\n");
+	}
+
+	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
+	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create ACC_TASK\n");
 	}
@@ -137,18 +153,6 @@ void Main_task( uint32_t initial_data ) {
     configure_can_pins(1);
 
     _test_CANFLEX();
-
-    //OSA_Start();
-
-#if 0
-    ids[0] = _task_create(0, USB_TASK  , 0 );
-    ids[1] = _task_create(0, CAN_TASK  , 1 );
-    ids[2] = _task_create(0, CAN_TASK  , 2 );
-    ids[3] = _task_create(0, J1708_TASK, 0 );
-    ids[4] = _task_create(0, ACC_TASK  , 0 );
-    ids[5] = _task_create(0, REG_TASK  , 0 );
-#endif
-
 
     MIC_DEBUG_UART_PRINTF("\nMain Task: Loop \n");
     while ( 1 ) {

@@ -108,6 +108,7 @@
                 <F N="MCU_TASKS/Sources/i2c_configuration.c"/>
                 <F N="MCU_TASKS/Sources/i2c_configuration.h"/>
                 <F N="MCU_TASKS/Sources/main_tasks.c"/>
+                <F N="MCU_TASKS/Sources/mic_typedef.h"/>
                 <F N="MCU_TASKS/Sources/tasks_list.c"/>
                 <F N="MCU_TASKS/Sources/tasks_list.h"/>
                 <F N="MCU_TASKS/Sources/uart_configuration.c"/>
