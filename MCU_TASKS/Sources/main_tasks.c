@@ -19,7 +19,8 @@
 
 #include "FlexCanDevice.h"
 
-void MQX_I2C0_IRQHandler( void );
+void MQX_I2C0_IRQHandler (void);
+void MQX_PORTA_IRQHandler(void);
 void MQX_PORTC_IRQHandler(void);
 
 #define	MAIN_TASK_SLEEP_PERIOD	10			// 10 mSec sleep
@@ -27,6 +28,8 @@ void MQX_PORTC_IRQHandler(void);
 
 static i2c_master_state_t i2c_master;
 _pool_id   message_pool;
+
+extern uint32_t wiggle_sensor_cnt;
 
 _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
 
@@ -37,9 +40,11 @@ void Main_task( uint32_t initial_data ) {
 
     _queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
 	_queue_id  j1708_rx_qid;
-	APPLICATION_MESSAGE_T *msg;
+	//APPLICATION_MESSAGE_T *msg;
 
     uint8_t u8mainTaskLoopCnt = 0;
+
+    wiggle_sensor_cnt = 0;
     _time_delay (10);
 
 
@@ -57,6 +62,7 @@ void Main_task( uint32_t initial_data ) {
     OSA_Init();
     GPIO_Config();
 
+    OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
     OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 
     // I2C0 Initialization
@@ -67,7 +73,8 @@ void Main_task( uint32_t initial_data ) {
     // turn on device
     GPIO_DRV_SetPinOutput(POWER_3V3_ENABLE);
     GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
-	GPIO_DRV_ClearPinOutput(ACC_ENABLE       );
+//	GPIO_DRV_ClearPinOutput(ACC_ENABLE       );
+	GPIO_DRV_SetPinOutput(ACC_ENABLE       );
 
     // FPGA Enable
     GPIO_DRV_SetPinOutput(FPGA_PWR_ENABLE);
@@ -81,10 +88,10 @@ void Main_task( uint32_t initial_data ) {
     // Enable USB for DEBUG
     GPIO_DRV_ClearPinOutput(USB_ENABLE);
     GPIO_DRV_ClearPinOutput(USB_HUB_RSTN);
-    GPIO_DRV_ClearPinOutput(USB_OTG_OE); //Enable OTG/MCU switch
+
     GPIO_DRV_ClearPinOutput(USB_OTG_SEL);    // Connect D1 <-> D MCU or HUB
     //GPIO_DRV_SetPinOutput(USB_OTG_SEL);    // Connect D2 <-> D A8 OTG
-
+    GPIO_DRV_ClearPinOutput(USB_OTG_OE); //Enable OTG/MCU switch
 
     _time_delay(10);
     GPIO_DRV_SetPinOutput(USB_HUB_RSTN);
@@ -110,12 +117,27 @@ void Main_task( uint32_t initial_data ) {
 
 	J1708_enable  (7);
 
+
+#if 0
+	GPIO_DRV_SetPinOutput   (LED_BLUE);
+
+    GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+    _time_delay (3000);
+    GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+
+    GPIO_DRV_ClearPinOutput   (LED_BLUE);
+#else
+    _time_delay (1000);
+#endif
+
 	{
 		uint8_t Br, R,G,B;
 		R = G = B = 255;
 		Br = 10;
 		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
+		_time_delay (10);
 		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
+		_time_delay (10);
 	}
 
 
@@ -130,18 +152,26 @@ void Main_task( uint32_t initial_data ) {
 	{
 		printf("\nMain Could not create J1708_RX_TASK\n");
 	}
-
+	
 	g_TASK_ids[FPGA_UART_RX_TASK] = _task_create(0, FPGA_UART_RX_TASK, 0 );
 	if (g_TASK_ids[FPGA_UART_RX_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create FPGA_UART_RX_TASK\n");
 	}
 
+	g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
+	if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create POWER_MGM_TASK\n");
+	}
+	
+#if 0
 	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
 	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create ACC_TASK\n");
 	}
+#endif
 
 
     //Disable CAN termination
@@ -152,9 +182,13 @@ void Main_task( uint32_t initial_data ) {
     configure_can_pins(0);
     configure_can_pins(1);
 
+    _time_delay (1000);
+
     _test_CANFLEX();
 
     MIC_DEBUG_UART_PRINTF("\nMain Task: Loop \n");
+
+
     while ( 1 ) {
 #if 0
 
@@ -258,6 +292,14 @@ void OTG_CONTROL (void)
 
 void MQX_I2C0_IRQHandler( void ) {
     I2C_DRV_MasterIRQHandler(0);
+}
+
+void MQX_PORTA_IRQHandler(void)
+{
+	if (GPIO_DRV_IsPinIntPending (VIB_SENS)) {
+		GPIO_DRV_ClearPinIntFlag(VIB_SENS);
+		wiggle_sensor_cnt++;
+	}
 }
 
 void MQX_PORTC_IRQHandler(void)

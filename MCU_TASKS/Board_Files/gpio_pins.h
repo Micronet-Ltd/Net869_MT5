@@ -88,6 +88,7 @@ enum _gpio_pins_pinNames {
     USB_HUB_RSTN						= GPIO_MAKE_PIN(GPIOC_IDX, 18),
     USB_OTG_OE							= GPIO_MAKE_PIN(GPIOE_IDX,  6),
     USB_OTG_SEL							= GPIO_MAKE_PIN(GPIOE_IDX,  7),
+	USB_OTG_PWR_REQ						= GPIO_MAKE_PIN(GPIOE_IDX, 28),
     //	USB_DN							(USB0_DM),;
     //	USB_DP							(USB0_DP),;
 
@@ -128,6 +129,9 @@ enum _gpio_pins_pinNames {
     CPU_RF_KILL							= GPIO_MAKE_PIN(GPIOC_IDX,  5),
     CPU_WATCHDOG						= GPIO_MAKE_PIN(GPIOB_IDX, 10),
     CPU_STATUS							= GPIO_MAKE_PIN(GPIOC_IDX,  2),
+	CPU_SPKR_EN						    = GPIO_MAKE_PIN(GPIOE_IDX, 25),
+	CPU_MIC_EN						    = GPIO_MAKE_PIN(GPIOE_IDX, 26),
+
 
 
     PORT_D_SPARE1						= GPIO_MAKE_PIN(GPIOD_IDX,  0),
@@ -148,10 +152,8 @@ enum _gpio_pins_pinNames {
     PORT_D_SPARE16						= GPIO_MAKE_PIN(GPIOD_IDX, 15),
 
 //    PORT_E_SPARE1						= GPIO_MAKE_PIN(GPIOE_IDX, 24),
-    PORT_E_SPARE2						= GPIO_MAKE_PIN(GPIOE_IDX, 25),
-    PORT_E_SPARE3						= GPIO_MAKE_PIN(GPIOE_IDX, 26),
     PORT_E_SPARE4						= GPIO_MAKE_PIN(GPIOE_IDX, 27),
-    PORT_E_SPARE5						= GPIO_MAKE_PIN(GPIOE_IDX, 28),
+
 
 //	I2C_SDA = GPIO_MAKE_PIN(GPIOB_IDX, 2),
 //	I2C_SCL = GPIO_MAKE_PIN(GPIOB_IDX, 3),

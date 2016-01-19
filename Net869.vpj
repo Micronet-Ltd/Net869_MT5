@@ -94,6 +94,13 @@
                     <F N="MCU_TASKS/Sources/J1708/J1708_task.c"/>
                     <F N="MCU_TASKS/Sources/J1708/J1708_task.h"/>
                 </Folder>
+                <Folder Name="POWER_MGM">
+                    <F N="MCU_TASKS/Sources/POWER_MGM/Device_control_GPIO.c"/>
+                    <F N="MCU_TASKS/Sources/POWER_MGM/Device_control_GPIO.h"/>
+                    <F N="MCU_TASKS/Sources/POWER_MGM/power_mgm.c"/>
+                    <F N="MCU_TASKS/Sources/POWER_MGM/Wiggle_sensor.c"/>
+                    <F N="MCU_TASKS/Sources/POWER_MGM/Wiggle_sensor.h"/>
+                </Folder>
                 <Folder Name="USB">
                     <F N="MCU_TASKS/Sources/USB/frame.c"/>
                     <F N="MCU_TASKS/Sources/USB/frame.h"/>

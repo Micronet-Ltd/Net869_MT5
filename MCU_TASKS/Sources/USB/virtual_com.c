@@ -339,7 +339,6 @@ void cdc_vcom_preinit(cdc_struct_t* param)
 void APP_init(void)
 {
     uint8_t i;
-    composite_device_struct_t *l_compositeDevice = NULL;
     uint8_t l_line_coding[LINE_CODING_SIZE] = {
                                             /*e.g. 0x00,0x10,0x0E,0x00 : 0x000E1000 is 921600 bits per second */
                                             (LINE_CODE_DTERATE_IFACE >> 0) & 0x000000FF,
@@ -588,7 +587,6 @@ uint8_t USB_App_Class_Callback
 void Usb_task(uint32_t arg)
 {
 	APPLICATION_MESSAGE_PTR_T msg_ptr;
-	uint8_t error;
 
 	const _queue_id usb_qid = _msgq_open ((_queue_number)USB_QUEUE, 0);
     if (MSGQ_NULL_QUEUE_ID == usb_qid)
@@ -659,7 +657,6 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
     		( TRUE == g_app_composite_device.cdc_vcom[1].start_transactions ) &&
 			g_app_composite_device.cdc_vcom[1].send_ready)
     {
-        uint32_t frame_len;
         uint64_t ts = (msg_ptr->timestamp.SECONDS * 1000) + msg_ptr->timestamp.MILLISECONDS;
 
         // FIXME: endian assumption
@@ -667,8 +664,7 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         // FIXME: no single point definition of actual payload size here
         memcpy(payload + 8, msg_ptr->data, sizeof(payload) - 8);
 
-        g_app_composite_device.cdc_vcom[0].send_size = sizeof(payload);
-        frame_len = frame_encode(payload, g_app_composite_device.cdc_vcom[1].curr_send_buf, g_app_composite_device.cdc_vcom[1].send_size);
+        g_app_composite_device.cdc_vcom[1].send_size = frame_encode(payload, g_app_composite_device.cdc_vcom[1].curr_send_buf, sizeof(payload));
         
 
         g_app_composite_device.cdc_vcom[0].send_ready = FALSE;
