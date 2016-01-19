@@ -66,7 +66,7 @@
  * 1 supported
  * 0 not supported
  */
-#define USBCFG_DEV_HID                    1
+#define USBCFG_DEV_HID                    0
 
 /* if PHDC device supported 
  * 1 supported
