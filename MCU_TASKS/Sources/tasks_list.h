@@ -61,6 +61,7 @@ typedef struct {
 	MESSAGE_HEADER_STRUCT 		header;
 	uint8_t						data[MAX_MSG_DATA_LEN];
 	TIME_STRUCT					timestamp;
+	uint8_t						portNum;
 } APPLICATION_MESSAGE_T, *APPLICATION_MESSAGE_PTR_T;
 
 extern void Main_task        (uint32_t);

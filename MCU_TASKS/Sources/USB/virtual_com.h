@@ -46,7 +46,7 @@
  * Macro's
  *****************************************************************************/
         
-#define COMPOSITE_CFG_MAX               (5)
+#define COMPOSITE_CFG_MAX               (MIC_USB_CDC_INF_COUNT)
         
 #if HIGH_SPEED
 #define CONTROLLER_ID         	        (USB_CONTROLLER_EHCI_0)
@@ -55,6 +55,8 @@
 #define CONTROLLER_ID         	        (USB_CONTROLLER_KHCI_0)
 #define DATA_BUFF_SIZE        	        (FS_DIC_BULK_OUT_ENDP_PACKET_SIZE)
 #endif
+
+#define MIC_USB_FRAME_BUFFER_SIZE       (0x80)
 
 /* Implementation Specific Macros */
 #define LINE_CODING_SIZE              	(0x07)
@@ -79,15 +81,19 @@
 /* It contain variables for one cdc class. */
 typedef struct _cdc_variable_struct
 {
-    cdc_handle_t cdc_handle;
-    uint8_t g_curr_recv_buf[DATA_BUFF_SIZE];
-    uint8_t g_curr_send_buf[DATA_BUFF_SIZE];
-    uint8_t g_recv_size;
-    uint8_t g_send_size;
-    bool start_app;
-    bool start_transactions;
-    uint8_t out_endpoint;
-    uint8_t in_endpoint;
+    cdc_handle_t    cdc_handle;
+    uint8_t         curr_recv_buf[DATA_BUFF_SIZE];
+    uint8_t         curr_send_buf[MIC_USB_FRAME_BUFFER_SIZE];
+    uint8_t         recv_size;
+    uint8_t         send_size;
+    bool            start_app;
+    bool            start_transactions;
+    bool            send_ready;
+    uint8_t         out_endpoint;
+    uint8_t         in_endpoint;
+    uint8_t         line_coding[LINE_CODING_SIZE];
+    uint8_t         abstract_state[COMM_FEATURE_DATA_SIZE];
+    uint8_t         country_code[COMM_FEATURE_DATA_SIZE];
 }cdc_struct_t;
 
 /* cdc_struct_t represents cdc class */
@@ -109,10 +115,10 @@ extern app_composite_device_struct_t g_app_composite_device;
 /*****************************************************************************
  * Global Functions
  *****************************************************************************/
-extern void TestApp_Init(void);
 extern void Virtual_Com_App(void);
 
 #endif 
 
 
 /* EOF */
+

@@ -59,6 +59,7 @@
 
 #include "frame.h"
 
+#include "mic_typedef.h"
 
 /*****************************************************************************
  * Constant and Macro's - None
@@ -67,7 +68,7 @@
 /*****************************************************************************
  * Global Functions Prototypes
  *****************************************************************************/
-void TestApp_Init(void);
+void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr );
 
 /****************************************************************************
  * Global Variables
@@ -75,8 +76,6 @@ void TestApp_Init(void);
 extern usb_desc_request_notify_struct_t desc_callback;
 app_composite_device_struct_t g_app_composite_device;
 extern uint8_t USB_Desc_Set_Speed(uint32_t handle, uint16_t speed);
-//cdc_handle_t g_app_handle;
-cdc_handle_t *g_cdc_vcom_ptr[MIC_USB_CDC_INF_COUNT];
 
 /*****************************************************************************
  * Local Types - None
@@ -87,45 +86,14 @@ cdc_handle_t *g_cdc_vcom_ptr[MIC_USB_CDC_INF_COUNT];
  *****************************************************************************/
 void USB_App_Device_Callback(uint8_t event_type, void* val, void* arg);
 uint8_t USB_App_Class_Callback(uint8_t event, uint16_t value, uint8_t ** data, uint32_t* size, void* arg);
-//void Virtual_Com_App(void);
+
 /*****************************************************************************
  * Local Variables 
  *****************************************************************************/
-uint8_t g_line_coding[LINE_CODING_SIZE] =
-{
-    /*e.g. 0x00,0x10,0x0E,0x00 : 0x000E1000 is 921600 bits per second */
-    (LINE_CODE_DTERATE_IFACE >> 0) & 0x000000FF,
-    (LINE_CODE_DTERATE_IFACE >> 8) & 0x000000FF,
-    (LINE_CODE_DTERATE_IFACE >> 16) & 0x000000FF,
-    (LINE_CODE_DTERATE_IFACE >> 24) & 0x000000FF,
-    LINE_CODE_CHARFORMAT_IFACE,
-    LINE_CODE_PARITYTYPE_IFACE,
-    LINE_CODE_DATABITS_IFACE
-};
-
-uint8_t g_abstract_state[COMM_FEATURE_DATA_SIZE] =
-{
-    (STATUS_ABSTRACT_STATE_IFACE >> 0) & 0x00FF,
-    (STATUS_ABSTRACT_STATE_IFACE >> 8) & 0x00FF
-};
-
-uint8_t g_country_code[COMM_FEATURE_DATA_SIZE] =
-{
-    (COUNTRY_SETTING_IFACE >> 0) & 0x00FF,
-    (COUNTRY_SETTING_IFACE >> 8) & 0x00FF
-};
-//static bool start_app = FALSE;
-//static bool start_transactions = FALSE;
-
-//static uint8_t g_curr_recv_buf[DATA_BUFF_SIZE];
-//static uint8_t g_curr_send_buf[DATA_BUFF_SIZE];
-
-//static uint32_t g_recv_size;
-//static uint32_t g_send_size;
-
 static uint16_t g_cdc_device_speed;
 static uint16_t g_bulk_out_max_packet_size;
 static uint16_t g_bulk_in_max_packet_size;
+
 /*****************************************************************************
  * Local Functions
  *****************************************************************************/
@@ -147,12 +115,15 @@ uint8_t USB_Get_Line_Coding(uint32_t handle,
     uint8_t interface,
     uint8_t * *coding_data)
 {
+    cdc_struct_t *handle1 = (cdc_struct_t *) handle;
+
     //UNUSED_ARGUMENT(handle)
+
     /* if interface valid */
     if (interface < USB_MAX_SUPPORTED_INTERFACES)
     {
         /* get line coding data*/
-        *coding_data = g_line_coding;
+        *coding_data = handle1->line_coding; 
         return USB_OK;
     }
 
@@ -177,6 +148,7 @@ uint8_t USB_Set_Line_Coding(uint32_t handle,
     uint8_t * *coding_data)
 {
     uint8_t count;
+    cdc_struct_t *handle1 = (cdc_struct_t *) handle;
 
     //UNUSED_ARGUMENT(handle)
 
@@ -186,7 +158,7 @@ uint8_t USB_Set_Line_Coding(uint32_t handle,
         /* set line coding data*/
         for (count = 0; count < LINE_CODING_SIZE; count++)
         {
-            g_line_coding[count] = *((*coding_data + USB_SETUP_PKT_SIZE) + count);
+            handle1->line_coding[count] = *((*coding_data + USB_SETUP_PKT_SIZE) + count);
         }
         return USB_OK;
     }
@@ -211,12 +183,15 @@ uint8_t USB_Get_Abstract_State(uint32_t handle,
     uint8_t interface,
     uint8_t * *feature_data)
 {
+    cdc_struct_t *handle1 = (cdc_struct_t *) handle;
+
     //UNUSED_ARGUMENT(handle)
+
     /* if interface valid */
     if (interface < USB_MAX_SUPPORTED_INTERFACES)
     {
         /* get line coding data*/
-        *feature_data = g_abstract_state;
+        *feature_data = handle1->abstract_state;
         return USB_OK;
     }
 
@@ -240,12 +215,15 @@ uint8_t USB_Get_Country_Setting(uint32_t handle,
     uint8_t interface,
     uint8_t * *feature_data)
 {
+    cdc_struct_t *handle1 = (cdc_struct_t *) handle;
+
     //UNUSED_ARGUMENT(handle)
+
     /* if interface valid */
     if (interface < USB_MAX_SUPPORTED_INTERFACES)
     {
         /* get line coding data*/
-        *feature_data = g_country_code;
+        *feature_data = handle1->country_code;
         return USB_OK;
     }
 
@@ -270,14 +248,17 @@ uint8_t USB_Set_Abstract_State(uint32_t handle,
     uint8_t * *feature_data)
 {
     uint8_t count;
+    cdc_struct_t *handle1 = (cdc_struct_t *) handle;
+
     //UNUSED_ARGUMENT(handle)
+
     /* if interface valid */
     if (interface < USB_MAX_SUPPORTED_INTERFACES)
     {
         /* set Abstract State Feature*/
         for (count = 0; count < COMM_FEATURE_DATA_SIZE; count++)
         {
-            g_abstract_state[count] = *(*feature_data + count);
+            handle1->abstract_state[count] = *(*feature_data + count);
         }
         return USB_OK;
     }
@@ -303,6 +284,8 @@ uint8_t USB_Set_Country_Setting(uint32_t handle,
     uint8_t * *feature_data)
 {
     uint8_t count;
+    cdc_struct_t *handle1 = (cdc_struct_t *) handle;
+
     //UNUSED_ARGUMENT (handle)
 
     /* if interface valid */
@@ -310,7 +293,7 @@ uint8_t USB_Set_Country_Setting(uint32_t handle,
     {
         for (count = 0; count < COMM_FEATURE_DATA_SIZE; count++)
         {
-            g_country_code[count] = *(*feature_data + count);
+            handle1->country_code[count] = *(*feature_data + count);
         }
         return USB_OK;
     }
@@ -335,8 +318,8 @@ void cdc_vcom_preinit(cdc_struct_t* param)
     {
         return;
     }
-    param->g_recv_size = 0;
-    param->g_send_size = 0;
+    param->recv_size = 0;
+    param->send_size = 0;
 }
 /*****************************************************************************
  *  
@@ -353,6 +336,23 @@ void APP_init(void)
 {
     uint8_t i;
     composite_device_struct_t *l_compositeDevice = NULL;
+    uint8_t l_line_coding[LINE_CODING_SIZE] = {
+                                            /*e.g. 0x00,0x10,0x0E,0x00 : 0x000E1000 is 921600 bits per second */
+                                            (LINE_CODE_DTERATE_IFACE >> 0) & 0x000000FF,
+                                            (LINE_CODE_DTERATE_IFACE >> 8) & 0x000000FF,
+                                            (LINE_CODE_DTERATE_IFACE >> 16) & 0x000000FF,
+                                            (LINE_CODE_DTERATE_IFACE >> 24) & 0x000000FF,
+                                            LINE_CODE_CHARFORMAT_IFACE,
+                                            LINE_CODE_PARITYTYPE_IFACE,
+                                            LINE_CODE_DATABITS_IFACE };
+
+    uint8_t l_abstract_state[COMM_FEATURE_DATA_SIZE] = {
+                                                        (STATUS_ABSTRACT_STATE_IFACE >> 0) & 0x00FF,
+                                                        (STATUS_ABSTRACT_STATE_IFACE >> 8) & 0x00FF };
+
+    uint8_t l_country_code[COMM_FEATURE_DATA_SIZE] = {
+                                                        (COUNTRY_SETTING_IFACE >> 0) & 0x00FF,
+                                                        (COUNTRY_SETTING_IFACE >> 8) & 0x00FF };
 
     USB_prepare_descroptors (  );
     USB_init_memory_Desc (  );
@@ -370,7 +370,11 @@ void APP_init(void)
         cdc_vcom_config_callback_handle->desc_callback_ptr = &desc_callback;
         cdc_vcom_config_callback_handle->type = USB_CLASS_COMMUNICATION;
 
-        g_cdc_vcom_ptr[i] = &(g_app_composite_device.cdc_vcom[i].cdc_handle);
+        _mem_copy( (void*)( l_line_coding ), (void*)( g_app_composite_device.cdc_vcom[i].line_coding ), sizeof ( l_line_coding ) );
+        _mem_copy( (void*)( l_abstract_state ), (void*)( g_app_composite_device.cdc_vcom[i].abstract_state ), sizeof ( l_abstract_state ) );
+        _mem_copy( (void*)( l_country_code ), (void*)( g_app_composite_device.cdc_vcom[i].country_code ), sizeof ( l_country_code ) );
+
+        g_app_composite_device.cdc_vcom[i].send_ready = TRUE;
     }
     
     g_cdc_device_speed = USB_SPEED_FULL;
@@ -450,7 +454,7 @@ void USB_App_Device_Callback(uint8_t event_type, void* val, void* arg)
     else if (event_type == USB_DEV_EVENT_CONFIG_CHANGED)
     {
         /* Schedule buffer for receive */
-        USB_Class_CDC_Recv_Data(handle, handle1->out_endpoint , handle1->g_curr_recv_buf, g_bulk_out_max_packet_size);
+        USB_Class_CDC_Recv_Data(handle, handle1->out_endpoint , handle1->curr_recv_buf, g_bulk_out_max_packet_size);
         handle1->start_app = TRUE;
     }
     else if (event_type == USB_DEV_EVENT_ERROR)
@@ -460,7 +464,6 @@ void USB_App_Device_Callback(uint8_t event_type, void* val, void* arg)
     return;
 }
 
-int g_send_ready = 1;
 /******************************************************************************
  * 
  *    @name        USB_App_Class_Callback
@@ -493,22 +496,22 @@ uint8_t USB_App_Class_Callback
     switch(event)
     {
     case GET_LINE_CODING:
-        error = USB_Get_Line_Coding(handle, value, data);
+        error = USB_Get_Line_Coding((uint32_t)handle1, value, data);
         break;
     case GET_ABSTRACT_STATE:
-        error = USB_Get_Abstract_State(handle, value, data);
+        error = USB_Get_Abstract_State((uint32_t)handle1, value, data);
         break;
     case GET_COUNTRY_SETTING:
-        error = USB_Get_Country_Setting(handle, value, data);
+        error = USB_Get_Country_Setting((uint32_t)handle1, value, data);
         break;
     case SET_LINE_CODING:
-        error = USB_Set_Line_Coding(handle, value, data);
+        error = USB_Set_Line_Coding((uint32_t)handle1, value, data);
         break;
     case SET_ABSTRACT_STATE:
-        error = USB_Set_Abstract_State(handle, value, data);
+        error = USB_Set_Abstract_State((uint32_t)handle1, value, data);
         break;
     case SET_COUNTRY_SETTING:
-        error = USB_Set_Country_Setting(handle, value, data);
+        error = USB_Set_Country_Setting((uint32_t)handle1, value, data);
         break;
     case USB_APP_CDC_DTE_ACTIVATED:
         if (handle1->start_app == TRUE)
@@ -528,12 +531,12 @@ uint8_t USB_App_Class_Callback
         {
         if ((handle1->start_app == TRUE) && (handle1->start_transactions == TRUE))
         {
-        	handle1->g_recv_size = *size;
+        	handle1->recv_size = *size;
 
-            if (!handle1->g_recv_size)
+            if (!handle1->recv_size)
             {
                 /* Schedule buffer for next receive event */
-                USB_Class_CDC_Recv_Data(handle, handle1->out_endpoint, handle1->g_curr_recv_buf, g_bulk_out_max_packet_size);
+                USB_Class_CDC_Recv_Data(handle, handle1->out_endpoint, handle1->curr_recv_buf, g_bulk_out_max_packet_size);
             }
         }
     }
@@ -552,7 +555,7 @@ uint8_t USB_App_Class_Callback
         {
             if ((*data != NULL) || ((*data == NULL) && (*size == 0)))
             {
-            	g_send_ready = 1;
+            	handle1->send_ready = TRUE;
                 /* User: add your own code for send complete event */
                 /* Schedule buffer for next receive event */
                 //USB_Class_CDC_Recv_Data(handle, DIC_BULK_OUT_ENDPOINT, g_curr_recv_buf, g_bulk_out_max_packet_size);
@@ -576,22 +579,19 @@ uint8_t USB_App_Class_Callback
     return error;
 }
 
+#define ACC_MSG_SIZE (8 + 6 * 10)
 
 void Usb_task(uint32_t arg)
 {
-
-	// TODO: SErial abstraction layer
-	// This is for accelerometer only testing
-#define ACC_MSG_SIZE (8 + 6 * 10)
-	uint8_t frame_encoded[ACC_MSG_SIZE * 2 + 2];
-	uint8_t payload[ACC_MSG_SIZE];
 	APPLICATION_MESSAGE_PTR_T msg_ptr;
 	uint8_t error;
 
 	const _queue_id usb_qid = _msgq_open ((_queue_number)USB_QUEUE, 0);
-
-
-
+    if (MSGQ_NULL_QUEUE_ID == usb_qid)
+    {
+        printf("\nCould not create a message pool USB_QUEUE\n");
+        _task_block();
+    }
 
     APP_init();
 
@@ -600,48 +600,76 @@ void Usb_task(uint32_t arg)
 		/* call the periodic task function */
 		USB_CDC_Periodic_Task();
 
-//		msg_ptr = _msgq_receive(usb_qid, 1);
-//		if(NULL == msg_ptr) { _time_delay(1); continue; }
-//
-//		// FIXME: bad predicate
-//		if( !((start_app == TRUE) && (start_transactions == TRUE) && g_send_ready))
-//		{
-//			_msg_free(msg_ptr);
-//			_time_delay(1);
-//		}
-//		/*check whether enumeration is complete or not */
-//		else if ((start_app == TRUE) && (start_transactions == TRUE) && g_send_ready)
-//		{
-//			uint32_t frame_len;
-//			uint64_t ts = (msg_ptr->timestamp.SECONDS * 1000) + msg_ptr->timestamp.MILLISECONDS;
-//
-//			// FIXME: endian assumption
-//			memcpy(payload, &ts, 8);
-//			// FIXME: no single point definition of actual payload size here
-//			memcpy(payload + 8, msg_ptr->data, sizeof(payload) - 8);
-//			frame_len = frame_encode(payload, frame_encoded, sizeof(payload));
-//
-//			g_send_ready = 0;
-//			error = USB_Class_CDC_Send_Data(g_app_handle, DIC_BULK_IN_ENDPOINT, frame_encoded, frame_len);
-//
-//			if(error != USB_OK)
-//			{
-//				//GPIO_DRV_SetPinOutput(LED_RED);
-//			}
-//			/*
-//			else { GPIO_DRV_ClearPinOutput(LED_RED); }
-//			static x = 0;
-//			if(x) { GPIO_DRV_ClearPinOutput (LED_GREEN); x = 0; }
-//			else { GPIO_DRV_SetPinOutput(LED_GREEN); x = 1; }
-//			*/
-//			_msg_free(msg_ptr);
-//
-//		}
-//		else
-		{
-			_time_delay(1);
-		}
+        msg_ptr = _msgq_receive(usb_qid, 1);
+        if(NULL == msg_ptr) { _time_delay(1); continue; }
+
+        switch (msg_ptr->portNum)
+        {
+        case MIC_CDC_USB_1: //Acc function
+            CDC0_send ( msg_ptr );
+            break;
+        default:
+            break;
+        }
+
     }
+}
+
+void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
+{
+    uint8_t payload[ACC_MSG_SIZE];
+    uint8_t error;
+
+    // FIXME: bad predicate
+    if( ( TRUE != g_app_composite_device.cdc_vcom[0].start_app ) &&
+    		( TRUE != g_app_composite_device.cdc_vcom[0].start_transactions ) &&
+			!g_app_composite_device.cdc_vcom[0].send_ready )
+    {
+        _msg_free(msg_ptr);
+        _time_delay(1);
+        return;
+    }
+    /*check whether enumeration is complete or not */
+    else if ( ( TRUE == g_app_composite_device.cdc_vcom[0].start_app ) &&
+    		( TRUE == g_app_composite_device.cdc_vcom[0].start_transactions ) &&
+			g_app_composite_device.cdc_vcom[0].send_ready)
+    {
+        uint32_t frame_len;
+        uint64_t ts = (msg_ptr->timestamp.SECONDS * 1000) + msg_ptr->timestamp.MILLISECONDS;
+
+        // FIXME: endian assumption
+        memcpy(payload, &ts, 8);
+        // FIXME: no single point definition of actual payload size here
+        memcpy(payload + 8, msg_ptr->data, sizeof(payload) - 8);
+
+        g_app_composite_device.cdc_vcom[0].send_size = sizeof(payload);
+        frame_len = frame_encode(payload, g_app_composite_device.cdc_vcom[0].curr_send_buf, g_app_composite_device.cdc_vcom[0].send_size);
+        
+
+        g_app_composite_device.cdc_vcom[0].send_ready = FALSE;
+        error = USB_Class_CDC_Send_Data(g_app_composite_device.cdc_vcom[0].cdc_handle,
+                                        g_app_composite_device.cdc_vcom[0].in_endpoint,
+                                        g_app_composite_device.cdc_vcom[0].curr_send_buf, 
+                                        g_app_composite_device.cdc_vcom[0].send_size);
+
+        if(error != USB_OK)
+        {
+            //GPIO_DRV_SetPinOutput(LED_RED);
+        }
+        /*
+        else { GPIO_DRV_ClearPinOutput(LED_RED); }
+        static x = 0;
+        if(x) { GPIO_DRV_ClearPinOutput (LED_GREEN); x = 0; }
+        else { GPIO_DRV_SetPinOutput(LED_GREEN); x = 1; }
+        */
+        _msg_free(msg_ptr);
+    }
+    else
+    {
+    	_msg_free(msg_ptr);
+    	_time_delay(1);
+    }
+
 }
 
 /* EOF */
