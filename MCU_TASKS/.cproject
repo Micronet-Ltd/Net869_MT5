@@ -47,6 +47,9 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP\platform\devices\MK20D10\startup&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP\platform\devices&quot;"/>
 								</option>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.defs.71250306" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.defs" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="CPU_MK20DX256VLQ10=1"/>
+								</option>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input.1597522711" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input"/>
 							</tool>
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1233451735" name="Cross ARM C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler">
@@ -90,6 +93,7 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/usb/usb_core/device/sources/classes/cdc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/usb/usb_core/device/sources/classes/common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/usb/usb_core/device/sources/classes/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/usb/usb_core/device/sources/classes/composite&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/usb/usb_core/device/sources/classes/include/config&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/usb/usb_core/device/sources/controller/khci&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/usb/usb_core/device/sources/controller&quot;"/>
@@ -190,6 +194,7 @@
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>

@@ -277,11 +277,8 @@ usb_status USB_Composite_Init
     devicePtr->class_app_callback,devicePtr->cl_count*sizeof(class_config_struct_t));
 
     status = usb_device_init(controller_id, (void* )&composite_callback_ptr->class_app_callback[0].board_init_callback, &devicePtr->handle);
-    devicePtr->class_app_callback->desc_callback_ptr->get_desc_entity((uint32_t)devicePtr->handle,
-    USB_COMPOSITE_INFO,
-    (uint32_t *)&usb_composite_info);
-    OS_Mem_copy(usb_composite_info,
-    &devicePtr->class_composite_info , sizeof(usb_composite_info_struct_t));
+    devicePtr->class_app_callback->desc_callback_ptr->get_desc_entity((uint32_t)devicePtr->handle, USB_COMPOSITE_INFO, (uint32_t *)&usb_composite_info);
+    OS_Mem_copy(usb_composite_info, &devicePtr->class_composite_info , sizeof(usb_composite_info_struct_t));
     if(status == USB_OK)
     {
         /* Initialize the generic class functions */

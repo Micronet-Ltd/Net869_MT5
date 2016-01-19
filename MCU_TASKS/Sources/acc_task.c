@@ -12,6 +12,8 @@
 
 #include "fsl_i2c_master_driver.h"
 
+#include "mic_typedef.h"
+
 #define ACC_DEVICE_ADDRESS 			0x1D
 #define	I2C_BAUD_RATE				400
 
@@ -88,6 +90,8 @@ void AccIntEnable()
 
 }
 
+#define MIC_LED_TEST
+
 void Acc_task (uint32_t initial_data)
 {
 	TIME_STRUCT time;
@@ -136,6 +140,9 @@ void Acc_task (uint32_t initial_data)
 		_time_delay (10000);
 	}
 
+#ifdef MIC_LED_TEST
+	GPIO_DRV_SetPinOutput(LED_GREEN);
+#endif
 
 
 	//TODO hack Enabling sensor by default
@@ -169,6 +176,7 @@ void Acc_task (uint32_t initial_data)
 			acc_msg->timestamp = time;
 			acc_msg->header.SOURCE_QID = acc_qid;
 			acc_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
+			acc_msg->portNum = MIC_CDC_USB_2;
 			_msgq_send (acc_msg);
 		}
 

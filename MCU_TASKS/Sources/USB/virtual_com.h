@@ -46,40 +46,79 @@
  * Macro's
  *****************************************************************************/
         
+#define COMPOSITE_CFG_MAX               (MIC_USB_CDC_INF_COUNT)
+        
 #if HIGH_SPEED
-#define CONTROLLER_ID         USB_CONTROLLER_EHCI_0
-#define DATA_BUFF_SIZE        (HS_DIC_BULK_OUT_ENDP_PACKET_SIZE)
+#define CONTROLLER_ID         	        (USB_CONTROLLER_EHCI_0)
+#define DATA_BUFF_SIZE        	        (HS_DIC_BULK_OUT_ENDP_PACKET_SIZE)
 #else
-#define CONTROLLER_ID         USB_CONTROLLER_KHCI_0
-#define DATA_BUFF_SIZE        (FS_DIC_BULK_OUT_ENDP_PACKET_SIZE)
+#define CONTROLLER_ID         	        (USB_CONTROLLER_KHCI_0)
+#define DATA_BUFF_SIZE        	        (FS_DIC_BULK_OUT_ENDP_PACKET_SIZE)
 #endif
 
+#define MIC_USB_FRAME_BUFFER_SIZE       (0x80)
+
 /* Implementation Specific Macros */
-#define LINE_CODING_SIZE              (0x07)
-#define COMM_FEATURE_DATA_SIZE        (0x02)
+#define LINE_CODING_SIZE              	(0x07)
+#define COMM_FEATURE_DATA_SIZE        	(0x02)
 
-#define LINE_CODE_DTERATE_IFACE      (115200) /*e.g 9600 is 0x00002580 */
-#define LINE_CODE_CHARFORMAT_IFACE   (0x00)   /* 1 stop bit */
-#define LINE_CODE_PARITYTYPE_IFACE   (0x00)  /* No Parity */
-#define LINE_CODE_DATABITS_IFACE     (0x08)  /* Data Bits Format */
+#define LINE_CODE_DTERATE_IFACE      	(115200) /*e.g 9600 is 0x00002580 */
+#define LINE_CODE_CHARFORMAT_IFACE   	(0x00)   /* 1 stop bit */
+#define LINE_CODE_PARITYTYPE_IFACE   	(0x00)  /* No Parity */
+#define LINE_CODE_DATABITS_IFACE     	(0x08)  /* Data Bits Format */
 
-#define STATUS_ABSTRACT_STATE_IFACE  (0x0000) /* Disable Multiplexing ENDP in
+#define STATUS_ABSTRACT_STATE_IFACE  	(0x0000) /* Disable Multiplexing ENDP in
                                                   this interface will continue
                                                   to accept/offer data*/
-#define COUNTRY_SETTING_IFACE        (0x0000) /* Country Code in the format as 
+#define COUNTRY_SETTING_IFACE        	(0x0000) /* Country Code in the format as 
                                                   defined in [ISO3166]- 
-                                                  - PLEASE CHECK THESE VALUES*/                                                                                                   
+                                                  - PLEASE CHECK THESE VALUES*/  
+												  
+/***************************************************************************** 
+  * Types
+  ****************************************************************************/
+/* cdc_struct_t is as follow. */
+/* It contain variables for one cdc class. */
+typedef struct _cdc_variable_struct
+{
+    cdc_handle_t    cdc_handle;
+    uint8_t         curr_recv_buf[DATA_BUFF_SIZE];
+    uint8_t         curr_send_buf[MIC_USB_FRAME_BUFFER_SIZE];
+    uint8_t         recv_size;
+    uint8_t         send_size;
+    bool            start_app;
+    bool            start_transactions;
+    bool            send_ready;
+    uint8_t         out_endpoint;
+    uint8_t         in_endpoint;
+    uint8_t         line_coding[LINE_CODING_SIZE];
+    uint8_t         abstract_state[COMM_FEATURE_DATA_SIZE];
+    uint8_t         country_code[COMM_FEATURE_DATA_SIZE];
+}cdc_struct_t;
+
+/* cdc_struct_t represents cdc class */
+typedef struct app_composite_device_struct
+{
+    composite_handle_t          composite_device;
+    cdc_struct_t                cdc_vcom[COMPOSITE_CFG_MAX];
+    composite_config_struct_t   composite_device_config_callback;
+    class_config_struct_t       composite_device_config_list[COMPOSITE_CFG_MAX];
+}app_composite_device_struct_t;
+
+
 /*****************************************************************************
  * Global variables
  *****************************************************************************/
 
+extern app_composite_device_struct_t g_app_composite_device;
+
 /*****************************************************************************
  * Global Functions
  *****************************************************************************/
-extern void TestApp_Init(void);
 extern void Virtual_Com_App(void);
 
 #endif 
 
 
 /* EOF */
+
