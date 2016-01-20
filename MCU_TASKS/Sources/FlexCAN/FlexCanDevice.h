@@ -120,7 +120,7 @@ extern void     get_string( char *, uint32_t * );
 /* Global variables */
 
 extern pflexcanInstance_t can_Device_0;
-extern pflexcanInstance_t can_device_1;
+extern pflexcanInstance_t can_Device_1;
 
 
 /* Get CAN instance */

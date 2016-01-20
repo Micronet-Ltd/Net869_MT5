@@ -34,7 +34,7 @@
 #ifndef _USB_COMPOSITE_CONFIG_H
 #define _USB_COMPOSITE_CONFIG_H 1
 
-#define CONFIG_MAX 2
+#define CONFIG_MAX (5)
 
 #endif
 

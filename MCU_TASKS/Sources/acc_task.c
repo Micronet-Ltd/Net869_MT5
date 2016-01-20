@@ -12,6 +12,8 @@
 
 #include "fsl_i2c_master_driver.h"
 
+#include "mic_typedef.h"
+
 #define ACC_DEVICE_ADDRESS 			0x1D
 #define	I2C_BAUD_RATE				400
 
@@ -88,6 +90,8 @@ void AccIntEnable()
 
 }
 
+#define MIC_LED_TEST
+
 void Acc_task (uint32_t initial_data)
 {
 	TIME_STRUCT time;
@@ -95,7 +99,7 @@ void Acc_task (uint32_t initial_data)
 
 	APPLICATION_MESSAGE_T test_acc_msg;
 	const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
-	const _queue_id power_mgmt_qid  = _msgq_open ((_queue_number)POWER_MGMT_QUEUE, 0);
+	const _queue_id power_mgmt_qid  = _msgq_open ((_queue_number)POWER_MGM_QUEUE, 0);
 	
 	//uint8_t acc_good_count = 0;
 	//uint32_t acc_bad_count = 0;
@@ -136,6 +140,9 @@ void Acc_task (uint32_t initial_data)
 		_time_delay (10000);
 	}
 
+#ifdef MIC_LED_TEST
+	GPIO_DRV_SetPinOutput(LED_GREEN);
+#endif
 
 
 	//TODO hack Enabling sensor by default
@@ -164,11 +171,12 @@ void Acc_task (uint32_t initial_data)
 		_event_clear(g_acc_event_h, 1);
 
 		if(acc_msg) {
-			acc_fifo_read (&(acc_msg->data), sizeof ((acc_msg->data)));
+			acc_fifo_read ((uint8_t*)&(acc_msg->data), (uint8_t)sizeof((acc_msg->data)));
 			_time_get(&time);
 			acc_msg->timestamp = time;
 			acc_msg->header.SOURCE_QID = acc_qid;
 			acc_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
+			acc_msg->portNum = MIC_CDC_USB_2;
 			_msgq_send (acc_msg);
 		}
 

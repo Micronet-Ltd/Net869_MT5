@@ -62,6 +62,7 @@ typedef struct _device_class_map
     uint8_t                              type;                   /*!< class type*/
 } device_class_map_t;
 
+#if 1
 /* Structure holding HID class state information*/
 typedef struct composite_device_struct
 {
@@ -73,6 +74,20 @@ typedef struct composite_device_struct
     /* Number of class support */
     uint8_t                       cl_count;
 }composite_device_struct_t;
+#else
+/* cdc_struct_t represents cdc class */
+typedef struct composite_device_struct
+{
+    usb_device_handle           handle;
+    cdc_struct_t                cdc_vcom[CONFIG_MAX];
+    composite_config_struct_t   composite_device_config_callback;
+    class_config_struct_t       composite_device_config_list[CONFIG_MAX];
+    usb_composite_info_struct_t class_composite_info;
+    /* Number of class support */
+    uint8_t                     cl_count;
+}composite_device_struct;
+#endif
+
 
 /******************************************************************************
  * Global Functions

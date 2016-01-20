@@ -61,7 +61,7 @@
 /* macros for queuing */
 #define CDC_MAX_QUEUE_ELEMS              (4)
 #endif
-#define MAX_CDC_DEVICE                   (0x01)
+#define MAX_CDC_DEVICE                   (0x05)
 #define MAX_CDC_EP_NUM                   (4)
 
 
