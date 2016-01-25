@@ -82,19 +82,19 @@ static int packet_recieve(int context, uint8_t * data, uint32_t size)
 		// Handle message
 		switch(data[0])
 		{
-			case 0: // Sync/Info packet
+			case SYNC_INFO: // Sync/Info packet
 				last_seq = data[1];
 				// TODO: set sync (normal) state
 				break;
-			case 0x01: break; // TODO: Write register
-			case 0x02: break; // TODO: Register read request
-			case 0x03: return -1; // BUG: Register read response should never receive this
-			case 0x04: break; // TODO: RTC Write
-			case 0x05: break; // TODO: RTC Read request
-			case 0x06: return -1; // BUG: RTC Read response
-			case 0x07: break; // TODO: Ping request
-			case 0x08: break; // TODO: Ping response
-			case 0x09: return -1; // BUG: GPIO Interrup Status
+			case REG_WRITE_REQ: break; // TODO: Write register
+			case REG_READ_REQ: break; // TODO: Register read request
+			case REG_READ_RESP: return -1; // BUG: Register read response should never receive this
+			case RTC_WRITE_REQ: break; // TODO: RTC Write
+			case RTC_READ_REQ: break; // TODO: RTC Read request
+			case RTC_READ_RESP: return -1; // BUG: RTC Read response
+			case PING_REQ: break; // TODO: Ping request
+			case PING_RESP: break; // TODO: Ping response
+			case GPIO_INT_STATUS: return -1; // BUG: GPIO Interrupt Status
 
 			// 0x80-0xff reserved for future PDU format changes with backwards compatability
 			default: return -1; // Unknown Ignore
@@ -143,9 +143,9 @@ int protocol_process_receive_data(int context, uint8_t * data, uint32_t size)
 	}
 
 	// If there is a gap of 10ms then reset and data already received.
-	// This migh need to be something other then 10ms, maybe more or less.
+	// This might need to be something other then 10ms, maybe more or less.
 	// Otherwise if the process crashes in middle of a frame, we will receive
-	// a partial frame. So this timeout should be greather then min delay between
+	// a partial frame. So this timeout should be greater than min delay between
 	// transmissions, this will need to be determined through testing.
 	// TODO: implement or add conversion for clock ticks to ms here
 	if( now - lastrx > MS(10) ) // MS(N) returns 10ms in clock ticks.

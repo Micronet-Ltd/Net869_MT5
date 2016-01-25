@@ -1,6 +1,24 @@
+#ifndef _PROTOCOL_H
+#define _PROTOCOL_H
 
-#define CONTEXT_CONTROL_EP 100
-#define CONTEXT_J1708_EP 101
-#define CONTECT_ACCEL_EP 102
-#define CONTEXT_SLCAN_0_EP 110
-#define CONTEXT_SLCAN_1_EP 111
+#define CONTEXT_CONTROL_EP 	100
+#define CONTEXT_J1708_EP 	101
+#define CONTECT_ACCEL_EP 	102
+#define CONTEXT_SLCAN_0_EP 	110
+#define CONTEXT_SLCAN_1_EP 	111
+
+typedef enum
+{
+	SYNC_INFO = 0x0, //0
+	REG_WRITE_REQ, //1
+	REG_READ_REQ,  //2
+	REG_READ_RESP, //3
+	RTC_WRITE_REQ, //4
+	RTC_READ_REQ,  //5
+	RTC_READ_RESP, //6
+	PING_REQ, //7
+	PING_RESP, //8
+	GPIO_INT_STATUS, //9
+}packet_type_enum;
+
+#endif /* _PROTOCOL_H */
