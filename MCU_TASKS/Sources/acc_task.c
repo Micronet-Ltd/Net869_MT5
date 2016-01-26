@@ -42,7 +42,6 @@
 
 static i2c_device_t acc_device = {.address = ACC_DEVICE_ADDRESS,    .baudRate_kbps = I2C_BAUD_RATE};
 bool acc_enabled_g = false;
-_pool_id   acc_message_pool_g;
 
 /**************************************************************************************
 * The accelerometer is connected to MCU I2C interface. When device is powered, the    *
@@ -114,22 +113,7 @@ void Acc_task (uint32_t initial_data)
 	event_result = _event_open("event.AccInt", &g_acc_event_h);
 	if(MQX_OK != event_result){	}
 
-	/* */
-
-
-	/* create a message pool */
-	acc_message_pool_g = _msgpool_create(sizeof(APPLICATION_MESSAGE_T),
-			ACC_MAX_POOL_SIZE, 0, 0);
-
-   if (acc_message_pool_g == MSGPOOL_NULL_POOL_ID)
-   {
-	  printf("\nCould not create a message pool\n");
-	  _task_block();
-   }
-
 	printf("\nACC Task: Start \n");
-
-
 
 	GPIO_DRV_SetPinOutput   (ACC_ENABLE       );
 	_time_delay(100);
@@ -160,7 +144,7 @@ void Acc_task (uint32_t initial_data)
 		APPLICATION_MESSAGE_T *acc_msg;
 
 		// TODO: add pm code
-		if ((acc_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (acc_message_pool_g)) == NULL)
+		if ((acc_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL)
 		{
 			printf("ACC Task: ERROR: message allocation failed\n");
 			//continue;
@@ -211,7 +195,7 @@ void Acc_task (uint32_t initial_data)
 			{
 				if (acc_enabled_g)
 				{
-					if ((acc_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (acc_message_pool_g)) == NULL)
+					if ((acc_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL)
 					{
 						printf("ACC Task: ERROR: message allocation failed\n");
 						acc_bad_count++;

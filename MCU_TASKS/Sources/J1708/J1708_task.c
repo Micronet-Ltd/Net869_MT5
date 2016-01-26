@@ -28,6 +28,8 @@
 
 #include "gpio_pins.h"
 
+#include "mic_typedef.h"
+
 #define J1708_DISABLED							0
 #define J1708_ENABLED							1
 
@@ -39,7 +41,7 @@ void J1708_reset   (void);
 void J1708_Tx_task (uint32_t initial_data)
 {
 	APPLICATION_MESSAGE_T *msg;
-	_queue_id     J1708_tx_qid = _msgq_open (J1708_TX_QUEUE, 0);
+	const _queue_id     J1708_tx_qid = _msgq_open (J1708_TX_QUEUE, 0);
 	
 	uint8_t       cnt;
 	bool          J1708TxFull   ;
@@ -99,9 +101,9 @@ void J1708_Tx_task (uint32_t initial_data)
 void J1708_Rx_task (uint32_t initial_data)
 {
 	APPLICATION_MESSAGE_T *msg;
-	_queue_id     J1708_rx_qid  = _msgq_open (J1708_RX_QUEUE, 0);
-	// _queue_id     USB_qid    = _msgq_get_id (0, USB_QUEUE     );
-	_queue_id     USB_qid       = _msgq_get_id (0, J1708_TX_QUEUE     );		// loop for test only
+	const _queue_id     J1708_rx_qid  = _msgq_open (J1708_RX_QUEUE, 0);
+	//_queue_id     USB_qid    	= _msgq_get_id (0, USB_QUEUE     );
+	//_queue_id     USB_qid       = _msgq_get_id (0, J1708_TX_QUEUE     );		// loop for test only
 
 	bool    J1708_rx_status;
 	uint8_t J1708_rx_len;
@@ -111,6 +113,7 @@ void J1708_Rx_task (uint32_t initial_data)
 	while (1) {
 		while (J1708_state == J1708_DISABLED)
 			_time_delay (10000);
+
 
 		// wait 10 second for interrupt message
 		msg = _msgq_receive(J1708_rx_qid, 10000);
@@ -133,10 +136,11 @@ void J1708_Rx_task (uint32_t initial_data)
 		}
 
 		// send buffer - Since the buffer is cyclic, it might be needed to split buffer to 2 buffers
-		if ((msg = _msg_alloc(message_pool)) != NULL) {
+		if ((msg = _msg_alloc(g_out_message_pool)) != NULL) {
 			 msg->header.SOURCE_QID = J1708_rx_qid;
-			 msg->header.TARGET_QID = USB_qid;
+			 msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);;
 			 msg->header.SIZE       = J1708_rx_len;
+			 msg->portNum 			= MIC_CDC_USB_5;
 		}
 		else {
 			printf ("\nJ1708_Rx: ERROR: Could not allocated message buffer\n");
@@ -155,7 +159,9 @@ void J1708_Rx_task (uint32_t initial_data)
 		GPIO_DRV_SetPinOutput(LED_BLUE);
 #endif
 
+#if 0
 		_msgq_send (msg);
+#endif
 	}
 	
 	// should never get here

@@ -26,5 +26,12 @@
 #define MIC_CDC_USB_4			(4) // ttyACM3 CAN1
 #define MIC_CDC_USB_5			(5) // ttyACM4 J1708
 
+/****************************************************************************
+ * Global Variables
+ ****************************************************************************/
+
+extern _pool_id   g_out_message_pool;	// msg pool for send information USB out 
+extern _pool_id   g_in_message_pool;	// msg pool for recieve USB information 
+
 #endif //~_MIC_TYPEDEFS_H__
 
