@@ -1,5 +1,6 @@
 #include "protocol.h"
 #include "frame.h"
+#include "register.h"
 
 frame_t g_control_frame;
 frame_t g_j1708_frame;
@@ -50,7 +51,7 @@ void protocol_init_data()
 	frame_setbuffer(&g_j1708_frame, j1708_data_buffer, sizeof(j1708_data_buffer));
 }
 
-static int packet_recieve(int context, uint8_t * data, uint32_t size)
+static int packet_receive(int context, uint8_t * data, uint32_t size)
 {
 	// NOTE: maybe these should be separate functions, maybe called by caller instead.
 	if(CONTEXT_CONTROL_EP == context)
@@ -87,7 +88,9 @@ static int packet_recieve(int context, uint8_t * data, uint32_t size)
 				// TODO: set sync (normal) state
 				break;
 			case REG_WRITE_REQ: break; // TODO: Write register
-			case REG_READ_REQ: break; // TODO: Register read request
+			case REG_READ_REQ:
+				register_get(data[2], &data[2]);
+				break; // TODO: Register read request
 			case REG_READ_RESP: return -1; // BUG: Register read response should never receive this
 			case RTC_WRITE_REQ: break; // TODO: RTC Write
 			case RTC_READ_REQ: break; // TODO: RTC Read request
@@ -96,7 +99,7 @@ static int packet_recieve(int context, uint8_t * data, uint32_t size)
 			case PING_RESP: break; // TODO: Ping response
 			case GPIO_INT_STATUS: return -1; // BUG: GPIO Interrupt Status
 
-			// 0x80-0xff reserved for future PDU format changes with backwards compatability
+			// 0x80-0xff reserved for future PDU format changes with backwards compatibility
 			default: return -1; // Unknown Ignore
 		}
 	}
@@ -159,7 +162,7 @@ int protocol_process_receive_data(int context, uint8_t * data, uint32_t size)
 		if(frame_data_ready(frame))
 		{
 			// TODO: check results
-			packet_recieve(context, frame->data, frame->data_len);
+			packet_receive(context, frame->data, frame->data_len);
 			frame_reset(frame);
 		}
 	}
