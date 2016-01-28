@@ -158,8 +158,8 @@ bool FPGA_write_led_status (uint8_t ledNum, uint8_t *brightness, uint8_t *red, u
 bool FPGA_J1708_enable (void)
 {
 	uint32_t data;
-	
-	if (!FPGA_GetData (!FPGA_REG_ADDR_J1708_CONTROL , &data))
+
+	if (!FPGA_GetData (FPGA_REG_ADDR_J1708_CONTROL , &data))
 		return false;
 		
 	data |= FPGA_REG_J1708_CONTROL_ENABLE;
@@ -170,7 +170,7 @@ bool FPGA_J1708_disable (void)
 {
 	uint32_t data;
 	
-	if (!FPGA_GetData (!FPGA_REG_ADDR_J1708_CONTROL , &data))
+	if (!FPGA_GetData (FPGA_REG_ADDR_J1708_CONTROL , &data))
 		return false;
 		
 	fpga_uart_rx_buf_wr_idx = 0;
@@ -210,7 +210,7 @@ bool FPGA_write_J1708_priority (uint8_t *priority)
 	if (priority == NULL)
 		return false;
 		
-	if (!FPGA_GetData (!FPGA_REG_ADDR_J1708_CONTROL , &data))
+	if (!FPGA_GetData (FPGA_REG_ADDR_J1708_CONTROL , &data))
 		return false;
 		
 	data &= FPGA_REG_J1708_CONTROL_ENABLE;					// clear previous priority
