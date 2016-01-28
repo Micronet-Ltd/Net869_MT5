@@ -314,10 +314,30 @@
         </option>
         <option>
           <name>CCIncludePath2</name>
+          <state>$PROJ_DIR$/../../MQX_OS/rtos/mqx/config/mcu/MK20D10</state>
+          <state>$PROJ_DIR$/../../MQX_OS/rtos/mqx/config/board/net869/</state>
           <state>$PROJ_DIR$\..\..\MQX_OS\rtos\mqx\config\board\net869</state>
           <state>$PROJ_DIR$\..\..\MQX_OS\rtos\mqx\config\mcu\MK20D10</state>
           <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\include</state>
           <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx_stdlib\source\include</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/rtos/mqx/config/common</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/rtos/mqx/mqx/source/bsp</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/rtos/mqx/mqx/source/include</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m\cpu</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m\core\M4</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m\compiler\iar</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\nio</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\nio\drivers\nio_serial</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx_stdlib\source\stdio</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\nio\drivers\nio_tty</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\nio\drivers\nio_dummy</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/inc</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/uart</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/gpio</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/pit</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/edma</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/system/inc</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/osa/inc</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/rtos</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/utilities/inc</state>
@@ -326,6 +346,8 @@
           <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/devices/MK20D10/include</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/devices/MK20D10/startup</state>
           <state>$PROJ_DIR$\..\..\MQX_OS\BSP\platform\CMSIS\Include</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\usb\usb_core\device\include\net869</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\usb\usb_core\device\sources\bsp\net869</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/adapter/sources</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/adapter/sources/sdk</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/include/MK60D10</state>
@@ -344,30 +366,12 @@
           <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/controller</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/hal</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/include</state>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/inc</state>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/uart</state>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/gpio</state>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/pit</state>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/edma</state>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/system/inc</state>
-          <state>$PROJ_DIR$/../../MQX_OS/rtos/mqx/config/mcu/MK20D10</state>
-          <state>$PROJ_DIR$/../../MQX_OS/rtos/mqx/config/board/net869/</state>
           <state>$PROJ_DIR$/../..</state>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/devices/MK60D10/include</state>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/devices/MK60D10/startup</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/system/inc</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/hal/inc</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/inc</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/mpu</state>
           <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/startup</state>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/rtos/mqx/config/common</state>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/rtos/mqx/mqx/source/bsp</state>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/rtos/mqx/mqx/source/include</state>
-          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m\cpu</state>
-          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m\core\M4</state>
-          <state>D:\Work\MCU_src\NET869\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m\compiler\iar</state>
-          <state>D:\Work\MCU_src\NET869\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m</state>
-          <state>D:\Work\MCU_src\NET869\MQX_OS\BSP\rtos\mqx\mqx\source\nio</state>
           <state>$PROJ_DIR$\..\Sources\FlexCAN</state>
           <state>$PROJ_DIR$\..\Sources\FPGA_API</state>
           <state>$PROJ_DIR$\..\Sources\J1708</state>
@@ -375,12 +379,6 @@
           <state>$PROJ_DIR$\..\Sources\USB</state>
           <state>$PROJ_DIR$\..\Sources</state>
           <state>$PROJ_DIR$\..\Board_Files</state>
-          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\nio\drivers\nio_serial</state>
-          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx_stdlib\source\stdio</state>
-          <state>$PROJ_DIR$\..\..\MQX_OS\usb\usb_core\device\include\net869</state>
-          <state>$PROJ_DIR$\..\..\MQX_OS\usb\usb_core\device\sources\bsp\net869</state>
-          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\nio\drivers\nio_tty</state>
-          <state>D:\Work\MCU_src\NET869\MQX_OS\BSP\rtos\mqx\mqx\source\nio\drivers\nio_dummy</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1049,15 +1047,15 @@
         <debug>0</debug>
         <option>
           <name>ExePath</name>
-          <state>$PROJ_DIR$/release</state>
+          <state>$PROJ_DIR$/Release_IAR</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>$PROJ_DIR$/release/obj</state>
+          <state>$PROJ_DIR$/Release_IAR/obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>$PROJ_DIR$/release/list</state>
+          <state>$PROJ_DIR$/Release_IAR/list</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1070,7 +1068,7 @@
         </option>
         <option>
           <name>Input description</name>
-          <state>Automatic choice of formatter.</state>
+          <state>No specifier n, no float nor long long, no scan set, no assignment suppressing.</state>
         </option>
         <option>
           <name>Output variant</name>
@@ -1079,7 +1077,7 @@
         </option>
         <option>
           <name>Output description</name>
-          <state>Automatic choice of formatter.</state>
+          <state>No specifier a, A, no specifier n, no float nor long long.</state>
         </option>
         <option>
           <name>GOutputBinary</name>
@@ -1101,7 +1099,7 @@
         </option>
         <option>
           <name>RTDescription</name>
-          <state>0</state>
+          <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
         </option>
         <option>
           <name>OGProductVersion</name>
@@ -1278,7 +1276,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>11111111</state>
+          <state>11111110</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -1346,71 +1344,71 @@
         </option>
         <option>
           <name>CCIncludePath2</name>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos/mqx/lib/twrk60d100m.iar/release</state>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos/mqx/lib/twrk60d100m.iar/release/config</state>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos/mqx/lib/twrk60d100m.iar/release/mqx</state>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos/mqx/lib/twrk60d100m.iar/release/mqx_stdlib</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/osa/inc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/utilities/inc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/CMSIS/Include</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/devices</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/devices/MK60D10/include</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/devices/MK60D10/startup</state>
-          <state>$PROJ_DIR$/../../../../../../..</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/adapter/sources</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/adapter/sources/sdk</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/include/MK60D10</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/include</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/classes/audio</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/classes/cdc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/classes/common</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/classes/composite</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/classes/hid</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/classes/include</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/classes/include/config</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/classes/msd</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/classes/phdc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/classes/video</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/controller/khci</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/sources/controller</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/hal</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/host/include/MK60D10</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/host/include</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/host/sources/classes/audio</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/host/sources/classes/cdc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/host/sources/classes/hid</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/host/sources/classes/hub</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/host/sources/classes/msd</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/host/sources/classes/phdc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/host/sources/classes/printer</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/host/sources/controller/khci</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/host/sources/controller</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/include</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/otg/sources/driver/khci</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/otg/sources/driver/max3353/sdk</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/otg/include</state>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/otg/sources/otg</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/hal/inc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/drivers/inc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/drivers/src/uart</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/drivers/src/gpio</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/drivers/src/pit</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/drivers/src/edma</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/system/inc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos/mqx/config/mcu/MK60D10</state>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos/mqx/config/board/twrk60d100m</state>
+          <state>$PROJ_DIR$/../../MQX_OS/rtos/mqx/config/mcu/MK20D10</state>
+          <state>$PROJ_DIR$/../../MQX_OS/rtos/mqx/config/board/net869/</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\rtos\mqx\config\board\net869</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\rtos\mqx\config\mcu\MK20D10</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\include</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx_stdlib\source\include</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/rtos/mqx/config/common</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/rtos/mqx/mqx/source/bsp</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/rtos/mqx/mqx/source/include</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m\cpu</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m\core\M4</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m\compiler\iar</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\psp\cortex_m</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\nio</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\nio\drivers\nio_serial</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx_stdlib\source\stdio</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\nio\drivers\nio_tty</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\rtos\mqx\mqx\source\nio\drivers\nio_dummy</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/inc</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/uart</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/gpio</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/pit</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/edma</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/system/inc</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/osa/inc</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/rtos</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/utilities/inc</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/CMSIS/Include</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/devices</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/devices/MK20D10/include</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/devices/MK20D10/startup</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\platform\CMSIS\Include</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\usb\usb_core\device\include\net869</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\usb\usb_core\device\sources\bsp\net869</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/adapter/sources</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/adapter/sources/sdk</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/include/MK60D10</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/include</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/classes/audio</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/classes/cdc</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/classes/common</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/classes/composite</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/classes/hid</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/classes/include</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/classes/include/config</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/classes/msd</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/classes/phdc</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/classes/video</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/controller/khci</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/device/sources/controller</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/hal</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/usb/usb_core/include</state>
           <state>$PROJ_DIR$/../..</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/devices/MK60D10/include</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/devices/MK60D10/startup</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/system/inc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/hal/inc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/drivers/inc</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/drivers/src/mpu</state>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/startup</state>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos/mqx/config/common</state>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos/mqx/mqx/source/bsp</state>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos/mqx/mqx/source/include</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/system/inc</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/hal/inc</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/inc</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/drivers/src/mpu</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/startup</state>
+          <state>$PROJ_DIR$\..\Sources\FlexCAN</state>
+          <state>$PROJ_DIR$\..\Sources\FPGA_API</state>
+          <state>$PROJ_DIR$\..\Sources\J1708</state>
+          <state>$PROJ_DIR$\..\Sources\POWER_MGM</state>
+          <state>$PROJ_DIR$\..\Sources\USB</state>
+          <state>$PROJ_DIR$\..\Sources</state>
+          <state>$PROJ_DIR$\..\Board_Files</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1439,7 +1437,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>1</state>
+          <state>3</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -1702,11 +1700,11 @@
         </option>
         <option>
           <name>OCOutputOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state></state>
+          <state>NET869_MCU.srec</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1714,7 +1712,7 @@
         </option>
         <option>
           <name>OOCObjCopyEnable</name>
-          <state>0</state>
+          <state>1</state>
         </option>
       </data>
     </settings>
@@ -1761,7 +1759,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>dev_msd_cdc_mqx.out</state>
+          <state>NET869_MCU.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -1799,7 +1797,7 @@
         </option>
         <option>
           <name>IlinkMapFile</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogFile</name>
@@ -1827,7 +1825,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$/../../../../../../../../../platform/devices/MK60D10/linker/iar/MK60DN512xxx10_flash.icf</state>
+          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/devices/MK20D10/linker/iar/MK20DX256xxx10_flash.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1875,10 +1873,10 @@
         </option>
         <option>
           <name>IlinkAdditionalLibs</name>
-          <state>$PROJ_DIR$/../../../../../../../../../usb/usb_core/device/lib/mqx/iar/MK60D10/release/libusbd_mqx.a</state>
-          <state>$PROJ_DIR$/../../../../../../../../../lib/ksdk_mqx_lib/iar/K60D10/release/libksdk_platform_mqx.a</state>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos/mqx/lib/twrk60d100m.iar/release/mqx/lib_mqx.a</state>
-          <state>$PROJ_DIR$/../../../../../../../../../rtos/mqx/lib/twrk60d100m.iar/release/mqx_stdlib/lib_mqx_stdlib.a</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\MQX_USB_DEVICE\iar\Release_IAR\libusbd_mqx.a</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\MQX_LIB\iar\Debug_IAR\libksdk_mqx_lib.a</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\MQX_PSP\iar\Release_IAR\lib_mqx.a</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\MQX_STDLIB\iar\Release_IAR\lib_mqx_stdlib.a</state>
         </option>
         <option>
           <name>IlinkOverrideProgramEntryLabel</name>

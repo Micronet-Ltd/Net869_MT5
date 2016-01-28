@@ -165,7 +165,7 @@ void Acc_task (uint32_t initial_data)
 		}
 
 
-		//_time_delay (1);
+		_time_delay (100);
 
 //#if DEBUG
 #if 0

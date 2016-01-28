@@ -84,7 +84,7 @@ typedef struct _cdc_variable_struct
     cdc_handle_t    cdc_handle;
     uint8_t         curr_recv_buf[DATA_BUFF_SIZE];
     uint8_t         curr_send_buf[MIC_USB_FRAME_BUFFER_SIZE];
-    uint8_t         recv_size;
+    uint32_t        recv_size;
     uint8_t         send_size;
     bool            start_app;
     bool            start_transactions;

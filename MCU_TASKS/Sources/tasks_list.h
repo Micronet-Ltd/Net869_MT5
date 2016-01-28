@@ -54,6 +54,7 @@ typedef enum {
 	ACC_QUEUE        ,
 	POWER_MGM_QUEUE  ,
 	REG_QUEUE   	 ,
+	USB_TEST_QUEUE	,
 } APPLICATION_QUEUE_T;
 
 typedef struct {

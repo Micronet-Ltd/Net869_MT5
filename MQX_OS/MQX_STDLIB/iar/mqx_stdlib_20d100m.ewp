@@ -89,7 +89,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>MK20DX256Zxxx10	Freescale MK20DX256Zxxx10</state>
+          <state>MK20DX256xxx10	Freescale MK20DX256xxx10</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -149,7 +149,7 @@
         </option>
         <option>
           <name>GFPUDeviceSlave</name>
-          <state>MK20DX256Zxxx10	Freescale MK20DX256Zxxx10</state>
+          <state>MK20DX256xxx10	Freescale MK20DX256xxx10</state>
         </option>
         <option>
           <name>FPU2</name>
@@ -1024,15 +1024,15 @@
         <debug>0</debug>
         <option>
           <name>ExePath</name>
-          <state>$PROJ_DIR$/Release_IAR/mqx_stdlib</state>
+          <state>$PROJ_DIR$/Release_IAR</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>$PROJ_DIR$/Release_IAR/obj</state>
+          <state>$PROJ_DIR$/Release_IAR/Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>$PROJ_DIR$/Release_IAR/list</state>
+          <state>$PROJ_DIR$/Release_IAR/List</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1062,7 +1062,7 @@
         </option>
         <option>
           <name>OGCoreOrChip</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GRuntimeLibSelect</name>
@@ -1076,7 +1076,7 @@
         </option>
         <option>
           <name>RTDescription</name>
-          <state>1</state>
+          <state>Do not link with a runtime library.</state>
         </option>
         <option>
           <name>OGProductVersion</name>
@@ -1096,7 +1096,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>Default	None</state>
+          <state>MK20DX256xxx10	Freescale MK20DX256xxx10</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -1156,7 +1156,7 @@
         </option>
         <option>
           <name>GFPUDeviceSlave</name>
-          <state>Default	None</state>
+          <state>MK20DX256xxx10	Freescale MK20DX256xxx10</state>
         </option>
         <option>
           <name>FPU2</name>
@@ -1323,45 +1323,45 @@
         </option>
         <option>
           <name>CCIncludePath2</name>
-          <state>$PROJ_DIR$/../BSP/rtos/mqx/mqx_stdlib/source/include</state>
-          <state>$PROJ_DIR$/../BSP/rtos/mqx/mqx_stdlib/source/stdio</state>
-          <state>$PROJ_DIR$/../BSP/rtos/mqx/source/psp/cortex_m/compiler/iar</state>
-          <state>$PROJ_DIR$/../BSP/rtos/mqx/source/psp/cortex_m</state>
-          <state>$PROJ_DIR$/../BSP/rtos/mqx/source/psp/cortex_m/cpu</state>
-          <state>$PROJ_DIR$/../BSP/platform/devices/MK60D10/startup</state>
-          <state>$PROJ_DIR$/../BSP/platform/CMSIS/Include</state>
-          <state>$PROJ_DIR$/../BSP/rtos/mqx/config/common</state>
-          <state>$PROJ_DIR$/../BSP/rtos/mqx/config/mcu/MK20D10</state>
-          <state>$PROJ_DIR$/../../rtos/mqx/config/board/net869</state>
-          <state>$PROJ_DIR$/../BSP/platform/devices/MK60D10</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/include</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/nio</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/nio/src</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/nio/fs</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/nio/drivers/nio_dummy</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/nio/drivers/nio_mem</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/nio/drivers/nio_null</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/nio/drivers/nio_pipe</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/nio/drivers/nio_serial</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/nio/drivers/nio_tfs</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/nio/drivers/nio_tty</state>
-          <state>$PROJ_DIR$/../BSP/platform/devices/MK20D10/startup</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/tad</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/include</state>
-          <state>$PROJ_DIR$/../BSP/platform/devices/MK20D10/startup</state>
-          <state>$PROJ_DIR$/../BSP/platform/devices/MK20D10/include</state>
-          <state>$PROJ_DIR$/../BSP/platform</state>
-          <state>$PROJ_DIR$/../BSP/platform/devices</state>
-          <state>$PROJ_DIR$/../BSP/platform/CMSIS/Include</state>
-          <state>$PROJ_DIR$/../BSP/platform/hal/inc</state>
-          <state>$PROJ_DIR$/../BSP/platform/drivers/inc</state>
-          <state>$PROJ_DIR$/../BSP/platform/drivers/src/mpu</state>
-          <state>$PROJ_DIR$/../BSP/platform/drivers/src/uart</state>
-          <state>$PROJ_DIR$/../BSP/platform/utilities/inc</state>
-          <state>$PROJ_DIR$/../BSP/middleware/filesystem/mfs/source/mfs_sdcard/nio_esdhc</state>
-          <state>$PROJ_DIR$/../BSP</state>
-          <state>$PROJ_DIR$/../BSP/platform/osa/inc</state>
-          <state>$PROJ_DIR$/../BSP/platform/system/inc</state>
+          <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx_stdlib\source\include</state>
+          <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx_stdlib\source\stdio</state>
+          <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\compiler\iar</state>
+          <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m</state>
+          <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\cpu</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\startup</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\CMSIS\Include</state>
+          <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\config\common</state>
+          <state>$PROJ_DIR$\..\..\rtos\mqx\config\mcu\MK20D10</state>
+          <state>$PROJ_DIR$\..\..\rtos\mqx\config\board\net869</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10</state>
+          <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include</state>
+          <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\nio</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\nio\src</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\nio\fs</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\nio\drivers\nio_dummy</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\nio\drivers\nio_mem</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\nio\drivers\nio_null</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\nio\drivers\nio_pipe</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\nio\drivers\nio_serial</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\nio\drivers\nio_tfs</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\nio\drivers\nio_tty</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\startup</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\tad</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\include</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\startup</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\include</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\devices</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\CMSIS\Include</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\hal\inc</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\drivers\inc</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\drivers\src\mpu</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\drivers\src\uart</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\utilities\inc</state>
+          <state>$PROJ_DIR$\..\..\BSP\middleware\filesystem\mfs\source\mfs_sdcard\nio_esdhc</state>
+          <state>$PROJ_DIR$\..\..\BSP</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\osa\inc</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\system\inc</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1621,18 +1621,17 @@
         </option>
         <option>
           <name>AUserIncludes</name>
-          <state>$PROJ_DIR$/../BSP/mqx/source/psp/cortex_m/compiler/iar</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/psp/cortex_m/core/M4</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/psp/cortex_m</state>
-          <state>$PROJ_DIR$/../BSP/platform/devices/MK20D10/startup</state>
-          <state>$PROJ_DIR$/../BSP/config/mcu/MK20D10</state>
-          <state>$PROJ_DIR$/../rtos/mqx/config/board/net869</state>
-          <state>$PROJ_DIR$/../BSP/platform/devices/MK20D10</state>
-          <state>$PROJ_DIR$/../BSP/mqx/source/include</state>
-          <state>$PROJ_DIR$/../BSP/config/common</state>
-          <state>$PROJ_DIR$/../BSP/platform/devices/MK20D10/startup</state>
-          <state>$PROJ_DIR$/../BSP/platform/devices/MK20D10/startup</state>
-          <state>$PROJ_DIR$/../BSP/platform/devices/MK20D10/include</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\psp\cortex_m\compiler\iar</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\psp\cortex_m\core\M4</state>
+          <state>$PROJ_DIR$\..\..\BSP\mqx\mqx\source\psp\cortex_m</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\startup</state>
+          <state>$PROJ_DIR$\..\..\rtos\mqx\config\mcu\MK20D10</state>
+          <state>$PROJ_DIR$\..\..\rtos\mqx\config\board\net869</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10</state>
+          <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include</state>
+          <state>$PROJ_DIR$\..\..\BSP\config\common</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\startup</state>
+          <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\include</state>
         </option>
         <option>
           <name>AExtraOptionsCheckV2</name>
@@ -1697,7 +1696,7 @@
       <archiveVersion>1</archiveVersion>
       <data>
         <prebuild></prebuild>
-        <postbuild>"$PROJ_DIR$/../../bat/mqx_stdlib_twrk60d100m.bat" "$PROJ_DIR$/../../../.." "$PROJ_DIR$/../../../../lib/twrk60d100m.iar/release/mqx_stdlib" iar</postbuild>
+        <postbuild></postbuild>
       </data>
     </settings>
     <settings>
@@ -2007,7 +2006,7 @@
         </option>
         <option>
           <name>IarchiveOutput</name>
-          <state>$PROJ_DIR$/Release_IAR/mqx_stdlib/lib_mqx_stdlib.a</state>
+          <state>$PROJ_DIR$\Release_IAR\lib_mqx_stdlib.a</state>
         </option>
       </data>
     </settings>

@@ -988,15 +988,15 @@
         <debug>0</debug>
         <option>
           <name>ExePath</name>
-          <state>Release\Exe</state>
+          <state>$PROJ_DIR$\Release_IAR</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>Release\Obj</state>
+          <state>$PROJ_DIR$\Release_IAR\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>Release\List</state>
+          <state>$PROJ_DIR$\Release_IAR\List</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1040,7 +1040,7 @@
         </option>
         <option>
           <name>RTDescription</name>
-          <state>1</state>
+          <state>Do not link with a runtime library.</state>
         </option>
         <option>
           <name>OGProductVersion</name>
@@ -1048,7 +1048,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state></state>
+          <state>7.50.2.10499</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1099,7 +1099,7 @@
         <option>
           <name>GBECoreSlave</name>
           <version>22</version>
-          <state>38</state>
+          <state>39</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -1116,7 +1116,7 @@
         <option>
           <name>CoreVariant</name>
           <version>22</version>
-          <state>38</state>
+          <state>39</state>
         </option>
         <option>
           <name>GFPUDeviceSlave</name>
@@ -1139,7 +1139,7 @@
         <option>
           <name>GFPUCoreSlave2</name>
           <version>22</version>
-          <state>38</state>
+          <state>39</state>
         </option>
       </data>
     </settings>
@@ -1934,7 +1934,7 @@
         </option>
         <option>
           <name>IarchiveOutput</name>
-          <state>$PROJ_DIR$/release/libksdk_platform_mqx.a</state>
+          <state>$PROJ_DIR$\Release_IAR\libksdk_platform_mqx.a</state>
         </option>
       </data>
     </settings>

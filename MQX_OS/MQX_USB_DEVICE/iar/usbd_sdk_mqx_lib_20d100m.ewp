@@ -1012,11 +1012,11 @@
         </option>
         <option>
           <name>ObjPath</name>
-          <state>$PROJ_DIR$/Release_IAR/obj</state>
+          <state>$PROJ_DIR$/Release_IAR/Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>$PROJ_DIR$/Release_IAR/list</state>
+          <state>$PROJ_DIR$/Release_IAR/List</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1060,7 +1060,7 @@
         </option>
         <option>
           <name>RTDescription</name>
-          <state>1</state>
+          <state>Do not link with a runtime library.</state>
         </option>
         <option>
           <name>OGProductVersion</name>
@@ -1307,8 +1307,8 @@
         </option>
         <option>
           <name>CCIncludePath2</name>
-          <state>$PROJ_DIR$\..\..\BSP\rtosrtos\mqx\mqx\source\psp\cortex_m\compiler\iar</state>
-          <state>$PROJ_DIR$\..\..\BSP\rtosrtos</state>
+          <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\compiler\iar</state>
+          <state>$PROJ_DIR$\..\..\BSP\rtos</state>
           <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\config\common</state>
           <state>$PROJ_DIR$\..\..\rtos\mqx\config\mcu\MK20D10</state>
           <state>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include</state>
@@ -1341,7 +1341,7 @@
           <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\include</state>
           <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\startup</state>
           <state>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10</state>
-          <state>$PROJ_DIR$\..\..\usb\usb_core\device\nclude\net869</state>
+          <state>$PROJ_DIR$\..\..\usb\usb_core\device\include\net869</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
