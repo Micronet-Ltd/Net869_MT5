@@ -33,8 +33,15 @@
 #define J1708_DISABLED							0
 #define J1708_ENABLED							1
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 static uint8_t J1708_state    = J1708_DISABLED;
 static uint8_t J1708_priority = 7;			// lowest priority by default
+
+void * g_J1708_event_h;
 
 void J1708_reset   (void);
 
@@ -105,9 +112,12 @@ void J1708_Rx_task (uint32_t initial_data)
 	//_queue_id     USB_qid    	= _msgq_get_id (0, USB_QUEUE     );
 	//_queue_id     USB_qid       = _msgq_get_id (0, J1708_TX_QUEUE     );		// loop for test only
 
-	bool    J1708_rx_status;
-	uint8_t J1708_rx_len;
+	uint32_t J1708_rx_event_bit;
+	bool     J1708_rx_status;
+	uint8_t  J1708_rx_len;
 
+	_event_create ("event.J1708_RX");
+	_event_open   ("event.J1708_RX", &g_J1708_event_h);
 	printf ("\nJ1708_Rx Task: Start \n");
 
 	while (1) {
@@ -116,8 +126,11 @@ void J1708_Rx_task (uint32_t initial_data)
 
 
 		// wait 10 second for interrupt message
-		msg = _msgq_receive(J1708_rx_qid, 10000);
-		if (msg == NULL) {
+		_event_wait_all (g_J1708_event_h, EVENT_J1708_RX, 3000);
+		_event_get_value (g_J1708_event_h, &J1708_rx_event_bit);
+		if (J1708_rx_event_bit == EVENT_J1708_RX)
+			_event_clear    (g_J1708_event_h, EVENT_J1708_RX);
+		else {
 			printf ("\nJ1708_Rx: WARNING: No interrupt in last 10 Seconds \n");
 			continue;
 		}
@@ -216,3 +229,8 @@ void J1708_disable (void)
 
 	J1708_state = J1708_DISABLED;
 }
+
+#ifdef __cplusplus
+}
+#endif
+

@@ -316,27 +316,10 @@ void MQX_PORTA_IRQHandler(void)
 
 void MQX_PORTC_IRQHandler(void)
 {
-	APPLICATION_MESSAGE_T *msg;
-	_queue_id J1708_rx_qid = _msgq_get_id (0, J1708_RX_QUEUE);
-	_queue_id J1708_tx_qid = _msgq_get_id (0, J1708_TX_QUEUE);
-
 	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO0)) {
 		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
-		msg = _msg_alloc (g_out_message_pool);
-		msg->header.SOURCE_QID = J1708_rx_qid;
-		msg->header.TARGET_QID = J1708_rx_qid;
-		_msgq_send (msg);
+		_event_set(g_J1708_event_h, EVENT_J1708_RX);
 	}
-
-#if 0
-	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO1)) {
-		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO1);
-		msg = _msg_alloc (message_pool);
-		msg->HEADER.SOURCE_QID = J1708_tx_qid;
-		msg->HEADER.TARGET_QID = J1708_rx_qid;
-		_msgq_send (msg);
-	}
-#endif
 }
 
 void _test_CANFLEX( ) {
