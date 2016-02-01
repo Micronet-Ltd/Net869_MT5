@@ -43,7 +43,7 @@
 #endif
 
 #endif
-#define MAX_DEVICE_SERVICE_NUMBER     8
+#define MAX_DEVICE_SERVICE_NUMBER     15
 
 /* Callback function storage structure */
 typedef struct service_struct 
