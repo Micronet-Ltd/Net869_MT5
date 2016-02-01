@@ -72,7 +72,7 @@
  * 1 supported
  * 0 not supported
  */
-#define USBCFG_DEV_PHDC                   1
+#define USBCFG_DEV_PHDC                   0
 
 /* if AUDIO device supported 
  * 1 supported
@@ -114,7 +114,7 @@
 #define USBCFG_DEV_MAX_ENDPOINTS          (16) 
 
 /* how many XDs are supported at most */
-#define USBCFG_DEV_MAX_XDS                (16)
+#define USBCFG_DEV_MAX_XDS                (36)
 
 /* how many instance should be supported for one class type device */
 #define USBCFG_DEV_MAX_CLASS_OBJECT       (1)
