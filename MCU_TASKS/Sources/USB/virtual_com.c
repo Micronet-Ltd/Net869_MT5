@@ -422,7 +422,7 @@ void APP_init(void)
 #endif
 #if MIC_USB_CDC_INF_COUNT > 4
     g_app_composite_device.cdc_vcom[4].in_endpoint  = DIC5_BULK_IN_ENDPOINT;
-    g_app_composite_device.cdc_vcom[4].out_endpoint = DIC1_BULK_OUT_ENDPOINT;
+    g_app_composite_device.cdc_vcom[4].out_endpoint = DIC5_BULK_OUT_ENDPOINT;
     g_app_composite_device.cdc_vcom[4].cdc_handle   = (cdc_handle_t)g_app_composite_device.composite_device_config_list[4].class_handle;
 #endif
 
@@ -543,8 +543,7 @@ uint8_t USB_App_Class_Callback
         }
         break;
     case USB_DEV_EVENT_DATA_RECEIVED:
-        {
-        if ((phandle->start_app == TRUE) && (phandle->start_transactions == TRUE))
+		if ((phandle->start_app == TRUE) && (phandle->start_transactions == TRUE))
         {
         	phandle->recv_size = *size;
 
@@ -556,12 +555,11 @@ uint8_t USB_App_Class_Callback
 
             if ((0 != phandle->recv_size) && (0xFFFFFFFF != phandle->recv_size))
             {
-                 USB_Recive_Data ( phandle );
-                 /* Schedule buffer for next receive event */
-                 USB_Class_CDC_Recv_Data(handle, phandle->out_endpoint, phandle->curr_recv_buf, g_bulk_out_max_packet_size);
+				USB_Recive_Data ( phandle );
+                /* Schedule buffer for next receive event */
+                USB_Class_CDC_Recv_Data(handle, phandle->out_endpoint, phandle->curr_recv_buf, g_bulk_out_max_packet_size);
             }
         }
-    }
         break;
     case USB_DEV_EVENT_SEND_COMPLETE:
         {
@@ -1058,7 +1056,7 @@ void CDC4_resv ( cdc_struct_t *handle )
     msg->header.SOURCE_QID = _msgq_get_id( 0, USB_TEST_QUEUE );
     msg->header.TARGET_QID = _msgq_get_id( 0, USB_QUEUE );
     msg->header.SIZE = handle->recv_size;
-    msg->portNum = MIC_CDC_USB_2;
+    msg->portNum = MIC_CDC_USB_5;
     _msgq_send (msg);
     handle->recv_size = 0;
 #else
