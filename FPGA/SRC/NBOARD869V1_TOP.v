@@ -17,6 +17,9 @@ module NBOARD869V1_TOP (
   output led3_red      ,
   output led3_green    ,
   output led3_blue     ,
+
+  input  [7:1] gpio_in ,
+  output       gpio_test,
          
   output irq           ,				// CPU interrupt
 //  input  rst         ,
@@ -32,7 +35,7 @@ localparam	CLK_FRQ_MHZ          = 26     ,
 localparam	FPGA_VERSION_TYPE    = "A"    ,
 			FPGA_VERSION_MAJOR   =  9     ,
 			FPGA_VERSION_MINOR   =  9     ,
-			FPGA_VERSION_DEBUG   =  9     ;
+			FPGA_VERSION_DEBUG   =  8     ;
         
 wire irq_int      ;
 
@@ -76,6 +79,7 @@ IO_OUTPUT IO_IRQ         (.IO_pin (irq), .data (irq_int), .clk (clk) );
 reg  [3:0]  rst_int = 0;
 reg         rst = 0;
 
+assign gpio_test = &gpio_in;		// for now, ignore GPIO inputs but they must be defined as inputs
 
 always @(posedge clk)
 begin

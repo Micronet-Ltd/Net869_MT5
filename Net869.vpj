@@ -175,6 +175,14 @@
                                     <F N="MQX_OS/BSP/platform/devices/MK20D10/linker/gcc/MK20DX256xxx10_flash.ld"/>
                                     <F N="MQX_OS/BSP/platform/devices/MK20D10/linker/gcc/MK20DX256xxx10_ram.ld"/>
                                 </Folder>
+                                <Folder Name="iar">
+                                    <F N="MQX_OS/BSP/platform/devices/MK20D10/linker/iar/MK20DN512xxx10_flash.icf"/>
+                                    <F N="MQX_OS/BSP/platform/devices/MK20D10/linker/iar/MK20DN512xxx10_ram.icf"/>
+                                    <F N="MQX_OS/BSP/platform/devices/MK20D10/linker/iar/MK20DX128xxx10_flash.icf"/>
+                                    <F N="MQX_OS/BSP/platform/devices/MK20D10/linker/iar/MK20DX128xxx10_ram.icf"/>
+                                    <F N="MQX_OS/BSP/platform/devices/MK20D10/linker/iar/MK20DX256xxx10_flash.icf"/>
+                                    <F N="MQX_OS/BSP/platform/devices/MK20D10/linker/iar/MK20DX256xxx10_ram.icf"/>
+                                </Folder>
                             </Folder>
                             <Folder Name="startup">
                                 <Folder Name="arm">

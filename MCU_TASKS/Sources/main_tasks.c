@@ -14,6 +14,7 @@
 #include "J1708_task.h"
 #include "fpga_api.h"
 
+#include "mic_typedef.h"
 
 #include "Uart_debugTerminal.h"
 
@@ -27,7 +28,9 @@ void MQX_PORTC_IRQHandler(void);
 #define TIME_ONE_SECOND_PERIOD	((int) (1000 / MAIN_TASK_SLEEP_PERIOD))
 
 static i2c_master_state_t i2c_master;
-_pool_id   message_pool;
+
+_pool_id   g_out_message_pool;
+_pool_id   g_in_message_pool;
 
 extern uint32_t wiggle_sensor_cnt;
 
@@ -108,7 +111,20 @@ void Main_task( uint32_t initial_data ) {
     GPIO_DRV_SetPinOutput(FTDI_RSTN);
 
 
-	message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
+	g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
+	if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
+	{
+		printf("\nCould not create a g_out_message_pool message pool\n");
+		_task_block();
+	}
+
+	g_in_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
+	if (g_in_message_pool == MSGPOOL_NULL_POOL_ID)
+	{
+		printf("\nCould not create a g_in_message_pool message pool\n");
+		_task_block();
+	}
+
 	main_qid = _msgq_open(MAIN_QUEUE, 0);
 
 	_time_delay (1000);
@@ -159,20 +175,19 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create FPGA_UART_RX_TASK\n");
 	}
 
+#if 0
 	g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
 	if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create POWER_MGM_TASK\n");
 	}
+#endif
 	
-#if 0
 	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
 	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create ACC_TASK\n");
 	}
-#endif
-
 
     //Disable CAN termination
     GPIO_DRV_ClearPinOutput(CAN1_TERM_ENABLE);
@@ -186,7 +201,7 @@ void Main_task( uint32_t initial_data ) {
 
     _test_CANFLEX();
 
-    MIC_DEBUG_UART_PRINTF("\nMain Task: Loop \n");
+    printf("\nMain Task: Loop \n");
 
 
     while ( 1 ) {
@@ -290,10 +305,6 @@ void OTG_CONTROL (void)
 }
 #endif
 
-void MQX_I2C0_IRQHandler( void ) {
-    I2C_DRV_MasterIRQHandler(0);
-}
-
 void MQX_PORTA_IRQHandler(void)
 {
 	if (GPIO_DRV_IsPinIntPending (VIB_SENS)) {
@@ -304,27 +315,10 @@ void MQX_PORTA_IRQHandler(void)
 
 void MQX_PORTC_IRQHandler(void)
 {
-	APPLICATION_MESSAGE_T *msg;
-	_queue_id J1708_rx_qid = _msgq_get_id (0, J1708_RX_QUEUE);
-	_queue_id J1708_tx_qid = _msgq_get_id (0, J1708_TX_QUEUE);
-
 	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO0)) {
 		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
-		msg = _msg_alloc (message_pool);
-		msg->header.SOURCE_QID = J1708_rx_qid;
-		msg->header.TARGET_QID = J1708_rx_qid;
-		_msgq_send (msg);
+		_event_set(g_J1708_event_h, EVENT_J1708_RX);
 	}
-
-#if 0
-	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO1)) {
-		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO1);
-		msg = _msg_alloc (message_pool);
-		msg->HEADER.SOURCE_QID = J1708_tx_qid;
-		msg->HEADER.TARGET_QID = J1708_rx_qid;
-		_msgq_send (msg);
-	}
-#endif
 }
 
 void _test_CANFLEX( ) {

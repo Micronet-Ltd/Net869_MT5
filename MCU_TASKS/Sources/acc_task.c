@@ -42,7 +42,6 @@
 
 static i2c_device_t acc_device = {.address = ACC_DEVICE_ADDRESS,    .baudRate_kbps = I2C_BAUD_RATE};
 bool acc_enabled_g = false;
-_pool_id   acc_message_pool_g;
 
 /**************************************************************************************
 * The accelerometer is connected to MCU I2C interface. When device is powered, the    *
@@ -99,7 +98,7 @@ void Acc_task (uint32_t initial_data)
 
 	APPLICATION_MESSAGE_T test_acc_msg;
 	const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
-	const _queue_id power_mgmt_qid  = _msgq_open ((_queue_number)POWER_MGM_QUEUE, 0);
+	//const _queue_id power_mgmt_qid  = _msgq_open ((_queue_number)POWER_MGM_QUEUE, 0);
 	
 	//uint8_t acc_good_count = 0;
 	//uint32_t acc_bad_count = 0;
@@ -114,22 +113,7 @@ void Acc_task (uint32_t initial_data)
 	event_result = _event_open("event.AccInt", &g_acc_event_h);
 	if(MQX_OK != event_result){	}
 
-	/* */
-
-
-	/* create a message pool */
-	acc_message_pool_g = _msgpool_create(sizeof(APPLICATION_MESSAGE_T),
-			ACC_MAX_POOL_SIZE, 0, 0);
-
-   if (acc_message_pool_g == MSGPOOL_NULL_POOL_ID)
-   {
-	  printf("\nCould not create a message pool\n");
-	  _task_block();
-   }
-
 	printf("\nACC Task: Start \n");
-
-
 
 	GPIO_DRV_SetPinOutput   (ACC_ENABLE       );
 	_time_delay(100);
@@ -148,8 +132,6 @@ void Acc_task (uint32_t initial_data)
 	//TODO hack Enabling sensor by default
 	AccEnable();
 
-
-
 	//TODO: Remote Test acc message
 	//test_acc_msg.header.SOURCE_QID = acc_qid;
 	//test_acc_msg.header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
@@ -158,97 +140,40 @@ void Acc_task (uint32_t initial_data)
 	while (1)
 	{
 		APPLICATION_MESSAGE_T *acc_msg;
+		_mqx_uint err_task;
 
 		// TODO: add pm code
-		if ((acc_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (acc_message_pool_g)) == NULL)
+		if ((acc_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL)
 		{
-			printf("ACC Task: ERROR: message allocation failed\n");
-			//continue;
+			if (MQX_OK != (err_task = _task_get_error()))
+			{
+				_task_set_error(MQX_OK);
+			}
+			printf("ACC Task: ERROR: message allocation failed %x\n", err_task);
 		}
-
 
 		_event_wait_all(g_acc_event_h, 1, 0);
 		_event_clear(g_acc_event_h, 1);
 
 		if(acc_msg) {
-			acc_fifo_read ((uint8_t*)&(acc_msg->data), (uint8_t)sizeof((acc_msg->data)));
+			acc_fifo_read ((uint8_t*)&(acc_msg->data), (uint8_t)(sizeof(acc_msg->data)-sizeof(uint64_t)));
 			_time_get(&time);
 			acc_msg->timestamp = time;
 			acc_msg->header.SOURCE_QID = acc_qid;
 			acc_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
+			acc_msg->header.SIZE = sizeof(acc_msg->data)-sizeof(uint64_t);
 			acc_msg->portNum = MIC_CDC_USB_2;
 			_msgq_send (acc_msg);
-		}
 
-
-		//_time_delay (1);
-
-//#if DEBUG
-#if 0
-		msg = _msgq_receive(acc_qid, 1); // wait 1 ms for message
-		//TODO: hack Test code to fake a message from the USB task for data
-		msg = &test_acc_msg;
-		if (msg == NULL)	// if message not received
-		{
-			printf("\nACC Task: Info: Message not received in last 10 Seconds \n");
-			continue;
-		}
-
-		if (msg->header.SOURCE_QID != NULL)
-		{
-			if (msg->header.SOURCE_QID == power_mgmt_qid)
+			if (MQX_OK != (err_task = _task_get_error()))
 			{
-				if (*msg->data == ACC_ENABLE)
-				{
-					AccEnable();
-				}
-				else
-				{
-					AccDisable();
-				}
-			}
-			else if (msg->header.SOURCE_QID == acc_qid)
-			{
-				if (acc_enabled_g)
-				{
-					if ((acc_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (acc_message_pool_g)) == NULL)
-					{
-						printf("ACC Task: ERROR: message allocation failed\n");
-						acc_bad_count++;
-						continue;
-						//_task_block();
-					}
-					else
-					{
-						acc_good_count++;
-						//memset(acc_msg->data, acc_good_count, MAX_MSG_DATA_LEN);
-						acc_fifo_read (&(acc_msg->data), sizeof ((acc_msg->data)));
-						_time_get(&time);
-						acc_msg->timestamp = time;
-						acc_msg->header.SOURCE_QID = acc_qid;
-						acc_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
-						_msgq_send (acc_msg);
-					}
-				}
-				else
-				{
-					printf("ACC Task: Accelerometer is disabled \n");
-				}
-			}
-			else
-			{
-				printf ("ACC Task: Unexpected message - Source id %d\n", msg->header.SOURCE_QID);
+				printf("ACC Task: ERROR: message allocation failed %x\n", err_task);
+				_task_set_error(MQX_OK);
 			}
 		}
+
+		_time_delay (100);
 	}
-	_msg_free(msg);
-	//_time_delay(1);
-
-#else
-	//acc_fifo_read (buffer, sizeof (buffer));
-
-#endif
-}
 
 	// should never get here
 	printf("\nACC Task: End \n");

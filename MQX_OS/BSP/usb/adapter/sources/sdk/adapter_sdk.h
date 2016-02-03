@@ -64,7 +64,14 @@
 //extern void * memset (void *, int32_t, unsigned);
 //extern int32_t printf_kinetis (const char *fmt, ...);
 
+#define USB_DEBUG 0
+
 #define USB_PRINTF                                           PRINTF
+
+#if (USB_DEBUG && _DEBUG)
+#define USB_DEBUG_PRINTF	1
+#endif
+
 //#define OS_install_isr
 #define OS_install_isr(num, isr, data)   OSA_InstallIntHandler(num, isr)
 #define OS_intr_init(num, prior, subprior, enable)         \

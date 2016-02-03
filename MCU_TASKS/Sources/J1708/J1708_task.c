@@ -28,18 +28,27 @@
 
 #include "gpio_pins.h"
 
+#include "mic_typedef.h"
+
 #define J1708_DISABLED							0
 #define J1708_ENABLED							1
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 static uint8_t J1708_state    = J1708_DISABLED;
 static uint8_t J1708_priority = 7;			// lowest priority by default
+
+void * g_J1708_event_h;
 
 void J1708_reset   (void);
 
 void J1708_Tx_task (uint32_t initial_data)
 {
 	APPLICATION_MESSAGE_T *msg;
-	_queue_id     J1708_tx_qid = _msgq_open (J1708_TX_QUEUE, 0);
+	const _queue_id     J1708_tx_qid = _msgq_open (J1708_TX_QUEUE, 0);
 	
 	uint8_t       cnt;
 	bool          J1708TxFull   ;
@@ -99,22 +108,29 @@ void J1708_Tx_task (uint32_t initial_data)
 void J1708_Rx_task (uint32_t initial_data)
 {
 	APPLICATION_MESSAGE_T *msg;
-	_queue_id     J1708_rx_qid  = _msgq_open (J1708_RX_QUEUE, 0);
-	// _queue_id     USB_qid    = _msgq_get_id (0, USB_QUEUE     );
-	_queue_id     USB_qid       = _msgq_get_id (0, J1708_TX_QUEUE     );		// loop for test only
+	const _queue_id     J1708_rx_qid  = _msgq_open (J1708_RX_QUEUE, 0);
+	//_queue_id     USB_qid    	= _msgq_get_id (0, USB_QUEUE     );
+	//_queue_id     USB_qid       = _msgq_get_id (0, J1708_TX_QUEUE     );		// loop for test only
 
-	bool    J1708_rx_status;
-	uint8_t J1708_rx_len;
+	uint32_t J1708_rx_event_bit;
+	bool     J1708_rx_status;
+	uint8_t  J1708_rx_len;
 
+	_event_create ("event.J1708_RX");
+	_event_open   ("event.J1708_RX", &g_J1708_event_h);
 	printf ("\nJ1708_Rx Task: Start \n");
 
 	while (1) {
 		while (J1708_state == J1708_DISABLED)
 			_time_delay (10000);
 
+
 		// wait 10 second for interrupt message
-		msg = _msgq_receive(J1708_rx_qid, 10000);
-		if (msg == NULL) {
+		_event_wait_all (g_J1708_event_h, EVENT_J1708_RX, 3000);
+		_event_get_value (g_J1708_event_h, &J1708_rx_event_bit);
+		if (J1708_rx_event_bit == EVENT_J1708_RX)
+			_event_clear    (g_J1708_event_h, EVENT_J1708_RX);
+		else {
 			printf ("\nJ1708_Rx: WARNING: No interrupt in last 10 Seconds \n");
 			continue;
 		}
@@ -133,10 +149,11 @@ void J1708_Rx_task (uint32_t initial_data)
 		}
 
 		// send buffer - Since the buffer is cyclic, it might be needed to split buffer to 2 buffers
-		if ((msg = _msg_alloc(message_pool)) != NULL) {
+		if ((msg = _msg_alloc(g_out_message_pool)) != NULL) {
 			 msg->header.SOURCE_QID = J1708_rx_qid;
-			 msg->header.TARGET_QID = USB_qid;
+			 msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);;
 			 msg->header.SIZE       = J1708_rx_len;
+			 msg->portNum 			= MIC_CDC_USB_5;
 		}
 		else {
 			printf ("\nJ1708_Rx: ERROR: Could not allocated message buffer\n");
@@ -155,7 +172,9 @@ void J1708_Rx_task (uint32_t initial_data)
 		GPIO_DRV_SetPinOutput(LED_BLUE);
 #endif
 
+#if 0
 		_msgq_send (msg);
+#endif
 	}
 	
 	// should never get here
@@ -210,3 +229,8 @@ void J1708_disable (void)
 
 	J1708_state = J1708_DISABLED;
 }
+
+#ifdef __cplusplus
+}
+#endif
+

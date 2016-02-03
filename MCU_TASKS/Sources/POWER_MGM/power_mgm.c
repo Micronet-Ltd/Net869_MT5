@@ -23,7 +23,7 @@ void Power_MGM_task (uint32_t initial_data )
 		if (Wiggle_sensor_cross_TH ()) {
 			Device_turn_on ();
 			Wiggle_sensor_stop ();
-			_task_create(0, ACC_TASK, 0);
+			//RS _task_create(0, ACC_TASK, 0);
 		}
 		Device_control_GPIO ();
 

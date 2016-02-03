@@ -1214,12 +1214,15 @@ usb_status usb_device_stall_endpoint
     if ((usb_dev_ptr->usb_dev_interface)->dev_stall_endpoint
     != NULL)
     {
+#if USB_DEBUG_PRINTF
+        USB_PRINTF("usb_device_stall_endpoint: ep %d, d %d\n", ep_num, direction);
+#endif 
         error = (usb_dev_ptr->usb_dev_interface)->dev_stall_endpoint(usb_dev_ptr->controller_handle,
         ep_num, direction);
     }
     else
     {
-#if _DEBUG
+#if USB_DEBUG_PRINTF
         USB_PRINTF("usb_device_stall_endpoint: DEV_STALL_ENDPOINT is NULL\n");
 #endif  
         error = USBERR_ERROR;
@@ -1352,7 +1355,7 @@ usb_status usb_device_cancel_transfer
     if (handle == NULL)
     {
 #if _DEBUG
-        USB_PRINTF("_usb_device_shutdowna: handle is NULL\n");
+        USB_PRINTF("_usb_device_shutdown: handle is NULL\n");
 #endif  
         return USBERR_ERROR;
     }
@@ -1535,7 +1538,7 @@ usb_status usb_device_reset
     else
     {
 #if _DEBUG
-        //USB_PRINTF("usb_device_reset: dev_reset is NULL\n");
+        USB_PRINTF("usb_device_reset: dev_reset is NULL\n");
 #endif    
         return USBERR_ERROR;
     }

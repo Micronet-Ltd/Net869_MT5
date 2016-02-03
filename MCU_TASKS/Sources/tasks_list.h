@@ -6,8 +6,8 @@
 #include <message.h>
 #include <stdio.h>
 
-#define MAX_MSG_DATA_LEN	 0xFF
-#define NUM_CLIENTS			 10
+#define MAX_MSG_DATA_LEN	 0x40
+#define NUM_CLIENTS			 40
 
 #define START_APPLICATION_PRIORITY (16)
 
@@ -54,6 +54,7 @@ typedef enum {
 	ACC_QUEUE        ,
 	POWER_MGM_QUEUE  ,
 	REG_QUEUE   	 ,
+	USB_TEST_QUEUE	,
 } APPLICATION_QUEUE_T;
 
 typedef struct {
@@ -76,15 +77,5 @@ extern void FPGA_UART_Rx_task (uint32_t );
 extern void FLEXCAN_Tx_Task( uint32_t param );
 extern void FLEXCAN_Rx_Task( uint32_t param ); 
 
-
-
-/*
-extern void Can_task         (uint32_t);
-extern void J1708_task       (uint32_t);
-extern void Acc_task         (uint32_t);
-extern void Reg_task         (uint32_t);
-*/
-
-extern _pool_id message_pool;
-
 #endif /* __tasks_list_h_ */
+

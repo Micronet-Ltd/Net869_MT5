@@ -147,7 +147,7 @@
 #define FS_CIC_NOTIF_ENDP_PACKET_SIZE    	(16)
 
 #define HS_CIC_NOTIF_ENDP_INTERVAL       	(0x07)
-#define FS_CIC_NOTIF_ENDP_INTERVAL       	(0x19)//(0x08)
+#define FS_CIC_NOTIF_ENDP_INTERVAL       	(0x08)
 
 #define CIC_NOTIF_ENDP_PACKET_SIZE          (FS_CIC_NOTIF_ENDP_PACKET_SIZE)
 #define DIC_BULK_IN_ENDP_PACKET_SIZE        (FS_DIC_BULK_IN_ENDP_PACKET_SIZE)
@@ -281,7 +281,7 @@
 
 #define CDC_DESC_ENDPOINT_COUNT       (CIC_ENDP_COUNT+(DATA_CLASS_SUPPORT & 0x01) * DIC_ENDP_COUNT)
 
-typedef uint32_t composite_handle_t;
+//typedef uint32_t composite_handle_t;
 
 /******************************************************************************
  * Types
