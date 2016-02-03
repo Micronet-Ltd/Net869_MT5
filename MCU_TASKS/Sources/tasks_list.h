@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 #define MAX_MSG_DATA_LEN	 0x40
-#define NUM_CLIENTS			 20
+#define NUM_CLIENTS			 40
 
 #define START_APPLICATION_PRIORITY (16)
 
