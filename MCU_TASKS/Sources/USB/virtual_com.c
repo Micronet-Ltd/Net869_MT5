@@ -66,7 +66,7 @@
  *****************************************************************************/
 #define USB_MSGQ_MAX_POOL_SIZE      20
 
-#define MIC_USB_DEBUG
+//#define MIC_USB_DEBUG
 /*****************************************************************************
  * Global Functions Prototypes
  *****************************************************************************/
@@ -389,7 +389,7 @@ void APP_init(void)
         _mem_copy( (void*)( l_abstract_state ), (void*)( g_app_composite_device.cdc_vcom[i].abstract_state ), sizeof ( l_abstract_state ) );
         _mem_copy( (void*)( l_country_code ), (void*)( g_app_composite_device.cdc_vcom[i].country_code ), sizeof ( l_country_code ) );
 
-        g_app_composite_device.cdc_vcom[i].send_ready = TRUE;
+        g_app_composite_device.cdc_vcom[i].send_ready = FALSE;
     }
     
     g_cdc_device_speed = USB_SPEED_FULL;
@@ -532,6 +532,7 @@ uint8_t USB_App_Class_Callback
         if (phandle->start_app == TRUE)
         {
         	phandle->start_transactions = TRUE;
+            phandle->send_ready = TRUE;
             //GPIO_DRV_SetPinOutput (LED_BLUE);
         }
         break;
@@ -539,6 +540,7 @@ uint8_t USB_App_Class_Callback
         if (phandle->start_app == TRUE)
         {
         	phandle->start_transactions = FALSE;
+            phandle->send_ready = FALSE;
             //GPIO_DRV_ClearPinOutput (LED_BLUE);
         }
         break;
@@ -665,8 +667,8 @@ void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 {
     uint8_t error;
 
-    if( ( TRUE != g_app_composite_device.cdc_vcom[0].start_app ) &&
-            ( TRUE != g_app_composite_device.cdc_vcom[0].start_transactions ) &&
+    if( ( TRUE != g_app_composite_device.cdc_vcom[0].start_app ) ||
+            ( TRUE != g_app_composite_device.cdc_vcom[0].start_transactions ) ||
             !g_app_composite_device.cdc_vcom[0].send_ready )
     {
         _msg_free(msg_ptr);
@@ -713,8 +715,8 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 
 #if COMPOSITE_CFG_MAX > 1
     // FIXME: bad predicate
-    if( ( TRUE != g_app_composite_device.cdc_vcom[1].start_app ) &&
-            ( TRUE != g_app_composite_device.cdc_vcom[1].start_transactions ) &&
+    if( ( TRUE != g_app_composite_device.cdc_vcom[1].start_app ) ||
+            ( TRUE != g_app_composite_device.cdc_vcom[1].start_transactions ) ||
             !g_app_composite_device.cdc_vcom[1].send_ready )
     {
         _msg_free(msg_ptr);
@@ -735,11 +737,12 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         uint64_t ts = (msg_ptr->timestamp.SECONDS * 1000) + msg_ptr->timestamp.MILLISECONDS;
 
         // FIXME: endian assumption
-        memcpy(payload, &ts, 8);
+        _mem_copy ( &ts, payload, sizeof( ts ) );
         // FIXME: no single point definition of actual payload size here
-        memcpy(payload + 8, msg_ptr->data, sizeof(payload) - 8);
+        _mem_copy( msg_ptr->data, payload + sizeof( ts ), msg_ptr->header.SIZE );
 
-        g_app_composite_device.cdc_vcom[1].send_size = frame_encode(payload, g_app_composite_device.cdc_vcom[1].curr_send_buf, sizeof(payload));
+        g_app_composite_device.cdc_vcom[1].send_size = msg_ptr->header.SIZE + sizeof( ts );
+        frame_encode(payload, g_app_composite_device.cdc_vcom[1].curr_send_buf, g_app_composite_device.cdc_vcom[1].send_size);
         
 #endif
         g_app_composite_device.cdc_vcom[1].send_ready = FALSE;
@@ -759,13 +762,18 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         else { GPIO_DRV_SetPinOutput(LED_GREEN); x = 1; }
         */
         _msg_free(msg_ptr);
+        return;
     }
     else
-#endif
     {
     	_msg_free(msg_ptr);
     	_time_delay(1);
     }
+#else
+    _msg_free(msg_ptr);
+    _time_delay(10);
+#endif
+    
 
 }
 
@@ -774,8 +782,8 @@ void CDC2_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 #if COMPOSITE_CFG_MAX > 2
     uint8_t error;
 
-    if( ( TRUE != g_app_composite_device.cdc_vcom[2].start_app ) &&
-            ( TRUE != g_app_composite_device.cdc_vcom[2].start_transactions ) &&
+    if( ( TRUE != g_app_composite_device.cdc_vcom[2].start_app ) ||
+            ( TRUE != g_app_composite_device.cdc_vcom[2].start_transactions ) ||
             !g_app_composite_device.cdc_vcom[2].send_ready )
     {
         _msg_free(msg_ptr);
@@ -809,11 +817,15 @@ void CDC2_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         _msg_free(msg_ptr);
     }
     else
-#endif
     {
         _msg_free(msg_ptr);
         _time_delay(1);
     }
+#else
+    _msg_free(msg_ptr);
+    _time_delay(1);
+#endif
+    
 }
 
 void CDC3_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
@@ -821,8 +833,8 @@ void CDC3_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 #if COMPOSITE_CFG_MAX > 3
     uint8_t error;
 
-    if( ( TRUE != g_app_composite_device.cdc_vcom[3].start_app ) &&
-            ( TRUE != g_app_composite_device.cdc_vcom[3].start_transactions ) &&
+    if( ( TRUE != g_app_composite_device.cdc_vcom[3].start_app ) ||
+            ( TRUE != g_app_composite_device.cdc_vcom[3].start_transactions ) ||
             !g_app_composite_device.cdc_vcom[3].send_ready )
     {
         _msg_free(msg_ptr);
@@ -856,11 +868,14 @@ void CDC3_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         _msg_free(msg_ptr);
     }
     else
-#endif
     {
         _msg_free(msg_ptr);
         _time_delay(1);
     }
+#else
+     _msg_free(msg_ptr);
+     _time_delay(1);
+#endif
 }
 
 void CDC4_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
@@ -868,8 +883,8 @@ void CDC4_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 #if COMPOSITE_CFG_MAX > 4
 	uint8_t error;
 
-    if( ( TRUE != g_app_composite_device.cdc_vcom[4].start_app ) &&
-    		( TRUE != g_app_composite_device.cdc_vcom[4].start_transactions ) &&
+    if( ( TRUE != g_app_composite_device.cdc_vcom[4].start_app ) ||
+    		( TRUE != g_app_composite_device.cdc_vcom[4].start_transactions ) ||
 			!g_app_composite_device.cdc_vcom[4].send_ready )
     {
         _msg_free(msg_ptr);
@@ -903,11 +918,15 @@ void CDC4_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         _msg_free(msg_ptr);
     }
     else
-#endif
     {
         _msg_free(msg_ptr);
         _time_delay(1);
     }
+#else
+    _msg_free(msg_ptr);
+    _time_delay(1);
+#endif
+    
 }
 
 void USB_Recive_Data ( cdc_struct_t *handle )

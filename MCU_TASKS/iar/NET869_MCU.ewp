@@ -2236,6 +2236,27 @@
   </group>
   <group>
     <name>utilities</name>
+    <group>
+      <name>Debug_console</name>
+      <file>
+        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\src\fsl_debug_console.c</name>
+      </file>
+      <file>
+        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\inc\fsl_debug_console.h</name>
+      </file>
+      <file>
+        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\src\fsl_misc_utilities.c</name>
+      </file>
+      <file>
+        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\inc\fsl_misc_utilities.h</name>
+      </file>
+      <file>
+        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\src\print_scan.c</name>
+      </file>
+      <file>
+        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\src\print_scan.h</name>
+      </file>
+    </group>
   </group>
 </project>
 

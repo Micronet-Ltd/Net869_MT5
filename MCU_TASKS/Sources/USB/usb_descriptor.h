@@ -281,7 +281,7 @@
 
 #define CDC_DESC_ENDPOINT_COUNT       (CIC_ENDP_COUNT+(DATA_CLASS_SUPPORT & 0x01) * DIC_ENDP_COUNT)
 
-typedef uint32_t composite_handle_t;
+//typedef uint32_t composite_handle_t;
 
 /******************************************************************************
  * Types
