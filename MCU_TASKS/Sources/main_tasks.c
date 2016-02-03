@@ -181,14 +181,13 @@ void Main_task( uint32_t initial_data ) {
 	{
 		printf("\nMain Could not create POWER_MGM_TASK\n");
 	}
+#endif
 	
 	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
 	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create ACC_TASK\n");
 	}
-
-#endif
 
     //Disable CAN termination
     GPIO_DRV_ClearPinOutput(CAN1_TERM_ENABLE);
@@ -202,7 +201,7 @@ void Main_task( uint32_t initial_data ) {
 
     _test_CANFLEX();
 
-    MIC_DEBUG_UART_PRINTF("\nMain Task: Loop \n");
+    printf("\nMain Task: Loop \n");
 
 
     while ( 1 ) {
