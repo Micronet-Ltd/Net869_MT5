@@ -355,7 +355,9 @@ static void _usb_khci_next_setup_token_prep
     //BD_CTRL_RX(USB_CONTROL_ENDPOINT, state_ptr->ep_info[USB_CONTROL_ENDPOINT].rx_buf_odd) =
     //USB_LONG_LE_TO_HOST((uint32_t)(USB_BD_BC(SETUP_PACKET_LENGTH)|
     //    USB_BD_OWN | USB_BD_DTS | USB_BD_DATA01(state_ptr->ep_info[USB_CONTROL_ENDPOINT].rx_data0)));
-    //USB_PRINTF("ready to receive on EP0 setup\n");
+#if USB_DEBUG_PRINTF
+    USB_PRINTF("ready to receive on EP0 setup\n");
+#endif
     /* setup token is always on DATA0 PID */
     return;
 }
@@ -697,7 +699,7 @@ static void _usb_khci_service_err_intr
     device_error = (uint8_t)(usb_hal_khci_get_error_interrupt_status(state_ptr->usbRegBase) &
     usb_hal_khci_get_error_interrupt_enable_status(state_ptr->usbRegBase));
 
-#if _DEBUG
+#if USB_DEBUG_PRINTF
     USB_PRINTF("USB Err: 0x%x\n", device_error);
 #endif
 
@@ -829,15 +831,21 @@ static void _usb_khci_service_tk_dne_intr
     /* if token PID is a setup token */
     setup = (token_pid == USB_SETUP_TOKEN) ? TRUE : FALSE;
 
-    //USB_PRINTF("23tk_dne ep %d dir %d len %d buff_odd %d\n", ep_num, dir, len, buf_odd);
+#if USB_DEBUG_PRINTF
+    USB_PRINTF("23tk_dne ep %d dir %d len %d buff_odd %d\n", ep_num, dir, len, buf_odd);
+#endif
     if (dir)
     {
         /* direction is USB_SEND*/
         /* Get head of the send queue */
         //USB_XD_QUEUE_GET_HEAD(&state_ptr->ep_info[ep_num].xd_queue_send,&xd_ptr);
         //USB_PRINTF("get send xd_ptr 0x%x\n", xd_ptr);
+
         /* updating the WSOFAR field */
         xd_ptr = state_ptr->ep_info[ep_num].send_xd;
+#if USB_DEBUG_PRINTF
+        USB_PRINTF("ep %d : get send xd_ptr 0x%x\n", ep_num, xd_ptr);
+#endif
         if (xd_ptr == NULL)
         {
             return;
@@ -900,6 +908,10 @@ static void _usb_khci_service_tk_dne_intr
         /* Get head of the send queue */
         //USB_XD_QUEUE_GET_HEAD(&state_ptr->ep_info[ep_num].xd_queue_recv, &xd_ptr);
         xd_ptr = state_ptr->ep_info[ep_num].recv_xd;
+#if USB_DEBUG_PRINTF
+        USB_PRINTF("ep %d : get recv xd_ptr 0x%x\n", ep_num, xd_ptr);
+#endif
+
         if (xd_ptr == NULL)
         {
             return;
@@ -937,7 +949,9 @@ static void _usb_khci_service_tk_dne_intr
             state_ptr->ep_info[ep_num].rx_buf_odd ^= 1;
         }
 
-        //USB_PRINTF("max packet size %d\n",state_ptr->EP_INFO[ep_num].max_packet_size);
+#if USB_DEBUG_PRINTF
+        USB_PRINTF("max packet size %d\n",state_ptr->ep_info[ep_num].max_packet_size);
+#endif
         /* dequeue if all bytes have been received or the last send transaction
          was of length less then the max packet size length configured for
          corresponding endpoint */
@@ -972,7 +986,9 @@ static void _usb_khci_service_tk_dne_intr
     /* propagate control to upper layers for processing */
     _usb_device_call_service(ep_num, &event);
 
-    //USB_PRINTF("_usb_khci_service_tk_dne_intr 3-- :%d \n",ep_num);
+#if USB_DEBUG_PRINTF
+    USB_PRINTF("_usb_khci_service_tk_dne_intr 3-- :%d \n",ep_num);
+#endif
 
     usb_hal_khci_clr_token_busy(state_ptr->usbRegBase);
 
@@ -1251,7 +1267,9 @@ static void _usb_khci_isr(usb_khci_dev_state_struct_t* state_ptr)
      */
     if (usb_hal_khci_is_interrupt_issued(state_ptr->usbRegBase, INTR_TOKDNE))
     {
-    //  USB_PRINTF("done ++");
+#if USB_DEBUG_PRINTF
+        USB_PRINTF("done ++");
+#endif
         _usb_khci_service_tk_dne_intr(state_ptr);
     }
     /* This reset interrupt comes when the USB Module has decoded a valid USB reset.
@@ -1449,7 +1467,9 @@ usb_status usb_dci_khci_init
     /* Initialize the end point state*/
     _usb_khci_reset_ep_state(usb_dev_ptr);
 
-    //USB_PRINTF("11usb_dci_khci_init ++");
+#if USB_DEBUG_PRINTF
+    USB_PRINTF("11usb_dci_khci_init ++");
+#endif
     /* Enable Sleep,Token Done,Error,USB Reset,Stall,
      * Resume and SOF Interrupt.
      */
@@ -1529,8 +1549,9 @@ usb_status usb_dci_khci_init_endpoint
         return USBERR_EP_INIT_FAILED;
     }
 #endif
-    //USB_PRINTF("init ep %d dir %d\n", xd_ptr->EP_NUM, xd_ptr->BDIRECTION);
-
+#if USB_DEBUG_PRINTF
+    USB_PRINTF("init ep %d dir %d stat %d\n", xd_ptr->ep_num, xd_ptr->bdirection, xd_ptr->bstatus);
+#endif
     /* mark this endpoint as initialized */
     state_ptr->ep_info[xd_ptr->ep_num].ep_init_flag[xd_ptr->bdirection] = TRUE;
 
@@ -1705,11 +1726,13 @@ usb_status usb_dci_khci_send
     if (xd_ptr->wsofar == 0)
     {
         state_ptr->ep_info[xd_ptr->ep_num].send_xd = xd_ptr;
+#if USB_DEBUG_PRINTF
         //USB_XD_QUEUE_ENQUEUE(&state_ptr->ep_info[xd_ptr->ep_num].xd_queue_send, xd_ptr);
         //USB_PRINTF("after send ep %d enqueue: xd_head_ptr 0x%x xd_tail_ptr 0x%x\n", xd_ptr->EP_NUM, 
         //        state_ptr->EP_INFO[xd_ptr->EP_NUM].xd_queue_send.xd_head_ptr,
         //        state_ptr->EP_INFO[xd_ptr->EP_NUM].xd_queue_send.xd_tail_ptr);
-
+        USB_PRINTF("send_xd: xd_ptr 0x%x\n", xd_ptr );
+#endif
     }
 
 #if 0
@@ -1859,6 +1882,10 @@ usb_status usb_dci_khci_stall_endpoint
 
     /* retiring pending IRPs on stall detection */
     usb_dci_khci_cancel(handle, ep_num, direction);
+
+#if USB_DEBUG_PRINTF
+    USB_PRINTF("khci_stall ep %d, dir %d\n", ep_num, direction);
+#endif
 
     /* If Stall is for Send packet update Send BDT */
     if (direction)
