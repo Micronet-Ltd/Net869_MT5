@@ -975,7 +975,7 @@ void CDC0_resv ( cdc_struct_t *handle )
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
-        printf("CDC4_resv USB Task: ERROR: message allocation failed\n");
+        printf("CDC0_resv USB Task: ERROR: message allocation failed\n");
         return;
     }
     _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
@@ -997,7 +997,7 @@ void CDC1_resv ( cdc_struct_t *handle )
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
-        printf("CDC4_resv USB Task: ERROR: message allocation failed\n");
+        printf("CDC1_resv USB Task: ERROR: message allocation failed\n");
         return;
     }
     _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
@@ -1021,7 +1021,7 @@ void CDC2_resv ( cdc_struct_t *handle )
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
-        printf("CDC4_resv USB Task: ERROR: message allocation failed\n");
+        printf("CDC2_resv USB Task: ERROR: message allocation failed\n");
         return;
     }
     _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
@@ -1045,7 +1045,7 @@ void CDC3_resv ( cdc_struct_t *handle )
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
-        printf("CDC4_resv USB Task: ERROR: message allocation failed\n");
+        printf("CDC3_resv USB Task: ERROR: message allocation failed\n");
         return;
     }
     _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
@@ -1064,6 +1064,7 @@ void CDC4_resv ( cdc_struct_t *handle )
 {
 #if COMPOSITE_CFG_MAX > 4
     APPLICATION_MESSAGE_T *msg;
+	frame_t frame_buf = { 0 };
 
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
@@ -1079,9 +1080,12 @@ void CDC4_resv ( cdc_struct_t *handle )
     _msgq_send (msg);
     handle->recv_size = 0;
 #else
-
-    frame_t frame_buf = { 0 };
-
+	
+	if ( 3 > handle->recv_size )
+	{
+		printf("CDC4_resv USB Task: rec data size %d < 3 \n", handle->recv_size);
+		return;
+	}
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
         printf("CDC4_resv USB Task: ERROR: message allocation failed\n");
