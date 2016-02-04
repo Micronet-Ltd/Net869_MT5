@@ -167,7 +167,7 @@ void Acc_task (uint32_t initial_data)
 
 			if (MQX_OK != (err_task = _task_get_error()))
 			{
-				printf("ACC Task: ERROR: message allocation failed %x\n", err_task);
+				printf("ACC Task: ERROR: message send failed %x\n", err_task);
 				_task_set_error(MQX_OK);
 			}
 		}
