@@ -19,13 +19,15 @@ void Power_MGM_task (uint32_t initial_data )
 		// check amount of vibrations sensed by the wiggle sensor
 		// if amount of vibrations is more than TH, it will turn on the device
 		// and stop the interrupts for better running efficiency
-		Wiggle_sensor_update ();
-		if (Wiggle_sensor_cross_TH ()) {
-			Device_turn_on ();
-			Wiggle_sensor_stop ();
-			//RS _task_create(0, ACC_TASK, 0);
-		}
-		Device_control_GPIO ();
+
+		//TODO: DISBALING WIGLE SENSOR FOR NOW
+//		Wiggle_sensor_update ();
+//		if (Wiggle_sensor_cross_TH ()) {
+//			Device_turn_on ();
+//			Wiggle_sensor_stop ();
+//			//RS _task_create(0, ACC_TASK, 0);
+//		}
+//		Device_control_GPIO ();
 
 		_time_delay (POWER_MGM_TIME_DELAY);
 	}
