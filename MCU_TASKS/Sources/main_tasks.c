@@ -263,7 +263,19 @@ void Main_task( uint32_t initial_data ) {
 		GPIO_DRV_SetPinOutput   (LED_BLUE);
 		_time_delay (1000);
 #endif
-	    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
+
+		if (GPIO_DRV_ReadPinInput (SWITCH1) == 1)
+		{
+			/* Connect D1 <-> D MCU or HUB */
+		    GPIO_DRV_ClearPinOutput(USB_OTG_SEL);
+		}
+		else
+		{
+			/* Connect D2 <-> D A8 OTG */
+		    GPIO_DRV_SetPinOutput(USB_OTG_SEL);
+		}
+
+		_time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
 #endif
     }
 
