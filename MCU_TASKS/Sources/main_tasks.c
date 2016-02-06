@@ -65,8 +65,10 @@ void Main_task( uint32_t initial_data ) {
     OSA_Init();
     GPIO_Config();
 
-    OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
-    OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
+	NVIC_SetPriority(PORTA_IRQn, 6U);
+	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
+	NVIC_SetPriority(PORTC_IRQn, 6U);
+	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 
     // I2C0 Initialization
     NVIC_SetPriority(I2C0_IRQn, 6U);
