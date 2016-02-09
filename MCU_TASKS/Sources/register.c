@@ -8,13 +8,22 @@
 #include <mqx.h>
 #include "register.h"
 
-#define FW_VER_MAJOR 0x1
-#define FW_VER_MINOR 0x1
+#define FW_VER_CUSTOMER 'X'
+#define FW_VER_MAJOR 0
+#define FW_VER_MINOR 1
+#define FW_VER_PATCH 1
 
-static uint32_t reg_g[REGISTERS_ENUM_SIZE] =
-	{
-		[FW_VERSION ] = ((FW_VER_MAJOR << 16) | (FW_VER_MINOR & 0x00FF)),
-	};
+#define RD_ONLY 0
+#define RD_WR   1
+
+static reg_t reg_g[REGISTERS_ENUM_SIZE] =
+{
+	[FW_VERSION ] = {(((FW_VER_CUSTOMER & 0xFF)<<24) |
+					((FW_VER_MAJOR & 0xFF) << 16) |
+					((FW_VER_MINOR & 0xFF) << 8) |
+					(FW_VER_PATCH & 0xFF)),
+					RD_ONLY},
+};
 
 void register_init()
 {
@@ -24,18 +33,29 @@ void register_init()
 //returns 0 for success, -1 for failure
 int8_t register_set(uint8_t address, uint32_t val)
 {
-	if (address > REGISTERS_ENUM_SIZE)
-		return -1;
+	if (address > REGISTERS_ENUM_SIZE || address < 0)
+	{
+		return INVALID_REG;
+	}
 
-	reg_g[address] = val;
-	return 0;
+	if (reg_g[address].read_write == RD_WR)
+	{
+		return READ_ONLY_REG;
+	}
+
+	reg_g[address].val = val;
+	return SUCCESS;
 }
 
 int8_t register_get(uint8_t address, uint32_t * data)
 {
-	memcpy(data, (void *) &reg_g[address], sizeof(uint32_t));
-	//*data =  reg_g[address];
-	return 0;
+	if (address > REGISTERS_ENUM_SIZE || address < 0)
+	{
+		return INVALID_REG;
+	}
+
+	memcpy(data, (void *) &reg_g[address].val, sizeof(uint32_t));
+	return SUCCESS;
 }
 
 

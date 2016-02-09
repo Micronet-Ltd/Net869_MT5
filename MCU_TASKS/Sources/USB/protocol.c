@@ -53,6 +53,7 @@ void protocol_init_data()
 
 static int packet_receive(int context, uint8_t * data, uint32_t size)
 {
+	int8_t result = 0;
 	// NOTE: maybe these should be separate functions, maybe called by caller instead.
 	if(CONTEXT_CONTROL_EP == context)
 	{
@@ -87,17 +88,19 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 				last_seq = data[1];
 				// TODO: set sync (normal) state
 				break;
-			case REG_WRITE_REQ: break; // TODO: Write register
+			case REG_WRITE_REQ:
+				result = register_set(data[1], &data[2]);
+				break;
 			case REG_READ_REQ:
-				register_get(data[2], &data[2]);
+				result = register_get(data[1], &data[2]);
 				break; // TODO: Register read request
-			case REG_READ_RESP: return -1; // BUG: Register read response should never receive this
+			case REG_READ_RESP: return -1; // BUG: Should never receive this
 			case RTC_WRITE_REQ: break; // TODO: RTC Write
 			case RTC_READ_REQ: break; // TODO: RTC Read request
-			case RTC_READ_RESP: return -1; // BUG: RTC Read response
-			case PING_REQ: break; // TODO: Ping request
-			case PING_RESP: break; // TODO: Ping response
-			case GPIO_INT_STATUS: return -1; // BUG: GPIO Interrupt Status
+			case RTC_READ_RESP: return -1; // BUG: Should never receive this
+			case PING_REQ: break; // TODO:
+			case PING_RESP: break; // TODO:
+			case GPIO_INT_STATUS: return -1; // BUG: Should never receive this
 
 			// 0x80-0xff reserved for future PDU format changes with backwards compatibility
 			default: return -1; // Unknown Ignore
