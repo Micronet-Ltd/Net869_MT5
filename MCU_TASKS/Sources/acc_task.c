@@ -35,6 +35,7 @@
 
 #define MAX_FIFO_SIZE				192
 #define ACC_MAX_POOL_SIZE			10
+#define ACC_XYZ_PKT_SIZE			6
 
 #define TIME_OUT					100		//  in miliseconds
 
@@ -90,10 +91,15 @@ void AccIntEnable()
 }
 
 #define MIC_LED_TEST
+uint32_t acc_time_diff_zero = 0;
+uint32_t acc_time_diff_non_zero = 0;
 
 void Acc_task (uint32_t initial_data)
 {
 	TIME_STRUCT time;
+	TIME_STRUCT new_time;
+	uint64_t time_diff;
+
 	//APPLICATION_MESSAGE_T *msg;
 
 	APPLICATION_MESSAGE_T test_acc_msg;
@@ -108,10 +114,14 @@ void Acc_task (uint32_t initial_data)
 
 
 	event_result = _event_create("event.AccInt");
-	if(MQX_OK != event_result){	}
+	if(MQX_OK != event_result){
+		printf("ACC Task: Could not create acc. event \n");
+	}
 
 	event_result = _event_open("event.AccInt", &g_acc_event_h);
-	if(MQX_OK != event_result){	}
+	if(MQX_OK != event_result){
+		printf("ACC Task: Could not open acc. event \n");
+	}
 
 	printf("\nACC Task: Start \n");
 
@@ -155,13 +165,21 @@ void Acc_task (uint32_t initial_data)
 		_event_wait_all(g_acc_event_h, 1, 0);
 		_event_clear(g_acc_event_h, 1);
 
+		_time_get(&new_time);
+		time_diff = ((new_time.SECONDS * 1000) +  new_time.MILLISECONDS) - ((time.SECONDS * 1000) +  time.MILLISECONDS);
+		/* Add delay on back to back reads to avoid overwhelming the USB */
+		if (time_diff == 0)
+		{
+			_time_delay (1);
+		}
+
 		if(acc_msg) {
-			acc_fifo_read ((uint8_t*)&(acc_msg->data), (uint8_t)(sizeof(acc_msg->data)-sizeof(uint64_t)));
+			acc_fifo_read ((uint8_t*)&(acc_msg->data), (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
 			_time_get(&time);
-			acc_msg->timestamp = time;
+			acc_msg->timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
 			acc_msg->header.SOURCE_QID = acc_qid;
 			acc_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
-			acc_msg->header.SIZE = sizeof(acc_msg->data)-sizeof(uint64_t);
+			acc_msg->header.SIZE = (ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE);//sizeof(acc_msg->data)-sizeof(uint64_t);
 			acc_msg->portNum = MIC_CDC_USB_2;
 			_msgq_send (acc_msg);
 
@@ -171,8 +189,6 @@ void Acc_task (uint32_t initial_data)
 				_task_set_error(MQX_OK);
 			}
 		}
-
-		_time_delay (100);
 	}
 
 	// should never get here
@@ -188,7 +204,11 @@ bool accInit (void)
 
 	// read recognition device ID
 	write_data[0] = ACC_REG_WHO_AM_I   ;
-	if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT) != kStatus_I2C_Success)
+	{
+		printf("accInit: I2C Rx access failed\n");
+		goto _ACC_CONFIG_FAIL;
+	}
 	if (read_data == ACC_VALUE_ID)
 	{
 		printf ("ACC Task: Device detected\n");

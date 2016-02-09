@@ -59,8 +59,8 @@ typedef enum {
 
 typedef struct {
 	MESSAGE_HEADER_STRUCT 		header;
+	uint64_t					timestamp; /* in milliseconds */
 	uint8_t						data[MAX_MSG_DATA_LEN];
-	TIME_STRUCT					timestamp;
 	uint8_t						portNum;
 } APPLICATION_MESSAGE_T, *APPLICATION_MESSAGE_PTR_T;
 

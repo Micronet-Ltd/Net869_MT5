@@ -733,17 +733,13 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         _mem_copy( msg_ptr->data, g_app_composite_device.cdc_vcom[1].curr_send_buf, msg_ptr->header.SIZE );
         g_app_composite_device.cdc_vcom[1].send_size = msg_ptr->header.SIZE;
 #else
-
-        uint64_t ts = (msg_ptr->timestamp.SECONDS * 1000) + msg_ptr->timestamp.MILLISECONDS;
-
         // FIXME: endian assumption
-        _mem_copy ( &ts, payload, sizeof( ts ) );
+        _mem_copy (&(msg_ptr->timestamp), payload, sizeof(msg_ptr->timestamp ));
         // FIXME: no single point definition of actual payload size here
-        _mem_copy( msg_ptr->data, payload + sizeof( ts ), msg_ptr->header.SIZE );
+        _mem_copy( msg_ptr->data, payload + sizeof(msg_ptr->timestamp), msg_ptr->header.SIZE );
+        g_app_composite_device.cdc_vcom[1].send_size = \
+        		frame_encode(payload, g_app_composite_device.cdc_vcom[1].curr_send_buf, (msg_ptr->header.SIZE + sizeof(msg_ptr->timestamp )));
 
-        g_app_composite_device.cdc_vcom[1].send_size = msg_ptr->header.SIZE + sizeof( ts );
-        frame_encode(payload, g_app_composite_device.cdc_vcom[1].curr_send_buf, g_app_composite_device.cdc_vcom[1].send_size);
-        
 #endif
         g_app_composite_device.cdc_vcom[1].send_ready = FALSE;
         error = USB_Class_CDC_Send_Data(g_app_composite_device.cdc_vcom[1].cdc_handle,

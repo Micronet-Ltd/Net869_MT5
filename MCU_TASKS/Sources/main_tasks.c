@@ -203,8 +203,20 @@ void Main_task( uint32_t initial_data ) {
 
     _test_CANFLEX();
 
-    printf("\nMain Task: Loop \n");
+	if (GPIO_DRV_ReadPinInput (SWITCH1) == 1)
+	{
+		/* Connect D1 <-> D MCU or HUB */
+		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
+	    GPIO_DRV_ClearPinOutput(USB_OTG_SEL);
+	}
+	else
+	{
+		/* Connect D2 <-> D A8 OTG */
+		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
+	    GPIO_DRV_SetPinOutput(USB_OTG_SEL);
+	}
 
+    printf("\nMain Task: Loop \n");
 
     while ( 1 ) {
 #if 0
@@ -265,19 +277,6 @@ void Main_task( uint32_t initial_data ) {
 		GPIO_DRV_SetPinOutput   (LED_BLUE);
 		_time_delay (1000);
 #endif
-
-		if (GPIO_DRV_ReadPinInput (SWITCH1) == 1)
-		{
-			/* Connect D1 <-> D MCU or HUB */
-			printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
-		    GPIO_DRV_ClearPinOutput(USB_OTG_SEL);
-		}
-		else
-		{
-			/* Connect D2 <-> D A8 OTG */
-			printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
-		    GPIO_DRV_SetPinOutput(USB_OTG_SEL);
-		}
 
 		_time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
 #endif
