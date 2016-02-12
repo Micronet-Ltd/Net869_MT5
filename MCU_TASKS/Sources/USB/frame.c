@@ -98,11 +98,10 @@ int frame_process_buffer(frame_t * frame, uint8_t *buffer, uint32_t len)
 	for(i = 0; i < len; i++)
 	{
 		if(frame_input(frame, buffer[i]))
-			return i;
+			return i+1;
 	}
 
-	// Must never return > len or < 0
-	return i;
+	return i+1;
 }
 
 
