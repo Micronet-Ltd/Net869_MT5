@@ -580,7 +580,7 @@ uint8_t USB_App_Class_Callback
             	phandle->send_ready = TRUE;
                 /* User: add your own code for send complete event */
                 /* Schedule buffer for next receive event */
-                //USB_Class_CDC_Recv_Data(handle, DIC_BULK_OUT_ENDPOINT, g_curr_recv_buf, g_bulk_out_max_packet_size);
+            	//USB_Class_CDC_Recv_Data(handle, phandle->out_endpoint, phandle->curr_recv_buf, g_bulk_out_max_packet_size);
             }
         }
     }
@@ -712,6 +712,8 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 {
     uint8_t payload[ACC_MSG_SIZE];
     uint8_t error;
+    uint8_t * pld_size = &g_app_composite_device.cdc_vcom[1].send_size;
+    uint8_t * buf = &g_app_composite_device.cdc_vcom[1].curr_send_buf;
 
 #if COMPOSITE_CFG_MAX > 1
     // FIXME: bad predicate
@@ -746,6 +748,9 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
                                         g_app_composite_device.cdc_vcom[1].in_endpoint,
                                         g_app_composite_device.cdc_vcom[1].curr_send_buf, 
                                         g_app_composite_device.cdc_vcom[1].send_size);
+
+        //printf("CDC1_send beg:%x,%x,%x,%x - end:%x,%x,%x,%x \t pld = %d, enc = %d\n", buf[0], buf[1], buf[2], buf[3], \
+        //		buf[*pld_size -4], buf[*pld_size -3], buf[*pld_size-2], buf[*pld_size -1], (msg_ptr->header.SIZE + sizeof(msg_ptr->timestamp )), *pld_size );
 
         if(error != USB_OK)
         {

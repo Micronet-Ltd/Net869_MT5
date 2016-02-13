@@ -321,11 +321,11 @@ uint8_t g_device_descriptor[DEVICE_DESCRIPTOR_SIZE] =
 	/*  BCD USB version  */
 	USB_uint_16_low(BCD_USB_VERSION), USB_uint_16_high(BCD_USB_VERSION),
 	/* Device Class is indicated in the interface descriptors */
-	0xEF, //DEVICE_DESC_DEVICE_CLASS,
+	DEVICE_DESC_DEVICE_CLASS,
 	/*  Device Subclass is indicated in the interface descriptors  */
-	0x02, //DEVICE_DESC_DEVICE_SUBCLASS,
+	DEVICE_DESC_DEVICE_SUBCLASS,
 	/*  Device Protocol  */
-	0x01, //DEVICE_DESC_DEVICE_PROTOCOL,
+	DEVICE_DESC_DEVICE_PROTOCOL,
 	/* Max Packet size */
 	CONTROL_MAX_PACKET_SIZE,
 	/* Vendor ID */
@@ -389,7 +389,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_CALL_MANAG_DESC_SIZE,               /* Size of this descriptor */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	CALL_MANAGEMENT_FUNC_DESC,
-	0x01,                                   /*D0(if set): device handles call management itself
+	CM_D0_D1,                                   /*D0(if set): device handles call management itself
 											D1(if set): process commands multiplexed over the data interface*/
 	0x01,                                   /* Indicates multiplexed commands are handled via data interface */
 
@@ -481,7 +481,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_CALL_MANAG_DESC_SIZE,               /* Size of this descriptor */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	CALL_MANAGEMENT_FUNC_DESC,
-	0x01,                                   /*D0(if set): device handles call management itself
+	CM_D0_D1,                                   /*D0(if set): device handles call management itself
 											D1(if set): process commands multiplexed over the data interface*/
 	0x01,                                   /* Indicates multiplexed commands are handled via data interface */
 
@@ -574,7 +574,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_CALL_MANAG_DESC_SIZE,               /* Size of this descriptor */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	CALL_MANAGEMENT_FUNC_DESC,
-	0x01,                                   /*D0(if set): device handles call management itself
+	CM_D0_D1,                                   /*D0(if set): device handles call management itself
 											D1(if set): process commands multiplexed over the data interface*/
 	0x01,                                   /* Indicates multiplexed commands are handled via data interface */
 
@@ -667,7 +667,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_CALL_MANAG_DESC_SIZE,               /* Size of this descriptor */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	CALL_MANAGEMENT_FUNC_DESC,
-	0x01,                                   /*D0(if set): device handles call management itself
+	CM_D0_D1,                                   /*D0(if set): device handles call management itself
 											D1(if set): process commands multiplexed over the data interface*/
 	0x01,                                   /* Indicates multiplexed commands are handled via data interface */
 
@@ -760,7 +760,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_CALL_MANAG_DESC_SIZE,               /* Size of this descriptor */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	CALL_MANAGEMENT_FUNC_DESC,
-	0x01,                                   /*D0(if set): device handles call management itself
+	CM_D0_D1,                                   /*D0(if set): device handles call management itself
 											D1(if set): process commands multiplexed over the data interface*/
 	0x01,                                   /* Indicates multiplexed commands are handled via data interface */
 
@@ -881,7 +881,7 @@ uint8_t g_other_speed_config_descriptor[OTHER_SPEED_CONFIG_DESCRIPTOR_SIZE] =
 	CDC_CALL_MANAG_DESC_SIZE, /* Size of this descriptor */
 	USB_CS_INTERFACE, /* descriptor type*/
 	CALL_MANAGEMENT_FUNC_DESC,
-	0x01, /*D0(if set): device handles call management itself
+	CM_D0_D1, /*D0(if set): device handles call management itself
 	  D1(if set): process commands multiplexed over the data interface*/
 	0x01, /* Indicates multiplexed commands are handled via data interface */
 
