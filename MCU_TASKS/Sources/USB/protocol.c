@@ -1,6 +1,6 @@
 #include "protocol.h"
 #include "frame.h"
-#include "register.h"
+#include "command.h"
 
 frame_t g_control_frame;
 frame_t g_j1708_frame;
@@ -88,16 +88,16 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 				last_seq = data[1];
 				// TODO: set sync (normal) state
 				break;
-			case REG_WRITE_REQ:
-				result = register_set(data[1], &data[2]);
+			case COMM_WRITE_REQ:
+				result = command_set(data[1], &data[2], size);
 				break;
-			case REG_READ_REQ:
-				result = register_get(data[1], &data[2]);
+			case COMM_READ_REQ:
+				result = command_get(data[1], &data[2], size);
 				break; // TODO: Register read request
-			case REG_READ_RESP: return -1; // BUG: Should never receive this
-			case RTC_WRITE_REQ: break; // TODO: RTC Write
-			case RTC_READ_REQ: break; // TODO: RTC Read request
-			case RTC_READ_RESP: return -1; // BUG: Should never receive this
+			case COMM_READ_RESP: return -1; // BUG: Should never receive this
+//			case RTC_WRITE_REQ: break; // TODO: RTC Write
+//			case RTC_READ_REQ: break; // TODO: RTC Read request
+//			case RTC_READ_RESP: return -1; // BUG: Should never receive this
 			case PING_REQ: break; // TODO:
 			case PING_RESP: break; // TODO:
 			case GPIO_INT_STATUS: return -1; // BUG: Should never receive this

@@ -10,9 +10,9 @@
 typedef enum
 {
 	SYNC_INFO = 0x0, //0
-	REG_WRITE_REQ, //1
-	REG_READ_REQ,  //2
-	REG_READ_RESP, //3
+	COMM_WRITE_REQ, //1
+	COMM_READ_REQ,  //2
+	COMM_READ_RESP, //3
 	RTC_WRITE_REQ, //4
 	RTC_READ_REQ,  //5
 	RTC_READ_RESP, //6
