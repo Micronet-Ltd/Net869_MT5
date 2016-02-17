@@ -119,7 +119,7 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 	return 0;
 }
 
-int protocol_process_receive_data(int context, uint8_t * data, uint32_t size)
+int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size)
 {
 	uint32_t offset = 0;
 	// TODO: use type for MCU monotonic clock
@@ -154,8 +154,8 @@ int protocol_process_receive_data(int context, uint8_t * data, uint32_t size)
 	// a partial frame. So this timeout should be greater than min delay between
 	// transmissions, this will need to be determined through testing.
 	// TODO: implement or add conversion for clock ticks to ms here
-	if( now - lastrx > MS(10) ) // MS(N) returns 10ms in clock ticks.
-		frame_reset(frame);
+	//if( now - lastrx > MS(10) ) // MS(N) returns 10ms in clock ticks.
+	//	frame_reset(frame);
 
 
 	while(size - offset > 0)

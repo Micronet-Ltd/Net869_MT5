@@ -663,6 +663,7 @@ void Usb_task(uint32_t arg)
     }
 }
 
+/* Control/command messages are sent through this CDC port */
 void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 {
     uint8_t error;
@@ -968,10 +969,12 @@ void USB_Recive_Data ( cdc_struct_t *handle )
    
 }
 
+/* Control/command messages are sent through this CDC EP */
 void CDC0_resv ( cdc_struct_t *handle )
 {
     //Add Source here
     APPLICATION_MESSAGE_T *msg;
+    frame_t frame_buf = { 0 };
 
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
@@ -986,6 +989,30 @@ void CDC0_resv ( cdc_struct_t *handle )
     msg->portNum = MIC_CDC_USB_1;
     _msgq_send (msg);
     handle->recv_size = 0;
+#else
+
+	if ( 3 > handle->recv_size )
+	{
+		printf("CDC0_resv USB Task: rec data size %d < 3 \n", handle->recv_size);
+		return;
+	}
+    if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
+    {
+        printf("CDC0_resv USB Task: ERROR: message allocation failed\n");
+        return;
+    }
+
+    //frame_setbuffer ( &frame_buf, handle->curr_recv_buf, handle->recv_size );
+    //handle->recv_size = frame_process_buffer ( &frame_buf, msg->data, handle->recv_size );
+    _mem_copy (msg->data, handle->curr_recv_buf, handle->recv_size );
+
+    msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
+    msg->header.TARGET_QID = _msgq_get_id( 0, CONTROL_QUEUE );
+    msg->header.SIZE = handle->recv_size;
+    msg->portNum = MIC_CDC_USB_1;
+    _msgq_send (msg);
+    handle->recv_size = 0;
+
 #endif
 }
 

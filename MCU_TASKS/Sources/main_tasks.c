@@ -191,6 +191,12 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create ACC_TASK\n");
 	}
 
+	g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
+	if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create CONTROL_TASK\n");
+	}
+
     //Disable CAN termination
     GPIO_DRV_ClearPinOutput(CAN1_TERM_ENABLE);
     GPIO_DRV_ClearPinOutput(CAN2_TERM_ENABLE);

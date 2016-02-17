@@ -1,6 +1,8 @@
 #ifndef _PROTOCOL_H
 #define _PROTOCOL_H
 
+#include <stdio.h>
+
 #define CONTEXT_CONTROL_EP 	100
 #define CONTEXT_J1708_EP 	101
 #define CONTECT_ACCEL_EP 	102
@@ -20,5 +22,7 @@ typedef enum
 	PING_RESP, //8
 	GPIO_INT_STATUS, //9
 }packet_type_enum;
+
+int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size);
 
 #endif /* _PROTOCOL_H */
