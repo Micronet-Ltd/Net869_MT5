@@ -63,36 +63,37 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 			return -1; // too small
 
 		// TODO: implement sequence logic
-		if(-1 == last_seq)
-		{
-			// TODO: wait for seq
-			if(0 != data[0])
-				return -1; // wait for sync
-		}
-		else
-		{
-			if( ((last_seq+1)&0xff) != data[1] )
-			{
-				// TODO: set error state
-				last_seq = -1;
-				return -1;
-			}
-			last_seq = data[1]; // SEQ_OFFSET
-		}
+		//TODO: Commenting out seq. logic for now, Abid
+//		if(-1 == last_seq)
+//		{
+//			// TODO: wait for seq
+//			if(0 != data[0])
+//				return -1; // wait for sync
+//		}
+//		else
+//		{
+//			if( ((last_seq+1)&0xff) != data[1] )
+//			{
+//				// TODO: set error state
+//				last_seq = -1;
+//				return -1;
+//			}
+//			last_seq = data[1]; // SEQ_OFFSET
+//		}
 
 
 		// Handle message
-		switch(data[0])
+		switch(data[1])//data[0])
 		{
 			case SYNC_INFO: // Sync/Info packet
 				last_seq = data[1];
 				// TODO: set sync (normal) state
 				break;
 			case COMM_WRITE_REQ:
-				result = command_set(data[1], &data[2], size);
+				result = command_set(data[2], &data[3], size-2);
 				break;
 			case COMM_READ_REQ:
-				result = command_get(data[1], &data[2], size);
+				result = command_get(data[2], &data[3], size-2);
 				break; // TODO: Register read request
 			case COMM_READ_RESP: return -1; // BUG: Should never receive this
 //			case RTC_WRITE_REQ: break; // TODO: RTC Write
@@ -155,12 +156,12 @@ int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t s
 	// transmissions, this will need to be determined through testing.
 	// TODO: implement or add conversion for clock ticks to ms here
 	//if( now - lastrx > MS(10) ) // MS(N) returns 10ms in clock ticks.
-	//	frame_reset(frame);
+		frame_reset(frame);
 
 
 	while(size - offset > 0)
 	{
-		offset = frame_process_buffer(frame, data + offset, size - offset);
+		offset += frame_process_buffer(frame, data + offset, size - offset);
 
 		if(frame_data_ready(frame))
 		{

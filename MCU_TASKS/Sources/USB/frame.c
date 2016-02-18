@@ -101,7 +101,7 @@ int frame_process_buffer(frame_t * frame, uint8_t *buffer, uint32_t len)
 			return i+1;
 	}
 
-	return i+1;
+	return i;
 }
 
 

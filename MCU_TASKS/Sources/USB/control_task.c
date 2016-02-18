@@ -1,5 +1,5 @@
 /*
- * control.c
+ * control_task.c
  *
  *  Created on: Feb 16, 2016
  *      Author: abid.esmail
@@ -18,6 +18,8 @@ void control_task (uint32_t initial_data)
 
 	printf ("\n control_task: Start \n");
 
+	protocol_init_data();
+
 	while (1)
 	{
 		// wait 10 second for interrupt message
@@ -29,8 +31,8 @@ void control_task (uint32_t initial_data)
 		}
 		else
 		{
-			printf("\n data : %x%x \t %x%x \n", msg->data[0], msg->data[1],msg->data[msg->header.SIZE -2], msg->data[msg->header.SIZE -1]);
-			printf("\n control_task: yay got the the message \n");
+			printf("\n data : %x,%x, \t ,%x,%x, size %d \n", msg->data[0], msg->data[1],msg->data[msg->header.SIZE -2], msg->data[msg->header.SIZE -1], msg->header.SIZE);
+			//printf("\n control_task: yay got the the message \n");
 		}
 
 		protocol_process_receive_data(CONTEXT_CONTROL_EP, msg->data, msg->header.SIZE);

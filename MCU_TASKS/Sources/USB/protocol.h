@@ -15,12 +15,9 @@ typedef enum
 	COMM_WRITE_REQ, //1
 	COMM_READ_REQ,  //2
 	COMM_READ_RESP, //3
-	RTC_WRITE_REQ, //4
-	RTC_READ_REQ,  //5
-	RTC_READ_RESP, //6
-	PING_REQ, //7
-	PING_RESP, //8
-	GPIO_INT_STATUS, //9
+	PING_REQ, //4
+	PING_RESP, //5
+	GPIO_INT_STATUS, //6
 }packet_type_enum;
 
 int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size);

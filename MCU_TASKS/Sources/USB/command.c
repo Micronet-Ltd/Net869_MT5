@@ -74,7 +74,9 @@ int8_t command_get(uint8_t address, uint8_t * data, uint16_t data_size)
 
 	uint8_t * resp = (uint8_t *) malloc(sizeof(comm_g[address].response_size + 2));
 	resp[0] = COMM_READ_RESP;
-	comm_g[address].fx(data, data_size, resp + 2);
+	comm_g[address].fx(data, data_size, resp + 1);
+
+	//TODO: Send response back
 
 	//memcpy(data, (void *) &comm_g[address].val, sizeof(uint32_t));
 	return SUCCESS;
@@ -84,7 +86,7 @@ int8_t command_get(uint8_t address, uint8_t * data, uint16_t data_size)
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver)
 {
 	//uint8_t * pfw_ver = (uint8_t *) malloc(sizeof(fw_ver));
-	memcpy(pfw_ver, (void*)fw_ver_g, sizeof(fw_ver_g));
+	memcpy(pfw_ver, (uint8_t *)&fw_ver_g, sizeof(fw_ver_g));
 }
 
 /* data[0]: GPIO value */

@@ -991,20 +991,32 @@ void CDC0_resv ( cdc_struct_t *handle )
     handle->recv_size = 0;
 #else
 
-	if ( 3 > handle->recv_size )
+//	if ( 3 > handle->recv_size )
+//	{
+//		printf("CDC0_resv USB Task: rec data size %d < 3 \n", handle->recv_size);
+//		handle->recv_size = 0;
+//		return;
+//	}
+    /* check to make sure we have a start of a frame */
+    //TODO: might need to move this check in the frame decode code so we can
+    // send a frame reset response!!
+	if ( handle->curr_recv_buf[0] != 0x7e )
 	{
-		printf("CDC0_resv USB Task: rec data size %d < 3 \n", handle->recv_size);
+		printf("CDC0_resv USB Task: first char not 0x7e it's %x\n", handle->curr_recv_buf[0]);
+		handle->recv_size = 0;
 		return;
 	}
+
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
         printf("CDC0_resv USB Task: ERROR: message allocation failed\n");
+        handle->recv_size = 0;
         return;
     }
 
     //frame_setbuffer ( &frame_buf, handle->curr_recv_buf, handle->recv_size );
     //handle->recv_size = frame_process_buffer ( &frame_buf, msg->data, handle->recv_size );
-    _mem_copy (msg->data, handle->curr_recv_buf, handle->recv_size );
+    _mem_copy (handle->curr_recv_buf, msg->data, handle->recv_size );
 
     msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
     msg->header.TARGET_QID = _msgq_get_id( 0, CONTROL_QUEUE );
