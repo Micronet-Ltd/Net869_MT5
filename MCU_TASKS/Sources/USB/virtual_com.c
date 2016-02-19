@@ -713,8 +713,8 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 {
     uint8_t payload[ACC_MSG_SIZE];
     uint8_t error;
-    uint8_t * pld_size = &g_app_composite_device.cdc_vcom[1].send_size;
-    uint8_t * buf = &g_app_composite_device.cdc_vcom[1].curr_send_buf;
+    //uint8_t * pld_size = &g_app_composite_device.cdc_vcom[1].send_size;
+    //uint8_t * buf = &g_app_composite_device.cdc_vcom[1].curr_send_buf;
 
 #if COMPOSITE_CFG_MAX > 1
     // FIXME: bad predicate
@@ -1019,7 +1019,7 @@ void CDC0_resv ( cdc_struct_t *handle )
     _mem_copy (handle->curr_recv_buf, msg->data, handle->recv_size );
 
     msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
-    msg->header.TARGET_QID = _msgq_get_id( 0, CONTROL_QUEUE );
+    msg->header.TARGET_QID = _msgq_get_id( 0, CONTROL_RX_QUEUE );
     msg->header.SIZE = handle->recv_size;
     msg->portNum = MIC_CDC_USB_1;
     _msgq_send (msg);

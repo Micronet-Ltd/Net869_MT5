@@ -8,6 +8,8 @@
 #ifndef _COMMAND_H_
 #define _COMMAND_H_
 
+#include "protocol.h"
+
 typedef enum
 {
 	COMM_FW_VERSION, /* 0 */
@@ -30,7 +32,7 @@ typedef enum comm_err
 
 typedef struct comm_type
 {
-	void (*fx)(uint8_t * data, uint16_t size, uint8_t * resp);
+	void (*fx)(uint8_t * req, uint16_t size, uint8_t * resp);
 	bool  get_set; /*get = 0, set = 1 */
 	uint8_t response_size; /* (in bytes) */
 }comm_t;
@@ -63,7 +65,8 @@ typedef union gpio_config_type
 	};
 }gpio_config_t;
 
-int8_t command_set(uint8_t address, uint8_t * val, uint16_t size);
-int8_t command_get(uint8_t address, uint8_t * data, uint16_t size);
+int8_t command_set(uint8_t * val, uint16_t size);
+int8_t command_get(uint8_t * data, uint16_t data_size,
+		packet_t * resp, uint8_t * resp_size);
 
 #endif /* _COMMAND_H_ */

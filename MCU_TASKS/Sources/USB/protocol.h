@@ -20,6 +20,15 @@ typedef enum
 	GPIO_INT_STATUS, //6
 }packet_type_enum;
 
-int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size);
+typedef struct
+{
+	uint8_t seq;
+	packet_type_enum pkt_type;
+	uint8_t *data;
+}packet_t;
+
+void protocol_init_data();
+int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size,
+		packet_t * resp, uint8_t  * resp_size);
 
 #endif /* _PROTOCOL_H */

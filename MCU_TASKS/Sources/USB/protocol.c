@@ -51,13 +51,19 @@ void protocol_init_data()
 	frame_setbuffer(&g_j1708_frame, j1708_data_buffer, sizeof(j1708_data_buffer));
 }
 
-static int packet_receive(int context, uint8_t * data, uint32_t size)
+static int packet_receive(int context, uint8_t * data, uint32_t size,
+		packet_t * resp, uint8_t  * resp_size)
 {
 	int8_t result = 0;
+	static int8_t last_seq;
+	packet_t req;
+	req.seq = data[0];
+	req.pkt_type = data[1];
+	req.data = &data[2];
 	// NOTE: maybe these should be separate functions, maybe called by caller instead.
 	if(CONTEXT_CONTROL_EP == context)
 	{
-		static int last_seq = -1;
+		last_seq = -1;
 
 		if(size < 2)
 			return -1; // too small
@@ -67,33 +73,35 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 //		if(-1 == last_seq)
 //		{
 //			// TODO: wait for seq
-//			if(0 != data[0])
+//			if(0 != req->seq)
 //				return -1; // wait for sync
 //		}
 //		else
 //		{
-//			if( ((last_seq+1)&0xff) != data[1] )
+//			if( ((last_seq+1)&0xff) != req->seq )
 //			{
 //				// TODO: set error state
 //				last_seq = -1;
 //				return -1;
 //			}
-//			last_seq = data[1]; // SEQ_OFFSET
+//			last_seq = req->seq; // SEQ_OFFSET
 //		}
 
 
 		// Handle message
-		switch(data[1])//data[0])
+		switch(req.pkt_type)//data[0])
 		{
 			case SYNC_INFO: // Sync/Info packet
-				last_seq = data[1];
+				last_seq = req.seq;
 				// TODO: set sync (normal) state
 				break;
 			case COMM_WRITE_REQ:
-				result = command_set(data[2], &data[3], size-2);
+				result = command_set(&req.data[0], size-2);
 				break;
 			case COMM_READ_REQ:
-				result = command_get(data[2], &data[3], size-2);
+				result = command_get(&req.data[0], size-2, resp, resp_size);
+				resp->seq = req.seq;
+				resp->pkt_type = COMM_READ_RESP;
 				break; // TODO: Register read request
 			case COMM_READ_RESP: return -1; // BUG: Should never receive this
 //			case RTC_WRITE_REQ: break; // TODO: RTC Write
@@ -110,17 +118,18 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 	else if(CONTEXT_J1708_EP == context)
 	{
 		// TODO: add J1708 code here
-		j1708_xmit(data, size);
+		j1708_xmit(req.data, size);
 	}
 	else
 	{
 		return -1;
 	}
 
-	return 0;
+	return result;
 }
 
-int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size)
+int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size,
+		packet_t * resp, uint8_t  * resp_size)
 {
 	uint32_t offset = 0;
 	// TODO: use type for MCU monotonic clock
@@ -166,7 +175,8 @@ int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t s
 		if(frame_data_ready(frame))
 		{
 			// TODO: check results
-			packet_receive(context, frame->data, frame->data_len);
+			packet_receive(context, frame->data, frame->data_len,
+					resp, resp_size);
 			frame_reset(frame);
 		}
 	}
@@ -174,3 +184,34 @@ int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t s
 	// TODO: status return here
 	return 0;
 }
+
+//int8_t packet_send(packet_t *resp, uint8_t resp_size)
+//{
+//	APPLICATION_MESSAGE_T *cntl_msg;
+//	_mqx_uint err_task;
+//
+//	if ((cntl_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL)
+//	{
+//		if (MQX_OK != (err_task = _task_get_error()))
+//		{
+//			_task_set_error(MQX_OK);
+//		}
+//		printf("packet_send: ERROR: message allocation failed %x\n", err_task);
+//	}
+//
+//	if(cntl_msg) {
+//		//_time_get(&time);
+//		//cntl_msg->timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
+//		cntl_msg->header.SOURCE_QID = control_qid;
+//		cntl_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
+//		cntl_msg->header.SIZE = (resp_size);
+//		cntl_msg->portNum = MIC_CDC_USB_1;
+//		_msgq_send (cntl_msg);
+//
+//		if (MQX_OK != (err_task = _task_get_error()))
+//		{
+//			printf("packet_send: ERROR: message send failed %x\n", err_task);
+//			_task_set_error(MQX_OK);
+//		}
+//	}
+//}

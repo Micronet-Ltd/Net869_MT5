@@ -19,7 +19,7 @@
 
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver);
 static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
+static void set_gpio_val(uint8_t * data, uint16_t data_size, void * val);
 static void get_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 static void set_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 
@@ -44,8 +44,9 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 						0},
 };
 
-int8_t command_set(uint8_t address, uint8_t * data, uint16_t data_size)
+int8_t command_set(uint8_t * data, uint16_t data_size)
 {
+	uint8_t address = data[0];
 	if (address > COMM_ENUM_SIZE || address < 0)
 	{
 		return INVALID_COMM;
@@ -56,12 +57,16 @@ int8_t command_set(uint8_t address, uint8_t * data, uint16_t data_size)
 		return INVALID_TYPE;
 	}
 
+	comm_g[address].fx(data, data_size, NULL);
+
 	return SUCCESS;
 }
 
 // always send response with COMM_READ_RESP
-int8_t command_get(uint8_t address, uint8_t * data, uint16_t data_size)
+int8_t command_get(uint8_t * data, uint16_t data_size,
+		packet_t * resp, uint8_t * resp_size)
 {
+	uint8_t address = data[0];
 	if (address > COMM_ENUM_SIZE || address < 0)
 	{
 		return INVALID_COMM;
@@ -72,12 +77,12 @@ int8_t command_get(uint8_t address, uint8_t * data, uint16_t data_size)
 		return INVALID_TYPE;
 	}
 
-	uint8_t * resp = (uint8_t *) malloc(sizeof(comm_g[address].response_size + 2));
-	resp[0] = COMM_READ_RESP;
-	comm_g[address].fx(data, data_size, resp + 1);
+	resp->data = (uint8_t *) malloc(sizeof(comm_g[address].response_size)+1);
+	resp->data[0] = address;
+	*resp_size = comm_g[address].response_size + 1;
+	comm_g[address].fx(data, data_size, &resp->data[1]);
 
 	//TODO: Send response back
-
 	//memcpy(data, (void *) &comm_g[address].val, sizeof(uint32_t));
 	return SUCCESS;
 }
@@ -92,12 +97,12 @@ static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver)
 /* data[0]: GPIO value */
 static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
 {
-
+	printf("get GPIO toggle \n");
 }
 
-static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
+static void set_gpio_val(uint8_t * data, uint16_t data_size, void * val)
 {
-
+	printf("set GPIO num: %d to val %d \n", data[0], data[1]);
 }
 
 /* data[0]: GPIO value */
