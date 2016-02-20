@@ -50,6 +50,7 @@ typedef enum
 	GPIO7,
 	GPIO8,
 	GPIO9,
+	GPIO10,
 
 	GPIO_NUM
 }virtual_gpio_names_enum;

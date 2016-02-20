@@ -8,6 +8,7 @@
 #include <mqx.h>
 #include "command.h"
 #include "protocol.h"
+#include "gpio_pins.h"
 
 #define FW_VER_BTLD_OR_APP 0x0A /* 0xA : Application, 0xB: Bootloader */
 #define FW_VER_MAJOR 0
@@ -19,7 +20,7 @@
 
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver);
 static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-static void set_gpio_val(uint8_t * data, uint16_t data_size, void * val);
+static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 static void get_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 static void set_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 
@@ -44,6 +45,28 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 						0},
 };
 
+static uint16_t gpio_out_mapping[] = {
+		[GPIO0] = GPIO_OUT1,
+		[GPIO1] = GPIO_OUT2,
+		[GPIO2] = GPIO_OUT3,
+		[GPIO3] = GPIO_OUT4,
+		[GPIO4] = SWITCH1,
+		[GPIO5] = LED_RED,
+		[GPIO6] = LED_GREEN,
+		[GPIO7] = LED_BLUE,
+};
+
+static uint16_t gpio_in_mapping[] = {
+		[GPIO0] = GPIO_OUT1,
+		[GPIO1] = GPIO_OUT2,
+		[GPIO2] = GPIO_OUT3,
+		[GPIO3] = GPIO_OUT4,
+		[GPIO4] = SWITCH1,
+		[GPIO5] = LED_RED,
+		[GPIO6] = LED_GREEN,
+		[GPIO7] = LED_BLUE,
+};
+
 int8_t command_set(uint8_t * data, uint16_t data_size)
 {
 	uint8_t address = data[0];
@@ -57,7 +80,7 @@ int8_t command_set(uint8_t * data, uint16_t data_size)
 		return INVALID_TYPE;
 	}
 
-	comm_g[address].fx(data, data_size, NULL);
+	comm_g[address].fx(&data[1], data_size, NULL);
 
 	return SUCCESS;
 }
@@ -80,7 +103,7 @@ int8_t command_get(uint8_t * data, uint16_t data_size,
 	resp->data = (uint8_t *) malloc(sizeof(comm_g[address].response_size)+1);
 	resp->data[0] = address;
 	*resp_size = comm_g[address].response_size + 1;
-	comm_g[address].fx(data, data_size, &resp->data[1]);
+	comm_g[address].fx(&data[1], data_size, &resp->data[1]);
 
 	//TODO: Send response back
 	//memcpy(data, (void *) &comm_g[address].val, sizeof(uint32_t));
@@ -97,12 +120,13 @@ static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver)
 /* data[0]: GPIO value */
 static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
 {
-	printf("get GPIO toggle \n");
+	pgpio_val[0] = (uint8_t)GPIO_DRV_ReadPinInput(gpio_out_mapping[data[0]]);
 }
 
-static void set_gpio_val(uint8_t * data, uint16_t data_size, void * val)
+static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
 {
-	printf("set GPIO num: %d to val %d \n", data[0], data[1]);
+	GPIO_DRV_WritePinOutput(gpio_out_mapping[data[0]], data[1] );
+	//printf("set GPIO num: %d to val %d \n", data[0], data[1]);
 }
 
 /* data[0]: GPIO value */
