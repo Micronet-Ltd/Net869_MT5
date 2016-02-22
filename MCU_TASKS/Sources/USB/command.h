@@ -12,10 +12,11 @@
 
 typedef enum
 {
-	COMM_FW_VERSION, /* 0 */
-	COMM_GPIO_CNFG, /* 1 */
-	COMM_GPIO_READ, /* 2 */
-	COMM_GPIO_WRITE, /* 3 */
+	COMM_GET_FW_VERSION, /* 0 */
+	COMM_GET_GPIO_IN_CNFG, /* 1 */
+	COMM_SET_GPIO_IN_CNFG, /* 2 */
+	COMM_GET_GPIO, /* 3 */
+	COMM_SET_GPIO, /* 4 */
 
 	COMM_ENUM_SIZE
 }command_enum;

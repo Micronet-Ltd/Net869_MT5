@@ -31,16 +31,19 @@ static const uint32_t fw_ver_g = (((FW_VER_BTLD_OR_APP & 0xFF)<<24) |
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
-	[COMM_FW_VERSION ] = {get_fw_ver,
+	[COMM_GET_FW_VERSION ] = {get_fw_ver,
 						  GET_COMMAND,
 						  sizeof(uint32_t)},
-	[COMM_GPIO_CNFG] = {NULL,
+	[COMM_GET_GPIO_IN_CNFG] = {NULL,
+							GET_COMMAND,
+							sizeof(uint8_t)},
+	[COMM_SET_GPIO_IN_CNFG] = {NULL,
+						SET_COMMAND,
+						sizeof(uint8_t)},
+	[COMM_GET_GPIO] = {get_gpio_val,
 						GET_COMMAND,
 						sizeof(uint8_t)},
-	[COMM_GPIO_READ] = {get_gpio_val,
-						GET_COMMAND,
-						sizeof(uint8_t)},
-	[COMM_GPIO_WRITE] = {set_gpio_val,
+	[COMM_SET_GPIO] = {set_gpio_val,
 						SET_COMMAND,
 						0},
 };
