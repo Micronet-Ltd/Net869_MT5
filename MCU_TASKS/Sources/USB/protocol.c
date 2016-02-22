@@ -184,34 +184,3 @@ int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t s
 	// TODO: status return here
 	return 0;
 }
-
-//int8_t packet_send(packet_t *resp, uint8_t resp_size)
-//{
-//	APPLICATION_MESSAGE_T *cntl_msg;
-//	_mqx_uint err_task;
-//
-//	if ((cntl_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL)
-//	{
-//		if (MQX_OK != (err_task = _task_get_error()))
-//		{
-//			_task_set_error(MQX_OK);
-//		}
-//		printf("packet_send: ERROR: message allocation failed %x\n", err_task);
-//	}
-//
-//	if(cntl_msg) {
-//		//_time_get(&time);
-//		//cntl_msg->timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
-//		cntl_msg->header.SOURCE_QID = control_qid;
-//		cntl_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
-//		cntl_msg->header.SIZE = (resp_size);
-//		cntl_msg->portNum = MIC_CDC_USB_1;
-//		_msgq_send (cntl_msg);
-//
-//		if (MQX_OK != (err_task = _task_get_error()))
-//		{
-//			printf("packet_send: ERROR: message send failed %x\n", err_task);
-//			_task_set_error(MQX_OK);
-//		}
-//	}
-//}

@@ -37,10 +37,10 @@ void control_task (uint32_t initial_data)
 		}
 		else
 		{
+			//TODO: For debug only
 			printf("\n data : %x,%x, \t ,%x,%x, size %d \n", ctl_rx_msg->data[0],
 					ctl_rx_msg->data[1],ctl_rx_msg->data[ctl_rx_msg->header.SIZE -2],
 					ctl_rx_msg->data[ctl_rx_msg->header.SIZE -1], ctl_rx_msg->header.SIZE);
-			//printf("\n control_task: yay got the the message \n");
 		}
 
 		/* process message */
@@ -60,9 +60,8 @@ void control_task (uint32_t initial_data)
 				printf("control_task: ERROR: message allocation failed %x\n", err_task);
 			}
 
-			if(ctl_tx_msg) {
-				//_time_get(&time);
-				//cntl_msg->timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
+			if(ctl_tx_msg)
+			{
 				/* copy seq and packet type */
 				memcpy(ctl_tx_msg->data,(uint8_t *) &resp, 2);
 				memcpy(ctl_tx_msg->data+2, resp.data, resp_size);

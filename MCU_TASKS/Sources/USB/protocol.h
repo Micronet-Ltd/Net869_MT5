@@ -11,13 +11,13 @@
 
 typedef enum
 {
-	SYNC_INFO = 0x0, //0
-	COMM_WRITE_REQ, //1
-	COMM_READ_REQ,  //2
-	COMM_READ_RESP, //3
-	PING_REQ, //4
-	PING_RESP, //5
-	GPIO_INT_STATUS, //6
+	SYNC_INFO 		= 0x0,
+	COMM_WRITE_REQ 	= 0x1,
+	COMM_READ_REQ 	= 0x2,
+	COMM_READ_RESP 	= 0x3,
+	PING_REQ 		= 0x4,
+	PING_RESP 		= 0x5,
+	GPIO_INT_STATUS = 0x6,
 }packet_type_enum;
 
 typedef struct

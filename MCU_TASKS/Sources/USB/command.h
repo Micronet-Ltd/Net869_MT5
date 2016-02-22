@@ -12,11 +12,11 @@
 
 typedef enum
 {
-	COMM_GET_FW_VERSION, /* 0 */
-	COMM_GET_GPIO_IN_CNFG, /* 1 */
-	COMM_SET_GPIO_IN_CNFG, /* 2 */
-	COMM_GET_GPIO, /* 3 */
-	COMM_SET_GPIO, /* 4 */
+	COMM_GET_FW_VERSION = 0,
+	COMM_GET_GPIO_IN_CNFG = 1,
+	COMM_SET_GPIO_IN_CNFG = 2,
+	COMM_GET_GPIO = 3,
+	COMM_SET_GPIO = 4,
 
 	COMM_ENUM_SIZE
 }command_enum;
@@ -30,13 +30,6 @@ typedef enum comm_err
 
 	ERR_ENUM_SIZE
 }comm_err_t;
-
-typedef struct comm_type
-{
-	void (*fx)(uint8_t * req, uint16_t size, uint8_t * resp);
-	bool  get_set; /*get = 0, set = 1 */
-	uint8_t response_size; /* (in bytes) */
-}comm_t;
 
 /* GPIO related stuff, might want to move this to a separate file */
 typedef enum
@@ -56,16 +49,12 @@ typedef enum
 	GPIO_NUM
 }virtual_gpio_names_enum;
 
-typedef union gpio_config_type
+typedef struct comm_type
 {
-	uint8_t val;
-	struct{
-		uint8_t in_out_b1 : 1;
-		uint8_t ris_fall_both_edge_b2_b3 : 2; /*0: rising, 1: falling, both: 2 */
-		uint8_t pd_pu_f_b4_b5: 2;/* 0: pull down, 1: pull up, 2: floating */
-		uint8_t unused_b6_b8: 3;
-	};
-}gpio_config_t;
+	void (*fx)(uint8_t * req, uint16_t size, uint8_t * resp);
+	bool  get_set; /*get = 0, set = 1 */
+	uint8_t response_size; /* (in bytes) */
+}comm_t;
 
 int8_t command_set(uint8_t * val, uint16_t size);
 int8_t command_get(uint8_t * data, uint16_t data_size,

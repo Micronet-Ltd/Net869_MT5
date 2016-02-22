@@ -18,6 +18,17 @@
 #define GET_COMMAND 0
 #define SET_COMMAND 1
 
+typedef union gpio_config_type
+{
+	uint8_t val;
+	struct{
+		uint8_t in_out_b1 : 1;
+		uint8_t ris_fall_both_edge_b2_b3 : 2; /*0: rising, 1: falling, both: 2 */
+		uint8_t pd_pu_f_b4_b5: 2;/* 0: pull down, 1: pull up, 2: floating */
+		uint8_t unused_b6_b8: 3;
+	};
+}gpio_config_t;
+
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver);
 static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
@@ -53,21 +64,6 @@ static uint16_t gpio_out_mapping[] = {
 		[GPIO1] = GPIO_OUT2,
 		[GPIO2] = GPIO_OUT3,
 		[GPIO3] = GPIO_OUT4,
-		[GPIO4] = SWITCH1,
-		[GPIO5] = LED_RED,
-		[GPIO6] = LED_GREEN,
-		[GPIO7] = LED_BLUE,
-};
-
-static uint16_t gpio_in_mapping[] = {
-		[GPIO0] = GPIO_OUT1,
-		[GPIO1] = GPIO_OUT2,
-		[GPIO2] = GPIO_OUT3,
-		[GPIO3] = GPIO_OUT4,
-		[GPIO4] = SWITCH1,
-		[GPIO5] = LED_RED,
-		[GPIO6] = LED_GREEN,
-		[GPIO7] = LED_BLUE,
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -108,15 +104,12 @@ int8_t command_get(uint8_t * data, uint16_t data_size,
 	*resp_size = comm_g[address].response_size + 1;
 	comm_g[address].fx(&data[1], data_size, &resp->data[1]);
 
-	//TODO: Send response back
-	//memcpy(data, (void *) &comm_g[address].val, sizeof(uint32_t));
 	return SUCCESS;
 }
 
 /* returns 4 bytes with fw version */
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver)
 {
-	//uint8_t * pfw_ver = (uint8_t *) malloc(sizeof(fw_ver));
 	memcpy(pfw_ver, (uint8_t *)&fw_ver_g, sizeof(fw_ver_g));
 }
 
