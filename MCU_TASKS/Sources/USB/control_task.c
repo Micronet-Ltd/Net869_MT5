@@ -11,13 +11,44 @@
 
 extern _pool_id   g_out_message_pool;
 
+void send_control_msg(packet_t * msg, uint8_t msg_size)
+{
+	APPLICATION_MESSAGE_T *ctl_tx_msg;
+	_mqx_uint err_task;
+	if ((ctl_tx_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL)
+	{
+		if (MQX_OK != (err_task = _task_get_error()))
+		{
+			_task_set_error(MQX_OK);
+		}
+		printf("send_control_msg: ERROR: message allocation failed %x\n", err_task);
+	}
+
+	if(ctl_tx_msg)
+	{
+		/* copy seq and packet type */
+		memcpy(ctl_tx_msg->data,(uint8_t *) &msg, 2);
+		memcpy(ctl_tx_msg->data+2, msg->data, msg_size);
+		free(msg->data);
+		ctl_tx_msg->header.SOURCE_QID = _msgq_get_id(0, CONTROL_TX_QUEUE);
+		ctl_tx_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
+		ctl_tx_msg->header.SIZE = (msg_size) + 2;//add seq and packet type
+		ctl_tx_msg->portNum = MIC_CDC_USB_1;
+		_msgq_send (ctl_tx_msg);
+
+		if (MQX_OK != (err_task = _task_get_error()))
+		{
+			printf("send_control_msg: ERROR: message send failed %x\n", err_task);
+			_task_set_error(MQX_OK);
+		}
+	}
+}
+
 void control_task (uint32_t initial_data)
 {
 	APPLICATION_MESSAGE_T *ctl_rx_msg;
 	const _queue_id     control_rx_qid = _msgq_open (CONTROL_RX_QUEUE, 0);
-	const _queue_id     control_tx_qid = _msgq_open (CONTROL_TX_QUEUE, 0);
-	APPLICATION_MESSAGE_T *ctl_tx_msg;
-	_mqx_uint err_task;
+
 	int8_t ret;
 	packet_t resp;
 	uint8_t resp_size = 0;
@@ -51,34 +82,7 @@ void control_task (uint32_t initial_data)
 		/* send host response if there is a response needed */
 		if (resp_size != 0)
 		{
-			if ((ctl_tx_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL)
-			{
-				if (MQX_OK != (err_task = _task_get_error()))
-				{
-					_task_set_error(MQX_OK);
-				}
-				printf("control_task: ERROR: message allocation failed %x\n", err_task);
-			}
-
-			if(ctl_tx_msg)
-			{
-				/* copy seq and packet type */
-				memcpy(ctl_tx_msg->data,(uint8_t *) &resp, 2);
-				memcpy(ctl_tx_msg->data+2, resp.data, resp_size);
-				free(resp.data);
-				ctl_tx_msg->header.SOURCE_QID = control_tx_qid;//_msgq_get_id(0, CONTROL_TX_QUEUE);
-				ctl_tx_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
-				ctl_tx_msg->header.SIZE = (resp_size) + 2;//add seq and packet type
-				ctl_tx_msg->portNum = MIC_CDC_USB_1;
-				_msgq_send (ctl_tx_msg);
-
-				if (MQX_OK != (err_task = _task_get_error()))
-				{
-					printf("control_task: ERROR: message send failed %x\n", err_task);
-					_task_set_error(MQX_OK);
-				}
-			}
-
+			send_control_msg(&resp, resp_size);
 		}
 
 	}
