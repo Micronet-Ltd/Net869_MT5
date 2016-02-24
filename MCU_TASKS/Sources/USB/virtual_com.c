@@ -991,18 +991,12 @@ void CDC0_resv ( cdc_struct_t *handle )
     handle->recv_size = 0;
 #else
 
-//	if ( 3 > handle->recv_size )
-//	{
-//		printf("CDC0_resv USB Task: rec data size %d < 3 \n", handle->recv_size);
-//		handle->recv_size = 0;
-//		return;
-//	}
     /* check to make sure we have a start of a frame */
     //TODO: might need to move this check in the frame decode code so we can
     // send a frame reset response!!
 	if ( handle->curr_recv_buf[0] != 0x7e )
 	{
-		printf("CDC0_resv USB Task: first char not 0x7e it's %x\n", handle->curr_recv_buf[0]);
+		//printf("CDC0_resv USB Task: first char not 0x7e it's %x\n", handle->curr_recv_buf[0]);
 		handle->recv_size = 0;
 		return;
 	}
@@ -1014,8 +1008,6 @@ void CDC0_resv ( cdc_struct_t *handle )
         return;
     }
 
-    //frame_setbuffer ( &frame_buf, handle->curr_recv_buf, handle->recv_size );
-    //handle->recv_size = frame_process_buffer ( &frame_buf, msg->data, handle->recv_size );
     memcpy(msg->data, handle->curr_recv_buf, handle->recv_size);
 
     msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
