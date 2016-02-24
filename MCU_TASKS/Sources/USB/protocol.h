@@ -28,7 +28,6 @@ typedef struct
 }packet_t;
 
 void protocol_init_data();
-int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size,
-		packet_t * resp, uint8_t  * resp_size);
+int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size);
 
 #endif /* _PROTOCOL_H */

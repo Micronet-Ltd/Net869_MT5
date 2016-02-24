@@ -101,8 +101,6 @@ void Acc_task (uint32_t initial_data)
 	uint64_t time_diff;
 
 	//APPLICATION_MESSAGE_T *msg;
-
-	APPLICATION_MESSAGE_T test_acc_msg;
 	const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
 	//const _queue_id power_mgmt_qid  = _msgq_open ((_queue_number)POWER_MGM_QUEUE, 0);
 	

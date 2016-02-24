@@ -28,11 +28,12 @@ void send_control_msg(packet_t * msg, uint8_t msg_size)
 	{
 		/* copy seq and packet type */
 		memcpy(ctl_tx_msg->data,(uint8_t *) msg, 2);
+		/* copy the data */
 		memcpy(ctl_tx_msg->data+2, msg->data, msg_size);
 		free(msg->data);
 		ctl_tx_msg->header.SOURCE_QID = _msgq_get_id(0, CONTROL_TX_QUEUE);
 		ctl_tx_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
-		ctl_tx_msg->header.SIZE = (msg_size) + 2;//add seq and packet type
+		ctl_tx_msg->header.SIZE = (msg_size + 2);//add seq and packet type
 		ctl_tx_msg->portNum = MIC_CDC_USB_1;
 		_msgq_send (ctl_tx_msg);
 
@@ -50,8 +51,6 @@ void control_task (uint32_t initial_data)
 	const _queue_id     control_rx_qid = _msgq_open (CONTROL_RX_QUEUE, 0);
 
 	int8_t ret;
-	packet_t resp;
-	uint8_t resp_size = 0;
 
 	printf ("\n control_task: Start \n");
 
@@ -75,16 +74,8 @@ void control_task (uint32_t initial_data)
 		}
 
 		/* process message */
-		ret = protocol_process_receive_data(CONTEXT_CONTROL_EP, ctl_rx_msg->data, ctl_rx_msg->header.SIZE,
-				&resp, &resp_size);
+		ret = protocol_process_receive_data(CONTEXT_CONTROL_EP, ctl_rx_msg->data, ctl_rx_msg->header.SIZE);
 		_msg_free   (ctl_rx_msg);
-
-		/* send host response if there is a response needed */
-		if (resp_size != 0)
-		{
-			send_control_msg(&resp, resp_size);
-		}
-
 	}
 
 	/* should never get here */

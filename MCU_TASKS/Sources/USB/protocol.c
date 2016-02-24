@@ -1,6 +1,7 @@
 #include "protocol.h"
 #include "frame.h"
 #include "command.h"
+#include "control_task.h"
 
 frame_t g_control_frame;
 frame_t g_j1708_frame;
@@ -51,12 +52,14 @@ void protocol_init_data()
 	frame_setbuffer(&g_j1708_frame, j1708_data_buffer, sizeof(j1708_data_buffer));
 }
 
-static int packet_receive(int context, uint8_t * data, uint32_t size,
-		packet_t * resp, uint8_t  * resp_size)
+static int packet_receive(int context, uint8_t * data, uint32_t size)
 {
 	int8_t result = 0;
 	static int8_t last_seq;
 	packet_t req;
+	packet_t resp;
+	uint8_t resp_size = 0;
+
 	req.seq = data[0];
 	req.pkt_type = data[1];
 	req.data = &data[2];
@@ -99,9 +102,10 @@ static int packet_receive(int context, uint8_t * data, uint32_t size,
 				result = command_set(&req.data[0], size-2);
 				break;
 			case COMM_READ_REQ:
-				result = command_get(&req.data[0], size-2, resp, resp_size);
-				resp->seq = req.seq;
-				resp->pkt_type = COMM_READ_RESP;
+				result = command_get(&req.data[0], size-2, &resp, &resp_size);
+				resp.seq = req.seq;
+				resp.pkt_type = COMM_READ_RESP;
+				send_control_msg(&resp, resp_size);
 				break; // TODO: Register read request
 			case COMM_READ_RESP: return -1; // BUG: Should never receive this
 //			case RTC_WRITE_REQ: break; // TODO: RTC Write
@@ -133,8 +137,7 @@ send_control_response()
 
 }
 
-int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size,
-		packet_t * resp, uint8_t  * resp_size)
+int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size)
 {
 	uint32_t offset = 0;
 	// TODO: use type for MCU monotonic clock
@@ -180,8 +183,7 @@ int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t s
 		if(frame_data_ready(frame))
 		{
 			// TODO: check results
-			packet_receive(context, frame->data, frame->data_len,
-					resp, resp_size);
+			packet_receive(context, frame->data, frame->data_len);
 			frame_reset(frame);
 		}
 	}

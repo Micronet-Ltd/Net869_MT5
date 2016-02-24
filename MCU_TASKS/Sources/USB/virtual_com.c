@@ -1016,7 +1016,7 @@ void CDC0_resv ( cdc_struct_t *handle )
 
     //frame_setbuffer ( &frame_buf, handle->curr_recv_buf, handle->recv_size );
     //handle->recv_size = frame_process_buffer ( &frame_buf, msg->data, handle->recv_size );
-    _mem_copy (handle->curr_recv_buf, msg->data, handle->recv_size );
+    memcpy(msg->data, handle->curr_recv_buf, handle->recv_size);
 
     msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
     msg->header.TARGET_QID = _msgq_get_id( 0, CONTROL_RX_QUEUE );
