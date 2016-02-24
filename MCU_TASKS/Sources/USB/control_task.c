@@ -27,7 +27,7 @@ void send_control_msg(packet_t * msg, uint8_t msg_size)
 	if(ctl_tx_msg)
 	{
 		/* copy seq and packet type */
-		memcpy(ctl_tx_msg->data,(uint8_t *) &msg, 2);
+		memcpy(ctl_tx_msg->data,(uint8_t *) msg, 2);
 		memcpy(ctl_tx_msg->data+2, msg->data, msg_size);
 		free(msg->data);
 		ctl_tx_msg->header.SOURCE_QID = _msgq_get_id(0, CONTROL_TX_QUEUE);
