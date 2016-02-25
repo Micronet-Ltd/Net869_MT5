@@ -35,10 +35,11 @@ typedef enum {
 } KOUTPUT_LEVEL;
 
 typedef enum {
-	kGPIO_OUT1 = 1,
+	kGPIO_OUT1 = 0,
 	kGPIO_OUT2,
 	kGPIO_OUT3,
-	kGPIO_OUT4
+	kGPIO_OUT4,
+	NUM_OF_OUTPUT_GPIOS
 } KGPIOS_OUTPUT_CHANNELS;
 
 #define EVENT_GPIO_IN(x)		(1 << (x))
@@ -54,7 +55,9 @@ void GPIO_sample_all (void);
 KINPUT_LOGIC_LEVEL GPIO_INPUT_get_logic_level   (KGPIOS_INPUT_CHANNELS gpio_input);
 uint32_t           GPIO_INPUT_get_voltage_level (KGPIOS_INPUT_CHANNELS gpio_input);
 
-void               GPIO_OUTPUT_set_level        (KGPIOS_OUTPUT_CHANNELS gpio_output, KOUTPUT_LEVEL level);
+void    GPIO_OUTPUT_set_level        (KGPIOS_OUTPUT_CHANNELS gpio_output, KOUTPUT_LEVEL level);
+void 	gpio_set_output (KGPIOS_OUTPUT_CHANNELS gpo_num, KOUTPUT_LEVEL level);
+void 	gpio_set_multiple_outputs(uint8_t * mask, uint8_t * value);
 
 #ifdef __cplusplus
 extern "C"

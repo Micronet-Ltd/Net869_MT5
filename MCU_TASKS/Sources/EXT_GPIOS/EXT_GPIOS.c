@@ -16,21 +16,27 @@
 #include "gpio_pins.h"
 #include "Uart_debugTerminal.h"
 
-#define NUM_OF_GPIOS	8
+#define NUM_OF_GPI	8
+#define NUM_OF_GPO  4
 
 typedef struct {
 	const KADC_CHANNELS_t adc_channel;
 	      uint32_t        gpio_input_voltage;
 } GPIO_INPUT;
 
-
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-GPIO_INPUT  gpio_inputs [NUM_OF_INPUT_GPIOS] = {	{kADC_ANALOG_IN1, 0}, {kADC_GPIO_IN1, 0}, {kADC_GPIO_IN2, 0}, {kADC_GPIO_IN3, 0},
+static GPIO_INPUT  gpio_inputs [NUM_OF_INPUT_GPIOS] = {	{kADC_ANALOG_IN1, 0}, {kADC_GPIO_IN1, 0}, {kADC_GPIO_IN2, 0}, {kADC_GPIO_IN3, 0},
 													{kADC_GPIO_IN4,   0}, {kADC_GPIO_IN5, 0}, {kADC_GPIO_IN6, 0}, {kADC_GPIO_IN7, 0}};
+static const KGPIOS_OUTPUT_CHANNELS gp_out_mapping[] = {
+		[kGPIO_OUT1] = GPIO_OUT1,
+		[kGPIO_OUT2] = GPIO_OUT2,
+		[kGPIO_OUT3] = GPIO_OUT3,
+		[kGPIO_OUT4] = GPIO_OUT4,
+};
 
 void *g_GPIO_event_h;
 
@@ -43,7 +49,7 @@ void GPIO_sample_all (void)
 	KGPIOS_INPUT_CHANNELS i;
 	KINPUT_LOGIC_LEVEL state_prev, state_current;
 
-	for (i = 0; i < NUM_OF_GPIOS; i++) {
+	for (i = 0; i < NUM_OF_GPI; i++) {
 		state_prev = GPIO_INPUT_get_logic_level (i);
 		ADC_sample_input (gpio_inputs[i].adc_channel);
 		gpio_inputs[i].gpio_input_voltage = ADC_get_value (gpio_inputs[i].adc_channel);
@@ -90,6 +96,25 @@ void GPIO_OUTPUT_set_level (KGPIOS_OUTPUT_CHANNELS gpio_output, KOUTPUT_LEVEL le
 		default           : MIC_DEBUG_UART_PRINTF ("ERROR: Illegal GPIO_OUT %d\n", gpio_output); return;
 	}
 	MIC_DEBUG_UART_PRINTF ("GPIO_OUT %d level is set to %s\n", gpio_output,  (level == GPIO_OUT_LOW) ? "LOW" : "OPEN DRAIN");
+}
+
+void gpio_set_output (KGPIOS_OUTPUT_CHANNELS gpo_num, KOUTPUT_LEVEL level)
+{
+	GPIO_DRV_WritePinOutput(gp_out_mapping[gpo_num], level );
+	printf("set GPIO num: %d to val %d \n", gpo_num, level);
+}
+
+void gpio_set_multiple_outputs(uint8_t * mask, uint8_t * value)
+{
+	KGPIOS_OUTPUT_CHANNELS gpo_num = kGPIO_OUT1;
+	/* loop through the mask, if true set the level */
+	for (gpo_num = 0; gpo_num < NUM_OF_OUTPUT_GPIOS; gpo_num++)
+	{
+		if (*mask>>gpo_num & 0x1)
+		{
+			gpio_set_output(gpo_num, (*value>>gpo_num & 0x1));
+		}
+	}
 }
 
 #ifdef __cplusplus

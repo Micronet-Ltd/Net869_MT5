@@ -9,6 +9,7 @@
 #include "command.h"
 #include "protocol.h"
 #include "gpio_pins.h"
+#include "EXT_GPIOS.h"
 
 #define FW_VER_BTLD_OR_APP 0x0A /* 0xA : Application, 0xB: Bootloader */
 #define FW_VER_MAJOR 0
@@ -57,13 +58,6 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_SET_GPIO] = {set_gpio_val,
 						SET_COMMAND,
 						0},
-};
-
-static uint16_t gpio_out_mapping[] = {
-		[GPIO0] = GPIO_OUT1,
-		[GPIO1] = GPIO_OUT2,
-		[GPIO2] = GPIO_OUT3,
-		[GPIO3] = GPIO_OUT4,
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -116,22 +110,11 @@ static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver)
 /* data[0]: GPIO value */
 static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
 {
-	pgpio_val[0] = (uint8_t)GPIO_DRV_ReadPinInput(gpio_out_mapping[data[0]]);
+	//TODO: Need to use EXT_GPIO.c Abid
+	//pgpio_val[0] = (uint8_t)GPIO_DRV_ReadPinInput(gpio_out_mapping[data[0]]);
 }
 
 static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
 {
-	GPIO_DRV_WritePinOutput(gpio_out_mapping[data[0]], data[1] );
-	//printf("set GPIO num: %d to val %d \n", data[0], data[1]);
-}
-
-/* data[0]: GPIO value */
-static void get_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
-{
-
-}
-
-static void set_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
-{
-
+	gpio_set_output(data[0], data[1]);
 }
