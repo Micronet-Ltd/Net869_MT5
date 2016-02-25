@@ -136,7 +136,11 @@ adc16_status_t ADC16_DRV_StructInitUserConfigDefault(adc16_converter_config_t *u
     userConfigPtr->lowPowerEnable = true;
     userConfigPtr->clkDividerMode = kAdc16ClkDividerOf8;
     userConfigPtr->longSampleTimeEnable = true;
+#if (FSL_FEATURE_ADC16_MAX_RESOLUTION >= 16)
+    userConfigPtr->resolution = kAdc16ResolutionBitOf16;
+#else
     userConfigPtr->resolution = kAdc16ResolutionBitOfSingleEndAs12;
+#endif
     userConfigPtr->clkSrc = kAdc16ClkSrcOfAsynClk;
     userConfigPtr->asyncClkEnable = true;
     userConfigPtr->highSpeedEnable = false;
