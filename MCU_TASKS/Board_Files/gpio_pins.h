@@ -17,23 +17,6 @@ enum _gpio_pins_pinNames {
     POWER_5V0_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX, 11),
     POWER_CHARGE_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX, 15),
     POWER_DISCHARGE_ENABLE				= GPIO_MAKE_PIN(GPIOB_IDX,  8),
-    POWER_HEATER_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX,  6),
-
-    // ANALOG INPUTS
-    ADC_POWER_IN						= GPIO_MAKE_PIN(GPIOA_IDX, 17),
-    ADC_POWER_VCAP						= GPIO_MAKE_PIN(GPIOB_IDX,  0),
-    //	ADC_TEMPERATURE					(ADC1_SE16),;
-    ADC_CABLE_TYPE						= GPIO_MAKE_PIN(GPIOB_IDX,  4),
-
-    // TELEMETRY INPUTS (ANALOG INPUTS),
-    ANALOG_IN1							= GPIO_MAKE_PIN(GPIOB_IDX,  6),
-    //	GPIO_IN1						(ADC1_DM1),
-    //	GPIO_IN2						(ADC1_DP1),
-    //	GPIO_IN3						(ADC1_DM3),
-    //	GPIO_IN4						(ADC1_DP3),
-    //	GPIO_IN5						(ADC1_DM0),
-    //	GPIO_IN6						(ADC1_DP0),
-    //	GPIO_IN7						(ADC1_SE18),
 
     // TELEMETRY OUTPUTS CONTROL
     GPIO_OUT1							= GPIO_MAKE_PIN(GPIOB_IDX, 11),
@@ -176,6 +159,22 @@ enum _gpio_pins_pinNames {
 #define EXTAL0_PORT   				PORTA
 #define EXTAL0_PIN    				18
 
+
+// ANALOG INPUTS
+#define ADC_POWER_IN					kAdc16Chn17
+#define ADC_POWER_VCAP					kAdc16Chn8
+#define ADC_TEMPERATURE					kAdc16Chn16
+#define ADC_CABLE_TYPE					kAdc16Chn10
+
+// TELEMETRY INPUTS (ANALOG INPUTS),
+#define ADC_ANALOG_IN1					kAdc16Chn12
+#define ADC_GPIO_IN1					kAdc16Chn20			// dm1
+#define ADC_GPIO_IN2					kAdc16Chn1			// dp1
+#define ADC_GPIO_IN3					kAdc16Chn3			// dp3 and dm3
+#define ADC_GPIO_IN4					kAdc16Chn3			// dp3
+#define ADC_GPIO_IN5					kAdc16Chn19			// dm0
+#define ADC_GPIO_IN6					kAdc16Chn0			// dp0
+#define ADC_GPIO_IN7					kAdc16Chn18
 
 #ifdef __cplusplus
 extern "C"
