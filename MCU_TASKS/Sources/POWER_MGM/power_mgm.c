@@ -16,6 +16,7 @@ void Power_MGM_task (uint32_t initial_data )
 	printf("\nPower Management Task: Start \n");
 
 	while ( 1 ) {
+#if 0
 		// check amount of vibrations sensed by the wiggle sensor
 		// if amount of vibrations is more than TH, it will turn on the device
 		// and stop the interrupts for better running efficiency
@@ -26,7 +27,7 @@ void Power_MGM_task (uint32_t initial_data )
 			//RS _task_create(0, ACC_TASK, 0);
 		}
 		Device_control_GPIO ();
-
+#endif
 		_time_delay (POWER_MGM_TIME_DELAY);
 	}
 }
