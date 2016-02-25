@@ -13,6 +13,8 @@
 #include "gpio_pins.h"
 #include "J1708_task.h"
 #include "fpga_api.h"
+#include "ADC.h"
+#include "EXT_GPIOS.h"
 
 #include "mic_typedef.h"
 
@@ -44,6 +46,9 @@ void Main_task( uint32_t initial_data ) {
     _queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
 	_queue_id  j1708_rx_qid;
 	//APPLICATION_MESSAGE_T *msg;
+	uint32_t gpios_event_bit;
+	uint32_t gpio_sample_timer = 0;
+	uint32_t i;
 
     uint8_t u8mainTaskLoopCnt = 0;
 
@@ -64,6 +69,7 @@ void Main_task( uint32_t initial_data ) {
     hardware_init();
     OSA_Init();
     GPIO_Config();
+    ADC_init ();
 
 	NVIC_SetPriority(PORTA_IRQn, 6U);
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
@@ -222,6 +228,9 @@ void Main_task( uint32_t initial_data ) {
 	    GPIO_DRV_SetPinOutput(USB_OTG_SEL);
 	}
 
+	_event_create ("event.EXTERNAL_GPIOS");
+	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
+
     printf("\nMain Task: Loop \n");
 
     while ( 1 ) {
@@ -266,7 +275,7 @@ void Main_task( uint32_t initial_data ) {
 
     }
     _time_delay(MAIN_TASK_SLEEP_PERIOD);            // contact switch
-#else
+#endif
 
 #if 0
 		GPIO_DRV_ClearPinOutput (LED_RED);
@@ -284,8 +293,29 @@ void Main_task( uint32_t initial_data ) {
 		_time_delay (1000);
 #endif
 
-		_time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
+		gpio_sample_timer  += MAIN_TASK_SLEEP_PERIOD;
+		if (gpio_sample_timer >= TIME_ONE_SECOND_PERIOD) {
+			gpio_sample_timer = 0;
+			GPIO_sample_all ();
+		}
+
+#if 0
+		_event_wait_any  (	g_GPIO_event_h,
+							EVENT_GPIO_IN(0) | EVENT_GPIO_IN(1) | EVENT_GPIO_IN(2) | EVENT_GPIO_IN(3) |
+							EVENT_GPIO_IN(4) | EVENT_GPIO_IN(5) | EVENT_GPIO_IN(6) | EVENT_GPIO_IN(7) ,
+							10);
+		_event_get_value (g_GPIO_event_h, &gpios_event_bit);
+
+		for (i = 0; i < 8; i++) {
+			int g;
+			if (gpios_event_bit & (1<<i)) {
+				g = GPIO_INPUT_get_logic_level (i);
+				_event_clear    (g_GPIO_event_h, (1<<i));
+			}
+		}
 #endif
+
+	    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
     }
 
     MIC_DEBUG_UART_PRINTF("\nMain Task: End \n");
