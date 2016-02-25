@@ -106,6 +106,8 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/FlexCAN&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/J1708&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/FPGA_API&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/ADC&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/ext_gpios&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/platform/CMSIS/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/platform/devices/MK20D10/startup&quot;"/>
 								</option>
@@ -216,6 +218,7 @@
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.581898609.611752877" name="Print size" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.581898609"/>
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn.1086330387.588458937" name="Enable all common warnings (-Wall)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn.1086330387"/>
 							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash.446663976.890217302" name="Create flash image" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash.446663976"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform" isAbstract="false" osList="all" superClass="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform"/>
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.103525062" name="Cross ARM GNU Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.1189500931">
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input.387956321" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input"/>
 							</tool>
@@ -261,4 +264,5 @@
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>
