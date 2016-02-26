@@ -16,6 +16,9 @@
 #include "gpio_pins.h"
 #include "Uart_debugTerminal.h"
 
+#include "control_task.h"
+#include "protocol.h"
+
 #define NUM_OF_GPI	8
 #define NUM_OF_GPO  4
 
@@ -31,7 +34,7 @@ extern "C"
 
 static GPIO_INPUT  gpio_inputs [NUM_OF_INPUT_GPIOS] = {	{kADC_ANALOG_IN1, 0}, {kADC_GPIO_IN1, 0}, {kADC_GPIO_IN2, 0}, {kADC_GPIO_IN3, 0},
 													{kADC_GPIO_IN4,   0}, {kADC_GPIO_IN5, 0}, {kADC_GPIO_IN6, 0}, {kADC_GPIO_IN7, 0}};
-static const KGPIOS_OUTPUT_CHANNELS gp_out_mapping[] = {
+static const uint32_t gp_out_mapping[] = {
 		[kGPIO_OUT1] = GPIO_OUT1,
 		[kGPIO_OUT2] = GPIO_OUT2,
 		[kGPIO_OUT3] = GPIO_OUT3,
@@ -39,9 +42,9 @@ static const KGPIOS_OUTPUT_CHANNELS gp_out_mapping[] = {
 };
 
 void *g_GPIO_event_h;
+void send_gpi_change(uint8_t * gpio_mask);
 
 KINPUT_LOGIC_LEVEL GPIO_INPUT_convert_voltage_to_level (uint32_t voltage);
-
 
 void GPIO_sample_all (void)
 {
@@ -65,6 +68,11 @@ void GPIO_sample_all (void)
 			MIC_DEBUG_UART_PRINTF ("GPIO_IN %d level became %d\n", i, state_prev);
 			gpio_event |= (1 << i);
 		}
+	}
+
+	//TODO: for now just send the control message from within the GPIO driver
+	if (gpio_event != 0){
+		send_gpi_change((uint8_t *)&gpio_event);
 	}
 
 	_event_set(g_GPIO_event_h, gpio_event);
@@ -102,6 +110,27 @@ void GPIO_OUTPUT_set_level (KGPIOS_OUTPUT_CHANNELS gpio_output, KOUTPUT_LEVEL le
 		default           : MIC_DEBUG_UART_PRINTF ("ERROR: Illegal GPIO_OUT %d\n", gpio_output); return;
 	}
 	MIC_DEBUG_UART_PRINTF ("GPIO_OUT %d level is set to %s\n", gpio_output,  (level == GPIO_OUT_LOW) ? "LOW" : "OPEN DRAIN");
+}
+
+void send_gpi_change(uint8_t * gpio_mask)
+{
+	packet_t gpi_msg;
+	gpi_msg.pkt_type = GPIO_INT_STATUS;
+	uint8_t val = 0;
+
+	KGPIOS_INPUT_CHANNELS gpi_num = kANALOG_EXT_IN;
+	/* loop through the mask, if true set the value bit */
+	for (gpi_num = 0; gpi_num < NUM_OF_INPUT_GPIOS; gpi_num++)
+	{
+		if (*gpio_mask>>gpi_num & 0x1)
+		{
+			val |= GPIO_INPUT_get_logic_level(gpi_num)<<gpi_num;
+		}
+	}
+
+	gpi_msg.data[0] = *gpio_mask;
+	gpi_msg.data[1] = val;
+	send_control_msg(&gpi_msg, 2);
 }
 
 void gpio_set_output (KGPIOS_OUTPUT_CHANNELS gpo_num, KOUTPUT_LEVEL level)

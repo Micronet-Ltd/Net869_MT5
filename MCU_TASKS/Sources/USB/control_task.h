@@ -7,6 +7,7 @@
 
 #ifndef _CONTROL_TASK_H_
 #define _CONTROL_TASK_H_
+#include "protocol.h"
 
 void send_control_msg(packet_t * msg, uint8_t msg_size);
 
