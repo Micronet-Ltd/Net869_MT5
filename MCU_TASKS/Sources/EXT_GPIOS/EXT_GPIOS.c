@@ -47,13 +47,19 @@ void GPIO_sample_all (void)
 {
 	uint32_t gpio_event = 0;
 	KGPIOS_INPUT_CHANNELS i;
-	KINPUT_LOGIC_LEVEL state_prev, state_current;
+	KINPUT_LOGIC_LEVEL state_prev, state_current, state_temp;
 
 	for (i = 0; i < NUM_OF_GPI; i++) {
 		state_prev = GPIO_INPUT_get_logic_level (i);
 		ADC_sample_input (gpio_inputs[i].adc_channel);
 		gpio_inputs[i].gpio_input_voltage = ADC_get_value (gpio_inputs[i].adc_channel);
-		state_current = GPIO_INPUT_get_logic_level (i);
+		state_temp = GPIO_INPUT_get_logic_level (i);
+
+		/* Do not update the state if it is in between low and high */
+		//TODO: verify this with Eyal, -Abid
+		if (state_temp == GPIO_IN_LOGIC_3STATE){
+			state_current = state_prev;
+		}
 		
 		if (state_current != state_prev) {
 			MIC_DEBUG_UART_PRINTF ("GPIO_IN %d level became %d\n", i, state_prev);
