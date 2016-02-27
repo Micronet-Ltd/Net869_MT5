@@ -273,7 +273,6 @@ void Main_task( uint32_t initial_data ) {
         8 : u8mainTaskLoopCnt = 0;
 
 
-    }
     _time_delay(MAIN_TASK_SLEEP_PERIOD);            // contact switch
 #endif
 
