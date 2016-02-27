@@ -63,9 +63,13 @@ void GPIO_sample_all (void)
 		if (state_temp == GPIO_IN_LOGIC_3STATE){
 			state_current = state_prev;
 		}
+		else{
+			state_current = state_temp;
+		}
+
 		
 		if (state_current != state_prev) {
-			MIC_DEBUG_UART_PRINTF ("GPIO_IN %d level became %d\n", i, state_prev);
+			MIC_DEBUG_UART_PRINTF ("GPIO_IN %d level became %d\n", i, state_current);
 			gpio_event |= (1 << i);
 		}
 	}
@@ -128,9 +132,11 @@ void send_gpi_change(uint8_t * gpio_mask)
 		}
 	}
 
+	gpi_msg.data = (uint8_t *) malloc(sizeof(uint8_t) * 2);
 	gpi_msg.data[0] = *gpio_mask;
 	gpi_msg.data[1] = val;
 	send_control_msg(&gpi_msg, 2);
+
 }
 
 void gpio_set_output (KGPIOS_OUTPUT_CHANNELS gpo_num, KOUTPUT_LEVEL level)
