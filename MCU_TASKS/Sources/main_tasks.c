@@ -51,6 +51,7 @@ void Main_task( uint32_t initial_data ) {
 	uint32_t i;
 
     uint8_t u8mainTaskLoopCnt = 0;
+    uint32_t FPGA_version = 0;
 
     wiggle_sensor_cnt = 0;
     _time_delay (10);
@@ -230,6 +231,9 @@ void Main_task( uint32_t initial_data ) {
 
 	_event_create ("event.EXTERNAL_GPIOS");
 	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
+
+	FPGA_read_version(&FPGA_version);
+	printf("\n FPGA version, %x", FPGA_version);
 
     printf("\nMain Task: Loop \n");
 
