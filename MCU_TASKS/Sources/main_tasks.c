@@ -142,11 +142,11 @@ void Main_task( uint32_t initial_data ) {
 	J1708_enable  (7);
 
 
-#if 0
+#if 1
 	GPIO_DRV_SetPinOutput   (LED_BLUE);
 
     GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
-    _time_delay (3000);
+    _time_delay (3250);
     GPIO_DRV_SetPinOutput(CPU_ON_OFF);
 
     GPIO_DRV_ClearPinOutput   (LED_BLUE);
