@@ -23,8 +23,8 @@ typedef enum {
 	FPGA_UART_RX_TASK_PRIORITY,
 	ACC_TASK_PRIORITY,
 	VIB_SENSOR_TASK_PRIORITY  ,
-	REG_TASK_PRIORITY,
-	MAIN_TASK_PRIORITY = (REG_TASK_PRIORITY + 16),
+	CONTROL_TASK_PRIORITY,
+	MAIN_TASK_PRIORITY = (CONTROL_TASK_PRIORITY + START_APPLICATION_PRIORITY),
 }PRIORITY_TASK_INDEX_T;
 
 typedef enum {
@@ -39,7 +39,7 @@ typedef enum {
 	J1708_RX_TASK    ,
 	FPGA_UART_RX_TASK,
 	ACC_TASK         ,
-	REG_TASK		 ,
+	CONTROL_TASK	,
 	NUM_TASKS		 ,
 } TASK_TEMPLATE_INDEX_T;
 
@@ -53,14 +53,15 @@ typedef enum {
 	FPGA_UART_RX_QUEUE,
 	ACC_QUEUE        ,
 	POWER_MGM_QUEUE  ,
-	REG_QUEUE   	 ,
+	CONTROL_RX_QUEUE ,
+	CONTROL_TX_QUEUE ,
 	USB_TEST_QUEUE	,
 } APPLICATION_QUEUE_T;
 
 typedef struct {
 	MESSAGE_HEADER_STRUCT 		header;
+	uint64_t					timestamp; /* in milliseconds */
 	uint8_t						data[MAX_MSG_DATA_LEN];
-	TIME_STRUCT					timestamp;
 	uint8_t						portNum;
 } APPLICATION_MESSAGE_T, *APPLICATION_MESSAGE_PTR_T;
 
@@ -73,6 +74,8 @@ extern void Usb_task         (uint32_t);
 extern void J1708_Tx_task     (uint32_t);
 extern void J1708_Rx_task     (uint32_t);
 extern void FPGA_UART_Rx_task (uint32_t );
+
+extern void control_task (uint32_t );
 
 extern void FLEXCAN_Tx_Task( uint32_t param );
 extern void FLEXCAN_Rx_Task( uint32_t param ); 

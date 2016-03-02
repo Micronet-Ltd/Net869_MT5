@@ -1,5 +1,7 @@
 #include "protocol.h"
 #include "frame.h"
+#include "command.h"
+#include "control_task.h"
 
 frame_t g_control_frame;
 frame_t g_j1708_frame;
@@ -50,70 +52,92 @@ void protocol_init_data()
 	frame_setbuffer(&g_j1708_frame, j1708_data_buffer, sizeof(j1708_data_buffer));
 }
 
-static int packet_recieve(int context, uint8_t * data, uint32_t size)
+static int packet_receive(int context, uint8_t * data, uint32_t size)
 {
+	int8_t result = 0;
+	static int8_t last_seq;
+	packet_t req;
+	packet_t resp;
+	uint8_t resp_size = 0;
+
+	req.seq = data[0];
+	req.pkt_type = data[1];
+	req.data = &data[2];
 	// NOTE: maybe these should be separate functions, maybe called by caller instead.
 	if(CONTEXT_CONTROL_EP == context)
 	{
-		static int last_seq = -1;
+		last_seq = -1;
 
 		if(size < 2)
 			return -1; // too small
 
 		// TODO: implement sequence logic
-		if(-1 == last_seq)
-		{
-			// TODO: wait for seq
-			if(0 != data[0])
-				return -1; // wait for sync
-		}
-		else
-		{
-			if( ((last_seq+1)&0xff) != data[1] )
-			{
-				// TODO: set error state
-				last_seq = -1;
-				return -1;
-			}
-			last_seq = data[1]; // SEQ_OFFSET
-		}
+		//TODO: Commenting out seq. logic for now, Abid
+//		if(-1 == last_seq)
+//		{
+//			// TODO: wait for seq
+//			if(0 != req->seq)
+//				return -1; // wait for sync
+//		}
+//		else
+//		{
+//			if( ((last_seq+1)&0xff) != req->seq )
+//			{
+//				// TODO: set error state
+//				last_seq = -1;
+//				return -1;
+//			}
+//			last_seq = req->seq; // SEQ_OFFSET
+//		}
 
 
 		// Handle message
-		switch(data[0])
+		switch(req.pkt_type)//data[0])
 		{
-			case 0: // Sync/Info packet
-				last_seq = data[1];
+			case SYNC_INFO: // Sync/Info packet
+				last_seq = req.seq;
 				// TODO: set sync (normal) state
 				break;
-			case 0x01: break; // TODO: Write register
-			case 0x02: break; // TODO: Register read request
-			case 0x03: return -1; // BUG: Register read response should never receive this
-			case 0x04: break; // TODO: RTC Write
-			case 0x05: break; // TODO: RTC Read request
-			case 0x06: return -1; // BUG: RTC Read response
-			case 0x07: break; // TODO: Ping request
-			case 0x08: break; // TODO: Ping response
-			case 0x09: return -1; // BUG: GPIO Interrup Status
+			case COMM_WRITE_REQ:
+				result = command_set(&req.data[0], size-2);
+				break;
+			case COMM_READ_REQ:
+				result = command_get(&req.data[0], size-2, &resp, &resp_size);
+				resp.seq = req.seq;
+				resp.pkt_type = COMM_READ_RESP;
+				send_control_msg(&resp, resp_size);
+				break; // TODO: Register read request
+			case COMM_READ_RESP: return -1; // BUG: Should never receive this
+//			case RTC_WRITE_REQ: break; // TODO: RTC Write
+//			case RTC_READ_REQ: break; // TODO: RTC Read request
+//			case RTC_READ_RESP: return -1; // BUG: Should never receive this
+			case PING_REQ: break; // TODO:
+			case PING_RESP: break; // TODO:
+			case GPIO_INT_STATUS: return -1; // BUG: Should never receive this
 
-			// 0x80-0xff reserved for future PDU format changes with backwards compatability
+			// 0x80-0xff reserved for future PDU format changes with backwards compatibility
 			default: return -1; // Unknown Ignore
 		}
 	}
 	else if(CONTEXT_J1708_EP == context)
 	{
 		// TODO: add J1708 code here
-		j1708_xmit(data, size);
+		j1708_xmit(req.data, size);
 	}
 	else
 	{
 		return -1;
 	}
 
-	return 0;
+	return result;
 }
 
-int protocol_process_receive_data(int context, uint8_t * data, uint32_t size)
+send_control_response()
+{
+
+}
+
+int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size)
 {
 	uint32_t offset = 0;
 	// TODO: use type for MCU monotonic clock
@@ -143,23 +167,23 @@ int protocol_process_receive_data(int context, uint8_t * data, uint32_t size)
 	}
 
 	// If there is a gap of 10ms then reset and data already received.
-	// This migh need to be something other then 10ms, maybe more or less.
+	// This might need to be something other then 10ms, maybe more or less.
 	// Otherwise if the process crashes in middle of a frame, we will receive
-	// a partial frame. So this timeout should be greather then min delay between
+	// a partial frame. So this timeout should be greater than min delay between
 	// transmissions, this will need to be determined through testing.
 	// TODO: implement or add conversion for clock ticks to ms here
-	if( now - lastrx > MS(10) ) // MS(N) returns 10ms in clock ticks.
+	//if( now - lastrx > MS(10) ) // MS(N) returns 10ms in clock ticks.
 		frame_reset(frame);
 
 
 	while(size - offset > 0)
 	{
-		offset = frame_process_buffer(frame, data + offset, size - offset);
+		offset += frame_process_buffer(frame, data + offset, size - offset);
 
 		if(frame_data_ready(frame))
 		{
 			// TODO: check results
-			packet_recieve(context, frame->data, frame->data_len);
+			packet_receive(context, frame->data, frame->data_len);
 			frame_reset(frame);
 		}
 	}

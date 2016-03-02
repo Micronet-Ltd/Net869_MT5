@@ -15,7 +15,7 @@
 #define FPGA_I2C_BAUD_RATE					400
 #define FPGA_I2C_TIMEOUT					100
 
-#define FPGA_UART_RX_BUF_SIZE 		30
+#define FPGA_UART_RX_BUF_SIZE 		100
 
 const uart_user_config_t fpga_uart_config = {
     .bitCountPerChar = kUart8BitsPerChar,

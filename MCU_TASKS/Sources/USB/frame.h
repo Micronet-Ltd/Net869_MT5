@@ -1,3 +1,6 @@
+#ifndef _FRAME_H
+#define _FRAME_H
+
 #include <stdint.h>
 #include <stdbool.h>
 typedef struct
@@ -16,4 +19,6 @@ int frame_process_buffer(frame_t * frame, uint8_t * buffer, uint32_t len);
 
 int frame_encode(uint8_t * s, uint8_t * d, int len);
 bool frame_data_ready(frame_t * frame);
+
+#endif /* _FRAME_H */
 
