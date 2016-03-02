@@ -68,9 +68,9 @@ void configure_can_pins( uint32_t instance ) {
         break;
     case CAN1_IDX:                       /* CAN1 */
         /* Affects PORTE_PCR25 register */
-        PORT_HAL_SetMuxMode(PORTE, 16u, kPortMuxAlt2);
+        PORT_HAL_SetMuxMode(PORTC, 16u, kPortMuxAlt2);
         /* Affects PORTE_PCR24 register */
-        PORT_HAL_SetMuxMode(PORTE, 17u, kPortMuxAlt2);
+        PORT_HAL_SetMuxMode(PORTC, 17u, kPortMuxAlt2);
         break;
     default:
         break;
