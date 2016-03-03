@@ -181,20 +181,19 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create FPGA_UART_RX_TASK\n");
 	}
 
-#if 0
 	g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
 	if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create POWER_MGM_TASK\n");
 	}
-#endif
 	
+#if 0
 	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
 	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create ACC_TASK\n");
 	}
-
+#endif
     //Disable CAN termination
     GPIO_DRV_ClearPinOutput(CAN1_TERM_ENABLE);
     GPIO_DRV_ClearPinOutput(CAN2_TERM_ENABLE);
