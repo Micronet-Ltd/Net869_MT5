@@ -91,22 +91,6 @@ int main
 #endif  /* defined(__ICCARM__) */
     /* Start MQX */
 
-	SIM_HAL_EnableClock(SIM, kSimClockGatePortA);		// enable port A
-
-	// enable 3.3V power rail
-	PORT_HAL_SetMuxMode     (PORTA, 14, kPortMuxAsGpio);
-	GPIO_HAL_SetPinDir      (GPIOA, 14, kGpioDigitalOutput);
-	GPIO_HAL_WritePinOutput (GPIOA, 14, 1);
-
-	// enable FPGA power rail for 26MHz OSC
-	PORT_HAL_SetMuxMode     (PORTA, 13, kPortMuxAsGpio);
-	GPIO_HAL_SetPinDir      (GPIOA, 13, kGpioDigitalOutput);
-	GPIO_HAL_WritePinOutput (GPIOA, 13, 1);
-
-	// config EXTAL0 to be input clock
-	PORT_HAL_SetMuxMode     (PORTA, 18, kPortPinDisabled);
-
-
     _mqx( (MQX_INITIALIZATION_STRUCT_PTR) &MQX_init_struct );
     return 0;
 }
