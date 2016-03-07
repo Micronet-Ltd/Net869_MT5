@@ -66,6 +66,9 @@
 #include "wiggle_sensor.h"
 #include "ADC.h"
 #include "gpio_pins.h"
+#include "protocol.h"
+
+#include "fpga_api.h"
 
 #define DEVICE_CONTROL_TIME_ON_TH				 3000		// number of mili-seconds pulse for turning device on
 #define DEVICE_CONTROL_TIME_OFF_TH				 3000		// number of mili-seconds pulse for turning device off
@@ -91,6 +94,7 @@ uint8_t ledBlinkCnt       = 0 ;
 
 void Device_control_GPIO        (void);
 bool Device_control_GPIO_status (void);
+void peripherals_enable         (void);
 void peripherals_disable        (void);
 
 
@@ -137,9 +141,10 @@ void Device_update_state (void)
 
 			if (turn_on_condition) {
 				turn_on_condition = FALSE;
-				Wiggle_sensor_stop ();						// disable interrupt
 				ledBlinkCnt = 0;
-				Device_turn_on ();
+				Wiggle_sensor_stop ();						// disable interrupt
+				peripherals_enable ();
+				Device_turn_on     ();
 				GPIO_DRV_ClearPinOutput (LED_RED);
 				device_state = DEVICE_STATE_TURNING_ON;
 			}
@@ -227,6 +232,7 @@ void Device_update_state (void)
 			if (!Device_control_GPIO_status()) {
 				printf ("\nPOWER_MGM: DEVICE IS OFF\n");
 				device_state = DEVICE_STATE_OFF;
+				Wiggle_sensor_restart ();
 				peripherals_disable ();
 				Wiggle_sensor_start ();									// enable interrupt
 			}
@@ -235,6 +241,7 @@ void Device_update_state (void)
 		default:
 			printf ("\nPOWER_MGM: UNKNOWN STATE %d\n", device_state );
 			device_state = DEVICE_STATE_OFF;
+			Wiggle_sensor_restart ();
 			break;
 	}
 #endif
@@ -298,6 +305,45 @@ void Device_control_GPIO (void)
 bool Device_control_GPIO_status  (void) {return device_control_gpio.status;}
 DEVICE_STATE_t Device_get_status (void) {return device_state;}
 
+void peripherals_enable (void)
+{
+	GPIO_DRV_ClearPinOutput (FPGA_RSTB);
+
+    GPIO_DRV_SetPinOutput   (POWER_3V3_ENABLE);	// turn on 3V3 power rail
+    GPIO_DRV_SetPinOutput   (POWER_5V0_ENABLE);	// turn on 5V0 power rail
+    GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
+    FPGA_init ();
+    GPIO_DRV_SetPinOutput   (FPGA_RSTB);
+
+	GPIO_DRV_SetPinOutput   (CAN_ENABLE);			// Enable CAN
+
+    GPIO_DRV_ClearPinOutput (USB_OTG_SEL);		// Connect D1 <-> D MCU or HUB
+//  GPIO_DRV_SetPinOutput(USB_OTG_SEL);			// Connect D2 <-> D A8 OTG
+    GPIO_DRV_ClearPinOutput (USB_OTG_OE);		//Enable OTG/MCU switch
+
+    // Enable USB for DEBUG
+    GPIO_DRV_SetPinOutput   (USB_HUB_RSTN);
+    GPIO_DRV_SetPinOutput   (USB_ENABLE);
+
+    GPIO_DRV_SetPinOutput   (UART_ENABLE);			// Enable UART
+    GPIO_DRV_SetPinOutput   (FTDI_RSTN);
+
+    // wait till FPGA is loaded
+    while (GPIO_DRV_ReadPinInput (FPGA_DONE) == 0)
+    	asm ("nop");
+    J1708_enable  (7);
+
+	{
+		uint8_t Br, R,G,B;
+		R = G = B = 255;
+		Br = 10;
+		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
+		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
+	}
+
+}
+
+
 void peripherals_disable (void)
 {
 	GPIO_DRV_ClearPinOutput (POWER_3V3_ENABLE);
@@ -312,3 +358,7 @@ void peripherals_disable (void)
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
 }
+
+
+
+
