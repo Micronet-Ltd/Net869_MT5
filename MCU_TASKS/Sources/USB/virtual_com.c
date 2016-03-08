@@ -580,7 +580,7 @@ uint8_t USB_App_Class_Callback
             	phandle->send_ready = TRUE;
                 /* User: add your own code for send complete event */
                 /* Schedule buffer for next receive event */
-                //USB_Class_CDC_Recv_Data(handle, DIC_BULK_OUT_ENDPOINT, g_curr_recv_buf, g_bulk_out_max_packet_size);
+            	//USB_Class_CDC_Recv_Data(handle, phandle->out_endpoint, phandle->curr_recv_buf, g_bulk_out_max_packet_size);
             }
         }
     }
@@ -663,6 +663,7 @@ void Usb_task(uint32_t arg)
     }
 }
 
+/* Control/command messages are sent through this CDC port */
 void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 {
     uint8_t error;
@@ -712,6 +713,8 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 {
     uint8_t payload[ACC_MSG_SIZE];
     uint8_t error;
+    //uint8_t * pld_size = &g_app_composite_device.cdc_vcom[1].send_size;
+    //uint8_t * buf = &g_app_composite_device.cdc_vcom[1].curr_send_buf;
 
 #if COMPOSITE_CFG_MAX > 1
     // FIXME: bad predicate
@@ -733,23 +736,22 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         _mem_copy( msg_ptr->data, g_app_composite_device.cdc_vcom[1].curr_send_buf, msg_ptr->header.SIZE );
         g_app_composite_device.cdc_vcom[1].send_size = msg_ptr->header.SIZE;
 #else
-
-        uint64_t ts = (msg_ptr->timestamp.SECONDS * 1000) + msg_ptr->timestamp.MILLISECONDS;
-
         // FIXME: endian assumption
-        _mem_copy ( &ts, payload, sizeof( ts ) );
+        _mem_copy (&(msg_ptr->timestamp), payload, sizeof(msg_ptr->timestamp ));
         // FIXME: no single point definition of actual payload size here
-        _mem_copy( msg_ptr->data, payload + sizeof( ts ), msg_ptr->header.SIZE );
+        _mem_copy( msg_ptr->data, payload + sizeof(msg_ptr->timestamp), msg_ptr->header.SIZE );
+        g_app_composite_device.cdc_vcom[1].send_size = \
+        		frame_encode(payload, g_app_composite_device.cdc_vcom[1].curr_send_buf, (msg_ptr->header.SIZE + sizeof(msg_ptr->timestamp )));
 
-        g_app_composite_device.cdc_vcom[1].send_size = msg_ptr->header.SIZE + sizeof( ts );
-        frame_encode(payload, g_app_composite_device.cdc_vcom[1].curr_send_buf, g_app_composite_device.cdc_vcom[1].send_size);
-        
 #endif
         g_app_composite_device.cdc_vcom[1].send_ready = FALSE;
         error = USB_Class_CDC_Send_Data(g_app_composite_device.cdc_vcom[1].cdc_handle,
                                         g_app_composite_device.cdc_vcom[1].in_endpoint,
                                         g_app_composite_device.cdc_vcom[1].curr_send_buf, 
                                         g_app_composite_device.cdc_vcom[1].send_size);
+
+        //printf("CDC1_send beg:%x,%x,%x,%x - end:%x,%x,%x,%x \t pld = %d, enc = %d\n", buf[0], buf[1], buf[2], buf[3], \
+        //		buf[*pld_size -4], buf[*pld_size -3], buf[*pld_size-2], buf[*pld_size -1], (msg_ptr->header.SIZE + sizeof(msg_ptr->timestamp )), *pld_size );
 
         if(error != USB_OK)
         {
@@ -967,15 +969,17 @@ void USB_Recive_Data ( cdc_struct_t *handle )
    
 }
 
+/* Control/command messages are sent through this CDC EP */
 void CDC0_resv ( cdc_struct_t *handle )
 {
     //Add Source here
     APPLICATION_MESSAGE_T *msg;
+    frame_t frame_buf = { 0 };
 
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
-        printf("CDC4_resv USB Task: ERROR: message allocation failed\n");
+        printf("CDC0_resv USB Task: ERROR: message allocation failed\n");
         return;
     }
     _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
@@ -985,6 +989,34 @@ void CDC0_resv ( cdc_struct_t *handle )
     msg->portNum = MIC_CDC_USB_1;
     _msgq_send (msg);
     handle->recv_size = 0;
+#else
+
+    /* check to make sure we have a start of a frame */
+    //TODO: might need to move this check in the frame decode code so we can
+    // send a frame reset response!!
+	if ( handle->curr_recv_buf[0] != 0x7e )
+	{
+		//printf("CDC0_resv USB Task: first char not 0x7e it's %x\n", handle->curr_recv_buf[0]);
+		handle->recv_size = 0;
+		return;
+	}
+
+    if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
+    {
+        printf("CDC0_resv USB Task: ERROR: message allocation failed\n");
+        handle->recv_size = 0;
+        return;
+    }
+
+    memcpy(msg->data, handle->curr_recv_buf, handle->recv_size);
+
+    msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
+    msg->header.TARGET_QID = _msgq_get_id( 0, CONTROL_RX_QUEUE );
+    msg->header.SIZE = handle->recv_size;
+    msg->portNum = MIC_CDC_USB_1;
+    _msgq_send (msg);
+    handle->recv_size = 0;
+
 #endif
 }
 
@@ -997,7 +1029,7 @@ void CDC1_resv ( cdc_struct_t *handle )
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
-        printf("CDC4_resv USB Task: ERROR: message allocation failed\n");
+        printf("CDC1_resv USB Task: ERROR: message allocation failed\n");
         return;
     }
     _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
@@ -1021,7 +1053,7 @@ void CDC2_resv ( cdc_struct_t *handle )
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
-        printf("CDC4_resv USB Task: ERROR: message allocation failed\n");
+        printf("CDC2_resv USB Task: ERROR: message allocation failed\n");
         return;
     }
     _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
@@ -1045,7 +1077,7 @@ void CDC3_resv ( cdc_struct_t *handle )
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
-        printf("CDC4_resv USB Task: ERROR: message allocation failed\n");
+        printf("CDC3_resv USB Task: ERROR: message allocation failed\n");
         return;
     }
     _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
@@ -1064,6 +1096,7 @@ void CDC4_resv ( cdc_struct_t *handle )
 {
 #if COMPOSITE_CFG_MAX > 4
     APPLICATION_MESSAGE_T *msg;
+	frame_t frame_buf = { 0 };
 
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
@@ -1079,9 +1112,12 @@ void CDC4_resv ( cdc_struct_t *handle )
     _msgq_send (msg);
     handle->recv_size = 0;
 #else
-
-    frame_t frame_buf = { 0 };
-
+	
+	if ( 3 > handle->recv_size )
+	{
+		printf("CDC4_resv USB Task: rec data size %d < 3 \n", handle->recv_size);
+		return;
+	}
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
         printf("CDC4_resv USB Task: ERROR: message allocation failed\n");

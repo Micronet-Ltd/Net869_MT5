@@ -63,7 +63,7 @@ void J1708_Tx_task (uint32_t initial_data)
 		// wait 10 second for interrupt message
 		msg = _msgq_receive(J1708_tx_qid, 10000);
 		if (msg == NULL) {
-			printf ("\nJ1708_Tx: WARNING: Message not received in last 10 Seconds \n");
+			//printf ("\nJ1708_Tx: WARNING: Message not received in last 10 Seconds \n");
 			continue;
 		}
 
@@ -108,6 +108,7 @@ void J1708_Tx_task (uint32_t initial_data)
 void J1708_Rx_task (uint32_t initial_data)
 {
 	APPLICATION_MESSAGE_T *msg;
+	_mqx_uint err_task;
 	const _queue_id     J1708_rx_qid  = _msgq_open (J1708_RX_QUEUE, 0);
 	//_queue_id     USB_qid    	= _msgq_get_id (0, USB_QUEUE     );
 	//_queue_id     USB_qid       = _msgq_get_id (0, J1708_TX_QUEUE     );		// loop for test only
@@ -131,11 +132,10 @@ void J1708_Rx_task (uint32_t initial_data)
 		if (J1708_rx_event_bit == EVENT_J1708_RX)
 			_event_clear    (g_J1708_event_h, EVENT_J1708_RX);
 		else {
-			printf ("\nJ1708_Rx: WARNING: No interrupt in last 10 Seconds \n");
+			//printf ("\nJ1708_Rx: WARNING: No interrupt in last 10 Seconds \n");
 			continue;
 		}
-		_msg_free (msg);
-
+		
 		// read J1708 package length
 		if (!FPGA_read_J1708_rx_register (&J1708_rx_status, &J1708_rx_len)) {
 			J1708_reset ();
@@ -150,14 +150,25 @@ void J1708_Rx_task (uint32_t initial_data)
 
 		// send buffer - Since the buffer is cyclic, it might be needed to split buffer to 2 buffers
 		if ((msg = _msg_alloc(g_out_message_pool)) != NULL) {
-			 msg->header.SOURCE_QID = J1708_rx_qid;
-			 msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);;
-			 msg->header.SIZE       = J1708_rx_len;
-			 msg->portNum 			= MIC_CDC_USB_5;
+			msg->header.SOURCE_QID = J1708_rx_qid;
+			msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);;
+			msg->header.SIZE       = J1708_rx_len;
+			msg->portNum 			= MIC_CDC_USB_5;
+			 
+			_msgq_send (msg);
+			if (MQX_OK != (err_task = _task_get_error()))
+			{
+				printf("J1708_Rx_task Task: ERROR: message send failed %x\n", err_task);
+				_task_set_error(MQX_OK);
+			}
 		}
 		else {
-			printf ("\nJ1708_Rx: ERROR: Could not allocated message buffer\n");
-			break;
+			if (MQX_OK != (err_task = _task_get_error()))
+			{
+				_task_set_error(MQX_OK);
+			}
+			printf("J1708_Rx_task Task: ERROR: message allocation failed %x\n", err_task);
+			continue;
 		}
 
 		// calculate actual buffer size

@@ -12,7 +12,7 @@
 #include "tasks_list.h"
 #include "gpio_pins.h"
 #include "J1708_task.h"
-//#include "fpga_api.h"
+#include "fpga_api.h"
 #include "ADC.h"
 #include "EXT_GPIOS.h"
 #include "wiggle_sensor.h"
@@ -49,6 +49,7 @@ void Main_task( uint32_t initial_data ) {
 	uint32_t i;
 
     uint8_t u8mainTaskLoopCnt = 0;
+    uint32_t FPGA_version = 0;
 
     _time_delay (10);
 
@@ -68,8 +69,10 @@ void Main_task( uint32_t initial_data ) {
     GPIO_Config();
     ADC_init ();
 
-    OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
-    OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
+	NVIC_SetPriority(PORTA_IRQn, 6U);
+	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
+	NVIC_SetPriority(PORTC_IRQn, 6U);
+	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 
     // I2C0 Initialization
     NVIC_SetPriority(I2C0_IRQn, 6U);
@@ -128,7 +131,6 @@ void Main_task( uint32_t initial_data ) {
 	{
 		printf("\nMain Could not create POWER_MGM_TASK\n");
 	}
-	
 #if 0
 	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
 	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
@@ -136,6 +138,12 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create ACC_TASK\n");
 	}
 #endif
+	g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
+	if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create CONTROL_TASK\n");
+	}
+
     //Disable CAN termination
     GPIO_DRV_ClearPinOutput(CAN1_TERM_ENABLE);
     GPIO_DRV_ClearPinOutput(CAN2_TERM_ENABLE);
@@ -148,20 +156,28 @@ void Main_task( uint32_t initial_data ) {
 
     _test_CANFLEX();
 
+	if (GPIO_DRV_ReadPinInput (SWITCH1) == 1)
+	{
+		/* Connect D1 <-> D MCU or HUB */
+		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
+	    GPIO_DRV_ClearPinOutput(USB_OTG_SEL);
+	}
+	else
+	{
+		/* Connect D2 <-> D A8 OTG */
+		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
+	    GPIO_DRV_SetPinOutput(USB_OTG_SEL);
+	}
+
 	_event_create ("event.EXTERNAL_GPIOS");
 	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
 
+	FPGA_read_version(&FPGA_version);
+	printf("\n FPGA version, %x", FPGA_version);
 
     printf("\nMain Task: Loop \n");
 
-
     while ( 1 ) {
-		gpio_sample_timer  += MAIN_TASK_SLEEP_PERIOD;
-		if (gpio_sample_timer >= TIME_ONE_SECOND_PERIOD) {
-			gpio_sample_timer = 0;
-			GPIO_sample_all ();
-		}
-
 	    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
     }
 

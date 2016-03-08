@@ -216,10 +216,17 @@ int _bsp_pre_init(void)
         return result;
     }
 
+    return _bsp_MQX_tick_timer_init ();
+}
+
 
 /******************************************************************************
                         Init MQX tick timer
 ******************************************************************************/
+int _bsp_MQX_tick_timer_init (void)
+{
+	uint32_t result;
+
     /* Initialize , set and run system hwtimer */
     result = HWTIMER_SYS_Init(&systimer, &BSP_SYSTIMER_DEV, BSP_SYSTIMER_ID, NULL);
     if (kStatus_OSA_Success != result) {

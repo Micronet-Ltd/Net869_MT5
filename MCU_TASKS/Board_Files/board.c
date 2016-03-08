@@ -121,6 +121,7 @@ void Board_SetFastClk (void)
 
 	CLOCK_SYS_BootToPee(&g_defaultClockConfigRun.mcgConfig);
 	SystemCoreClock = CORE_CLOCK_FREQ;
+	_bsp_MQX_tick_timer_init ();
 }
 
 // this function modifies the MCG configuration from any state to FEI
@@ -154,6 +155,7 @@ void Board_SetSlowClk (void)
 
 	CLOCK_SYS_BootToFei(&g_defaultClockConfigVlpr.mcgConfig);
 	SystemCoreClock = CORE_LPM_CLOCK_FREQ;
+	_bsp_MQX_tick_timer_init ();
 }
 
 

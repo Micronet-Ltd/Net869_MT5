@@ -103,6 +103,7 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Board_Files&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/USB&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/power_mgm&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/FlexCAN&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/J1708&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/FPGA_API&quot;"/>

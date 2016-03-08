@@ -2241,6 +2241,7 @@ int _bsp_init(void);
  * \cond DOXYGEN_PRIVATE
  */
 int _bsp_pre_init(void);
+int _bsp_MQX_tick_timer_init(void);
 /*! \endcond */
 
 /*!

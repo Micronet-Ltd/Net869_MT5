@@ -15,6 +15,7 @@
 #define TEMPERATURE_TIME_DELAY		5000
 #define IGNITION_TIME_DELAY			1000
 #define CABLE_TYPE_TIME_DELAY		1000
+#define EXT_GPIO_TIME_DELAY			1000
 
 #define CABLE_TYPE_VOLTAGE			(3300 / 2)
 #define CABLE_TYPE_MIN_VOLTAGE		(CABLE_TYPE_VOLTAGE *  90/100)
@@ -38,6 +39,7 @@ void Power_MGM_task (uint32_t initial_data )
 	uint32_t current_time          = 0;
 	uint32_t temperature_last_time = 0;
 	uint32_t ignition_last_time    = 0;
+	uint32_t ext_gpio_last_time    = 0;
 	uint32_t cable_type_last_time  = 0;
 	uint32_t cable_type_voltage    = 0;
 
@@ -70,6 +72,11 @@ void Power_MGM_task (uint32_t initial_data )
 				(cable_type_voltage > CABLE_TYPE_MAX_VOLTAGE) ) {
 				// TO DO: set event or send message
 			}
+		}
+
+		if ((current_time - ext_gpio_last_time) >= EXT_GPIO_TIME_DELAY) {
+			ext_gpio_last_time = current_time;
+			GPIO_sample_all ();
 		}
 
 		Device_update_state      ();
