@@ -10,11 +10,7 @@
 #include "protocol.h"
 #include "gpio_pins.h"
 #include "EXT_GPIOS.h"
-
-#define FW_VER_BTLD_OR_APP 0x0A /* 0xA : Application, 0xB: Bootloader */
-#define FW_VER_MAJOR 0
-#define FW_VER_MINOR 1
-#define FW_VER_BUILD 1
+#include "version.h"
 
 #define GET_COMMAND 0
 #define SET_COMMAND 1
@@ -35,11 +31,6 @@ static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val
 static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 static void get_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 static void set_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-
-static const uint32_t fw_ver_g = (((FW_VER_BTLD_OR_APP & 0xFF)<<24) |
-								((FW_VER_MAJOR & 0xFF) << 16) |
-								((FW_VER_MINOR & 0xFF) << 8) |
-								(FW_VER_BUILD & 0xFF));
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -96,7 +87,10 @@ int8_t command_get(uint8_t * data, uint16_t data_size,
 	resp->data = (uint8_t *) malloc(sizeof(comm_g[address].response_size)+1);
 	resp->data[0] = address;
 	*resp_size = comm_g[address].response_size + 1;
-	comm_g[address].fx(&data[1], data_size, &resp->data[1]);
+	if (comm_g[address].fx != NULL )
+	{
+		comm_g[address].fx(&data[1], data_size, &resp->data[1]);
+	}
 
 	return SUCCESS;
 }
@@ -104,7 +98,10 @@ int8_t command_get(uint8_t * data, uint16_t data_size,
 /* returns 4 bytes with fw version */
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver)
 {
-	memcpy(pfw_ver, (uint8_t *)&fw_ver_g, sizeof(fw_ver_g));
+	pfw_ver[0] = FW_VER_BTLD_OR_APP;
+	pfw_ver[1] = FW_VER_MAJOR;
+	pfw_ver[2] = FW_VER_MINOR;
+	pfw_ver[3] = FW_VER_BUILD;
 }
 
 /* data[0]: GPIO value */
