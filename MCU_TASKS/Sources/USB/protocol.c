@@ -112,7 +112,11 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 //			case RTC_WRITE_REQ: break; // TODO: RTC Write
 //			case RTC_READ_REQ: break; // TODO: RTC Read request
 //			case RTC_READ_RESP: return -1; // BUG: Should never receive this
-			case PING_REQ: break; // TODO:
+			case PING_REQ:
+				//resp.seq = req.seq;
+				//resp.pkt_type = PING_RESP;
+				//send_control_msg(&resp, resp_size);
+				break;
 			case PING_RESP: break; // TODO:
 			case GPIO_INT_STATUS:
 				/* process a GPIO output message */
