@@ -63,7 +63,7 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 
 	req.seq = data[0];
 	req.pkt_type = data[1];
-	req.data = &data[2];
+//	req.data = &data[2];
 	// NOTE: maybe these should be separate functions, maybe called by caller instead.
 	if(CONTEXT_CONTROL_EP == context)
 	{
@@ -132,6 +132,9 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 	{
 		return -1;
 	}
+
+	// added by eyal
+	memcpy (&data[2], &req.data, MAX_PACKET_SIZE);
 
 	return result;
 }
