@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <gpio_pins.h>
 #include "fsl_port_hal.h"
+#include "event.h"
 
 #include "wiggle_sensor.h"
 

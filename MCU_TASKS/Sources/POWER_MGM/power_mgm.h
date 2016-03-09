@@ -6,6 +6,8 @@ extern "C"
 {
 #endif
 
+#define CABLE_TYPE_VOLTAGE					(3300 / 2)
+
 #define POWER_IN_TURN_ON_TH					7200
 #define POWER_IN_SHUTDOWN_TH				6000
 #define POWER_IN_SUPERCAP_DISCHARGE_TH		POWER_IN_SHUTDOWN_TH
