@@ -154,9 +154,6 @@ void Device_update_state (void)
 			break;
 
 		case DEVICE_STATE_TURNING_ON:
-			GPIO_DRV_SetPinOutput (POWER_3V3_ENABLE);
-			GPIO_DRV_SetPinOutput (FPGA_PWR_ENABLE);		// enables CPU GPIOs power
-
 			// wait while pulse is still generated (time period didn't reach threshold)
 			if (!Device_control_GPIO_status()) {
 				Board_SetFastClk ();
@@ -167,8 +164,6 @@ void Device_update_state (void)
 
 		case DEVICE_STATE_ON:
 			GPIO_DRV_SetPinOutput (LED_GREEN);
-			GPIO_DRV_SetPinOutput (POWER_3V3_ENABLE);
-			GPIO_DRV_SetPinOutput (FPGA_PWR_ENABLE);
 
 			// if power drops below threshold - shutdown
 			if (power_in_voltage < POWER_IN_SHUTDOWN_TH) {
@@ -313,10 +308,8 @@ void peripherals_enable (void)
 
 	GPIO_DRV_ClearPinOutput (FPGA_RSTB);
 
-    GPIO_DRV_SetPinOutput   (POWER_3V3_ENABLE);	// turn on 3V3 power rail
     GPIO_DRV_SetPinOutput   (POWER_5V0_ENABLE);	// turn on 5V0 power rail
     GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
-    FPGA_init ();
     GPIO_DRV_SetPinOutput   (FPGA_RSTB);
 
 	GPIO_DRV_SetPinOutput   (CAN_ENABLE);			// Enable CAN
@@ -357,7 +350,6 @@ void peripherals_enable (void)
 
 void peripherals_disable (void)
 {
-	GPIO_DRV_ClearPinOutput (POWER_3V3_ENABLE);
 	GPIO_DRV_ClearPinOutput (LED_RED);
 	GPIO_DRV_ClearPinOutput (LED_GREEN);
 	GPIO_DRV_ClearPinOutput (LED_BLUE);
