@@ -34,6 +34,7 @@
 #include "fsl_debug_console.h"
 #include "pin_mux.h"
 
+#include "mqx_prv.h"
 #include "MK20D10_extension.h"
 
 /* Configuration for enter VLPR mode. Core clock = 4MHz. */

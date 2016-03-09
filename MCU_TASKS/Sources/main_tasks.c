@@ -62,6 +62,7 @@ void Main_task( uint32_t initial_data ) {
     OSA_Init();
     GPIO_Config();
     ADC_init ();
+    FPGA_init ();
 
 	NVIC_SetPriority(PORTA_IRQn, 6U);
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
@@ -76,7 +77,6 @@ void Main_task( uint32_t initial_data ) {
     // turn on device
     GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
 	GPIO_DRV_SetPinOutput(ACC_ENABLE       );
-
 
     _time_delay(20);
     g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
