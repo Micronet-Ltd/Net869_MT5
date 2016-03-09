@@ -150,6 +150,7 @@ void Board_SetSlowClk (void)
 							while ((CLOCK_HAL_IsPllSelected(MCG) != false)) {}			// wait for PLLST status bit to clear
 
 							MCG_WR_C5(MCG, 0U);											// Disable PLL
+							break;
 
 		default : return;																// all other cases are not supported
 	}
