@@ -42,13 +42,7 @@ void _test_CANFLEX( void );
 void Main_task( uint32_t initial_data ) {
 
     _queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
-	_queue_id  j1708_rx_qid;
-	//APPLICATION_MESSAGE_T *msg;
-	uint32_t gpios_event_bit;
-	uint32_t gpio_sample_timer = 0;
-	uint32_t i;
 
-    uint8_t u8mainTaskLoopCnt = 0;
     uint32_t FPGA_version = 0;
 
     _time_delay (10);
