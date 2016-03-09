@@ -32,24 +32,6 @@ typedef enum comm_err
 	ERR_ENUM_SIZE
 }comm_err_t;
 
-/* GPIO related stuff, might want to move this to a separate file */
-typedef enum
-{
-	GPIO0,
-	GPIO1,
-	GPIO2,
-	GPIO3,
-	GPIO4,
-	GPIO5,
-	GPIO6,
-	GPIO7,
-	GPIO8,
-	GPIO9,
-	GPIO10,
-
-	GPIO_NUM
-}virtual_gpio_names_enum;
-
 typedef struct comm_type
 {
 	void (*fx)(uint8_t * req, uint16_t size, uint8_t * resp);

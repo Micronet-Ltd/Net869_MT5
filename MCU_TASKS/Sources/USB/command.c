@@ -29,8 +29,8 @@ typedef union gpio_config_type
 
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver);
 static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver);
-static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
+static void get_gpio_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
+static void set_gpio_output_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 static void get_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 static void set_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 
@@ -42,16 +42,16 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_GET_FPGA_VERSION ] = {get_fpga_ver,
 						  GET_COMMAND,
 						  sizeof(uint32_t)},
-	[COMM_GET_GPIO_IN_CNFG] = {NULL,
-						  GET_COMMAND,
-						  sizeof(uint8_t)},
-	[COMM_SET_GPIO_IN_CNFG] = {NULL,
-						SET_COMMAND,
-						sizeof(uint8_t)},
-	[COMM_GET_GPIO] = {get_gpio_val,
+//	[COMM_GET_GPIO_IN_CNFG] = {NULL,
+//						  GET_COMMAND,
+//						  sizeof(uint8_t)},
+//	[COMM_SET_GPIO_IN_CNFG] = {NULL,
+//						SET_COMMAND,
+//						sizeof(uint8_t)},
+	[COMM_GET_GPIO] = {get_gpio_input_voltage,
 						GET_COMMAND,
 						sizeof(uint8_t)},
-	[COMM_SET_GPIO] = {set_gpio_val,
+	[COMM_SET_GPIO] = {set_gpio_output_val,
 						SET_COMMAND,
 						0},
 };
@@ -116,13 +116,13 @@ static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver
 }
 
 /* data[0]: GPIO value */
-static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
+static void get_gpio_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
 {
 	//TODO: Need to use EXT_GPIO.c Abid
 	//pgpio_val[0] = (uint8_t)GPIO_DRV_ReadPinInput(gpio_out_mapping[data[0]]);
 }
 
-static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
+static void set_gpio_output_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
 {
 	gpio_set_output(data[0], data[1]);
 }

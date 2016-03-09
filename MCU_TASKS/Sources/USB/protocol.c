@@ -109,9 +109,7 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 				send_control_msg(&resp, resp_size);
 				break; // TODO: Register read request
 			case COMM_READ_RESP: return -1; // BUG: Should never receive this
-//			case RTC_WRITE_REQ: break; // TODO: RTC Write
-//			case RTC_READ_REQ: break; // TODO: RTC Read request
-//			case RTC_READ_RESP: return -1; // BUG: Should never receive this
+
 			case PING_REQ:
 				//resp.seq = req.seq;
 				//resp.pkt_type = PING_RESP;
