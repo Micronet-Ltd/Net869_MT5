@@ -2,6 +2,7 @@
 #include "frame.h"
 #include "command.h"
 #include "control_task.h"
+#include "EXT_GPIOS.h"
 
 frame_t g_control_frame;
 frame_t g_j1708_frame;
@@ -108,12 +109,17 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 				send_control_msg(&resp, resp_size);
 				break; // TODO: Register read request
 			case COMM_READ_RESP: return -1; // BUG: Should never receive this
-//			case RTC_WRITE_REQ: break; // TODO: RTC Write
-//			case RTC_READ_REQ: break; // TODO: RTC Read request
-//			case RTC_READ_RESP: return -1; // BUG: Should never receive this
-			case PING_REQ: break; // TODO:
+
+			case PING_REQ:
+				//resp.seq = req.seq;
+				//resp.pkt_type = PING_RESP;
+				//send_control_msg(&resp, resp_size);
+				break;
 			case PING_RESP: break; // TODO:
-			case GPIO_INT_STATUS: return -1; // BUG: Should never receive this
+			case GPIO_INT_STATUS:
+				/* process a GPIO output message */
+				gpio_set_multiple_outputs(&req.data[0], &req.data[1]);
+				break; // BUG: Should never receive this
 
 			// 0x80-0xff reserved for future PDU format changes with backwards compatibility
 			default: return -1; // Unknown Ignore

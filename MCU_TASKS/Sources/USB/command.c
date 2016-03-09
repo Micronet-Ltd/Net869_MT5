@@ -9,11 +9,9 @@
 #include "command.h"
 #include "protocol.h"
 #include "gpio_pins.h"
-
-#define FW_VER_BTLD_OR_APP 0x0A /* 0xA : Application, 0xB: Bootloader */
-#define FW_VER_MAJOR 0
-#define FW_VER_MINOR 1
-#define FW_VER_BUILD 1
+#include "EXT_GPIOS.h"
+#include "version.h"
+#include "fpga_API.h"
 
 #define GET_COMMAND 0
 #define SET_COMMAND 1
@@ -30,40 +28,32 @@ typedef union gpio_config_type
 }gpio_config_t;
 
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver);
-static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
+static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver);
+static void get_gpio_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
+static void set_gpio_output_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 static void get_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
 static void set_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-
-static const uint32_t fw_ver_g = (((FW_VER_BTLD_OR_APP & 0xFF)<<24) |
-								((FW_VER_MAJOR & 0xFF) << 16) |
-								((FW_VER_MINOR & 0xFF) << 8) |
-								(FW_VER_BUILD & 0xFF));
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
 	[COMM_GET_FW_VERSION ] = {get_fw_ver,
 						  GET_COMMAND,
 						  sizeof(uint32_t)},
-	[COMM_GET_GPIO_IN_CNFG] = {NULL,
-							GET_COMMAND,
-							sizeof(uint8_t)},
-	[COMM_SET_GPIO_IN_CNFG] = {NULL,
-						SET_COMMAND,
-						sizeof(uint8_t)},
-	[COMM_GET_GPIO] = {get_gpio_val,
+	[COMM_GET_FPGA_VERSION ] = {get_fpga_ver,
+						  GET_COMMAND,
+						  sizeof(uint32_t)},
+//	[COMM_GET_GPIO_IN_CNFG] = {NULL,
+//						  GET_COMMAND,
+//						  sizeof(uint8_t)},
+//	[COMM_SET_GPIO_IN_CNFG] = {NULL,
+//						SET_COMMAND,
+//						sizeof(uint8_t)},
+	[COMM_GET_GPIO] = {get_gpio_input_voltage,
 						GET_COMMAND,
 						sizeof(uint8_t)},
-	[COMM_SET_GPIO] = {set_gpio_val,
+	[COMM_SET_GPIO] = {set_gpio_output_val,
 						SET_COMMAND,
 						0},
-};
-
-static uint16_t gpio_out_mapping[] = {
-		[GPIO0] = GPIO_OUT1,
-		[GPIO1] = GPIO_OUT2,
-		[GPIO2] = GPIO_OUT3,
-		[GPIO3] = GPIO_OUT4,
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -102,7 +92,10 @@ int8_t command_get(uint8_t * data, uint16_t data_size,
 	resp->data = (uint8_t *) malloc(sizeof(comm_g[address].response_size)+1);
 	resp->data[0] = address;
 	*resp_size = comm_g[address].response_size + 1;
-	comm_g[address].fx(&data[1], data_size, &resp->data[1]);
+	if (comm_g[address].fx != NULL )
+	{
+		comm_g[address].fx(&data[1], data_size, &resp->data[1]);
+	}
 
 	return SUCCESS;
 }
@@ -110,28 +103,26 @@ int8_t command_get(uint8_t * data, uint16_t data_size,
 /* returns 4 bytes with fw version */
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver)
 {
-	memcpy(pfw_ver, (uint8_t *)&fw_ver_g, sizeof(fw_ver_g));
+	pfw_ver[0] = FW_VER_BTLD_OR_APP;
+	pfw_ver[1] = FW_VER_MAJOR;
+	pfw_ver[2] = FW_VER_MINOR;
+	pfw_ver[3] = FW_VER_BUILD;
+}
+
+/* returns 4 bytes with fpga version */
+static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver)
+{
+	FPGA_read_version((uint32_t *)pfpga_ver);
 }
 
 /* data[0]: GPIO value */
-static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
+static void get_gpio_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
 {
-	pgpio_val[0] = (uint8_t)GPIO_DRV_ReadPinInput(gpio_out_mapping[data[0]]);
+	//TODO: Need to use EXT_GPIO.c Abid
+	//pgpio_val[0] = (uint8_t)GPIO_DRV_ReadPinInput(gpio_out_mapping[data[0]]);
 }
 
-static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
+static void set_gpio_output_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
 {
-	GPIO_DRV_WritePinOutput(gpio_out_mapping[data[0]], data[1] );
-	//printf("set GPIO num: %d to val %d \n", data[0], data[1]);
-}
-
-/* data[0]: GPIO value */
-static void get_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
-{
-
-}
-
-static void set_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
-{
-
+	gpio_set_output(data[0], data[1]);
 }

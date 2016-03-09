@@ -13,10 +13,11 @@
 typedef enum
 {
 	COMM_GET_FW_VERSION = 0,
-	COMM_GET_GPIO_IN_CNFG = 1,
-	COMM_SET_GPIO_IN_CNFG = 2,
-	COMM_GET_GPIO = 3,
-	COMM_SET_GPIO = 4,
+	COMM_GET_FPGA_VERSION = 1,
+	COMM_GET_GPIO_IN_CNFG = 2,
+	COMM_SET_GPIO_IN_CNFG = 3,
+	COMM_GET_GPIO = 4,
+	COMM_SET_GPIO = 5,
 
 	COMM_ENUM_SIZE
 }command_enum;
@@ -30,24 +31,6 @@ typedef enum comm_err
 
 	ERR_ENUM_SIZE
 }comm_err_t;
-
-/* GPIO related stuff, might want to move this to a separate file */
-typedef enum
-{
-	GPIO0,
-	GPIO1,
-	GPIO2,
-	GPIO3,
-	GPIO4,
-	GPIO5,
-	GPIO6,
-	GPIO7,
-	GPIO8,
-	GPIO9,
-	GPIO10,
-
-	GPIO_NUM
-}virtual_gpio_names_enum;
 
 typedef struct comm_type
 {
