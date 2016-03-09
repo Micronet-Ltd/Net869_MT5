@@ -62,13 +62,20 @@
 **************************************************************************************/
 
 #include "Device_control_GPIO.h"
+#include "ADC.h"
 #include "power_mgm.h"
 #include "wiggle_sensor.h"
-#include "ADC.h"
-#include "gpio_pins.h"
-#include "protocol.h"
 
+#include "board.h"
+#include "gpio_pins.h"
+
+#include "control_task.h"
+
+// TODO: need to be removed after tasks enable will be set fro USB protocol
 #include "fpga_api.h"
+#include "J1708_task.h"
+
+#include "Uart_debugTerminal.h"
 
 #define DEVICE_CONTROL_TIME_ON_TH				 3000		// number of mili-seconds pulse for turning device on
 #define DEVICE_CONTROL_TIME_OFF_TH				 3000		// number of mili-seconds pulse for turning device off
@@ -96,17 +103,15 @@ void Device_control_GPIO        (void);
 bool Device_control_GPIO_status (void);
 void peripherals_enable         (void);
 void peripherals_disable        (void);
+void send_power_change          (uint8_t *power_mask);
 
 
 void Device_update_state (void)
 {
-#if 1
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
 	uint32_t ingition_voltage  = ADC_get_value (kADC_ANALOG_IN1 );
 	int32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
-	bool     turn_on_condition = FALSE;
-
-
+	uint8_t  turn_on_condition = 0;
 
 	Device_control_GPIO ();
 
@@ -128,23 +133,21 @@ void Device_update_state (void)
 				break;
 
 			if (ingition_voltage >= IGNITION_TURN_ON_TH) {
-				printf ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
-				turn_on_condition = TRUE;
-				// TO DO: set event or send message
+				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
+				turn_on_condition |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;
 			}
 
 			if (Wiggle_sensor_cross_TH ()) {
-				printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
-				turn_on_condition = TRUE;
-				// TO DO: set event or send message
+				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
+				turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
 			}
 
-			if (turn_on_condition) {
-				turn_on_condition = FALSE;
+			if (turn_on_condition != 0) {
 				ledBlinkCnt = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
 				peripherals_enable ();
 				Device_turn_on     ();
+				send_power_change  (&turn_on_condition);
 				GPIO_DRV_ClearPinOutput (LED_RED);
 				device_state = DEVICE_STATE_TURNING_ON;
 			}
@@ -158,7 +161,7 @@ void Device_update_state (void)
 			if (!Device_control_GPIO_status()) {
 				Board_SetFastClk ();
 				device_state = DEVICE_STATE_ON;
-				printf ("\nPOWER_MGM: DEVICE RUNNING\n");
+				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE RUNNING\n");
 			}
 			break;
 
@@ -169,7 +172,7 @@ void Device_update_state (void)
 
 			// if power drops below threshold - shutdown
 			if (power_in_voltage < POWER_IN_SHUTDOWN_TH) {
-				printf ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - SHUTING DOWN !!! \n", power_in_voltage);
+				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - SHUTING DOWN !!! \n", power_in_voltage);
 				device_state = DEVICE_STATE_BACKUP_RECOVERY;
 				break;
 			}
@@ -177,7 +180,7 @@ void Device_update_state (void)
 			// if temperature is out of range - turn off device
 			if ((temperature < TEMPERATURE_MIN_TH)   ||
 				(temperature > TEMPERATURE_MAX_TH)    ) {
-				printf ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
+				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
 				GPIO_DRV_ClearPinOutput (LED_GREEN);
 				Device_turn_off  ();
 				Board_SetSlowClk ();
@@ -194,13 +197,13 @@ void Device_update_state (void)
 				peripherals_disable ();
 				Board_SetSlowClk ();
 				device_state = DEVICE_STATE_BACKUP_POWER;
-				printf ("\nPOWER_MGM: Recovery period is over\n");
+				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: Recovery period is over\n");
 				break;
 			}
 
 			// if power is back during recovery period - return to DEVICE_ON state, like nothing happen
 			if (power_in_voltage >= POWER_IN_TURN_ON_TH) {
-				printf ("\nPOWER_MGM: INPUT POWER OK %d\n", power_in_voltage);
+				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: INPUT POWER OK %d\n", power_in_voltage);
 				backup_power_cnt = 0;
 				device_state = DEVICE_STATE_ON;
 			}
@@ -222,7 +225,7 @@ void Device_update_state (void)
 				ledBlinkCnt = 0;
 				Device_turn_off ();
 				device_state = DEVICE_STATE_TURN_OFF;
-				printf ("\nPOWER_MGM: backup period is over - shutting down\n");
+				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: backup period is over - shutting down\n");
 
 			}
 			break;
@@ -230,7 +233,7 @@ void Device_update_state (void)
 		case DEVICE_STATE_TURN_OFF:
 			// wait while pulse is still generated (time period didn't reach threshold)
 			if (!Device_control_GPIO_status()) {
-				printf ("\nPOWER_MGM: DEVICE IS OFF\n");
+				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF\n");
 				device_state = DEVICE_STATE_OFF;
 				Wiggle_sensor_restart ();
 				peripherals_disable ();
@@ -239,12 +242,11 @@ void Device_update_state (void)
 			break;
 
 		default:
-			printf ("\nPOWER_MGM: UNKNOWN STATE %d\n", device_state );
+			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: ERROR: UNKNOWN STATE %d\n", device_state );
 			device_state = DEVICE_STATE_OFF;
 			Wiggle_sensor_restart ();
 			break;
 	}
-#endif
 }
 
 
@@ -307,6 +309,8 @@ DEVICE_STATE_t Device_get_status (void) {return device_state;}
 
 void peripherals_enable (void)
 {
+	uint32_t i;
+
 	GPIO_DRV_ClearPinOutput (FPGA_RSTB);
 
     GPIO_DRV_SetPinOutput   (POWER_3V3_ENABLE);	// turn on 3V3 power rail
@@ -329,10 +333,17 @@ void peripherals_enable (void)
     GPIO_DRV_SetPinOutput   (FTDI_RSTN);
 
     // wait till FPGA is loaded
-    while (GPIO_DRV_ReadPinInput (FPGA_DONE) == 0)
-    	asm ("nop");
+    for (i = 0; i < 100000; i++) {
+    	if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1) {
+    		MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: INFO: FPGA is loaded\n");
+    		break;
+    	}
+    }
+
+    // TODO: need to be removed after tasks enable will be set fro USB protocol
     J1708_enable  (7);
 
+    // TODO: need to be removed after tasks enable will be set fro USB protocol
 	{
 		uint8_t Br, R,G,B;
 		R = G = B = 255;
@@ -360,5 +371,11 @@ void peripherals_disable (void)
 }
 
 
+void send_power_change (uint8_t *power_mask)
+{
+	packet_t pwm_msg;						// power management message
+	pwm_msg.pkt_type = POWER_MGM_STATUS;
 
-
+	pwm_msg.data[0] = *power_mask;
+	send_control_msg(&pwm_msg, 1);
+}
