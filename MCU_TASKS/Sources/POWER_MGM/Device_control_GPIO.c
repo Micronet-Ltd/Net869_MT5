@@ -84,7 +84,8 @@
 #define BACKUP_RECOVER_TIME_TH					 1000		// number of mili-seconds to try power failure overcome (device is powered by supercap)
 #define BACKUP_POWER_TIME_TH					10000		// number of mili-seconds to power device by supercap
 
-typedef struct {
+typedef struct
+{
 	uint32_t time_threshold;								// pulse time period
 	uint32_t time;											// time counter
 	uint32_t delay_period;									// time duration that needs to be added to counter
@@ -93,11 +94,11 @@ typedef struct {
 } DEVICE_CONTROL_GPIO_t;
 
 
-DEVICE_CONTROL_GPIO_t device_control_gpio;
-DEVICE_STATE_t        device_state;
+DEVICE_CONTROL_GPIO_t device_control_gpio_g;
+DEVICE_STATE_t        device_state_g;
 
-uint32_t backup_power_cnt = 0 ;
-uint8_t ledBlinkCnt       = 0 ;
+uint32_t backup_power_cnt_g = 0 ;
+uint8_t led_blink_cnt_g     = 0 ;
 
 void Device_control_GPIO        (void);
 bool Device_control_GPIO_status (void);
@@ -109,18 +110,19 @@ void send_power_change          (uint8_t *power_mask);
 void Device_update_state (void)
 {
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
-	uint32_t ingition_voltage  = ADC_get_value (kADC_ANALOG_IN1 );
+	uint32_t ignition_voltage  = ADC_get_value (kADC_ANALOG_IN1 );
 	int32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
 	uint8_t  turn_on_condition = 0;
 
 	Device_control_GPIO ();
 
-	switch (device_state) {
+	switch (device_state_g)
+	{
 		case DEVICE_STATE_OFF:
 			// blink RED LED when device is off
-			if      (++ledBlinkCnt == 8)		GPIO_DRV_SetPinOutput   (LED_RED);
-			else if (  ledBlinkCnt < 10)		GPIO_DRV_ClearPinOutput (LED_RED);
-			else       ledBlinkCnt = 0;
+			if      (++led_blink_cnt_g == 8)		GPIO_DRV_SetPinOutput   (LED_RED);
+			else if (  led_blink_cnt_g < 10)		GPIO_DRV_ClearPinOutput (LED_RED);
+			else       led_blink_cnt_g = 0;
 
 			// check amount of vibrations sensed by the wiggle sensor
 			// if amount of vibrations is more than TH, it will turn on the device
@@ -132,32 +134,36 @@ void Device_update_state (void)
 				(temperature      > TEMPERATURE_MAX_TH  )  )
 				break;
 
-			if (ingition_voltage >= IGNITION_TURN_ON_TH) {
+			if (ignition_voltage >= IGNITION_TURN_ON_TH)
+			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
 				turn_on_condition |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;
 			}
 
-			if (Wiggle_sensor_cross_TH ()) {
+			if (Wiggle_sensor_cross_TH ())
+			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
 				turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
 			}
 
-			if (turn_on_condition != 0) {
-				ledBlinkCnt = 0;
+			if (turn_on_condition != 0)
+			{
+				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
 				peripherals_enable ();
 				Device_turn_on     ();
 				send_power_change  (&turn_on_condition);
 				GPIO_DRV_ClearPinOutput (LED_RED);
-				device_state = DEVICE_STATE_TURNING_ON;
+				device_state_g = DEVICE_STATE_TURNING_ON;
 			}
 			break;
 
 		case DEVICE_STATE_TURNING_ON:
 			// wait while pulse is still generated (time period didn't reach threshold)
-			if (!Device_control_GPIO_status()) {
+			if (!Device_control_GPIO_status())
+			{
 				Board_SetFastClk ();
-				device_state = DEVICE_STATE_ON;
+				device_state_g = DEVICE_STATE_ON;
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE RUNNING\n");
 			}
 			break;
@@ -166,70 +172,76 @@ void Device_update_state (void)
 			GPIO_DRV_SetPinOutput (LED_GREEN);
 
 			// if power drops below threshold - shutdown
-			if (power_in_voltage < POWER_IN_SHUTDOWN_TH) {
+			if (power_in_voltage < POWER_IN_SHUTDOWN_TH)
+			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - SHUTING DOWN !!! \n", power_in_voltage);
-				device_state = DEVICE_STATE_BACKUP_RECOVERY;
+				device_state_g = DEVICE_STATE_BACKUP_RECOVERY;
 				break;
 			}
 
 			// if temperature is out of range - turn off device
 			if ((temperature < TEMPERATURE_MIN_TH)   ||
-				(temperature > TEMPERATURE_MAX_TH)    ) {
+				(temperature > TEMPERATURE_MAX_TH)    )
+			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
 				GPIO_DRV_ClearPinOutput (LED_GREEN);
 				Device_turn_off  ();
 				Board_SetSlowClk ();
-				device_state = DEVICE_STATE_TURN_OFF;
+				device_state_g = DEVICE_STATE_TURN_OFF;
 			}
 			break;
 
 		case DEVICE_STATE_BACKUP_RECOVERY:
-			backup_power_cnt += device_control_gpio.delay_period;
+			backup_power_cnt_g += device_control_gpio_g.delay_period;
 
 			// if recovery period has passed - generate power loss interrupt to CPU and close peripherals
-			if (backup_power_cnt > BACKUP_RECOVER_TIME_TH) {
+			if (backup_power_cnt_g > BACKUP_RECOVER_TIME_TH)
+			{
 				GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
 				peripherals_disable ();
 				Board_SetSlowClk ();
-				device_state = DEVICE_STATE_BACKUP_POWER;
+				device_state_g = DEVICE_STATE_BACKUP_POWER;
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: Recovery period is over\n");
 				break;
 			}
 
 			// if power is back during recovery period - return to DEVICE_ON state, like nothing happen
-			if (power_in_voltage >= POWER_IN_TURN_ON_TH) {
+			if (power_in_voltage >= POWER_IN_TURN_ON_TH)
+			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: INPUT POWER OK %d\n", power_in_voltage);
-				backup_power_cnt = 0;
-				device_state = DEVICE_STATE_ON;
+				backup_power_cnt_g = 0;
+				device_state_g = DEVICE_STATE_ON;
 			}
 			break;
 
 		case DEVICE_STATE_BACKUP_POWER:
 			// if power is back during backup period - turn on a YELLOW LED
-			if (power_in_voltage >= POWER_IN_TURN_ON_TH) {
+			if (power_in_voltage >= POWER_IN_TURN_ON_TH)
+			{
 				GPIO_DRV_SetPinOutput   (LED_RED);
 				GPIO_DRV_SetPinOutput   (LED_GREEN);
 			}
 
-			backup_power_cnt += device_control_gpio.delay_period;
-			if (backup_power_cnt > BACKUP_POWER_TIME_TH) {
+			backup_power_cnt_g += device_control_gpio_g.delay_period;
+			if (backup_power_cnt_g > BACKUP_POWER_TIME_TH)
+			{
 				GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 				GPIO_DRV_ClearPinOutput (LED_RED);
 				GPIO_DRV_ClearPinOutput (LED_GREEN);
-				backup_power_cnt = 0;
-				ledBlinkCnt = 0;
+				backup_power_cnt_g = 0;
+				led_blink_cnt_g = 0;
 				Device_turn_off ();
-				device_state = DEVICE_STATE_TURN_OFF;
+				device_state_g = DEVICE_STATE_TURN_OFF;
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: backup period is over - shutting down\n");
-
 			}
 			break;
 
 		case DEVICE_STATE_TURN_OFF:
 			// wait while pulse is still generated (time period didn't reach threshold)
-			if (!Device_control_GPIO_status()) {
+			if (!Device_control_GPIO_status())
+			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF\n");
-				device_state = DEVICE_STATE_OFF;
+				device_state_g = DEVICE_STATE_OFF;
 				Wiggle_sensor_restart ();
 				peripherals_disable ();
 				Wiggle_sensor_start ();									// enable interrupt
@@ -237,8 +249,8 @@ void Device_update_state (void)
 			break;
 
 		default:
-			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: ERROR: UNKNOWN STATE %d\n", device_state );
-			device_state = DEVICE_STATE_OFF;
+			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: ERROR: UNKNOWN STATE %d\n", device_state_g );
+			device_state_g = DEVICE_STATE_OFF;
 			Wiggle_sensor_restart ();
 			break;
 	}
@@ -247,13 +259,13 @@ void Device_update_state (void)
 
 void Device_init (uint32_t delay_period)
 {
-	device_state = DEVICE_STATE_OFF;
+	device_state_g = DEVICE_STATE_OFF;
 
-	device_control_gpio.time_threshold = DEVICE_CONTROL_TIME_ON_TH;
-	device_control_gpio.delay_period   = delay_period;
-	device_control_gpio.time           = 0;
-	device_control_gpio.enable         = false;
-	device_control_gpio.status         = false;
+	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_ON_TH;
+	device_control_gpio_g.delay_period   = delay_period;
+	device_control_gpio_g.time           = 0;
+	device_control_gpio_g.enable         = false;
+	device_control_gpio_g.status         = false;
 	GPIO_DRV_SetPinOutput(CPU_ON_OFF);
 
 	Wiggle_sensor_init (delay_period);
@@ -261,46 +273,49 @@ void Device_init (uint32_t delay_period)
 
 void Device_turn_on  (void)
 {
-	device_control_gpio.time_threshold = DEVICE_CONTROL_TIME_ON_TH;
-	device_control_gpio.time           = 0;
-	device_control_gpio.enable         = true;	
+	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_ON_TH;
+	device_control_gpio_g.time           = 0;
+	device_control_gpio_g.enable         = true;	
 }
 
 void Device_turn_off (void)
 {
-	device_control_gpio.time_threshold = DEVICE_CONTROL_TIME_OFF_TH;
-	device_control_gpio.time           = 0;
-	device_control_gpio.enable         = true;	
+	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_OFF_TH;
+	device_control_gpio_g.time           = 0;
+	device_control_gpio_g.enable         = true;	
 }
 
 void Device_reset (void)
 {
-	device_control_gpio.time_threshold = DEVICE_CONTROL_TIME_RESET_TH;
-	device_control_gpio.time           = 0;
-	device_control_gpio.enable         = true;	
+	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_RESET_TH;
+	device_control_gpio_g.time           = 0;
+	device_control_gpio_g.enable         = true;	
 }
 
 void Device_control_GPIO (void)
 {
-	if (device_control_gpio.enable == false)
+	if (device_control_gpio_g.enable == false)
 		return;
 		
-	if (device_control_gpio.time <	device_control_gpio.time_threshold) {
+	if (device_control_gpio_g.time <	device_control_gpio_g.time_threshold)
+	{
 		GPIO_DRV_SetPinOutput   (LED_BLUE);
 		GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
-		device_control_gpio.status = true;
-		device_control_gpio.time  += device_control_gpio.delay_period;
-	} else {
+		device_control_gpio_g.status = true;
+		device_control_gpio_g.time  += device_control_gpio_g.delay_period;
+	}
+	else
+	{
 		GPIO_DRV_ClearPinOutput (LED_BLUE);
 		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
-		device_control_gpio.status = false;
-		device_control_gpio.time   = 0;
-		device_control_gpio.enable = false;		
+		device_control_gpio_g.status = false;
+		device_control_gpio_g.time   = 0;
+		device_control_gpio_g.enable = false;		
 	}
 }
 
-bool Device_control_GPIO_status  (void) {return device_control_gpio.status;}
-DEVICE_STATE_t Device_get_status (void) {return device_state;}
+bool Device_control_GPIO_status  (void) {return device_control_gpio_g.status;}
+DEVICE_STATE_t Device_get_status (void) {return device_state_g;}
 
 void peripherals_enable (void)
 {
@@ -326,8 +341,10 @@ void peripherals_enable (void)
     GPIO_DRV_SetPinOutput   (FTDI_RSTN);
 
     // wait till FPGA is loaded
-    for (i = 0; i < 100000; i++) {
-    	if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1) {
+    for (i = 0; i < 100000; i++)
+    {
+    	if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1)
+    	{
     		MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: INFO: FPGA is loaded\n");
     		break;
     	}
