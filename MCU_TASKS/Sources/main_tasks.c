@@ -36,6 +36,8 @@ _pool_id   g_in_message_pool;
 
 _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
 
+extern void * g_acc_event_h;
+
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
 
@@ -220,6 +222,13 @@ void MQX_PORTA_IRQHandler(void)
 		Wiggle_sensor_stop ();
 		_event_set(g_WIGGLE_SENSOR_event_h, EVENT_WIGGLE_SENSOR_IRQ);
 	}
+
+	if (GPIO_DRV_IsPinIntPending (ACC_INT)) {
+		GPIO_DRV_ClearPinIntFlag(ACC_INT);
+		// Signal main task to read acc
+		_event_set(g_acc_event_h, 1);
+	}
+
 }
 
 void MQX_PORTC_IRQHandler(void)
