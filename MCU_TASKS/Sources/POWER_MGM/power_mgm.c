@@ -14,6 +14,8 @@
 
 #include "Uart_debugTerminal.h"
 
+//#define SUPERCAP_CHRG_DISCHRG_ENABLE   1
+
 #define POWER_MGM_TIME_DELAY		 100
 #define TEMPERATURE_TIME_DELAY		5000
 #define IGNITION_TIME_DELAY			1000
@@ -88,8 +90,10 @@ void Power_MGM_task (uint32_t initial_data )
 		}
 
 		Device_update_state      ();
+#ifdef SUPERCAP_CHRG_DISCHRG_ENABLE
 		Supercap_charge_state    ();
 		Supercap_discharge_state ();
+#endif
 		_time_delay (POWER_MGM_TIME_DELAY);
 		current_time += POWER_MGM_TIME_DELAY;
 	}
