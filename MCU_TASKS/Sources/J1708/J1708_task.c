@@ -103,7 +103,7 @@ void J1708_Tx_task (uint32_t initial_data)
 	_task_block();
 }
 
-#define MIC_LED_TEST
+//#define MIC_LED_TEST
 
 void J1708_Rx_task (uint32_t initial_data)
 {

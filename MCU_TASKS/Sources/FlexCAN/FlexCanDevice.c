@@ -79,7 +79,7 @@ flexcan_device_status_t     FlexCanDevice_InitInstance( uint8_t instNum, pflexca
 void FLEXCAN_Tx_Task( uint32_t param ) {
 }
 
-#define MIC_LED_TEST
+//#define MIC_LED_TEST
 
 void FLEXCAN_Rx_Task( uint32_t param ) {
 
