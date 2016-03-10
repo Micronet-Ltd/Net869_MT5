@@ -32,8 +32,17 @@ extern "C"
 {
 #endif
 
-static GPIO_INPUT  gpio_inputs [NUM_OF_INPUT_GPIOS] = {	{kADC_ANALOG_IN1, 0}, {kADC_GPIO_IN1, 0}, {kADC_GPIO_IN2, 0}, {kADC_GPIO_IN3, 0},
-													{kADC_GPIO_IN4,   0}, {kADC_GPIO_IN5, 0}, {kADC_GPIO_IN6, 0}, {kADC_GPIO_IN7, 0}};
+static GPIO_INPUT  gpio_inputs [NUM_OF_INPUT_GPIOS] = {
+		[kANALOG_EXT_IN] = {kADC_ANALOG_IN1, 0},
+		[kGPIO_IN1]      = {kADC_GPIO_IN1  , 0},
+		[kGPIO_IN2]      = {kADC_GPIO_IN2  , 0},
+		[kGPIO_IN3]      = {kADC_GPIO_IN3  , 0},
+		[kGPIO_IN4]      = {kADC_GPIO_IN4  , 0},
+		[kGPIO_IN5]      = {kADC_GPIO_IN5  , 0},
+		[kGPIO_IN6]      = {kADC_GPIO_IN6  , 0},
+		[kGPIO_IN7]      = {kADC_GPIO_IN7  , 0},
+};
+
 static const uint32_t gp_out_mapping[] = {
 		[kGPIO_OUT1] = GPIO_OUT1,
 		[kGPIO_OUT2] = GPIO_OUT2,
@@ -132,7 +141,6 @@ void send_gpi_change(uint8_t * gpio_mask)
 		}
 	}
 
-	gpi_msg.data = (uint8_t *) malloc(sizeof(uint8_t) * 2);
 	gpi_msg.data[0] = *gpio_mask;
 	gpi_msg.data[1] = val;
 	send_control_msg(&gpi_msg, 2);
@@ -142,7 +150,7 @@ void send_gpi_change(uint8_t * gpio_mask)
 void gpio_set_output (KGPIOS_OUTPUT_CHANNELS gpo_num, KOUTPUT_LEVEL level)
 {
 	GPIO_DRV_WritePinOutput(gp_out_mapping[gpo_num], level );
-	printf("set GPIO num: %d to val %d \n", gpo_num, level);
+	MIC_DEBUG_UART_PRINTF("set GPIO num: %d to val %d \n", gpo_num, level);
 }
 
 void gpio_set_multiple_outputs(uint8_t * mask, uint8_t * value)

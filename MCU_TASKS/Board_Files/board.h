@@ -40,17 +40,15 @@
 
 #define CLOCK_VLPR 1U
 #define CLOCK_RUN  2U
-#define CLOCK_NUMBER_OF_CONFIGURATIONS 3U
+//#define CLOCK_NUMBER_OF_CONFIGURATIONS 3U
 
 #ifndef CLOCK_INIT_CONFIG
 #define CLOCK_INIT_CONFIG CLOCK_RUN
 #endif
 
-#if (CLOCK_INIT_CONFIG == CLOCK_RUN)
 #define CORE_CLOCK_FREQ 96000000U
-#else
-#define CORE_CLOCK_FREQ 4000000U
-#endif
+#define CORE_LPM_CLOCK_FREQ 4000000U
+
 
 /* OSC0 configuration. */
 #define OSC0_XTAL_FREQ 26000000U
@@ -280,6 +278,9 @@ uint8_t usb_device_board_init(uint8_t controller_id);
 uint8_t usb_host_board_init(uint8_t controller_id);
 /*Function to handle board-specified initialization*/
 uint8_t usb_otg_board_init(uint8_t controller_id);
+
+void Board_SetFastClk (void);
+void Board_SetSlowClk (void);
 
 #if defined(__cplusplus)
 }

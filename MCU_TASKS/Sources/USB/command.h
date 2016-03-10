@@ -24,6 +24,7 @@ typedef enum
 
 typedef enum comm_err
 {
+	INVALID_SIZE = -3,
 	INVALID_COMM = -2,
 	INVALID_TYPE = -1, /* case when command a setCommand is issued for a get or
 						vice versa */

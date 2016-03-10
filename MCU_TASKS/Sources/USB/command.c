@@ -89,7 +89,11 @@ int8_t command_get(uint8_t * data, uint16_t data_size,
 		return INVALID_TYPE;
 	}
 
-	resp->data = (uint8_t *) malloc(sizeof(comm_g[address].response_size)+1);
+	if (comm_g[address].response_size > MAX_PACKET_SIZE)
+	{
+		return INVALID_SIZE;
+	}
+
 	resp->data[0] = address;
 	*resp_size = comm_g[address].response_size + 1;
 	if (comm_g[address].fx != NULL )

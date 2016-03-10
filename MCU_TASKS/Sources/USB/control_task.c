@@ -34,7 +34,7 @@ void send_control_msg(packet_t * msg, uint8_t msg_size)
 		memcpy(ctl_tx_msg->data,(uint8_t *) msg, 2);
 		/* copy the data */
 		memcpy(ctl_tx_msg->data+2, msg->data, msg_size);
-		free(msg->data);
+
 		ctl_tx_msg->header.SOURCE_QID = _msgq_get_id(0, CONTROL_TX_QUEUE);
 		ctl_tx_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
 		ctl_tx_msg->header.SIZE = (msg_size + 2);//add seq and packet type
