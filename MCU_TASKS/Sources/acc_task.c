@@ -61,6 +61,7 @@ void acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size);
 
 void * g_acc_event_h;
 
+#if 0
 void acc_irq(void)
 {
 	GPIO_DRV_ClearPinIntFlag(ACC_INT);
@@ -87,10 +88,10 @@ void AccIntEnable()
 	OSA_InstallIntHandler(g_portIrqId[port], acc_irq);
 
 	GPIO_DRV_InputPinInit(&inputPin);
-
 }
+#endif
 
-#define MIC_LED_TEST
+//#define MIC_LED_TEST
 uint32_t acc_time_diff_zero = 0;
 uint32_t acc_time_diff_non_zero = 0;
 
@@ -123,9 +124,9 @@ void Acc_task (uint32_t initial_data)
 
 	printf("\nACC Task: Start \n");
 
-	GPIO_DRV_SetPinOutput   (ACC_ENABLE       );
+//	GPIO_DRV_SetPinOutput   (ACC_ENABLE       );
 	_time_delay(100);
-	AccIntEnable();
+//	AccIntEnable();
 	// try to initialize accelerometer every 10 seconds
 	while (accInit () == false)
 	{
@@ -136,9 +137,10 @@ void Acc_task (uint32_t initial_data)
 	GPIO_DRV_SetPinOutput(LED_GREEN);
 #endif
 
-
+#if 0
 	//TODO hack Enabling sensor by default
 	AccEnable();
+#endif
 
 	//TODO: Remote Test acc message
 	//test_acc_msg.header.SOURCE_QID = acc_qid;
