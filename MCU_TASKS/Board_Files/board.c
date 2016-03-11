@@ -205,7 +205,8 @@ static void CLOCK_SetBootConfig(clock_manager_user_config_t const* config)
 {
     CLOCK_SYS_SetSimConfigration   (&config->simConfig);
     CLOCK_SYS_SetOscerConfigration (0, &config->oscerConfig);
-    Board_SetSlowClk ();
+    //Board_SetSlowClk ();
+    Board_SetFastClk();
 }
 
 /* Initialize clock. */
