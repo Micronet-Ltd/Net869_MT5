@@ -16,23 +16,11 @@
 #define GET_COMMAND 0
 #define SET_COMMAND 1
 
-typedef union gpio_config_type
-{
-	uint8_t val;
-	struct{
-		uint8_t in_out_b1 : 1;
-		uint8_t ris_fall_both_edge_b2_b3 : 2; /*0: rising, 1: falling, both: 2 */
-		uint8_t pd_pu_f_b4_b5: 2;/* 0: pull down, 1: pull up, 2: floating */
-		uint8_t unused_b6_b8: 3;
-	};
-}gpio_config_t;
-
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver);
 static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver);
-static void get_gpio_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-static void set_gpio_output_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-static void get_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-static void set_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
+static void get_gp_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpi_volt);
+static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status);
+static void set_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -42,18 +30,15 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_GET_FPGA_VERSION ] = {get_fpga_ver,
 						  GET_COMMAND,
 						  sizeof(uint32_t)},
-//	[COMM_GET_GPIO_IN_CNFG] = {NULL,
-//						  GET_COMMAND,
-//						  sizeof(uint8_t)},
-//	[COMM_SET_GPIO_IN_CNFG] = {NULL,
-//						SET_COMMAND,
-//						sizeof(uint8_t)},
-	[COMM_GET_GPIO] = {get_gpio_input_voltage,
-						GET_COMMAND,
-						sizeof(uint8_t)},
-	[COMM_SET_GPIO] = {set_gpio_output_val,
-						SET_COMMAND,
-						0},
+	[COMM_GET_GPI_INPUT_VOLTAGE] = {get_gp_input_voltage,
+							GET_COMMAND,
+							sizeof(uint32_t)},
+	[COMM_GET_LED_STATUS] = {get_led_status,
+							GET_COMMAND,
+							4},
+	[COMM_SET_LED_STATUS] = {set_led_status,
+							SET_COMMAND,
+							0},
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -115,14 +100,20 @@ static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver
 	FPGA_read_version((uint32_t *)pfpga_ver);
 }
 
-/* data[0]: GPIO value */
-static void get_gpio_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
+/* returns voltage of the requested GPInput */
+static void get_gp_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpi_volt)
 {
-	//TODO: Need to use EXT_GPIO.c Abid
-	//pgpio_val[0] = (uint8_t)GPIO_DRV_ReadPinInput(gpio_out_mapping[data[0]]);
+	uint32_t gpi_voltage = 0;
+	gpi_voltage = GPIO_INPUT_get_voltage_level(data[0]);
+	memcpy(pgpi_volt, (uint8_t *)&gpi_voltage , sizeof(uint32_t));
 }
 
-static void set_gpio_output_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
+static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status)
 {
-	gpio_set_output(data[0], data[1]);
+	FPGA_read_led_status(data[0], &pled_status[0], &pled_status[1], &pled_status[2], &pled_status[3]);
+}
+
+static void set_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status)
+{
+	FPGA_write_led_status (data[0], &data[1], &data[2], &data[3], &data[4]);
 }
