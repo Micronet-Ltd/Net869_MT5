@@ -143,7 +143,8 @@ void Main_task( uint32_t initial_data ) {
 	J1708_enable  (7);
 
 
-#if 0
+#if 1
+	/* Simulate a power on button press on the A8 */
 	GPIO_DRV_SetPinOutput   (LED_BLUE);
 
     GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
