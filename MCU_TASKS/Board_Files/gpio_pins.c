@@ -59,6 +59,9 @@ const gpio_output_pin_user_config_t outputPins[] = {
 	{.pinName = CPU_MIC_EN, 				    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{.pinName = BUTTON1,     				    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
+	//AUDIO
+	{.pinName = SPKR_INT_EN, .config.outputLogic = 1, .config.slewRate = kPortFastSlewRate, .config.isOpenDrainEnabled = false, .config.driveStrength = kPortHighDriveStrength },
+
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE                                                                                                                                                               }
 };
 
