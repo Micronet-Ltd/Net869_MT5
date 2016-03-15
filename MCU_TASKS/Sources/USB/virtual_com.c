@@ -750,8 +750,10 @@ void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
                                         g_app_composite_device.cdc_vcom[1].curr_send_buf, 
                                         g_app_composite_device.cdc_vcom[1].send_size);
 
-        //printf("CDC1_send beg:%x,%x,%x,%x - end:%x,%x,%x,%x \t pld = %d, enc = %d\n", buf[0], buf[1], buf[2], buf[3], \
-        //		buf[*pld_size -4], buf[*pld_size -3], buf[*pld_size-2], buf[*pld_size -1], (msg_ptr->header.SIZE + sizeof(msg_ptr->timestamp )), *pld_size );
+        /*
+        printf("CDC1_send beg:%x,%x,%x,%x - end:%x,%x,%x,%x \t pld = %d, enc = %d\n", buf[0], buf[1], buf[2], buf[3], \
+        		buf[*pld_size -4], buf[*pld_size -3], buf[*pld_size-2], buf[*pld_size -1], (msg_ptr->header.SIZE + sizeof(msg_ptr->timestamp )), *pld_size );
+		*/
 
         if(error != USB_OK)
         {

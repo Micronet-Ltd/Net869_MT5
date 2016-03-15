@@ -138,11 +138,6 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 	return result;
 }
 
-send_control_response()
-{
-
-}
-
 int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size)
 {
 	uint32_t offset = 0;
