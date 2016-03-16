@@ -46,7 +46,7 @@ void Main_task( uint32_t initial_data ) {
     _queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
 	_queue_id  j1708_rx_qid;
 	//APPLICATION_MESSAGE_T *msg;
-	uint32_t gpios_event_bit;
+	//uint32_t gpios_event_bit;
 	uint32_t gpio_sample_timer = 0;
 	uint32_t i;
 
@@ -95,7 +95,9 @@ void Main_task( uint32_t initial_data ) {
 //	CLOCK_SetBootConfig_Run ();
 
 	//Enable CAN
-	GPIO_DRV_SetPinOutput(CAN_ENABLE);
+	//GPIO_DRV_SetPinOutput(CAN_ENABLE);
+    /* Disabling CAN for Inthinc as they want to enable it after their application starts up */
+    GPIO_DRV_ClearPinOutput(CAN_ENABLE);
 
     // Enable USB for DEBUG
     GPIO_DRV_ClearPinOutput(USB_ENABLE);
@@ -167,17 +169,17 @@ void Main_task( uint32_t initial_data ) {
 	}
 
 
-	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
-	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create J1708_TX_TASK\n");
-	}
-
-	g_TASK_ids[J1708_RX_TASK] = _task_create(0, J1708_RX_TASK, 0 );
-	if (g_TASK_ids[J1708_RX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create J1708_RX_TASK\n");
-	}
+//	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
+//	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create J1708_TX_TASK\n");
+//	}
+//
+//	g_TASK_ids[J1708_RX_TASK] = _task_create(0, J1708_RX_TASK, 0 );
+//	if (g_TASK_ids[J1708_RX_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create J1708_RX_TASK\n");
+//	}
 	
 	g_TASK_ids[FPGA_UART_RX_TASK] = _task_create(0, FPGA_UART_RX_TASK, 0 );
 	if (g_TASK_ids[FPGA_UART_RX_TASK] == MQX_NULL_TASK_ID)
@@ -209,13 +211,13 @@ void Main_task( uint32_t initial_data ) {
     GPIO_DRV_ClearPinOutput(CAN1_TERM_ENABLE);
     GPIO_DRV_ClearPinOutput(CAN2_TERM_ENABLE);
 
-    //Initialize CAN sample
-    configure_can_pins(0);
-    configure_can_pins(1);
-
-    _time_delay (1000);
-
-    _test_CANFLEX();
+//    //Initialize CAN sample
+//    configure_can_pins(0);
+//    configure_can_pins(1);
+//
+//    _time_delay (1000);
+//
+//    _test_CANFLEX();
 
 	if (GPIO_DRV_ReadPinInput (SWITCH1) == 1)
 	{
