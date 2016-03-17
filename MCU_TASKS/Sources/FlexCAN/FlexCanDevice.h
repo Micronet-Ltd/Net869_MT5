@@ -15,7 +15,7 @@ extern "C"
 
 /*Definition*/
 
-#define MAX_MB_NUMBER           16
+#define MAX_MB_NUMBER           		16
 
 #define RX_FLEXCAN_MSGQ_MESAGES         32
 #define TX_FLEXCAN_MSGQ_MESAGES         32
@@ -37,7 +37,12 @@ typedef enum _flexcan_device_status
 
 typedef enum _flexcan_device_bitrate
 {
-    fdBitrate_125_kHz = 0,
+    fdBitrate_10_kHz = 0,
+    fdBitrate_20_kHz,
+    //fdBitrate_33_kHz,
+    fdBitrate_50_kHz,
+    fdBitrate_100_kHz,
+    fdBitrate_125_kHz,
     fdBitrate_250_kHz,
     fdBitrate_500_kHz,
     fdBitrate_750_kHz,
@@ -125,6 +130,9 @@ extern pflexcanInstance_t can_Device_1;
 
 /* Get CAN instance */
 extern pflexcanInstance_t FlexCanDevice_GetInstance( flexcandevice_module_t );
+
+/* Process SLCAN tty commands from USB task*/
+extern flexcan_device_status_t flexcan_CommandParser ( const uint8_t* pbuf, uint32_t size );
 
 /* The initalized driver and HW */
 extern flexcan_device_status_t FlexCanDevice_Init( pflexcandevice_initparams_t pinstance_Can0, pflexcandevice_initparams_t pinstance_Can1 );

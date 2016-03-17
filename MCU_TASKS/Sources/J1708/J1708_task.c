@@ -63,7 +63,7 @@ void J1708_Tx_task (uint32_t initial_data)
 		// wait 10 second for interrupt message
 		msg = _msgq_receive(J1708_tx_qid, 10000);
 		if (msg == NULL) {
-			printf ("\nJ1708_Tx: WARNING: Message not received in last 10 Seconds \n");
+			//printf ("\nJ1708_Tx: WARNING: Message not received in last 10 Seconds \n");
 			continue;
 		}
 
@@ -132,7 +132,7 @@ void J1708_Rx_task (uint32_t initial_data)
 		if (J1708_rx_event_bit == EVENT_J1708_RX)
 			_event_clear    (g_J1708_event_h, EVENT_J1708_RX);
 		else {
-			printf ("\nJ1708_Rx: WARNING: No interrupt in last 10 Seconds \n");
+			//printf ("\nJ1708_Rx: WARNING: No interrupt in last 10 Seconds \n");
 			continue;
 		}
 		
