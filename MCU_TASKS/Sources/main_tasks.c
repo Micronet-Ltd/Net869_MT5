@@ -86,7 +86,6 @@ void Main_task( uint32_t initial_data ) {
 		MIC_DEBUG_UART_PRINTF("\nMain Could not create USB_TASK\n");
 	}
 
-
 	g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
 	if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
 	{
@@ -102,7 +101,12 @@ void Main_task( uint32_t initial_data ) {
 	}
 
 	main_qid = _msgq_open(MAIN_QUEUE, 0);
-    _time_delay (1000);
+
+	_time_delay (1000);
+
+	FPGA_init ();
+
+	J1708_enable  (7);
 
 	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
 	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
@@ -170,6 +174,17 @@ void Main_task( uint32_t initial_data ) {
 
 	FPGA_read_version(&FPGA_version);
 	printf("\n FPGA version, %x", FPGA_version);
+
+#if 1
+	/* Simulate a power on button press on the A8 */
+	GPIO_DRV_SetPinOutput   (LED_BLUE);
+
+    GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+    _time_delay (3000);
+    GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+
+    GPIO_DRV_ClearPinOutput   (LED_BLUE);
+#endif
 
     printf("\nMain Task: Loop \n");
 

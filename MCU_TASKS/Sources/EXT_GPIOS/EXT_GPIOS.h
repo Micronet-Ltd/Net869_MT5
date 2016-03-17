@@ -8,7 +8,7 @@
 
 #include "ADC.h"
 
-#define GPIO_LOGIC_LOW_TH			2500 //(value in mV)
+#define GPIO_LOGIC_LOW_TH			6000 //(value in mV)
 #define GPIO_LOGIC_HIGH_TH			7000 //(value in mV)
 
 typedef enum {
