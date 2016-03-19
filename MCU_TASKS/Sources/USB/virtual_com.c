@@ -636,7 +636,9 @@ void Usb_task(uint32_t arg)
        USB_CDC_Periodic_Task();
 
         msg_ptr = _msgq_receive(usb_qid, 1);
-        if(NULL == msg_ptr) { _time_delay(1); continue; }
+        if(NULL == msg_ptr) {
+        	_time_delay(1); continue;
+        }
 
         switch (msg_ptr->portNum)
         {
@@ -663,6 +665,37 @@ void Usb_task(uint32_t arg)
     }
 }
 
+void requeue_control_msg(APPLICATION_MESSAGE_T *ctl_tx_msg_old)
+{
+	APPLICATION_MESSAGE_T *ctl_tx_msg;
+	_mqx_uint err_task;
+	if ((ctl_tx_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL)
+	{
+		if (MQX_OK != (err_task = _task_get_error()))
+		{
+			_task_set_error(MQX_OK);
+		}
+		printf("send_control_msg: ERROR: message allocation failed %x\n", err_task);
+	}
+
+	if(ctl_tx_msg)
+	{
+		memcpy(ctl_tx_msg->data,(uint8_t *) ctl_tx_msg_old->data, ctl_tx_msg_old->header.SIZE);
+
+		ctl_tx_msg->header.SOURCE_QID = _msgq_get_id(0, CONTROL_TX_QUEUE);
+		ctl_tx_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
+		ctl_tx_msg->header.SIZE = ctl_tx_msg_old->header.SIZE;
+		ctl_tx_msg->portNum = MIC_CDC_USB_1;
+		_msgq_send (ctl_tx_msg);
+
+		if (MQX_OK != (err_task = _task_get_error()))
+		{
+			printf("requeue_control_msg: ERROR: message send failed %x\n", err_task);
+			_task_set_error(MQX_OK);
+		}
+	}
+}
+
 /* Control/command messages are sent through this CDC port */
 void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 {
@@ -672,8 +705,10 @@ void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
             ( TRUE != g_app_composite_device.cdc_vcom[0].start_transactions ) ||
             !g_app_composite_device.cdc_vcom[0].send_ready )
     {
-        _msg_free(msg_ptr);
+        /* since we don't want to lose a control message, put it back in the Q */
         _time_delay(1);
+        requeue_control_msg(msg_ptr);
+        _msg_free(msg_ptr);
         return;
     }
 
