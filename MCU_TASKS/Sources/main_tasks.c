@@ -21,12 +21,13 @@
 #include "Uart_debugTerminal.h"
 
 #include "FlexCanDevice.h"
+#include "rtc.h"
 
 void MQX_I2C0_IRQHandler (void);
 void MQX_PORTA_IRQHandler(void);
 void MQX_PORTC_IRQHandler(void);
 
-#define	MAIN_TASK_SLEEP_PERIOD	10			// 10 mSec sleep
+#define	MAIN_TASK_SLEEP_PERIOD	1000			// 10 mSec sleep
 #define TIME_ONE_SECOND_PERIOD	((int) (1000 / MAIN_TASK_SLEEP_PERIOD))
 
 static i2c_master_state_t i2c_master;
@@ -49,6 +50,7 @@ void Main_task( uint32_t initial_data ) {
 	MUTEX_ATTR_STRUCT mutexattr;
 
     uint32_t FPGA_version = 0;
+	char rtc_time[8];
 
     _time_delay (10);
 
@@ -128,15 +130,7 @@ void Main_task( uint32_t initial_data ) {
 
 	J1708_enable  (7);
 
-	{
-//		uint8_t Br, R,G,B;
-//		R = G = B = 255;
-//		Br = 10;
-//		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
-//		_time_delay (10);
-//		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
-//		_time_delay (10);
-	}
+	rtc_init();
 
 	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
 	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
@@ -217,8 +211,10 @@ void Main_task( uint32_t initial_data ) {
 #endif
 
     printf("\nMain Task: Loop \n");
+    rtc_set();
 
     while ( 1 ) {
+		rtc_get(rtc_time, 1);
 	    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
     }
 
