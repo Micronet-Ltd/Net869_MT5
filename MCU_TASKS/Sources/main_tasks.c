@@ -41,9 +41,12 @@ extern void * g_acc_event_h;
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
 
+MUTEX_STRUCT g_i2c0_mutex;
+
 void Main_task( uint32_t initial_data ) {
 
     _queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
+	MUTEX_ATTR_STRUCT mutexattr;
 
     uint32_t FPGA_version = 0;
 
@@ -76,6 +79,19 @@ void Main_task( uint32_t initial_data ) {
     OSA_InstallIntHandler(I2C0_IRQn, MQX_I2C0_IRQHandler);
     I2C_DRV_MasterInit(I2C0_IDX, &i2c_master);
 
+	/* Initialize mutex attributes: */
+	if (_mutatr_init(&mutexattr) != MQX_OK)
+	{
+		printf("Initializing mutex attributes failed.\n");
+		_task_block();
+	}
+	/* Initialize the mutex: */
+	if (_mutex_init(&g_i2c0_mutex, &mutexattr) != MQX_OK)
+	{
+		printf("Initializing i2c0 mutex failed.\n");
+		_task_block();
+	}
+
     // turn on device
     GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
 	GPIO_DRV_SetPinOutput(ACC_ENABLE       );
@@ -85,6 +101,10 @@ void Main_task( uint32_t initial_data ) {
 	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
 		MIC_DEBUG_UART_PRINTF("\nMain Could not create USB_TASK\n");
 	}
+
+    //Enable UART
+    GPIO_DRV_SetPinOutput(UART_ENABLE);
+    GPIO_DRV_SetPinOutput(FTDI_RSTN);
 
 	g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
 	if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
@@ -107,6 +127,16 @@ void Main_task( uint32_t initial_data ) {
 	FPGA_init ();
 
 	J1708_enable  (7);
+
+	{
+//		uint8_t Br, R,G,B;
+//		R = G = B = 255;
+//		Br = 10;
+//		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
+//		_time_delay (10);
+//		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
+//		_time_delay (10);
+	}
 
 	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
 	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)

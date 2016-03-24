@@ -5,6 +5,7 @@
 #include "fsl_i2c_master_driver.h"
 
 #include "uart_configuration.h"
+#include <mutex.h>
 
 #define FPGA_UART_PORT						UART1_IDX
 #define FPGA_UART_BAUDRATE					115200
@@ -32,6 +33,7 @@ static i2c_device_t fpga_device = {
 uint8_t fpga_uart_rx_buf [FPGA_UART_RX_BUF_SIZE] = {0};
 uint8_t fpga_uart_rx_buf_wr_idx = 0;
 uint8_t fpga_uart_rx_buf_rd_idx = 0;
+extern MUTEX_STRUCT g_i2c0_mutex;
 
 
 bool FPGA_GetData (uint8_t Register_Addr, uint32_t *Register_Data);
@@ -266,10 +268,19 @@ bool FPGA_GetData (uint8_t register_addr, uint32_t *register_data)
 {
 	i2c_status_t  i2c_status ;
 	uint8_t       i2c_cmd  = register_addr;
-			
+	_mqx_uint ret = MQX_OK;
+
+	/* Get i2c0 mutex */
+	if ((ret =_mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+	{
+		printf("FPGA_GetData: i2c mutex lock failed, ret %d \n", ret);
+		_task_block();
+	}
+
 	if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (FPGA_I2C_PORT, &fpga_device, &i2c_cmd,  1, (uint8_t *)register_data, 4, FPGA_I2C_TIMEOUT)) != kStatus_I2C_Success)
 		printf ("\nFPGA API GetData: ERROR: Could not read Address 0x%X (I2C error code %d)\n", register_addr, i2c_status);
 
+	_mutex_unlock(&g_i2c0_mutex);
 	return (i2c_status == kStatus_I2C_Success);
 }
 
@@ -277,10 +288,18 @@ bool FPGA_SetData (uint8_t register_addr, uint32_t *register_data)
 {
 	i2c_status_t  i2c_status ;
 	uint8_t       i2c_cmd  = register_addr;
+	_mqx_uint ret = MQX_OK;
+	/* Get i2c0 mutex */
+	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+	{
+		printf("FPGA_SetData: i2c mutex lock failed, ret %d \n", ret);
+		_task_block();
+	}
 	
 	if ((i2c_status = I2C_DRV_MasterSendDataBlocking (FPGA_I2C_PORT, &fpga_device, &i2c_cmd,  1, (uint8_t *)register_data, 4, FPGA_I2C_TIMEOUT)) != kStatus_I2C_Success)
 		printf ("\nFPGA API SetData: ERROR: Could not write Address 0x%X (I2C error code %d)\n", register_addr, i2c_status);
 
+	_mutex_unlock(&g_i2c0_mutex);
 	return (i2c_status == kStatus_I2C_Success);
 }
 
