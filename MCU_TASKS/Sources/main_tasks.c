@@ -41,6 +41,8 @@ _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
 
+MUTEX_STRUCT g_i2c0_mutex;
+
 void Main_task( uint32_t initial_data ) {
 
     _queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
@@ -49,9 +51,11 @@ void Main_task( uint32_t initial_data ) {
 	uint32_t gpios_event_bit;
 	uint32_t gpio_sample_timer = 0;
 	uint32_t i;
+	MUTEX_ATTR_STRUCT mutexattr;
 
     uint8_t u8mainTaskLoopCnt = 0;
     uint32_t FPGA_version = 0;
+    _mqx_uint ret = MQX_OK;
 
     wiggle_sensor_cnt = 0;
     _time_delay (10);
@@ -81,6 +85,19 @@ void Main_task( uint32_t initial_data ) {
     NVIC_SetPriority(I2C0_IRQn, 6U);
     OSA_InstallIntHandler(I2C0_IRQn, MQX_I2C0_IRQHandler);
     I2C_DRV_MasterInit(I2C0_IDX, &i2c_master);
+
+	/* Initialize mutex attributes: */
+	if (_mutatr_init(&mutexattr) != MQX_OK)
+	{
+		printf("Initializing mutex attributes failed.\n");
+		_task_block();
+	}
+	/* Initialize the mutex: */
+	if (_mutex_init(&g_i2c0_mutex, &mutexattr) != MQX_OK)
+	{
+		printf("Initializing i2c0 mutex failed.\n");
+		_task_block();
+	}
 
     // turn on device
     GPIO_DRV_SetPinOutput(POWER_3V3_ENABLE);
@@ -118,7 +135,6 @@ void Main_task( uint32_t initial_data ) {
     //Enable UART
     GPIO_DRV_SetPinOutput(UART_ENABLE);
     GPIO_DRV_SetPinOutput(FTDI_RSTN);
-
 
 	g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
 	if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
@@ -165,7 +181,6 @@ void Main_task( uint32_t initial_data ) {
 		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
 		_time_delay (10);
 	}
-
 
 	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
 	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
