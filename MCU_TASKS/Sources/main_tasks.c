@@ -173,13 +173,13 @@ void Main_task( uint32_t initial_data ) {
 #endif
 
 	{
-		uint8_t Br, R,G,B;
-		R = G = B = 255;
-		Br = 10;
-		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
-		_time_delay (10);
-		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
-		_time_delay (10);
+//		uint8_t Br, R,G,B;
+//		R = G = B = 255;
+//		Br = 10;
+//		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
+//		_time_delay (10);
+//		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
+//		_time_delay (10);
 	}
 
 	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
