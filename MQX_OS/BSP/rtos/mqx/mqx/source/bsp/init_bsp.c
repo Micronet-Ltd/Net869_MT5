@@ -33,6 +33,7 @@
 #endif
 
 extern void HWTIMER_SYS_SystickIsrAction(void);
+int _bsp_MQX_tick_timer_init (void);
 
 #if BSPCFG_ENABLE_IO_SUBSYSTEM
     #include "nio.h"

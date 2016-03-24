@@ -145,9 +145,9 @@ int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t s
 {
 	uint32_t offset = 0;
 	// TODO: use type for MCU monotonic clock
-	static uint32_t lastrx = 0;
+	//static uint32_t lastrx = 0;
 	// TODO: get current monotonic clock value
-	uint32_t now = 0; // Set to current monotonic clock time
+	//uint32_t now = 0; // Set to current monotonic clock time
 
 	frame_t * frame;
 

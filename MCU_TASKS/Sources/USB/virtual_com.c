@@ -1011,7 +1011,6 @@ void CDC0_resv ( cdc_struct_t *handle )
 {
     //Add Source here
     APPLICATION_MESSAGE_T *msg;
-    frame_t frame_buf = { 0 };
 
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
@@ -1061,7 +1060,7 @@ void CDC1_resv ( cdc_struct_t *handle )
 {
 #if COMPOSITE_CFG_MAX > 1
     //Add source here
-    APPLICATION_MESSAGE_T *msg;
+    //APPLICATION_MESSAGE_T *msg;
 
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
@@ -1085,7 +1084,7 @@ void CDC2_resv ( cdc_struct_t *handle )
 {
 #if COMPOSITE_CFG_MAX > 2
     //Add source here
-    APPLICATION_MESSAGE_T *msg;
+    //APPLICATION_MESSAGE_T *msg;
 
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
@@ -1109,7 +1108,7 @@ void CDC3_resv ( cdc_struct_t *handle )
 {
 #if COMPOSITE_CFG_MAX > 3
     //Add source here
-    APPLICATION_MESSAGE_T *msg;
+    //APPLICATION_MESSAGE_T *msg;
 
 #ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
