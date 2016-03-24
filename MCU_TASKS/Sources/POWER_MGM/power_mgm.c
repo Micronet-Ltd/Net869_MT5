@@ -81,7 +81,7 @@ void Power_MGM_task (uint32_t initial_data )
 			if ((cable_type_voltage < CABLE_TYPE_MIN_VOLTAGE) ||
 				(cable_type_voltage > CABLE_TYPE_MAX_VOLTAGE) )
 			{
-				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
+				//MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
 			}
 		}
 
