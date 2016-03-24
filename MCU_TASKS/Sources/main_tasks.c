@@ -211,7 +211,7 @@ void Main_task( uint32_t initial_data ) {
 #endif
 
     printf("\nMain Task: Loop \n");
-    rtc_set();
+    //rtc_set();
 
     while ( 1 ) {
 		rtc_get(rtc_time, 1);
