@@ -12,6 +12,7 @@
 #include "EXT_GPIOS.h"
 #include "version.h"
 #include "fpga_API.h"
+#include "Device_control_GPIO.h"
 
 #define GET_COMMAND 0
 #define SET_COMMAND 1
@@ -21,6 +22,7 @@ static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver
 static void get_gp_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpi_volt);
 static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status);
 static void set_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status);
+static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * pturn_on_reason);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -39,6 +41,9 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_SET_LED_STATUS] = {set_led_status,
 							SET_COMMAND,
 							0},
+	[COMM_GET_TURN_ON_REASON] = {get_turn_on_reason,
+							GET_COMMAND,
+							sizeof(uint8_t)},
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -120,4 +125,9 @@ static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_st
 static void set_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status)
 {
 	FPGA_write_led_status (data[0], &data[1], &data[2], &data[3], &data[4]);
+}
+
+static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * pturn_on_reason)
+{
+	Device_get_turn_on_reason(pturn_on_reason);
 }

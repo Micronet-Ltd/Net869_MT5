@@ -26,6 +26,7 @@ void Device_update_state (void);
 void Device_turn_on      (void);
 void Device_turn_off     (void);
 void Device_reset        (void);
+void Device_get_turn_on_reason(uint8_t * turn_on_reason);
 
 DEVICE_STATE_t Device_get_status   (void);
 

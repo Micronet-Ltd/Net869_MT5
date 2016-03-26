@@ -96,6 +96,7 @@ typedef struct
 
 DEVICE_CONTROL_GPIO_t device_control_gpio_g;
 DEVICE_STATE_t        device_state_g;
+static uint8_t turn_on_condition_g = 0;
 
 uint32_t backup_power_cnt_g = 0 ;
 uint8_t led_blink_cnt_g     = 0 ;
@@ -112,13 +113,13 @@ void Device_update_state (void)
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
 	uint32_t ignition_voltage  = ADC_get_value (kADC_ANALOG_IN1 );
 	int32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
-	uint8_t  turn_on_condition = 0;
 
 	Device_control_GPIO ();
 
 	switch (device_state_g)
 	{
 		case DEVICE_STATE_OFF:
+			turn_on_condition_g = 0;
 			// blink RED LED when device is off
 			if      (++led_blink_cnt_g == 8)		GPIO_DRV_SetPinOutput   (LED_RED);
 			else if (  led_blink_cnt_g < 10)		GPIO_DRV_ClearPinOutput (LED_RED);
@@ -137,22 +138,22 @@ void Device_update_state (void)
 			if (ignition_voltage >= IGNITION_TURN_ON_TH)
 			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
-				turn_on_condition |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;
+				turn_on_condition_g |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;
 			}
 
 			if (Wiggle_sensor_cross_TH ())
 			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
-				turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
+				turn_on_condition_g |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
 			}
 
-			if (turn_on_condition != 0)
+			if (turn_on_condition_g != 0)
 			{
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
 				peripherals_enable ();
 				Device_turn_on     ();
-				send_power_change  (&turn_on_condition);
+				//send_power_change  (&turn_on_condition);
 				GPIO_DRV_ClearPinOutput (LED_RED);
 				device_state_g = DEVICE_STATE_TURNING_ON;
 			}
@@ -256,6 +257,10 @@ void Device_update_state (void)
 	}
 }
 
+void Device_get_turn_on_reason(uint8_t * turn_on_reason)
+{
+	*turn_on_reason = turn_on_condition_g;
+}
 
 void Device_init (uint32_t delay_period)
 {
