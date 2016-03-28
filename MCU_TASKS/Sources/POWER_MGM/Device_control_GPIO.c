@@ -100,6 +100,7 @@ static uint8_t turn_on_condition_g = 0;
 
 uint32_t backup_power_cnt_g = 0 ;
 uint8_t led_blink_cnt_g     = 0 ;
+extern uint32_t ignition_threshold_g;
 
 void Device_control_GPIO        (void);
 bool Device_control_GPIO_status (void);
@@ -135,7 +136,7 @@ void Device_update_state (void)
 				(temperature      > TEMPERATURE_MAX_TH  )  )
 				break;
 
-			if (ignition_voltage >= IGNITION_TURN_ON_TH)
+			if (ignition_voltage >= ignition_threshold_g)
 			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
 				turn_on_condition_g |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;

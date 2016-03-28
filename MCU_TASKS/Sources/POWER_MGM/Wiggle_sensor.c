@@ -118,6 +118,12 @@ void Wiggle_sensor_set_vibration_TH  (uint32_t vibration_threshold, uint32_t dur
 		sensor.duration_threshold = duration_threshold;
 }
 
+void Wiggle_sensor_get_vibration_TH  (uint32_t * vibration_threshold, uint32_t *duration_threshold)
+{
+	*vibration_threshold = sensor.vibration_threshold;
+	*duration_threshold = sensor.duration_threshold;
+}
+
 void Wiggle_sensor_update (void)
 {
 #if 0

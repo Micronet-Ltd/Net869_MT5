@@ -38,6 +38,8 @@
 void Supercap_charge_state (void);
 void Supercap_discharge_state (void);
 
+uint32_t ignition_threshold_g = IGNITION_TURN_ON_TH_DEFAULT;
+
 void Power_MGM_task (uint32_t initial_data )
 {
 	uint32_t current_time          = 0;
@@ -149,4 +151,14 @@ void Supercap_discharge_state (void)
 		}
 		GPIO_DRV_ClearPinOutput (POWER_DISCHARGE_ENABLE);
 	}
+}
+
+void get_ignition_threshold(uint32_t * p_ignition_threshold)
+{
+	*p_ignition_threshold = ignition_threshold_g;
+}
+
+void set_ignition_threshold(uint32_t ignition_threshold)
+{
+	ignition_threshold_g = ignition_threshold;
 }
