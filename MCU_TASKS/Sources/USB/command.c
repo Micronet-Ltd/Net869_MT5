@@ -13,6 +13,8 @@
 #include "version.h"
 #include "fpga_API.h"
 #include "Device_control_GPIO.h"
+#include "Wiggle_sensor.h"
+#include "power_mgm.h"
 
 #define GET_COMMAND 0
 #define SET_COMMAND 1
@@ -22,6 +24,8 @@ static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver
 static void get_gp_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpi_volt);
 static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status);
 static void set_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status);
+static void get_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold);
+static void set_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold);
 static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * pturn_on_reason);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
@@ -39,6 +43,12 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 							GET_COMMAND,
 							4},
 	[COMM_SET_LED_STATUS] = {set_led_status,
+							SET_COMMAND,
+							0},
+	[COMM_GET_POWER_ON_THRESHOLD] = {get_power_on_threshold,
+							GET_COMMAND,
+							(sizeof(uint16_t)*3)},
+	[COMM_SET_POWER_ON_THRESHOLD] = {set_power_on_threshold,
 							SET_COMMAND,
 							0},
 	[COMM_GET_TURN_ON_REASON] = {get_turn_on_reason,
@@ -125,6 +135,32 @@ static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_st
 static void set_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status)
 {
 	FPGA_write_led_status (data[0], &data[1], &data[2], &data[3], &data[4]);
+}
+
+static void  get_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold)
+{
+	uint32_t vibration_threshold = 0;
+	uint32_t duration_threshold = 0;
+	uint32_t ignition_threshold = 0;
+	Wiggle_sensor_get_vibration_TH  (&vibration_threshold, &duration_threshold);
+	get_ignition_threshold(&ignition_threshold);
+	/*litte Endian */
+	ppower_on_threshold[0] = (uint8_t) (vibration_threshold&0xFF);
+	ppower_on_threshold[1] = (uint8_t) ((vibration_threshold>>8)&0xFF);
+	ppower_on_threshold[2] = (uint8_t) (duration_threshold&0xFF);
+	ppower_on_threshold[3] = (uint8_t) ((duration_threshold>>8)&0xFF);
+	ppower_on_threshold[4] = (uint8_t) (ignition_threshold&0xFF);
+	ppower_on_threshold[5] = (uint8_t) ((ignition_threshold>>8)&0xFF);
+}
+
+static void  set_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold)
+{
+	/* Data is in little Endian format*/
+	uint32_t vibration_threshold = (uint32_t)((data[1]<<8)|data[0]);
+	uint32_t duration_threshold = (uint32_t)((data[3]<<8)|data[2]);
+	uint32_t ignition_threshold = (uint32_t)((data[5]<<8)|data[4]);
+	Wiggle_sensor_set_vibration_TH  (vibration_threshold, duration_threshold);
+	set_ignition_threshold(ignition_threshold);
 }
 
 static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * pturn_on_reason)
