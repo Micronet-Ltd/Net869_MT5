@@ -265,10 +265,13 @@ void Device_get_turn_on_reason(uint8_t * turn_on_reason)
 
 void Device_off_req(uint8_t wait_time)
 {
-	//TODO: wait for wait_time before shutting off
-	MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF\n");
+	_time_delay(wait_time*1000);
 	backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
+	GPIO_DRV_ClearPinOutput (LED_GREEN);
+	Device_turn_off  ();
+	//Board_SetSlowClk ();
+	MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF\n");
 	device_state_g = DEVICE_STATE_OFF;
 	Wiggle_sensor_restart ();
 	peripherals_disable ();
