@@ -27,6 +27,8 @@ static void set_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_st
 static void get_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold);
 static void set_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold);
 static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * pturn_on_reason);
+static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice_off);
+static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice_off);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -54,6 +56,9 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_GET_TURN_ON_REASON] = {get_turn_on_reason,
 							GET_COMMAND,
 							sizeof(uint8_t)},
+	[COMM_SET_DEVICE_OFF] = {set_device_off,
+								SET_COMMAND,
+								0},
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -166,4 +171,9 @@ static void  set_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t 
 static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * pturn_on_reason)
 {
 	Device_get_turn_on_reason(pturn_on_reason);
+}
+
+static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice_off)
+{
+	Device_off_req(data[0]);
 }

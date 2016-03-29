@@ -263,6 +263,18 @@ void Device_get_turn_on_reason(uint8_t * turn_on_reason)
 	*turn_on_reason = turn_on_condition_g;
 }
 
+void Device_off_req(uint8_t wait_time)
+{
+	//TODO: wait for wait_time before shutting off
+	MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF\n");
+	backup_power_cnt_g = 0;
+	led_blink_cnt_g = 0;
+	device_state_g = DEVICE_STATE_OFF;
+	Wiggle_sensor_restart ();
+	peripherals_disable ();
+	Wiggle_sensor_start ();
+}
+
 void Device_init (uint32_t delay_period)
 {
 	device_state_g = DEVICE_STATE_OFF;
