@@ -8,3 +8,4 @@ Windows->Preferences->C/C++->Build->Build Variables before you start build proje
 
 go to project properties:
 1. Link resource -> Path Variables
+
