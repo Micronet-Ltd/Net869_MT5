@@ -10,7 +10,7 @@
 #define CONTEXT_SLCAN_1_EP 	111
 
 
-#define MAX_PACKET_SIZE		16
+#define MAX_PACKET_SIZE		32
 
 typedef enum
 {

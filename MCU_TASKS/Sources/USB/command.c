@@ -15,6 +15,7 @@
 #include "Device_control_GPIO.h"
 #include "Wiggle_sensor.h"
 #include "power_mgm.h"
+#include "rtc.h"
 
 #define GET_COMMAND 0
 #define SET_COMMAND 1
@@ -29,6 +30,8 @@ static void set_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t *
 static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * pturn_on_reason);
 static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice_off);
 static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice_off);
+static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
+static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -59,6 +62,12 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_SET_DEVICE_OFF] = {set_device_off,
 								SET_COMMAND,
 								0},
+	[COMM_GET_RTC_DATE_TIME] = {get_rtc_date_time,
+							GET_COMMAND,
+							RTC_BCD_SIZE},
+	[COMM_SET_RTC_DATE_TIME] = {set_rtc_date_time,
+								SET_COMMAND,
+								RTC_BCD_SIZE},
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -176,4 +185,14 @@ static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * ptu
 static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice_off)
 {
 	Device_off_req(data[0]);
+}
+
+static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
+{
+	rtc_get(pdate_time);
+}
+
+static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
+{
+	rtc_set(&data[0]);
 }

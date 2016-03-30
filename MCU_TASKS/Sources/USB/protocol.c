@@ -136,7 +136,7 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 	}
 
 	// added by eyal
-	memcpy (&data[2], &req.data, MAX_PACKET_SIZE);
+	//memcpy (&data[2], &req.data, MAX_PACKET_SIZE);
 
 	return result;
 }

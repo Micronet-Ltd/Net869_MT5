@@ -50,7 +50,6 @@ void Main_task( uint32_t initial_data ) {
 	MUTEX_ATTR_STRUCT mutexattr;
 
     uint32_t FPGA_version = 0;
-	char rtc_time[8];
 
     _time_delay (10);
 
@@ -69,7 +68,6 @@ void Main_task( uint32_t initial_data ) {
     OSA_Init();
     GPIO_Config();
     ADC_init ();
-    FPGA_init ();
 
 	NVIC_SetPriority(PORTA_IRQn, 6U);
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
@@ -211,10 +209,8 @@ void Main_task( uint32_t initial_data ) {
 #endif
 
     printf("\nMain Task: Loop \n");
-    //rtc_set();
 
     while ( 1 ) {
-		rtc_get(rtc_time, 1);
 	    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
     }
 
