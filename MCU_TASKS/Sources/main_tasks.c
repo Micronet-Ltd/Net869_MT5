@@ -178,19 +178,6 @@ void Main_task( uint32_t initial_data ) {
 
     _test_CANFLEX();
 
-	if (GPIO_DRV_ReadPinInput (SWITCH1) == 1)
-	{
-		/* Connect D1 <-> D MCU or HUB */
-		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
-	    GPIO_DRV_ClearPinOutput(USB_OTG_SEL);
-	}
-	else
-	{
-		/* Connect D2 <-> D A8 OTG */
-		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
-	    GPIO_DRV_SetPinOutput(USB_OTG_SEL);
-	}
-
 	_event_create ("event.EXTERNAL_GPIOS");
 	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
 
@@ -199,18 +186,31 @@ void Main_task( uint32_t initial_data ) {
 
 #if 1
 	/* Simulate a power on button press on the A8 */
-	GPIO_DRV_SetPinOutput   (LED_BLUE);
-
-    GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
-    _time_delay (3000);
-    GPIO_DRV_SetPinOutput(CPU_ON_OFF);
-
-    GPIO_DRV_ClearPinOutput   (LED_BLUE);
+//	GPIO_DRV_SetPinOutput   (LED_BLUE);
+//
+//    GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+//    _time_delay (3000);
+//    GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+//
+//    GPIO_DRV_ClearPinOutput   (LED_BLUE);
 #endif
 
     printf("\nMain Task: Loop \n");
 
     while ( 1 ) {
+
+    	if (GPIO_DRV_ReadPinInput (SWITCH1) == 1)
+    	{
+    		/* Connect D1 <-> D MCU or HUB */
+    		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
+    	    GPIO_DRV_ClearPinOutput(USB_OTG_SEL);
+    	}
+    	else
+    	{
+    		/* Connect D2 <-> D A8 OTG */
+    		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
+    	    GPIO_DRV_SetPinOutput(USB_OTG_SEL);
+    	}
 	    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
     }
 
