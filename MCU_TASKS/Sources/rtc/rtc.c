@@ -196,7 +196,7 @@ void rtc_get(uint8_t * dt_bcd)
 
 	if (!rtc_check_oscillator())
 	{
-		printf("rtc_init: oscillator not good \n");
+		printf("rtc_get: oscillator not good \n");
 	}
 
 	cmd_buff = RTC_DECI_SEC_ADDR;
@@ -222,7 +222,6 @@ void rtc_set(uint8_t * dt_bcd)
 	{
 		printf("rtc_set: set time failed \n");
 	}
-	printf("rtc_set: set time succeeded \n");
 }
 
 #ifdef RTC_DEBUG

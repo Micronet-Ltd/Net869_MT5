@@ -4,7 +4,7 @@
 TASK_TEMPLATE_STRUCT MQX_template_list[] =
 {
 //  Task number,		Entry point,			Stack,     Pri,	    					Task name       	,	    Auto start        Creation Param      Time Slice
-	{ MAIN_TASK,			Main_task,			1000,       MAIN_TASK_PRIORITY,			"MAIN_TASK",			MQX_AUTO_START_TASK,		0,            	0 },
+	{ MAIN_TASK,			Main_task,			1500,       MAIN_TASK_PRIORITY,			"MAIN_TASK",			MQX_AUTO_START_TASK,		0,            	0 },
 	{ ACC_TASK,				Acc_task,			2000,      	ACC_TASK_PRIORITY,			"ACC_TASK",				0,        					0,              0 },
 	{ USB_TASK,				Usb_task,			1500,      	USB_TASK_PRIORITY,			"USB_TASK",				0,					        0,              0 },
 	{ CAN_TASK_RX_0,		FLEXCAN_Rx_Task,	1500,   	CAN_TASK_RX_PRIORITY,		"CAN_TASK_RX",			0,							0,              0 },
