@@ -126,27 +126,33 @@ bool rtc_check_halt_bit(void)
 	return TRUE;
 }
 
+/* returns TRUE if successful */
+bool rtc_oscillator_kick_start(void)
+{
+	uint8_t cmd_buff = RTC_SECOND_ADDR;
+	uint8_t tx_buff = 0;
+
+	/* setting bit D7 of register 01h to cause the oscillator to stop */
+	tx_buff |= 0x80;
+	if (!rtc_send_data (&cmd_buff,  1, &tx_buff, 1))
+	{
+		printf("rtc_oscillator_kick_start: setting oscillator bit failed \n");
+		return FALSE;
+	}
+	/* clearing bit D7 of register 01h to cause the oscillator to start */
+	tx_buff &= 0x7f;
+	if (!rtc_send_data (&cmd_buff,  1, &tx_buff, 1))
+	{
+		printf("rtc_oscillator_kick_start: clearing oscillator bit failed \n");
+		return FALSE;
+	}
+	return TRUE;
+}
+
 
 void rtc_init(void)
 {
-//	uint8_t cmd_buff = RTC_SECOND_ADDR;
-//	uint8_t tx_buff = 0;
-
-	/* setting bit D7 of register 01h to cause the oscillator to stop */
-//	tx_buff |= 0x80;
-//	if (!rtc_send_data (&cmd_buff,  1, &tx_buff, 1))
-//	{
-//		printf("rtc_init: setting oscillator bit failed \n");
-//		return;
-//	}
-//	/* clearing bit D7 of register 01h to cause the oscillator to start */
-//	tx_buff &= 0x7f;
-//	if (!rtc_send_data (&cmd_buff,  1, &tx_buff, 1))
-//	{
-//		printf("rtc_init: clearing oscillator bit failed \n");
-//		return;
-//	}
-
+	//rtc_oscillator_kick_start();
 	if (!rtc_check_oscillator())
 	{
 		printf("rtc_init: oscillator not good \n");
