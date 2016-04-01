@@ -22,7 +22,7 @@
 
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver);
 static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver);
-static void get_gp_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpi_volt);
+static void get_gp_or_adc_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpi_volt);
 static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status);
 static void set_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status);
 static void get_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold);
@@ -32,6 +32,7 @@ static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice
 static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice_off);
 static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
 static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
+static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pbatt_ignition_voltage);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -41,7 +42,7 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_GET_FPGA_VERSION ] = {get_fpga_ver,
 						  GET_COMMAND,
 						  sizeof(uint32_t)},
-	[COMM_GET_GPI_INPUT_VOLTAGE] = {get_gp_input_voltage,
+	[COMM_GET_GPI_OR_ADC_INPUT_VOLTAGE] = {get_gp_or_adc_input_voltage,
 							GET_COMMAND,
 							sizeof(uint32_t)},
 	[COMM_GET_LED_STATUS] = {get_led_status,
@@ -133,12 +134,15 @@ static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver
 	FPGA_read_version((uint32_t *)pfpga_ver);
 }
 
-/* returns voltage of the requested GPInput */
-static void get_gp_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpi_volt)
+/* returns voltage of the requested GPInput or ADC */
+static void get_gp_or_adc_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpi_volt)
 {
-	uint32_t gpi_voltage = 0;
-	gpi_voltage = GPIO_INPUT_get_voltage_level(data[0]);
-	memcpy(pgpi_volt, (uint8_t *)&gpi_voltage , sizeof(uint32_t));
+	uint32_t gpi_or_adc_voltage = 0;
+	if (data[0] < kADC_CHANNELS)
+	{
+		gpi_or_adc_voltage = ADC_get_value(data[0]);
+	}
+	memcpy(pgpi_volt, (uint8_t *)&gpi_or_adc_voltage , sizeof(uint32_t));
 }
 
 static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status)

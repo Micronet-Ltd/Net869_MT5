@@ -53,10 +53,6 @@ void ADC_init (void)
 	// initalize all channels
 	//                         channel                   index         factor  factor  factor    diff
 	//                          name                     number        offset    mul     div     pair
-	ADC_channel_init (&adc_input[kADC_POWER_IN   ], ADC_POWER_IN   ,     0,     105,      5,    false);
-	ADC_channel_init (&adc_input[kADC_POWER_VCAP ], ADC_POWER_VCAP ,     0,       3,      1,    false);
-	ADC_channel_init (&adc_input[kADC_TEMPERATURE], ADC_TEMPERATURE,   500,       1,     10,    false);
-	ADC_channel_init (&adc_input[kADC_CABLE_TYPE ], ADC_CABLE_TYPE ,     0,       1,      1,    false);
 	ADC_channel_init (&adc_input[kADC_ANALOG_IN1 ], ADC_ANALOG_IN1 ,     0,     110,     10,    false);
 	ADC_channel_init (&adc_input[kADC_GPIO_IN1   ], ADC_GPIO_IN1   ,     0,     110,     10,    false);
 	ADC_channel_init (&adc_input[kADC_GPIO_IN2   ], ADC_GPIO_IN2   ,     0,     110,     10,    false);
@@ -65,6 +61,10 @@ void ADC_init (void)
 	ADC_channel_init (&adc_input[kADC_GPIO_IN5   ], ADC_GPIO_IN5   ,     0,     110,     10,    false);
 	ADC_channel_init (&adc_input[kADC_GPIO_IN6   ], ADC_GPIO_IN6   ,     0,     110,     10,    false);
 	ADC_channel_init (&adc_input[kADC_GPIO_IN7   ], ADC_GPIO_IN7   ,     0,     110,     10,    false);
+	ADC_channel_init (&adc_input[kADC_POWER_IN   ], ADC_POWER_IN   ,     0,     105,      5,    false);
+	ADC_channel_init (&adc_input[kADC_POWER_VCAP ], ADC_POWER_VCAP ,     0,       3,      1,    false);
+	ADC_channel_init (&adc_input[kADC_TEMPERATURE], ADC_TEMPERATURE,   500,       1,     10,    false);
+	ADC_channel_init (&adc_input[kADC_CABLE_TYPE ], ADC_CABLE_TYPE ,     0,       1,      1,    false);
 
 	calibrateParams ();
 }
