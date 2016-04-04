@@ -111,11 +111,11 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 			case COMM_READ_RESP: return -1; // BUG: Should never receive this
 
 			case PING_REQ:
-				//resp.seq = req.seq;
-				//resp.pkt_type = PING_RESP;
-				//send_control_msg(&resp, resp_size);
+				resp.seq = req.seq;
+				resp.pkt_type = PING_RESP;
+				send_control_msg(&resp, resp_size);
 				break;
-			case PING_RESP: break; // TODO:
+			case PING_RESP: break;
 			case GPIO_INT_STATUS:
 				/* process a GPIO output message */
 				gpio_set_multiple_outputs(&req.data[0], &req.data[1]);

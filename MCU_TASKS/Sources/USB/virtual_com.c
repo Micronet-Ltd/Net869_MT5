@@ -707,7 +707,7 @@ void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
     {
         /* since we don't want to lose a control message, put it back in the Q */
         _time_delay(1);
-        requeue_control_msg(msg_ptr);
+        //requeue_control_msg(msg_ptr);
         _msg_free(msg_ptr);
         return;
     }

@@ -58,6 +58,7 @@ uint32_t           GPIO_INPUT_get_voltage_level (KGPIOS_INPUT_CHANNELS gpio_inpu
 void    GPIO_OUTPUT_set_level        (KGPIOS_OUTPUT_CHANNELS gpio_output, KOUTPUT_LEVEL level);
 void 	gpio_set_output (KGPIOS_OUTPUT_CHANNELS gpo_num, KOUTPUT_LEVEL level);
 void 	gpio_set_multiple_outputs(uint8_t * mask, uint8_t * value);
+void 	send_gpi_change(uint8_t * gpio_mask);
 
 #ifdef __cplusplus
 extern "C"

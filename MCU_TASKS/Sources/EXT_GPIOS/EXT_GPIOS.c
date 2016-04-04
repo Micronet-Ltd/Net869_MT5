@@ -51,7 +51,6 @@ static const uint32_t gp_out_mapping[] = {
 };
 
 void *g_GPIO_event_h;
-void send_gpi_change(uint8_t * gpio_mask);
 
 KINPUT_LOGIC_LEVEL GPIO_INPUT_convert_voltage_to_level (uint32_t voltage);
 

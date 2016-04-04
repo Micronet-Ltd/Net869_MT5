@@ -33,6 +33,7 @@ static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice
 static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
 static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
 static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pbatt_ignition_voltage);
+static void set_gpi_update_all_values(uint8_t * data, uint16_t data_size, uint8_t * pgpi_values);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -69,6 +70,9 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_SET_RTC_DATE_TIME] = {set_rtc_date_time,
 								SET_COMMAND,
 								RTC_BCD_SIZE},
+	[COMM_SET_GPI_UPDATE_ALL_VALUES] = {set_gpi_update_all_values,
+								SET_COMMAND,
+								0},
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -143,6 +147,14 @@ static void get_gp_or_adc_input_voltage(uint8_t * data, uint16_t data_size, uint
 		gpi_or_adc_voltage = ADC_get_value(data[0]);
 	}
 	memcpy(pgpi_volt, (uint8_t *)&gpi_or_adc_voltage , sizeof(uint32_t));
+}
+
+/* sends the GPI values to the OS since some of the updates could have been sent
+ * during bootup */
+static void set_gpi_update_all_values(uint8_t * data, uint16_t data_size, uint8_t * pgpi_values)
+{
+	uint8_t gpio_mask = 0xff;
+	send_gpi_change(&gpio_mask);
 }
 
 static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status)
