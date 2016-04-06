@@ -46,8 +46,10 @@ typedef enum {
 typedef enum {
 	MAIN_QUEUE       ,
 	USB_QUEUE        ,
-	CAN1_QUEUE       ,
-	CAN2_QUEUE       ,
+	CAN1_TX_QUEUE    ,
+	CAN2_TX_QUEUE    ,
+	CAN1_RX_QUEUE	 ,
+	CAN2_RX_QUEUE	 ,
 	J1708_TX_QUEUE   ,
 	J1708_RX_QUEUE   ,
 	FPGA_UART_RX_QUEUE,
@@ -60,10 +62,12 @@ typedef enum {
 
 typedef struct {
 	MESSAGE_HEADER_STRUCT 		header;
-	uint64_t					timestamp; /* in milliseconds */
-	uint8_t						data[MAX_MSG_DATA_LEN];
+	uint64_t					timestamp;
 	uint8_t						portNum;
+	uint8_t						data[MAX_MSG_DATA_LEN];
 } APPLICATION_MESSAGE_T, *APPLICATION_MESSAGE_PTR_T;
+
+#define APP_MESSAGE_NO_ARRAY_SIZE (sizeof(MESSAGE_HEADER_STRUCT)+sizeof(uint64_t)+sizeof(uint8_t))
 
 extern void Main_task        (uint32_t);
 extern void Power_MGM_task   (uint32_t);

@@ -348,7 +348,7 @@ void peripherals_enable (void)
     GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
     GPIO_DRV_SetPinOutput   (FPGA_RSTB);
 
-	GPIO_DRV_SetPinOutput   (CAN_ENABLE);			// Enable CAN
+	//GPIO_DRV_SetPinOutput   (CAN_ENABLE);			// Enable CAN
 
 //    GPIO_DRV_ClearPinOutput (USB_OTG_SEL);		// Connect D1 <-> D MCU or HUB
 //  GPIO_DRV_SetPinOutput(USB_OTG_SEL);			// Connect D2 <-> D A8 OTG
@@ -392,7 +392,7 @@ void peripherals_disable (void)
 	GPIO_DRV_ClearPinOutput (LED_GREEN);
 	GPIO_DRV_ClearPinOutput (LED_BLUE);
 	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
-	GPIO_DRV_ClearPinOutput (CAN_ENABLE);
+	//GPIO_DRV_ClearPinOutput (CAN_ENABLE);
 	GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
 	GPIO_DRV_ClearPinOutput (SPKR_INT_EN);

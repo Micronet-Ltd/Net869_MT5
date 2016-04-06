@@ -263,13 +263,15 @@
 #define USB_OTHER_SPEED_DESCRIPTOR  		(7)
 #endif
 
-#define CDC_CLASS                              (0x02)
+#define CDC_CLASS								(0x02)
 #define DEVICE_DESC_DEVICE_CLASS               (0xEF)
 #define DEVICE_DESC_DEVICE_SUBCLASS            (0X03)//(0x00)
+#define DEVICE_DESC_DEVICE_SUBCLASS_CAN			(0x02)
 #define DEVICE_DESC_DEVICE_PROTOCOL            (0x01)
 #define DEVICE_DESC_NUM_CONFIG_SUPPORTED       (0x01)
 
 #define CM_D0_D1								(0x03)
+#define CM_DO_D1_CAN							(0x00)
 /* Keep the following macro Zero if you don't Support Other Speed Configuration
  If you support Other Speeds make it 0x01 */
 #define DEVICE_OTHER_DESC_NUM_CONFIG_SUPPORTED  (0x00)

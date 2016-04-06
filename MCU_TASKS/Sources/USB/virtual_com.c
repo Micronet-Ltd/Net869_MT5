@@ -839,7 +839,9 @@ void CDC2_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         _mem_copy( msg_ptr->data, g_app_composite_device.cdc_vcom[2].curr_send_buf, msg_ptr->header.SIZE );
         g_app_composite_device.cdc_vcom[2].send_size = msg_ptr->header.SIZE;
 #else
-        g_app_composite_device.cdc_vcom[2].send_size = frame_encode(msg_ptr->data, g_app_composite_device.cdc_vcom[2].curr_send_buf, msg_ptr->header.SIZE);
+        g_app_composite_device.cdc_vcom[2].send_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
+        _mem_copy ( msg_ptr->data, g_app_composite_device.cdc_vcom[2].curr_send_buf, g_app_composite_device.cdc_vcom[2].send_size );
+        
 #endif
 
         g_app_composite_device.cdc_vcom[2].send_ready = FALSE;
@@ -890,7 +892,8 @@ void CDC3_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         _mem_copy( msg_ptr->data, g_app_composite_device.cdc_vcom[3].curr_send_buf, msg_ptr->header.SIZE );
         g_app_composite_device.cdc_vcom[3].send_size = msg_ptr->header.SIZE;
 #else
-        g_app_composite_device.cdc_vcom[3].send_size = frame_encode(msg_ptr->data, g_app_composite_device.cdc_vcom[3].curr_send_buf, msg_ptr->header.SIZE);
+       g_app_composite_device.cdc_vcom[3].send_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
+       _mem_copy ( msg_ptr->data, g_app_composite_device.cdc_vcom[3].curr_send_buf, g_app_composite_device.cdc_vcom[2].send_size );
 #endif
 
         g_app_composite_device.cdc_vcom[3].send_ready = FALSE;
@@ -988,19 +991,19 @@ void USB_Recive_Data ( cdc_struct_t *handle )
 #if COMPOSITE_CFG_MAX > 2
     else if ( handle->cdc_handle == g_app_composite_device.cdc_vcom[2].cdc_handle )
     {
-        CDC2_resv ( handle );
+        CDC2_resv ( handle ); // CAN0
     }
 #endif
 #if COMPOSITE_CFG_MAX > 3
     else if ( handle->cdc_handle == g_app_composite_device.cdc_vcom[3].cdc_handle )
     {
-        CDC3_resv ( handle );
+        CDC3_resv ( handle ); //CAN1
     }
 #endif
 #if COMPOSITE_CFG_MAX > 4
     else if ( handle->cdc_handle == g_app_composite_device.cdc_vcom[4].cdc_handle )
     {
-        CDC4_resv ( handle );
+        CDC4_resv ( handle ); //J1708
     }
 #endif
    
@@ -1080,23 +1083,33 @@ void CDC1_resv ( cdc_struct_t *handle )
 #endif
 }
 
+//CAN 0
 void CDC2_resv ( cdc_struct_t *handle )
 {
 #if COMPOSITE_CFG_MAX > 2
     //Add source here
-    //APPLICATION_MESSAGE_T *msg;
+    APPLICATION_MESSAGE_T *msg;
 
-#ifdef MIC_USB_DEBUG
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
         printf("CDC2_resv USB Task: ERROR: message allocation failed\n");
         return;
     }
+
+#ifdef MIC_USB_DEBUG
+    
     _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
     msg->header.SOURCE_QID = _msgq_get_id( 0, USB_TEST_QUEUE );
     msg->header.TARGET_QID = _msgq_get_id( 0, USB_QUEUE );
     msg->header.SIZE = handle->recv_size;
     msg->portNum = MIC_CDC_USB_3;
+    _msgq_send (msg);
+    handle->recv_size = 0;
+#else
+    _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
+    msg->header.SOURCE_QID = _msgq_get_id( 0, USB_TEST_QUEUE );
+    msg->header.TARGET_QID = _msgq_get_id( 0, CAN1_TX_QUEUE );
+    msg->header.SIZE = handle->recv_size + APP_MESSAGE_NO_ARRAY_SIZE;
     _msgq_send (msg);
     handle->recv_size = 0;
 #endif
@@ -1108,19 +1121,26 @@ void CDC3_resv ( cdc_struct_t *handle )
 {
 #if COMPOSITE_CFG_MAX > 3
     //Add source here
-    //APPLICATION_MESSAGE_T *msg;
-
-#ifdef MIC_USB_DEBUG
+    APPLICATION_MESSAGE_T *msg;
+    
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
         printf("CDC3_resv USB Task: ERROR: message allocation failed\n");
         return;
     }
+#ifdef MIC_USB_DEBUG
     _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
     msg->header.SOURCE_QID = _msgq_get_id( 0, USB_TEST_QUEUE );
     msg->header.TARGET_QID = _msgq_get_id( 0, USB_QUEUE );
     msg->header.SIZE = handle->recv_size;
     msg->portNum = MIC_CDC_USB_4;
+    _msgq_send (msg);
+    handle->recv_size = 0;
+#else
+    _mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
+    msg->header.SOURCE_QID = _msgq_get_id( 0, USB_TEST_QUEUE );
+    msg->header.TARGET_QID = _msgq_get_id( 0, CAN2_TX_QUEUE );
+    msg->header.SIZE = handle->recv_size + APP_MESSAGE_NO_ARRAY_SIZE;
     _msgq_send (msg);
     handle->recv_size = 0;
 #endif
@@ -1154,6 +1174,7 @@ void CDC4_resv ( cdc_struct_t *handle )
 		printf("CDC4_resv USB Task: rec data size %d < 3 \n", handle->recv_size);
 		return;
 	}
+
     if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
     {
         printf("CDC4_resv USB Task: ERROR: message allocation failed\n");

@@ -541,6 +541,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 #endif
 #endif //MIC_USB_CDC_INF_COUNT > 1
 
+// CAN 1 chanell
 #if MIC_USB_CDC_INF_COUNT > 2
 	, /* Interface Association Descriptor */
 	IAD_CONFIG_DESC_SIZE,                   /* Size of this descriptor */
@@ -550,7 +551,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	0x02,                                   /* Number of contiguous CDC interfaces
 											that are associated with this function */
 	CDC_CLASS,                              /* CDC_CC */
-	DEVICE_DESC_DEVICE_SUBCLASS,
+	DEVICE_DESC_DEVICE_SUBCLASS_CAN,
 	DEVICE_DESC_DEVICE_PROTOCOL,
 	0x00,                                   /* Index of string */
 
@@ -562,7 +563,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CIC_ENDP_COUNT,                         /* management and notification(optional)element present */
 	CDC_CLASS,                              /* Communication Interface Class */
 	CIC_SUBCLASS_CODE,
-	CIC_PROTOCOL_CODE,
+	AT_250_PROTOCOL,
 	0x00, /* Interface Description String Index*/
 
 	/* CDC Class-Specific descriptor */
@@ -571,20 +572,23 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	HEADER_FUNC_DESC,
 	0x10, 0x01,                             /* USB Class Definitions for CDC spec release number in BCD */
 
+	//Call Managment Functional Descriptor
 	CDC_CALL_MANAG_DESC_SIZE,               /* Size of this descriptor */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	CALL_MANAGEMENT_FUNC_DESC,
-	CM_D0_D1,                                   /*D0(if set): device handles call management itself
+	CM_DO_D1_CAN,                           /*D0(if set): device handles call management itself
 											D1(if set): process commands multiplexed over the data interface*/
 	0x01,                                   /* Indicates multiplexed commands are handled via data interface */
 
+	//ACM Functional descriptor
 	CDC_ABSTRACT_DESC_SIZE,                 /* Size of this descriptor */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	ABSTRACT_CONTROL_FUNC_DESC,
-	0x06,                                   /* Device supports request send break, device supports request
+	0x02,                                   /* Device supports request send break, device supports request
 											 combination o set_line_coding, set_control_line_state, 
 											 get_line_coding and the notification serial state */
 
+	//Union Functional Descriptor
 	CDC_UNION_FUNC_DESC_SIZE,               /* size of Functional Desc in bytes */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	UNION_FUNC_DESC,
@@ -634,6 +638,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 #endif
 #endif //MIC_USB_CDC_INF_COUNT > 2
 
+// CAN 2 chanell
 #if MIC_USB_CDC_INF_COUNT > 3
 	, /* Interface Association Descriptor */
 	IAD_CONFIG_DESC_SIZE,                   /* Size of this descriptor */
@@ -727,6 +732,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 #endif
 #endif //MIC_USB_CDC_INF_COUNT > 3
 
+// J1708 chanell
 #if MIC_USB_CDC_INF_COUNT > 4
 	, /* Interface Association Descriptor */
 	IAD_CONFIG_DESC_SIZE,                   /* Size of this descriptor */

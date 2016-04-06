@@ -15,6 +15,7 @@
 #include <fsl_flexcan_hal.h>
 #include <lwmsgq.h>
 #include <mutex.h>
+#include <mqx_str.h>
 
 #include "board.h"
 #include "gpio_pins.h"
@@ -22,6 +23,7 @@
 #include "Uart_debugTerminal.h"
 #include "tasks_list.h"
 #include "FlexCanDevice.h"
+#include "mic_typedef.h"
 
 /* Definition */
 
@@ -45,6 +47,11 @@ flexcan_time_segment_t bitRateTable60Mhz[] = {
  * a protocol engine clock of 48MHz
  */
 flexcan_time_segment_t bitRateTable48Mhz[] = {
+	{ 7, 7, 2, 0xEF, 3}, /* 10 kHz */
+	{ 4, 7, 1, 0x95, 3}, /* 20 KHz */
+	{ 0, 0, 0, 0x39, 3}, /* 33.33 KHz Not finaly config*/
+	{ 4, 7, 1, 0x3B, 3}, /* 50 KHz */
+	{ 4, 7, 1, 0x1D, 3}, /* 100 KHz */
 	{ 6, 7, 7, 15, 3 },  /* 125 kHz */
 	{ 6, 7, 7,  7, 3 },  /* 250 kHz */
 	{ 6, 7, 7,  3, 3 },  /* 500 kHz */
@@ -75,39 +82,322 @@ uint32_t g_flexacandevice_PacketCountRX1 = 0;
 
 flexcan_device_bitrate_t    ConvertTimetoBitRate( flexcan_time_segment_t *ptimeSegmentTable,  flexcan_time_segment_t *ptimeSegment );
 flexcan_device_status_t     FlexCanDevice_InitInstance( uint8_t instNum, pflexcandevice_initparams_t pinstance_Can );
+flexcan_device_status_t		DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData );
 
 void FLEXCAN_Tx_Task( uint32_t param ) {
+	uint32_t result, can_instance;
+	pflexcanInstance_t pinstance;
+	_queue_id  msg_qid;
+	APPLICATION_MESSAGE_PTR_T msg_ptr;
+	flexcan_device_status_t ret;
+	LWEVENT_STRUCT      event_ISR;
+	flexcandevice_TX_data_t Tx_data;
+
+	flexcandevice_initparams_t initCan;
+
+	if ( BOARD_CAN_INSTANCE <= param ) {
+		printf( "CAN_TX thread wrong param %u\n", param );
+		return;
+	}
+	can_instance = param;
+	pinstance = &g_flexcanDeviceInstance[can_instance];
+
+	initCan.flexcanMode        = fdFlexCanNormalMode;
+	initCan.instanceBitrate    = fdBitrate_125_kHz;
+	initCan.is_rx_fifo_needed  = false;
+	initCan.max_num_mb         = MAX_MB_NUMBER;
+	initCan.num_id_filters     = kFlexCanRxFifoIDFilters_8;
+	initCan.RX_queue_num       = RX_FLEXCAN_MSGQ_MESAGES;
+	initCan.TX_queue_num       = TX_FLEXCAN_MSGQ_MESAGES;
+
+	if ( BSP_CAN_DEVICE_0 == can_instance ) {
+		msg_qid = _msgq_open(CAN1_TX_QUEUE, 0);
+	}
+	else {
+		msg_qid = _msgq_open(CAN2_TX_QUEUE, 0);
+	}
+
+	if (MSGQ_NULL_QUEUE_ID == msg_qid)
+    {
+       printf("\nCould not create a message pool CAN %u _TX_QUEU\n", param);
+       _task_block();
+    }
+
+
+	if (MQX_OK != _lwevent_create(&event_ISR, LWEVENT_AUTO_CLEAR)) // Not set auto clean bits
+    {
+        printf("Make event failed\n");
+        return;;// ( kStatus_FLEXCAN_Fail );
+    }
+
+
+	do {
+		msg_ptr = _msgq_receive(msg_qid, 1);
+        if(NULL == msg_ptr) { _time_delay(1); continue; }
+
+		char* pbuff = (char *)msg_ptr->data;
+		int msg_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
+		char erroResp = '\r';
+		char termination, baudrate;
+		do {
+			switch ( *pbuff ) {
+			case 'S':
+				if ( msg_size > 2 ) {
+					pbuff++;
+					msg_size--;
+					baudrate = *pbuff;
+					if ( (fdBitrate_125_kHz <= baudrate) && ( fdBitrate_MAX > baudrate ) ) {
+						initCan.instanceBitrate = ( flexcan_device_bitrate_t )baudrate;
+						printf("Set baudrate command %c \n", baudrate );
+					}
+					else {
+						printf("Error get baudrate command %c \n", baudrate );
+						erroResp = '\a';
+						_mem_copy ( &erroResp, msg_ptr->data, 1 );
+						msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE + 1;
+						break;
+					}
+					pbuff++;
+					msg_size--;
+					if ( 0 == msg_size ) {
+						_mem_copy ( &erroResp, msg_ptr->data, 1 );
+						msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE + 1;
+					}
+				}
+				break;
+			case 'O':
+				pbuff++;
+				msg_size--;
+				
+				termination = *pbuff;
+				
+				if ( '\r' == termination)
+				{
+					printf ( "Open wrong format to enable termination\n" );
+					erroResp = '\a';
+					break;					
+				}
+				pbuff++;
+				msg_size--;
+				
+				if ( BSP_CAN_DEVICE_0 == can_instance ) {
+					ret = FlexCanDevice_Init(&initCan, NULL);
+				}
+				else {
+					ret = FlexCanDevice_Init(NULL, &initCan);
+				}
+				printf("FlexCanDevice_Init( ) return %d\n", ret);
+
+				pinstance->canState.pevent_ISR = &event_ISR;
+
+				ret = FlexCanDevice_Start(pinstance);
+				printf("FlexCanDevice_Start( ) return %d\n", ret);
+
+				ret = FlexCanDevice_SetRxMaskType(pinstance, false);
+				printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
+
+				ret = FlexCanDevice_SetRxMaskType(pinstance, true);
+				printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
+
+				ret = FlexCanDevice_SetRxMbGlobalMask ( pinstance, kFlexCanMsgIdStd , 0x700 );
+				printf("FlexCanDevice_SetRxMbGlobalMask( ) return %d\n", ret);
+
+				pinstance->iScanInstanceStarted = true;
+				
+				if ( 0 == termination ){
+				    ret = FlexCanDevice_SetTermination(pinstance, false);
+				}
+				else{
+					ret = FlexCanDevice_SetTermination(pinstance, true);
+				}
+				printf("FlexCanDevice_SetTermination( ) return %d on set %d\n", ret, termination);
+
+				_time_delay(20);
+
+				for (int i = 0; i < 14; i++) {
+					ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0xF00 );
+					printf("FlexCanDevice_SetRxIndividualMask %d return %d\n", i, ret);
+					ret = FlexCanDevice_setMailbox(pinstance, kFlexCanMsgIdStd, i, 0x1c, true);
+					printf("FlexCanDevice_setMailbox %d return %d\n", i, ret);
+				}
+				
+				//Enable CAN
+				if ( BSP_CAN_DEVICE_0 == can_instance ){
+					GPIO_DRV_SetPinOutput(CAN1_J1708_ENABLE);
+				}
+				else {
+					GPIO_DRV_SetPinOutput(CAN2_ENABLE);
+				}
+
+				_time_delay(20);				
+				break;
+			case 'C':
+				pbuff++;
+				msg_size--;
+				//Disable CAN
+				pinstance->iScanInstanceStarted = false;
+				if ( BSP_CAN_DEVICE_0 == can_instance ) {
+					GPIO_DRV_ClearPinOutput(CAN1_J1708_ENABLE);
+				}
+				else {
+					GPIO_DRV_ClearPinOutput(CAN2_ENABLE);
+				}
+
+				ret = FlexCanDevice_SetTermination(pinstance, false);
+				printf("FlexCanDevice_SetTermination( ) return %d\n", ret);
+
+				ret = FlexCanDevice_Stop(pinstance);
+				printf("FlexCanDevice_Stop( ) return %d\n", ret);
+
+				ret = FlexCanDevice_DeInit(pinstance);
+				printf("FlexCanDevice_DeInit( ) return %d\n", ret);
+
+				_time_delay(100);
+				break;
+			case 't':
+				printf( "ERROR Command not recognized %c size %d", *pbuff, msg_size  );
+				Tx_data.msgbuffType = kFlexCanMsgIdStd;
+			case 'T':
+				if ( 'T' == *pbuff ) {
+					Tx_data.msgbuffType = kFlexCanMsgIdExt;
+				}
+				if ( ((4 > msg_size) && (kFlexCanMsgIdStd == Tx_data.msgbuffType)) || ((9 > msg_size) && (kFlexCanMsgIdExt == Tx_data.msgbuffType)) )
+				{
+					_msg_free(msg_ptr);
+					msg_ptr = NULL;
+					msg_size = 0;
+					break;
+				}
+				pbuff++;
+				msg_size--;
+				if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data ) )
+				{
+					if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage ( pinstance, 14, &Tx_data ) )
+						erroResp = '\a';
+				}
+				else
+				{
+					erroResp = '\a';
+				}
+				msg_size = 0;
+				break;
+			case 'F':
+				pbuff++;
+				msg_size--;
+				break;
+			case '\r':
+				pbuff++;
+				msg_size--;
+				break;
+			case '\a':
+				pbuff++;
+				msg_size--;
+				break;
+			default:
+				printf( "ERROR Command not recognized %c size %d", *pbuff, msg_size  );
+				_msg_free(msg_ptr);
+				msg_ptr = NULL;
+				msg_size = 0;
+				//erroResp = '\a';
+			}
+
+			if ( (0 >= msg_size) || ('\r' != erroResp) ) {
+				break;
+			}
+		}while ( 1 );
+		
+		if ( msg_ptr ) {			
+			msg_ptr->header.SOURCE_QID = msg_qid;
+			msg_ptr->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
+			_mem_copy ( &erroResp, msg_ptr->data, 1 );
+			msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE + 1;
+			if ( BSP_CAN_DEVICE_0 == can_instance ) {
+				msg_ptr->portNum = MIC_CDC_USB_3;
+			}
+			else {
+				msg_ptr->portNum = MIC_CDC_USB_4;
+			}
+			_msgq_send (msg_ptr);
+		}
+		else
+        	_time_delay(1);
+
+	} while ( 1 );
+
+	//TODO
+	if (MQX_OK != _lwevent_destroy(&(event_ISR)))
+	{
+		printf("_lwevent_destroy event failed\n");
+		return;// ( kStatus_FLEXCAN_Fail );
+	}
 }
 
 //#define MIC_LED_TEST
 
 void FLEXCAN_Rx_Task( uint32_t param ) {
 
-	uint32_t result;
+	uint32_t result, can_instance;
 	pflexcanInstance_t pinstance;
-	uint32_t tmp;
+	_queue_id  msg_qid;
+	APPLICATION_MESSAGE_PTR_T msg_ptr;
+	uint8_t tmp;
+	char msg_str[35];
+	_mqx_uint err_task;
 
 	if ( BOARD_CAN_INSTANCE <= param ) {
 		return;
 	}
+	can_instance = param;
+	
+	printf("FLEXCAN_Rx_Task Task: Loop instance %u \n", can_instance);
 
-	MIC_DEBUG_UART_PRINTF("FLEXCAN_Rx_Task Task: Loop instance %u \n", param);
+	if ( BSP_CAN_DEVICE_0 == can_instance ) {
+		msg_qid = _msgq_open(CAN1_RX_QUEUE, 0);
+	}
+	else {
+		msg_qid = _msgq_open(CAN2_RX_QUEUE, 0);
+	}
 
-	pinstance = &g_flexcanDeviceInstance[param];
-
-	if (MQX_OK != _lwevent_create(&(pinstance->canState.event_ISR), LWEVENT_AUTO_CLEAR)) // Not set auto clean bits
+	if (MSGQ_NULL_QUEUE_ID == msg_qid)
     {
-        //printf("Make event failed\n");
-        return;;// ( kStatus_FLEXCAN_Fail );
+       printf("\nCould not create a message pool CAN %u _TX_QUEU\n", param);
+       _task_block();
     }
 
+	pinstance = &g_flexcanDeviceInstance[can_instance];
+
 	do {
-		uint32_t idx, i, j;
-		flexcan_device_msgRX_t msg;
+		uint32_t idx, i, j, pmsg_size, curr_msg_len;
+		//flexcan_device_msgRX_t msg;
+		char *pmsg_data;
 		_mqx_uint mRet;
+		if ((uint32_t)false == pinstance->iScanInstanceStarted )
+		{
+			_time_delay(2);
+			continue;
+		}
 		result = FLEXCAN_DRV_GetReceiveStatusBlocking(pinstance->instance, &idx, 0);
 
 		if ( !result ) {
+			pmsg_data = NULL;
+			pmsg_size = curr_msg_len = 0;
+			if ( (msg_ptr = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL )
+			{
+				printf("CAN RX task %u failed allocate msg\n", can_instance);
+			}
+			if ( msg_ptr ) {
+				if ( BSP_CAN_DEVICE_0 == can_instance ) {
+					msg_ptr->portNum = MIC_CDC_USB_3;
+				}
+				else {
+					msg_ptr->portNum = MIC_CDC_USB_4;
+				}
+				msg_ptr->header.SOURCE_QID = msg_qid;
+				msg_ptr->header.TARGET_QID = _msgq_get_id( 0, USB_QUEUE );;
+				msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE;
+
+				pmsg_data = ( char* )msg_ptr->data;
+			}
 			for ( i = 0; idx && (i < MAX_MB_NUMBER); i++ ) {
 				j = idx & 0x00000001;
 				idx >>= 1;
@@ -120,18 +410,123 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 						GPIO_DRV_SetPinOutput(LED_BLUE);
 					}
 #endif
-					msg.msgID                   = pinstance->MB_msgbuff[i].msgId;
-					msg.mb_inst_id.canInstance  = pinstance->instance;
-					msg.mb_inst_id.mb_id        = pinstance->MB_config[i].iD;
+					if ( pmsg_data ) {
+						tmp = (uint8_t)(((pinstance->MB_msgbuff[i].cs) >> 16) & 0xF);
+						//printf("\r\nDLC=%u, mb_idx=%u", tmp, pinstance->MB_config[i].iD);
+						//printf("\r\nID: 0x%x", pinstance->MB_msgbuff[i].msgId);
+						//printf("\r\nRX MB data: 0x");
 
-					tmp = ((pinstance->MB_msgbuff[i].cs) >> 16) & 0xF;
-					//MIC_DEBUG_UART_PRINTF("\r\nDLC=%u, mb_idx=%u", tmp, pinstance->MB_config[i].iD);
-					//MIC_DEBUG_UART_PRINTF("\r\nID: 0x%x", pinstance->MB_msgbuff[i].msgId);
-					//MIC_DEBUG_UART_PRINTF("\r\nRX MB data: 0x");
+						switch ( tmp ) {
+						case 1:
+							sprintf ( msg_str, "%x#%02x\r", pinstance->MB_msgbuff[i].msgId, 
+									  pinstance->MB_msgbuff[i].data[0]  );
+							break;
+						case 2:
+							sprintf ( msg_str, "%x#%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
+									  pinstance->MB_msgbuff[i].data[0],
+									  pinstance->MB_msgbuff[i].data[1] );
+							break;
+						case 3:
+							sprintf ( msg_str, "%x#%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
+									  pinstance->MB_msgbuff[i].data[0],
+									  pinstance->MB_msgbuff[i].data[1],
+									  pinstance->MB_msgbuff[i].data[2] );
+							break;
+						case 4:
+							sprintf ( msg_str, "%x#%02x%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
+									  pinstance->MB_msgbuff[i].data[0],
+									  pinstance->MB_msgbuff[i].data[1],
+									  pinstance->MB_msgbuff[i].data[2],
+									  pinstance->MB_msgbuff[i].data[3] );
+							break;
+						case 5:
+							sprintf ( msg_str, "%x#%02x%02x%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
+									  pinstance->MB_msgbuff[i].data[0],
+									  pinstance->MB_msgbuff[i].data[1],
+									  pinstance->MB_msgbuff[i].data[2],
+									  pinstance->MB_msgbuff[i].data[3],
+									  pinstance->MB_msgbuff[i].data[4] );
+							break;
+						case 6:
+							sprintf ( msg_str, "%x#%02x%02x%02x%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
+									  pinstance->MB_msgbuff[i].data[0],
+									  pinstance->MB_msgbuff[i].data[1],
+									  pinstance->MB_msgbuff[i].data[2],
+									  pinstance->MB_msgbuff[i].data[3],
+									  pinstance->MB_msgbuff[i].data[4],
+									  pinstance->MB_msgbuff[i].data[5] );
+							break;
+						case 7:
+							sprintf ( msg_str, "%x#%02x%02x%02x%02x%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
+									  pinstance->MB_msgbuff[i].data[0],
+									  pinstance->MB_msgbuff[i].data[1],
+									  pinstance->MB_msgbuff[i].data[2],
+									  pinstance->MB_msgbuff[i].data[3],
+									  pinstance->MB_msgbuff[i].data[4],
+									  pinstance->MB_msgbuff[i].data[5],
+									  pinstance->MB_msgbuff[i].data[6] );
+							break;
+						case 8:
+							sprintf ( msg_str, "%x#%02x%02x%02x%02x%02x%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
+									  pinstance->MB_msgbuff[i].data[0],
+									  pinstance->MB_msgbuff[i].data[1],
+									  pinstance->MB_msgbuff[i].data[2],
+									  pinstance->MB_msgbuff[i].data[3],
+									  pinstance->MB_msgbuff[i].data[4],
+									  pinstance->MB_msgbuff[i].data[5],
+									  pinstance->MB_msgbuff[i].data[6],
+									  pinstance->MB_msgbuff[i].data[7] );
+							break;
+						default:
+							sprintf ( msg_str, "%x#\r", pinstance->MB_msgbuff[i].msgId );
 
-					for ( result = 0; result < tmp; result++ ) {
-						msg.data[result] = pinstance->MB_msgbuff[i].data[result];
-						//MIC_DEBUG_UART_PRINTF("%02x ", pinstance->MB_msgbuff[i].data[result]);
+						}
+
+//						for ( result = 0; result < tmp; result++ ) {
+//							msg.data[result] = pinstance->MB_msgbuff[i].data[result];
+//							//printf("%02x ", pinstance->MB_msgbuff[i].data[result]);
+//						}
+						curr_msg_len = _strnlen( msg_str, sizeof ( msg_str ) );
+						printf("CAN%d msg %s size %d\n", can_instance, msg_str, curr_msg_len );
+
+						if ( MAX_MSG_DATA_LEN < (pmsg_size + curr_msg_len) ) {
+							printf("CAN%d msg is full realloc\n", can_instance );
+							msg_ptr->header.SIZE += pmsg_size;
+
+							_msgq_send (msg_ptr);
+							if (MQX_OK != (err_task = _task_get_error()))
+							{
+								printf("FCD_RX_%u Task: ERROR: message send failed %x\n", can_instance, err_task);
+								_task_set_error(MQX_OK);
+							}
+
+							msg_ptr = NULL;
+							pmsg_size = 0;
+							if ( (msg_ptr = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL )
+							{
+								printf("CAN RX task %u failed allocate msg\n", can_instance);
+							}
+							if ( msg_ptr ) {
+								if ( BSP_CAN_DEVICE_0 == can_instance ) {
+									msg_ptr->portNum = MIC_CDC_USB_3;
+								}
+								else {
+									msg_ptr->portNum = MIC_CDC_USB_4;
+								}
+								msg_ptr->header.SOURCE_QID = msg_qid;
+								msg_ptr->header.TARGET_QID = _msgq_get_id( 0, USB_QUEUE );;
+								msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE;
+
+								pmsg_data = ( char* )msg_ptr->data;
+							}
+						}
+						if ( NULL != pmsg_data ) {
+							_mem_copy((const void *)msg_str, (void *)pmsg_data, curr_msg_len);
+							pmsg_size += curr_msg_len;
+							pmsg_data += curr_msg_len;
+							printf("pmsg_size %d\n", pmsg_size);
+						}
+
 					}
 
 					mRet = _mutex_lock(&(pinstance->mutex_MB_sync));
@@ -145,33 +540,35 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 						mRet = FLEXCAN_DRV_ConfigRxMb(pinstance->instance, i, &rxInfo, pinstance->MB_config[i].iD_Mask);
 						if ( mRet ) {
 							//numErrors++;
-							MIC_DEBUG_UART_PRINTF("\r\nFlexCAN RX MB configuration failed. result: 0x%lx\n", mRet);
+							printf("\r\nFlexCAN RX MB configuration failed. result: 0x%lx\n", mRet);
 						}
 						//Enable Interrupt and start recieving
 						mRet = FLEXCAN_DRV_RxMessageBuffer(pinstance->instance, pinstance->MB_config[i].iD, &(pinstance->MB_msgbuff[i]));
 						if ( mRet ) {
-							MIC_DEBUG_UART_PRINTF("\r\nFLEXCAN_DRV_RxMessageBuffer. result: 0x%lx\n", mRet);
+							printf("\r\nFLEXCAN_DRV_RxMessageBuffer. result: 0x%lx\n", mRet);
 						}
 					}
 
 					g_flexacandevice_PacketCountRX++;
 					mRet = _mutex_unlock(&(pinstance->mutex_MB_sync));
-
-					// Temporary disable need for USB
-					//_lwmsgq_send((void *)pinstance->pRX_queue, (_mqx_max_type_ptr)&msg, LWMSGQ_SEND_BLOCK_ON_FULL);
-					_time_delay_ticks(1);
 				}
 			}
 		}
 
-	} while ( 1 );
+		if ( msg_ptr ) {
+			msg_ptr->header.SIZE += pmsg_size;
+			_msgq_send (msg_ptr);
+			if (MQX_OK != (err_task = _task_get_error()))
+			{
+				printf("FCD_RX_%u Task: ERROR: message send failed %x\n", can_instance, err_task);
+				_task_set_error(MQX_OK);
+			}
+			msg_ptr = NULL;
+		}
+		else
+			_time_delay(1);
 
-	//TODO
-	if (MQX_OK != _lwevent_destroy(&(pinstance->canState.event_ISR)))
-	{
-		//printf("_lwevent_destroy event failed\n");
-		return;// ( kStatus_FLEXCAN_Fail );
-	}
+	} while ( 1 );
 }
 
 pflexcanInstance_t FlexCanDevice_GetInstance( flexcandevice_module_t moduleID ) {
@@ -198,33 +595,11 @@ flexcan_device_status_t FlexCanDevice_InitInstance(  uint8_t instNum, pflexcande
 	g_flexcanDeviceInstance[instNum].flexcanData.num_id_filters       = pinstance_Can->num_id_filters; //kFlexCanRxFifoIDFilters_8;
 	g_flexcanDeviceInstance[instNum].instanceBitrate                  = pinstance_Can->instanceBitrate;
 	g_flexcanDeviceInstance[instNum].initialize                       = true;
-	g_flexcanDeviceInstance[instNum].pRX_queue                        = (uint32_t *)_mem_alloc(sizeof(LWMSGQ_STRUCT) / sizeof(uint32_t) +
-																							   pinstance_Can->RX_queue_num * sizeof(flexcan_device_msgRX_t));
-
-	if ( NULL !=  g_flexcanDeviceInstance[instNum].pRX_queue ) {
-		ret = (flexcan_device_status_t)_lwmsgq_init((void *)g_flexcanDeviceInstance[instNum].pRX_queue, pinstance_Can->RX_queue_num, sizeof(flexcan_device_msgRX_t));
-		if ( MQX_OK != ret ) {
-			MIC_DEBUG_UART_PRINTF("Error _lwmsgq_init - %x\n", ret);
-			_mem_free(g_flexcanDeviceInstance[instNum].pRX_queue);
-			g_flexcanDeviceInstance[instNum].pRX_queue = NULL;
-			g_flexcanDeviceInstance[instNum].initialize = false;
-			ret = fcStatus_FLEXCAN_Error;
-		}
-	} else {
-		g_flexcanDeviceInstance[instNum].initialize = false;
-		ret = fcStatus_FLEXCAN_Error;
-	}
 
 	if ( g_flexcanDeviceInstance[instNum].initialize ) {
 		ret = (flexcan_device_status_t)_mutex_init(&(g_flexcanDeviceInstance[instNum].mutex_MB_sync), NULL);
 		if ( MQX_EOK != ret ) {
-			MIC_DEBUG_UART_PRINTF("Error init mutex for instance %u - %x\n", instNum, ret);
-
-			if ( MQX_OK != _lwmsgq_deinit(&(g_flexcanDeviceInstance[instNum].pRX_queue)) ) {
-				MIC_DEBUG_UART_PRINTF("Error _lwmsgq_deinit instance %u\n", instNum);
-			}
-			_mem_free(g_flexcanDeviceInstance[instNum].pRX_queue);
-			g_flexcanDeviceInstance[instNum].pRX_queue = NULL;
+			printf("Error init mutex for instance %u - %x\n", instNum, ret);
 			g_flexcanDeviceInstance[instNum].initialize = false;
 			ret = fcStatus_FLEXCAN_Error;
 		}
@@ -236,14 +611,18 @@ flexcan_device_status_t FlexCanDevice_InitInstance(  uint8_t instNum, pflexcande
 flexcan_device_status_t FlexCanDevice_Init( pflexcandevice_initparams_t pinstance_Can0, pflexcandevice_initparams_t pinstance_Can1 ) {
 	flexcan_device_status_t ret = fcStatus_FLEXCAN_Success;
 
-	ret = FlexCanDevice_InitInstance(0, pinstance_Can0);
-	if ( 0 > ret ) {
-		MIC_DEBUG_UART_PRINTF("Error Initialize instance 0\n");
+	if ( NULL != pinstance_Can0 ) {
+		ret = FlexCanDevice_InitInstance(0, pinstance_Can0);
+		if ( 0 > ret ) {
+			printf("Error Initialize instance 0\n");
+		}
 	}
 
-	ret = FlexCanDevice_InitInstance(1, pinstance_Can1);
-	if ( 0 > ret ) {
-		MIC_DEBUG_UART_PRINTF("Error Initialize instance 1\n");
+	if ( NULL != pinstance_Can1 ) {
+		ret = FlexCanDevice_InitInstance(1, pinstance_Can1);
+		if ( 0 > ret ) {
+			printf("Error Initialize instance 1\n");
+		}
 	}
 
 	return ret;
@@ -264,20 +643,13 @@ flexcan_device_status_t FlexCanDevice_DeInit( pflexcanInstance_t pInstance ) {
 
 	ret = FlexCanDevice_Stop(pInstance);
 	if ( fcStatus_FLEXCAN_Success != ret ) {
-		MIC_DEBUG_UART_PRINTF(" Error FlexCanDevice_Stop - %x\n", ret);
+		printf(" Error FlexCanDevice_Stop - %x\n", ret);
 	}
 
 	if ( MQX_EOK != _mutex_destroy(&(pInstance->mutex_MB_sync)) ) {
-		MIC_DEBUG_UART_PRINTF(" Error _mutex_destroy\n");
+		printf(" Error _mutex_destroy\n");
 	}
 
-	if ( MQX_OK != _lwmsgq_deinit(&(pInstance->pRX_queue)) ) {
-		MIC_DEBUG_UART_PRINTF("Error _lwmsgq_deinit instance 1\n");
-	}
-	if ( NULL != pInstance->pRX_queue ) {
-		_mem_free(pInstance->pRX_queue);
-		pInstance->pRX_queue = NULL;
-	}
 	pInstance->initialize = false;
 
 	return ret;
@@ -291,24 +663,18 @@ flexcan_device_status_t FlexCanDevice_Start( pflexcanInstance_t pInstance ) {
 	}
 
 	if ( !pInstance->initialize ) {
-		MIC_DEBUG_UART_PRINTF("Instance not initialized correct\n");
+		printf("Instance not initialized correct\n");
 		return fcStatus_FLEXCAN_Error;
 	}
 
 	ret = (flexcan_device_status_t)FLEXCAN_DRV_Init(pInstance->instance, &(pInstance->canState), &(pInstance->flexcanData));
 	if ( fcStatus_FLEXCAN_Success < ret ) {
-		MIC_DEBUG_UART_PRINTF("\r\nFLEXCAN initilization failed. result: 0x%x \n", ret);
+		printf("\r\nFLEXCAN initilization failed. result: 0x%x \n", ret);
 		return ret;
 	}
-	pInstance->iScanInstanceStarted = (uint32_t)true;
+	//pInstance->iScanInstanceStarted = (uint32_t)true;
 
 	ret = FlexCanDevice_SetBitrate(pInstance, pInstance->instanceBitrate);
-
-	//Start RX TX Tasks
-	pInstance->RX_idTask = _task_create(0, CAN_TASK_RX_0, pInstance->instance);
-	if ( pInstance->RX_idTask == MQX_NULL_TASK_ID ) {
-		MIC_DEBUG_UART_PRINTF("FlexCanDevice_Start Could not create CAN_TASK_RX for inst %u \n", pInstance->instance);
-	}
 
 	return ret;
 }
@@ -352,6 +718,7 @@ flexcan_device_status_t FlexCanDevice_SetBitrate( pflexcanInstance_t pInstance, 
 	}
 
 	pInstance->canPeClk = canPeClk;
+	printf( "FlexCan clock %u", canPeClk );
 
 	/* Decide which table to use */
 	switch ( pInstance->canPeClk ) {
@@ -365,7 +732,7 @@ flexcan_device_status_t FlexCanDevice_SetBitrate( pflexcanInstance_t pInstance, 
 		if ( (canPeClk > 74990000) && (canPeClk <= 75000000) ) {
 			ret = (flexcan_device_status_t)FLEXCAN_DRV_SetBitrate(pInstance->instance, &bitRateTable75Mhz[bitRate]); // 125kbps
 		} else {
-			// MIC_DEBUG_UART_PRINTF("\r\nFLEXCAN bitrate table not available for PE clock: %d", canPeClk);
+			// printf("\r\nFLEXCAN bitrate table not available for PE clock: %d", canPeClk);
 			return fcStatus_FLEXCAN_Fail;
 		}
 	}
@@ -385,7 +752,7 @@ flexcan_device_status_t FlexCanDevice_GetBitrate( pflexcanInstance_t pInstance, 
 		return fcStatus_FLEXCAN_InvalidArgument;
 	}
 
-	ret = FLEXCAN_DRV_GetBitrate(pInstance->instance, &instanceTimeSegment);
+	ret = (flexcan_device_status_t)FLEXCAN_DRV_GetBitrate(pInstance->instance, &instanceTimeSegment);
 
 	switch ( pInstance->canPeClk ) {
 	case 60000000:
@@ -407,7 +774,7 @@ flexcan_device_status_t FlexCanDevice_GetBitrate( pflexcanInstance_t pInstance, 
 				ret = fcStatus_FLEXCAN_Error;
 			}
 		} else {
-			MIC_DEBUG_UART_PRINTF("\r\nFLEXCAN bitrate table not available for PE clock: %d \n", (int)pInstance->canPeClk);
+			printf("\r\nFLEXCAN bitrate table not available for PE clock: %d \n", (int)pInstance->canPeClk);
 			return fcStatus_FLEXCAN_Fail;
 		}
 	}
@@ -424,7 +791,7 @@ flexcan_device_bitrate_t ConvertTimetoBitRate( flexcan_time_segment_t *ptimeSegm
 			return (flexcan_device_bitrate_t)i;
 		}
 	}
-	return -1;
+	return fdBitrate_Error;
 }
 
 flexcan_device_status_t FlexCanDevice_setMailbox( pflexcanInstance_t pinstance, flexcan_msgbuff_id_type_t id_type, uint32_t id, uint32_t mask, bool enabled ) {
@@ -463,23 +830,23 @@ flexcan_device_status_t FlexCanDevice_setMailbox( pflexcanInstance_t pinstance, 
 	if ( enabled ) {
 		_mutex_lock(&(pinstance->mutex_MB_sync));
 		ret = FlexCanDevice_SetRxIndividualMask(pinstance, id_type, id, mask);
-		MIC_DEBUG_UART_PRINTF("\r\nFlexCAN SetRxIndividualMask ret %u MB %x\n", ret, id);
+		printf("\r\nFlexCAN SetRxIndividualMask ret %u MB %x\n", ret, id);
 
 		if ( bprev != enabled ) {
 			rxInfo.msg_id_type = pinstance->MB_config[id].iD_type;
 			rxInfo.data_length = kFlexCanMessageSize;
 
-			MIC_DEBUG_UART_PRINTF("\r\nFlexCAN MB receive config MB %x\n", id);
+			printf("\r\nFlexCAN MB receive config MB %x\n", id);
 
 			/* Configure RX MB fields*/
-			ret = FLEXCAN_DRV_ConfigRxMb(pinstance->instance, id, &rxInfo, pinstance->MB_config[id].iD_Mask);
+			ret = (flexcan_device_status_t)FLEXCAN_DRV_ConfigRxMb(pinstance->instance, id, &rxInfo, pinstance->MB_config[id].iD_Mask);
 			if ( ret ) {
 				//numErrors++;
-				MIC_DEBUG_UART_PRINTF("\r\nFlexCAN RX MB configuration failed. result: 0x%lx\n", ret);
+				printf("\r\nFlexCAN RX MB configuration failed. result: 0x%lx\n", ret);
 			}
 			//Enable Interrupt and start recieving
-			ret = FLEXCAN_DRV_RxMessageBuffer(pinstance->instance, pinstance->MB_config[id].iD, &(pinstance->MB_msgbuff[id]));
-			MIC_DEBUG_UART_PRINTF("\r\nFLEXCAN_DRV_RxMessageBuffer. result: 0x%lx \n", ret);
+			ret = (flexcan_device_status_t)FLEXCAN_DRV_RxMessageBuffer(pinstance->instance, pinstance->MB_config[id].iD, &(pinstance->MB_msgbuff[id]));
+			printf("\r\nFLEXCAN_DRV_RxMessageBuffer. result: 0x%lx \n", ret);
 		}
 		_mutex_unlock(&(pinstance->mutex_MB_sync));
 
@@ -489,6 +856,29 @@ flexcan_device_status_t FlexCanDevice_setMailbox( pflexcanInstance_t pinstance, 
 	_mutex_lock(&(pinstance->mutex_MB_sync));
 	ret = FlexCanDevice_SetRxIndividualMask(pinstance, id_type, id, 0);
 	_mutex_unlock(&(pinstance->mutex_MB_sync));
+	return ret;
+}
+
+flexcan_device_status_t FlexCanDevice_TxMessage ( pflexcanInstance_t pinstance, uint32_t MbId, pflexcandevice_TX_data_t pTxData ) {
+	flexcan_device_status_t ret = fcStatus_FLEXCAN_Success;
+	flexcan_data_info_t txInfo;
+
+	if ( !pinstance || !pTxData ) {
+		return fcStatus_FLEXCAN_InvalidArgument;
+	}
+
+	if ( pinstance->iScanInstanceStarted ) {
+		return fcStatus_FLEXCAN_Error;
+	}
+
+	txInfo.msg_id_type = pTxData->msgbuffType;
+	txInfo.data_length = pTxData->msgSize;
+
+	ret = (flexcan_device_status_t)FLEXCAN_DRV_ConfigTxMb(pinstance->instance, MbId, &txInfo, pTxData->msgID);
+	if ( fcStatus_FLEXCAN_Success == ret ) {
+		ret = (flexcan_device_status_t)FLEXCAN_DRV_SendBlocking(pinstance->instance, MbId, &txInfo, pTxData->msgID, pTxData->msgData, FLEXCAN_DEVICE_TX_TIMEOUT);
+	}
+
 	return ret;
 }
 
@@ -569,6 +959,36 @@ flexcan_device_status_t FlexCanDevice_SetRxIndividualMask( pflexcanInstance_t pi
 	}
 
 	return (flexcan_device_status_t)FLEXCAN_DRV_SetRxIndividualMask(pinstance->instance, id_type, mb_idx, mask);
+}
+
+flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData ) {
+	flexcan_device_status_t ret = fcStatus_FLEXCAN_Success;
+	uint32_t i, msg_limit = 3;
+	char *pbuff =  (char*)buff;
+
+	if ( NULL == buff || 0 == bufflen ||  NULL == pTxData) {
+		return fcStatus_FLEXCAN_InvalidArgument;
+	}
+	
+	if ( kFlexCanMsgIdExt ==  pTxData->msgbuffType )
+		msg_limit = 8;
+
+	for ( i = 0; '\r' != *pbuff && 1 < bufflen; i++ ) {
+		if ( msg_limit > i ) {
+			pTxData->msgID <<= 4;
+			pTxData->msgID |= (char)*pbuff;
+			pbuff++;
+			continue;
+		}
+		if ( msg_limit == i ) {
+			pTxData->msgSize = (char)*pbuff;
+			pbuff++;
+			continue;
+		}
+		pTxData->msgData[i-(msg_limit + 1)] = (char)*pbuff;
+	}
+	pbuff++;
+	return ret;
 }
 
 
