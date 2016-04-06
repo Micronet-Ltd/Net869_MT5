@@ -101,6 +101,7 @@ static uint8_t turn_on_condition_g = 0;
 uint32_t backup_power_cnt_g = 0 ;
 uint8_t led_blink_cnt_g     = 0 ;
 extern uint32_t ignition_threshold_g;
+extern volatile uint32_t cpu_watchdog_count_g;
 
 void Device_control_GPIO        (void);
 bool Device_control_GPIO_status (void);
@@ -265,13 +266,45 @@ void Device_get_turn_on_reason(uint8_t * turn_on_reason)
 
 void Device_off_req(uint8_t wait_time)
 {
+	uint32_t prev_cpu_watchdog_count = 0;
+	uint32_t watchdog_wait_time = 0;
+	uint8_t cpu_status_pin = 0;
+
 	_time_delay(wait_time*1000);
 	backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
+	/* monitor for watchdog stop signal for 1 minute sec */
+	while (1)
+	{
+		cpu_status_pin = GPIO_DRV_ReadPinInput (CPU_STATUS);
+		MIC_DEBUG_UART_PRINTF ("Device_off_req: CPU_status pin %d\n", GPIO_DRV_ReadPinInput (CPU_STATUS) );
+		prev_cpu_watchdog_count = cpu_watchdog_count_g;
+		_time_delay(7000);
+		watchdog_wait_time += 7000;
+		if (prev_cpu_watchdog_count == cpu_watchdog_count_g)
+		{
+			MIC_DEBUG_UART_PRINTF ("Device_off_req: CPU_status pin %d\n", GPIO_DRV_ReadPinInput (CPU_STATUS) );
+			//do final check just in case
+			if (GPIO_DRV_ReadPinInput (CPU_WATCHDOG) == 1)
+			{
+				MIC_DEBUG_UART_PRINTF ("Device_off_req: CPU_watchdog is 1 even "
+						"though watchdog count not changing, watchdog_time %d\n", watchdog_wait_time );
+			}
+			else
+			{
+				MIC_DEBUG_UART_PRINTF ("Device_off_req: CPU watchdog is 0 as expected %d \n", watchdog_wait_time);
+				break;
+			}
+		}
+	}
+
+
 	GPIO_DRV_ClearPinOutput (LED_GREEN);
-	Device_turn_off  ();
+	//GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
+	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
+	//Device_turn_off  ();
 	//Board_SetSlowClk ();
-	MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF\n");
+	MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
 	device_state_g = DEVICE_STATE_OFF;
 	Wiggle_sensor_restart ();
 	peripherals_disable ();
