@@ -81,7 +81,7 @@ typedef struct FlexCANState {
     volatile bool       isTxBlocking;                   /*!< True if transmit is blocking transaction. */
     volatile bool       isRxBlockingFIFO;               /*!< True if receive is blocking transaction on FIFO. */
     volatile bool       isRxBlockingMB[CAN_CS_COUNT];   /*!< True if receive is blocking transaction on MB. */
-    LWEVENT_STRUCT      event_ISR;                      /*!< Event signaling interrupt occure. */ 
+    LWEVENT_STRUCT_PTR  pevent_ISR;                      /*!< Event signaling interrupt occure. */ 
 } flexcan_state_t;
 
 /*! @brief FlexCAN data info from user*/

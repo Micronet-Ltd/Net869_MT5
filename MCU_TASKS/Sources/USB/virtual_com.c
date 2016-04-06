@@ -800,7 +800,9 @@ void CDC2_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         _mem_copy( msg_ptr->data, g_app_composite_device.cdc_vcom[2].curr_send_buf, msg_ptr->header.SIZE );
         g_app_composite_device.cdc_vcom[2].send_size = msg_ptr->header.SIZE;
 #else
-        g_app_composite_device.cdc_vcom[2].send_size = frame_encode(msg_ptr->data, g_app_composite_device.cdc_vcom[2].curr_send_buf, msg_ptr->header.SIZE);
+        g_app_composite_device.cdc_vcom[2].send_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
+        _mem_copy ( msg_ptr->data, g_app_composite_device.cdc_vcom[2].curr_send_buf, g_app_composite_device.cdc_vcom[2].send_size );
+        
 #endif
 
         g_app_composite_device.cdc_vcom[2].send_ready = FALSE;
@@ -851,7 +853,8 @@ void CDC3_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         _mem_copy( msg_ptr->data, g_app_composite_device.cdc_vcom[3].curr_send_buf, msg_ptr->header.SIZE );
         g_app_composite_device.cdc_vcom[3].send_size = msg_ptr->header.SIZE;
 #else
-        g_app_composite_device.cdc_vcom[3].send_size = frame_encode(msg_ptr->data, g_app_composite_device.cdc_vcom[3].curr_send_buf, msg_ptr->header.SIZE);
+       g_app_composite_device.cdc_vcom[3].send_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
+       _mem_copy ( msg_ptr->data, g_app_composite_device.cdc_vcom[3].curr_send_buf, g_app_composite_device.cdc_vcom[2].send_size );
 #endif
 
         g_app_composite_device.cdc_vcom[3].send_ready = FALSE;
@@ -1012,6 +1015,7 @@ void CDC1_resv ( cdc_struct_t *handle )
 #endif
 }
 
+//CAN 0
 void CDC2_resv ( cdc_struct_t *handle )
 {
 #if COMPOSITE_CFG_MAX > 2

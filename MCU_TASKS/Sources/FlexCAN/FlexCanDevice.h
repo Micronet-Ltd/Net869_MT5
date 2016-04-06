@@ -20,6 +20,8 @@ extern "C"
 #define RX_FLEXCAN_MSGQ_MESAGES         32
 #define TX_FLEXCAN_MSGQ_MESAGES         32
 
+#define FLEXCAN_DEVICE_TX_TIMEOUT       200
+
 typedef enum _flexcan_device_status
 {
     fcStatus_FLEXCAN_Error = -1,
@@ -37,9 +39,10 @@ typedef enum _flexcan_device_status
 
 typedef enum _flexcan_device_bitrate
 {
+	fdBitrate_Error = -1,
     fdBitrate_10_kHz = 0,
     fdBitrate_20_kHz,
-    //fdBitrate_33_kHz,
+    fdBitrate_33_kHz,
     fdBitrate_50_kHz,
     fdBitrate_100_kHz,
     fdBitrate_125_kHz,
@@ -78,8 +81,6 @@ typedef struct flexcanInstance {
     flexcan_device_bitrate_t        instanceBitrate;            // Instance Bitrate
     uint32_t                        iScanInstanceStarted;       // Indicate that Instance is started
     uint32_t                        canPeClk;                   // HW clock value
-    uint32_t                        *pRX_queue;                 // Recieve queue
-    uint32_t                        *pTX_queue;                 // Transmit queue
     flexcan_device_MailboxConfig_t  MB_config[MAX_MB_NUMBER];   // MB configuration
     flexcan_msgbuff_t               MB_msgbuff[MAX_MB_NUMBER];  // MB message buffer for HW
     MUTEX_STRUCT                    mutex_MB_sync;              // sync MB configuration
@@ -113,6 +114,13 @@ typedef enum _flexcandevice_module {
     fdcandevice_CAN1_MAX
 }flexcandevice_module_t;
 
+typedef struct _flexcandevice_TX_data {
+    uint32_t                        msgID;
+    flexcan_msgbuff_id_type_t       msgbuffType;
+    uint32_t                        msgSize;
+    uint8_t                         msgData[8];
+}flexcandevice_TX_data_t, *pflexcandevice_TX_data_t;
+
 /* Tasks */
 
 extern void FLEXCAN_Tx_Task( uint32_t param );
@@ -130,9 +138,6 @@ extern pflexcanInstance_t can_Device_1;
 
 /* Get CAN instance */
 extern pflexcanInstance_t FlexCanDevice_GetInstance( flexcandevice_module_t );
-
-/* Process SLCAN tty commands from USB task*/
-extern flexcan_device_status_t flexcan_CommandParser ( const uint8_t* pbuf, uint32_t size );
 
 /* The initalized driver and HW */
 extern flexcan_device_status_t FlexCanDevice_Init( pflexcandevice_initparams_t pinstance_Can0, pflexcandevice_initparams_t pinstance_Can1 );
@@ -154,6 +159,9 @@ extern flexcan_device_status_t FlexCanDevice_GetBitrate( pflexcanInstance_t pins
 
 /* Register-Unregister the mailbox  */
 extern flexcan_device_status_t FlexCanDevice_setMailbox( pflexcanInstance_t pinstance, flexcan_msgbuff_id_type_t id_type, uint32_t id, uint32_t mask, bool enabled );
+
+/* Transfer message over */
+extern flexcan_device_status_t FlexCanDevice_TxMessage ( pflexcanInstance_t pinstance, uint32_t MbId, pflexcandevice_TX_data_t pTxData );
 
 /* Enable/Disable termination*/
 extern flexcan_device_status_t FlexCanDevice_SetTermination( pflexcanInstance_t, bool isSet );

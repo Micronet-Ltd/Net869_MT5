@@ -77,7 +77,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.50.2.10499</state>
+          <state>7.50.3.10745</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -714,7 +714,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>16</version>
+        <version>17</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -1002,6 +1002,10 @@
         <option>
           <name>IlinkThreadsSlave</name>
           <state>1</state>
+        </option>
+        <option>
+          <name>IlinkLogCallGraph</name>
+          <state>0</state>
         </option>
       </data>
     </settings>
@@ -1742,7 +1746,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>16</version>
+        <version>17</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -2031,6 +2035,10 @@
           <name>IlinkThreadsSlave</name>
           <state>1</state>
         </option>
+        <option>
+          <name>IlinkLogCallGraph</name>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -2239,22 +2247,22 @@
     <group>
       <name>Debug_console</name>
       <file>
-        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\src\fsl_debug_console.c</name>
+        <name>$PROJ_DIR$\..\..\MQX_OS\BSP\platform\utilities\src\fsl_debug_console.c</name>
       </file>
       <file>
-        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\inc\fsl_debug_console.h</name>
+        <name>$PROJ_DIR$\..\..\MQX_OS\BSP\platform\utilities\inc\fsl_debug_console.h</name>
       </file>
       <file>
-        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\src\fsl_misc_utilities.c</name>
+        <name>$PROJ_DIR$\..\..\MQX_OS\BSP\platform\utilities\src\fsl_misc_utilities.c</name>
       </file>
       <file>
-        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\inc\fsl_misc_utilities.h</name>
+        <name>$PROJ_DIR$\..\..\MQX_OS\BSP\platform\utilities\inc\fsl_misc_utilities.h</name>
       </file>
       <file>
-        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\src\print_scan.c</name>
+        <name>$PROJ_DIR$\..\..\MQX_OS\BSP\platform\utilities\src\print_scan.c</name>
       </file>
       <file>
-        <name>Y:\Aviram\obc_5_mcu\MQX_OS\BSP\platform\utilities\src\print_scan.h</name>
+        <name>$PROJ_DIR$\..\..\MQX_OS\BSP\platform\utilities\src\print_scan.h</name>
       </file>
     </group>
   </group>

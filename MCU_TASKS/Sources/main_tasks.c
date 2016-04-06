@@ -88,7 +88,7 @@ void Main_task( uint32_t initial_data ) {
 //	CLOCK_SetBootConfig_Run ();
 
 	//Enable CAN
-	//GPIO_DRV_SetPinOutput(CAN_ENABLE);
+	//GPIO_DRV_SetPinOutput(CAN1_J1708_ENABLE);
 
     // Enable USB for DEBUG
     GPIO_DRV_ClearPinOutput(USB_ENABLE);
