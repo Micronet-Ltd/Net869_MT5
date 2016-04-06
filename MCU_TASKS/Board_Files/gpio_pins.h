@@ -45,7 +45,7 @@ enum _gpio_pins_pinNames {
     BUTTON1								= GPIO_MAKE_PIN(GPIOA_IDX, 25),
     BUTTON2								= GPIO_MAKE_PIN(GPIOA_IDX, 26),
     BUTTON3								= GPIO_MAKE_PIN(GPIOC_IDX,  3),
-    BUTTON4								= GPIO_MAKE_PIN(GPIOC_IDX,  4),
+    //BUTTON4								= GPIO_MAKE_PIN(GPIOC_IDX,  4),
     SWITCH1								= GPIO_MAKE_PIN(GPIOE_IDX, 11),
     SWITCH2								= GPIO_MAKE_PIN(GPIOE_IDX, 12),
     LED_RED								= GPIO_MAKE_PIN(GPIOA_IDX,  4),
@@ -69,7 +69,8 @@ enum _gpio_pins_pinNames {
     SPI_MEM_DO							= GPIO_MAKE_PIN(GPIOB_IDX, 23),
 
     // CAN BUS INTERFACE
-    CAN_ENABLE							= GPIO_MAKE_PIN(GPIOC_IDX,  0), // Will be changed in version 2 to PTC0 on version 1 should be shorted
+    CAN1_J1708_ENABLE					= GPIO_MAKE_PIN(GPIOC_IDX,  0), // Will be changed in version 2 to PTC0 on version 1 should be shorted
+	CAN2_ENABLE							= GPIO_MAKE_PIN(GPIOC_IDX,  4),
     CAN1_TERM_ENABLE					= GPIO_MAKE_PIN(GPIOE_IDX, 24), //changed from GPIOA pin 18 on HW 2 
     CAN2_TERM_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX, 10),
     CAN2_SWC_SELECT						= GPIO_MAKE_PIN(GPIOC_IDX,  6),
