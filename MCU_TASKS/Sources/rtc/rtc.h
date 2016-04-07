@@ -11,8 +11,10 @@
 #define RTC_BCD_SIZE					8
 
 void rtc_init(void);
-void rtc_get(uint8_t * dt_bcd);
-void rtc_set(uint8_t * dt_bcd);
+void rtc_get_time(uint8_t * dt_bcd);
+void rtc_set_time(uint8_t * dt_bcd);
+void rtc_get_cal_register(uint8_t *digital_cal, uint8_t *analog_cal);
+void rtc_set_cal_register(uint8_t *digital_cal, uint8_t *analog_cal);
 void rtc_test(void);
 
 

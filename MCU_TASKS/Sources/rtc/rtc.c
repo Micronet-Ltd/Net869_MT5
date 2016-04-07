@@ -26,9 +26,10 @@
 #define RTC_DAY_OF_MONTH_ADDR			0x5
 #define RTC_MONTH_ADDR					0x6
 #define RTC_YEAR_ADDR					0x7
-
+#define RTC_DIGITAL_CAL					0x8
 #define RTC_ALRM1_HOUR_ADDR				0xC
 #define RTC_FLAGS_ADDR					0xF
+#define RTC_ANALOG_CAL					0x12
 
 #define RTC_STRING_SIZE 				23
 
@@ -195,9 +196,9 @@ void rtc_convert_bcd_to_string(uint8_t * dt_bcd, char * dt_str, bool print_time)
  *
  * Note: For debugging you can uncomment rtc_convert_bcd_to_string() to print time
  */
-void rtc_get(uint8_t * dt_bcd)
+void rtc_get_time(uint8_t * dt_bcd)
 {
-	uint8_t cmd_buff = 0;
+	uint8_t cmd_buff = RTC_DECI_SEC_ADDR;
 	//char dt_str[RTC_STRING_SIZE] = {0};
 
 	if (!rtc_check_oscillator())
@@ -220,13 +221,47 @@ void rtc_get(uint8_t * dt_bcd)
  *
  * Note: rtc_convert_bcd_to_string() describes the conversion from bcd to string
  */
-void rtc_set(uint8_t * dt_bcd)
+void rtc_set_time(uint8_t * dt_bcd)
 {
 	uint8_t cmd_buff = RTC_DECI_SEC_ADDR;
 
 	if (!rtc_send_data(&cmd_buff,  1, dt_bcd, 8))
 	{
 		printf("rtc_set: set time failed \n");
+	}
+}
+
+/* rtc_get_cal_register : Gets the analog and digital calibration register */
+void rtc_get_cal_register(uint8_t * digital_cal, uint8_t * analog_cal)
+{
+	uint8_t cmd_buff = RTC_DIGITAL_CAL;
+
+	if (!rtc_receive_data (&cmd_buff,  1, digital_cal, 1))
+	{
+		printf("rtc_get_cal_register: get digital cal failed \n");
+	}
+
+	cmd_buff = RTC_ANALOG_CAL;
+	if (!rtc_receive_data (&cmd_buff,  1, analog_cal, 1))
+	{
+		printf("rtc_get_cal_register: get analog cal failed \n");
+	}
+}
+
+/* rtc_set_cal_register : Sets the analog and digital calibration register */
+void rtc_set_cal_register(uint8_t *digital_cal, uint8_t *analog_cal)
+{
+	uint8_t cmd_buff = RTC_DIGITAL_CAL;
+
+	if (!rtc_send_data(&cmd_buff,  1, digital_cal, 1))
+	{
+		printf("rtc_set_cal_register: set digital cal failed \n");
+	}
+
+	cmd_buff = RTC_ANALOG_CAL;
+	if (!rtc_send_data(&cmd_buff,  1, analog_cal, 1))
+	{
+		printf("rtc_set_cal_register: set analog cal failed \n");
 	}
 }
 
@@ -244,8 +279,8 @@ void rtc_test(void)
 	dt_bcd[5] = 0x29 ; /* Day of month */
 	dt_bcd[6] = 0x03; /* Month */
 	dt_bcd[7] = 0x16; /* Year */
-	rtc_set(dt_bcd);
+	rtc_set_time(dt_bcd);
 	_time_delay(1000);
-	rtc_get(dt_bcd);
+	rtc_get_time(dt_bcd);
 }
 #endif

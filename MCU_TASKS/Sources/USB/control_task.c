@@ -54,8 +54,6 @@ void control_task (uint32_t initial_data)
 	APPLICATION_MESSAGE_T *ctl_rx_msg;
 	const _queue_id     control_rx_qid = _msgq_open (CONTROL_RX_QUEUE, 0);
 
-	int8_t ret;
-
 	printf ("\n control_task: Start \n");
 
 	protocol_init_data();
@@ -71,7 +69,7 @@ void control_task (uint32_t initial_data)
 					ctl_rx_msg->data[1],ctl_rx_msg->data[ctl_rx_msg->header.SIZE -2],
 					ctl_rx_msg->data[ctl_rx_msg->header.SIZE -1], ctl_rx_msg->header.SIZE);
 			/* process message */
-			ret = protocol_process_receive_data(CONTEXT_CONTROL_EP, ctl_rx_msg->data, ctl_rx_msg->header.SIZE);
+			protocol_process_receive_data(CONTEXT_CONTROL_EP, ctl_rx_msg->data, ctl_rx_msg->header.SIZE);
 			_msg_free   (ctl_rx_msg);
 		}
 
