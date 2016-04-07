@@ -152,7 +152,7 @@ static void get_gp_or_adc_input_voltage(uint8_t * data, uint16_t data_size, uint
 	uint32_t gpi_or_adc_voltage = 0;
 	if (data[0] < kADC_CHANNELS)
 	{
-		gpi_or_adc_voltage = ADC_get_value(data[0]);
+		gpi_or_adc_voltage = ADC_get_value((KADC_CHANNELS_t)data[0]);
 	}
 	memcpy(pgpi_volt, (uint8_t *)&gpi_or_adc_voltage , sizeof(uint32_t));
 }
