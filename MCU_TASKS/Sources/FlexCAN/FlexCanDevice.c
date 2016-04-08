@@ -196,11 +196,11 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				ret = FlexCanDevice_SetRxMaskType(pinstance, false);
 				printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
 
-				ret = FlexCanDevice_SetRxMaskType(pinstance, true);
-				printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
+				//ret = FlexCanDevice_SetRxMaskType(pinstance, true);
+				//printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
 
-				ret = FlexCanDevice_SetRxMbGlobalMask ( pinstance, kFlexCanMsgIdStd , 0x700 );
-				printf("FlexCanDevice_SetRxMbGlobalMask( ) return %d\n", ret);
+				//ret = FlexCanDevice_SetRxMbGlobalMask ( pinstance, kFlexCanMsgIdStd , 0x120 );
+				//printf("FlexCanDevice_SetRxMbGlobalMask( ) return %d\n", ret);
 
 				pinstance->iScanInstanceStarted = true;
 				
@@ -215,9 +215,10 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				_time_delay(20);
 
 				for (int i = 0; i < 14; i++) {
-					ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0xF00 );
+					//ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0xF00 );
+					//ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0x700 ); // Mask Value
 					printf("FlexCanDevice_SetRxIndividualMask %d return %d\n", i, ret);
-					ret = FlexCanDevice_setMailbox(pinstance, kFlexCanMsgIdStd, i, 0x1c, true);
+					ret = FlexCanDevice_setMailbox(pinstance, kFlexCanMsgIdStd, i, 0x700, true); //Filter value
 					printf("FlexCanDevice_setMailbox %d return %d\n", i, ret);
 				}
 				
