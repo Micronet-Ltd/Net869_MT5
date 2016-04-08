@@ -84,6 +84,9 @@
 #define BACKUP_RECOVER_TIME_TH					 1000		// number of mili-seconds to try power failure overcome (device is powered by supercap)
 #define BACKUP_POWER_TIME_TH					10000		// number of mili-seconds to power device by supercap
 
+#define CPU_OFF_CHECK_TIME						1000		// time between checks for CPU/A8 off
+#define MAX_CPU_OFF_CHECK_TIME					60000		// Max time to wait before shutting off the unit by killing the power
+
 typedef struct
 {
 	uint32_t time_threshold;								// pulse time period
@@ -101,6 +104,7 @@ static uint8_t turn_on_condition_g = 0;
 uint32_t backup_power_cnt_g = 0 ;
 uint8_t led_blink_cnt_g     = 0 ;
 extern uint32_t ignition_threshold_g;
+extern volatile uint32_t cpu_watchdog_count_g;
 
 void Device_control_GPIO        (void);
 bool Device_control_GPIO_status (void);
@@ -265,13 +269,41 @@ void Device_get_turn_on_reason(uint8_t * turn_on_reason)
 
 void Device_off_req(uint8_t wait_time)
 {
+	uint32_t cpu_off_wait_time = 0;
+	uint8_t cpu_status_pin = 0;
+
 	_time_delay(wait_time*1000);
+	Device_turn_off  ();
+
+	/* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
+	while (cpu_off_wait_time < MAX_CPU_OFF_CHECK_TIME)
+	{
+		_time_delay(CPU_OFF_CHECK_TIME);
+		cpu_off_wait_time += CPU_OFF_CHECK_TIME;
+		cpu_status_pin = GPIO_DRV_ReadPinInput (CPU_STATUS);
+		if (cpu_status_pin == 0)
+		{
+			MIC_DEBUG_UART_PRINTF ("Device_off_req: CPU_status pin %d, wait_time %d ms\n", cpu_status_pin, cpu_off_wait_time);
+			break;
+		}
+	}
+
+	/* if the CPU/A8 does not end up being powered off kill the power by manually
+	 * turning off the 5V rail. Note, this ends up turning of the LED and Audio
+	 * power
+	 */
+	if (cpu_off_wait_time >= MAX_CPU_OFF_CHECK_TIME)
+	{
+		MIC_DEBUG_UART_PRINTF ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
+		GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
+	}
+
 	backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
 	GPIO_DRV_ClearPinOutput (LED_GREEN);
-	Device_turn_off  ();
+	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 	//Board_SetSlowClk ();
-	MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF\n");
+	MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
 	device_state_g = DEVICE_STATE_OFF;
 	Wiggle_sensor_restart ();
 	peripherals_disable ();

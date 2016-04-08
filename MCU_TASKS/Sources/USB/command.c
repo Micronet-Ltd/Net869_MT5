@@ -34,6 +34,8 @@ static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdat
 static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
 static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pbatt_ignition_voltage);
 static void set_gpi_update_all_values(uint8_t * data, uint16_t data_size, uint8_t * pgpi_values);
+static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
+static void set_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -59,17 +61,23 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 							SET_COMMAND,
 							0},
 	[COMM_GET_TURN_ON_REASON] = {get_turn_on_reason,
-							GET_COMMAND,
-							sizeof(uint8_t)},
+								GET_COMMAND,
+								sizeof(uint8_t)},
 	[COMM_SET_DEVICE_OFF] = {set_device_off,
-								SET_COMMAND,
-								0},
+							 SET_COMMAND,
+							 0},
 	[COMM_GET_RTC_DATE_TIME] = {get_rtc_date_time,
-							GET_COMMAND,
-							RTC_BCD_SIZE},
+								GET_COMMAND,
+								RTC_BCD_SIZE},
 	[COMM_SET_RTC_DATE_TIME] = {set_rtc_date_time,
 								SET_COMMAND,
-								RTC_BCD_SIZE},
+								0},
+	[COMM_GET_RTC_CAL_REGISTERS] = {get_rtc_cal_register,
+									GET_COMMAND,
+									(sizeof(uint8_t)*2)},
+	[COMM_SET_RTC_CAL_REGISTERS] = {set_rtc_cal_register,
+									SET_COMMAND,
+									0},
 	[COMM_SET_GPI_UPDATE_ALL_VALUES] = {set_gpi_update_all_values,
 								SET_COMMAND,
 								0},
@@ -144,7 +152,7 @@ static void get_gp_or_adc_input_voltage(uint8_t * data, uint16_t data_size, uint
 	uint32_t gpi_or_adc_voltage = 0;
 	if (data[0] < kADC_CHANNELS)
 	{
-		gpi_or_adc_voltage = ADC_get_value(data[0]);
+		gpi_or_adc_voltage = ADC_get_value((KADC_CHANNELS_t)data[0]);
 	}
 	memcpy(pgpi_volt, (uint8_t *)&gpi_or_adc_voltage , sizeof(uint32_t));
 }
@@ -205,10 +213,20 @@ static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice
 
 static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
 {
-	rtc_get(pdate_time);
+	rtc_get_time(pdate_time);
 }
 
 static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
 {
-	rtc_set(&data[0]);
+	rtc_set_time(&data[0]);
+}
+
+static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg)
+{
+	rtc_get_cal_register(&pcal_reg[0], &pcal_reg[1]);
+}
+
+static void set_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg)
+{
+	rtc_set_cal_register(&data[0], &data[1]);
 }

@@ -25,6 +25,7 @@
 
 void MQX_I2C0_IRQHandler (void);
 void MQX_PORTA_IRQHandler(void);
+void MQX_PORTB_IRQHandler(void);
 void MQX_PORTC_IRQHandler(void);
 
 #define	MAIN_TASK_SLEEP_PERIOD	1000			// 10 mSec sleep
@@ -36,6 +37,7 @@ _pool_id   g_out_message_pool;
 _pool_id   g_in_message_pool;
 
 _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
+volatile uint32_t cpu_watchdog_count_g = 0;
 
 extern void * g_acc_event_h;
 
@@ -73,6 +75,9 @@ void Main_task( uint32_t initial_data ) {
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
 	NVIC_SetPriority(PORTC_IRQn, 6U);
 	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
+
+	NVIC_SetPriority(PORTB_IRQn, 6U);
+	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
     // I2C0 Initialization
     NVIC_SetPriority(I2C0_IRQn, 6U);
@@ -293,6 +298,14 @@ void MQX_PORTA_IRQHandler(void)
 		_event_set(g_acc_event_h, 1);
 	}
 
+}
+
+void MQX_PORTB_IRQHandler(void)
+{
+	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG)) {
+		GPIO_DRV_ClearPinIntFlag(CPU_WATCHDOG);
+		cpu_watchdog_count_g++;
+	}
 }
 
 void MQX_PORTC_IRQHandler(void)

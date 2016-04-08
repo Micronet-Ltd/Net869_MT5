@@ -60,7 +60,7 @@ void GPIO_sample_all (void)
 	KGPIOS_INPUT_CHANNELS i;
 	KINPUT_LOGIC_LEVEL state_prev, state_current, state_temp;
 
-	for (i = 0; i < NUM_OF_GPI; i++) {
+	for (i = kANALOG_EXT_IN; i < NUM_OF_GPI; i++) {
 		state_prev = GPIO_INPUT_get_logic_level (i);
 		ADC_sample_input (gpio_inputs[i].adc_channel);
 		gpio_inputs[i].gpio_input_voltage = ADC_get_value (gpio_inputs[i].adc_channel);
@@ -132,7 +132,7 @@ void send_gpi_change(uint8_t * gpio_mask)
 
 	KGPIOS_INPUT_CHANNELS gpi_num = kANALOG_EXT_IN;
 	/* loop through the mask, if true set the value bit */
-	for (gpi_num = 0; gpi_num < NUM_OF_INPUT_GPIOS; gpi_num++)
+	for (gpi_num = kANALOG_EXT_IN; gpi_num < NUM_OF_INPUT_GPIOS; gpi_num++)
 	{
 		if (*gpio_mask>>gpi_num & 0x1)
 		{
@@ -156,11 +156,11 @@ void gpio_set_multiple_outputs(uint8_t * mask, uint8_t * value)
 {
 	KGPIOS_OUTPUT_CHANNELS gpo_num = kGPIO_OUT1;
 	/* loop through the mask, if true set the level */
-	for (gpo_num = 0; gpo_num < NUM_OF_OUTPUT_GPIOS; gpo_num++)
+	for (gpo_num = kGPIO_OUT1; gpo_num < NUM_OF_OUTPUT_GPIOS; gpo_num++)
 	{
 		if (*mask>>gpo_num & 0x1)
 		{
-			gpio_set_output(gpo_num, (*value>>gpo_num & 0x1));
+			gpio_set_output(gpo_num, (KOUTPUT_LEVEL)(*value>>gpo_num & 0x1));
 		}
 	}
 }
