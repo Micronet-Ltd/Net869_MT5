@@ -11,7 +11,7 @@
 #define FPGA_UART_BAUDRATE					115200
 #define FPGA_UART_TIMEOUT					100
 
-#define FPGA_I2C_PORT						I2C0_IDX
+#define FPGA_I2C_PORT						I2C1_IDX
 #define FPGA_DEVICE_ADDRESS					0x5E
 #define FPGA_I2C_BAUD_RATE					400
 #define FPGA_I2C_TIMEOUT					100

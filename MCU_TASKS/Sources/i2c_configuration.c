@@ -17,7 +17,7 @@ void I2C_Enable  (uint8_t port)
 						OSA_InstallIntHandler (I2C1_IRQn, MQX_I2C1_IRQHandler);
 						break;
 						
-		default:		printf("\nI2C Enable - illeagal port\n");
+		default:		printf("\nI2C Enable - illegal port\n");
 						return;
 	}
 	

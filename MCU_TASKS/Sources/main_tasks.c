@@ -23,7 +23,8 @@
 #include "FlexCanDevice.h"
 #include "rtc.h"
 
-void MQX_I2C0_IRQHandler (void);
+//void MQX_I2C0_IRQHandler (void);
+//void MQX_I2C1_IRQHandler (void);
 void MQX_PORTA_IRQHandler(void);
 void MQX_PORTB_IRQHandler(void);
 void MQX_PORTC_IRQHandler(void);
@@ -31,7 +32,8 @@ void MQX_PORTC_IRQHandler(void);
 #define	MAIN_TASK_SLEEP_PERIOD	1000			// 10 mSec sleep
 #define TIME_ONE_SECOND_PERIOD	((int) (1000 / MAIN_TASK_SLEEP_PERIOD))
 
-static i2c_master_state_t i2c_master;
+//static i2c_master_state_t i2c0_master;
+//static i2c_master_state_t i2c1_master;
 
 _pool_id   g_out_message_pool;
 _pool_id   g_in_message_pool;
@@ -79,10 +81,15 @@ void Main_task( uint32_t initial_data ) {
 	NVIC_SetPriority(PORTB_IRQn, 6U);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
-    // I2C0 Initialization
-    NVIC_SetPriority(I2C0_IRQn, 6U);
-    OSA_InstallIntHandler(I2C0_IRQn, MQX_I2C0_IRQHandler);
-    I2C_DRV_MasterInit(I2C0_IDX, &i2c_master);
+//    // I2C0 Initialization
+//    NVIC_SetPriority(I2C0_IRQn, 6U);
+//    OSA_InstallIntHandler(I2C0_IRQn, MQX_I2C0_IRQHandler);
+//    I2C_DRV_MasterInit(I2C0_IDX, &i2c0_master);
+//
+//    // I2C1 Initialization
+//	NVIC_SetPriority(I2C1_IRQn, 6U);
+//	OSA_InstallIntHandler(I2C1_IRQn, MQX_I2C1_IRQHandler);
+//	I2C_DRV_MasterInit(I2C1_IDX, &i2c1_master);
 
 	/* Initialize mutex attributes: */
 	if (_mutatr_init(&mutexattr) != MQX_OK)

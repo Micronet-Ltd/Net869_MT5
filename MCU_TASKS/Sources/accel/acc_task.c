@@ -13,6 +13,7 @@
 #include "fsl_i2c_master_driver.h"
 
 #include "mic_typedef.h"
+#include "i2c_configuration.h"
 
 #define ACC_DEVICE_ADDRESS 			0x1D
 #define	I2C_BAUD_RATE				400
@@ -204,6 +205,8 @@ bool accInit (void)
 	uint8_t read_data      =  0 ;
 	uint8_t write_data [2] = {0};
 	_mqx_uint ret = MQX_OK;
+
+	I2C_Enable(ACC_I2C_PORT);
 
 	/* Get i2c0 mutex */
 	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
