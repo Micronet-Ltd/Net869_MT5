@@ -43,7 +43,6 @@ enum _gpio_pins_pinNames {
     FPGA_DONE							= GPIO_MAKE_PIN(GPIOE_IDX,  9),
     FPGA_GPIO0							= GPIO_MAKE_PIN(GPIOC_IDX,  8),
     FPGA_GPIO1							= GPIO_MAKE_PIN(GPIOC_IDX,  9),
-
     FPGA_GPIO2							= GPIO_MAKE_PIN(GPIOE_IDX,  2),
     FPGA_GPIO3							= GPIO_MAKE_PIN(GPIOE_IDX,  3),
 
@@ -145,7 +144,6 @@ enum _gpio_pins_pinNames {
 //	I2C_SDA = GPIO_MAKE_PIN(GPIOB_IDX, 2),
 //	I2C_SCL = GPIO_MAKE_PIN(GPIOB_IDX, 3),
 };
-
 
 // I2C INTERFACE - CHANNEL 2
 #define I2C0_SDA_GPIO_PORT			PORTB

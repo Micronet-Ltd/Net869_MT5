@@ -11,6 +11,7 @@
 #include "rtc.h"
 
 #include "fsl_i2c_master_driver.h"
+#include "i2c_configuration.h"
 
 #define RTC_DEVICE_ADDRESS 			0x68
 #define	RTC_I2C_BAUD_RATE			400
@@ -153,6 +154,7 @@ bool rtc_oscillator_kick_start(void)
 
 void rtc_init(void)
 {
+	I2C_Enable(RTC_I2C_PORT); /* Note:Both accelerometer and RTC are on the same bus*/
 	//rtc_oscillator_kick_start();
 	if (!rtc_check_oscillator())
 	{

@@ -206,7 +206,7 @@ bool accInit (void)
 	uint8_t write_data [2] = {0};
 	_mqx_uint ret = MQX_OK;
 
-	I2C_Enable(ACC_I2C_PORT);
+	I2C_Enable(ACC_I2C_PORT); /* Note:Both accelerometer and RTC are on the same bus*/
 
 	/* Get i2c0 mutex */
 	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
