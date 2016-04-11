@@ -224,10 +224,10 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				
 				//Enable CAN
 				if ( BSP_CAN_DEVICE_0 == can_instance ){
-					GPIO_DRV_SetPinOutput(CAN1_J1708_ENABLE);
+					GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
 				}
 				else {
-					GPIO_DRV_SetPinOutput(CAN2_ENABLE);
+					GPIO_DRV_SetPinOutput(CAN2_SWC_PWR_ENABLE);
 				}
 
 				_time_delay(20);				
@@ -238,10 +238,10 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				//Disable CAN
 				pinstance->iScanInstanceStarted = false;
 				if ( BSP_CAN_DEVICE_0 == can_instance ) {
-					GPIO_DRV_ClearPinOutput(CAN1_J1708_ENABLE);
+					GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE);
 				}
 				else {
-					GPIO_DRV_ClearPinOutput(CAN2_ENABLE);
+					GPIO_DRV_ClearPinOutput(CAN2_SWC_PWR_ENABLE);
 				}
 
 				ret = FlexCanDevice_SetTermination(pinstance, false);

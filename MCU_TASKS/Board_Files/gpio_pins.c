@@ -25,7 +25,9 @@ const gpio_output_pin_user_config_t outputPins[] = {
     {.pinName = FPGA_PWR_ENABLE,			.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
 	// CAN BUS INTERFACE
-	{ .pinName = CAN1_J1708_ENABLE,			.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	{ .pinName = CAN1_J1708_PWR_ENABLE,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	{ .pinName = CAN2_SWC_PWR_ENABLE,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+
 	{ .pinName = CAN1_TERM_ENABLE,			.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{ .pinName = CAN2_TERM_ENABLE,			.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{ .pinName = CAN2_SWC_SELECT,			.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
@@ -61,7 +63,9 @@ const gpio_output_pin_user_config_t outputPins[] = {
 
 
 	// AUDIO
-	{.pinName = SPKR_INT_EN,                    .config.outputLogic = 1,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	{.pinName = SPKR_LEFT_EN,                   .config.outputLogic = 1,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	{.pinName = SPKR_RIGHT_EN,                  .config.outputLogic = 1,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	{.pinName = SPKR_EXT_EN,                    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE                                                                                                                                                               }
 };
@@ -72,8 +76,8 @@ const gpio_input_pin_user_config_t inputPins[] = {
 	{.pinName = VIB_SENS,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge },
 	{.pinName = FPGA_GPIO0,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge },
 	{.pinName = FPGA_DONE,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
-	{.pinName = SWITCH1   ,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
-	{.pinName = SWITCH2   ,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
+	{.pinName = OTG_ID   ,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
+	{.pinName = CPU_OTG_ID, 		.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = USB_OTG_PWR_REQ,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 
 	{.pinName = UART_MCU2CPU_RX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
@@ -97,17 +101,17 @@ void GPIO_Config( void ) {
 	GPIO_DRV_Init(inputPins, outputPins);
 
 	// I2C0 configuration
-	PORT_HAL_SetMuxMode(I2C0_SDA_GPIO_PORT, I2C0_SDA_GPIO_PIN, kPortMuxAlt2);
+	PORT_HAL_SetMuxMode     (I2C0_SDA_GPIO_PORT, I2C0_SDA_GPIO_PIN, kPortMuxAlt2);
 	PORT_HAL_SetOpenDrainCmd(I2C0_SDA_GPIO_PORT, I2C0_SDA_GPIO_PIN, true);
 
-	PORT_HAL_SetMuxMode(I2C0_SCL_GPIO_PORT, I2C0_SCL_GPIO_PIN, kPortMuxAlt2);
+	PORT_HAL_SetMuxMode     (I2C0_SCL_GPIO_PORT, I2C0_SCL_GPIO_PIN, kPortMuxAlt2);
 	PORT_HAL_SetOpenDrainCmd(I2C0_SCL_GPIO_PORT, I2C0_SCL_GPIO_PIN, true);
 
 	// I2C1 configuration
-	PORT_HAL_SetMuxMode(I2C1_SDA_GPIO_PORT, I2C1_SDA_GPIO_PIN, kPortMuxAlt2);
+	PORT_HAL_SetMuxMode     (I2C1_SDA_GPIO_PORT, I2C1_SDA_GPIO_PIN, kPortMuxAlt2);
 	PORT_HAL_SetOpenDrainCmd(I2C1_SDA_GPIO_PORT, I2C1_SDA_GPIO_PIN, true);
 
-	PORT_HAL_SetMuxMode(I2C1_SCL_GPIO_PORT, I2C1_SCL_GPIO_PIN, kPortMuxAlt2);
+	PORT_HAL_SetMuxMode     (I2C1_SCL_GPIO_PORT, I2C1_SCL_GPIO_PIN, kPortMuxAlt2);
 	PORT_HAL_SetOpenDrainCmd(I2C1_SCL_GPIO_PORT, I2C1_SCL_GPIO_PIN, true);
 
 	// UART1 configuration
