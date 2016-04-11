@@ -380,8 +380,8 @@ void peripherals_enable (void)
     GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
     GPIO_DRV_SetPinOutput   (FPGA_RSTB);
 
-	GPIO_DRV_SetPinOutput   (CAN1_J1708_PWR_ENABLE);		// Enable CAN1 and J1708
-	GPIO_DRV_SetPinOutput   (CAN2_SWC_PWR_ENABLE);		// Enable CAN2 and SWC
+	//GPIO_DRV_SetPinOutput   (CAN1_J1708_PWR_ENABLE);		// Enable CAN1 and J1708
+	//GPIO_DRV_SetPinOutput   (CAN2_SWC_PWR_ENABLE);		// Enable CAN2 and SWC
 
 //    GPIO_DRV_ClearPinOutput (USB_OTG_SEL);		// Connect D1 <-> D MCU or HUB
 //  GPIO_DRV_SetPinOutput(USB_OTG_SEL);			// Connect D2 <-> D A8 OTG
@@ -426,8 +426,8 @@ void peripherals_disable (void)
 	GPIO_DRV_ClearPinOutput (LED_BLUE);
 	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
 
-	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
-	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
+	//GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
+	//GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
 
 	GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
