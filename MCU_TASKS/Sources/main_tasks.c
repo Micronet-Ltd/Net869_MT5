@@ -28,6 +28,8 @@
 void MQX_PORTA_IRQHandler(void);
 void MQX_PORTB_IRQHandler(void);
 void MQX_PORTC_IRQHandler(void);
+void MQX_PORTE_IRQHandler(void);
+void configure_otg_for_host_or_device(void);
 
 #define	MAIN_TASK_SLEEP_PERIOD	1000			// 10 mSec sleep
 #define TIME_ONE_SECOND_PERIOD	((int) (1000 / MAIN_TASK_SLEEP_PERIOD))
@@ -205,6 +207,10 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create CONTROL_TASK\n");
 	}
 
+	configure_otg_for_host_or_device();
+	NVIC_SetPriority(PORTE_IRQn, 6U);
+	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
+
     //Disable CAN termination
 //    GPIO_DRV_ClearPinOutput(CAN1_TERM_ENABLE);
 //    GPIO_DRV_ClearPinOutput(CAN2_TERM_ENABLE);
@@ -237,21 +243,6 @@ void Main_task( uint32_t initial_data ) {
     printf("\nMain Task: Loop \n");
 
     while ( 1 ) {
-
-    	if (GPIO_DRV_ReadPinInput (OTG_ID) == 1)
-    	{
-    		/* Connect D1 <-> D MCU or HUB */
-    		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
-    	    GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
-    	    GPIO_DRV_SetPinOutput   (CPU_OTG_ID);
-    	}
-    	else
-    	{
-    		/* Connect D2 <-> D A8 OTG */
-    		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
-    	    GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
-    	    GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
-    	}
 	    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
     }
 
@@ -293,6 +284,24 @@ void OTG_CONTROL (void)
 }
 #endif
 
+void configure_otg_for_host_or_device(void)
+{
+	if (GPIO_DRV_ReadPinInput (OTG_ID) == 1)
+	{
+		/* Connect D1 <-> D MCU or HUB */
+		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
+		GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+		GPIO_DRV_SetPinOutput   (CPU_OTG_ID);
+	}
+	else
+	{
+		/* Connect D2 <-> D A8 OTG */
+		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
+		GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
+		GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
+	}
+}
+
 void MQX_PORTA_IRQHandler(void)
 {
 	if (GPIO_DRV_IsPinIntPending (VIB_SENS)) {
@@ -322,6 +331,15 @@ void MQX_PORTC_IRQHandler(void)
 	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO0)) {
 		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
 		_event_set(g_J1708_event_h, EVENT_J1708_RX);
+	}
+}
+
+void MQX_PORTE_IRQHandler(void)
+{
+	if (GPIO_DRV_IsPinIntPending (OTG_ID))
+	{
+		GPIO_DRV_ClearPinIntFlag(OTG_ID);
+		configure_otg_for_host_or_device();
 	}
 }
 
