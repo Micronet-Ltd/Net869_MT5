@@ -36,6 +36,8 @@ static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pbat
 static void set_gpi_update_all_values(uint8_t * data, uint16_t data_size, uint8_t * pgpi_values);
 static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
 static void set_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
+static void get_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
+static void set_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -79,8 +81,14 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 									SET_COMMAND,
 									0},
 	[COMM_SET_GPI_UPDATE_ALL_VALUES] = {set_gpi_update_all_values,
-								SET_COMMAND,
-								0},
+										SET_COMMAND,
+										0},
+	[COMM_GET_RTC_REG_DBG] = {get_rtc_data_dbg,
+							   GET_COMMAND,
+							   sizeof(uint8_t)},
+	[COMM_SET_RTC_REG_DBG] = {set_rtc_data_dbg,
+							   SET_COMMAND,
+							   0},
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -229,4 +237,14 @@ static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * p
 static void set_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg)
 {
 	rtc_set_cal_register(&data[0], &data[1]);
+}
+
+static void get_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg)
+{
+	rtc_receive_data (&data[0], 1, &p_reg[0], 1);
+}
+
+static void set_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg)
+{
+	rtc_send_data (&data[0], 1, &data[1], 1);
 }
