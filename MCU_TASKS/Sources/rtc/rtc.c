@@ -40,6 +40,8 @@ extern MUTEX_STRUCT g_i2c0_mutex;
 
 static i2c_device_t rtc_device_g = {.address = RTC_DEVICE_ADDRESS,    .baudRate_kbps = RTC_I2C_BAUD_RATE};
 
+bool rtc_oscillator_kick_start(void);
+
 bool rtc_receive_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data_size)
 {
 	i2c_status_t  i2c_status ;
@@ -91,6 +93,7 @@ bool rtc_check_oscillator(void)
 	/* Oscillator fail flag is high when oscil. has stopped or was stopped */
 	if ((flags & 0x4))
 	{
+		rtc_oscillator_kick_start();
 		/* clear oscillator flag */
 		flags &= ~0x4;
 		if (!rtc_send_data (&cmd_buff,  1, &flags, 1))
@@ -134,18 +137,22 @@ bool rtc_oscillator_kick_start(void)
 	uint8_t cmd_buff = RTC_SECOND_ADDR;
 	uint8_t tx_buff = 0;
 
+	if (!rtc_receive_data (&cmd_buff,  1, &tx_buff, 1))
+	{
+		printf("rtc_oscillator_kick_start: reading second address failed \n");
+	}
 	/* setting bit D7 of register 01h to cause the oscillator to stop */
 	tx_buff |= 0x80;
 	if (!rtc_send_data (&cmd_buff,  1, &tx_buff, 1))
 	{
-		printf("rtc_oscillator_kick_start: setting oscillator bit failed \n");
+		printf("rtc_oscillator_kick_start: setting stop bit failed \n");
 		return FALSE;
 	}
 	/* clearing bit D7 of register 01h to cause the oscillator to start */
 	tx_buff &= 0x7f;
 	if (!rtc_send_data (&cmd_buff,  1, &tx_buff, 1))
 	{
-		printf("rtc_oscillator_kick_start: clearing oscillator bit failed \n");
+		printf("rtc_oscillator_kick_start: clearing stop bit failed \n");
 		return FALSE;
 	}
 	return TRUE;
@@ -206,6 +213,11 @@ void rtc_get_time(uint8_t * dt_bcd)
 	if (!rtc_check_oscillator())
 	{
 		printf("rtc_get: oscillator not good \n");
+	}
+
+	if (!rtc_check_halt_bit())
+	{
+		printf("rtc_init: halt bit set \n");
 	}
 
 	cmd_buff = RTC_DECI_SEC_ADDR;
