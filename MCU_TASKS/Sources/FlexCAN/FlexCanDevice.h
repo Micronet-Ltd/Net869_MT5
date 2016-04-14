@@ -135,6 +135,8 @@ extern void     get_string( char *, uint32_t * );
 extern pflexcanInstance_t can_Device_0;
 extern pflexcanInstance_t can_Device_1;
 
+/* init pin outs and configuration the perepherials */
+extern void FlexCanDevice_InitHW ( void );
 
 /* Get CAN instance */
 extern pflexcanInstance_t FlexCanDevice_GetInstance( flexcandevice_module_t );
