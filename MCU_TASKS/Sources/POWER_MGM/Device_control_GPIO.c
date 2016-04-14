@@ -407,15 +407,6 @@ void peripherals_enable (void)
     // TODO: need to be removed after tasks enable will be set fro USB protocol
     J1708_enable  (7);
 
-    // TODO: need to be removed after tasks enable will be set fro USB protocol
-	{
-		uint8_t Br, R,G,B;
-		R = G = B = 255;
-		Br = 10;
-		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
-		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
-	}
-
 }
 
 
