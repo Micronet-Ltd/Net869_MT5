@@ -49,7 +49,7 @@ flexcan_time_segment_t bitRateTable60Mhz[] = {
 flexcan_time_segment_t bitRateTable48Mhz[] = {
 	{ 7, 7, 2, 0xEF, 3}, /* 10 kHz */
 	{ 4, 7, 1, 0x95, 3}, /* 20 KHz */
-	{ 0, 0, 0, 0x39, 3}, /* 33.33 KHz Not finaly config*/
+	{ 4, 4, 2, 0x83, 1}, /* 33.33 KHz Not finaly config*/
 	{ 4, 7, 1, 0x3B, 3}, /* 50 KHz */
 	{ 4, 7, 1, 0x1D, 3}, /* 100 KHz */
 	{ 6, 7, 7, 15, 3 },  /* 125 kHz */
@@ -83,6 +83,10 @@ uint32_t g_flexacandevice_PacketCountRX1 = 0;
 flexcan_device_bitrate_t    ConvertTimetoBitRate( flexcan_time_segment_t *ptimeSegmentTable,  flexcan_time_segment_t *ptimeSegment );
 flexcan_device_status_t     FlexCanDevice_InitInstance( uint8_t instNum, pflexcandevice_initparams_t pinstance_Can );
 flexcan_device_status_t		DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData );
+
+void FlexCanDevice_InitHW ( )
+{
+}
 
 void FLEXCAN_Tx_Task( uint32_t param ) {
 	uint32_t result, can_instance;
@@ -215,8 +219,8 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				_time_delay(20);
 
 				for (int i = 0; i < 14; i++) {
-					//ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0xF00 );
-					//ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0x700 ); // Mask Value
+					ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0xF00 );
+					ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0x700 ); // Mask Value
 					printf("FlexCanDevice_SetRxIndividualMask %d return %d\n", i, ret);
 					ret = FlexCanDevice_setMailbox(pinstance, kFlexCanMsgIdStd, i, 0x700, true); //Filter value
 					printf("FlexCanDevice_setMailbox %d return %d\n", i, ret);
