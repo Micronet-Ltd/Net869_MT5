@@ -13,18 +13,18 @@
 
 typedef enum {
 	//Regular priority tasks
-	
+
 	USB_TASK_PRIORITY = (START_APPLICATION_PRIORITY + 1),
 	POWER_MGM_TASK_PRIORITY,
 	CAN_TASK_RX_PRIORITY,
 	CAN_TASK_TX_PRIORITY,
+        CONTROL_TASK_PRIORITY,
 	J1708_TX_TASK_PRIORITY,
 	J1708_RX_TASK_PRIORITY,
 	FPGA_UART_RX_TASK_PRIORITY,
 	ACC_TASK_PRIORITY,
 	VIB_SENSOR_TASK_PRIORITY  ,
-	CONTROL_TASK_PRIORITY,
-	MAIN_TASK_PRIORITY = (CONTROL_TASK_PRIORITY + START_APPLICATION_PRIORITY),
+	MAIN_TASK_PRIORITY = (VIB_SENSOR_TASK_PRIORITY + START_APPLICATION_PRIORITY),
 }PRIORITY_TASK_INDEX_T;
 
 typedef enum {
@@ -82,7 +82,7 @@ extern void FPGA_UART_Rx_task (uint32_t );
 extern void control_task (uint32_t );
 
 extern void FLEXCAN_Tx_Task( uint32_t param );
-extern void FLEXCAN_Rx_Task( uint32_t param ); 
+extern void FLEXCAN_Rx_Task( uint32_t param );
 
 #endif /* __tasks_list_h_ */
 

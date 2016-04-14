@@ -22,6 +22,7 @@
 
 #include "FlexCanDevice.h"
 #include "rtc.h"
+#include "Wiggle_sensor.h"
 
 //void MQX_I2C0_IRQHandler (void);
 //void MQX_I2C1_IRQHandler (void);
@@ -42,6 +43,7 @@ _pool_id   g_in_message_pool;
 
 _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
 volatile uint32_t cpu_watchdog_count_g = 0;
+extern WIGGLE_SENSOR_t sensor_g;
 
 extern void * g_acc_event_h;
 
@@ -270,19 +272,23 @@ void OTG_CONTROL (void)
 
 void configure_otg_for_host_or_device(void)
 {
-	if (GPIO_DRV_ReadPinInput (OTG_ID) == 1)
+	if (GPIO_DRV_ReadPinInput (OTG_ID) == 0)
 	{
 		/* Connect D1 <-> D MCU or HUB */
 		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
 		GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
-		GPIO_DRV_SetPinOutput   (CPU_OTG_ID);
+                
+		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+		GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
 	}
 	else
 	{
 		/* Connect D2 <-> D A8 OTG */
 		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
 		GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
-		GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
+                
+		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+		GPIO_DRV_SetPinOutput (CPU_OTG_ID);
 	}
 }
 
@@ -290,8 +296,9 @@ void MQX_PORTA_IRQHandler(void)
 {
 	if (GPIO_DRV_IsPinIntPending (VIB_SENS)) {
 		GPIO_DRV_ClearPinIntFlag(VIB_SENS);
-		Wiggle_sensor_stop ();
-		_event_set(g_WIGGLE_SENSOR_event_h, EVENT_WIGGLE_SENSOR_IRQ);
+		//Wiggle_sensor_stop ();
+		sensor_g.wiggle_sensor_cnt++;
+		//_event_set(g_WIGGLE_SENSOR_event_h, EVENT_WIGGLE_SENSOR_IRQ);
 	}
 
 	if (GPIO_DRV_IsPinIntPending (ACC_INT)) {

@@ -31,6 +31,8 @@
 #define RTC_ALRM1_HOUR_ADDR				0xC
 #define RTC_FLAGS_ADDR					0xF
 #define RTC_ANALOG_CAL					0x12
+#define RTC_MIN_ADDR					0x0
+#define RTC_MAX_ADDR					0x1f
 
 #define RTC_STRING_SIZE 				23
 
@@ -46,6 +48,12 @@ bool rtc_receive_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t 
 {
 	i2c_status_t  i2c_status ;
 	_mqx_uint ret = MQX_OK;
+
+	if (*cmd > RTC_MAX_ADDR)
+	{
+		printf("rtc_receive_data: invalid command address, address %d \n", *cmd);
+		return FALSE;
+	}
 
 	/* Get i2c0 mutex */
 	if ((ret =_mutex_lock(&g_i2c0_mutex)) != MQX_OK)
@@ -65,6 +73,12 @@ bool rtc_send_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t dat
 {
 	i2c_status_t  i2c_status ;
 	_mqx_uint ret = MQX_OK;
+
+	if (*cmd > RTC_MAX_ADDR)
+	{
+		printf("rtc_send_data: invalid command address, address %d \n", *cmd);
+		return FALSE;
+	}
 
 	/* Get i2c0 mutex */
 	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
@@ -131,6 +145,24 @@ bool rtc_check_halt_bit(void)
 	return TRUE;
 }
 
+/* returns TRUE if the battery is good, FALSE if no battery or low battery */
+bool rtc_check_battery_good(void)
+{
+	uint8_t flags = 0 ;
+	uint8_t cmd_buff = RTC_FLAGS_ADDR;
+	if (!rtc_receive_data (&cmd_buff,  1, &flags, 1))
+	{
+		printf("rtc_check_battery_good: failed i2c read \n");
+		return FALSE;
+	}
+	/* Oscillator fail flag is high when oscil. has stopped or was stopped */
+	if ((flags & 0x10))
+	{
+		return FALSE;
+	}
+	return TRUE;
+}
+
 /* returns TRUE if successful */
 bool rtc_oscillator_kick_start(void)
 {
@@ -162,7 +194,6 @@ bool rtc_oscillator_kick_start(void)
 void rtc_init(void)
 {
 	I2C_Enable(RTC_I2C_PORT); /* Note:Both accelerometer and RTC are on the same bus*/
-	//rtc_oscillator_kick_start();
 	if (!rtc_check_oscillator())
 	{
 		printf("rtc_init: oscillator not good \n");
@@ -171,6 +202,10 @@ void rtc_init(void)
 	if (!rtc_check_halt_bit())
 	{
 		printf("rtc_init: halt bit set \n");
+	}
+	if (!rtc_check_battery_good())
+	{
+		printf("rtc_init: battery low bit set \n");
 	}
 }
 

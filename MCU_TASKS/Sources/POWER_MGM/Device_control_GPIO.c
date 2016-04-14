@@ -76,6 +76,7 @@
 #include "J1708_task.h"
 
 #include "Uart_debugTerminal.h"
+#include "acc_task.h"
 
 #define DEVICE_CONTROL_TIME_ON_TH				 3000		// number of mili-seconds pulse for turning device on
 #define DEVICE_CONTROL_TIME_OFF_TH				 3000		// number of mili-seconds pulse for turning device off
@@ -85,12 +86,14 @@
 #define BACKUP_POWER_TIME_TH					10000		// number of mili-seconds to power device by supercap
 
 #define CPU_OFF_CHECK_TIME						1000		// time between checks for CPU/A8 off
-#define MAX_CPU_OFF_CHECK_TIME					60000		// Max time to wait before shutting off the unit by killing the power
+#define MAX_CPU_OFF_CHECK_TIME					30000		// Max time to wait before shutting off the unit by killing the power
+
+#define MCU_AND_CPU_BOARD_CONNECTED
 
 typedef struct
 {
 	uint32_t time_threshold;								// pulse time period
-	uint32_t time;											// time counter
+	uint32_t time;											// time er
 	uint32_t delay_period;									// time duration that needs to be added to counter
 	bool     enable;										// pulse enable control
 	bool     status;										// pulse status - TRUE as long as pulse is generated
@@ -108,8 +111,6 @@ extern volatile uint32_t cpu_watchdog_count_g;
 
 void Device_control_GPIO        (void);
 bool Device_control_GPIO_status (void);
-void peripherals_enable         (void);
-void peripherals_disable        (void);
 void send_power_change          (uint8_t *power_mask);
 
 
@@ -275,6 +276,7 @@ void Device_off_req(uint8_t wait_time)
 	_time_delay(wait_time*1000);
 	Device_turn_off  ();
 
+#ifdef MCU_AND_CPU_BOARD_CONNECTED
 	/* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
 	while (cpu_off_wait_time < MAX_CPU_OFF_CHECK_TIME)
 	{
@@ -289,7 +291,7 @@ void Device_off_req(uint8_t wait_time)
 	}
 
 	/* if the CPU/A8 does not end up being powered off kill the power by manually
-	 * turning off the 5V rail. Note, this ends up turning of the LED and Audio
+	 * turning off the 5V rail. Note, this ends up turning off the LED and Audio
 	 * power
 	 */
 	if (cpu_off_wait_time >= MAX_CPU_OFF_CHECK_TIME)
@@ -297,7 +299,7 @@ void Device_off_req(uint8_t wait_time)
 		MIC_DEBUG_UART_PRINTF ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
 		GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
 	}
-
+#endif
 	backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
 	GPIO_DRV_ClearPinOutput (LED_GREEN);
@@ -328,28 +330,28 @@ void Device_turn_on  (void)
 {
 	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.time           = 0;
-	device_control_gpio_g.enable         = true;	
+	device_control_gpio_g.enable         = true;
 }
 
 void Device_turn_off (void)
 {
 	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_OFF_TH;
 	device_control_gpio_g.time           = 0;
-	device_control_gpio_g.enable         = true;	
+	device_control_gpio_g.enable         = true;
 }
 
 void Device_reset (void)
 {
 	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_RESET_TH;
 	device_control_gpio_g.time           = 0;
-	device_control_gpio_g.enable         = true;	
+	device_control_gpio_g.enable         = true;
 }
 
 void Device_control_GPIO (void)
 {
 	if (device_control_gpio_g.enable == false)
 		return;
-		
+
 	if (device_control_gpio_g.time <	device_control_gpio_g.time_threshold)
 	{
 		GPIO_DRV_SetPinOutput   (LED_BLUE);
@@ -363,7 +365,7 @@ void Device_control_GPIO (void)
 		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
 		device_control_gpio_g.status = false;
 		device_control_gpio_g.time   = 0;
-		device_control_gpio_g.enable = false;		
+		device_control_gpio_g.enable = false;
 	}
 }
 
@@ -380,6 +382,8 @@ void peripherals_enable (void)
     GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
     GPIO_DRV_SetPinOutput   (FPGA_RSTB);
 
+    AccEnable();
+
 	//GPIO_DRV_SetPinOutput   (CAN1_J1708_PWR_ENABLE);		// Enable CAN1 and J1708
 	//GPIO_DRV_SetPinOutput   (CAN2_SWC_PWR_ENABLE);		// Enable CAN2 and SWC
 
@@ -394,6 +398,11 @@ void peripherals_enable (void)
     GPIO_DRV_SetPinOutput   (UART_ENABLE);			// Enable UART
     GPIO_DRV_SetPinOutput   (FTDI_RSTN);
 
+	GPIO_DRV_SetPinOutput (SPKR_LEFT_EN);
+	GPIO_DRV_SetPinOutput (SPKR_RIGHT_EN);
+//	GPIO_DRV_SetPinOutput (SPKR_EXT_EN);
+//	GPIO_DRV_SetPinOutput (CPU_MIC_EN);
+
     // wait till FPGA is loaded
     for (i = 0; i < 100000; i++)
     {
@@ -406,15 +415,6 @@ void peripherals_enable (void)
 
     // TODO: need to be removed after tasks enable will be set fro USB protocol
     J1708_enable  (7);
-
-    // TODO: need to be removed after tasks enable will be set fro USB protocol
-	{
-		uint8_t Br, R,G,B;
-		R = G = B = 255;
-		Br = 10;
-		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
-		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
-	}
 
 }
 
@@ -435,6 +435,7 @@ void peripherals_disable (void)
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
+	AccDisable();
 }
 
 
