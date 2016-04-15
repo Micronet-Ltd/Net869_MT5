@@ -286,19 +286,23 @@ void OTG_CONTROL (void)
 
 void configure_otg_for_host_or_device(void)
 {
-	if (GPIO_DRV_ReadPinInput (OTG_ID) == 1)
+	if (GPIO_DRV_ReadPinInput (OTG_ID) == 0)
 	{
 		/* Connect D1 <-> D MCU or HUB */
 		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
 		GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
-		GPIO_DRV_SetPinOutput   (CPU_OTG_ID);
+                
+		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+		GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
 	}
 	else
 	{
 		/* Connect D2 <-> D A8 OTG */
 		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
 		GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
-		GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
+                
+		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+		GPIO_DRV_SetPinOutput (CPU_OTG_ID);
 	}
 }
 
