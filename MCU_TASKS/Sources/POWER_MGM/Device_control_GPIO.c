@@ -85,7 +85,9 @@
 #define BACKUP_POWER_TIME_TH					10000		// number of mili-seconds to power device by supercap
 
 #define CPU_OFF_CHECK_TIME						1000		// time between checks for CPU/A8 off
-#define MAX_CPU_OFF_CHECK_TIME					60000		// Max time to wait before shutting off the unit by killing the power
+#define MAX_CPU_OFF_CHECK_TIME					30000		// Max time to wait before shutting off the unit by killing the power
+
+#define MCU_AND_CPU_BOARD_CONNECTED
 
 typedef struct
 {
@@ -275,6 +277,7 @@ void Device_off_req(uint8_t wait_time)
 	_time_delay(wait_time*1000);
 	Device_turn_off  ();
 
+#ifdef MCU_AND_CPU_BOARD_CONNECTED
 	/* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
 	while (cpu_off_wait_time < MAX_CPU_OFF_CHECK_TIME)
 	{
@@ -289,7 +292,7 @@ void Device_off_req(uint8_t wait_time)
 	}
 
 	/* if the CPU/A8 does not end up being powered off kill the power by manually
-	 * turning off the 5V rail. Note, this ends up turning of the LED and Audio
+	 * turning off the 5V rail. Note, this ends up turning off the LED and Audio
 	 * power
 	 */
 	if (cpu_off_wait_time >= MAX_CPU_OFF_CHECK_TIME)
@@ -297,7 +300,7 @@ void Device_off_req(uint8_t wait_time)
 		MIC_DEBUG_UART_PRINTF ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
 		GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
 	}
-
+#endif
 	backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
 	GPIO_DRV_ClearPinOutput (LED_GREEN);

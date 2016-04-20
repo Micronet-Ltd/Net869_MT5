@@ -8,6 +8,17 @@ extern "C"
 
 #define EVENT_WIGGLE_SENSOR_IRQ		(1 << 0)
 
+typedef struct {
+	uint32_t vibration_threshold ;
+	uint32_t duration_threshold  ;
+	uint32_t delay_period        ;
+	uint32_t movement_period     ;
+	uint32_t sample_period       ;
+	volatile uint32_t wiggle_sensor_cnt   ;
+	bool     status              ;
+	bool     enable              ;
+} WIGGLE_SENSOR_t;
+
 extern void *g_WIGGLE_SENSOR_event_h;
 
 void Wiggle_sensor_init     (uint32_t delay_period);
