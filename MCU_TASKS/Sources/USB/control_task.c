@@ -37,7 +37,7 @@ void send_control_msg(packet_t * msg, uint8_t msg_size)
 
 		ctl_tx_msg->header.SOURCE_QID = _msgq_get_id(0, CONTROL_TX_QUEUE);
 		ctl_tx_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
-		ctl_tx_msg->header.SIZE = (msg_size + 2);//add seq and packet type
+		ctl_tx_msg->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE + (msg_size + 2);//add seq and packet type
 		ctl_tx_msg->portNum = MIC_CDC_USB_1;
 		_msgq_send (ctl_tx_msg);
 
