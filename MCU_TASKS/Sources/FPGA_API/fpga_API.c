@@ -44,15 +44,6 @@ bool check_uart_rx_buffer_overflow (uint8_t length);
 void FPGA_init (void)
 {
 	uint32_t i = 0;
-	// wait till FPGA is loaded
-	for (i = 0; i < 100000; i++)
-	{
-		if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1)
-		{
-			printf ("\nPOWER_MGM: INFO: FPGA is loaded\n");
-			break;
-		}
-	}
 	FPGA_port_enable ();
 }
 
