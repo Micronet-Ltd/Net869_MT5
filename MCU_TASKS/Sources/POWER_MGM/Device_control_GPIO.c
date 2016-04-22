@@ -399,7 +399,7 @@ void peripherals_enable (void)
 
 	GPIO_DRV_SetPinOutput (SPKR_LEFT_EN);
 	GPIO_DRV_SetPinOutput (SPKR_RIGHT_EN);
-	GPIO_DRV_SetPinOutput (SPKR_EXT_EN);
+//	GPIO_DRV_SetPinOutput (SPKR_EXT_EN);
 //	GPIO_DRV_SetPinOutput (CPU_MIC_EN);
 
     // wait till FPGA is loaded
