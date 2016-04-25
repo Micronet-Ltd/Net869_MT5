@@ -51,6 +51,8 @@ void Power_MGM_task (uint32_t initial_data )
 
 	Device_init (POWER_MGM_TIME_DELAY);
 	ADC_init ();
+	/* Start off with the peripherals disabled */
+	peripherals_disable ();
 
 	MIC_DEBUG_UART_PRINTF ("\nPower Management Task: Start \n");
 

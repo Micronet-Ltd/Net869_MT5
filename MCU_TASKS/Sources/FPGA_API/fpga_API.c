@@ -43,7 +43,6 @@ bool check_uart_rx_buffer_overflow (uint8_t length);
 *****************************************************************/
 void FPGA_init (void)
 {
-	uint32_t i = 0;
 	FPGA_port_enable ();
 }
 

@@ -76,6 +76,7 @@
 #include "J1708_task.h"
 
 #include "Uart_debugTerminal.h"
+#include "acc_task.h"
 
 #define DEVICE_CONTROL_TIME_ON_TH				 3000		// number of mili-seconds pulse for turning device on
 #define DEVICE_CONTROL_TIME_OFF_TH				 3000		// number of mili-seconds pulse for turning device off
@@ -92,7 +93,7 @@
 typedef struct
 {
 	uint32_t time_threshold;								// pulse time period
-	uint32_t time;											// time counter
+	uint32_t time;											// time er
 	uint32_t delay_period;									// time duration that needs to be added to counter
 	bool     enable;										// pulse enable control
 	bool     status;										// pulse status - TRUE as long as pulse is generated
@@ -110,8 +111,6 @@ extern volatile uint32_t cpu_watchdog_count_g;
 
 void Device_control_GPIO        (void);
 bool Device_control_GPIO_status (void);
-void peripherals_enable         (void);
-void peripherals_disable        (void);
 void send_power_change          (uint8_t *power_mask);
 
 
@@ -331,28 +330,28 @@ void Device_turn_on  (void)
 {
 	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.time           = 0;
-	device_control_gpio_g.enable         = true;	
+	device_control_gpio_g.enable         = true;
 }
 
 void Device_turn_off (void)
 {
 	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_OFF_TH;
 	device_control_gpio_g.time           = 0;
-	device_control_gpio_g.enable         = true;	
+	device_control_gpio_g.enable         = true;
 }
 
 void Device_reset (void)
 {
 	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_RESET_TH;
 	device_control_gpio_g.time           = 0;
-	device_control_gpio_g.enable         = true;	
+	device_control_gpio_g.enable         = true;
 }
 
 void Device_control_GPIO (void)
 {
 	if (device_control_gpio_g.enable == false)
 		return;
-		
+
 	if (device_control_gpio_g.time <	device_control_gpio_g.time_threshold)
 	{
 		GPIO_DRV_SetPinOutput   (LED_BLUE);
@@ -366,7 +365,7 @@ void Device_control_GPIO (void)
 		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
 		device_control_gpio_g.status = false;
 		device_control_gpio_g.time   = 0;
-		device_control_gpio_g.enable = false;		
+		device_control_gpio_g.enable = false;
 	}
 }
 
@@ -382,6 +381,8 @@ void peripherals_enable (void)
     GPIO_DRV_SetPinOutput   (POWER_5V0_ENABLE);	// turn on 5V0 power rail
     GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
     GPIO_DRV_SetPinOutput   (FPGA_RSTB);
+
+    AccEnable();
 
 	//GPIO_DRV_SetPinOutput   (CAN1_J1708_PWR_ENABLE);		// Enable CAN1 and J1708
 	//GPIO_DRV_SetPinOutput   (CAN2_SWC_PWR_ENABLE);		// Enable CAN2 and SWC
@@ -434,6 +435,7 @@ void peripherals_disable (void)
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
+	AccDisable();
 }
 
 
