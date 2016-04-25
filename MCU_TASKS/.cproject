@@ -110,6 +110,7 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/ADC&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/EXT_GPIOS&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/rtc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/accel&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/platform/CMSIS/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/platform/devices/MK20D10/startup&quot;"/>
 								</option>
