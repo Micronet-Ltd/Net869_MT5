@@ -49,7 +49,7 @@ flexcan_time_segment_t bitRateTable60Mhz[] = {
 flexcan_time_segment_t bitRateTable48Mhz[] = {
 	{ 7, 7, 2, 0xEF, 3}, /* 10 kHz */
 	{ 4, 7, 1, 0x95, 3}, /* 20 KHz */
-	{ 4, 4, 2, 0x83, 1}, /* 33.33 KHz Not finaly config*/
+	{ 6, 7, 2, 0x8B, 1}, /* 33.33 KHz Not finaly config*/
 	{ 4, 7, 1, 0x3B, 3}, /* 50 KHz */
 	{ 4, 7, 1, 0x1D, 3}, /* 100 KHz */
 	{ 6, 7, 7, 15, 3 },  /* 125 kHz */
@@ -83,9 +83,27 @@ uint32_t g_flexacandevice_PacketCountRX1 = 0;
 flexcan_device_bitrate_t    ConvertTimetoBitRate( flexcan_time_segment_t *ptimeSegmentTable,  flexcan_time_segment_t *ptimeSegment );
 flexcan_device_status_t     FlexCanDevice_InitInstance( uint8_t instNum, pflexcandevice_initparams_t pinstance_Can );
 flexcan_device_status_t		DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData );
+flexcan_device_status_t 	parseHex(int8_t * line, uint8_t len, uint8_t * value);
 
 void FlexCanDevice_InitHW ( )
 {
+	//Unset CAN termination
+	GPIO_DRV_SetPinOutput(CAN1_TERM_ENABLE);
+	GPIO_DRV_SetPinOutput(CAN1_TERM_ENABLE);
+
+	//Set CAN2 to regular mode twisted 
+	GPIO_DRV_SetPinOutput(CAN2_SWC_SELECT);
+
+	//Sleep mode for NCV7356
+	GPIO_DRV_ClearPinOutput(SWC_MODE0);
+	GPIO_DRV_ClearPinOutput(SWC_MODE1);
+
+	//Disable SWC 
+	GPIO_DRV_SetPinOutput(SWC_ENABLE);
+
+	//Configure CAN1 Pins
+	configure_can_pins(0);
+    configure_can_pins(1); 
 }
 
 void FLEXCAN_Tx_Task( uint32_t param ) {
@@ -96,6 +114,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 	flexcan_device_status_t ret;
 	LWEVENT_STRUCT      event_ISR;
 	flexcandevice_TX_data_t Tx_data;
+	uint8_t Baudrate_notSet = 1;
 
 	flexcandevice_initparams_t initCan;
 
@@ -140,19 +159,38 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
         if(NULL == msg_ptr) { _time_delay(1); continue; }
 
 		char* pbuff = (char *)msg_ptr->data;
+		printf("Command recieved %s \n", pbuff );
 		int msg_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
 		char erroResp = '\r';
-		char termination, baudrate;
+		uint8_t termination, baudrate;
 		do {
 			switch ( *pbuff ) {
 			case 'S':
 				if ( msg_size > 2 ) {
 					pbuff++;
 					msg_size--;
-					baudrate = *pbuff;
-					if ( (fdBitrate_125_kHz <= baudrate) && ( fdBitrate_MAX > baudrate ) ) {
-						initCan.instanceBitrate = ( flexcan_device_bitrate_t )baudrate;
-						printf("Set baudrate command %c \n", baudrate );
+                    if ( fcStatus_FLEXCAN_Success != parseHex((int8_t*)pbuff, 1, &baudrate)) {
+						printf("Error parse the Baudrate value %x %x", *pbuff, baudrate );
+						Baudrate_notSet = 1;
+						erroResp = '\a';
+						_mem_copy ( &erroResp, msg_ptr->data, 1 );
+						msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE + 1;
+						break;
+                    }
+					if ( (fdBitrate_10_kHz <= baudrate) && ( fdBitrate_MAX > baudrate ) ) {
+						if ( BSP_CAN_DEVICE_0 == can_instance && fdBitrate_33_kHz == baudrate )
+						{
+							printf("Error set baudrate 33Khz to instance %d", can_instance);
+							erroResp = '\a';
+							_mem_copy ( &erroResp, msg_ptr->data, 1 );
+							msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE + 1;
+							break;
+						}
+						else {
+							initCan.instanceBitrate = ( flexcan_device_bitrate_t )baudrate;
+							printf("Set baudrate command %x \n", baudrate );
+							Baudrate_notSet = 0;
+						}
 					}
 					else {
 						printf("Error get baudrate command %c \n", baudrate );
@@ -172,15 +210,31 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 			case 'O':
 				pbuff++;
 				msg_size--;
-				
-				termination = *pbuff;
-				
-				if ( '\r' == termination)
-				{
-					printf ( "Open wrong format to enable termination\n" );
+
+                if (1 == Baudrate_notSet) {
+					printf("The baudrate not configured Open command terminated");
 					erroResp = '\a';
-					break;					
+					_mem_copy ( &erroResp, msg_ptr->data, 1 );
+					msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE + 1;
+					break;
+                }
+
+				if ( fcStatus_FLEXCAN_Success != parseHex((int8_t*)pbuff, 1, &termination)) {
+					printf("Error parse the Termination value %x %x", *pbuff, termination );
+					erroResp = '\a';
+					_mem_copy ( &erroResp, msg_ptr->data, 1 );
+					msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE + 1;
+					break;
 				}
+				
+//				if ( '\r' == termination)
+//				{
+//					printf ( "Open wrong format to enable termination\n" );
+//					erroResp = '\a';
+//					_mem_copy ( &erroResp, msg_ptr->data, 1 );
+//					msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE + 1;
+//					break;
+//				}
 				pbuff++;
 				msg_size--;
 				
@@ -220,7 +274,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
 				for (int i = 0; i < 14; i++) {
 					ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0xF00 );
-					ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0x700 ); // Mask Value
+					//ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0x700 ); // Mask Value
 					printf("FlexCanDevice_SetRxIndividualMask %d return %d\n", i, ret);
 					ret = FlexCanDevice_setMailbox(pinstance, kFlexCanMsgIdStd, i, 0x700, true); //Filter value
 					printf("FlexCanDevice_setMailbox %d return %d\n", i, ret);
@@ -231,16 +285,46 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
 				}
 				else {
+					if ( fdBitrate_33_kHz == initCan.instanceBitrate) {
+                        printf("Set elec fo 33.33 baudrate");
+						//Set SWC to operation mode
+						//Set CAN2 to regular mode twisted 
+						GPIO_DRV_SetPinOutput(CAN2_SWC_SELECT);
+
+						//Set Speed to Normal 33KHz of NCV7356
+						GPIO_DRV_SetPinOutput(SWC_MODE0);
+						GPIO_DRV_SetPinOutput(SWC_MODE1);
+
+						//Enable SWC 
+						//GPIO_DRV_ClearPinOutput(SWC_ENABLE);
+                        GPIO_DRV_SetPinOutput(SWC_ENABLE);
+                    }
+					else {
+						//Set CAN2 to regular mode twisted 
+						//GPIO_DRV_SetPinOutput(CAN2_SWC_SELECT);
+						GPIO_DRV_ClearPinOutput(CAN2_SWC_SELECT);
+
+						//Set to sleep mode NCV7356
+						GPIO_DRV_ClearPinOutput(SWC_MODE0);
+						GPIO_DRV_ClearPinOutput(SWC_MODE1);
+
+						//Enable SWC 
+						//GPIO_DRV_SetPinOutput(SWC_ENABLE);
+                        GPIO_DRV_ClearPinOutput(SWC_ENABLE);
+					}
+
+					_time_delay (20);
+
 					GPIO_DRV_SetPinOutput(CAN2_SWC_PWR_ENABLE);
 				}
 
-				_time_delay(20);				
 				break;
 			case 'C':
 				pbuff++;
 				msg_size--;
 				//Disable CAN
 				pinstance->iScanInstanceStarted = false;
+				Baudrate_notSet = 1; 
 				if ( BSP_CAN_DEVICE_0 == can_instance ) {
 					GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE);
 				}
@@ -260,10 +344,12 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				_time_delay(100);
 				break;
 			case 't':
+			case 'r':
 				printf( "ERROR Command not recognized %c size %d", *pbuff, msg_size  );
 				Tx_data.msgbuffType = kFlexCanMsgIdStd;
 			case 'T':
-				if ( 'T' == *pbuff ) {
+			case 'R':
+				if ( 'T' == *pbuff || 'R' == *pbuff) {
 					Tx_data.msgbuffType = kFlexCanMsgIdExt;
 				}
 				if ( ((4 > msg_size) && (kFlexCanMsgIdStd == Tx_data.msgbuffType)) || ((9 > msg_size) && (kFlexCanMsgIdExt == Tx_data.msgbuffType)) )
@@ -872,7 +958,7 @@ flexcan_device_status_t FlexCanDevice_TxMessage ( pflexcanInstance_t pinstance, 
 		return fcStatus_FLEXCAN_InvalidArgument;
 	}
 
-	if ( pinstance->iScanInstanceStarted ) {
+	if ( !pinstance->iScanInstanceStarted ) {
 		return fcStatus_FLEXCAN_Error;
 	}
 
@@ -881,7 +967,8 @@ flexcan_device_status_t FlexCanDevice_TxMessage ( pflexcanInstance_t pinstance, 
 
 	ret = (flexcan_device_status_t)FLEXCAN_DRV_ConfigTxMb(pinstance->instance, MbId, &txInfo, pTxData->msgID);
 	if ( fcStatus_FLEXCAN_Success == ret ) {
-		ret = (flexcan_device_status_t)FLEXCAN_DRV_SendBlocking(pinstance->instance, MbId, &txInfo, pTxData->msgID, pTxData->msgData, FLEXCAN_DEVICE_TX_TIMEOUT);
+		//ret = (flexcan_device_status_t)FLEXCAN_DRV_SendBlocking(pinstance->instance, MbId, &txInfo, pTxData->msgID, pTxData->msgData, FLEXCAN_DEVICE_TX_TIMEOUT);
+        ret = (flexcan_device_status_t)FLEXCAN_DRV_Send(pinstance->instance, MbId, &txInfo, pTxData->msgID, pTxData->msgData);
 	}
 
 	return ret;
@@ -969,7 +1056,8 @@ flexcan_device_status_t FlexCanDevice_SetRxIndividualMask( pflexcanInstance_t pi
 flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData ) {
 	flexcan_device_status_t ret = fcStatus_FLEXCAN_Success;
 	uint32_t i, msg_limit = 3;
-	char *pbuff =  (char*)buff;
+    uint8_t tmp;
+	int8_t *pbuff =  (int8_t*)buff;
 
 	if ( NULL == buff || 0 == bufflen ||  NULL == pTxData) {
 		return fcStatus_FLEXCAN_InvalidArgument;
@@ -978,22 +1066,53 @@ flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen
 	if ( kFlexCanMsgIdExt ==  pTxData->msgbuffType )
 		msg_limit = 8;
 
+    _mem_zero ((void*)pTxData, sizeof(flexcandevice_TX_data_t));
+
 	for ( i = 0; '\r' != *pbuff && 1 < bufflen; i++ ) {
 		if ( msg_limit > i ) {
 			pTxData->msgID <<= 4;
-			pTxData->msgID |= (char)*pbuff;
+            if ( fcStatus_FLEXCAN_Success != parseHex (pbuff, 1, &tmp) )
+                return fcStatus_FLEXCAN_Error;
+			pTxData->msgID |= (tmp & 0x0F);
 			pbuff++;
 			continue;
 		}
 		if ( msg_limit == i ) {
-			pTxData->msgSize = (char)*pbuff;
+            if ( fcStatus_FLEXCAN_Success != parseHex (pbuff, 1, &tmp) )
+                return fcStatus_FLEXCAN_Error;
+			pTxData->msgSize = (tmp & 0x0F);
 			pbuff++;
 			continue;
 		}
-		pTxData->msgData[i-(msg_limit + 1)] = (char)*pbuff;
+        if ( fcStatus_FLEXCAN_Success != parseHex (pbuff, 2, &tmp) )
+            return fcStatus_FLEXCAN_Error;
+		pTxData->msgData[i-(msg_limit + 1)] = (tmp & 0xFF);
+        pbuff += 2;
 	}
 	pbuff++;
 	return ret;
+}
+
+flexcan_device_status_t parseHex(int8_t * line, uint8_t len, uint8_t * value) {
+    *value = 0;
+
+    if (0 == len) {
+		return fcStatus_FLEXCAN_OutOfRange;
+    }
+
+    while (len--) {
+        if (*line == 0) return fcStatus_FLEXCAN_OutOfRange;
+        *value <<= 4;
+        if ((*line >= '0') && (*line <= '9')) {
+           *value += *line - '0';
+        } else if ((*line >= 'A') && (*line <= 'F')) {
+           *value += *line - 'A' + 10;
+        } else if ((*line >= 'a') && (*line <= 'f')) {
+           *value += *line - 'a' + 10;
+        } else return fcStatus_FLEXCAN_OutOfRange;
+        line++;
+    }
+    return fcStatus_FLEXCAN_Success;
 }
 
 

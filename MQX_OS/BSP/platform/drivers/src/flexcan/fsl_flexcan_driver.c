@@ -729,13 +729,13 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
             }
         }
         /* Check mailbox completed transmission*/
-        temp = (1 << state->tx_mb_idx);
-        if (flag_reg & temp)
-        {
-                /* Complete transmit data */
-                FLEXCAN_DRV_CompleteSendData(instance);
-                FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, temp & flag_reg);
-        }
+//        temp = (1 << state->tx_mb_idx);
+//        if (flag_reg & temp)
+//        {
+//                /* Complete transmit data */
+//                FLEXCAN_DRV_CompleteSendData(instance);
+//                FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, temp & flag_reg);
+//        }
     }
 
     /* Clear all other interrupts in ERRSTAT register (Error, Busoff, Wakeup) */

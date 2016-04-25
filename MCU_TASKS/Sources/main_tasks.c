@@ -140,6 +140,8 @@ void Main_task( uint32_t initial_data ) {
 
 	_time_delay (1000);
 
+	FlexCanDevice_InitHW();
+
 	FPGA_init ();
 
 	J1708_enable  (7);
@@ -163,12 +165,6 @@ void Main_task( uint32_t initial_data ) {
 	{
 		printf("\nMain Could not create FPGA_UART_RX_TASK\n");
 	}
-
-	    //Initialize CAN sample
-    configure_can_pins(0);
-    configure_can_pins(1);
-
-    _time_delay (1000);
 
 	//Start CAN RX TX Tasks
 	g_TASK_ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, BSP_CAN_DEVICE_0);
@@ -212,18 +208,6 @@ void Main_task( uint32_t initial_data ) {
 	configure_otg_for_host_or_device();
 	NVIC_SetPriority(PORTE_IRQn, 6U);
 	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
-
-    //Disable CAN termination
-//    GPIO_DRV_ClearPinOutput(CAN1_TERM_ENABLE);
-//    GPIO_DRV_ClearPinOutput(CAN2_TERM_ENABLE);
-
-    //Initialize CAN sample
-//    configure_can_pins(0);
-//    configure_can_pins(1);
-//
-//    _time_delay (1000);
-
-    //_test_CANFLEX();
 
 	_event_create ("event.EXTERNAL_GPIOS");
 	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
