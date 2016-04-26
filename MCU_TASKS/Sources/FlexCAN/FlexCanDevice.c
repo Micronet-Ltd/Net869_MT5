@@ -49,7 +49,8 @@ flexcan_time_segment_t bitRateTable60Mhz[] = {
 flexcan_time_segment_t bitRateTable48Mhz[] = {
 	{ 7, 7, 2, 0xEF, 3}, /* 10 kHz */
 	{ 4, 7, 1, 0x95, 3}, /* 20 KHz */
-	{ 6, 7, 2, 0x8B, 1}, /* 33.33 KHz Not finaly config*/
+	//{ 6, 7, 2, 0x8B, 1}, /* 33.33 KHz Not finaly config*/
+    { 2, 3, 3, 0x77, 2}, //33.33 KHz
 	{ 4, 7, 1, 0x3B, 3}, /* 50 KHz */
 	{ 4, 7, 1, 0x1D, 3}, /* 100 KHz */
 	{ 6, 7, 7, 15, 3 },  /* 125 kHz */
@@ -89,10 +90,10 @@ void FlexCanDevice_InitHW ( )
 {
 	//Unset CAN termination
 	GPIO_DRV_SetPinOutput(CAN1_TERM_ENABLE);
-	GPIO_DRV_SetPinOutput(CAN1_TERM_ENABLE);
+	GPIO_DRV_SetPinOutput(CAN2_TERM_ENABLE);
 
 	//Set CAN2 to regular mode twisted 
-	GPIO_DRV_SetPinOutput(CAN2_SWC_SELECT);
+	GPIO_DRV_ClearPinOutput(CAN2_SWC_SELECT);
 
 	//Sleep mode for NCV7356
 	GPIO_DRV_ClearPinOutput(SWC_MODE0);
@@ -293,24 +294,23 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
 						//Set Speed to Normal 33KHz of NCV7356
 						GPIO_DRV_SetPinOutput(SWC_MODE0);
-						GPIO_DRV_SetPinOutput(SWC_MODE1);
+						//GPIO_DRV_SetPinOutput(SWC_MODE1); // Configuratio Normal 33KHz Mode Mode0 High Mode1 High
+                        GPIO_DRV_ClearPinOutput(SWC_MODE1); // Configuratio High up to 100Khz Mode Mode0 High Mode1 Low
 
 						//Enable SWC 
-						//GPIO_DRV_ClearPinOutput(SWC_ENABLE);
-                        GPIO_DRV_SetPinOutput(SWC_ENABLE);
+						GPIO_DRV_ClearPinOutput(SWC_ENABLE);
+                        //GPIO_DRV_SetPinOutput(SWC_ENABLE);
                     }
 					else {
 						//Set CAN2 to regular mode twisted 
-						//GPIO_DRV_SetPinOutput(CAN2_SWC_SELECT);
-						GPIO_DRV_ClearPinOutput(CAN2_SWC_SELECT);
+                        GPIO_DRV_ClearPinOutput(CAN2_SWC_SELECT);
 
 						//Set to sleep mode NCV7356
 						GPIO_DRV_ClearPinOutput(SWC_MODE0);
-						GPIO_DRV_ClearPinOutput(SWC_MODE1);
+						GPIO_DRV_ClearPinOutput(SWC_MODE1); // Configuration Sleep
 
 						//Enable SWC 
-						//GPIO_DRV_SetPinOutput(SWC_ENABLE);
-                        GPIO_DRV_ClearPinOutput(SWC_ENABLE);
+						GPIO_DRV_SetPinOutput(SWC_ENABLE);
 					}
 
 					_time_delay (20);
