@@ -14,8 +14,9 @@ extern "C"
 
 #define IGNITION_TURN_ON_TH_DEFAULT			POWER_IN_TURN_ON_TH
 
-#define TEMPERATURE_MIN_TH					(-20)
-#define TEMPERATURE_MAX_TH					(80)
+/* Conversion from Temperature(c) to mV => 		mV = (temp * 10) + 500 */
+#define TEMPERATURE_MIN_TH		300			 /* mV = (-20 * 10) + 500 */
+#define TEMPERATURE_MAX_TH		1300		 /* mV = (80 * 10) + 500 */
 
 void get_ignition_threshold(uint32_t * p_ignition_threshold);
 void set_ignition_threshold(uint32_t ignition_threshold);

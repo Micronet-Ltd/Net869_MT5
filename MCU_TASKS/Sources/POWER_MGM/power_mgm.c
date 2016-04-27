@@ -42,15 +42,25 @@ uint32_t ignition_threshold_g = IGNITION_TURN_ON_TH_DEFAULT;
 
 void Power_MGM_task (uint32_t initial_data )
 {
-	uint32_t current_time          = 0;
-	uint32_t temperature_last_time = 0;
-	uint32_t ignition_last_time    = 0;
-	uint32_t ext_gpio_last_time    = 0;
-	uint32_t cable_type_last_time  = 0;
+	uint64_t current_time          = 0;
+	uint64_t temperature_last_time = 0;
+	uint64_t ignition_last_time    = 0;
+	uint64_t ext_gpio_last_time    = 0;
+	uint64_t cable_type_last_time  = 0;
 	uint32_t cable_type_voltage    = 0;
+	KADC_CHANNELS_t i = kADC_ANALOG_IN1;
+	TIME_STRUCT time;
+	uint64_t time_ms;
 
 	Device_init (POWER_MGM_TIME_DELAY);
 	ADC_init ();
+	/* Get all the initial ADC values */
+	for (i = kADC_ANALOG_IN1; i < kADC_CHANNELS; i++)
+	{
+		ADC_sample_input (i);
+	}
+
+
 	/* Start off with the peripherals disabled */
 	peripherals_disable ();
 
@@ -99,7 +109,9 @@ void Power_MGM_task (uint32_t initial_data )
 		Supercap_discharge_state ();
 #endif
 		_time_delay (POWER_MGM_TIME_DELAY);
-		current_time += POWER_MGM_TIME_DELAY;
+
+		_time_get(&time);
+		current_time = ((time.SECONDS * 1000) +  time.MILLISECONDS);;
 	}
 }
 

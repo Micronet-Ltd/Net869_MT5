@@ -118,7 +118,7 @@ void Device_update_state (void)
 {
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
 	uint32_t ignition_voltage  = ADC_get_value (kADC_ANALOG_IN1 );
-	int32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
+	uint32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
 
 	Device_control_GPIO ();
 
