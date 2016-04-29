@@ -5,6 +5,8 @@
 extern "C"
 {
 #endif
+  
+#include "fsl_power_manager.h"
 
 #define CABLE_TYPE_VOLTAGE					(3300 / 2)
 
@@ -20,10 +22,11 @@ extern "C"
 
 void get_ignition_threshold(uint32_t * p_ignition_threshold);
 void set_ignition_threshold(uint32_t ignition_threshold);
+void switch_power_mode(power_manager_modes_t mode);
 
 #ifdef __cplusplus
 extern "C"
 }
 #endif
 
-#endif /* _POWER_MGM_H */ 
+#endif /* _POWER_MGM_H */

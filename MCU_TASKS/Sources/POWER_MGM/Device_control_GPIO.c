@@ -77,6 +77,8 @@
 
 #include "Uart_debugTerminal.h"
 #include "acc_task.h"
+#include "fsl_power_manager.h"
+#include "fsl_clock_manager.h"
 
 #define DEVICE_CONTROL_TIME_ON_TH				 3000		// number of mili-seconds pulse for turning device on
 #define DEVICE_CONTROL_TIME_OFF_TH				 3000		// number of mili-seconds pulse for turning device off
@@ -88,7 +90,9 @@
 #define CPU_OFF_CHECK_TIME						1000		// time between checks for CPU/A8 off
 #define MAX_CPU_OFF_CHECK_TIME					30000		// Max time to wait before shutting off the unit by killing the power
 
-#define MCU_AND_CPU_BOARD_CONNECTED
+//#define MCU_AND_CPU_BOARD_CONNECTED
+
+#define WDG_RESET_MCU() WDOG_UNLOCK = 0xd928;  WDOG_UNLOCK = 0xc520;
 
 typedef struct
 {
@@ -108,11 +112,30 @@ uint32_t backup_power_cnt_g = 0 ;
 uint8_t led_blink_cnt_g     = 0 ;
 extern uint32_t ignition_threshold_g;
 extern volatile uint32_t cpu_watchdog_count_g;
+extern void * power_up_event_g;
 
 void Device_control_GPIO        (void);
 bool Device_control_GPIO_status (void);
 void send_power_change          (uint8_t *power_mask);
 
+void enable_peripheral_clocks(void)
+{
+  uint8_t i;
+  for (i = 1; i < PORT_INSTANCE_COUNT; i++)
+  {
+    CLOCK_SYS_EnablePortClock (i);
+  }
+}
+
+/* Disable All peripheral clocks except Port A, which is used by Wiggle Sense */
+void disable_peripheral_clocks(void)
+{
+  uint8_t i;
+  for (i = 1; i < PORT_INSTANCE_COUNT; i++)
+  {
+    CLOCK_SYS_DisablePortClock (i);
+  }
+}
 
 void Device_update_state (void)
 {
@@ -155,10 +178,9 @@ void Device_update_state (void)
 
 			if (turn_on_condition_g != 0)
 			{
+
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
-				peripherals_enable ();
-				Device_turn_on     ();
 				//send_power_change  (&turn_on_condition);
 				device_state_g = DEVICE_STATE_TURNING_ON;
 			}
@@ -168,10 +190,15 @@ void Device_update_state (void)
 			// wait while pulse is still generated (time period didn't reach threshold)
 			if (!Device_control_GPIO_status())
 			{
-				Board_SetFastClk ();
+                switch_power_mode(kPowerManagerRun);
+                enable_peripheral_clocks();
+				peripherals_enable ();
+				Device_turn_on     ();
 				device_state_g = DEVICE_STATE_ON;
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE RUNNING\n");
+                FPGA_init ();
                 FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0);
+                _event_set(power_up_event_g, 1);
 			}
 			break;
 
@@ -191,7 +218,8 @@ void Device_update_state (void)
 			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
 				Device_turn_off  ();
-				Board_SetSlowClk ();
+                switch_power_mode(kPowerManagerVlpr);
+				//Board_SetVerySlowClk ();
 				device_state_g = DEVICE_STATE_TURN_OFF;
 			}
 			break;
@@ -204,7 +232,8 @@ void Device_update_state (void)
 			{
 				GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
 				peripherals_disable ();
-				Board_SetSlowClk ();
+                switch_power_mode(kPowerManagerVlpr);
+				//Board_SetVerySlowClk ();
 				device_state_g = DEVICE_STATE_BACKUP_POWER;
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: Recovery period is over\n");
 				break;
@@ -246,7 +275,8 @@ void Device_update_state (void)
 				device_state_g = DEVICE_STATE_OFF;
 				Wiggle_sensor_restart ();
 				peripherals_disable ();
-				Wiggle_sensor_start ();									// enable interrupt
+				Wiggle_sensor_start ();	// enable interrupt
+                disable_peripheral_clocks();
 			}
 			break;
 
@@ -254,6 +284,8 @@ void Device_update_state (void)
 			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: ERROR: UNKNOWN STATE %d\n", device_state_g );
 			device_state_g = DEVICE_STATE_OFF;
 			Wiggle_sensor_restart ();
+            enable_peripheral_clocks();
+
 			break;
 	}
 }
@@ -301,9 +333,10 @@ void Device_off_req(uint8_t wait_time)
 	//Board_SetSlowClk ();
 	MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
 	device_state_g = DEVICE_STATE_OFF;
-	Wiggle_sensor_restart ();
-	peripherals_disable ();
-	Wiggle_sensor_start ();
+        WDG_RESET_MCU();
+	//Wiggle_sensor_restart ();
+	//peripherals_disable ();
+	//Wiggle_sensor_start ();
 }
 
 void Device_init (uint32_t delay_period)
@@ -374,10 +407,9 @@ void peripherals_enable (void)
     GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
     GPIO_DRV_SetPinOutput   (FPGA_RSTB);
 
-    AccEnable();
-
-	//GPIO_DRV_SetPinOutput   (CAN1_J1708_PWR_ENABLE);		// Enable CAN1 and J1708
-	//GPIO_DRV_SetPinOutput   (CAN2_SWC_PWR_ENABLE);		// Enable CAN2 and SWC
+    //AccEnable();
+    GPIO_DRV_SetPinOutput   (CAN1_J1708_PWR_ENABLE);		// Enable CAN1 and J1708
+    GPIO_DRV_SetPinOutput   (CAN2_SWC_PWR_ENABLE);		// Enable CAN2 and SWC
 
 //    GPIO_DRV_ClearPinOutput (USB_OTG_SEL);		// Connect D1 <-> D MCU or HUB
 //  GPIO_DRV_SetPinOutput(USB_OTG_SEL);			// Connect D2 <-> D A8 OTG
@@ -406,7 +438,7 @@ void peripherals_enable (void)
     }
 
     // TODO: need to be removed after tasks enable will be set fro USB protocol
-    J1708_enable  (7);
+    //J1708_enable  (7);
 
 }
 
@@ -415,8 +447,8 @@ void peripherals_disable (void)
 {
 	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
 
-	//GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
-	//GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
+	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
+	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
 
 	GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
@@ -424,7 +456,7 @@ void peripherals_disable (void)
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
-	AccDisable();
+	//AccDisable();
 }
 
 

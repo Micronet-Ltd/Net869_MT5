@@ -32,6 +32,7 @@ void Device_off_req(uint8_t wait_time);
 DEVICE_STATE_t Device_get_status   (void);
 void peripherals_enable         (void);
 void peripherals_disable        (void);
+void disable_peripheral_clocks(void);
 
 #ifdef __cplusplus
 }

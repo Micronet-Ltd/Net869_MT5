@@ -50,7 +50,7 @@ const gpio_output_pin_user_config_t outputPins[] = {
 
 	{.pinName = FPGA_RSTB,					.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{.pinName = J1708_ENABLE,				.config.outputLogic = 1,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
-	
+
 //  {.pinName = I2C_SCL, 				    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
 	// CPU control
@@ -64,8 +64,8 @@ const gpio_output_pin_user_config_t outputPins[] = {
 
 
 	// AUDIO
-	{.pinName = SPKR_LEFT_EN,                   .config.outputLogic = 1,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
-	{.pinName = SPKR_RIGHT_EN,                  .config.outputLogic = 1,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	{.pinName = SPKR_LEFT_EN,                   .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	{.pinName = SPKR_RIGHT_EN,                  .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{.pinName = SPKR_EXT_EN,                    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE                                                                                                                                                               }

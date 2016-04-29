@@ -46,6 +46,7 @@ volatile uint32_t cpu_watchdog_count_g = 0;
 extern WIGGLE_SENSOR_t sensor_g;
 
 extern void * g_acc_event_h;
+extern void * power_up_event_g;
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
@@ -58,6 +59,7 @@ void Main_task( uint32_t initial_data ) {
 	MUTEX_ATTR_STRUCT mutexattr;
 
     uint32_t FPGA_version = 0;
+    _mqx_uint event_result;
 
     _time_delay (10);
 
@@ -77,13 +79,13 @@ void Main_task( uint32_t initial_data ) {
     GPIO_Config();
     ADC_init ();
 
-	NVIC_SetPriority(PORTA_IRQn, 6U);
-	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
-	NVIC_SetPriority(PORTC_IRQn, 6U);
-	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
+    NVIC_SetPriority(PORTA_IRQn, 6U);
+    OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
+    NVIC_SetPriority(PORTC_IRQn, 6U);
+    OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 
-	NVIC_SetPriority(PORTB_IRQn, 6U);
-	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
+    NVIC_SetPriority(PORTB_IRQn, 6U);
+    OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
 //    // I2C0 Initialization
 //    NVIC_SetPriority(I2C0_IRQn, 6U);
@@ -95,141 +97,147 @@ void Main_task( uint32_t initial_data ) {
 //	OSA_InstallIntHandler(I2C1_IRQn, MQX_I2C1_IRQHandler);
 //	I2C_DRV_MasterInit(I2C1_IDX, &i2c1_master);
 
-	/* Initialize mutex attributes: */
-	if (_mutatr_init(&mutexattr) != MQX_OK)
-	{
-		printf("Initializing mutex attributes failed.\n");
-		_task_block();
-	}
-	/* Initialize the mutex: */
-	if (_mutex_init(&g_i2c0_mutex, &mutexattr) != MQX_OK)
-	{
-		printf("Initializing i2c0 mutex failed.\n");
-		_task_block();
-	}
+    /* Initialize mutex attributes: */
+    if (_mutatr_init(&mutexattr) != MQX_OK)
+    {
+        printf("Initializing mutex attributes failed.\n");
+        _task_block();
+    }
+    /* Initialize the mutex: */
+    if (_mutex_init(&g_i2c0_mutex, &mutexattr) != MQX_OK)
+    {
+        printf("Initializing i2c0 mutex failed.\n");
+        _task_block();
+    }
+
+    g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
+    if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create POWER_MGM_TASK\n");
+    }
+
+    event_result = _event_open("event.PowerUpEvent", &power_up_event_g);
+    if(MQX_OK != event_result){
+            printf("Main_task: Could not open PowerUp event \n");
+    }
+    
+    g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
+    if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
+    {
+        printf("\nCould not create a g_out_message_pool message pool\n");
+        _task_block();
+    }
+
+    g_in_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
+    if (g_in_message_pool == MSGPOOL_NULL_POOL_ID)
+    {
+        printf("\nCould not create a g_in_message_pool message pool\n");
+        _task_block();
+    }
+
+    main_qid = _msgq_open(MAIN_QUEUE, 0);
+
+    printf("\nbefore power on event\n");
+    /* We are waiting until a wiggle event happens before starting everything up
+       The main reason for this is to stay below 5mA at 12V */
+    _event_wait_all(power_up_event_g, 1, 0);
+    _event_clear(power_up_event_g, 1);
+
+    printf("\nAfter power on event\n");
 
     // turn on device
     GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
-	GPIO_DRV_SetPinOutput(ACC_ENABLE       );
 
-    _time_delay(20);
+
+    
     g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
-	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
-		printf("\nMain Could not create USB_TASK\n");
-	}
+    if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
+            printf("\nMain Could not create USB_TASK\n");
+    }
+
+
+    GPIO_DRV_SetPinOutput(ACC_ENABLE);
 
     //Enable UART
     GPIO_DRV_SetPinOutput(UART_ENABLE);
     GPIO_DRV_SetPinOutput(FTDI_RSTN);
 
-	g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
-	if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
-	{
-		printf("\nCould not create a g_out_message_pool message pool\n");
-		_task_block();
-	}
+    _time_delay (1000);
 
-	g_in_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
-	if (g_in_message_pool == MSGPOOL_NULL_POOL_ID)
-	{
-		printf("\nCould not create a g_in_message_pool message pool\n");
-		_task_block();
-	}
+    FlexCanDevice_InitHW();
 
-	main_qid = _msgq_open(MAIN_QUEUE, 0);
+    FPGA_init ();
 
-	_time_delay (1000);
+    J1708_enable  (7);
 
-	FlexCanDevice_InitHW();
+    rtc_init();
 
-	FPGA_init ();
+    g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
+    if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create J1708_TX_TASK\n");
+    }
 
-	J1708_enable  (7);
+    g_TASK_ids[J1708_RX_TASK] = _task_create(0, J1708_RX_TASK, 0 );
+    if (g_TASK_ids[J1708_RX_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create J1708_RX_TASK\n");
+    }
 
-	rtc_init();
+    g_TASK_ids[FPGA_UART_RX_TASK] = _task_create(0, FPGA_UART_RX_TASK, 0 );
+    if (g_TASK_ids[FPGA_UART_RX_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create FPGA_UART_RX_TASK\n");
+    }
 
-	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
-	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create J1708_TX_TASK\n");
-	}
+    //Start CAN RX TX Tasks
+    g_TASK_ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, BSP_CAN_DEVICE_0);
+    if ( g_TASK_ids[CAN_TASK_RX_0] == MQX_NULL_TASK_ID ) {
+        printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_0);
+    }
 
-	g_TASK_ids[J1708_RX_TASK] = _task_create(0, J1708_RX_TASK, 0 );
-	if (g_TASK_ids[J1708_RX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create J1708_RX_TASK\n");
-	}
-	
-	g_TASK_ids[FPGA_UART_RX_TASK] = _task_create(0, FPGA_UART_RX_TASK, 0 );
-	if (g_TASK_ids[FPGA_UART_RX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create FPGA_UART_RX_TASK\n");
-	}
+    g_TASK_ids[CAN_TASK_RX_1] = _task_create(0, CAN_TASK_RX_1, BSP_CAN_DEVICE_1);
+    if ( g_TASK_ids[CAN_TASK_RX_1] == MQX_NULL_TASK_ID ) {
+        printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_1);
+    }
 
-	//Start CAN RX TX Tasks
-	g_TASK_ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, BSP_CAN_DEVICE_0);
-	if ( g_TASK_ids[CAN_TASK_RX_0] == MQX_NULL_TASK_ID ) {
-		printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_0);
-	}
+    g_TASK_ids[CAN_TASK_TX_0] = _task_create(0, CAN_TASK_TX_0, BSP_CAN_DEVICE_0);
+    if ( g_TASK_ids[CAN_TASK_TX_0] == MQX_NULL_TASK_ID ) {
+        printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_0);
+    }
 
-	g_TASK_ids[CAN_TASK_RX_1] = _task_create(0, CAN_TASK_RX_1, BSP_CAN_DEVICE_1);
-	if ( g_TASK_ids[CAN_TASK_RX_1] == MQX_NULL_TASK_ID ) {
-		printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_1);
-	}
+    g_TASK_ids[CAN_TASK_TX_1] = _task_create(0, CAN_TASK_TX_1, BSP_CAN_DEVICE_1);
+    if ( g_TASK_ids[CAN_TASK_TX_1] == MQX_NULL_TASK_ID ) {
+            printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_1);
+    }
 
-	g_TASK_ids[CAN_TASK_TX_0] = _task_create(0, CAN_TASK_TX_0, BSP_CAN_DEVICE_0);
-	if ( g_TASK_ids[CAN_TASK_TX_0] == MQX_NULL_TASK_ID ) {
-		printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_0);
-	}
+    g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
+    if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create ACC_TASK\n");
+    }
 
-	g_TASK_ids[CAN_TASK_TX_1] = _task_create(0, CAN_TASK_TX_1, BSP_CAN_DEVICE_1);
-	if ( g_TASK_ids[CAN_TASK_TX_1] == MQX_NULL_TASK_ID ) {
-		printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_1);
-	}
+    g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
+    if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create CONTROL_TASK\n");
+    }
 
-	g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
-	if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create POWER_MGM_TASK\n");
-	}
-	
-	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
-	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create ACC_TASK\n");
-	}
+    configure_otg_for_host_or_device();
+    NVIC_SetPriority(PORTE_IRQn, 6U);
+    OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
 
-	g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
-	if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create CONTROL_TASK\n");
-	}
+    _event_create ("event.EXTERNAL_GPIOS");
+    _event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
 
-	configure_otg_for_host_or_device();
-	NVIC_SetPriority(PORTE_IRQn, 6U);
-	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
-
-	_event_create ("event.EXTERNAL_GPIOS");
-	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
-
-	FPGA_read_version(&FPGA_version);
-	printf("\n FPGA version, %x", FPGA_version);
-
-#if 1
-	/* Simulate a power on button press on the A8 */
-//	GPIO_DRV_SetPinOutput   (LED_BLUE);
-//
-//    GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
-//    _time_delay (3000);
-//    GPIO_DRV_SetPinOutput(CPU_ON_OFF);
-//
-//    GPIO_DRV_ClearPinOutput   (LED_BLUE);
-#endif
+    FPGA_read_version(&FPGA_version);
+    printf("\n FPGA version, %x", FPGA_version);
+    FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0);
 
     printf("\nMain Task: Loop \n");
 
     while ( 1 ) {
-	    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
+        _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
     }
 
     printf("\nMain Task: End \n");
@@ -277,7 +285,7 @@ void configure_otg_for_host_or_device(void)
 		/* Connect D1 <-> D MCU or HUB */
 		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
 		GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
-                
+
 		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
 		GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
 	}
@@ -286,7 +294,7 @@ void configure_otg_for_host_or_device(void)
 		/* Connect D2 <-> D A8 OTG */
 		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
 		GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
-                
+
 		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
 		GPIO_DRV_SetPinOutput (CPU_OTG_ID);
 	}
