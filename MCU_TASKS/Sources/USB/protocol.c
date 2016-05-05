@@ -132,9 +132,9 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 	return result;
 }
 
-send_control_response()
+int32_t send_control_response()
 {
-
+  return 0;
 }
 
 int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size)

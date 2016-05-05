@@ -90,6 +90,8 @@
     #define BOARD_DEBUG_UART_BAUD       115200
 #endif
 
+#define	UART_UPDATE_FW_IDX				UART3_IDX
+
 /* This define to use for power manager demo */
 #define BOARD_LOW_POWER_UART_BAUD       9600
 
@@ -280,6 +282,7 @@ uint8_t usb_device_board_init(uint8_t controller_id);
 uint8_t usb_host_board_init(uint8_t controller_id);
 /*Function to handle board-specified initialization*/
 uint8_t usb_otg_board_init(uint8_t controller_id);
+void update_fw_uart_init(void);
 
 #if defined(__cplusplus)
 }

@@ -10,6 +10,7 @@ void UART_Reset    (uint8_t port, const uart_user_config_t *uartConfig);
 
 extern void MQX_UART0_RX_TX_IRQHandler (void);
 extern void MQX_UART1_RX_TX_IRQHandler (void);
+extern void MQX_UART3_RX_TX_IRQHandler (void);
 
 #endif /* _MIC_UART_CONFIGURATION_H */
 

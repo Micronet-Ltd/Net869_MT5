@@ -217,6 +217,11 @@ void dbg_uart_init(void)
     DbgConsole_Init(BOARD_DEBUG_UART_INSTANCE, BOARD_DEBUG_UART_BAUD, kDebugConsoleUART);
 #endif
 }
+void update_fw_uart_init(void)
+{
+    configure_uart_pins(UART_UPDATE_FW_IDX);
+}
+
 /******************************************************************************
  *
  *   @name      usb_device_board_init

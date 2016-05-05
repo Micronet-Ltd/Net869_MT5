@@ -22,6 +22,10 @@ void UART_Enable  (uint8_t port, const uart_user_config_t *uartConfig)
 						OSA_InstallIntHandler (UART1_RX_TX_IRQn, MQX_UART1_RX_TX_IRQHandler);
 						break;
 						
+		case UART3_IDX:	NVIC_SetPriority      (UART3_RX_TX_IRQn, 6U);
+						OSA_InstallIntHandler (UART3_RX_TX_IRQn, MQX_UART3_RX_TX_IRQHandler);
+						break;
+
 		default:		printf("\nUART Enable - illeagal port\n");
 						return;
 	}
@@ -44,3 +48,4 @@ void UART_Reset  (uint8_t port, const uart_user_config_t *uartConfig)
 
 void MQX_UART0_RX_TX_IRQHandler (void)		{ UART_DRV_IRQHandler (0); }
 void MQX_UART1_RX_TX_IRQHandler (void)		{ UART_DRV_IRQHandler (1); }
+void MQX_UART3_RX_TX_IRQHandler (void)		{ UART_DRV_IRQHandler (3); }
