@@ -60,12 +60,13 @@
 #define EERAM_BASE              FSL_FEATURE_FLASH_FLEX_RAM_START_ADDRESS
 #define EERAM_SIZE              FSL_FEATURE_FLASH_FLEX_RAM_SIZE
 ////////////////////////////
-#define BOOT_REGISTERS_START_ADDR    0x1003F800	//(uint32_t)(0x83F800)
+//#define BOOT_REGISTERS_START_ADDR    0x1003F800	//(uint32_t)(0x83F800)
 //#define BOOT_REGISTERS_SIZE      	0x10040000 -  BOOT_REGISTERS_START_ADDR	//(uint32_t)(0x83FFFF)
 ///iii
 #define PFLASH_BASE				0x800
 #define	PBLOCK_SIZE				P_FLASH_SIZE - PFLASH_BASE
-#define	DEBLOCK_SIZE_M			BOOT_REGISTERS_START_ADDR - FLEXNVM_BASE
+#define NVFLASH_BASE			0x10000800
+#define	DEBLOCK_SIZE_M			0x10040000 - NVFLASH_BASE //BOOT_REGISTERS_START_ADDR - FLEXNVM_BASE
 
 ////////////////////////////
 /* Destination to program security key back to flash location */

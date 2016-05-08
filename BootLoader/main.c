@@ -7,9 +7,9 @@
 #include <stdint.h>
 
 #define P_FLASH_PHYSICAL_ADDR  	0x00000800
-#define FLEX_NVM_PHYSICAL_ADDR 	0x10000000
+#define FLEX_NVM_PHYSICAL_ADDR 	0x10000800
 ///////////////////////////////////////////
-#define BOOT_REG_PHYSICAL_ADDR 	0x1003F800
+//#define BOOT_REG_PHYSICAL_ADDR 	0x1003F800
 #define RUN_FROM_P_FLASH       	0xAA
 #define RUN_FROM_FLEX_NVM      	0xBB
 /////////////////////////////////////////

@@ -85,8 +85,8 @@ const char*	cmds_srec[] =
   "S9",
   ""
 };
-uint32_t 	g_offset = FLEXNVM_BASE;//temp!!! place
-uint32_t 	g_errors = 0;//temp!!! place
+uint32_t 	g_offset = NVFLASH_BASE;
+uint32_t 	g_errors = 0;
 uint8_t 	bbb[516] = {0};
 uint8_t 	tmp_buf[255] = {0};
 void*		g_event_ptr;
@@ -271,7 +271,7 @@ int32_t start_update(uint32_t id)
 	else
 	{
 	  	Flash_Init();
-	  	g_offset = FLEXNVM_BASE;
+	  	g_offset = NVFLASH_BASE;
 	}
 	return 0;
 }
@@ -318,7 +318,6 @@ int32_t end_update(void)
 uint32_t choose_flash(void)
 {
   	void* pfunc = (void*)choose_flash;
-	uint32_t val = *((uint32_t*)(FLEXNVM_BASE + READY_OFFSET));
   	
 	uint32_t ret = FROM_P_FLASH;
 
@@ -605,7 +604,6 @@ void updater_task(uint32_t param)
 					ClearUart_Reply(bbb, (g_start_flag ? ((char*)nRDY_str) : ((char*)ERR_str)));
 					continue;
 				}
-				 //UART_DRV_SendDataBlocking(UART_UPDATE_FW_IDX, &rxChar, 1u, 1000u);
 				if(-1 != (id = (cmd_id)find_cmd(cmds_srec, (char*)bbb, 2)))
 				{
 				  	//maybe check g_start_flag???

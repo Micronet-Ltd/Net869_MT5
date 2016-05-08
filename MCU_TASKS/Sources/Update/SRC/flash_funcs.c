@@ -61,8 +61,8 @@ uint32_t EraseSectors(int32_t sid)
 		break;
 		case FROM_FLEX_NVM:
 		{
-			destination = flashSSDConfig.DFlashBase;
-			size = DEBLOCK_SIZE_M;	//flashSSDConfig.DFlashSize;
+			destination = NVFLASH_BASE;//flashSSDConfig.DFlashBase;
+			size 		= DEBLOCK_SIZE_M;	//flashSSDConfig.DFlashSize;
 		}
 		break;
 //		case FROM_BOOT_REG:
@@ -95,16 +95,6 @@ uint32_t Flash_Init(void)
 uint32_t Flash_Program(uint32_t dest, uint32_t size, uint8_t* pData) 
 {
    return FlashProgram(&flashSSDConfig, dest, size, pData, FlashCommandSequence);
-}
-uint32_t Update_Reg(int32_t sid)
-{
-	uint32_t ret;
-	ret = EraseSectors(FROM_BOOT_REG);
-	if(0 == ret)
-	{
-  		ret = Flash_Program(BOOT_REGISTERS_START_ADDR, 4, (uint8_t*)&sid);
-	}
-	return ret;
 }
 //////////
               
