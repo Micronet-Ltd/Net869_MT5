@@ -58,8 +58,8 @@ define symbol m_interrupts_end         = 0x000003FF;
 define symbol m_interrupts_start       = 0x00000810;
 define symbol m_interrupts_end         = 0x00000C0F;
 
-define symbol m_interrupts_start       = 0x10000010;
-define symbol m_interrupts_end         = 0x1000040F;
+define symbol m_interrupts_start       = 0x10000810;
+define symbol m_interrupts_end         = 0x10000C0F;
 */
 define symbol m_interrupts_start       = 0x00000810;
 define symbol m_interrupts_end         = 0x00000C0F;
@@ -74,8 +74,8 @@ define symbol m_text_end               = 0x0003FFFF;
 define symbol m_text_start             = 0x00000C10;
 define symbol m_text_end               = 0x0003FFFF;
 
-define symbol m_text_start             = 0x10000410;
-define symbol m_text_end               = 0x1003F7FF;
+define symbol m_text_start             = 0x10000C10;
+define symbol m_text_end               = 0x1003FFFF;
 */
 define symbol m_text_start             = 0x00000C10;
 define symbol m_text_end               = 0x0003FFFF;
