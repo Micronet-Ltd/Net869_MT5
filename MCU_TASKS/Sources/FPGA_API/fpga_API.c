@@ -121,6 +121,7 @@ bool FPGA_read_led_status  (uint8_t ledNum, uint8_t *brightness, uint8_t *red, u
 	switch (ledNum) {
 		case LED_RIGHT  : status = FPGA_GetData (FPGA_REG_ADDR_LED_RIGHT , &data); break;
 		case LED_MIDDLE : status = FPGA_GetData (FPGA_REG_ADDR_LED_MIDDLE, &data); break;
+        case LED_LEFT   : status = FPGA_GetData (FPGA_REG_ADDR_LED_LEFT, &data); break;
 	}
 	
 	if (status == false)
@@ -147,7 +148,8 @@ bool FPGA_write_led_status (uint8_t ledNum, uint8_t *brightness, uint8_t *red, u
 		
 	switch (ledNum) {
 		case LED_RIGHT  : return FPGA_SetData (FPGA_REG_ADDR_LED_RIGHT , &data);
-		case LED_MIDDLE : return FPGA_SetData (FPGA_REG_ADDR_LED_MIDDLE, &data); 
+		case LED_MIDDLE : return FPGA_SetData (FPGA_REG_ADDR_LED_MIDDLE, &data);
+        case LED_LEFT   : return FPGA_SetData (FPGA_REG_ADDR_LED_LEFT, &data); 
 	}
 	return false;
 }

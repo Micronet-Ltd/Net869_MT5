@@ -136,10 +136,6 @@ void Acc_task (uint32_t initial_data)
 		_time_delay (10000);
 	}
 
-#ifdef MIC_LED_TEST
-	GPIO_DRV_SetPinOutput(LED_GREEN);
-#endif
-
 #if 0
 	//TODO hack Enabling sensor by default
 	AccEnable();
