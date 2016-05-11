@@ -127,9 +127,9 @@ void Device_update_state (void)
 		case DEVICE_STATE_OFF:
 			turn_on_condition_g = 0;
 			// blink RED LED when device is off
-			if      (++led_blink_cnt_g == 8)		GPIO_DRV_SetPinOutput   (LED_RED);
-			else if (  led_blink_cnt_g < 10)		GPIO_DRV_ClearPinOutput (LED_RED);
-			else       led_blink_cnt_g = 0;
+			//if      (++led_blink_cnt_g == 8)		GPIO_DRV_SetPinOutput   (LED_RED);
+			//else if (  led_blink_cnt_g < 10)		GPIO_DRV_ClearPinOutput (LED_RED);
+			//else       led_blink_cnt_g = 0;
 
 			// check amount of vibrations sensed by the wiggle sensor
 			// if amount of vibrations is more than TH, it will turn on the device
