@@ -135,11 +135,8 @@ void Acc_task (uint32_t initial_data)
 	{
 		_time_delay (10000);
 	}
-
-#if 0
-	//TODO hack Enabling sensor by default
-	AccEnable();
-#endif
+    
+    AccEnable();
 
 	//TODO: Remote Test acc message
 	//test_acc_msg.header.SOURCE_QID = acc_qid;
@@ -266,12 +263,6 @@ bool accInit (void)
 	// configure output buffer data format using 8g scale range
 	write_data[0] = ACC_REG_XYZ_DATA_CFG   ;
 	write_data[1] = 0x02 ;
-    if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
-
-	// keep the Accelerometer in STANDBY mode since it is enabled and disabled
-    //in the power management task
-	write_data[0] = ACC_REG_CTRL_REG1   ;
-	write_data[1] = 0xC0 ;
     if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
 
 	printf ("ACC Task: Device Configured \n");
