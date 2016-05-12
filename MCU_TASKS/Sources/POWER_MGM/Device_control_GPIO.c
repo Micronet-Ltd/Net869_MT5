@@ -171,6 +171,7 @@ void Device_update_state (void)
 				Board_SetFastClk ();
 				device_state_g = DEVICE_STATE_ON;
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE RUNNING\n");
+                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0);
 			}
 			break;
 

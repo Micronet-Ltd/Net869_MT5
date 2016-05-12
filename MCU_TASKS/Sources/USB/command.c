@@ -180,7 +180,7 @@ static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_st
 
 static void set_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status)
 {
-	FPGA_write_led_status (data[0], &data[1], &data[2], &data[3], &data[4]);
+	FPGA_write_led_status (data[0], data[1], data[2], data[3], data[4]);
 }
 
 static void  get_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold)

@@ -134,17 +134,14 @@ bool FPGA_read_led_status  (uint8_t ledNum, uint8_t *brightness, uint8_t *red, u
 	return true;
 }
 
-bool FPGA_write_led_status (uint8_t ledNum, uint8_t *brightness, uint8_t *red, uint8_t *green, uint8_t *blue)
+bool FPGA_write_led_status (uint8_t ledNum, uint8_t brightness, uint8_t red, uint8_t green, uint8_t blue)
 {
 	uint32_t data;
-
-	if ((brightness == NULL) || (red == NULL) ||(green == NULL) ||(blue == NULL))
-		return false;
-		
-	data  = ((*brightness) << FPGA_REG_LED_BRIGHTNESS_SHIFT);
-	data |= ((*red)        << FPGA_REG_LED_RED_SHIFT       );
-	data |= ((*green)      << FPGA_REG_LED_GREEN_SHIFT     );
-	data |= ((*blue)       << FPGA_REG_LED_BLUE_SHIFT      );
+	
+	data  = ((brightness) << FPGA_REG_LED_BRIGHTNESS_SHIFT);
+	data |= ((red)        << FPGA_REG_LED_RED_SHIFT       );
+	data |= ((green)      << FPGA_REG_LED_GREEN_SHIFT     );
+	data |= ((blue)       << FPGA_REG_LED_BLUE_SHIFT      );
 		
 	switch (ledNum) {
 		case LED_RIGHT  : return FPGA_SetData (FPGA_REG_ADDR_LED_RIGHT , &data);
