@@ -79,18 +79,19 @@
 #include "acc_task.h"
 #include "fsl_power_manager.h"
 #include "fsl_clock_manager.h"
+#include "mqx_prv.h"
 
-#define DEVICE_CONTROL_TIME_ON_TH				 3000		// number of mili-seconds pulse for turning device on
-#define DEVICE_CONTROL_TIME_OFF_TH				 3000		// number of mili-seconds pulse for turning device off
+#define DEVICE_CONTROL_TIME_ON_TH				 3500		// number of mili-seconds pulse for turning device on
+#define DEVICE_CONTROL_TIME_OFF_TH				 3500		// number of mili-seconds pulse for turning device off
 #define DEVICE_CONTROL_TIME_RESET_TH			  500		// number of mili-seconds pulse for reseting device
 
 #define BACKUP_RECOVER_TIME_TH					 1000		// number of mili-seconds to try power failure overcome (device is powered by supercap)
-#define BACKUP_POWER_TIME_TH					10000		// number of mili-seconds to power device by supercap
+#define BACKUP_POWER_TIME_TH					20000		// number of mili-seconds to power device by supercap
 
 #define CPU_OFF_CHECK_TIME						1000		// time between checks for CPU/A8 off
-#define MAX_CPU_OFF_CHECK_TIME					30000		// Max time to wait before shutting off the unit by killing the power
+#define MAX_CPU_OFF_CHECK_TIME					10000		// Max time to wait before shutting off the unit by killing the power
 
-//#define MCU_AND_CPU_BOARD_CONNECTED
+#define MCU_AND_CPU_BOARD_CONNECTED
 
 #define WDG_RESET_MCU() WDOG_UNLOCK = 0xd928;  WDOG_UNLOCK = 0xc520;
 
@@ -114,7 +115,7 @@ extern uint32_t ignition_threshold_g;
 extern volatile uint32_t cpu_watchdog_count_g;
 extern void * power_up_event_g;
 
-void Device_control_GPIO        (void);
+void Device_control_GPIO        (uint32_t * time_diff);
 bool Device_control_GPIO_status (void);
 void send_power_change          (uint8_t *power_mask);
 
@@ -137,13 +138,14 @@ void disable_peripheral_clocks(void)
   }
 }
 
-void Device_update_state (void)
+void Device_update_state (uint32_t * time_diff)
 {
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
 	uint32_t ignition_voltage  = ADC_get_value (kADC_ANALOG_IN1 );
 	uint32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
+    uint32_t supercap_voltage;
 
-	Device_control_GPIO ();
+	Device_control_GPIO(time_diff);
 
 	switch (device_state_g)
 	{
@@ -162,8 +164,10 @@ void Device_update_state (void)
 			if ((power_in_voltage < POWER_IN_TURN_ON_TH ) ||
 				(temperature      < TEMPERATURE_MIN_TH  ) ||
 				(temperature      > TEMPERATURE_MAX_TH  )  )
+            {
 				break;
-
+            }
+            
 			if (ignition_voltage >= ignition_threshold_g)
 			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
@@ -193,11 +197,13 @@ void Device_update_state (void)
                 switch_power_mode(kPowerManagerRun);
                 enable_peripheral_clocks();
 				peripherals_enable ();
+                _bsp_MQX_tick_timer_init ();
+                //Board_SetFastClk ();
 				Device_turn_on     ();
 				device_state_g = DEVICE_STATE_ON;
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE RUNNING\n");
                 FPGA_init ();
-                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0);
+                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
                 _event_set(power_up_event_g, 1);
 			}
 			break;
@@ -209,6 +215,7 @@ void Device_update_state (void)
 			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - SHUTING DOWN !!! \n", power_in_voltage);
 				device_state_g = DEVICE_STATE_BACKUP_RECOVERY;
+                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
 				break;
 			}
 
@@ -217,6 +224,7 @@ void Device_update_state (void)
 				(temperature > TEMPERATURE_MAX_TH)    )
 			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
+                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /*Red LED */
 				Device_turn_off  ();
                 switch_power_mode(kPowerManagerVlpr);
 				//Board_SetVerySlowClk ();
@@ -225,14 +233,15 @@ void Device_update_state (void)
 			break;
 
 		case DEVICE_STATE_BACKUP_RECOVERY:
-			backup_power_cnt_g += device_control_gpio_g.delay_period;
+			backup_power_cnt_g += *time_diff;
 
 			// if recovery period has passed - generate power loss interrupt to CPU and close peripherals
 			if (backup_power_cnt_g > BACKUP_RECOVER_TIME_TH)
 			{
 				GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
-				peripherals_disable ();
-                switch_power_mode(kPowerManagerVlpr);
+                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0xFF, 0); /* Yellow LED*/
+				//peripherals_disable ();
+                //switch_power_mode(kPowerManagerVlpr);
 				//Board_SetVerySlowClk ();
 				device_state_g = DEVICE_STATE_BACKUP_POWER;
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: Recovery period is over\n");
@@ -245,6 +254,7 @@ void Device_update_state (void)
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: INPUT POWER OK %d\n", power_in_voltage);
 				backup_power_cnt_g = 0;
 				device_state_g = DEVICE_STATE_ON;
+                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 			}
 			break;
 
@@ -255,7 +265,7 @@ void Device_update_state (void)
                 MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE_STATE_BACKUP_POWER power back up");
 			}
 
-			backup_power_cnt_g += device_control_gpio_g.delay_period;
+			backup_power_cnt_g += *time_diff;
 			if (backup_power_cnt_g > BACKUP_POWER_TIME_TH)
 			{
 				GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
@@ -263,7 +273,8 @@ void Device_update_state (void)
 				led_blink_cnt_g = 0;
 				Device_turn_off ();
 				device_state_g = DEVICE_STATE_TURN_OFF;
-				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: backup period is over - shutting down\n");
+                supercap_voltage = ADC_get_value (kADC_POWER_VCAP);
+				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: backup period is over - shutting down, supercap voltage = %d\n", supercap_voltage);
 			}
 			break;
 
@@ -273,10 +284,11 @@ void Device_update_state (void)
 			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF\n");
 				device_state_g = DEVICE_STATE_OFF;
-				Wiggle_sensor_restart ();
-				peripherals_disable ();
-				Wiggle_sensor_start ();	// enable interrupt
-                disable_peripheral_clocks();
+                Device_off_req(0);
+				//Wiggle_sensor_restart ();
+				//peripherals_disable ();
+				//Wiggle_sensor_start ();	// enable interrupt
+                //disable_peripheral_clocks();
 			}
 			break;
 
@@ -302,6 +314,7 @@ void Device_off_req(uint8_t wait_time)
 
 	_time_delay(wait_time*1000);
 	Device_turn_off  ();
+    FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
 
 #ifdef MCU_AND_CPU_BOARD_CONNECTED
 	/* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
@@ -333,7 +346,7 @@ void Device_off_req(uint8_t wait_time)
 	//Board_SetSlowClk ();
 	MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
 	device_state_g = DEVICE_STATE_OFF;
-        WDG_RESET_MCU();
+    WDG_RESET_MCU();
 	//Wiggle_sensor_restart ();
 	//peripherals_disable ();
 	//Wiggle_sensor_start ();
@@ -374,7 +387,7 @@ void Device_reset (void)
 	device_control_gpio_g.enable         = true;
 }
 
-void Device_control_GPIO (void)
+void Device_control_GPIO (uint32_t * time_diff)
 {
 	if (device_control_gpio_g.enable == false)
 		return;
@@ -383,7 +396,7 @@ void Device_control_GPIO (void)
 	{
 		GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
 		device_control_gpio_g.status = true;
-		device_control_gpio_g.time  += device_control_gpio_g.delay_period;
+		device_control_gpio_g.time  += *time_diff;
 	}
 	else
 	{
