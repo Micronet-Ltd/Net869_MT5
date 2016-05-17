@@ -9,22 +9,26 @@
 #define CONTEXT_SLCAN_0_EP 	110
 #define CONTEXT_SLCAN_1_EP 	111
 
+
+#define MAX_PACKET_SIZE		32
+
 typedef enum
 {
-	SYNC_INFO 		= 0x0,
-	COMM_WRITE_REQ 	= 0x1,
-	COMM_READ_REQ 	= 0x2,
-	COMM_READ_RESP 	= 0x3,
-	PING_REQ 		= 0x4,
-	PING_RESP 		= 0x5,
-	GPIO_INT_STATUS = 0x6,
+	SYNC_INFO 		 = 0x0,
+	COMM_WRITE_REQ 	 = 0x1,
+	COMM_READ_REQ 	 = 0x2,
+	COMM_READ_RESP 	 = 0x3,
+	PING_REQ 		 = 0x4,
+	PING_RESP 		 = 0x5,
+	GPIO_INT_STATUS  = 0x6,
+	POWER_MGM_STATUS = 0x7,
 }packet_type_enum;
 
 typedef struct
 {
 	uint8_t seq;
 	packet_type_enum pkt_type;
-	uint8_t *data;
+	uint8_t data [MAX_PACKET_SIZE];
 }packet_t;
 
 void protocol_init_data();

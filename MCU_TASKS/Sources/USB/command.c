@@ -9,61 +9,86 @@
 #include "command.h"
 #include "protocol.h"
 #include "gpio_pins.h"
-
-#define FW_VER_BTLD_OR_APP 0x0A /* 0xA : Application, 0xB: Bootloader */
-#define FW_VER_MAJOR 0
-#define FW_VER_MINOR 1
-#define FW_VER_BUILD 1
+#include "EXT_GPIOS.h"
+#include "version.h"
+#include "fpga_API.h"
+#include "Device_control_GPIO.h"
+#include "Wiggle_sensor.h"
+#include "power_mgm.h"
+#include "rtc.h"
 
 #define GET_COMMAND 0
 #define SET_COMMAND 1
 
-typedef union gpio_config_type
-{
-	uint8_t val;
-	struct{
-		uint8_t in_out_b1 : 1;
-		uint8_t ris_fall_both_edge_b2_b3 : 2; /*0: rising, 1: falling, both: 2 */
-		uint8_t pd_pu_f_b4_b5: 2;/* 0: pull down, 1: pull up, 2: floating */
-		uint8_t unused_b6_b8: 3;
-	};
-}gpio_config_t;
-
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver);
-static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-static void get_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-static void set_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val);
-
-static const uint32_t fw_ver_g = (((FW_VER_BTLD_OR_APP & 0xFF)<<24) |
-								((FW_VER_MAJOR & 0xFF) << 16) |
-								((FW_VER_MINOR & 0xFF) << 8) |
-								(FW_VER_BUILD & 0xFF));
+static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver);
+static void get_gp_or_adc_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpi_volt);
+static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status);
+static void set_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status);
+static void get_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold);
+static void set_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold);
+static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * pturn_on_reason);
+static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice_off);
+static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice_off);
+static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
+static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
+static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pbatt_ignition_voltage);
+static void set_gpi_update_all_values(uint8_t * data, uint16_t data_size, uint8_t * pgpi_values);
+static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
+static void set_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
+static void get_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
+static void set_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
 	[COMM_GET_FW_VERSION ] = {get_fw_ver,
 						  GET_COMMAND,
 						  sizeof(uint32_t)},
-	[COMM_GET_GPIO_IN_CNFG] = {NULL,
+	[COMM_GET_FPGA_VERSION ] = {get_fpga_ver,
+						  GET_COMMAND,
+						  sizeof(uint32_t)},
+	[COMM_GET_GPI_OR_ADC_INPUT_VOLTAGE] = {get_gp_or_adc_input_voltage,
 							GET_COMMAND,
-							sizeof(uint8_t)},
-	[COMM_SET_GPIO_IN_CNFG] = {NULL,
-						SET_COMMAND,
-						sizeof(uint8_t)},
-	[COMM_GET_GPIO] = {get_gpio_val,
-						GET_COMMAND,
-						sizeof(uint8_t)},
-	[COMM_SET_GPIO] = {set_gpio_val,
-						SET_COMMAND,
-						0},
-};
-
-static uint16_t gpio_out_mapping[] = {
-		[GPIO0] = GPIO_OUT1,
-		[GPIO1] = GPIO_OUT2,
-		[GPIO2] = GPIO_OUT3,
-		[GPIO3] = GPIO_OUT4,
+							sizeof(uint32_t)},
+	[COMM_GET_LED_STATUS] = {get_led_status,
+							GET_COMMAND,
+							4},
+	[COMM_SET_LED_STATUS] = {set_led_status,
+							SET_COMMAND,
+							0},
+	[COMM_GET_POWER_ON_THRESHOLD] = {get_power_on_threshold,
+							GET_COMMAND,
+							(sizeof(uint16_t)*3)},
+	[COMM_SET_POWER_ON_THRESHOLD] = {set_power_on_threshold,
+							SET_COMMAND,
+							0},
+	[COMM_GET_TURN_ON_REASON] = {get_turn_on_reason,
+								GET_COMMAND,
+								sizeof(uint8_t)},
+	[COMM_SET_DEVICE_OFF] = {set_device_off,
+							 SET_COMMAND,
+							 0},
+	[COMM_GET_RTC_DATE_TIME] = {get_rtc_date_time,
+								GET_COMMAND,
+								RTC_BCD_SIZE},
+	[COMM_SET_RTC_DATE_TIME] = {set_rtc_date_time,
+								SET_COMMAND,
+								0},
+	[COMM_GET_RTC_CAL_REGISTERS] = {get_rtc_cal_register,
+									GET_COMMAND,
+									(sizeof(uint8_t)*2)},
+	[COMM_SET_RTC_CAL_REGISTERS] = {set_rtc_cal_register,
+									SET_COMMAND,
+									0},
+	[COMM_SET_GPI_UPDATE_ALL_VALUES] = {set_gpi_update_all_values,
+										SET_COMMAND,
+										0},
+	[COMM_GET_RTC_REG_DBG] = {get_rtc_data_dbg,
+							   GET_COMMAND,
+							   sizeof(uint8_t)},
+	[COMM_SET_RTC_REG_DBG] = {set_rtc_data_dbg,
+							   SET_COMMAND,
+							   0},
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -99,10 +124,17 @@ int8_t command_get(uint8_t * data, uint16_t data_size,
 		return INVALID_TYPE;
 	}
 
-	resp->data = (uint8_t *) malloc(sizeof(comm_g[address].response_size)+1);
+	if (comm_g[address].response_size > MAX_PACKET_SIZE)
+	{
+		return INVALID_SIZE;
+	}
+
 	resp->data[0] = address;
 	*resp_size = comm_g[address].response_size + 1;
-	comm_g[address].fx(&data[1], data_size, &resp->data[1]);
+	if (comm_g[address].fx != NULL )
+	{
+		comm_g[address].fx(&data[1], data_size, &resp->data[1]);
+	}
 
 	return SUCCESS;
 }
@@ -110,28 +142,109 @@ int8_t command_get(uint8_t * data, uint16_t data_size,
 /* returns 4 bytes with fw version */
 static void get_fw_ver(uint8_t * data, uint16_t data_size, uint8_t * pfw_ver)
 {
-	memcpy(pfw_ver, (uint8_t *)&fw_ver_g, sizeof(fw_ver_g));
+	pfw_ver[0] = FW_VER_BTLD_OR_APP;
+	pfw_ver[1] = FW_VER_MAJOR;
+	pfw_ver[2] = FW_VER_MINOR;
+	pfw_ver[3] = FW_VER_BUILD;
 }
 
-/* data[0]: GPIO value */
-static void get_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
+/* returns 4 bytes with fpga version */
+static void get_fpga_ver(uint8_t * data, uint16_t data_size, uint8_t * pfpga_ver)
 {
-	pgpio_val[0] = (uint8_t)GPIO_DRV_ReadPinInput(gpio_out_mapping[data[0]]);
+	FPGA_read_version((uint32_t *)pfpga_ver);
 }
 
-static void set_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
+/* returns voltage of the requested GPInput or ADC */
+static void get_gp_or_adc_input_voltage(uint8_t * data, uint16_t data_size, uint8_t * pgpi_volt)
 {
-	GPIO_DRV_WritePinOutput(gpio_out_mapping[data[0]], data[1] );
-	//printf("set GPIO num: %d to val %d \n", data[0], data[1]);
+	uint32_t gpi_or_adc_voltage = 0;
+	if (data[0] < kADC_CHANNELS)
+	{
+		gpi_or_adc_voltage = ADC_get_value((KADC_CHANNELS_t)data[0]);
+	}
+	memcpy(pgpi_volt, (uint8_t *)&gpi_or_adc_voltage , sizeof(uint32_t));
 }
 
-/* data[0]: GPIO value */
-static void get_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
+/* sends the GPI values to the OS since some of the updates could have been sent
+ * during bootup */
+static void set_gpi_update_all_values(uint8_t * data, uint16_t data_size, uint8_t * pgpi_values)
 {
-
+	uint8_t gpio_mask = 0xff;
+	send_gpi_change(&gpio_mask);
 }
 
-static void set_all_gpio_val(uint8_t * data, uint16_t data_size, uint8_t * pgpio_val)
+static void get_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status)
 {
+	FPGA_read_led_status(data[0], &pled_status[0], &pled_status[1], &pled_status[2], &pled_status[3]);
+}
 
+static void set_led_status(uint8_t * data, uint16_t data_size, uint8_t * pled_status)
+{
+	FPGA_write_led_status (data[0], data[1], data[2], data[3], data[4]);
+}
+
+static void  get_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold)
+{
+	uint32_t vibration_threshold = 0;
+	uint32_t duration_threshold = 0;
+	uint32_t ignition_threshold = 0;
+	Wiggle_sensor_get_vibration_TH  (&vibration_threshold, &duration_threshold);
+	get_ignition_threshold(&ignition_threshold);
+	/*litte Endian */
+	ppower_on_threshold[0] = (uint8_t) (vibration_threshold&0xFF);
+	ppower_on_threshold[1] = (uint8_t) ((vibration_threshold>>8)&0xFF);
+	ppower_on_threshold[2] = (uint8_t) (duration_threshold&0xFF);
+	ppower_on_threshold[3] = (uint8_t) ((duration_threshold>>8)&0xFF);
+	ppower_on_threshold[4] = (uint8_t) (ignition_threshold&0xFF);
+	ppower_on_threshold[5] = (uint8_t) ((ignition_threshold>>8)&0xFF);
+}
+
+static void  set_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t * ppower_on_threshold)
+{
+	/* Data is in little Endian format*/
+	uint32_t vibration_threshold = (uint32_t)((data[1]<<8)|data[0]);
+	uint32_t duration_threshold = (uint32_t)((data[3]<<8)|data[2]);
+	uint32_t ignition_threshold = (uint32_t)((data[5]<<8)|data[4]);
+	Wiggle_sensor_set_vibration_TH  (vibration_threshold, duration_threshold);
+	set_ignition_threshold(ignition_threshold);
+}
+
+static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * pturn_on_reason)
+{
+	Device_get_turn_on_reason(pturn_on_reason);
+}
+
+static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice_off)
+{
+	Device_off_req(data[0]);
+}
+
+static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
+{
+	rtc_get_time(pdate_time);
+}
+
+static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
+{
+	rtc_set_time(&data[0]);
+}
+
+static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg)
+{
+	rtc_get_cal_register(&pcal_reg[0], &pcal_reg[1]);
+}
+
+static void set_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg)
+{
+	rtc_set_cal_register(&data[0], &data[1]);
+}
+
+static void get_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg)
+{
+	rtc_receive_data (&data[0], 1, &p_reg[0], 1);
+}
+
+static void set_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg)
+{
+	rtc_send_data (&data[0], 1, &data[1], 1);
 }

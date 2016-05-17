@@ -34,6 +34,9 @@
 #include "fsl_debug_console.h"
 #include "pin_mux.h"
 
+#include "mqx_prv.h"
+#include "MK20D10_extension.h"
+
 /* Configuration for enter VLPR mode. Core clock = 4MHz. */
 const clock_manager_user_config_t g_defaultClockConfigVlpr =
 {
@@ -72,6 +75,7 @@ const clock_manager_user_config_t g_defaultClockConfigVlpr =
 };
 
 /* Configuration for enter RUN mode. Core clock = 96MHz. */
+/* in device low power mode, configuration remains in RUN mode but Core clock = 4MHz */
 const clock_manager_user_config_t g_defaultClockConfigRun =
 {
     .mcgConfig =
@@ -90,7 +94,7 @@ const clock_manager_user_config_t g_defaultClockConfigRun =
         .pll0EnableInFllMode        = false,  // PLL0 disable
         .pll0EnableInStop  = false,  // PLL0 disalbe in STOP mode
         .prdiv0            = 12,	// support input clock of 26MHz
-        .vdiv0             = 0x18U,
+        .vdiv0             = (CORE_CLOCK_FREQ / 2000000) - 24,		// VDIV = CLK_FRQ / 2MHz - 24
     },
     .simConfig =
     {
@@ -107,6 +111,56 @@ const clock_manager_user_config_t g_defaultClockConfigRun =
         .enableInStop = false, // OSCERCLK disable in STOP mode.
     }
 };
+
+// this function modifies the MCG configuration from FEI to PEE
+void Board_SetFastClk (void)
+{
+	uint32_t mode = (uint32_t) CLOCK_HAL_GetMcgMode(MCG);
+
+	if ((mode & kMcgModeFEI) != kMcgModeFEI)
+		Board_SetSlowClk ();
+
+	CLOCK_SYS_BootToPee(&g_defaultClockConfigRun.mcgConfig);
+	SystemCoreClock = CORE_CLOCK_FREQ;
+	_bsp_MQX_tick_timer_init ();
+}
+
+// this function modifies the MCG configuration from any state to FEI
+void Board_SetSlowClk (void)
+{
+	uint32_t mode = (uint32_t) CLOCK_HAL_GetMcgMode(MCG);
+
+	switch (mode) {
+		case kMcgModeFEI :
+		case kMcgModeFBI :
+		case kMcgModeFEE :
+		case kMcgModeFBE :	break;
+
+		case kMcgModeBLPE :
+		case kMcgModeBLPI :	MCG_WR_C2(MCG, MCG_RD_C2(MCG) &~ MCG_C2_LP_MASK);		// Set MCG mode to FBI \ FBE(clear LP)
+							break;
+
+		case kMcgModePEE :	MCG_WR_C1 (MCG, (MCG_RD_C1(MCG) & ~MCG_C1_IRCLKEN_MASK));	// Set MCG mode to PBE (disable MCGIRCLK)
+
+		case kMcgModePBE :	// change MCG mode from PBE to FBE
+							MCG_BWR_C1_CLKS(MCG, kMcgClkOutSrcExternal);
+							while (CLOCK_HAL_GetClkOutStat(MCG)  != kMcgClkOutStatExternal) {}
+
+							MCG_WR_C6(MCG, 0U);											// Disable PLL and select FLL
+							while ((CLOCK_HAL_IsPllSelected(MCG) != false)) {}			// wait for PLLST status bit to clear
+
+							MCG_WR_C5(MCG, 0U);											// Disable PLL
+							break;
+
+		default : return;																// all other cases are not supported
+	}
+
+	CLOCK_SYS_BootToFei(&g_defaultClockConfigVlpr.mcgConfig);
+	SystemCoreClock = CORE_LPM_CLOCK_FREQ;
+	_bsp_MQX_tick_timer_init ();
+}
+
+
 
 /* Function to initialize OSC0 base on board configuration. */
 void BOARD_InitOsc0(void)
@@ -149,19 +203,10 @@ void BOARD_InitRtcOsc(void)
 
 static void CLOCK_SetBootConfig(clock_manager_user_config_t const* config)
 {
-#if 1
-    CLOCK_SYS_SetSimConfigration(&config->simConfig);
-
-    CLOCK_SYS_SetOscerConfigration(0, &config->oscerConfig);
-
-#if (CLOCK_INIT_CONFIG == CLOCK_VLPR)
-    CLOCK_SYS_BootToBlpi(&config->mcgConfig);
- #else
-    CLOCK_SYS_BootToPee(&config->mcgConfig);
- #endif
-
-    SystemCoreClock = CORE_CLOCK_FREQ;
-#endif
+    CLOCK_SYS_SetSimConfigration   (&config->simConfig);
+    CLOCK_SYS_SetOscerConfigration (0, &config->oscerConfig);
+    //Board_SetSlowClk ();
+    Board_SetFastClk();
 }
 
 /* Initialize clock. */

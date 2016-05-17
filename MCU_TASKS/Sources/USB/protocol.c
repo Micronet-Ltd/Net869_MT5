@@ -2,6 +2,7 @@
 #include "frame.h"
 #include "command.h"
 #include "control_task.h"
+#include "EXT_GPIOS.h"
 
 frame_t g_control_frame;
 frame_t g_j1708_frame;
@@ -61,8 +62,8 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 	uint8_t resp_size = 0;
 
 	req.seq = data[0];
-	req.pkt_type = data[1];
-	req.data = &data[2];
+	req.pkt_type = (packet_type_enum)data[1];
+	memcpy(req.data, &data[2], size - 2);
 	// NOTE: maybe these should be separate functions, maybe called by caller instead.
 	if(CONTEXT_CONTROL_EP == context)
 	{
@@ -108,12 +109,17 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 				send_control_msg(&resp, resp_size);
 				break; // TODO: Register read request
 			case COMM_READ_RESP: return -1; // BUG: Should never receive this
-//			case RTC_WRITE_REQ: break; // TODO: RTC Write
-//			case RTC_READ_REQ: break; // TODO: RTC Read request
-//			case RTC_READ_RESP: return -1; // BUG: Should never receive this
-			case PING_REQ: break; // TODO:
-			case PING_RESP: break; // TODO:
-			case GPIO_INT_STATUS: return -1; // BUG: Should never receive this
+
+			case PING_REQ:
+				resp.seq = req.seq;
+				resp.pkt_type = PING_RESP;
+				send_control_msg(&resp, resp_size);
+				break;
+			case PING_RESP: break;
+			case GPIO_INT_STATUS:
+				/* process a GPIO output message */
+				gpio_set_multiple_outputs(&req.data[0], &req.data[1]);
+				break; // BUG: Should never receive this
 
 			// 0x80-0xff reserved for future PDU format changes with backwards compatibility
 			default: return -1; // Unknown Ignore
@@ -129,21 +135,19 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 		return -1;
 	}
 
-	return result;
-}
+	// added by eyal
+	//memcpy (&data[2], &req.data, MAX_PACKET_SIZE);
 
-int32_t send_control_response()
-{
-  return 0;
+	return result;
 }
 
 int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t size)
 {
 	uint32_t offset = 0;
 	// TODO: use type for MCU monotonic clock
-	static uint32_t lastrx = 0;
+	//static uint32_t lastrx = 0;
 	// TODO: get current monotonic clock value
-	uint32_t now = 0; // Set to current monotonic clock time
+	//uint32_t now = 0; // Set to current monotonic clock time
 
 	frame_t * frame;
 

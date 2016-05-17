@@ -73,7 +73,7 @@
 
 #endif
 
-#define USB_DEVICE_TASK_STACKSIZE                (3500)
+#define USB_DEVICE_TASK_STACKSIZE                (2000)
 #define USB_DEVICE_TASK_NAME                     "Device Task"
 #define USB_DEVICE_TASK_ATTRIBUTES               (0)
 #define USB_DEVICE_TASK_CREATION_PARAMETER       (0)

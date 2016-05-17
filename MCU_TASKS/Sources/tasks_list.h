@@ -13,20 +13,20 @@
 
 typedef enum {
 	//Regular priority tasks
-	
+
 	USB_TASK_PRIORITY = (START_APPLICATION_PRIORITY + 1),
 	POWER_MGM_TASK_PRIORITY,
 	UPDATER_TASK_PRIORITY,
 	UPDATER_EXEC_TASK_PRIORITY,
 	CAN_TASK_RX_PRIORITY,
 	CAN_TASK_TX_PRIORITY,
+        CONTROL_TASK_PRIORITY,
 	J1708_TX_TASK_PRIORITY,
 	J1708_RX_TASK_PRIORITY,
 	FPGA_UART_RX_TASK_PRIORITY,
 	ACC_TASK_PRIORITY,
 	VIB_SENSOR_TASK_PRIORITY  ,
-	CONTROL_TASK_PRIORITY,
-	MAIN_TASK_PRIORITY = (CONTROL_TASK_PRIORITY + START_APPLICATION_PRIORITY),
+	MAIN_TASK_PRIORITY = (VIB_SENSOR_TASK_PRIORITY + START_APPLICATION_PRIORITY),
 }PRIORITY_TASK_INDEX_T;
 
 typedef enum {
@@ -50,8 +50,10 @@ typedef enum {
 typedef enum {
 	MAIN_QUEUE       ,
 	USB_QUEUE        ,
-	CAN1_QUEUE       ,
-	CAN2_QUEUE       ,
+	CAN1_TX_QUEUE    ,
+	CAN2_TX_QUEUE    ,
+	CAN1_RX_QUEUE	 ,
+	CAN2_RX_QUEUE	 ,
 	J1708_TX_QUEUE   ,
 	J1708_RX_QUEUE   ,
 	FPGA_UART_RX_QUEUE,
@@ -64,10 +66,12 @@ typedef enum {
 
 typedef struct {
 	MESSAGE_HEADER_STRUCT 		header;
-	uint64_t					timestamp; /* in milliseconds */
-	uint8_t						data[MAX_MSG_DATA_LEN];
+	uint64_t					timestamp;
 	uint8_t						portNum;
+	uint8_t						data[MAX_MSG_DATA_LEN];
 } APPLICATION_MESSAGE_T, *APPLICATION_MESSAGE_PTR_T;
+
+#define APP_MESSAGE_NO_ARRAY_SIZE (sizeof(MESSAGE_HEADER_STRUCT)+sizeof(uint64_t)+sizeof(uint8_t))
 
 extern void Main_task        (uint32_t);
 extern void Power_MGM_task   (uint32_t);
@@ -82,7 +86,7 @@ extern void FPGA_UART_Rx_task (uint32_t );
 extern void control_task (uint32_t );
 
 extern void FLEXCAN_Tx_Task( uint32_t param );
-extern void FLEXCAN_Rx_Task( uint32_t param ); 
+extern void FLEXCAN_Rx_Task( uint32_t param );
 
 extern void updater_task (uint32_t );
 extern void upd_exec_task (uint32_t );

@@ -103,11 +103,14 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Board_Files&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/USB&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/POWER_MGM&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/FlexCAN&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/J1708&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/FPGA_API&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/ADC&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/ext_gpios&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/EXT_GPIOS&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/rtc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/accel&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/platform/CMSIS/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../MQX_OS/BSP/platform/devices/MK20D10/startup&quot;"/>
 								</option>

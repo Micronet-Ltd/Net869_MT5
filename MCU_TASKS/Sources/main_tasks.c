@@ -15,48 +15,54 @@
 #include "fpga_api.h"
 #include "ADC.h"
 #include "EXT_GPIOS.h"
-
+#include "wiggle_sensor.h"
 #include "mic_typedef.h"
 
 #include "Uart_debugTerminal.h"
 
 #include "FlexCanDevice.h"
+#include "rtc.h"
+#include "Wiggle_sensor.h"
 
-void MQX_I2C0_IRQHandler (void);
+//void MQX_I2C0_IRQHandler (void);
+//void MQX_I2C1_IRQHandler (void);
 void MQX_PORTA_IRQHandler(void);
+void MQX_PORTB_IRQHandler(void);
 void MQX_PORTC_IRQHandler(void);
+void MQX_PORTE_IRQHandler(void);
+void configure_otg_for_host_or_device(void);
 
-#define	MAIN_TASK_SLEEP_PERIOD	10			// 10 mSec sleep
+#define	MAIN_TASK_SLEEP_PERIOD	1000			// 10 mSec sleep
 #define TIME_ONE_SECOND_PERIOD	((int) (1000 / MAIN_TASK_SLEEP_PERIOD))
 
-static i2c_master_state_t i2c_master;
+//static i2c_master_state_t i2c0_master;
+//static i2c_master_state_t i2c1_master;
 
 _pool_id   g_out_message_pool;
 _pool_id   g_in_message_pool;
 
-extern uint32_t wiggle_sensor_cnt;
-
 _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
+volatile uint32_t cpu_watchdog_count_g = 0;
+extern WIGGLE_SENSOR_t sensor_g;
+
+extern void * g_acc_event_h;
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
 
+MUTEX_STRUCT g_i2c0_mutex;
+
 void Main_task( uint32_t initial_data ) {
 
     _queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
-	_queue_id  j1708_rx_qid;
-	//APPLICATION_MESSAGE_T *msg;
-	uint32_t gpios_event_bit;
-	uint32_t gpio_sample_timer = 0;
-	uint32_t i;
+	MUTEX_ATTR_STRUCT mutexattr;
 
-    uint8_t u8mainTaskLoopCnt = 0;
+    uint32_t FPGA_version = 0;
 
-    wiggle_sensor_cnt = 0;
     _time_delay (10);
 
 
-    MIC_DEBUG_UART_PRINTF("\nMain Task: Start \n");
+    printf("\nMain Task: Start \n");
 #if 0
     PinMuxConfig ();
     ADCInit      ();
@@ -76,48 +82,45 @@ void Main_task( uint32_t initial_data ) {
 	NVIC_SetPriority(PORTC_IRQn, 6U);
 	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 
-    // I2C0 Initialization
-    NVIC_SetPriority(I2C0_IRQn, 6U);
-    OSA_InstallIntHandler(I2C0_IRQn, MQX_I2C0_IRQHandler);
-    I2C_DRV_MasterInit(I2C0_IDX, &i2c_master);
+	NVIC_SetPriority(PORTB_IRQn, 6U);
+	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
+
+//    // I2C0 Initialization
+//    NVIC_SetPriority(I2C0_IRQn, 6U);
+//    OSA_InstallIntHandler(I2C0_IRQn, MQX_I2C0_IRQHandler);
+//    I2C_DRV_MasterInit(I2C0_IDX, &i2c0_master);
+//
+//    // I2C1 Initialization
+//	NVIC_SetPriority(I2C1_IRQn, 6U);
+//	OSA_InstallIntHandler(I2C1_IRQn, MQX_I2C1_IRQHandler);
+//	I2C_DRV_MasterInit(I2C1_IDX, &i2c1_master);
+
+	/* Initialize mutex attributes: */
+	if (_mutatr_init(&mutexattr) != MQX_OK)
+	{
+		printf("Initializing mutex attributes failed.\n");
+		_task_block();
+	}
+	/* Initialize the mutex: */
+	if (_mutex_init(&g_i2c0_mutex, &mutexattr) != MQX_OK)
+	{
+		printf("Initializing i2c0 mutex failed.\n");
+		_task_block();
+	}
 
     // turn on device
-    GPIO_DRV_SetPinOutput(POWER_3V3_ENABLE);
     GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
-//	GPIO_DRV_ClearPinOutput(ACC_ENABLE       );
 	GPIO_DRV_SetPinOutput(ACC_ENABLE       );
-
-    // FPGA Enable
-    GPIO_DRV_SetPinOutput(FPGA_PWR_ENABLE);
-
-//	BOARD_InitOsc0();
-//	CLOCK_SetBootConfig_Run ();
-
-	//Enable CAN
-	GPIO_DRV_SetPinOutput(CAN_ENABLE);
-
-    // Enable USB for DEBUG
-    GPIO_DRV_ClearPinOutput(USB_ENABLE);
-    GPIO_DRV_ClearPinOutput(USB_HUB_RSTN);
-
-    GPIO_DRV_ClearPinOutput(USB_OTG_SEL);    // Connect D1 <-> D MCU or HUB
-    //GPIO_DRV_SetPinOutput(USB_OTG_SEL);    // Connect D2 <-> D A8 OTG
-    GPIO_DRV_ClearPinOutput(USB_OTG_OE); //Enable OTG/MCU switch
-
-    _time_delay(10);
-    GPIO_DRV_SetPinOutput(USB_HUB_RSTN);
-    GPIO_DRV_SetPinOutput(USB_ENABLE);
 
     _time_delay(20);
     g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
 	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
-		MIC_DEBUG_UART_PRINTF("\nMain Could not create USB_TASK\n");
+		printf("\nMain Could not create USB_TASK\n");
 	}
 
     //Enable UART
     GPIO_DRV_SetPinOutput(UART_ENABLE);
     GPIO_DRV_SetPinOutput(FTDI_RSTN);
-
 
 	g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
 	if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
@@ -137,33 +140,13 @@ void Main_task( uint32_t initial_data ) {
 
 	_time_delay (1000);
 
+	FlexCanDevice_InitHW();
+
 	FPGA_init ();
 
 	J1708_enable  (7);
 
-
-#if 0
-	GPIO_DRV_SetPinOutput   (LED_BLUE);
-
-    GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
-    _time_delay (3000);
-    GPIO_DRV_SetPinOutput(CPU_ON_OFF);
-
-    GPIO_DRV_ClearPinOutput   (LED_BLUE);
-#else
-    _time_delay (1000);
-#endif
-
-	{
-		uint8_t Br, R,G,B;
-		R = G = B = 255;
-		Br = 10;
-		FPGA_write_led_status (LED_RIGHT , &Br, &R, &G, &B);
-		_time_delay (10);
-		FPGA_write_led_status (LED_MIDDLE, &Br, &R, &G, &B);
-		_time_delay (10);
-	}
-
+	rtc_init();
 
 	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
 	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
@@ -183,13 +166,32 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create FPGA_UART_RX_TASK\n");
 	}
 
-#if 0
+	//Start CAN RX TX Tasks
+	g_TASK_ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, BSP_CAN_DEVICE_0);
+	if ( g_TASK_ids[CAN_TASK_RX_0] == MQX_NULL_TASK_ID ) {
+		printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_0);
+	}
+
+	g_TASK_ids[CAN_TASK_RX_1] = _task_create(0, CAN_TASK_RX_1, BSP_CAN_DEVICE_1);
+	if ( g_TASK_ids[CAN_TASK_RX_1] == MQX_NULL_TASK_ID ) {
+		printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_1);
+	}
+
+	g_TASK_ids[CAN_TASK_TX_0] = _task_create(0, CAN_TASK_TX_0, BSP_CAN_DEVICE_0);
+	if ( g_TASK_ids[CAN_TASK_TX_0] == MQX_NULL_TASK_ID ) {
+		printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_0);
+	}
+
+	g_TASK_ids[CAN_TASK_TX_1] = _task_create(0, CAN_TASK_TX_1, BSP_CAN_DEVICE_1);
+	if ( g_TASK_ids[CAN_TASK_TX_1] == MQX_NULL_TASK_ID ) {
+		printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_1);
+	}
+
 	g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
 	if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create POWER_MGM_TASK\n");
 	}
-#endif
 	
 	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
 	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
@@ -210,122 +212,34 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create UPDATER_TASK\n");
 	}
 
-	//Disable CAN termination
-    GPIO_DRV_ClearPinOutput(CAN1_TERM_ENABLE);
-    GPIO_DRV_ClearPinOutput(CAN2_TERM_ENABLE);
-
-    //Initialize CAN sample
-    configure_can_pins(0);
-    configure_can_pins(1);
-
-    _time_delay (1000);
-
-    _test_CANFLEX();
-
-	if (GPIO_DRV_ReadPinInput (SWITCH1) == 1)
-	{
-		/* Connect D1 <-> D MCU or HUB */
-		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
-	    GPIO_DRV_ClearPinOutput(USB_OTG_SEL);
-	}
-	else
-	{
-		/* Connect D2 <-> D A8 OTG */
-		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
-	    GPIO_DRV_SetPinOutput(USB_OTG_SEL);
-	}
+	configure_otg_for_host_or_device();
+	NVIC_SetPriority(PORTE_IRQn, 6U);
+	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
 
 	_event_create ("event.EXTERNAL_GPIOS");
 	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
 
+	FPGA_read_version(&FPGA_version);
+	printf("\n FPGA version, %x", FPGA_version);
+
+#if 1
+	/* Simulate a power on button press on the A8 */
+//	GPIO_DRV_SetPinOutput   (LED_BLUE);
+//
+//    GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+//    _time_delay (3000);
+//    GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+//
+//    GPIO_DRV_ClearPinOutput   (LED_BLUE);
+#endif
+
     printf("\nMain Task: Loop \n");
 
     while ( 1 ) {
-#if 0
-
-        u8InputVoltageStatus_Prev = u8InputVoltageStatus;
-        u8InputVoltageStatus      = IntputVoltageSample (&inputVoltage);
-
-        // sleep till ADC completed
-        while ((_lwadc_read_average(&pot, 8, &inputVoltage) ) == FALSE);
-        InputVoltageUpdateStatus (&inputVoltage);
-        u8InputVoltageStatus = InputVoltageGetStatus (&inputVoltage);
-
-        if (u8InputVoltageStatus == INPUT_VOLTAGE_STATUS_NORMAL) {
-            GPIOClear	(POWER_DISCHARGE_ENABLE);
-            GPIOClear	(CPU_POWER_LOSS);
-            if (u8InputVoltageStatus_Prev != u8InputVoltageStatus)
-            MIC_DEBUG_UART_PRINTF ("MAIN TASK: INPUT VOLTAGE NORMAL\n");
-        } else {
-            GPIOSet     (CPU_POWER_LOSS);
-            GPIOSet     (POWER_DISCHARGE_ENABLE);
-            if (u8InputVoltageStatus_Prev != u8InputVoltageStatus)
-            MIC_DEBUG_UART_PRINTF ("MAIN TASK: INPUT VOLTAGE OUT OF RANGE\n");
-        }
-
-        u8SupercapStatus_Prev     = u8SupercapStatus;
-        u8SupercapStatus          = SupercapVoltageSample (&supercap    );
-        // sleep till ADC completed
-
-        if (u8SupercapStatus == SUPERCAP_STATUS_LOW)
-        GPIOSet		(POWER_CHARGE_ENABLE);
-        else
-        GPIOClear	(POWER_CHARGE_ENABLE);
-
-
-        switch (u8mainTaskLoopCnt)
-        0 : temperatureStatus = TemperatureVoltageSample(&temperature);
-        4 : cableTypeStatus   = TelemetryVoltageSample  (&cableType  );
-        7 : DebugSwitchControl (&u8LastSwitchStatus);
-        8 : u8mainTaskLoopCnt = 0;
-
-
-    }
-    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // contact switch
-#endif
-
-#if 0
-		GPIO_DRV_ClearPinOutput (LED_RED);
-		GPIO_DRV_ClearPinOutput (LED_GREEN);
-		GPIO_DRV_ClearPinOutput (LED_BLUE);
-		_time_delay (1000);
-
-		GPIO_DRV_SetPinOutput   (LED_RED);
-		_time_delay (1000);
-
-		GPIO_DRV_SetPinOutput   (LED_GREEN);
-		_time_delay (1000);
-
-		GPIO_DRV_SetPinOutput   (LED_BLUE);
-		_time_delay (1000);
-#endif
-
-		gpio_sample_timer  += MAIN_TASK_SLEEP_PERIOD;
-		if (gpio_sample_timer >= TIME_ONE_SECOND_PERIOD) {
-			gpio_sample_timer = 0;
-			GPIO_sample_all ();
-		}
-
-#if 0
-		_event_wait_any  (	g_GPIO_event_h,
-							EVENT_GPIO_IN(0) | EVENT_GPIO_IN(1) | EVENT_GPIO_IN(2) | EVENT_GPIO_IN(3) |
-							EVENT_GPIO_IN(4) | EVENT_GPIO_IN(5) | EVENT_GPIO_IN(6) | EVENT_GPIO_IN(7) ,
-							10);
-		_event_get_value (g_GPIO_event_h, &gpios_event_bit);
-
-		for (i = 0; i < 8; i++) {
-			int g;
-			if (gpios_event_bit & (1<<i)) {
-				g = GPIO_INPUT_get_logic_level (i);
-				_event_clear    (g_GPIO_event_h, (1<<i));
-			}
-		}
-#endif
-
 	    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
     }
 
-    MIC_DEBUG_UART_PRINTF("\nMain Task: End \n");
+    printf("\nMain Task: End \n");
     _task_block();       // should never get here
 
 }
@@ -363,11 +277,50 @@ void OTG_CONTROL (void)
 }
 #endif
 
+void configure_otg_for_host_or_device(void)
+{
+	if (GPIO_DRV_ReadPinInput (OTG_ID) == 0)
+	{
+		/* Connect D1 <-> D MCU or HUB */
+		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
+		GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+                
+		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+		GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
+	}
+	else
+	{
+		/* Connect D2 <-> D A8 OTG */
+		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
+		GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
+                
+		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+		GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+	}
+}
+
 void MQX_PORTA_IRQHandler(void)
 {
 	if (GPIO_DRV_IsPinIntPending (VIB_SENS)) {
 		GPIO_DRV_ClearPinIntFlag(VIB_SENS);
-		wiggle_sensor_cnt++;
+		//Wiggle_sensor_stop ();
+		sensor_g.wiggle_sensor_cnt++;
+		//_event_set(g_WIGGLE_SENSOR_event_h, EVENT_WIGGLE_SENSOR_IRQ);
+	}
+
+	if (GPIO_DRV_IsPinIntPending (ACC_INT)) {
+		GPIO_DRV_ClearPinIntFlag(ACC_INT);
+		// Signal main task to read acc
+		_event_set(g_acc_event_h, 1);
+	}
+
+}
+
+void MQX_PORTB_IRQHandler(void)
+{
+	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG)) {
+		GPIO_DRV_ClearPinIntFlag(CPU_WATCHDOG);
+		cpu_watchdog_count_g++;
 	}
 }
 
@@ -379,11 +332,20 @@ void MQX_PORTC_IRQHandler(void)
 	}
 }
 
+void MQX_PORTE_IRQHandler(void)
+{
+	if (GPIO_DRV_IsPinIntPending (OTG_ID))
+	{
+		GPIO_DRV_ClearPinIntFlag(OTG_ID);
+		configure_otg_for_host_or_device();
+	}
+}
+
 void _test_CANFLEX( ) {
-#if 1
+#if 0
     //	ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, BSP_CAN_DEVICE_0);
     //    if ( ids[USB_TASK] == MQX_NULL_TASK_ID ) {
-    //        MIC_DEBUG_UART_PRINTF("\nMain Could not create CAN_TASK_RX_0\n");
+    //        printf("\nMain Could not create CAN_TASK_RX_0\n");
     //    }
 
 
@@ -408,80 +370,80 @@ void _test_CANFLEX( ) {
 
 	ret = FlexCanDevice_Init(&initCan0, &initCan1);
 
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_Init( ) return %d\n", ret);
+	printf("FlexCanDevice_Init( ) return %d\n", ret);
 
 	ret = FlexCanDevice_Start(can_Device_0);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_Start( ) return %d\n", ret);
+	printf("FlexCanDevice_Start( ) return %d\n", ret);
 
 	ret = FlexCanDevice_Start(can_Device_1);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_Start( ) return %d\n", ret);
+	printf("FlexCanDevice_Start( ) return %d\n", ret);
 
 	ret = FlexCanDevice_SetTermination(can_Device_0, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetTermination( ) return %d\n", ret);
+	printf("FlexCanDevice_SetTermination( ) return %d\n", ret);
 
 	ret = FlexCanDevice_SetTermination(can_Device_1, false);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetTermination( ) return %d\n", ret);
+	printf("FlexCanDevice_SetTermination( ) return %d\n", ret);
 
 	ret = FlexCanDevice_SetRxMaskType(can_Device_0, false);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
+	printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
 
 	ret = FlexCanDevice_SetRxMaskType(can_Device_1, false);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
+	printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
 
 //        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdStd, 8, 0x7FF, true);
-//        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+//        printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 5, 0x3, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 6, 0x3, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 7, 0x3, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 8, 0x3, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 //        ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdStd, 9, 0x7FF, true);
-//        MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+//        printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 9, 0xC, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 10, 0xC, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 11, 0xC, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_0, kFlexCanMsgIdExt, 12, 0xC, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	//CAN1
 	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 5, 0x3, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 6, 0x3, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 7, 0x3, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 8, 0x3, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 9, 0xC, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 10, 0xC, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 11, 0xC, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 
 	ret = FlexCanDevice_setMailbox(can_Device_1, kFlexCanMsgIdExt, 12, 0xC, true);
-	MIC_DEBUG_UART_PRINTF("FlexCanDevice_setMailbox( ) return %d\n", ret);
+	printf("FlexCanDevice_setMailbox( ) return %d\n", ret);
 #endif
 
 }

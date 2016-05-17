@@ -77,7 +77,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.50.3.10745</state>
+          <state>7.60.1.11206</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -127,7 +127,7 @@
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
         <option>
@@ -144,7 +144,7 @@
         </option>
         <option>
           <name>CoreVariant</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
         <option>
@@ -167,7 +167,7 @@
         </option>
         <option>
           <name>GFPUCoreSlave2</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
       </data>
@@ -376,7 +376,11 @@
           <state>$PROJ_DIR$\..\Sources\FPGA_API</state>
           <state>$PROJ_DIR$\..\Sources\J1708</state>
           <state>$PROJ_DIR$\..\Sources\POWER_MGM</state>
+          <state>$PROJ_DIR$\..\Sources\accel</state>
+          <state>$PROJ_DIR$\..\Sources\ADC</state>
+          <state>$PROJ_DIR$\..\Sources\EXT_GPIOS</state>
           <state>$PROJ_DIR$\..\Sources\USB</state>
+          <state>$PROJ_DIR$\..\Sources\rtc</state>
           <state>$PROJ_DIR$\..\Sources</state>
           <state>$PROJ_DIR$\..\Board_Files</state>
           <state>$PROJ_DIR$\..\Sources\ADC</state>
@@ -767,8 +771,8 @@
         <option>
           <name>IlinkConfigDefines</name>
           <state>__ram_vector_table__=1</state>
-          <state>__stack_size__=0x4000</state>
-          <state>__heap_size__=0x8000</state>
+          <state>__stack_size__=0x2000</state>
+          <state>__heap_size__=0x4000</state>
         </option>
         <option>
           <name>IlinkMapFile</name>
@@ -1164,7 +1168,7 @@
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
         <option>
@@ -1181,7 +1185,7 @@
         </option>
         <option>
           <name>CoreVariant</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
         <option>
@@ -1204,7 +1208,7 @@
         </option>
         <option>
           <name>GFPUCoreSlave2</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
       </data>
@@ -1413,6 +1417,9 @@
           <state>$PROJ_DIR$\..\Sources\FPGA_API</state>
           <state>$PROJ_DIR$\..\Sources\J1708</state>
           <state>$PROJ_DIR$\..\Sources\POWER_MGM</state>
+          <state>$PROJ_DIR$\..\Sources\accel</state>
+          <state>$PROJ_DIR$\..\Sources\ADC</state>
+          <state>$PROJ_DIR$\..\Sources\EXT_GPIOS</state>
           <state>$PROJ_DIR$\..\Sources\USB</state>
           <state>$PROJ_DIR$\..\Sources</state>
           <state>$PROJ_DIR$\..\Board_Files</state>
@@ -2148,6 +2155,15 @@
   <group>
     <name>sources</name>
     <group>
+      <name>accel</name>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\accel\acc_task.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\accel\acc_task.h</name>
+      </file>
+    </group>
+    <group>
       <name>ADC</name>
       <file>
         <name>$PROJ_DIR$\..\Sources\ADC\ADC.c</name>
@@ -2159,40 +2175,46 @@
     <group>
       <name>C90TFS</name>
       <group>
-        <name>drvsrc</name>
-        <group>
-          <name>include</name>
-          <file>
-            <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\FTFx_KX_flash_config.h</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_FTFx.h</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_FTFx_Common.h</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_FTFx_Internal.h</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_Types.h</name>
-          </file>
-        </group>
-        <group>
-          <name>source</name>
-          <file>
-            <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashCommandSequence.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashEraseSector.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashInit.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashProgram.c</name>
-          </file>
-        </group>
+        <name>inc</name>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\FTFx_KX_flash_config.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_FTFx.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_FTFx_Common.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_FTFx_Internal.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_Types.h</name>
+        </file>
+      </group>
+      <group>
+        <name>src</name>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\DFlashGetProtection.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashCommandSequence.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashEraseSector.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashInit.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashProgram.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\PFlashGetProtection.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\SetEEEEnable.c</name>
+        </file>
       </group>
     </group>
     <group>
@@ -2246,6 +2268,9 @@
         <name>$PROJ_DIR$\..\Sources\POWER_MGM\power_mgm.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Sources\POWER_MGM\power_mgm.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Sources\POWER_MGM\Wiggle_sensor.c</name>
       </file>
       <file>
@@ -2253,25 +2278,31 @@
       </file>
     </group>
     <group>
+      <name>rtc</name>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\rtc\rtc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\rtc\rtc.h</name>
+      </file>
+    </group>
+    <group>
       <name>Update</name>
-      <group>
-        <name>SRC</name>
-        <file>
-          <name>$PROJ_DIR$\..\Sources\Update\SRC\flash_funcs.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\Sources\Update\SRC\flash_funcs.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\Sources\Update\SRC\update_exec.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\Sources\Update\SRC\updater.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\Sources\Update\SRC\updater.h</name>
-        </file>
-      </group>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\flash_funcs.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\flash_funcs.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\update_exec.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\updater.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\updater.h</name>
+      </file>
     </group>
     <group>
       <name>USB</name>
@@ -2313,9 +2344,6 @@
       </file>
     </group>
     <file>
-      <name>$PROJ_DIR$\..\Sources\acc_task.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\Sources\i2c_configuration.c</name>
     </file>
     <file>
@@ -2338,6 +2366,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\Sources\uart_configuration.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Sources\version.h</name>
     </file>
   </group>
   <group>

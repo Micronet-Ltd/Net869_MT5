@@ -4,13 +4,8 @@
 #include <stdio.h>
 
 typedef enum {
-	kADC_POWER_IN	= 0,
-	kADC_POWER_VCAP	   ,
-	kADC_TEMPERATURE   ,
-	kADC_CABLE_TYPE	   ,
-
 	// TELEMETRY INPUTS (ANALOG INPUTS)
-	kADC_ANALOG_IN1    ,
+	kADC_ANALOG_IN1    = 0,
 	kADC_GPIO_IN1      ,
 	kADC_GPIO_IN2      ,
 	kADC_GPIO_IN3      ,
@@ -18,6 +13,11 @@ typedef enum {
 	kADC_GPIO_IN5      ,
 	kADC_GPIO_IN6      ,
 	kADC_GPIO_IN7      ,
+
+	kADC_POWER_IN	   ,
+	kADC_POWER_VCAP	   ,
+	kADC_TEMPERATURE   ,
+	kADC_CABLE_TYPE	   ,
 	kADC_CHANNELS
 } KADC_CHANNELS_t;
 

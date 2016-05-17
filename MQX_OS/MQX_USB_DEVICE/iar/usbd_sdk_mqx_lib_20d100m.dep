@@ -1,0 +1,1032 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>1041607561</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc_pstn.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\sdk\adapter_cfg.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\sdk\adapter_sdk.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\sdk\adapter_sdk.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\adapter.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\adapter_types.h</file>
+      <file>$PROJ_DIR$\..\..\usb\usb_core\device\include\net869\usb_device_config.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\include\usb_device_stack_interface.h</file>
+      <file>$PROJ_DIR$\..\..\usb\usb_core\device\sources\bsp\net869\usb_dev_bsp.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\audio\usb_audio.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc_pstn.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\common\usb_class.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\common\usb_class_internal.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\hid\usb_hid.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\composite\usb_composite.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\composite\usb_composite.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\include\usb_class.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\msd\usb_msc.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\include\usb_class_cdc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\include\usb_class_composite.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\msd\usb_msc_scsi.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\phdc\usb_phdc.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\video\usb_video.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\khci_dev.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\device_khci_interface.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\khci_dev.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_dev.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\khci_dev_misc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_dev.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_framework.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_framework.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\compiler.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb_desc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb_error.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb_misc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb_opt.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb_types.h</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_audio.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\device_khci_interface.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug_IAR\libusbd_mqx.a</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_msc.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_dev_bsp.__cstat.et</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\config\common\mqx_cnfg.h</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_class.__cstat.et</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\mqx.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_cdc_pstn.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\adapter_sdk.__cstat.et</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_hid.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_composite.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_msc_scsi.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_phdc.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_video.__cstat.et</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdlib.h</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\khci_dev.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_dev.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_framework.__cstat.et</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\adapter_sdk.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_cdc.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_dev_bsp.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_audio.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_composite.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_cdc_pstn.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_hid.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_class.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_msc_scsi.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_msc.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_phdc.o</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\lwsem.h</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_class.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_audio.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_cdc_pstn.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_dev_bsp.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\adapter_sdk.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_framework.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_dev.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_video.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\device_khci_interface.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_cdc.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\khci_dev.o</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_composite.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_framework.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_dev.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\khci_dev.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\device_khci_interface.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_video.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_phdc.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_msc.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_hid.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\kinetis_mpu.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\utilities\inc\fsl_debug_console.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\fsl_device_registers.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\mqx_cpudef.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\mqx_ioc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\lwmsgq.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\assert.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\include\MK20D10_extension.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\startup\system_MK20D10.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\CMSIS\Include\core_cmFunc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp_comp.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\config\common\verif_enabled_config.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp_time.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\osa\inc\fsl_os_abstraction_mqx.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\lwevent.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\task.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\include\MK20D10.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\kinetis.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psptypes.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp_supp.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\osa\inc\fsl_os_abstraction.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\compiler\iar\comp.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\cmsis_iar.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\include\MK20D10_features.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\mqx_macros.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp.h</file>
+      <file>$PROJ_DIR$\..\..\rtos\mqx\config\mcu\MK20D10\mqx_sdk_config.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\config\common\small_ram_config.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\CMSIS\Include\core_cm4.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\include\fsl_bitaccess.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\queue.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\lwmem.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp_cpu.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp_math.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\hal\inc\fsl_osc_hal.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\hal\src\sim\MK20D10\fsl_sim_hal_MK20D10.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\CMSIS\Include\core_cmInstr.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\CMSIS\Include\core_cmSimd.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\system\src\clock\MK20D10\fsl_clock_MK20D10.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\hal\inc\fsl_mcg_hal.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\hal\inc\fsl_sim_hal.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\cortex.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\nvic.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\hal\fsl_usb_khci_hal.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\hal\inc\fsl_mcg_hal_modes.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\system\inc\fsl_clock_manager.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\include\config\usb_cdc_config.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\include\config\usb_composite_config.h</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_msc_scsi.pbi</file>
+      <file>$PROJ_DIR$\Debug_IAR\obj\usb_cdc.__cstat.et</file>
+    </outputs>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc_pstn.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 75</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 66</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 49</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 104 147 35 18 11 95 148 47 45 72 96 93 57 51 48 100 99 97 102 103 105 7 20 4 38 5 106 113 114 107 108 109 119 94 98 34 14 152 12 39 37 36 1 2 123 112 110 115 116 117 128 118 129 130 121 122 127 134 136 135 124 126 131 140 141 125 133 120 111 6 145 146 132 137</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7 14 18 152 20 12 11</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\sdk\adapter_sdk.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 77</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 61</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 50</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 147 47 45 95 72 96 97 148 93 104 94 98 57 51 48 100 99 102 103 105 2 101 106 113 114 107 108 109 119 120 111 1 5 4 112 123 110 115 116 117 128 118 129 130 121 122 127 134 136 135 124 126 131 140 141 125 133 145 146 132 137</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 4 101</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\usb\usb_core\device\sources\bsp\net869\usb_dev_bsp.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 76</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 63</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 44</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 93 114 105 48 96 151 148 109 119 47 139 5 106 113 147 107 108 136 35 112 37 101 95 57 51 100 45 99 72 97 102 103 104 121 123 138 6 34 149 1 2 110 115 116 117 128 118 129 130 122 127 134 135 124 126 131 140 141 125 133 145 146 132 137 4 38 143 120 94 111 98 39 36 144 142 150</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 6 37 34 39 35 38 36 101 151 144 139 142 143 150 138 149</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\audio\usb_audio.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 74</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 64</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 40</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 93 114 105 120 38 148 109 119 4 5 106 113 147 107 108 47 96 111 7 35 95 57 51 48 100 45 99 72 97 102 103 104 94 34 39 37 36 1 2 123 112 110 115 116 117 128 118 129 130 121 122 127 134 136 135 124 126 131 140 141 125 133 145 146 98 6 132 137</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 82</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 62</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 155</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 141 147 37 148 12 2 128 121 108 57 14 1 110 116 115 93 118 127 136 112 124 126 45 105 7 20 39 36 123 117 72 129 130 122 134 135 119 131 140 125 133 97 94 98 152 11 34 4 35 38 5 106 95 113 51 48 47 114 100 107 99 96 102 103 104 109 120 111 6 145 146 132 137 18</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7 14 18 152 20 11 12</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\common\usb_class.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 68</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 46</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 95 72 96 45 97 147 47 148 93 98 35 104 94 57 51 48 100 99 102 103 7 32 4 38 5 106 113 114 107 105 108 109 119 120 34 14 39 37 36 1 2 123 112 110 115 116 117 128 118 129 130 121 122 127 134 136 135 124 126 131 140 141 125 133 145 146 111 6 132 137 18</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7 14 18 32</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>IARCHIVE</name>
+          <file> 42</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\hid\usb_hid.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 92</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 67</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 52</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\composite\usb_composite.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 84</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 65</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 53</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 116 11 110 118 127 93 146 48 1 108 115 148 136 112 124 126 132 18 17 37 2 128 121 141 47 7 152 39 36 123 57 117 147 45 72 129 130 122 134 135 119 131 140 125 133 145 137 34 21 14 20 4 35 38 5 106 95 113 51 114 100 107 105 99 97 96 102 103 104 109 6 120 94 111 98 153</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7 21 18 17 153 14 152 20 11</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\msd\usb_msc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 91</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 70</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 43</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\msd\usb_msc_scsi.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 154</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 69</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 54</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\phdc\usb_phdc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 90</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 71</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 55</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\video\usb_video.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 89</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 80</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 56</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\khci_dev.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 87</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 83</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 58</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7 27 29 149 101</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\device_khci_interface.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 81</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 41</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 33 35 37 27 7 30 32</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_dev.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 86</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 79</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 59</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7 30 32 29</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_framework.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 85</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 78</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 60</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 123 93 148 147 110 116 117 115 51 112 57 48 113 45 129 130 107 47 121 105 97 96 119 131 140 125 109 104 141 103 102 133 126 124 122 99 127 134 72 136 120 146 94 145 108 132 135 128 111 137 114 100 118 106 98 95 39 35 37 38 36 7 32</file>
+        </tool>
+      </inputs>
+    </file>
+  </configuration>
+  <configuration>
+    <name>Release</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc_pstn.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\sdk\adapter_cfg.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\sdk\adapter_sdk.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\sdk\adapter_sdk.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\adapter.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\adapter_types.h</file>
+      <file>$PROJ_DIR$\..\..\usb\usb_core\device\include\net869\usb_device_config.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\include\usb_device_stack_interface.h</file>
+      <file>$PROJ_DIR$\..\..\usb\usb_core\device\sources\bsp\net869\usb_dev_bsp.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\audio\usb_audio.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc_pstn.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\common\usb_class.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\common\usb_class_internal.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\hid\usb_hid.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\composite\usb_composite.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\composite\usb_composite.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\include\usb_class.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\msd\usb_msc.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\include\usb_class_cdc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\include\usb_class_composite.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\msd\usb_msc_scsi.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\phdc\usb_phdc.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\video\usb_video.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\khci_dev.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\device_khci_interface.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\khci_dev.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_dev.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\khci_dev_misc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_dev.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_framework.c</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_framework.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\compiler.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb_desc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb_error.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb_misc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb_opt.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\include\usb_types.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\config\common\mqx_cnfg.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\mqx.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdlib.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\lwsem.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\kinetis_mpu.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\utilities\inc\fsl_debug_console.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\fsl_device_registers.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\mqx_cpudef.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\mqx_ioc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\lwmsgq.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\assert.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\include\MK20D10_extension.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\startup\system_MK20D10.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\CMSIS\Include\core_cmFunc.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp_comp.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\config\common\verif_enabled_config.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp_time.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\osa\inc\fsl_os_abstraction_mqx.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\lwevent.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\task.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\include\MK20D10.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\kinetis.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psptypes.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp_supp.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\osa\inc\fsl_os_abstraction.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\compiler\iar\comp.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\cmsis_iar.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\include\MK20D10_features.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\mqx_macros.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp.h</file>
+      <file>$PROJ_DIR$\..\..\rtos\mqx\config\mcu\MK20D10\mqx_sdk_config.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\config\common\small_ram_config.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\CMSIS\Include\core_cm4.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\devices\MK20D10\include\fsl_bitaccess.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\queue.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\include\lwmem.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp_cpu.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\psp_math.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\hal\inc\fsl_osc_hal.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\hal\src\sim\MK20D10\fsl_sim_hal_MK20D10.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\CMSIS\Include\core_cmInstr.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\CMSIS\Include\core_cmSimd.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\system\src\clock\MK20D10\fsl_clock_MK20D10.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\hal\inc\fsl_mcg_hal.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\hal\inc\fsl_sim_hal.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\cortex.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\rtos\mqx\mqx\source\psp\cortex_m\nvic.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\hal\fsl_usb_khci_hal.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\hal\inc\fsl_mcg_hal_modes.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\platform\system\inc\fsl_clock_manager.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\include\config\usb_cdc_config.h</file>
+      <file>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\include\config\usb_composite_config.h</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_dev_bsp.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_phdc.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_cdc_pstn.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\adapter_sdk.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_class.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_audio.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_cdc.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_video.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_hid.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_composite.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_msc_scsi.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\device_khci_interface.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\khci_dev.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_dev.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_framework.o</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_audio.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\adapter_sdk.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_dev_bsp.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_cdc.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_cdc_pstn.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_class.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_composite.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_hid.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_msc.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_msc_scsi.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_phdc.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_video.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\khci_dev.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_framework.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\device_khci_interface.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_dev.__cstat.et</file>
+      <file>$PROJ_DIR$\Release_IAR\Obj\usb_msc.o</file>
+      <file>$PROJ_DIR$\Release_IAR\libusbd_mqx.a</file>
+    </outputs>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc_pstn.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 109</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 126</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7 14 18 105 20 12 11</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\adapter\sources\sdk\adapter_sdk.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 110</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 123</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 4 54</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\usb\usb_core\device\sources\bsp\net869\usb_dev_bsp.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 107</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 124</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 6 37 34 39 35 38 36 54 104 97 92 95 96 103 91 102</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\audio\usb_audio.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 112</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 122</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\cdc\usb_cdc.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 113</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 125</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7 14 18 105 20 11 12</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\common\usb_class.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 111</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 127</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7 14 18 32</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>IARCHIVE</name>
+          <file> 139</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\hid\usb_hid.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 115</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 129</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\composite\usb_composite.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 116</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 128</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7 21 18 17 106 14 105 20 11</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\msd\usb_msc.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 138</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 130</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\msd\usb_msc_scsi.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 117</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 131</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\phdc\usb_phdc.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 108</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 132</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\classes\video\usb_video.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 114</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 133</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\khci_dev.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 119</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 134</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7 27 29 102 54</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\khci\device_khci_interface.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 118</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 136</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 33 35 37 27 7 30 32</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_dev.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 120</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 137</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7 30 32 29</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\BSP\usb\usb_core\device\sources\controller\usb_framework.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 121</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 135</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6 34 4 1 5 2 76 46 101 100 63 69 70 68 43 65 44 42 66 40 82 83 60 41 74 58 50 49 72 84 93 78 62 57 94 56 55 86 79 77 75 52 80 87 45 89 73 99 47 98 61 85 88 81 64 90 67 53 71 59 51 48 39 35 37 38 36 7 32</file>
+        </tool>
+      </inputs>
+    </file>
+  </configuration>
+</project>
+
+

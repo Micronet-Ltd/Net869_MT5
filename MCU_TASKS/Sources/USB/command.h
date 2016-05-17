@@ -12,42 +12,38 @@
 
 typedef enum
 {
-	COMM_GET_FW_VERSION = 0,
-	COMM_GET_GPIO_IN_CNFG = 1,
-	COMM_SET_GPIO_IN_CNFG = 2,
-	COMM_GET_GPIO = 3,
-	COMM_SET_GPIO = 4,
+	COMM_GET_FW_VERSION = 0x00,
+	COMM_GET_FPGA_VERSION = 0x01,
+	COMM_GET_GPI_THRESHOLD = 0x02,
+	COMM_SET_GPI_THRESHOLD = 0x03,
+	COMM_GET_GPI_OR_ADC_INPUT_VOLTAGE = 0x04,
+	COMM_GET_LED_STATUS = 0x05,
+	COMM_SET_LED_STATUS = 0x06,
+	COMM_GET_POWER_ON_THRESHOLD = 0x07,
+	COMM_SET_POWER_ON_THRESHOLD = 0x08,
+	COMM_GET_TURN_ON_REASON = 0x09,
+	COMM_SET_DEVICE_OFF = 0x0A,
+	COMM_GET_RTC_DATE_TIME = 0x0B,
+	COMM_SET_RTC_DATE_TIME = 0x0C,
+	COMM_GET_RTC_CAL_REGISTERS = 0x0D,
+	COMM_SET_RTC_CAL_REGISTERS = 0x0E,
+	COMM_SET_GPI_UPDATE_ALL_VALUES = 0x0F,
+	COMM_GET_RTC_REG_DBG = 0x10,
+	COMM_SET_RTC_REG_DBG = 0x20,
 
 	COMM_ENUM_SIZE
 }command_enum;
 
 typedef enum comm_err
 {
+	INVALID_SIZE = -3,
 	INVALID_COMM = -2,
-	INVALID_TYPE = -1, /* case when command a setCommand is issued for a get or
+	INVALID_TYPE = -1, /* case when a setCommand is issued for a get or
 						vice versa */
 	SUCCESS = 0,
 
 	ERR_ENUM_SIZE
 }comm_err_t;
-
-/* GPIO related stuff, might want to move this to a separate file */
-typedef enum
-{
-	GPIO0,
-	GPIO1,
-	GPIO2,
-	GPIO3,
-	GPIO4,
-	GPIO5,
-	GPIO6,
-	GPIO7,
-	GPIO8,
-	GPIO9,
-	GPIO10,
-
-	GPIO_NUM
-}virtual_gpio_names_enum;
 
 typedef struct comm_type
 {

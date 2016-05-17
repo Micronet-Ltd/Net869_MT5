@@ -1,0 +1,19 @@
+"--endian=little" 
+
+"--cpu=Cortex-M4" 
+
+"--fpu=None" 
+
+"-p" 
+
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\arm\CONFIG\debugger\NXP\MK20DX256xxx10.ddf" 
+
+"--semihosting" 
+
+"--device=MK20DX256xxx10" 
+
+"--multicore_nr_of_cores=1" 
+
+
+
+

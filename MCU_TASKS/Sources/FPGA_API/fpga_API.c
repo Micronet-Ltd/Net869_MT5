@@ -5,12 +5,13 @@
 #include "fsl_i2c_master_driver.h"
 
 #include "uart_configuration.h"
+#include <mutex.h>
 
 #define FPGA_UART_PORT						UART1_IDX
 #define FPGA_UART_BAUDRATE					115200
 #define FPGA_UART_TIMEOUT					100
 
-#define FPGA_I2C_PORT						I2C0_IDX
+#define FPGA_I2C_PORT						I2C1_IDX
 #define FPGA_DEVICE_ADDRESS					0x5E
 #define FPGA_I2C_BAUD_RATE					400
 #define FPGA_I2C_TIMEOUT					100
@@ -32,7 +33,6 @@ static i2c_device_t fpga_device = {
 uint8_t fpga_uart_rx_buf [FPGA_UART_RX_BUF_SIZE] = {0};
 uint8_t fpga_uart_rx_buf_wr_idx = 0;
 uint8_t fpga_uart_rx_buf_rd_idx = 0;
-
 
 bool FPGA_GetData (uint8_t Register_Addr, uint32_t *Register_Data);
 bool FPGA_SetData (uint8_t Register_Addr, uint32_t *Register_Data);
@@ -121,6 +121,7 @@ bool FPGA_read_led_status  (uint8_t ledNum, uint8_t *brightness, uint8_t *red, u
 	switch (ledNum) {
 		case LED_RIGHT  : status = FPGA_GetData (FPGA_REG_ADDR_LED_RIGHT , &data); break;
 		case LED_MIDDLE : status = FPGA_GetData (FPGA_REG_ADDR_LED_MIDDLE, &data); break;
+        case LED_LEFT   : status = FPGA_GetData (FPGA_REG_ADDR_LED_LEFT, &data); break;
 	}
 	
 	if (status == false)
@@ -133,21 +134,19 @@ bool FPGA_read_led_status  (uint8_t ledNum, uint8_t *brightness, uint8_t *red, u
 	return true;
 }
 
-bool FPGA_write_led_status (uint8_t ledNum, uint8_t *brightness, uint8_t *red, uint8_t *green, uint8_t *blue)
+bool FPGA_write_led_status (uint8_t ledNum, uint8_t brightness, uint8_t red, uint8_t green, uint8_t blue)
 {
 	uint32_t data;
-
-	if ((brightness == NULL) || (red == NULL) ||(green == NULL) ||(blue == NULL))
-		return false;
-		
-	data  = ((*brightness) << FPGA_REG_LED_BRIGHTNESS_SHIFT);
-	data |= ((*red)        << FPGA_REG_LED_RED_SHIFT       );
-	data |= ((*green)      << FPGA_REG_LED_GREEN_SHIFT     );
-	data |= ((*blue)       << FPGA_REG_LED_BLUE_SHIFT      );
+	
+	data  = ((brightness) << FPGA_REG_LED_BRIGHTNESS_SHIFT);
+	data |= ((red)        << FPGA_REG_LED_RED_SHIFT       );
+	data |= ((green)      << FPGA_REG_LED_GREEN_SHIFT     );
+	data |= ((blue)       << FPGA_REG_LED_BLUE_SHIFT      );
 		
 	switch (ledNum) {
 		case LED_RIGHT  : return FPGA_SetData (FPGA_REG_ADDR_LED_RIGHT , &data);
-		case LED_MIDDLE : return FPGA_SetData (FPGA_REG_ADDR_LED_MIDDLE, &data); 
+		case LED_MIDDLE : return FPGA_SetData (FPGA_REG_ADDR_LED_MIDDLE, &data);
+        case LED_LEFT   : return FPGA_SetData (FPGA_REG_ADDR_LED_LEFT, &data); 
 	}
 	return false;
 }
@@ -266,7 +265,7 @@ bool FPGA_GetData (uint8_t register_addr, uint32_t *register_data)
 {
 	i2c_status_t  i2c_status ;
 	uint8_t       i2c_cmd  = register_addr;
-			
+
 	if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (FPGA_I2C_PORT, &fpga_device, &i2c_cmd,  1, (uint8_t *)register_data, 4, FPGA_I2C_TIMEOUT)) != kStatus_I2C_Success)
 		printf ("\nFPGA API GetData: ERROR: Could not read Address 0x%X (I2C error code %d)\n", register_addr, i2c_status);
 

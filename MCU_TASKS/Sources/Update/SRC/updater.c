@@ -35,7 +35,7 @@
 #include "updater.h"
 #include "flash_funcs.h"
 #include <event.h>
-//#include <mqx_prv.h>
+#include "version.h"
 
 extern void UART_Enable   (uint8_t port, const uart_user_config_t *uartConfig);
 extern _task_id   g_TASK_ids[];
@@ -303,8 +303,9 @@ int32_t end_update(void)
 		return ret;
 	}
 
-	ptr = (uint32_t*)(g_offset + COUNT_OFFSET);
+	ptr = (PFLASH_BASE == g_offset) ? (uint32_t*)(NVFLASH_BASE + COUNT_OFFSET) : (uint32_t*)(PFLASH_BASE + COUNT_OFFSET);
 	upd = *ptr - 1;
+
 	ret = Flash_Program(g_offset + COUNT_OFFSET, 4, (uint8_t*)&upd	);//counter
 		
 	if(0 == ret)//must be last!!!
@@ -328,25 +329,27 @@ uint32_t choose_flash(void)
 }
 void version_srec(char* out_buf)
 {
-//	char tmp_str[4] = {0};
-//	uint32_t i; 
+	char tmp_str[4] = {0};
+	uint32_t i; 
+//  	uint32_t ver = 0;
 
-	memcpy(out_buf, "4E455438", 8);//temp!!!
-	out_buf[8] = 0;
+//	memcpy(out_buf, "4E455438", 8);//temp!!!
+//	out_buf[8] = 0;
 //	memset(out_buf, '0', 10); 
 //4E455438
-//	tmp_str[0] = ;//FW_VER_BTLD_OR_APP;
-//	tmp_str[1] = 2;//FW_VER_MAJOR;
-//	tmp_str[2] = 3;//FW_VER_MINOR;
-//	tmp_str[3] = 4;//FW_VER_BUILD;
-	//ver = (tmp_str[0] << 3*4) + (tmp_str[1] << 2*4) + (tmp_str[2] << 1*4) + tmp_str[3];  
-	//uint_to_hex_string(ver, &out_buf[8+i], 4);
-//	for(i = 0; i < 4; ++i)
-//	{
-//		uint_to_hex_string(tmp_str[i], &out_buf[8+i], 1);
-//	}
-		  
+	tmp_str[0] = FW_VER_BTLD_OR_APP;
+	tmp_str[1] = FW_VER_MAJOR;
+	tmp_str[2] = FW_VER_MINOR;
+	tmp_str[3] = FW_VER_BUILD;
+//	ver = ((FW_VER_BTLD_OR_APP & 0xFF) << 3*4) + ((FW_VER_MAJOR & 0xFF) << 2*4) + ((FW_VER_MINOR & 0xFF) << 1*4) + (FW_VER_BUILD & 0xFF);  
+//	uint_to_hex_string(ver, out_buf, 4);
 //	out_buf[8] = 0;
+	for(i = 0; i < 4; ++i)
+	{
+		uint_to_hex_string(tmp_str[i], &out_buf[i * 2], 1);
+	}
+		  
+	out_buf[8] = 0;
 }
 
 int32_t exec_cmd(cmd_id id, char* out_buf)
