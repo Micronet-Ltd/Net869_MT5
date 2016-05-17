@@ -728,7 +728,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\linker\MK20DX256xxx10_flash.icf</state>
+          <state>$PROJ_DIR$/../MQX_OS/BSP/platform/devices/MK20D10/linker/iar/MK20DX256xxx10_flash.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>

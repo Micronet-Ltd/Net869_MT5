@@ -2,20 +2,20 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>1432090890</fileChecksum>
+  <fileChecksum>570614490</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
+      <file>$PROJ_DIR$\..\MQX_OS\BSP\platform\devices\MK20D10\linker\iar\MK20DX256xxx10_flash.icf</file>
       <file>$PROJ_DIR$\main.c</file>
       <file>$PROJ_DIR$\..\MQX_OS\BSP\platform\devices\MK20D10\startup\iar\startup_MK20D10.s</file>
       <file>$PROJ_DIR$\Debug\Obj\BootLoader.pbd</file>
       <file>$PROJ_DIR$\Debug\Obj\startup_MK20D10.o</file>
       <file>$PROJ_DIR$\Debug\Obj\main.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
-      <file>$PROJ_DIR$\Debug\Exe\BootLoader.out</file>
-      <file>$PROJ_DIR$\linker\MK20DX256xxx10_flash.icf</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
       <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\Debug\Exe\BootLoader.out</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
       <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
       <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
       <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
@@ -28,27 +28,32 @@
       <file>$PROJ_DIR$\..\MQX_OS\MQX_PSP\iar\Debug_IAR\lib_mqx.a</file>
       <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
       <file>$PROJ_DIR$\Debug\List\BootLoader.map</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.__cstat.et</file>
     </outputs>
     <file>
       <name>$PROJ_DIR$\main.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 5</file>
+          <file> 9</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 4</file>
+          <file> 5</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 22</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 9 8 11 10 13 12 14 15</file>
+          <file> 6 7 11 10 13 12 14 15</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 13 12 9 8 14 15 11 10</file>
+          <file> 13 12 6 7 14 15 11 10</file>
         </tool>
       </inputs>
     </file>
@@ -57,16 +62,7 @@
       <outputs>
         <tool>
           <name>AARM</name>
-          <file> 3</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 6 21</file>
+          <file> 4</file>
         </tool>
       </outputs>
     </file>
@@ -81,9 +77,18 @@
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 7 4 3 19 18 17 16 20</file>
+          <file> 0 5 4 19 18 17 16 20</file>
         </tool>
       </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 8 21</file>
+        </tool>
+      </outputs>
     </file>
   </configuration>
   <configuration>
