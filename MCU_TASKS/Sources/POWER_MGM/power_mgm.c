@@ -29,7 +29,7 @@
 #include "board.h"
 #include "bsp.h"
 
-//#define SUPERCAP_CHRG_DISCHRG_ENABLE   1
+#define SUPERCAP_CHRG_DISCHRG_ENABLE   1
 //#define DEBUGGING_ENABLED                1
 
 #define POWER_MGM_TIME_DELAY		 100
@@ -41,15 +41,8 @@
 #define CABLE_TYPE_MIN_VOLTAGE		(CABLE_TYPE_VOLTAGE *  90/100)
 #define CABLE_TYPE_MAX_VOLTAGE		(CABLE_TYPE_VOLTAGE * 110/100)
 
-#define BOOST_ENABLE
-
-#ifdef BOOST_ENABLE
-#define SUPERCAP_MIN_TH		3600
-#define SUPERCAP_MAX_TH		3800
-#else
 #define SUPERCAP_MIN_TH		5000
 #define SUPERCAP_MAX_TH		5300
-#endif
 
 /* The LPTMR instance used for LPTMR */
 #define PM_RTOS_DEMO_LPTMR_FUNC_INSTANCE                0
@@ -235,6 +228,7 @@ uint32_t ignition_threshold_g = IGNITION_TURN_ON_TH_DEFAULT;
 
 extern const clock_manager_user_config_t g_defaultClockConfigRun;
 extern const clock_manager_user_config_t g_defaultClockConfigVlpr;
+extern DEVICE_STATE_t        device_state_g;
 
 const clock_manager_user_config_t * g_defaultClockConfigurations[] = 
 {
@@ -549,6 +543,7 @@ void Power_MGM_task (uint32_t initial_data )
 	uint64_t ext_gpio_last_time    = 0;
 	uint64_t cable_type_last_time  = 0;
 	uint32_t cable_type_voltage    = 0;
+    uint32_t time_diff = 0;
 	KADC_CHANNELS_t i = kADC_ANALOG_IN1;
 	TIME_STRUCT time;
     uint32_t ret;
@@ -582,8 +577,6 @@ void Power_MGM_task (uint32_t initial_data )
                    cm_callback_tbl_size);
 
     CLOCK_SYS_UpdateConfiguration(cmConfigMode, kClockManagerPolicyForcible);
-
-    MIC_DEBUG_UART_PRINTF ("\nPower Management Task: Before power change, after baud change to 9600 \n");
     
     // initialize power manager driver
     POWER_SYS_Init(powerConfigs, powerConfigsSize, pm_callback_tbl, pm_callback_tbl_size);
@@ -640,16 +633,22 @@ void Power_MGM_task (uint32_t initial_data )
 			ext_gpio_last_time = current_time;
 			GPIO_sample_all ();
 		}
-
-		Device_update_state      ();
+		
 #ifdef SUPERCAP_CHRG_DISCHRG_ENABLE
-		Supercap_charge_state    ();
-		Supercap_discharge_state ();
+        if (device_state_g != DEVICE_STATE_OFF)// || device_state_g == DEVICE_STATE_BACKUP_RECOVERY || device_state_g == DEVICE_STATE_BACKUP_POWER)
+        {
+            Supercap_charge_state    ();
+            Supercap_discharge_state ();
+        }
 #endif
 		_time_delay (POWER_MGM_TIME_DELAY);
 
 		_time_get(&time);
-		current_time = ((time.SECONDS * 1000) +  time.MILLISECONDS);;
+        time_diff = ((time.SECONDS * 1000) +  time.MILLISECONDS) - current_time;
+		current_time += time_diff;
+        time_diff = 100;
+        
+        Device_update_state(&time_diff);
 	}
 }
 
