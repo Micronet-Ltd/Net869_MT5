@@ -81,15 +81,15 @@
 #include "fsl_clock_manager.h"
 #include "mqx_prv.h"
 
-#define DEVICE_CONTROL_TIME_ON_TH				 3500		// number of mili-seconds pulse for turning device on
-#define DEVICE_CONTROL_TIME_OFF_TH				 3500		// number of mili-seconds pulse for turning device off
+#define DEVICE_CONTROL_TIME_ON_TH				 3200		// number of mili-seconds pulse for turning device on
+#define DEVICE_CONTROL_TIME_OFF_TH				 3200		// number of mili-seconds pulse for turning device off
 #define DEVICE_CONTROL_TIME_RESET_TH			  500		// number of mili-seconds pulse for reseting device
 
 #define BACKUP_RECOVER_TIME_TH					 1000		// number of mili-seconds to try power failure overcome (device is powered by supercap)
 #define BACKUP_POWER_TIME_TH					20000		// number of mili-seconds to power device by supercap
 
 #define CPU_OFF_CHECK_TIME						1000		// time between checks for CPU/A8 off
-#define MAX_CPU_OFF_CHECK_TIME					10000		// Max time to wait before shutting off the unit by killing the power
+#define MAX_CPU_OFF_CHECK_TIME					15000		// Max time to wait before shutting off the unit by killing the power
 
 #define MCU_AND_CPU_BOARD_CONNECTED
 
@@ -204,6 +204,7 @@ void Device_update_state (uint32_t * time_diff)
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE RUNNING\n");
                 FPGA_init ();
                 FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
+                GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
                 _event_set(power_up_event_g, 1);
 			}
 			break;
@@ -312,9 +313,14 @@ void Device_off_req(uint8_t wait_time)
 	uint32_t cpu_off_wait_time = 0;
 	uint8_t cpu_status_pin = 0;
 
-	_time_delay(wait_time*1000);
-	Device_turn_off  ();
+    GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
     FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
+	_time_delay(wait_time*1000);
+
+    /* Turn device off */
+    GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+    _time_delay (DEVICE_CONTROL_TIME_OFF_TH);
+    GPIO_DRV_SetPinOutput(CPU_ON_OFF);
 
 #ifdef MCU_AND_CPU_BOARD_CONNECTED
 	/* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
