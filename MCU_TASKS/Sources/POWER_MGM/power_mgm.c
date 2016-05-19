@@ -635,11 +635,8 @@ void Power_MGM_task (uint32_t initial_data )
 		}
 		
 #ifdef SUPERCAP_CHRG_DISCHRG_ENABLE
-        if (device_state_g != DEVICE_STATE_OFF)// || device_state_g == DEVICE_STATE_BACKUP_RECOVERY || device_state_g == DEVICE_STATE_BACKUP_POWER)
-        {
-            Supercap_charge_state    ();
-            Supercap_discharge_state ();
-        }
+        Supercap_charge_state    ();
+        Supercap_discharge_state ();
 #endif
 		_time_delay (POWER_MGM_TIME_DELAY);
 
