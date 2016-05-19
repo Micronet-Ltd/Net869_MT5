@@ -110,12 +110,12 @@ enum _gpio_pins_pinNames {
 
     // CPU INTERFACE
     CPU_ON_OFF							= GPIO_MAKE_PIN(GPIOB_IDX,  7),
-    CPU_POWER_LOSS						= GPIO_MAKE_PIN(GPIOB_IDX, 9),
+    CPU_SPKR_EN 						= GPIO_MAKE_PIN(GPIOB_IDX, 9),  //swapped CPU_POWER_LOSS with CPU_SPKR_EN in schematic
     FORCE_USB_BOOT						= GPIO_MAKE_PIN(GPIOC_IDX,  1),
     CPU_RF_KILL							= GPIO_MAKE_PIN(GPIOC_IDX,  5),
     CPU_WATCHDOG						= GPIO_MAKE_PIN(GPIOB_IDX, 10),
     CPU_STATUS							= GPIO_MAKE_PIN(GPIOC_IDX,  2),
-	CPU_SPKR_EN						    = GPIO_MAKE_PIN(GPIOE_IDX, 25),
+	CPU_POWER_LOSS					    = GPIO_MAKE_PIN(GPIOE_IDX, 25), //swapped CPU_SPKR_EN with CPU_POWER_LOSS in schematic
 	CPU_MIC_EN						    = GPIO_MAKE_PIN(GPIOE_IDX, 26),
 
 
