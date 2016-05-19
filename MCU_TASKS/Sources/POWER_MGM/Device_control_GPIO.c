@@ -118,7 +118,7 @@ void Device_update_state (void)
 {
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
 	uint32_t ignition_voltage  = ADC_get_value (kADC_ANALOG_IN1 );
-	int32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
+	uint32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
 
 	Device_control_GPIO ();
 
@@ -127,9 +127,9 @@ void Device_update_state (void)
 		case DEVICE_STATE_OFF:
 			turn_on_condition_g = 0;
 			// blink RED LED when device is off
-			if      (++led_blink_cnt_g == 8)		GPIO_DRV_SetPinOutput   (LED_RED);
-			else if (  led_blink_cnt_g < 10)		GPIO_DRV_ClearPinOutput (LED_RED);
-			else       led_blink_cnt_g = 0;
+			//if      (++led_blink_cnt_g == 8)		GPIO_DRV_SetPinOutput   (LED_RED);
+			//else if (  led_blink_cnt_g < 10)		GPIO_DRV_ClearPinOutput (LED_RED);
+			//else       led_blink_cnt_g = 0;
 
 			// check amount of vibrations sensed by the wiggle sensor
 			// if amount of vibrations is more than TH, it will turn on the device
@@ -160,7 +160,6 @@ void Device_update_state (void)
 				peripherals_enable ();
 				Device_turn_on     ();
 				//send_power_change  (&turn_on_condition);
-				GPIO_DRV_ClearPinOutput (LED_RED);
 				device_state_g = DEVICE_STATE_TURNING_ON;
 			}
 			break;
@@ -172,11 +171,11 @@ void Device_update_state (void)
 				Board_SetFastClk ();
 				device_state_g = DEVICE_STATE_ON;
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE RUNNING\n");
+                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0);
 			}
 			break;
 
 		case DEVICE_STATE_ON:
-			GPIO_DRV_SetPinOutput (LED_GREEN);
 
 			// if power drops below threshold - shutdown
 			if (power_in_voltage < POWER_IN_SHUTDOWN_TH)
@@ -191,7 +190,6 @@ void Device_update_state (void)
 				(temperature > TEMPERATURE_MAX_TH)    )
 			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
-				GPIO_DRV_ClearPinOutput (LED_GREEN);
 				Device_turn_off  ();
 				Board_SetSlowClk ();
 				device_state_g = DEVICE_STATE_TURN_OFF;
@@ -225,16 +223,13 @@ void Device_update_state (void)
 			// if power is back during backup period - turn on a YELLOW LED
 			if (power_in_voltage >= POWER_IN_TURN_ON_TH)
 			{
-				GPIO_DRV_SetPinOutput   (LED_RED);
-				GPIO_DRV_SetPinOutput   (LED_GREEN);
+                MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE_STATE_BACKUP_POWER power back up");
 			}
 
 			backup_power_cnt_g += device_control_gpio_g.delay_period;
 			if (backup_power_cnt_g > BACKUP_POWER_TIME_TH)
 			{
 				GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
-				GPIO_DRV_ClearPinOutput (LED_RED);
-				GPIO_DRV_ClearPinOutput (LED_GREEN);
 				backup_power_cnt_g = 0;
 				led_blink_cnt_g = 0;
 				Device_turn_off ();
@@ -302,7 +297,6 @@ void Device_off_req(uint8_t wait_time)
 #endif
 	backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
-	GPIO_DRV_ClearPinOutput (LED_GREEN);
 	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 	//Board_SetSlowClk ();
 	MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
@@ -354,14 +348,12 @@ void Device_control_GPIO (void)
 
 	if (device_control_gpio_g.time <	device_control_gpio_g.time_threshold)
 	{
-		GPIO_DRV_SetPinOutput   (LED_BLUE);
 		GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
 		device_control_gpio_g.status = true;
 		device_control_gpio_g.time  += device_control_gpio_g.delay_period;
 	}
 	else
 	{
-		GPIO_DRV_ClearPinOutput (LED_BLUE);
 		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
 		device_control_gpio_g.status = false;
 		device_control_gpio_g.time   = 0;
@@ -421,9 +413,6 @@ void peripherals_enable (void)
 
 void peripherals_disable (void)
 {
-	GPIO_DRV_ClearPinOutput (LED_RED);
-	GPIO_DRV_ClearPinOutput (LED_GREEN);
-	GPIO_DRV_ClearPinOutput (LED_BLUE);
 	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
 
 	//GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);

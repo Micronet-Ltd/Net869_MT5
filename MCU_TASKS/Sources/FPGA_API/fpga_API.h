@@ -55,17 +55,21 @@ bool FPGA_clear_irq       (uint32_t irqMask);
 *****************************************************/
 #define LED_RIGHT			                     0
 #define LED_MIDDLE			                     1
+#define LED_LEFT                                 2
 
-#define FPGA_REG_ADDR_LED_MIDDLE				0x10
-#define FPGA_REG_ADDR_LED_RIGHT					0x11
+#define FPGA_REG_ADDR_LED_RIGHT					0x12
+#define FPGA_REG_ADDR_LED_MIDDLE				0x11
+#define FPGA_REG_ADDR_LED_LEFT					0x10
 
 #define FPGA_REG_LED_BRIGHTNESS_SHIFT			24
 #define FPGA_REG_LED_RED_SHIFT					16
 #define FPGA_REG_LED_GREEN_SHIFT				 8
 #define FPGA_REG_LED_BLUE_SHIFT					 0
 
+#define LED_DEFAULT_BRIGHTESS                   0xFF/2
+
 bool FPGA_read_led_status  (uint8_t ledNum, uint8_t *brightness, uint8_t *red, uint8_t *green, uint8_t *blue);
-bool FPGA_write_led_status (uint8_t ledNum, uint8_t *brightness, uint8_t *red, uint8_t *green, uint8_t *blue);
+bool FPGA_write_led_status (uint8_t ledNum, uint8_t brightness, uint8_t red, uint8_t green, uint8_t blue);
 
 /*****************************************************
 *              J1708 CONTROL  Register               *
