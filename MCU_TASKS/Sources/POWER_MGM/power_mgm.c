@@ -368,7 +368,10 @@ power_manager_error_code_t rtos_pm_callback(power_manager_notify_struct_t * noti
                 wait_finish_uart();
                 //disable_unused_pins();
                 /* Disable systick in all other mode. */
-                SYSTICK_DISABLE();
+                /* Noticed that if I disable SYSTICK in VLPR mode the RTOS power
+                   powermanagement task does not run, but interrupts work - Abid
+                */
+                //SYSTICK_DISABLE();
             }
             break;
 
