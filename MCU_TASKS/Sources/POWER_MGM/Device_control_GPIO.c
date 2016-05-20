@@ -440,9 +440,18 @@ void peripherals_enable (void)
 
     GPIO_DRV_SetPinOutput   (UART_ENABLE);			// Enable UART
     GPIO_DRV_SetPinOutput   (FTDI_RSTN);
-
-	GPIO_DRV_SetPinOutput (SPKR_LEFT_EN);
-	GPIO_DRV_SetPinOutput (SPKR_RIGHT_EN);
+    
+    /* Only enable the speakers if CPU_SPKR_EN is set */
+    if (GPIO_DRV_ReadPinInput(CPU_SPKR_EN))
+    {
+        GPIO_DRV_SetPinOutput (SPKR_RIGHT_EN);
+        GPIO_DRV_SetPinOutput (SPKR_LEFT_EN);       
+    }   
+    else 
+    {
+        GPIO_DRV_ClearPinOutput(SPKR_RIGHT_EN);
+        GPIO_DRV_ClearPinOutput(SPKR_LEFT_EN);
+    }
 //	GPIO_DRV_SetPinOutput (SPKR_EXT_EN);
 //	GPIO_DRV_SetPinOutput (CPU_MIC_EN);
 

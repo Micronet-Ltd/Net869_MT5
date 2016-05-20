@@ -319,10 +319,26 @@ void MQX_PORTA_IRQHandler(void)
 
 void MQX_PORTB_IRQHandler(void)
 {
-	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG)) {
+	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG)) 
+    {
 		GPIO_DRV_ClearPinIntFlag(CPU_WATCHDOG);
 		cpu_watchdog_count_g++;
 	}
+    
+    if (GPIO_DRV_IsPinIntPending(CPU_SPKR_EN)) 
+    {
+        GPIO_DRV_ClearPinIntFlag(CPU_SPKR_EN);
+        if (GPIO_DRV_ReadPinInput(CPU_SPKR_EN))
+        {
+            GPIO_DRV_SetPinOutput (SPKR_RIGHT_EN);
+            GPIO_DRV_SetPinOutput (SPKR_LEFT_EN);       
+        }   
+        else 
+        {
+            GPIO_DRV_ClearPinOutput(SPKR_RIGHT_EN);
+            GPIO_DRV_ClearPinOutput(SPKR_LEFT_EN);
+        }
+    }
 }
 
 void MQX_PORTC_IRQHandler(void)
