@@ -447,8 +447,9 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 	pflexcanInstance_t pinstance;
 	_queue_id  msg_qid;
 	APPLICATION_MESSAGE_PTR_T msg_ptr;
-	uint8_t tmp;
+	uint8_t tmp, tmp1, ind;
 	char msg_str[35];
+	char *pmsg_str;
 	_mqx_uint err_task;
 
 	if ( BOARD_CAN_INSTANCE <= param ) {
@@ -518,81 +519,76 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 					}
 #endif
 					if ( pmsg_data ) {
-						tmp = (uint8_t)(((pinstance->MB_msgbuff[i].cs) >> 16) & 0xF);
-						//printf("\r\nDLC=%u, mb_idx=%u", tmp, pinstance->MB_config[i].iD);
-						//printf("\r\nID: 0x%x", pinstance->MB_msgbuff[i].msgId);
-						//printf("\r\nRX MB data: 0x");
-
-						switch ( tmp ) {
-						case 1:
-							sprintf ( msg_str, "%x#%02x\r", pinstance->MB_msgbuff[i].msgId, 
-									  pinstance->MB_msgbuff[i].data[0]  );
-							break;
-						case 2:
-							sprintf ( msg_str, "%x#%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
-									  pinstance->MB_msgbuff[i].data[0],
-									  pinstance->MB_msgbuff[i].data[1] );
-							break;
-						case 3:
-							sprintf ( msg_str, "%x#%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
-									  pinstance->MB_msgbuff[i].data[0],
-									  pinstance->MB_msgbuff[i].data[1],
-									  pinstance->MB_msgbuff[i].data[2] );
-							break;
-						case 4:
-							sprintf ( msg_str, "%x#%02x%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
-									  pinstance->MB_msgbuff[i].data[0],
-									  pinstance->MB_msgbuff[i].data[1],
-									  pinstance->MB_msgbuff[i].data[2],
-									  pinstance->MB_msgbuff[i].data[3] );
-							break;
-						case 5:
-							sprintf ( msg_str, "%x#%02x%02x%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
-									  pinstance->MB_msgbuff[i].data[0],
-									  pinstance->MB_msgbuff[i].data[1],
-									  pinstance->MB_msgbuff[i].data[2],
-									  pinstance->MB_msgbuff[i].data[3],
-									  pinstance->MB_msgbuff[i].data[4] );
-							break;
-						case 6:
-							sprintf ( msg_str, "%x#%02x%02x%02x%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
-									  pinstance->MB_msgbuff[i].data[0],
-									  pinstance->MB_msgbuff[i].data[1],
-									  pinstance->MB_msgbuff[i].data[2],
-									  pinstance->MB_msgbuff[i].data[3],
-									  pinstance->MB_msgbuff[i].data[4],
-									  pinstance->MB_msgbuff[i].data[5] );
-							break;
-						case 7:
-							sprintf ( msg_str, "%x#%02x%02x%02x%02x%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
-									  pinstance->MB_msgbuff[i].data[0],
-									  pinstance->MB_msgbuff[i].data[1],
-									  pinstance->MB_msgbuff[i].data[2],
-									  pinstance->MB_msgbuff[i].data[3],
-									  pinstance->MB_msgbuff[i].data[4],
-									  pinstance->MB_msgbuff[i].data[5],
-									  pinstance->MB_msgbuff[i].data[6] );
-							break;
-						case 8:
-							sprintf ( msg_str, "%x#%02x%02x%02x%02x%02x%02x%02x%02x\r", pinstance->MB_msgbuff[i].msgId, 
-									  pinstance->MB_msgbuff[i].data[0],
-									  pinstance->MB_msgbuff[i].data[1],
-									  pinstance->MB_msgbuff[i].data[2],
-									  pinstance->MB_msgbuff[i].data[3],
-									  pinstance->MB_msgbuff[i].data[4],
-									  pinstance->MB_msgbuff[i].data[5],
-									  pinstance->MB_msgbuff[i].data[6],
-									  pinstance->MB_msgbuff[i].data[7] );
-							break;
-						default:
-							sprintf ( msg_str, "%x#\r", pinstance->MB_msgbuff[i].msgId );
-
+						pmsg_str = msg_str;
+						//Detect remoute or regular message
+						tmp = (uint8_t)(((pinstance->MB_msgbuff[i].cs) >> 20) & 0x1);
+                        tmp1 = (uint8_t)(((pinstance->MB_msgbuff[i].cs) >> 21) & 0x1);
+                        if (tmp) {
+							//remoute frame
+							*pmsg_str = 'r';
+                            if (tmp1) {
+								*pmsg_str = 'R';
+                            }
+                        }
+						else {
+							//standard frame
+							*pmsg_str = 't';
+                            if (tmp1) {
+								*pmsg_str = 'T';
+                            }
 						}
+						pmsg_str++;
+						//set message ID;
+                        if (tmp) {
+							//Extended
+							sprintf ( pmsg_str, "%09x", pinstance->MB_msgbuff[i].msgId);
+							pmsg_str += 9;
+                        }
+						else {
+							//Standard
+							sprintf ( pmsg_str, "%03x", pinstance->MB_msgbuff[i].msgId);
+							pmsg_str += 3;
+						}
+						//Message length
+                        tmp = (uint8_t)(((pinstance->MB_msgbuff[i].cs) >> 16) & 0xF);
+						*pmsg_str = tmp + '0';
+						pmsg_str++;
 
-//						for ( result = 0; result < tmp; result++ ) {
-//							msg.data[result] = pinstance->MB_msgbuff[i].data[result];
-//							//printf("%02x ", pinstance->MB_msgbuff[i].data[result]);
-//						}
+                        for (ind = 0; ind < tmp; ind++) {
+							tmp1 = (pinstance->MB_msgbuff[i].data[ind]>>4) & 0xF;
+                            if (tmp1 > 9 )
+								*pmsg_str = tmp1 - 10 + 'A';
+							else
+								*pmsg_str = tmp1 + '0';
+
+							pmsg_str++;
+							tmp1 = pinstance->MB_msgbuff[i].data[ind] & 0xF;
+							if (tmp1 > 9 )
+								*pmsg_str = tmp1 - 10 + 'A';
+							else
+								*pmsg_str = tmp1 + '0';
+
+							pmsg_str++;
+                        }
+
+						//Message time stamp
+						pmsg_str += 3;
+						for (ind = 0; ind < 4; ind++) {
+							tmp1 = (uint8_t)(((pinstance->MB_msgbuff[i].cs) >> (ind<<2)) & 0xF);
+                            if (tmp1 > 9 )
+								*pmsg_str = tmp1 - 10 + 'A';
+							else
+								*pmsg_str = tmp1 + '0';
+
+							pmsg_str--;
+						}
+						pmsg_str += 4;
+
+						//Add '\r' character
+						*pmsg_str = '\r';
+						pmsg_str++;
+						*pmsg_str = 0;
+
 						curr_msg_len = _strnlen( msg_str, sizeof ( msg_str ) );
 						printf("CAN%d msg %s size %d\n", can_instance, msg_str, curr_msg_len );
 
