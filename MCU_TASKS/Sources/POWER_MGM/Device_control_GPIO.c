@@ -225,11 +225,8 @@ void Device_update_state (uint32_t * time_diff)
 				(temperature > TEMPERATURE_MAX_TH)    )
 			{
 				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
-                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /*Red LED */
-				Device_turn_off  ();
-                switch_power_mode(kPowerManagerVlpr);
-				//Board_SetVerySlowClk ();
-				device_state_g = DEVICE_STATE_TURN_OFF;
+                device_state_g = DEVICE_STATE_OFF;
+                Device_off_req(0);
 			}
 			break;
 
