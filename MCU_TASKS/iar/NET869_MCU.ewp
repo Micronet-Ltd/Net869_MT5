@@ -1118,7 +1118,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.50.3.10745</state>
+          <state>7.60.1.11206</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1428,6 +1428,7 @@
           <state>$PROJ_DIR$\..\Sources\EXT_GPIOS</state>
           <state>$PROJ_DIR$\..\..\MQX_OS</state>
           <state>$PROJ_DIR$\..\startup</state>
+          <state>$PROJ_DIR$\..\Sources\rtc</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
