@@ -2,60 +2,47 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>570614490</fileChecksum>
+  <fileChecksum>4083787465</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$PROJ_DIR$\..\MQX_OS\BSP\platform\devices\MK20D10\linker\iar\MK20DX256xxx10_flash.icf</file>
       <file>$PROJ_DIR$\main.c</file>
       <file>$PROJ_DIR$\..\MQX_OS\BSP\platform\devices\MK20D10\startup\iar\startup_MK20D10.s</file>
-      <file>$PROJ_DIR$\Debug\Obj\BootLoader.pbd</file>
-      <file>$PROJ_DIR$\Debug\Obj\startup_MK20D10.o</file>
       <file>$PROJ_DIR$\Debug\Obj\main.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
-      <file>$PROJ_DIR$\Debug\Exe\BootLoader.out</file>
       <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\startup_MK20D10.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\BootLoader.pbd</file>
+      <file>$PROJ_DIR$\Debug\Exe\BootLoader.out</file>
       <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
-      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
-      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
-      <file>$PROJ_DIR$\..\MQX_OS\MQX_PSP\iar\Debug_IAR\lib_mqx.a</file>
-      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
       <file>$PROJ_DIR$\Debug\List\BootLoader.map</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.__cstat.et</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$PROJ_DIR$\..\MQX_OS\BSP\platform\devices\MK20D10\linker\iar\MK20DX256xxx10_flash.icf</file>
+      <file>$PROJ_DIR$\..\MQX_OS\MQX_PSP\iar\Debug_IAR\lib_mqx.a</file>
+      <file>$PROJ_DIR$\version.h</file>
     </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 6 8</file>
+        </tool>
+      </outputs>
+    </file>
     <file>
       <name>$PROJ_DIR$\main.c</name>
       <outputs>
         <tool>
-          <name>BICOMP</name>
-          <file> 9</file>
-        </tool>
-        <tool>
           <name>ICCARM</name>
-          <file> 5</file>
+          <file> 2</file>
         </tool>
         <tool>
-          <name>__cstat</name>
-          <file> 22</file>
+          <name>BICOMP</name>
+          <file> 3</file>
         </tool>
       </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 6 7 11 10 13 12 14 15</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 13 12 6 7 14 15 11 10</file>
-        </tool>
-      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\..\MQX_OS\BSP\platform\devices\MK20D10\startup\iar\startup_MK20D10.s</name>
@@ -71,24 +58,15 @@
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 21</file>
+          <file> 8</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 0 5 4 19 18 17 16 20</file>
+          <file> 12 2 4 13 11 9 7 10</file>
         </tool>
       </inputs>
-    </file>
-    <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 8 21</file>
-        </tool>
-      </outputs>
     </file>
   </configuration>
   <configuration>

@@ -1039,7 +1039,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.50.3.10745</state>
+          <state>7.60.1.11206</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1564,11 +1564,11 @@
         </option>
         <option>
           <name>OCOutputOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state></state>
+          <state>BootLoader.srec</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1576,7 +1576,7 @@
         </option>
         <option>
           <name>OOCObjCopyEnable</name>
-          <state>0</state>
+          <state>1</state>
         </option>
       </data>
     </settings>
@@ -1611,7 +1611,7 @@
         <debug>0</debug>
         <option>
           <name>IlinkOutputFile</name>
-          <state>c.out</state>
+          <state>BootLoader.out</state>
         </option>
         <option>
           <name>IlinkLibIOConfig</name>
@@ -1931,6 +1931,9 @@
   </group>
   <file>
     <name>$PROJ_DIR$\main.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\version.h</name>
   </file>
 </project>
 
