@@ -83,6 +83,7 @@
             <Folder Name="Sources">
                 <Folder Name="accel">
                     <F N="MCU_TASKS/Sources/accel/acc_task.c"/>
+                    <F N="MCU_TASKS/Sources/accel/acc_task.h"/>
                 </Folder>
                 <Folder Name="ADC">
                     <F N="MCU_TASKS/Sources/ADC/ADC.c"/>

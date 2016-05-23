@@ -79,7 +79,7 @@ typedef struct flexcanInstance {
     flexcan_user_config_t           flexcanData;                // FlexCan configuration
     bool                            initialize;                 // Indicate that configuration is set
     flexcan_device_bitrate_t        instanceBitrate;            // Instance Bitrate
-    uint32_t                        iScanInstanceStarted;       // Indicate that Instance is started
+    bool                        	bScanInstanceStarted;       // Indicate that Instance is started
     uint32_t                        canPeClk;                   // HW clock value
     flexcan_device_MailboxConfig_t  MB_config[MAX_MB_NUMBER];   // MB configuration
     flexcan_msgbuff_t               MB_msgbuff[MAX_MB_NUMBER];  // MB message buffer for HW
