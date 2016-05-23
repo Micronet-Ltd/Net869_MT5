@@ -237,9 +237,6 @@ void Main_task( uint32_t initial_data ) {
     printf("\nMain Task: Loop \n");
 
     while ( 1 ) {
-        FPGA_write_led_status(LED_RIGHT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
-        _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
-        FPGA_write_led_status(LED_RIGHT, 0, 0, 0, 0); /*Blue LED */
         _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
     }
 
