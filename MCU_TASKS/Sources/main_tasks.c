@@ -233,6 +233,7 @@ void Main_task( uint32_t initial_data ) {
     FPGA_read_version(&FPGA_version);
     printf("\n FPGA version, %x", FPGA_version);
 
+    FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
     printf("\nMain Task: Loop \n");
 
     while ( 1 ) {
@@ -253,7 +254,7 @@ void OTG_CONTROL (void)
 		return;
 
 	user_switch = user_switch_status;
-	GPIO_DRV_SetPinOutput (USB_OTG_OE);
+    GPIO_DRV_SetPinOutput (USB_OTG_OE);
 	_time_delay (1000);
 
 	// disable OTG Switch
@@ -272,7 +273,7 @@ void OTG_CONTROL (void)
 		default            : break;
 
 		// enable OTG Switch
-		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+        GPIO_DRV_ClearPinOutput (USB_OTG_OE);
 	}
 }
 #endif
@@ -283,19 +284,19 @@ void configure_otg_for_host_or_device(void)
 	{
 		/* Connect D1 <-> D MCU or HUB */
 		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
-		GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+        GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
 
-		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-		GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
+        GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+        GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
 	}
 	else
 	{
 		/* Connect D2 <-> D A8 OTG */
 		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
-		GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
+        GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
 
-		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-		GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+        GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+        GPIO_DRV_SetPinOutput (CPU_OTG_ID);
 	}
 }
 
