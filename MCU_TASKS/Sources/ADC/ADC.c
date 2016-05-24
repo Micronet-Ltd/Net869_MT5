@@ -71,36 +71,34 @@ void ADC_init (void)
 
 void ADC_sample_input (KADC_CHANNELS_t channel)
 {
-	int16_t sample1;
-	uint16_t sample2;
-
-	assert (channel < kADC_CHANNELS);
-
-	ADC16_DRV_ConfigConvChn (ADC16_INSTANCE, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);				// trigger the conversion
-	ADC16_DRV_WaitConvDone  (ADC16_INSTANCE, ADC16_CHN_GROUP_0);												// Wait for the conversion to be done
-	sample1 = ADC16_DRV_GetConvValueSigned (ADC16_INSTANCE, ADC16_CHN_GROUP_0); 								// get value
-
-	if (adc_input[channel].chnConfig.diffConvEnable) {
-		// in case of differential pair sample positive input and calculate the value of negative pad
-		adc_input[channel].chnConfig.diffConvEnable = false;
-		ADC16_DRV_ConfigConvChn (ADC16_INSTANCE, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);			// trigger the conversion
-		ADC16_DRV_WaitConvDone  (ADC16_INSTANCE, ADC16_CHN_GROUP_0);											// Wait for the conversion to be done
-		sample2 = ADC16_DRV_GetConvValueSigned (ADC16_INSTANCE, ADC16_CHN_GROUP_0);								// get value
-		sample1 = sample2 - (int32_t) (sample1 << 1) ;
-
-		// the result can't be negative number
-		if (sample1 < 0)
-			sample1 = 0;
-		adc_input[channel].chnConfig.diffConvEnable = true;
-	}
-	
-	// KDS 3.0.0 has a compiler bug, where casting from int16_t to uint32_t is not implemented correctly.
-	// the actual casting is from int16_t to int32_t, therefore a workaround is implemented
-	sample2 = (uint16_t) sample1;
-	adc_input[channel].sample = (uint32_t) sample2;
-
-	ADC_convert_sample_to_value (&adc_input[channel]);
-}	
+       assert (channel < kADC_CHANNELS);
+ 
+       ADC16_DRV_ConfigConvChn (ADC16_INSTANCE, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);         // trigger the conversion
+       ADC16_DRV_WaitConvDone  (ADC16_INSTANCE, ADC16_CHN_GROUP_0);                                        // Wait for the conversion to be done
+ 
+       if (adc_input[channel].chnConfig.diffConvEnable) 
+       {
+              // in case of differential channel read differential value represented in signed 16bit.
+              // In order to convert it to signed 32 bit range, the value needs to be multiply by 2
+              int32_t   sample_diff_chn = (int32_t) (ADC16_DRV_GetConvValueSigned (ADC16_INSTANCE, ADC16_CHN_GROUP_0) << 1);
+              uint32_t  sample_pos_chn;
+ 
+              // sample positive input and calculate the value of negative pad
+              adc_input[channel].chnConfig.diffConvEnable = false;
+              ADC16_DRV_ConfigConvChn (ADC16_INSTANCE, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);   // trigger the conversion
+              ADC16_DRV_WaitConvDone  (ADC16_INSTANCE, ADC16_CHN_GROUP_0);                                  // Wait for the conversion to be done
+              adc_input[channel].chnConfig.diffConvEnable = true;
+ 
+              sample_pos_chn = ADC16_DRV_GetConvValueRAW (ADC16_INSTANCE, ADC16_CHN_GROUP_0);               // get value of positive channel
+              adc_input[channel].sample = sample_pos_chn - sample_diff_chn;                                 // calculate differential value
+       }
+       else
+       {
+              adc_input[channel].sample = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE, ADC16_CHN_GROUP_0);     // get  value for single ended channel
+       }
+ 
+       ADC_convert_sample_to_value (&adc_input[channel]);
+}
 
 	
 void ADC_channel_init (
