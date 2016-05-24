@@ -329,27 +329,28 @@ uint32_t choose_flash(void)
 }
 void version_srec(char* out_buf)
 {
-	char tmp_str[4] = {0};
-	uint32_t i; 
+//	char tmp_str[4] = {0};
+//	uint32_t i; 
 //  	uint32_t ver = 0;
 
 //	memcpy(out_buf, "4E455438", 8);//temp!!!
 //	out_buf[8] = 0;
 //	memset(out_buf, '0', 10); 
 //4E455438
-	tmp_str[0] = FW_VER_BTLD_OR_APP;
-	tmp_str[1] = FW_VER_MAJOR;
-	tmp_str[2] = FW_VER_MINOR;
-	tmp_str[3] = FW_VER_BUILD;
+//	tmp_str[0] = FW_VER_BTLD_OR_APP;
+//	tmp_str[1] = FW_VER_MAJOR;
+//	tmp_str[2] = FW_VER_MINOR;
+//	tmp_str[3] = FW_VER_BUILD;
 //	ver = ((FW_VER_BTLD_OR_APP & 0xFF) << 3*4) + ((FW_VER_MAJOR & 0xFF) << 2*4) + ((FW_VER_MINOR & 0xFF) << 1*4) + (FW_VER_BUILD & 0xFF);  
 //	uint_to_hex_string(ver, out_buf, 4);
 //	out_buf[8] = 0;
-	for(i = 0; i < 4; ++i)
-	{
-		uint_to_hex_string(tmp_str[i], &out_buf[i * 2], 1);
-	}
+//	for(i = 0; i < 4; ++i)
+//	{
+//		uint_to_hex_string(tmp_str[i], &out_buf[i * 2], 1);
+//	}
 		  
-	out_buf[8] = 0;
+//	out_buf[8] = 0;
+  	sprintf(out_buf, "%02X02X02X02X", FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD); 
 }
 
 int32_t exec_cmd(cmd_id id, char* out_buf)
@@ -656,6 +657,7 @@ void updater_task(uint32_t param)
 				{
 				  	uint8_t* ptr = 0;
 				  	int32_t res = -1;
+					int32_t len = 0;
 
 					id = (cmd_id)find_cmd(cmds, (char*)bbb, 3);
 					
@@ -678,8 +680,12 @@ void updater_task(uint32_t param)
 						ClearUart_Reply(bbb, (g_start_flag ? ((char*)nRDY_str) : ((char*)ERR_str)));
 						continue;
 					}
-
-					stat = transmit_with_timeout(ptr, strlen((char*)ptr));
+					
+					len = strlen((char*)ptr);
+					if(REV == id)
+					  len += 1;//for NULL
+					
+					stat = transmit_with_timeout(ptr, len);
 				}
 			}
 		}

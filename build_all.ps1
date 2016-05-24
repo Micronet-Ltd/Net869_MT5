@@ -9,7 +9,7 @@ $full0_file = "NET869_MCU_f0.srec"
 $full1_file = "NET869_MCU_f1.srec"
 $bl_file = "BootLoader.srec"
 $tmpl =  "FW_VER_BTLD_OR_APP", "FW_VER_MAJOR", "FW_VER_MINOR", "FW_VER_BUILD"
-$vers = 'S0070000'
+$vers = 'S00B0000'
 
 ######## merging bootloader and app with adding ready flag
 Function merge_srec ($file_in, $file_out, $serc)
@@ -34,9 +34,11 @@ Function vers_srec
 	param ( $file_in, [ref]$version )
 	
 	[byte]$intNum
-	[byte]$cs = 7
+	[byte]$tmpNum
+	[uint32]$cs = 0xB
 	$file = get-content $file_in
 	[string]$tmp
+	[string]$num_str
 
 	for($i=0; $i -lt 4; $i++)
 	{
@@ -46,9 +48,12 @@ Function vers_srec
 		$dig = "$(($str -split 'x')[1].Trim())"
 		$intNum = [convert]::ToByte($dig, 16)
 
-		$tmp = "{0:X2}" -f $intNum
-		$version.value += $tmp
-		$cs += $intNum
+		$tmp 	= "{0:X2}" -f $intNum
+		$num_str		=  "{0:X2}" -f ([byte]$tmp[0])
+		$version.value += $num_str
+		$num_str		=  "{0:X2}" -f ([byte]$tmp[1])
+		$version.value += $num_str
+		$cs += ([byte]$tmp[0] + [byte]$tmp[1])
 	}
 	$intNum = (-bnot $cs) -band 0xFF  
 	$tmp = "{0:X2}" -f $intNum
@@ -98,7 +103,7 @@ if(!$nr)
 # BootLoader
 if($bbl)
 {
-	$bvers = 'S0070000'
+	$bvers = 'S00B0000'
 	vers_srec  $PSScriptRoot'\BootLoader\version.h' ([ref]$bvers )
 	& $iar_tool 'BootLoader\BootLoader.ewp' -clean Release -log info
 	& $iar_tool "BootLoader\BootLoader.ewp" -make Release -log info	
