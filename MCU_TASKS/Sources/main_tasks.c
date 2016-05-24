@@ -24,6 +24,8 @@
 #include "rtc.h"
 #include "Wiggle_sensor.h"
 
+//#define DEBUG_BLINKING_RIGHT_LED 1
+
 //void MQX_I2C0_IRQHandler (void);
 //void MQX_I2C1_IRQHandler (void);
 void MQX_PORTA_IRQHandler(void);
@@ -236,8 +238,14 @@ void Main_task( uint32_t initial_data ) {
     FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
     printf("\nMain Task: Loop \n");
 
-    while ( 1 ) {
-        _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
+    while ( 1 ) 
+    {
+        _time_delay(MAIN_TASK_SLEEP_PERIOD);
+#ifdef DEBUG_BLINKING_RIGHT_LED
+        FPGA_write_led_status(LED_RIGHT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
+        _time_delay(MAIN_TASK_SLEEP_PERIOD);
+        FPGA_write_led_status(LED_RIGHT, 0, 0, 0, 0); /*Blue LED */
+#endif
     }
 
     printf("\nMain Task: End \n");
