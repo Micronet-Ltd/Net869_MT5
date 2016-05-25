@@ -16,7 +16,7 @@
 
 #define BAUD_115200 115200
 #define NUM_MESSAGES  	1//2
-#define UPD_MSG_SIZE   	68 //type + addr + size + 256 bytes + 1
+#define UPD_MSG_SIZE   	8 //type + addr + size + 256 bytes + 1
 
 #if defined(__cplusplus)
 extern "C" {

@@ -87,8 +87,8 @@ const char*	cmds_srec[] =
 };
 uint32_t 	g_offset = NVFLASH_BASE;
 uint32_t 	g_errors = 0;
-uint8_t 	bbb[516] = {0};
-uint8_t 	tmp_buf[255] = {0};
+uint8_t 	bbb[64] = {0};
+uint8_t 	tmp_buf[32] = {0};
 void*		g_event_ptr;
 uint32_t	client_queue[sizeof(LWMSGQ_STRUCT)/sizeof(uint32_t) + NUM_MESSAGES * UPD_MSG_SIZE];
 _mqx_uint  	msgf[UPD_MSG_SIZE];
@@ -350,7 +350,7 @@ void version_srec(char* out_buf)
 //	}
 		  
 //	out_buf[8] = 0;
-  	sprintf(out_buf, "%02X02X02X02X", FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD); 
+  	sprintf(out_buf, "%02X%02X%02X%02X", FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD); 
 }
 
 int32_t exec_cmd(cmd_id id, char* out_buf)
@@ -359,6 +359,7 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 	uint32_t val = 0;
 
 	strcpy(out_buf, OK_str);
+	printf("updater:%s  id %d\n", __func__, id);
 
 	switch(id)
 	{
@@ -416,6 +417,7 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 			printf("updater: PFD\n");			
 			g_start_flag = 0;
 			end_update();
+			//NVIC_SystemReset();
 		}
 		break;
 		default:
@@ -564,6 +566,8 @@ void updater_task(uint32_t param)
   	uint32_t tmp_len = 0;
 	cmd_id id = UNN;
 	
+
+	printf("updater: task started\n");
 	
 /*  	Upd_idTask = _task_create(0, UPDATER_EXEC_TASK, 0);//temp!!! place
 	if(MQX_NULL_TASK_ID == Upd_idTask)

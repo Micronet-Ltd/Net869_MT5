@@ -1,7 +1,12 @@
 
 $iar_tool = "c:\Program Files `(x86`)\IAR Systems\Embedded Workbench 7.4\common\bin\iarbuild.exe"
+$tproj = 'Release'
+$tproj_m = 'release'
+$core_num = 4
+#-log errors|warnings|info|all	
+$jar_log = 'info'
 $out_path = "$PSScriptRoot\MCU_TASKS\iar\out"
-$bl_path = "$PSScriptRoot\BootLoader\Release\Exe"
+$bl_path = "$PSScriptRoot\BootLoader\$tproj\Exe"
 $app_file = "NET869_MCU.srec"
 $app0_file = "NET869_MCU_0.srec"
 $app1_file = "NET869_MCU_1.srec"
@@ -33,30 +38,31 @@ Function vers_srec
 {
 	param ( $file_in, [ref]$version )
 	
-	[byte]$intNum
-	[byte]$tmpNum
-	[uint32]$cs = 0xB
-	$file = get-content $file_in
+	[byte]$byteNum 	= 0
+	[uint32]$cs		= 0xB
 	[string]$tmp
 	[string]$num_str
+
+	$file = get-content $file_in
 
 	for($i=0; $i -lt 4; $i++)
 	{
 		$tmp = $tmpl[$i]
 		$str = $file -match $tmp
-		Write-Host "$str";
-		$dig = "$(($str -split 'x')[1].Trim())"
-		$intNum = [convert]::ToByte($dig, 16)
+		Write-Host $str;
 
-		$tmp 	= "{0:X2}" -f $intNum
+		$num_str 		= "$(($str -split 'x')[1].Trim())"
+		$byteNum 		= [convert]::ToByte($num_str, 16)
+		$tmp 			= "{0:X2}" -f $byteNum
+
 		$num_str		=  "{0:X2}" -f ([byte]$tmp[0])
-		$version.value += $num_str
+		$version.value 	+= $num_str
 		$num_str		=  "{0:X2}" -f ([byte]$tmp[1])
-		$version.value += $num_str
-		$cs += ([byte]$tmp[0] + [byte]$tmp[1])
+		$version.value 	+= $num_str
+		$cs 			+= ([byte]$tmp[0] + [byte]$tmp[1])
 	}
-	$intNum = (-bnot $cs) -band 0xFF  
-	$tmp = "{0:X2}" -f $intNum
+	$byteNum = (-bnot $cs) -band 0xFF  
+	$tmp = "{0:X2}" -f $byteNum
 	$version.value += $tmp
 }
 ############################################
@@ -81,34 +87,35 @@ Remove-Item $out_path\*.*
 # New-Item $out_path PowerShell -type directory
 
 #build version S0 s-record
-Write-Host "building version s-record"
+#Write-Host 'building version S0 s-record';
 vers_srec  $PSScriptRoot'\MCU_TASKS\Sources\version.h' ([ref]$vers )
 Write-Host "version: $vers";
 
 #rebuild os libs
 if(!$nr)
 {
-	& $iar_tool 'MQX_OS\MQX_STDLIB\iar\mqx_stdlib_20d100m.ewp' -clean release -log info
-	& $iar_tool 'MQX_OS\MQX_STDLIB\iar\mqx_stdlib_20d100m.ewp' -make release -log info
+	& $iar_tool 'MQX_OS\MQX_STDLIB\iar\mqx_stdlib_20d100m.ewp' -clean $tproj_m -log $jar_log -parallel $core_num
+	& $iar_tool 'MQX_OS\MQX_STDLIB\iar\mqx_stdlib_20d100m.ewp' -make $tproj_m -log $jar_log -parallel $core_num
 
-	& $iar_tool 'MQX_OS\MQX_USB_DEVICE\iar\usbd_sdk_mqx_lib_20d100m.ewp' -clean Release -log info
-	& $iar_tool 'MQX_OS\MQX_USB_DEVICE\iar\usbd_sdk_mqx_lib_20d100m.ewp' -make Release -log info
+	& $iar_tool 'MQX_OS\MQX_USB_DEVICE\iar\usbd_sdk_mqx_lib_20d100m.ewp' -clean $tproj -log $jar_log -parallel $core_num
+	& $iar_tool 'MQX_OS\MQX_USB_DEVICE\iar\usbd_sdk_mqx_lib_20d100m.ewp' -make $tproj -log $jar_log -parallel $core_num
 
-	& $iar_tool 'MQX_OS\MQX_PSP\iar\mqx_psp_20d100m.ewp' -clean release -log info
-	& $iar_tool 'MQX_OS\MQX_PSP\iar\mqx_psp_20d100m.ewp' -make release -log info
+	& $iar_tool 'MQX_OS\MQX_PSP\iar\mqx_psp_20d100m.ewp' -clean $tproj_m -log $jar_log -parallel $core_num
+	& $iar_tool 'MQX_OS\MQX_PSP\iar\mqx_psp_20d100m.ewp' -make $tproj_m -log $jar_log -parallel $core_num
 
-	& $iar_tool 'MQX_OS\MQX_LIB\iar\ksdk_mqx_20d100m_lib.ewp' -clean Release -log info
-	& $iar_tool 'MQX_OS\MQX_LIB\iar\ksdk_mqx_20d100m_lib.ewp' -make Release -log info
+	& $iar_tool 'MQX_OS\MQX_LIB\iar\ksdk_mqx_20d100m_lib.ewp' -clean $tproj -log $jar_log -parallel $core_num
+	& $iar_tool 'MQX_OS\MQX_LIB\iar\ksdk_mqx_20d100m_lib.ewp' -make $tproj -log $jar_log -parallel $core_num
 }
 # BootLoader
 if($bbl)
 {
 	$bvers = 'S00B0000'
 	vers_srec  $PSScriptRoot'\BootLoader\version.h' ([ref]$bvers )
-	& $iar_tool 'BootLoader\BootLoader.ewp' -clean Release -log info
-	& $iar_tool "BootLoader\BootLoader.ewp" -make Release -log info	
+	Write-Host "Bootloader Version: $bvers";
+	& $iar_tool 'BootLoader\BootLoader.ewp' -clean $tproj -log $jar_log -parallel $core_num
+	& $iar_tool "BootLoader\BootLoader.ewp" -make $tproj -log $jar_log	-parallel $core_num
 #	Copy-Item BootLoader\Release\Exe\$bl_file $out_path\$bl_file
-	copy_app_with_version $PSScriptRoot'\BootLoader\Release\Exe\'$bl_file $bl_file $bvers 
+	copy_app_with_version $PSScriptRoot'\BootLoader\'$tproj'\Exe\'$bl_file $bl_file $bvers 
 }
 else
 {
@@ -117,20 +124,20 @@ else
 #PFlash
 Copy-Item MCU_TASKS\linker\files\MK20DX256xxx10_flash_0.icf MCU_TASKS\linker\MK20DX256xxx10_flash.icf
 
-& $iar_tool 'MCU_TASKS\iar\NET869_MCU.ewp' -clean Release -log info
-& $iar_tool 'MCU_TASKS\iar\NET869_MCU.ewp' -make Release -log info
+& $iar_tool 'MCU_TASKS\iar\NET869_MCU.ewp' -clean $tproj -log $jar_log -parallel $core_num
+& $iar_tool 'MCU_TASKS\iar\NET869_MCU.ewp' -make $tproj -log $jar_log -parallel $core_num
 
 # Copy-Item MCU_TASKS\iar\Release_IAR\$app_file $out_path\$app0_file
-copy_app_with_version $PSScriptRoot'\MCU_TASKS\iar\Release_IAR\'$app_file $app0_file $vers 
+copy_app_with_version $PSScriptRoot'\MCU_TASKS\iar\'$tproj'_IAR\'$app_file $app0_file $vers 
 
 #NVM flash
 Copy-Item MCU_TASKS\linker\files\MK20DX256xxx10_flash_1.icf MCU_TASKS\linker\MK20DX256xxx10_flash.icf
 
-& $iar_tool "MCU_TASKS\iar\NET869_MCU.ewp" -clean Release -log info	
-& $iar_tool "MCU_TASKS\iar\NET869_MCU.ewp" -make Release -log info
+& $iar_tool "MCU_TASKS\iar\NET869_MCU.ewp" -clean $tproj -log $jar_log	-parallel $core_num
+& $iar_tool "MCU_TASKS\iar\NET869_MCU.ewp" -make $tproj -log $jar_log -parallel $core_num
 
 #Copy-Item MCU_TASKS\iar\Release_IAR\$app_file $out_path\$app1_file
-copy_app_with_version $PSScriptRoot'\MCU_TASKS\iar\Release_IAR\'$app_file $app1_file $vers 
+copy_app_with_version $PSScriptRoot'\MCU_TASKS\iar\'$tproj'_IAR\'$app_file $app1_file $vers 
 
 # merging
 cd $out_path
