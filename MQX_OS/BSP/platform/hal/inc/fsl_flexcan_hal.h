@@ -154,9 +154,9 @@ typedef enum _flexcan_rx_fifo_id_filter_number {
 
 /*! @brief FlexCAN receive FIFO ID filter table structure*/
 typedef struct FLEXCANIdTable {
-    bool isRemoteFrame;      /*!< Remote frame*/
-    bool isExtendedFrame;    /*!< Extended frame*/
-    uint32_t *idFilter;    /*!< Receive FIFO ID filter elements*/
+    bool isRemoteFrame;     /*!< Remote frame*/
+    bool isExtendedFrame;   /*!< Extended frame*/
+    uint32_t idFilter;     /*!< Receive FIFO ID filter elements*/
 } flexcan_id_table_t;
 
 /*! @brief FlexCAN receive mask type.*/

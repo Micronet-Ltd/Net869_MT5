@@ -701,7 +701,7 @@ flexcan_status_t FLEXCAN_HAL_SetRxFifoFilter(
     flexcan_id_table_t *idFilterTable)
 {
     /* Set RX FIFO ID filter table elements*/
-uint32_t i, j, numOfFilters;
+    uint32_t i, j, numOfFilters;
     uint32_t val1 = 0, val2 = 0, val = 0;
     volatile CAN_Type  *flexcan_reg_ptr;
     volatile uint32_t *filterTable;
@@ -718,24 +718,23 @@ uint32_t i, j, numOfFilters;
         case (kFlexCanRxFifoIdElementFormatA):
             /* One full ID (standard and extended) per ID Filter Table element.*/
             CAN_BWR_MCR_IDAM(base, kFlexCanRxFifoIdElementFormatA);
-            if (idFilterTable->isRemoteFrame)
-            {
-                val = FlexCanRxFifoAcceptRemoteFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_RTR_SHIFT;
-            }
-            if (idFilterTable->isExtendedFrame)
-            {
-                val |= FlexCanRxFifoAcceptExtFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_IDE_SHIFT;
-            }
             for (i = 0; i < RxFifoFilterElementNum(numOfFilters); i++)
             {
-                if(idFilterTable->isExtendedFrame)
+                if ((idFilterTable + i)->isRemoteFrame)
                 {
-                    filterTable[i] = val + ((*(idFilterTable->idFilter + i)) <<
+                    val = FlexCanRxFifoAcceptRemoteFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_RTR_SHIFT;
+                }
+
+                if ((idFilterTable + i)->isExtendedFrame)
+                {
+                    val |= FlexCanRxFifoAcceptExtFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_IDE_SHIFT;
+
+                    filterTable[i] = val + (((idFilterTable + i)->idFilter) <<
                                              FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_EXT_SHIFT &
                                              FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_EXT_MASK);
                 }else
                 {
-                    filterTable[i] = val + ((*(idFilterTable->idFilter + i)) <<
+                    filterTable[i] = val + (((idFilterTable + i)->idFilter) <<
                                              FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_STD_SHIFT &
                                              FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_STD_MASK);
                 }
@@ -745,33 +744,42 @@ uint32_t i, j, numOfFilters;
             /* Two full standard IDs or two partial 14-bit (standard and extended) IDs*/
             /* per ID Filter Table element.*/
             CAN_BWR_MCR_IDAM(base, kFlexCanRxFifoIdElementFormatB);
-            if (idFilterTable->isRemoteFrame)
-            {
-                val1 = FlexCanRxFifoAcceptRemoteFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_RTR_SHIFT;
-                val2 = FlexCanRxFifoAcceptRemoteFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_RTR_SHIFT;
-            }
-            if (idFilterTable->isExtendedFrame)
-            {
-                val1 |= FlexCanRxFifoAcceptExtFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_IDE_SHIFT;
-                val2 |= FlexCanRxFifoAcceptExtFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_IDE_SHIFT;
-            }
+            
             j = 0;
             for (i = 0; i < RxFifoFilterElementNum(numOfFilters); i++)
             {
-                if (idFilterTable->isExtendedFrame)
+                if ((idFilterTable + j)->isRemoteFrame)
                 {
-                    filterTable[i] = val1 + (((*(idFilterTable->idFilter + j)) &
+                    val1 = FlexCanRxFifoAcceptRemoteFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_RTR_SHIFT;
+                }
+                if ((idFilterTable + j + 1)->isRemoteFrame)
+                {
+                    val2 = FlexCanRxFifoAcceptRemoteFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_RTR_SHIFT;
+                }
+
+                if ((idFilterTable + j)->isExtendedFrame)
+                {
+                    val1 |= FlexCanRxFifoAcceptExtFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_IDE_SHIFT;
+
+                    filterTable[i] = val1 + ((((idFilterTable + j)->idFilter) &
                                               FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_EXT_MASK) <<
                                               FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_EXT_SHIFT1);
-                    filterTable[i] |= val2 + (((*(idFilterTable->idFilter + j + 1)) &
+                }else
+                {
+                    filterTable[i] = val1 + ((((idFilterTable + j)->idFilter) &
+                                              FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_MASK) <<
+                                              FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_SHIFT1);
+                }
+
+                if ((idFilterTable + j + 1)->isExtendedFrame)
+                {
+                    val2 |= FlexCanRxFifoAcceptExtFrame << FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_IDE_SHIFT;
+                    filterTable[i] |= val2 + ((((idFilterTable + j + 1)->idFilter) &
                                               FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_EXT_MASK) <<
                                               FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_EXT_SHIFT2);
                 }else
                 {
-                    filterTable[i] = val1 + (((*(idFilterTable->idFilter + j)) &
-                                              FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_MASK) <<
-                                              FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_SHIFT1);
-                    filterTable[i] |= val2 + (((*(idFilterTable->idFilter + j + 1)) &
+                     filterTable[i] |= val2 + ((((idFilterTable + j + 1)->idFilter) &
                                               FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_MASK) <<
                                               FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_SHIFT2);
                 }
@@ -784,16 +792,16 @@ uint32_t i, j, numOfFilters;
             j = 0;
             for (i = 0; i < RxFifoFilterElementNum(numOfFilters); i++)
             {
-                filterTable[i] = (((*(idFilterTable->idFilter + j)) &
+                filterTable[i] = (((idFilterTable + j)->idFilter &
                                   FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_MASK) <<
                                   FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT1);
-                filterTable[i] = (((*(idFilterTable->idFilter + j + 1)) &
+                filterTable[i] = (((idFilterTable + j + 1)->idFilter &
                                   FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_MASK) <<
                                   FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT2);
-                filterTable[i] = (((*(idFilterTable->idFilter + j + 2)) &
+                filterTable[i] = (((idFilterTable + j + 2)->idFilter &
                                   FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_MASK) <<
                                   FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT3);
-                filterTable[i] = (((*(idFilterTable->idFilter + j + 3)) &
+                filterTable[i] = (((idFilterTable + j + 3)->idFilter &
                                   FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_MASK) <<
                                   FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT4);
                 j = j + 4;

@@ -35,6 +35,7 @@
 
 #include "fsl_flexcan_hal.h"
 #include "fsl_os_abstraction.h"
+#include <queue.h>
 #if FSL_FEATURE_SOC_FLEXCAN_COUNT
 
 /*!
@@ -61,6 +62,14 @@ extern const IRQn_Type g_flexcanBusOffIrqId[];
 /*! @brief Table to save message buffer IRQ numbers for FlexCAN instances. */
 extern const IRQn_Type g_flexcanOredMessageBufferIrqId[];
 
+typedef struct FLEXCAN_MailboxConfig {
+    uint8_t                    	iD;             // MB id
+    bool                        isEnable;       // Is MB configured as RX and enabled
+                                                //bool                        isTXConfigure;
+    flexcan_msgbuff_id_type_t   iD_type;        // Standard or extended
+    uint32_t                    iD_Mask;        // Mask configuration
+}FLEXCAN_MailboxConfig_t, *pFLEXCAN_MailboxConfig_t;
+
 /*!
  * @brief Internal driver state information.
  *
@@ -69,19 +78,22 @@ extern const IRQn_Type g_flexcanOredMessageBufferIrqId[];
  *      future releases.
  */
 typedef struct FlexCANState {
-    flexcan_msgbuff_t   *fifo_message;                  /*!< The FlexCAN receive FIFO data*/
-    flexcan_msgbuff_t   *mb_message[CAN_CS_COUNT];	    /*!< The FlexCAN receive MB data*/
-    volatile uint32_t   rx_mb_idx;                      /*!< Index of the message buffer for receiving*/
-    volatile uint32_t   tx_mb_idx;                      /*!< Index of the message buffer for transmitting*/
-    semaphore_t         txIrqSync;                      /*!< Used to wait for ISR to complete its TX business.*/
-    semaphore_t         rxIrqSync;                      /*!< Used to wait for ISR to complete its RX business.*/
-    volatile bool       isTxBusy;                       /*!< True if there is an active transmit. */
-    volatile bool       isRxBusyFIFO;                   /*!< True if there is an active receive on FIFO. */
-    volatile bool       isRxBusyMB[CAN_CS_COUNT];       /*!< True if there is an active receive on MB. */
-    volatile bool       isTxBlocking;                   /*!< True if transmit is blocking transaction. */
-    volatile bool       isRxBlockingFIFO;               /*!< True if receive is blocking transaction on FIFO. */
-    volatile bool       isRxBlockingMB[CAN_CS_COUNT];   /*!< True if receive is blocking transaction on MB. */
-    LWEVENT_STRUCT_PTR  pevent_ISR;                      /*!< Event signaling interrupt occure. */ 
+    //flexcan_msgbuff_t   *fifo_message;                    /*!< The FlexCAN receive FIFO data*/
+    //flexcan_msgbuff_t   *mb_message[CAN_CS_COUNT];	    /*!< The FlexCAN receive MB data*/
+    volatile uint32_t       rx_mb_idx;                      /*!< Index of the message buffer for receiving*/
+    volatile uint32_t       tx_mb_idx;                      /*!< Index of the message buffer for transmitting*/
+    semaphore_t             txIrqSync;                      /*!< Used to wait for ISR to complete its TX business.*/
+    semaphore_t             rxIrqSync;                      /*!< Used to wait for ISR to complete its RX business.*/
+    volatile bool           isTxBusy;                       /*!< True if there is an active transmit. */
+    volatile bool           isRxBusyFIFO;                   /*!< True if there is an active receive on FIFO. */
+    volatile bool           isRxBusyMB[CAN_CS_COUNT];       /*!< True if there is an active receive on MB. */
+    volatile bool           isTxBlocking;                   /*!< True if transmit is blocking transaction. */
+    volatile bool           isRxBlockingFIFO;               /*!< True if receive is blocking transaction on FIFO. */
+    volatile bool           isRxBlockingMB[CAN_CS_COUNT];   /*!< True if receive is blocking transaction on MB. */
+    FLEXCAN_MailboxConfig_t MB_config[CAN_CS_COUNT];        /*!< MB configuration */
+    LWEVENT_STRUCT_PTR      pevent_ISR;                     /*!< Event signaling interrupt occure. */
+	QUEUE_STRUCT_PTR	    fifo_free_messages;				/*!< Queue of available FIFO data elements. */
+	QUEUE_STRUCT_PTR	    fifo_ready_messages;			/*!< Queue of ready FIFO data elements. */ 
 } flexcan_state_t;
 
 /*! @brief FlexCAN data info from user*/
@@ -99,6 +111,17 @@ typedef struct FLEXCANUserConfig {
     bool is_rx_fifo_needed;                         /*!< 1 if needed; 0 if not. This controls whether the Rx FIFO feature is enabled or not. @internal gui name="Use rx fifo" id="is_rx_fifo_needed" */
     flexcan_operation_modes_t flexcanMode;          /*!< User configurable FlexCAN operation modes. @internal gui name="Flexcan Operation Mode" id="flexcanMode"*/
 } flexcan_user_config_t;
+
+typedef struct FLEXCAN_queue_element_struct {
+    QUEUE_ELEMENT_STRUCT    HEADER;
+    flexcan_msgbuff_t       msg_buff;
+}FLEXCAN_queue_element_t, *pFLEXCAN_queue_element_t;
+
+typedef struct FLEXCAN_Debug {
+    uint32_t acceptRX_IRQ;
+    uint32_t rejectRX_FifoEmpty;
+    uint32_t sendUSB;
+}FLEXCAN_Debug_t;
 
 /*******************************************************************************
  * API

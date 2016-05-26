@@ -17,8 +17,7 @@ extern "C"
 
 #define MAX_MB_NUMBER           		16
 
-#define RX_FLEXCAN_MSGQ_MESAGES         32
-#define TX_FLEXCAN_MSGQ_MESAGES         32
+#define RX_FLEXCAN_MSGQ_MESAGES         64
 
 #define FLEXCAN_DEVICE_TX_TIMEOUT       200
 
@@ -65,14 +64,6 @@ typedef struct _flexcan_device_msgRX {
     uint8_t     data[kFlexCanMessageSize];
 }flexcan_device_msgRX_t, *pflexcan_device_msgRX_t;
 
-typedef struct _flexcan_device_MailboxConfig {
-    uint8_t                    	iD;             // MB id
-    bool                        isEnable;       // Is MB configured as RX and enabled
-                                                //bool                        isTXConfigure;
-    flexcan_msgbuff_id_type_t   iD_type;        // Standard or extended
-    uint32_t                    iD_Mask;        // Mask configuration
-}flexcan_device_MailboxConfig_t, *pflexcan_device_MailboxConfig_t;
-
 typedef struct flexcanInstance {
     uint8_t                         instance;                   // Instance of CAN0 or CAN1
     flexcan_state_t                 canState;                   // Internal driver state information.
@@ -81,12 +72,15 @@ typedef struct flexcanInstance {
     flexcan_device_bitrate_t        instanceBitrate;            // Instance Bitrate
     bool                        	bScanInstanceStarted;       // Indicate that Instance is started
     uint32_t                        canPeClk;                   // HW clock value
-    flexcan_device_MailboxConfig_t  MB_config[MAX_MB_NUMBER];   // MB configuration
-    flexcan_msgbuff_t               MB_msgbuff[MAX_MB_NUMBER];  // MB message buffer for HW
     MUTEX_STRUCT                    mutex_MB_sync;              // sync MB configuration
     bool                            bIsInstanceStop;            // Indicate Stop instance process
-    _task_id                        RX_idTask;
-    _task_id                        TX_idTask;
+    QUEUE_STRUCT                    Rx_FreeMSGQueue;            // Queue free messages for recieve
+    QUEUE_STRUCT                    Rx_ReadyMSGQueue;           // Queue of ready messsages
+    void*                           pMesagebuff;                // Mssages allocated pool pointer
+    flexcan_id_table_t*             pFIFOIdFilterTable;         // FIFO ID filter table
+    uint32_t                        FIFOFilterTableSize;        // FIFO ID filter table size
+    uint32_t                        FIFOTableIndx;              // FIFO ID filter table next index
+    flexcan_id_table_t              FIFOAceptableMask;          // FIFO Aceptable mask 
 }flexcanInstance_t, *pflexcanInstance_t;
 
 typedef enum _flexcaninstance_operation_modes {
@@ -106,6 +100,7 @@ typedef struct _flexcandevice_initparams {
     flexcan_device_bitrate_t            instanceBitrate;    // Instance Bitrate
     uint32_t                            RX_queue_num;       // The recieve queue elements
     uint32_t                            TX_queue_num;       // The transmit queue elements
+    flexcan_rx_fifo_id_element_format_t fifoElemFormat;     // Format ID for FIFO filtering
 }flexcandevice_initparams_t, *pflexcandevice_initparams_t;
 
 typedef enum _flexcandevice_module {
