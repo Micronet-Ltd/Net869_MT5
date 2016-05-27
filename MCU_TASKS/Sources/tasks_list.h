@@ -9,6 +9,8 @@
 #define MAX_MSG_DATA_LEN	 0x40
 #define NUM_CLIENTS			 100
 
+#define USB_CAN_MAX_USABLE      (NUM_CLIENTS-10)
+
 #define START_APPLICATION_PRIORITY (16)
 
 typedef enum {

@@ -28,6 +28,8 @@
 
 /* Definition */
 
+//#define FLEXCAN_DEVICE_DEBUG_
+
 /* The following tables are the CAN bit timing parameters that are calculated by using the method
  * outlined in AN1798, section 4.1.
  */
@@ -298,8 +300,6 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
                     //ret = FlexCanDevice_SetRxMbGlobalMask ( pinstance, kFlexCanMsgIdStd , 0x120 );
                     //printf("FlexCanDevice_SetRxMbGlobalMask( ) return %d\n", ret);
-
-                    
                     
                     for (int i = 0; i < 14; i++) {
                         //ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0xF00 );
@@ -580,9 +580,11 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
 //#define MIC_LED_TEST
 
+//#define FLEXCAN_DEVICE_USB_PACKET_AGGREGATION
+
 void FLEXCAN_Rx_Task( uint32_t param ) {
 
-	uint32_t result, can_instance;
+	uint32_t result, can_instance, icount;
     _mqx_uint queue_count;
 	pflexcanInstance_t pinstance;
 	_queue_id  msg_qid;
@@ -629,35 +631,66 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 		if ( !result ) {
 			pmsg_data = NULL;
 			pmsg_size = curr_msg_len = 0;
-            queue_count = _queue_get_size(&(pinstance->Rx_ReadyMSGQueue));
-            printf("Rx_task: Ready buff %d\n", queue_count);
-            if (queue_count) {
-                if ((msg_ptr = (APPLICATION_MESSAGE_PTR_T)_msg_alloc(g_out_message_pool)) == NULL)
-                {
-                    printf("CAN RX task %u failed allocate msg\n", can_instance);
-                }
-                if ( msg_ptr ) {
-                    if ( BSP_CAN_DEVICE_0 == can_instance ) {
-                        msg_ptr->portNum = MIC_CDC_USB_3;
-                    }
-                    else {
-                        msg_ptr->portNum = MIC_CDC_USB_4;
-                    }
-                    msg_ptr->header.SOURCE_QID = msg_qid;
-                    msg_ptr->header.TARGET_QID = _msgq_get_id( 0, USB_QUEUE );;
-                    msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE;
-#if 0
-                    pmsg_data = ( char* )msg_ptr->data;
-#else
-                    pmsg_str = ( char* )msg_ptr->data;
-#endif
+			icount = 0;
+            do {
+				queue_count = _queue_get_size(&(pinstance->Rx_ReadyMSGQueue));
+                if ( (RX_FLEXCAN_MSGQ_TRESHOLD_MIN < queue_count || (20 < icount++))/* && ( USB_CAN_MAX_USABLE > _msg_available(g_out_message_pool) )*/ ) {
+                    printf("Rx_task: Ready buff %d\n", queue_count/*, _msg_available(g_out_message_pool)*/);
+					break;
                 }
 
+				_time_delay(3);
+            } while (1);
+
+			if (queue_count) {
+
                 for ( i = 0; i < queue_count; i++ ) {
-                    pqueue_msg = (pFLEXCAN_queue_element_t)_queue_dequeue(&(pinstance->Rx_ReadyMSGQueue));
-                    //printf("Get from queue %x elm %x\n",(uint32_t)(&(pinstance->Rx_ReadyMSGQueue)), (uint32_t)pqueue_msg );
+                    if (NULL == msg_ptr) {
+						do {
+							if ((msg_ptr = (APPLICATION_MESSAGE_PTR_T)_msg_alloc(g_out_message_pool)) == NULL) {
+								printf("CAN RX task %u failed allocate msg\n", can_instance);
+							}
+
+							if ( msg_ptr ) {
+								if ( BSP_CAN_DEVICE_0 == can_instance ) {
+									msg_ptr->portNum = MIC_CDC_USB_3;
+								}
+								else {
+									msg_ptr->portNum = MIC_CDC_USB_4;
+								}
+								msg_ptr->header.SOURCE_QID = msg_qid;
+								msg_ptr->header.TARGET_QID = _msgq_get_id( 0, USB_QUEUE );;
+								msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE;
+#ifdef FLEXCAN_DEVICE_USB_PACKET_AGGREGATION
+								pmsg_data = ( char* )msg_ptr->data;
+#else
+								pmsg_str = ( char* )msg_ptr->data;
+#endif
+								break;
+							}
+
+                            //Wait for free USB pool buffers
+                            _time_delay(10);
+                    
+                            if (RX_FLEXCAN_MSGQ_TRESHOLD_MAX < _queue_get_size(&(pinstance->Rx_ReadyMSGQueue))) {
+                                //printf("ERROR alocate USB buffer CAN ready msg %d\n",_queue_get_size(&(pinstance->Rx_ReadyMSGQueue)) );
+                                break;
+                            }
+
+						} while (1);
+					}// END if (NULL == msg_ptr)
+
+                    if (NULL != msg_ptr) {
+#ifdef FLEXCAN_DEVICE_DEBUG_
+						printf("Get from queue %x elm %x\n",(uint32_t)(&(pinstance->Rx_ReadyMSGQueue)), (uint32_t)pqueue_msg );
+#endif
+						pqueue_msg = (pFLEXCAN_queue_element_t)_queue_dequeue(&(pinstance->Rx_ReadyMSGQueue));
+                    }
+
                     if ( msg_ptr && pqueue_msg ) {
+#ifdef FLEXCAN_DEVICE_USB_PACKET_AGGREGATION
                         pmsg_str = msg_str;
+#endif
                         //Detect remoute or regular message 
                         tmp = (uint8_t) ((pqueue_msg->msg_buff.cs >> 20) & 0x1); 
                         tmp1 = (uint8_t)((pqueue_msg->msg_buff.cs >> 21) & 0x1);
@@ -728,39 +761,33 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
                         *pmsg_str = 0;
 
                         _queue_enqueue (&(pinstance->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
-                        //printf("Return to queue %x elm %x\n",(uint32_t)(&(pinstance->Rx_FreeMSGQueue)), (uint32_t)pqueue_msg );
-                        pqueue_msg = NULL;
+#ifdef FLEXCAN_DEVICE_DEBUG_
+						printf("Return to queue %x elm %x\n",(uint32_t)(&(pinstance->Rx_FreeMSGQueue)), (uint32_t)pqueue_msg );
+#endif
+						pqueue_msg = NULL;
 
                         curr_msg_len = _strnlen( msg_str, sizeof ( msg_str ) );
-                        //printf("CAN%d msg %s size %d\n", can_instance, msg_str, curr_msg_len );
+#ifdef FLEXCAN_DEVICE_DEBUG_
+						printf("CAN%d msg %s \n size %d\n", can_instance, msg_ptr->data, curr_msg_len );
+#endif
 
-#if 1
-                        //printf("CAN%d send message\n", can_instance );
-                        msg_ptr->header.SIZE += curr_msg_len;
+#ifndef FLEXCAN_DEVICE_USB_PACKET_AGGREGATION
+
+#ifdef FLEXCAN_DEVICE_DEBUG_
+                        printf("CAN%d send message\n", can_instance );
+#endif
+						msg_ptr->header.SIZE += curr_msg_len;
 
                         _msgq_send (msg_ptr);
                         if (MQX_OK != (err_task = _task_get_error()))
                         {
-                            //printf("FCD_RX_%u Task: ERROR: message send failed %x\n", can_instance, err_task);
-                            _task_set_error(MQX_OK);
+#ifdef FLEXCAN_DEVICE_DEBUG_
+							printf("FCD_RX_%u Task: ERROR: message send failed %x\n", can_instance, err_task);
+#endif
+							_task_set_error(MQX_OK);
                         }
-
-                        if ( (msg_ptr = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL ) {
-                            printf("CAN RX task %u failed allocate msg\n", can_instance);
-                        }
-                        if ( msg_ptr ) {
-                            if ( BSP_CAN_DEVICE_0 == can_instance ) {
-                                msg_ptr->portNum = MIC_CDC_USB_3;
-                            }
-                            else {
-                                msg_ptr->portNum = MIC_CDC_USB_4;
-                            }
-                            msg_ptr->header.SOURCE_QID = msg_qid;
-                            msg_ptr->header.TARGET_QID = _msgq_get_id( 0, USB_QUEUE );;
-                            msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE;
-
-                            pmsg_str = ( char* )msg_ptr->data;
-                        }
+						pmsg_str = NULL;
+						msg_ptr = NULL;
 #else
                         if ( MAX_MSG_DATA_LEN < (pmsg_size + curr_msg_len) ) {
                             printf("CAN%d msg is full realloc\n", can_instance );
@@ -805,53 +832,22 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 
                     }//End if ( msg_ptr && pqueue_msg )
                     else {
+						_time_delay(2);
+                        if (msg_ptr) {
+                            _mem_free(msg_ptr);
+                            msg_ptr = NULL;
+                        }
                         if (pqueue_msg) {
                             _queue_enqueue (&(pinstance->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
-                            printf("Return to queue %x elm %x\n",(uint32_t)(&(pinstance->Rx_FreeMSGQueue)), (uint32_t)pqueue_msg );
                             pqueue_msg = NULL;
                         }
-                        if ( NULL != pmsg_data ){
-                            if (0 != pmsg_size) {
-                                //printf("CAN%d pqueue_msg empty flash\n", can_instance );
-                                msg_ptr->header.SIZE += pmsg_size;
-
-                                _msgq_send (msg_ptr);
-                                if (MQX_OK != (err_task = _task_get_error()))
-                                {
-                                    //printf("FCD_RX_%u Task: ERROR: message send failed %x\n", can_instance, err_task);
-                                    _task_set_error(MQX_OK);
-                                }
-
-                                msg_ptr = NULL;
-                                pmsg_size = 0;
-                            
-                                if ( (msg_ptr = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL ) {
-                                    printf("CAN RX task %u failed allocate msg\n", can_instance);
-                                }
-                                if ( msg_ptr ) {
-                                    if ( BSP_CAN_DEVICE_0 == can_instance ) {
-                                        msg_ptr->portNum = MIC_CDC_USB_3;
-                                    }
-                                    else {
-                                        msg_ptr->portNum = MIC_CDC_USB_4;
-                                    }
-                                    msg_ptr->header.SOURCE_QID = msg_qid;
-                                    msg_ptr->header.TARGET_QID = _msgq_get_id( 0, USB_QUEUE );;
-                                    msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE;
-
-                                    pmsg_data = ( char* )msg_ptr->data;
-                                }
-                            }//End if (0 != pmsg_size)
-
-                        }//End  if ( NULL != pmsg_data )
-
-                    }//End if ( pmsg_data && pqueue_msg ) else
+                    } //End if ( pmsg_data && pqueue_msg ) else
 
                 }//End for ( i = 0; i < queue_count; i++ )
 
             }//End if (queue_count)
 
-		}//End if ( !result )
+		}//End if ( !result ) CAN message axxeptable in queue
 
 		if ( msg_ptr ) {
             if (0 != pmsg_size) {
