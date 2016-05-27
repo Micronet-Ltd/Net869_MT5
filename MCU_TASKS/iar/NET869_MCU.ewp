@@ -1117,7 +1117,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.50.2.10499</state>
+          <state>7.60.1.11206</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1422,6 +1422,7 @@
           <state>$PROJ_DIR$\..\Sources\USB</state>
           <state>$PROJ_DIR$\..\Sources</state>
           <state>$PROJ_DIR$\..\Board_Files</state>
+          <state>$PROJ_DIR$\..\Sources\rtc</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
