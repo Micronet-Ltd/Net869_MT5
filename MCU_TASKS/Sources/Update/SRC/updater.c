@@ -417,7 +417,7 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 			printf("updater: PFD\n");			
 			g_start_flag = 0;
 			end_update();
-			//NVIC_SystemReset();
+			NVIC_SystemReset();
 		}
 		break;
 		default:
