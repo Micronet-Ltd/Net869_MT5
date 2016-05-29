@@ -705,6 +705,7 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
                         g_Flexdebug.rejectRX_FifoEmpty++;
 				}
             }
+			FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
         }
         else
         {
