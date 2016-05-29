@@ -5,6 +5,8 @@
 extern "C"
 {
 #endif
+  
+#include "fsl_power_manager.h"
 
 #define CABLE_TYPE_VOLTAGE					(3300 / 2)
 
@@ -16,14 +18,15 @@ extern "C"
 
 /* Conversion from Temperature(c) to mV => 		mV = (temp * 10) + 500 */
 #define TEMPERATURE_MIN_TH		300			 /* mV = (-20 * 10) + 500 */
-#define TEMPERATURE_MAX_TH		1300		 /* mV = (80 * 10) + 500 */
+#define TEMPERATURE_MAX_TH		1400		 /* mV = (90 * 10) + 500 */
 
 void get_ignition_threshold(uint32_t * p_ignition_threshold);
 void set_ignition_threshold(uint32_t ignition_threshold);
+void switch_power_mode(power_manager_modes_t mode);
 
 #ifdef __cplusplus
 extern "C"
 }
 #endif
 
-#endif /* _POWER_MGM_H */ 
+#endif /* _POWER_MGM_H */

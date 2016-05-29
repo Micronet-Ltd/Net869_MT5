@@ -22,7 +22,7 @@ typedef enum {
 #define POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER		(1 << 1)
 
 void Device_init         (uint32_t delay_period);
-void Device_update_state (void);
+void Device_update_state (uint32_t * time_diff);
 void Device_turn_on      (void);
 void Device_turn_off     (void);
 void Device_reset        (void);
@@ -32,6 +32,7 @@ void Device_off_req(uint8_t wait_time);
 DEVICE_STATE_t Device_get_status   (void);
 void peripherals_enable         (void);
 void peripherals_disable        (void);
+void disable_peripheral_clocks(void);
 
 #ifdef __cplusplus
 }
