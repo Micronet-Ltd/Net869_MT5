@@ -182,7 +182,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
         if(NULL == msg_ptr) { _time_delay(1); continue; }
 
 		pbuff = (char *)msg_ptr->data;
-		printf("Command recieved %s \n", pbuff );
+		printf("Cmd recieved %s \n", pbuff );
 		msg_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
 		erroResp = '\r';
 		do {
@@ -202,6 +202,9 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 						erroResp = '\a';
 						break;
                     }
+					pbuff++;
+					msg_size--;
+					
 					if ( (fdBitrate_10_kHz <= baudrate) && ( fdBitrate_MAX > baudrate ) ) {
 						if ( BSP_CAN_DEVICE_0 == can_instance && fdBitrate_33_kHz == baudrate )
 						{
@@ -220,7 +223,12 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 						erroResp = '\a';
 						break;
 					}
-
+					if ('\r' != *pbuff) {
+						printf("Wrong Set Baudrate command \r not found\n");
+						Baudrate_notSet = 1;
+						erroResp = '\a';
+						break;
+					}
 					pbuff++;
 					msg_size--;
 				}
@@ -243,6 +251,14 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					break;
 				}
 				
+				pbuff++;
+				msg_size--;
+				
+				if ('\r' != *pbuff) {
+					printf("Wrong Open command \r not found\n");
+					erroResp = '\a';
+					break;
+				}
 				pbuff++;
 				msg_size--;
 				
@@ -276,6 +292,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
                 if (initCan.is_rx_fifo_needed)
                 {
+				  	printf("Set FIFO for recieve\n");
                     if (pinstance->FIFOAceptableMask.isExtendedFrame)
 						ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(pinstance->instance, kFlexCanMsgIdExt, pinstance->FIFOAceptableMask.idFilter);
 					else
@@ -352,6 +369,14 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 			case 'C':
 				pbuff++;
 				msg_size--;
+				if ('\r' != *pbuff) {
+					printf("Wrong close command \r not found\n");
+					erroResp = '\a';
+					break;
+				}
+				pbuff++;
+				msg_size--;
+				
 				//Disable CAN
 				Baudrate_notSet = 1; 
 				if ( BSP_CAN_DEVICE_0 == can_instance ) {
@@ -443,6 +468,11 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                         erroResp = '\a';
                         break;
                     }
+					if ('\r' != *(pbuff + 10)) {
+						printf("Wrong Set FIFO acceptable mask set \r not found\n");
+						erroResp = '\a';
+						break;
+					}
                     pbuff++;
                     msg_size--;
                     
@@ -465,12 +495,13 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                     pbuff++;
                     msg_size--;
 
-                    if (!parseAsciToUInt((const int8_t*)pbuff, msg_size, &(pinstance->FIFOAceptableMask.idFilter))) {
+                    if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(pinstance->FIFOAceptableMask.idFilter))) {
                         printf("ERROR parse ID FIFO MASK\n");
                         erroResp = '\a';
                         break;
                     }
-                    msg_size = 0;
+                    pbuff += 9;
+                    msg_size -= 9;
                 } while (0);
                 break;
             case 'M':
@@ -480,6 +511,11 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                         erroResp = '\a';
                         break;
                     }
+					if ('\r' != *(pbuff + 10)) {
+						printf("Wrong Set FIFO ID filter table set \r not found\n");
+						erroResp = '\a';
+						break;
+					}
                     pbuff++;
                     msg_size--;
 
@@ -490,6 +526,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                     }
 
                     if (pinstance->FIFOTableIndx >= (pinstance->FIFOFilterTableSize/sizeof(flexcan_id_table_t))) {
+					  	printf ("Overwrite FIFO ID Filter table start\n");
                         pinstance->FIFOTableIndx = 0;
                     }
 
@@ -513,18 +550,22 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                     pbuff++;
                     msg_size--;
 
-                    if (!parseAsciToUInt((const int8_t*)pbuff, msg_size, &(pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->idFilter)) {
+                    if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->idFilter)) {
                         printf("ERROR parse FIFO ID table value\n");
                         erroResp = '\a';
                         break;
                     }
+					
+					pbuff += 9;
+                    msg_size -= 9;
 
                     printf("Set FIFO table[%d] RTR %d IDE %d val %x\n", pinstance->FIFOTableIndx, 
                            (pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->isRemoteFrame, 
                            (pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->isExtendedFrame,
                            (pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->idFilter);
+					
+					pinstance->FIFOTableIndx++;
 
-                    msg_size = 0;
                 } while (0);
                 break;
 			case 'F':
