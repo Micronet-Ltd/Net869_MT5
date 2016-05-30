@@ -40,8 +40,8 @@ Function vers_srec
 	
 	[byte]$byteNum 	= 0
 	[uint32]$cs		= 0xB
-	[string]$tmp
-	[string]$num_str
+	[string]$tmp = ""
+	[string]$num_str = ""
 
 	$file = get-content $file_in
 
