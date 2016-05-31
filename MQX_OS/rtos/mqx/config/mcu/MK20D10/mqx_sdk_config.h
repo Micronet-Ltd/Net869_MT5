@@ -36,6 +36,7 @@
 #define CMSIS_ENABLED                       1
 #define MQX_USE_IDLE_TASK                   1
 #define MQX_TASK_DESTRUCTION                1
+#define MQX_USE_SW_WATCHDOGS                1
 
 // #undef MQX_DISABLE_CONFIG_CHECK
 

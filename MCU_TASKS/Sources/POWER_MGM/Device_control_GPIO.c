@@ -110,7 +110,7 @@ static uint8_t turn_on_condition_g = 0;
 uint32_t backup_power_cnt_g = 0 ;
 uint8_t led_blink_cnt_g     = 0 ;
 extern uint32_t ignition_threshold_g;
-extern volatile uint32_t cpu_watchdog_count_g;
+extern volatile uint32_t a8_watchdog_count_g;
 extern void * power_up_event_g;
 
 void Device_control_GPIO        (uint32_t * time_diff);

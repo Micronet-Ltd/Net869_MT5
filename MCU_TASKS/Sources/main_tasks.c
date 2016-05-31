@@ -7,6 +7,7 @@
 #include <fsl_flexcan_hal.h>
 #include <lwmsgq.h>
 #include <mutex.h>
+#include <watchdog.h>
 
 #include "fsl_i2c_master_driver.h"
 
@@ -28,6 +29,7 @@
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
+#define WATCHDOG_MCU_MAX_TIME       10000 //ms
 
 //void MQX_I2C0_IRQHandler (void);
 //void MQX_I2C1_IRQHandler (void);
@@ -49,7 +51,7 @@ void HardFault_Handler_asm(void);
 _pool_id   g_in_message_pool;
 
 _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
-volatile uint32_t cpu_watchdog_count_g = 0;
+volatile uint32_t a8_watchdog_count_g = 0;
 extern WIGGLE_SENSOR_t sensor_g;
 
 extern void * g_acc_event_h;
@@ -57,6 +59,7 @@ extern void * power_up_event_g;
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
+extern void handle_mcu_watchdog_expiry(void *);
 
 MUTEX_STRUCT g_i2c0_mutex;
 
@@ -166,19 +169,35 @@ void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 #ifdef MCU_HARD_FAULT_DEBUG
 	" b HardFault_HandlerC \n"
 #endif
-	);
 	WDG_RESET_MCU();
+	);
+}
+
+/*FUNCTION*------------------------------------------------------
+*
+* Function Name  : handle_mcu_watchdog_expiry
+* Returned Value : none
+* Comments       :
+*     This function is called when a watchdog has expired.
+*END*-----------------------------------------------------------*/
+
+void handle_mcu_watchdog_expiry
+   (
+      void   *td_ptr
+   )
+{
+  printf("\r\n MCU Watchdog Expired, resetting MCU! \r\n");
+  WDG_RESET_MCU();
 }
 
 void Main_task( uint32_t initial_data ) {
 
 	_queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
 	MUTEX_ATTR_STRUCT mutexattr;
-
-	uint32_t FPGA_version = 0;
-	_mqx_uint event_result;
-
-	_time_delay (10);
+    uint32_t FPGA_version = 0;
+    _mqx_uint event_result;
+    _mqx_uint result;
+    _mqx_uint event_bits;
 
 	printf("\n%s: Start\n", __func__);
 #if 0
@@ -192,6 +211,16 @@ void Main_task( uint32_t initial_data ) {
     // board Initialization
     post_bsp_hardware_init ();
     OSA_Init();
+    result = _watchdog_create_component(BSP_SYSTIMER_INTERRUPT_VECTOR,
+                                        handle_mcu_watchdog_expiry);
+    _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+    
+    if (result != MQX_OK) 
+    {
+      printf("\nError creating watchdog component.");
+      _task_block();
+    }    
+    
     GPIO_Config();
     ADC_init ();
 	
@@ -258,13 +287,24 @@ void Main_task( uint32_t initial_data ) {
 			printf("Main_task: Could not open PowerUp event \n");
 	}
 
-	printf("\nbefore power on event\n");
-	/* We are waiting until a wiggle event happens before starting everything up
-	   The main reason for this is to stay below 5mA at 12V */
-	_event_wait_all(power_up_event_g, 1, 0);
-	_event_clear(power_up_event_g, 1);
-
-	printf("\nAfter power on event\n");
+    printf("\nbefore power on event\n");
+    while (1)
+    {
+        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+        /* We are waiting until a wiggle event happens before starting everything up
+           The main reason for this is to stay below 5mA at 12V */
+        _event_wait_all(power_up_event_g, 1, WATCHDOG_MCU_MAX_TIME/2);
+        if (_event_get_value(power_up_event_g, &event_bits) == MQX_OK) 
+        {
+            if (event_bits & 0x01) 
+            {
+              _event_clear(power_up_event_g, 1);
+              _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+              break;
+            }
+        }
+    }
+    printf("\nAfter power on event\n");
 
 	// turn on device
 	GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
@@ -365,9 +405,10 @@ void Main_task( uint32_t initial_data ) {
 
 	printf("\nMain Task: Loop \n");
 
-	while ( 1 )
-	{
-		_time_delay(MAIN_TASK_SLEEP_PERIOD);
+    while ( 1 ) 
+    {
+        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+        _time_delay(MAIN_TASK_SLEEP_PERIOD);
 #ifdef DEBUG_BLINKING_RIGHT_LED
 		FPGA_write_led_status(LED_RIGHT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
 
@@ -458,7 +499,7 @@ void MQX_PORTB_IRQHandler(void)
 	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG))
 	{
 		GPIO_DRV_ClearPinIntFlag(CPU_WATCHDOG);
-		cpu_watchdog_count_g++;
+		a8_watchdog_count_g++;
 	}
 
 	if (GPIO_DRV_IsPinIntPending(CPU_SPKR_EN))
