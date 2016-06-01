@@ -117,11 +117,6 @@ void Main_task( uint32_t initial_data ) {
     {
         printf("\nMain Could not create POWER_MGM_TASK\n");
     }
-
-    event_result = _event_open("event.PowerUpEvent", &power_up_event_g);
-    if(MQX_OK != event_result){
-            printf("Main_task: Could not open PowerUp event \n");
-    }
     
     g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
     if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
@@ -138,6 +133,11 @@ void Main_task( uint32_t initial_data ) {
     }
 
     main_qid = _msgq_open(MAIN_QUEUE, 0);
+    
+    event_result = _event_open("event.PowerUpEvent", &power_up_event_g);
+    if(MQX_OK != event_result){
+            printf("Main_task: Could not open PowerUp event \n");
+    }
 
     printf("\nbefore power on event\n");
     /* We are waiting until a wiggle event happens before starting everything up
