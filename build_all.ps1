@@ -83,11 +83,20 @@ foreach ($arg in $args)
 	}	
 }
 
+#Added by Abid because script was not working if MCU project was not in C:\
+Write-Host "psscript root: $PSScriptRoot";
+$PSScriptRoot = $pwd
+Write-Host "psscript root after change: $PSScriptRoot";
+$out_path = "$PSScriptRoot\MCU_TASKS\iar\out"
+$bl_path = "$PSScriptRoot\BootLoader\$tproj\Exe"
+
+
 Remove-Item $out_path\*.*
 # New-Item $out_path PowerShell -type directory
 
 #build version S0 s-record
 #Write-Host 'building version S0 s-record';
+
 vers_srec  $PSScriptRoot'\MCU_TASKS\Sources\version.h' ([ref]$vers )
 Write-Host "version: $vers";
 
