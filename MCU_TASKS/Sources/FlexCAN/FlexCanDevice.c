@@ -28,6 +28,9 @@
 
 /* Definition */
 
+#define CAN_OK_RESPONCE 	0x0D
+#define CAN_ERROR_RESPONCE	0x07
+
 //#define FLEXCAN_DEVICE_DEBUG_
 
 /* The following tables are the CAN bit timing parameters that are calculated by using the method
@@ -135,8 +138,8 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 	can_instance = param;
 	pinstance = &g_flexcanDeviceInstance[can_instance];
 
-	initCan.flexcanMode         = fdFlexCanNormalMode;
-	initCan.instanceBitrate     = fdBitrate_125_kHz;
+	initCan.flexcanMode         = fdFlexCanDisableMode;
+	initCan.instanceBitrate     = fdBitrate_500_kHz;
 	initCan.is_rx_fifo_needed   = true;
 	initCan.max_num_mb          = MAX_MB_NUMBER;
 	initCan.num_id_filters      = kFlexCanRxFifoIDFilters_24;
@@ -182,16 +185,16 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
         if(NULL == msg_ptr) { _time_delay(1); continue; }
 
 		pbuff = (char *)msg_ptr->data;
-		printf("Cmd recieved %s \n", pbuff );
+		printf("Cmd recieved %c \n", (char)pbuff[0] );
 		msg_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
-		erroResp = '\r';
+		erroResp = CAN_OK_RESPONCE;
 		do {
 			switch ( *pbuff ) {
 			case 'S':
 				if ( msg_size > 2 ) {
                     if (true == pinstance->bScanInstanceStarted && fdFlexCanListenOnlyMode != initCan.flexcanMode) {
 						printf("The baudrate tried change on open instance\n");
-						erroResp = '\a';
+						erroResp = CAN_ERROR_RESPONCE;
 						break;
                     }
                     pbuff++;
@@ -199,7 +202,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                     if ( fcStatus_FLEXCAN_Success != parseHex((int8_t*)pbuff, 1, &baudrate)) {
 						printf("Error parse the Baudrate value %x %x\n", *pbuff, baudrate );
 						Baudrate_notSet = 1;
-						erroResp = '\a';
+						erroResp = CAN_ERROR_RESPONCE;
 						break;
                     }
 					pbuff++;
@@ -209,7 +212,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 						if ( BSP_CAN_DEVICE_0 == can_instance && fdBitrate_33_kHz == baudrate )
 						{
 							printf("Error set baudrate 33Khz to instance %d\n", can_instance);
-							erroResp = '\a';
+							erroResp = CAN_ERROR_RESPONCE;
 							break;
 						}
 						else {
@@ -220,13 +223,13 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					}
 					else {
 						printf("Error get baudrate command %c \n", baudrate );
-						erroResp = '\a';
+						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
-					if ('\r' != *pbuff) {
+					if (CAN_OK_RESPONCE != *pbuff) {
 						printf("Wrong Set Baudrate command \r not found\n");
 						Baudrate_notSet = 1;
-						erroResp = '\a';
+						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
 					pbuff++;
@@ -241,22 +244,22 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
                 if (1 == Baudrate_notSet) {
 					printf("The baudrate not configured Open command terminated\n");
-					erroResp = '\a';
+					erroResp = CAN_ERROR_RESPONCE;
 					break;
                 }
 
 				if ( fcStatus_FLEXCAN_Success != parseHex((int8_t*)pbuff, 1, &termination)) {
 					printf("Error parse the Termination value %x %x\n", *pbuff, termination );
-					erroResp = '\a';
+					erroResp = CAN_ERROR_RESPONCE;
 					break;
 				}
 				
 				pbuff++;
 				msg_size--;
 				
-				if ('\r' != *pbuff) {
+				if (CAN_OK_RESPONCE != *pbuff) {
 					printf("Wrong Open command \r not found\n");
-					erroResp = '\a';
+					erroResp = CAN_ERROR_RESPONCE;
 					break;
 				}
 				pbuff++;
@@ -369,9 +372,9 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 			case 'C':
 				pbuff++;
 				msg_size--;
-				if ('\r' != *pbuff) {
+				if (CAN_OK_RESPONCE != *pbuff) {
 					printf("Wrong close command \r not found\n");
-					erroResp = '\a';
+					erroResp = CAN_ERROR_RESPONCE;
 					break;
 				}
 				pbuff++;
@@ -406,14 +409,13 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				break;
 			case 't':
 			case 'r':
-				printf( "ERROR Command not recognized %c size %d\n", *pbuff, msg_size  );
 				Tx_data.msgbuffType = kFlexCanMsgIdStd;
 			case 'T':
             case 'R':
                 do {
                     if (fdFlexCanListenOnlyMode == initCan.flexcanMode) {
                         printf("Error CAN in listener mode\n" );
-                        erroResp = '\a';
+                        erroResp = CAN_ERROR_RESPONCE;
                         break;
                     }
                     if ('T' == *pbuff || 'R' == *pbuff) {
@@ -430,10 +432,10 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                     msg_size--;
                     if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data ) ) {
                         if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage ( pinstance, 14, &Tx_data ) )
-                            erroResp = '\a';
+                            erroResp = CAN_ERROR_RESPONCE;
 
                         pbuff = (char *)msg_ptr->data;
-                        if ('\a' != erroResp) {
+                        if (CAN_ERROR_RESPONCE != erroResp) {
                             if (kFlexCanMsgIdExt == Tx_data.msgbuffType)
                                 *pbuff ='N';
                             else
@@ -456,7 +458,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                         msg_ptr = NULL;
                     }//if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data ) )
                     else 
-                        erroResp = '\a';
+                        erroResp = CAN_ERROR_RESPONCE;
                 } while (0);
 
 				msg_size = 0;
@@ -465,12 +467,12 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                 do {
                     if ((10 > msg_size) || (true == pinstance->bScanInstanceStarted)) {
                         printf("ERROR set FIFO MASK\n" );
-                        erroResp = '\a';
+                        erroResp = CAN_ERROR_RESPONCE;
                         break;
                     }
-					if ('\r' != *(pbuff + 10)) {
+					if (CAN_OK_RESPONCE != *(pbuff + 10)) {
 						printf("Wrong Set FIFO acceptable mask set \r not found\n");
-						erroResp = '\a';
+						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
                     pbuff++;
@@ -489,7 +491,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                         break;
                     default:
                         printf("ERROR format extended/remote bit\n");
-                        erroResp = '\a';
+                        erroResp = CAN_ERROR_RESPONCE;
                         break;
                     }
                     pbuff++;
@@ -497,7 +499,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
                     if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(pinstance->FIFOAceptableMask.idFilter))) {
                         printf("ERROR parse ID FIFO MASK\n");
-                        erroResp = '\a';
+                        erroResp = CAN_ERROR_RESPONCE;
                         break;
                     }
                     pbuff += 9;
@@ -508,12 +510,12 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                 do {
                     if ((10 > msg_size) || (true == pinstance->bScanInstanceStarted)) {
                         printf("ERROR set FIFO ID filder\n" );
-                        erroResp = '\a';
+                        erroResp = CAN_ERROR_RESPONCE;
                         break;
                     }
-					if ('\r' != *(pbuff + 10)) {
+					if (CAN_OK_RESPONCE != *(pbuff + 10)) {
 						printf("Wrong Set FIFO ID filter table set \r not found\n");
-						erroResp = '\a';
+						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
                     pbuff++;
@@ -521,7 +523,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
                     if (NULL == pinstance->pFIFOIdFilterTable) {
                         printf("ERROR set FIFO ID table NULL\n" );
-                        erroResp = '\a';
+                        erroResp = CAN_ERROR_RESPONCE;
                         break;
                     }
 
@@ -544,7 +546,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                         break;
                     default:
                         printf("ERROR format extended/remote bit\n");
-                        erroResp = '\a';
+                        erroResp = CAN_ERROR_RESPONCE;
                         break;
                     }
                     pbuff++;
@@ -552,7 +554,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
                     if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->idFilter)) {
                         printf("ERROR parse FIFO ID table value\n");
-                        erroResp = '\a';
+                        erroResp = CAN_ERROR_RESPONCE;
                         break;
                     }
 					
@@ -572,11 +574,11 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				pbuff++;
 				msg_size--;
 				break;
-			case '\r':
+			case CAN_OK_RESPONCE:
 				pbuff++;
 				msg_size--;
 				break;
-			case '\a':
+			case CAN_ERROR_RESPONCE:
 				pbuff++;
 				msg_size--;
 				break;
@@ -585,10 +587,10 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				_msg_free(msg_ptr);
 				msg_ptr = NULL;
 				msg_size = 0;
-				//erroResp = '\a';
+				//erroResp = CAN_ERROR_RESPONCE;
 			}
 
-			if ( (0 >= msg_size) || ('\r' != erroResp) ) {
+			if ( (0 >= msg_size) || (CAN_OK_RESPONCE != erroResp) ) {
 				break;
 			}
 		}while ( 1 );
@@ -596,7 +598,9 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 		if ( msg_ptr ) {			
 			msg_ptr->header.SOURCE_QID = msg_qid;
 			msg_ptr->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
-			_mem_copy ( &erroResp, msg_ptr->data, 1 );
+			//_mem_copy ( &erroResp, msg_ptr->data, 1 );
+			msg_ptr->data[0] = (uint8_t)erroResp;
+			msg_ptr->data[1] = 0;
 			msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE + 1;
 			if ( BSP_CAN_DEVICE_0 == can_instance ) {
 				msg_ptr->portNum = MIC_CDC_USB_3;
@@ -707,6 +711,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 #else
 								pmsg_str = ( char* )msg_ptr->data;
 #endif
+								curr_msg_len = 0;
 								break;
 							}
 
@@ -750,21 +755,25 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
                             }
                         }
                         pmsg_str++;
+						curr_msg_len++;
                         //set message ID;
                         if (tmp) {
                             //Extended
                             sprintf ( pmsg_str, "%09x", pqueue_msg->msg_buff.msgId);
                             pmsg_str += 9;
+							curr_msg_len += 9;
                         }
                         else {
                             //Standard
                             sprintf ( pmsg_str, "%03x", pqueue_msg->msg_buff.msgId);
                             pmsg_str += 3;
+							curr_msg_len += 3;
                         }
                         //Message length
                         tmp = (uint8_t)((pqueue_msg->msg_buff.cs >> 16) & 0xF);
                         *pmsg_str = tmp + '0';
                         pmsg_str++;
+						curr_msg_len ++;
 
                         for (ind = 0; ind < tmp; ind++) {
                             tmp1 = (pqueue_msg->msg_buff.data[ind]>>4) & 0xF;
@@ -774,6 +783,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
                                 *pmsg_str = tmp1 + '0';
 
                             pmsg_str++;
+							curr_msg_len++;
                             tmp1 = pqueue_msg->msg_buff.data[ind] & 0xF;
                             if (tmp1 > 9 )
                                 *pmsg_str = tmp1 - 10 + 'A';
@@ -781,6 +791,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
                                 *pmsg_str = tmp1 + '0';
 
                             pmsg_str++;
+							curr_msg_len++;
                         }
 
                         //Message time stamp
@@ -795,9 +806,10 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
                             pmsg_str--;
                         }
                         pmsg_str += 5;
+						curr_msg_len += 5;
 
-                        //Add '\r' character
-                        *pmsg_str = '\r';
+                        //Add CAN_OK_RESPONCE character
+                        *pmsg_str = CAN_OK_RESPONCE;
                         pmsg_str++;
                         *pmsg_str = 0;
 
@@ -807,12 +819,10 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 #endif
 						pqueue_msg = NULL;
 
-                        curr_msg_len = _strnlen( msg_str, sizeof ( msg_str ) );
+                        //curr_msg_len = _strnlen( pmsg_str, sizeof ( msg_str ) );
 #ifdef FLEXCAN_DEVICE_DEBUG_
 						printf("CAN%d msg %s \n size %d\n", can_instance, msg_ptr->data, curr_msg_len );
 #endif
-
-#ifndef FLEXCAN_DEVICE_USB_PACKET_AGGREGATION
 
 #ifdef FLEXCAN_DEVICE_DEBUG_
                         printf("CAN%d send message\n", can_instance );
@@ -829,47 +839,9 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
                         }
 						pmsg_str = NULL;
 						msg_ptr = NULL;
-#else
-                        if ( MAX_MSG_DATA_LEN < (pmsg_size + curr_msg_len) ) {
-                            printf("CAN%d msg is full realloc\n", can_instance );
-                            msg_ptr->header.SIZE += pmsg_size;
-
-                            _msgq_send (msg_ptr);
-                            if (MQX_OK != (err_task = _task_get_error()))
-                            {
-                                printf("FCD_RX_%u Task: ERROR: message send failed %x\n", can_instance, err_task);
-                                _task_set_error(MQX_OK);
-                            }
-
-                            msg_ptr = NULL;
-                            pmsg_size = 0;
-                            if ( (msg_ptr = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL ) {
-                                printf("CAN RX task %u failed allocate msg\n", can_instance);
-                            }
-                            if ( msg_ptr ) {
-                                if ( BSP_CAN_DEVICE_0 == can_instance ) {
-                                    msg_ptr->portNum = MIC_CDC_USB_3;
-                                }
-                                else {
-                                    msg_ptr->portNum = MIC_CDC_USB_4;
-                                }
-                                msg_ptr->header.SOURCE_QID = msg_qid;
-                                msg_ptr->header.TARGET_QID = _msgq_get_id( 0, USB_QUEUE );;
-                                msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE;
-
-                                pmsg_data = ( char* )msg_ptr->data;
-                            }
-                        }
-
-                        if ( NULL != pmsg_data ) {
-                            _mem_copy((const void *)msg_str, (void *)pmsg_data, curr_msg_len);
-                            pmsg_size += curr_msg_len;
-                            pmsg_data += curr_msg_len;
-                            printf("pmsg_size %d\n", pmsg_size);
-                        }
-#endif
 
                         g_Flexdebug.sendUSB++;
+                        printf("Send USB %d\n", g_Flexdebug.sendUSB);
 
                     }//End if ( msg_ptr && pqueue_msg )
                     else {
@@ -1343,7 +1315,7 @@ flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen
 
     _mem_zero ((void*)pTxData, sizeof(flexcandevice_TX_data_t));
 
-	for ( i = 0; '\r' != *pbuff && 1 < bufflen; i++ ) {
+	for ( i = 0; CAN_OK_RESPONCE != *pbuff && 1 < bufflen; i++ ) {
 		if ( msg_limit > i ) {
 			pTxData->msgID <<= 4;
             if ( fcStatus_FLEXCAN_Success != parseHex (pbuff, 1, &tmp) )

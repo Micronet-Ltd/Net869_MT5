@@ -819,27 +819,18 @@ void CDC2_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 #if COMPOSITE_CFG_MAX > 2
     uint8_t error;
 
-    if( ( TRUE != g_app_composite_device.cdc_vcom[2].start_app ) ||
-            ( TRUE != g_app_composite_device.cdc_vcom[2].start_transactions ) ||
-            !g_app_composite_device.cdc_vcom[2].send_ready )
-    {
-        _msg_free(msg_ptr);
-        _time_delay(1);
-        printf("CDC2_send notReady\n");
-        return;
-    }
-
     /*check whether enumeration is complete or not */
     do {
-        if ( ( TRUE == g_app_composite_device.cdc_vcom[2].start_app ) ||
-                ( TRUE == g_app_composite_device.cdc_vcom[2].start_transactions )) {
+        if ( ( TRUE != g_app_composite_device.cdc_vcom[2].start_app ) ||
+                ( TRUE != g_app_composite_device.cdc_vcom[2].start_transactions )) {
             _msg_free(msg_ptr);
+             _time_delay(1);
+             printf("CDC2_send notReady\n");
             return;
         }
 
-        if ( ( TRUE == g_app_composite_device.cdc_vcom[2].start_app ) &&
-                ( TRUE == g_app_composite_device.cdc_vcom[2].start_transactions ) &&
-                !g_app_composite_device.cdc_vcom[2].send_ready) {
+        if ( !g_app_composite_device.cdc_vcom[2].send_ready) {
+            printf("CDC2_send in tr wait\n");
             _time_delay(2);
             continue;
         }
@@ -852,7 +843,8 @@ void CDC2_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
         _mem_copy ( msg_ptr->data, g_app_composite_device.cdc_vcom[2].curr_send_buf, g_app_composite_device.cdc_vcom[2].send_size );
             
 #endif
-        _msg_free(msg_ptr); 
+        _msg_free(msg_ptr);
+        //printf("Send USB  %d\n", g_app_composite_device.cdc_vcom[2].curr_send_buf[0]);
         g_app_composite_device.cdc_vcom[2].send_ready = FALSE;
         error = USB_Class_CDC_Send_Data(g_app_composite_device.cdc_vcom[2].cdc_handle,
                                             g_app_composite_device.cdc_vcom[2].in_endpoint,
@@ -877,28 +869,18 @@ void CDC3_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
 #if COMPOSITE_CFG_MAX > 3
     uint8_t error;
 
-    if( ( TRUE != g_app_composite_device.cdc_vcom[3].start_app ) ||
-            ( TRUE != g_app_composite_device.cdc_vcom[3].start_transactions ) ||
-            !g_app_composite_device.cdc_vcom[3].send_ready )
-    {
-        _msg_free(msg_ptr);
-        _time_delay(1);
-        return;
-    }
-
     /*check whether enumeration is complete or not */
     do {
-        if ( ( TRUE == g_app_composite_device.cdc_vcom[3].start_app ) &&
-                ( TRUE == g_app_composite_device.cdc_vcom[3].start_transactions ) &&
-                g_app_composite_device.cdc_vcom[3].send_ready) {
+        if ( ( TRUE != g_app_composite_device.cdc_vcom[3].start_app ) &&
+                ( TRUE != g_app_composite_device.cdc_vcom[3].start_transactions ) ) {
             _msg_free(msg_ptr);
+             _time_delay(1);
+             printf("CDC3_send notReady\n");
             return;
         }
 
-        if ( ( TRUE == g_app_composite_device.cdc_vcom[3].start_app ) &&
-                ( TRUE == g_app_composite_device.cdc_vcom[3].start_transactions ) &&
-                !g_app_composite_device.cdc_vcom[3].send_ready) {
-             printf("CDC3_send notReady wait\n");
+        if ( !g_app_composite_device.cdc_vcom[3].send_ready) {
+            printf("CDC3_send in tr wait\n");
             _time_delay(2);
             continue;
         }

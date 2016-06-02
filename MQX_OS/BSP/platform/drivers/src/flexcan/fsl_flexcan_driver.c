@@ -692,7 +692,7 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
                         g_Flexdebug.rejectRX_FifoEmpty++;
                     }
 
-                    if (NULL == pqueue_elem) {
+                    if (NULL != pqueue_elem) {
 						/* Get RX FIFO field values */
 						FLEXCAN_HAL_ReadRxFifo(base, &(pqueue_elem->msg_buff));
 						_queue_enqueue(state->fifo_ready_messages, (QUEUE_ELEMENT_STRUCT_PTR)pqueue_elem );
