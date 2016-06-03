@@ -684,33 +684,31 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
             //if (state->fifo_message != NULL)
             if ( (NULL != state->fifo_free_messages) && (NULL != state->fifo_ready_messages) )
             {
-                if (!_queue_is_empty(state->fifo_free_messages)) {
-					pqueue_elem = (pFLEXCAN_queue_element_t)_queue_dequeue(state->fifo_free_messages);
-                    if (NULL == pqueue_elem) {
-                        //Reuse ready messages
-                        pqueue_elem = (pFLEXCAN_queue_element_t)_queue_dequeue(state->fifo_ready_messages);
-                        g_Flexdebug.rejectRX_FifoEmpty++;
-                    }
+                pqueue_elem = (pFLEXCAN_queue_element_t)_queue_dequeue(state->fifo_free_messages);
+                if (NULL == pqueue_elem) {
+                    //Reuse ready messages
+                    pqueue_elem = (pFLEXCAN_queue_element_t)_queue_dequeue(state->fifo_ready_messages);
+                    g_Flexdebug.rejectRX_FifoEmpty++;
+                }
 
-                    if (NULL != pqueue_elem) {
-						/* Get RX FIFO field values */
-						FLEXCAN_HAL_ReadRxFifo(base, &(pqueue_elem->msg_buff));
-						_queue_enqueue(state->fifo_ready_messages, (QUEUE_ELEMENT_STRUCT_PTR)pqueue_elem );
-						/* Complete receive data */
-						//RS FLEXCAN_DRV_CompleteRxMessageFifoData(instance);
+                if (NULL != pqueue_elem) {
+                    /* Get RX FIFO field values */
+                    FLEXCAN_HAL_ReadRxFifo(base, &(pqueue_elem->msg_buff));
+                    _queue_enqueue(state->fifo_ready_messages, (QUEUE_ELEMENT_STRUCT_PTR)pqueue_elem );
+                    /* Complete receive data */
+                    //RS FLEXCAN_DRV_CompleteRxMessageFifoData(instance);
 
-                        //Set event for task notification
-                        if (MQX_OK != _lwevent_set( state->pevent_ISR, 1))
-                        {
-                            //printf ( "Error _lwevent_set set ISR event %x", temp1 );
-                        }
-						FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
-                        g_Flexdebug.acceptRX_IRQ++;
+                    //Set event for task notification
+                    if (MQX_OK != _lwevent_set( state->pevent_ISR, 1))
+                    {
+                        //printf ( "Error _lwevent_set set ISR event %x", temp1 );
                     }
-                    else
-                        g_Flexdebug.rejectRX_FifoEmpty++;
-				}
-            }
+                    FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
+                    g_Flexdebug.acceptRX_IRQ++;
+                }
+                else
+                    g_Flexdebug.rejectRX_FifoEmpty++;
+			}
 			FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
         }
         else
