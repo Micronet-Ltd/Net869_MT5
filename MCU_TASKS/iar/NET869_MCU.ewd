@@ -1623,7 +1623,7 @@
         </option>
         <option>
           <name>MemFile</name>
-          <state></state>
+          <state>$TOOLKIT_DIR$\CONFIG\debugger\NXP\MK20DX256xxx10.ddf</state>
         </option>
         <option>
           <name>RunToEnable</name>
@@ -1663,11 +1663,11 @@
         </option>
         <option>
           <name>OCDynDriverList</name>
-          <state>ARMSIM_ID</state>
+          <state>JLINK_ID</state>
         </option>
         <option>
           <name>OCLastSavedByProductVersion</name>
-          <state></state>
+          <state>7.60.1.11206</state>
         </option>
         <option>
           <name>UseFlashLoader</name>
@@ -1691,7 +1691,7 @@
         </option>
         <option>
           <name>FlashLoadersV3</name>
-          <state></state>
+          <state>$TOOLKIT_DIR$\config\flashloader\NXP\FlashK60Dxxx64K.board</state>
         </option>
         <option>
           <name>OCImagesSuppressCheck1</name>
@@ -1699,7 +1699,7 @@
         </option>
         <option>
           <name>OCImagesPath1</name>
-          <state></state>
+          <state>C:\Users\abid.esmail\Documents\micronet\source\Net869_MT5\BootLoader\Release\Exe\BootLoader.srec</state>
         </option>
         <option>
           <name>OCImagesSuppressCheck2</name>
@@ -1723,7 +1723,7 @@
         </option>
         <option>
           <name>OCImagesOffset1</name>
-          <state></state>
+          <state>0x0</state>
         </option>
         <option>
           <name>OCImagesOffset2</name>
@@ -1735,7 +1735,7 @@
         </option>
         <option>
           <name>OCImagesUse1</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OCImagesUse2</name>
@@ -1759,7 +1759,7 @@
         </option>
         <option>
           <name>OCMulticoreNrOfCores</name>
-          <state></state>
+          <state>1</state>
         </option>
         <option>
           <name>OCMulticoreMaster</name>
@@ -2439,7 +2439,7 @@
         <option>
           <name>CCJLinkResetList</name>
           <version>6</version>
-          <state>5</state>
+          <state>7</state>
         </option>
         <option>
           <name>CCJLinkInterfaceCmdLine</name>
