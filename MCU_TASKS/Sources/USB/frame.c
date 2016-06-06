@@ -13,7 +13,7 @@
 // TODO: this is based on old code, may have some bugs which were fixed.
 
 // buffer d is atleast 2*len+2, assuming all bytes are escaped and 2 FEND.
-int frame_encode(unsigned char *s, unsigned char *d, int len)
+int frame_encode(const unsigned char *s, unsigned char *d, int len)
 {
 	unsigned char *p = d;
 	unsigned char c;

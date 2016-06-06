@@ -30,14 +30,14 @@ void send_control_msg(packet_t * msg, uint8_t msg_size)
 	{
 		//TODO: for now hard coding the sequence
 		msg->seq = 0x99;
-		/* copy seq and packet type */
-		memcpy(ctl_tx_msg->data,(uint8_t *) msg, 2);
-		/* copy the data */
-		memcpy(ctl_tx_msg->data+2, msg->data, msg_size);
-
+        /* copy seq(1byte) and packet type(1byte)*/
+        memcpy(ctl_tx_msg->data,(uint8_t *) msg, sizeof(msg->seq) + sizeof(msg->pkt_type));
+        /* copy the data */
+        memcpy(ctl_tx_msg->data + sizeof(msg->seq) + sizeof(msg->pkt_type), msg->data, msg_size);
+        
 		ctl_tx_msg->header.SOURCE_QID = _msgq_get_id(0, CONTROL_TX_QUEUE);
 		ctl_tx_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
-		ctl_tx_msg->header.SIZE = (msg_size + 2);//add seq and packet type
+		ctl_tx_msg->header.SIZE = (msg_size + sizeof(msg->seq) + sizeof(msg->pkt_type));//add seq and packet type
 		ctl_tx_msg->portNum = MIC_CDC_USB_1;
 		_msgq_send (ctl_tx_msg);
 

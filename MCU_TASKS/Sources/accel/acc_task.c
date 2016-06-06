@@ -170,7 +170,7 @@ void Acc_task (uint32_t initial_data)
 		}
 
 		if(acc_msg) {
-			acc_fifo_read ((uint8_t*)&(acc_msg->data), (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
+			acc_fifo_read ((acc_msg->data), (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
 			_time_get(&time);
 			acc_msg->timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
 			acc_msg->header.SOURCE_QID = acc_qid;
