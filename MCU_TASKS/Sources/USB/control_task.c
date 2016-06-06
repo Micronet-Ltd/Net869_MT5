@@ -53,6 +53,9 @@ void control_task (uint32_t initial_data)
 {
 	APPLICATION_MESSAGE_T *ctl_rx_msg;
 	const _queue_id     control_rx_qid = _msgq_open (CONTROL_RX_QUEUE, 0);
+    uint32_t time_diff = 0;
+    uint32_t current_time = 0;
+    TIME_STRUCT time;
 
 	printf ("\n control_task: Start \n");
 
@@ -65,7 +68,11 @@ void control_task (uint32_t initial_data)
 		if (ctl_rx_msg != NULL)
 		{
 			//TODO: For debug only
-			printf("\n data : %x,%x, \t ,%x,%x, size %d \n", ctl_rx_msg->data[0],
+            _time_get(&time);
+            
+            time_diff = ((time.SECONDS * 1000) +  time.MILLISECONDS) - current_time;
+            current_time += time_diff;
+			printf("\n time diff: %d ms, data : %x,%x, \t ,%x,%x, size %d \n", time_diff, ctl_rx_msg->data[0],
 					ctl_rx_msg->data[1],ctl_rx_msg->data[ctl_rx_msg->header.SIZE -2],
 					ctl_rx_msg->data[ctl_rx_msg->header.SIZE -1], ctl_rx_msg->header.SIZE);
 			/* process message */
