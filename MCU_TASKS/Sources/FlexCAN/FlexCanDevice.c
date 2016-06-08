@@ -92,6 +92,8 @@ flexcan_device_status_t 	parseHex(int8_t * line, uint8_t len, uint8_t * value);
 bool                        parseAsciToUInt (const int8_t * line, uint8_t len, uint32_t * value);
 bool                        AllocateFIFOFilterTable (pflexcanInstance_t pinst,flexcan_rx_fifo_id_filter_num_t filtnum, flexcan_rx_fifo_id_element_format_t tableFormat);
 
+int32_t                     ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *DestBuff);
+
 void FlexCanDevice_InitHW ( )
 {
 	//Unset CAN termination
@@ -117,19 +119,20 @@ void FlexCanDevice_InitHW ( )
 }
 
 void FLEXCAN_Tx_Task( uint32_t param ) {
-	uint32_t result, can_instance;
-	pflexcanInstance_t pinstance;
-	_queue_id  msg_qid;
-	APPLICATION_MESSAGE_PTR_T msg_ptr;
-	flexcan_device_status_t ret;
-	LWEVENT_STRUCT      event_ISR;
-	flexcandevice_TX_data_t Tx_data;
-	uint8_t termination, baudrate, Baudrate_notSet = 1;
-    char* pbuff;
-    int32_t msg_size;
-    char erroResp;
+	uint32_t                    result, can_instance;
+	pflexcanInstance_t          pinstance;
+	_queue_id               	msg_qid;
+	APPLICATION_MESSAGE_PTR_T   msg_ptr;
+	flexcan_device_status_t     ret;
+	LWEVENT_STRUCT              event_ISR;
+	flexcandevice_TX_data_t     Tx_data;
+	uint8_t                     termination, baudrate, Baudrate_notSet = 1;
+    char*                       pbuff;
+    int32_t                     msg_size;
+    char                        erroResp;
+    pcdc_mic_queue_element_t    pqMemElem;
 
-	flexcandevice_initparams_t initCan;
+	flexcandevice_initparams_t  initCan;
 
 	if ( BOARD_CAN_INSTANCE <= param ) {
 		printf( "CAN_TX thread wrong param %u\n", param );
@@ -172,22 +175,21 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
        _task_block();
     }
 
-
 	if (MQX_OK != _lwevent_create(&event_ISR, LWEVENT_AUTO_CLEAR)) // Not set auto clean bits
     {
         printf("Make event failed\n");
         _task_block();// ( kStatus_FLEXCAN_Fail );
     }
 
-
 	do {
 		msg_ptr = _msgq_receive(msg_qid, 1);
         if(NULL == msg_ptr) { _time_delay(1); continue; }
 
 		pbuff = (char *)msg_ptr->data;
-		printf("Cmd recieved %c \n", (char)pbuff[0] );
 		msg_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
 		erroResp = CAN_OK_RESPONCE;
+        pqMemElem = NULL;
+        printf("Cmd rec %c=%d, s %d, Inst %d\n", (char)pbuff[0], (char)pbuff[0], msg_size, pinstance->instance );
 		do {
 			switch ( *pbuff ) {
 			case 'S':
@@ -433,7 +435,31 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                     if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data ) ) {
                         if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage ( pinstance, 14, &Tx_data ) )
                             erroResp = CAN_ERROR_RESPONCE;
+#if 1
+                        _msg_free(msg_ptr);
+                        msg_ptr = NULL;
+                        pqMemElem = GetUSBWriteBuffer (pinstance->initialize + 2);
+                        if (NULL == pqMemElem) {
+                            printf("%s: Error get mem for USB responce\n", __func__);
+                            break;
+                        }
 
+                        pbuff = (char *)pqMemElem->data_buff;
+                        if (CAN_ERROR_RESPONCE != erroResp) {
+                            if (kFlexCanMsgIdExt == Tx_data.msgbuffType)
+                                *pbuff ='N';
+                            else
+                                *pbuff ='n';
+                            pbuff++;
+                        }
+                        *pbuff = erroResp;
+                        pqMemElem->send_size = 2;
+
+                        if (!SetUSBWriteBuffer(pqMemElem, (pinstance->initialize + 2)) ) {
+                            printf("%s: Error send data to CDC_%d\n", __func__, (uint32_t)(pinstance->initialize + 2));
+                        }
+                        pqMemElem = NULL;
+#else
                         pbuff = (char *)msg_ptr->data;
                         if (CAN_ERROR_RESPONCE != erroResp) {
                             if (kFlexCanMsgIdExt == Tx_data.msgbuffType)
@@ -456,6 +482,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                         }
                         _msgq_send (msg_ptr);
                         msg_ptr = NULL;
+#endif
                     }//if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data ) )
                     else 
                         erroResp = CAN_ERROR_RESPONCE;
@@ -574,16 +601,16 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				pbuff++;
 				msg_size--;
 				break;
-			case CAN_OK_RESPONCE:
-				pbuff++;
-				msg_size--;
-				break;
-			case CAN_ERROR_RESPONCE:
-				pbuff++;
-				msg_size--;
-				break;
+//  		case CAN_OK_RESPONCE:
+//  			pbuff++;
+//  			msg_size--;
+//  			break;
+//  		case CAN_ERROR_RESPONCE:
+//  			pbuff++;
+//  			msg_size--;
+//  			break;
 			default:
-				printf( "ERROR Command not recognized %c size %d\n", *pbuff, msg_size  );
+				printf( "ERROR Command not recognized %c %d size %d\n", *pbuff, *pbuff, msg_size  );
 				_msg_free(msg_ptr);
 				msg_ptr = NULL;
 				msg_size = 0;
@@ -595,7 +622,27 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 			}
 		}while ( 1 );
 		
-		if ( msg_ptr ) {			
+		if ( msg_ptr ) {
+#if 1
+            _msg_free(msg_ptr);
+			msg_ptr = NULL;
+
+            do {
+                pqMemElem = GetUSBWriteBuffer(pinstance->initialize + 2);
+                if (NULL == pqMemElem) {
+                    printf("%s: Error get mem for USB responce_\n", __func__);
+                    break;
+                }
+
+                *(pqMemElem->data_buff) = erroResp;
+                pqMemElem->send_size = 1;
+
+                if (!SetUSBWriteBuffer(pqMemElem, (pinstance->initialize + 2)) ) {
+                    printf("%s: Error send data to CDC_%d\n", __func__, (uint32_t)(pinstance->initialize + 2));
+                }
+                pqMemElem = NULL;
+            } while (0);
+#else
 			msg_ptr->header.SOURCE_QID = msg_qid;
 			msg_ptr->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
 			//_mem_copy ( &erroResp, msg_ptr->data, 1 );
@@ -609,6 +656,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				msg_ptr->portNum = MIC_CDC_USB_4;
 			}
 			_msgq_send (msg_ptr);
+#endif
 		}
 		else
         	_time_delay(1);
@@ -629,16 +677,15 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
 void FLEXCAN_Rx_Task( uint32_t param ) {
 
-	uint32_t result, can_instance, icount;
-    _mqx_uint queue_count;
-	pflexcanInstance_t pinstance;
-	_queue_id  msg_qid;
-	APPLICATION_MESSAGE_PTR_T msg_ptr;
-    pFLEXCAN_queue_element_t pqueue_msg;
-	uint8_t tmp, tmp1, ind;
-	char msg_str[35];
-	char *pmsg_str;
-	_mqx_uint err_task;
+	uint32_t                    result, can_instance, icount;
+    _mqx_uint                   queue_count;
+	pflexcanInstance_t          pinstance;
+    pFLEXCAN_queue_element_t    pqueue_msg;
+	uint8_t                     *pmsg_str;
+    uint32_t                    idx, i;
+    int32_t                     curr_msg_len;
+	//uint8_t                     *pmsg_data;
+    pcdc_mic_queue_element_t    pqMemElem;
 
 	if ( BOARD_CAN_INSTANCE <= param ) {
 		return;
@@ -647,6 +694,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 	
 	printf("FLEXCAN_Rx_Task Task: Loop instance %u \n", can_instance);
 
+#if 0
 	if ( BSP_CAN_DEVICE_0 == can_instance ) {
 		msg_qid = _msgq_open(CAN1_RX_QUEUE, 0);
 	}
@@ -659,13 +707,10 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
        printf("\nCould not create a message pool CAN %u _TX_QUEU\n", param);
        _task_block();
     }
-
+#endif
 	pinstance = &g_flexcanDeviceInstance[can_instance];
 
 	do {
-		uint32_t idx, i, pmsg_size, curr_msg_len;
-		char *pmsg_data;
-		_mqx_uint mRet;
 		if (false == pinstance->bScanInstanceStarted )
 		{
 			_time_delay(2);
@@ -674,10 +719,11 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 		result = FLEXCAN_DRV_GetReceiveStatusBlocking(pinstance->instance, &idx, 0);
 
 		if ( !result ) {
-			pmsg_data = NULL;
-			pmsg_size = curr_msg_len = 0;
+			pmsg_str = NULL;
+			curr_msg_len = 0;
 			icount = 0;
             do {
+                //Accamulate the CAN messages before USB send
 				queue_count = _queue_get_size(&(pinstance->Rx_ReadyMSGQueue));
                 if ( (RX_FLEXCAN_MSGQ_TRESHOLD_MIN < queue_count || (20 < icount++))/* && ( USB_CAN_MAX_USABLE > _msg_available(g_out_message_pool) )*/ ) {
                     printf("Rx_task: Ready buff %d\n", queue_count/*, _msg_available(g_out_message_pool)*/);
@@ -690,128 +736,27 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 			if (queue_count) {
 
                 for ( i = 0; i < queue_count; i++ ) {
-                    if (NULL == msg_ptr) {
-						do {
-							if ((msg_ptr = (APPLICATION_MESSAGE_PTR_T)_msg_alloc(g_out_message_pool)) == NULL) {
-								printf("CAN RX task %u failed allocate msg\n", can_instance);
-							}
+                    if (NULL == pqMemElem) {
+                        pqMemElem = GetUSBWriteBuffer (pinstance->instance + 2);
+                        if (NULL == pqMemElem) {
+                            printf("%s: Error get mem for USB drop\n", __func__);
+                            continue;
+                        }
+						else {
+							pmsg_str = pqMemElem->data_buff;
+							pqMemElem->send_size = 0;
+						}
+                    }
 
-							if ( msg_ptr ) {
-								if ( BSP_CAN_DEVICE_0 == can_instance ) {
-									msg_ptr->portNum = MIC_CDC_USB_3;
-								}
-								else {
-									msg_ptr->portNum = MIC_CDC_USB_4;
-								}
-								msg_ptr->header.SOURCE_QID = msg_qid;
-								msg_ptr->header.TARGET_QID = _msgq_get_id( 0, USB_QUEUE );;
-								msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE;
-#ifdef FLEXCAN_DEVICE_USB_PACKET_AGGREGATION
-								pmsg_data = ( char* )msg_ptr->data;
-#else
-								pmsg_str = ( char* )msg_ptr->data;
-#endif
-								curr_msg_len = 0;
-								break;
-							}
-
-                            //Wait for free USB pool buffers
-                            _time_delay(10);
-                    
-                            if (RX_FLEXCAN_MSGQ_TRESHOLD_MAX < _queue_get_size(&(pinstance->Rx_ReadyMSGQueue))) {
-                                //printf("ERROR alocate USB buffer CAN ready msg %d\n",_queue_get_size(&(pinstance->Rx_ReadyMSGQueue)) );
-                                break;
-                            }
-
-						} while (1);
-					}// END if (NULL == msg_ptr)
-
-                    if (NULL != msg_ptr) {
+                    if (NULL != pqMemElem) {
 #ifdef FLEXCAN_DEVICE_DEBUG_
 						printf("Get from queue %x elm %x\n",(uint32_t)(&(pinstance->Rx_ReadyMSGQueue)), (uint32_t)pqueue_msg );
 #endif
 						pqueue_msg = (pFLEXCAN_queue_element_t)_queue_dequeue(&(pinstance->Rx_ReadyMSGQueue));
                     }
 
-                    if ( msg_ptr && pqueue_msg ) {
-#ifdef FLEXCAN_DEVICE_USB_PACKET_AGGREGATION
-                        pmsg_str = msg_str;
-#endif
-                        //Detect remoute or regular message 
-                        tmp = (uint8_t) ((pqueue_msg->msg_buff.cs >> 20) & 0x1); 
-                        tmp1 = (uint8_t)((pqueue_msg->msg_buff.cs >> 21) & 0x1);
-                        if (tmp) {
-                            //remoute frame
-                            *pmsg_str = 'r';
-                            if (tmp1) {
-                                *pmsg_str = 'R';
-                            }
-                        }
-                        else {
-                            //standard frame
-                            *pmsg_str = 't';
-                            if (tmp1) {
-                                *pmsg_str = 'T';
-                            }
-                        }
-                        pmsg_str++;
-						curr_msg_len++;
-                        //set message ID;
-                        if (tmp) {
-                            //Extended
-                            sprintf ( pmsg_str, "%09x", pqueue_msg->msg_buff.msgId);
-                            pmsg_str += 9;
-							curr_msg_len += 9;
-                        }
-                        else {
-                            //Standard
-                            sprintf ( pmsg_str, "%03x", pqueue_msg->msg_buff.msgId);
-                            pmsg_str += 3;
-							curr_msg_len += 3;
-                        }
-                        //Message length
-                        tmp = (uint8_t)((pqueue_msg->msg_buff.cs >> 16) & 0xF);
-                        *pmsg_str = tmp + '0';
-                        pmsg_str++;
-						curr_msg_len ++;
-
-                        for (ind = 0; ind < tmp; ind++) {
-                            tmp1 = (pqueue_msg->msg_buff.data[ind]>>4) & 0xF;
-                            if (tmp1 > 9 )
-                                *pmsg_str = tmp1 - 10 + 'A';
-                            else
-                                *pmsg_str = tmp1 + '0';
-
-                            pmsg_str++;
-							curr_msg_len++;
-                            tmp1 = pqueue_msg->msg_buff.data[ind] & 0xF;
-                            if (tmp1 > 9 )
-                                *pmsg_str = tmp1 - 10 + 'A';
-                            else
-                                *pmsg_str = tmp1 + '0';
-
-                            pmsg_str++;
-							curr_msg_len++;
-                        }
-
-                        //Message time stamp
-                        pmsg_str += 3;
-                        for (ind = 0; ind < 4; ind++) {
-                            tmp1 = (uint8_t)((pqueue_msg->msg_buff.cs >> (ind<<2)) & 0xF);
-                            if (tmp1 > 9 )
-                                *pmsg_str = tmp1 - 10 + 'A';
-                            else
-                                *pmsg_str = tmp1 + '0';
-
-                            pmsg_str--;
-                        }
-                        pmsg_str += 5;
-						curr_msg_len += 5;
-
-                        //Add CAN_OK_RESPONCE character
-                        *pmsg_str = CAN_OK_RESPONCE;
-                        pmsg_str++;
-                        *pmsg_str = 0;
+                    if ( pqMemElem && pqueue_msg ) {
+                        curr_msg_len = ParseCanMessToString (pqueue_msg, (const uint8_t*)pmsg_str);
 
                         _queue_enqueue (&(pinstance->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
 #ifdef FLEXCAN_DEVICE_DEBUG_
@@ -819,67 +764,63 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 #endif
 						pqueue_msg = NULL;
 
-                        //curr_msg_len = _strnlen( pmsg_str, sizeof ( msg_str ) );
-#ifdef FLEXCAN_DEVICE_DEBUG_
-						printf("CAN%d msg %s \n size %d\n", can_instance, msg_ptr->data, curr_msg_len );
-#endif
-
-#ifdef FLEXCAN_DEVICE_DEBUG_
-                        printf("CAN%d send message\n", can_instance );
-#endif
-						msg_ptr->header.SIZE += curr_msg_len;
-
-                        _msgq_send (msg_ptr);
-                        if (MQX_OK != (err_task = _task_get_error()))
-                        {
-#ifdef FLEXCAN_DEVICE_DEBUG_
-							printf("FCD_RX_%u Task: ERROR: message send failed %x\n", can_instance, err_task);
-#endif
-							_task_set_error(MQX_OK);
+                        if (0 > curr_msg_len) {
+                            printf("Error pars CAN to String\n");
+                            //TODO
+                            //Add Error handler
                         }
-						pmsg_str = NULL;
-						msg_ptr = NULL;
+                        else {
+                            pqMemElem->send_size += curr_msg_len;
+                            if ((g_CanCDCPacketsize - pqMemElem->send_size) < FLEXCAN_MAX_MSG_STR_SIZE) {
+                                pmsg_str = NULL;
 
+                                //put message to USB send
+                                if (!SetUSBWriteBuffer(pqMemElem, (pinstance->instance + 2))) {
+                                    printf("%s: Error send data to CDC1\n", __func__);
+                                    //TODO
+                                    //ADD error handler
+                                }
+                                pqMemElem = NULL;
+                            }
+                            else {
+                                pmsg_str += curr_msg_len;
+                            }
+                        }
                         g_Flexdebug.sendUSB++;
-                        printf("Send USB %d\n", g_Flexdebug.sendUSB);
+                        //printf("Send USB %d\n", g_Flexdebug.sendUSB);
 
-                    }//End if ( msg_ptr && pqueue_msg )
+                    }//End if ( pqMemElem && pqueue_msg )
                     else {
-						_time_delay(2);
-                        if (msg_ptr) {
-                            _mem_free(msg_ptr);
-                            msg_ptr = NULL;
+                        if (pqMemElem) {
+                            if (!SetUSBWriteBuffer(pqMemElem, (pinstance->instance + 2))) {
+                                printf("%s: Error send data to CDC1\n", __func__);
+                                //TODO
+                                //ADD error handler
+                            }
+                            pqMemElem = NULL;
                         }
                         if (pqueue_msg) {
                             _queue_enqueue (&(pinstance->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
                             pqueue_msg = NULL;
                         }
+                        _time_delay(2);
                     } //End if ( pmsg_data && pqueue_msg ) else
 
                 }//End for ( i = 0; i < queue_count; i++ )
+				if (pqMemElem) {
+					if (!SetUSBWriteBuffer(pqMemElem, (pinstance->instance + 2))) {
+						printf("%s: Error send data to CDC1\n", __func__);
+						//TODO
+						//ADD error handler
+					}
+					pqMemElem = NULL;
+				}
 
             }//End if (queue_count)
 
 		}//End if ( !result ) CAN message axxeptable in queue
 
-		if ( msg_ptr ) {
-            if (0 != pmsg_size) {
-                msg_ptr->header.SIZE += pmsg_size;
-                _msgq_send (msg_ptr);
-                if (MQX_OK != (err_task = _task_get_error()))
-                {
-                    //printf("FCD_RX_%u Task: ERROR: message send failed %x\n", can_instance, err_task);
-                    _task_set_error(MQX_OK);
-                }
-            }
-            else
-                _msg_free(msg_ptr);
-
-            msg_ptr = NULL;
-            pmsg_size = 0;
-		}
-		else
-			_time_delay(1);
+		_time_delay(1);
 
 	} while ( 1 );
 }
@@ -1429,4 +1370,90 @@ bool AllocateFIFOFilterTable (pflexcanInstance_t pinst, flexcan_rx_fifo_id_filte
     return true;
 }
 
+int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *pDestBuff) {
+    uint8_t   tmp, tmp1, ind, *pmsg_str, curr_msg_len = 0;
+
+    if (NULL == pCanMess || NULL == pDestBuff) {
+        printf("%s: Error wrong params\n", __func__);
+        return -1;
+    }
+
+    pmsg_str = (uint8_t*)pDestBuff;
+
+    //Detect remoute or regular message 
+    tmp = (uint8_t) ((pCanMess->msg_buff.cs >> 20) & 0x1); 
+    tmp1 = (uint8_t)((pCanMess->msg_buff.cs >> 21) & 0x1);
+    if (tmp) {
+        //remoute frame
+        *pmsg_str = 'r';
+        if (tmp1) {
+            *pmsg_str = 'R';
+        }
+    }
+    else {
+        //standard frame
+        *pmsg_str = 't';
+        if (tmp1) {
+            *pmsg_str = 'T';
+        }
+    }
+    pmsg_str++;
+    curr_msg_len++;
+    //set message ID;
+    if (tmp) {
+        //Extended
+        sprintf ( (char*)pmsg_str, "%08x", pCanMess->msg_buff.msgId);
+        pmsg_str += 9;
+        curr_msg_len += 9;
+    }
+    else {
+        //Standard
+        sprintf ( (char*)pmsg_str, "%03x", pCanMess->msg_buff.msgId);
+        pmsg_str += 3;
+        curr_msg_len += 3;
+    }
+    //Message length
+    tmp = (uint8_t)((pCanMess->msg_buff.cs >> 16) & 0xF);
+    *pmsg_str = tmp + '0';
+    pmsg_str++;
+    curr_msg_len ++;
+
+    for (ind = 0; ind < tmp; ind++) {
+        tmp1 = (pCanMess->msg_buff.data[ind]>>4) & 0xF;
+        if (tmp1 > 9 )
+            *pmsg_str = tmp1 - 10 + 'A';
+        else
+            *pmsg_str = tmp1 + '0';
+
+        pmsg_str++;
+        curr_msg_len++;
+        tmp1 = pCanMess->msg_buff.data[ind] & 0xF;
+        if (tmp1 > 9 )
+            *pmsg_str = tmp1 - 10 + 'A';
+        else
+            *pmsg_str = tmp1 + '0';
+
+        pmsg_str++;
+        curr_msg_len++;
+    }
+
+    //Message time stamp
+    pmsg_str += 3;
+    for (ind = 0; ind < 4; ind++) {
+        tmp1 = (uint8_t)((pCanMess->msg_buff.cs >> (ind<<2)) & 0xF);
+        if (tmp1 > 9 )
+            *pmsg_str = tmp1 - 10 + 'A';
+        else
+            *pmsg_str = tmp1 + '0';
+
+        pmsg_str--;
+    }
+    pmsg_str += 5;
+    curr_msg_len += 5;
+
+    //Add CAN_OK_RESPONCE character
+    *pmsg_str = CAN_OK_RESPONCE;
+    
+    return (int32_t)curr_msg_len;
+}
 

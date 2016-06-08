@@ -259,7 +259,7 @@ usb_status USB_Composite_Init
     if (USB_OK != USB_Composite_Allocate_Handle(&devicePtr))
     {
 #if _DEBUG
-        USB_PRINTF("USB_Class_COMPOSITE_Init: Memalloc devicePtr failed\n");
+        USB_PRINTF("%s: Memalloc devicePtr failed\n", __func__);
 #endif  
         return USBERR_ALLOC;
     }
@@ -267,7 +267,7 @@ usb_status USB_Composite_Init
     if (CONFIG_MAX < devicePtr->cl_count)
     {
 #if _DEBUG
-        USB_PRINTF("USB_Class_COMPOSITE_Init: Too many class\n");
+        USB_PRINTF("%s: Too many class\n", __func__);
 #endif  
         return USBERR_ERROR;
     }

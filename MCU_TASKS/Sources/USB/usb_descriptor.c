@@ -36,6 +36,7 @@
  * Includes
  *****************************************************************************/
 #include <mqx.h>
+#include <message.h>
 
 #include "usb_device_config.h"
 #include "usb.h"
@@ -43,6 +44,8 @@
 
 #include "usb_class_composite.h"
 #include "usb_composite.h"
+
+#include "mic_typedef.h"
 
 #include "virtual_com.h"
 #include "usb_descriptor.h"

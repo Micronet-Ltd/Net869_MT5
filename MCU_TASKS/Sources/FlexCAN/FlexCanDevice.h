@@ -15,13 +15,15 @@ extern "C"
 
 /*Definition*/
 
-#define MAX_MB_NUMBER           		16
+#define MAX_MB_NUMBER           		(16)
 
-#define RX_FLEXCAN_MSGQ_MESAGES         64
+#define RX_FLEXCAN_MSGQ_MESAGES         (64)
 #define RX_FLEXCAN_MSGQ_TRESHOLD_MAX    (RX_FLEXCAN_MSGQ_MESAGES-5)
-#define RX_FLEXCAN_MSGQ_TRESHOLD_MIN    15
+#define RX_FLEXCAN_MSGQ_TRESHOLD_MIN    (15)
 
-#define FLEXCAN_DEVICE_TX_TIMEOUT       200
+#define FLEXCAN_DEVICE_TX_TIMEOUT       (200)
+
+#define FLEXCAN_MAX_MSG_STR_SIZE        (32)
 
 typedef enum _flexcan_device_status
 {

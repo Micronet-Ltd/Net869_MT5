@@ -15,6 +15,8 @@
 #include "mic_typedef.h"
 #include "i2c_configuration.h"
 
+#include "frame.h"
+
 #define ACC_DEVICE_ADDRESS 			0x1D
 #define	I2C_BAUD_RATE				400
 
@@ -46,6 +48,11 @@ static i2c_device_t acc_device = {.address = ACC_DEVICE_ADDRESS,    .baudRate_kb
 bool acc_enabled_g = false;
 
 extern MUTEX_STRUCT g_i2c0_mutex;
+
+__packed typedef struct{
+    uint64_t timestamp;
+    uint8_t buff[ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE];
+}acc_data_messg, *pacc_data_messg;
 
 /**************************************************************************************
 * The accelerometer is connected to MCU I2C interface. When device is powered, the    *
@@ -100,12 +107,14 @@ uint32_t acc_time_diff_non_zero = 0;
 
 void Acc_task (uint32_t initial_data)
 {
-	TIME_STRUCT time;
-	TIME_STRUCT new_time;
-	uint64_t time_diff;
+	TIME_STRUCT                 time;
+	TIME_STRUCT                 new_time;
+	uint64_t                    time_diff;
+    acc_data_messg              acc_data_buff;
+    pcdc_mic_queue_element_t    pqMemElem;
 
 	//APPLICATION_MESSAGE_T *msg;
-	const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
+	//const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
 	//const _queue_id power_mgmt_qid  = _msgq_open ((_queue_number)POWER_MGM_QUEUE, 0);
 
 	//uint8_t acc_good_count = 0;
@@ -145,6 +154,34 @@ void Acc_task (uint32_t initial_data)
 	//acc_msg = &test_acc_msg;
 	while (1)
 	{
+#if 1
+        _event_wait_all(g_acc_event_h, 1, 0);
+		_event_clear(g_acc_event_h, 1);
+
+        _time_get(&new_time);
+		time_diff = ((new_time.SECONDS * 1000) +  new_time.MILLISECONDS) - ((time.SECONDS * 1000) +  time.MILLISECONDS);
+		/* Add delay on back to back reads to avoid overwhelming the USB */
+		if (time_diff == 0)
+		{
+			_time_delay (1);
+		}
+
+        acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
+		_time_get(&time);
+        acc_data_buff.timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
+
+        pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
+        if (NULL == pqMemElem) {
+            printf("%s: Error get mem for USB drop\n", __func__);
+            continue;
+        }
+
+        pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
+
+        if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2)) {
+            printf("%s: Error send data to CDC1\n", __func__);
+        }
+#else
 		APPLICATION_MESSAGE_T *acc_msg;
 		_mqx_uint err_task;
 
@@ -170,7 +207,7 @@ void Acc_task (uint32_t initial_data)
 		}
 
 		if(acc_msg) {
-			acc_fifo_read ((uint8_t*)&(acc_msg->data), (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
+			acc_fifo_read ((acc_msg->data), (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
 			_time_get(&time);
 			acc_msg->timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
 			acc_msg->header.SOURCE_QID = acc_qid;
@@ -185,6 +222,7 @@ void Acc_task (uint32_t initial_data)
 				_task_set_error(MQX_OK);
 			}
 		}
+#endif // if 0
 	}
 
 	// should never get here

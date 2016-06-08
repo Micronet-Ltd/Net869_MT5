@@ -38,7 +38,7 @@ void configure_otg_for_host_or_device(void);
 //static i2c_master_state_t i2c0_master;
 //static i2c_master_state_t i2c1_master;
 
-_pool_id   g_out_message_pool;
+//_pool_id   g_out_message_pool;
 _pool_id   g_in_message_pool;
 
 _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
@@ -61,8 +61,6 @@ void Main_task( uint32_t initial_data ) {
 
     _time_delay (10);
 
-
-    printf("\nMain Task: Start \n");
 #if 0
     PinMuxConfig ();
     ADCInit      ();
@@ -76,6 +74,8 @@ void Main_task( uint32_t initial_data ) {
     OSA_Init();
     GPIO_Config();
     ADC_init ();
+	
+	printf("\n%s: Start\n", __func__);
 
 	NVIC_SetPriority(PORTA_IRQn, 6U);
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
@@ -113,27 +113,30 @@ void Main_task( uint32_t initial_data ) {
 	GPIO_DRV_SetPinOutput(ACC_ENABLE       );
 
     _time_delay(20);
-    g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
-	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
-		printf("\nMain Could not create USB_TASK\n");
-	}
-
+    
     //Enable UART
     GPIO_DRV_SetPinOutput(UART_ENABLE);
     GPIO_DRV_SetPinOutput(FTDI_RSTN);
 
+    Virtual_Com_MemAlloc(); // Allocate USB out buffers
+/*
 	g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
 	if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
 	{
 		printf("\nCould not create a g_out_message_pool message pool\n");
 		_task_block();
 	}
-
+*/
 	g_in_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
 	if (g_in_message_pool == MSGPOOL_NULL_POOL_ID)
 	{
 		printf("\nCould not create a g_in_message_pool message pool\n");
 		_task_block();
+	}
+	
+	g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
+	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
+		printf("\nMain Could not create USB_TASK\n");
 	}
 
 	main_qid = _msgq_open(MAIN_QUEUE, 0);
