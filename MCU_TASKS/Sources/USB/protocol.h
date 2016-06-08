@@ -24,7 +24,7 @@ typedef enum
 	POWER_MGM_STATUS = 0x7,
 }packet_type_enum;
 
-typedef struct
+__packed typedef struct
 {
 	uint8_t seq;
 	packet_type_enum pkt_type;
