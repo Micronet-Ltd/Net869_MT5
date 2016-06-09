@@ -77,7 +77,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.50.2.10499</state>
+          <state>7.60.1.11206</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -127,7 +127,7 @@
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
         <option>
@@ -144,7 +144,7 @@
         </option>
         <option>
           <name>CoreVariant</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
         <option>
@@ -167,7 +167,7 @@
         </option>
         <option>
           <name>GFPUCoreSlave2</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
       </data>
@@ -680,7 +680,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>16</version>
+        <version>17</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -964,6 +964,10 @@
           <name>IlinkThreadsSlave</name>
           <state>1</state>
         </option>
+        <option>
+          <name>IlinkLogCallGraph</name>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -1118,7 +1122,7 @@
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
         <option>
@@ -1135,7 +1139,7 @@
         </option>
         <option>
           <name>CoreVariant</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
         <option>
@@ -1158,7 +1162,7 @@
         </option>
         <option>
           <name>GFPUCoreSlave2</name>
-          <version>22</version>
+          <version>24</version>
           <state>39</state>
         </option>
       </data>
@@ -1671,7 +1675,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>16</version>
+        <version>17</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1954,6 +1958,10 @@
         <option>
           <name>IlinkThreadsSlave</name>
           <state>1</state>
+        </option>
+        <option>
+          <name>IlinkLogCallGraph</name>
+          <state>0</state>
         </option>
       </data>
     </settings>

@@ -1161,7 +1161,7 @@ usb_status USB_Class_CDC_Cancel
         else
         {
 #if _DEBUG
-            USB_PRINTF("usb_device_cancel_transfer fail\r\n");
+            USB_PRINTF("%s: fail\r\n", __func__);
 #endif
         }
     }

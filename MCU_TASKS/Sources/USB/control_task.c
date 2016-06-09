@@ -10,11 +10,32 @@
 #include "mic_typedef.h"
 #include "event.h"
 
-extern _pool_id   g_out_message_pool;
+
+#include "frame.h"
+
+//extern _pool_id   g_out_message_pool;
 extern void *g_GPIO_event_h;
 
 void send_control_msg(packet_t * msg, uint8_t msg_size)
 {
+#if 1
+    pcdc_mic_queue_element_t pqMemElem;
+
+    pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_1);
+    if (NULL == pqMemElem) {
+        printf("%s: Error get mem for USB drop\n", __func__);
+        return;
+    }
+
+    //TODO: for now hard coding the sequence
+    msg->seq = 0x99;
+    
+    pqMemElem->send_size = frame_encode((uint8_t*)msg, (const uint8_t*)(pqMemElem->data_buff), (msg_size + 2) );
+
+    if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_1)) {
+        printf("%s: Error send data to CDC0\n", __func__);
+    }
+#else
 	APPLICATION_MESSAGE_T *ctl_tx_msg;
 	_mqx_uint err_task;
 	if ((ctl_tx_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL)
@@ -47,6 +68,7 @@ void send_control_msg(packet_t * msg, uint8_t msg_size)
 			_task_set_error(MQX_OK);
 		}
 	}
+#endif
 }
 
 void control_task (uint32_t initial_data)

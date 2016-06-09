@@ -40,9 +40,8 @@
 #include "usb_class_composite.h"
 #include "usb_composite.h"
 #include "usb_descriptor.h"
-#include "virtual_com.h"
 
-/////
+////
 #include "fsl_device_registers.h"
 #include "fsl_clock_manager.h"
 #include "board.h"
@@ -61,10 +60,31 @@
 
 #include "mic_typedef.h"
 
+#include "virtual_com.h"
+
 /*****************************************************************************
  * Constant and Macro's - None
  *****************************************************************************/
 #define USB_MSGQ_MAX_POOL_SIZE      20
+
+#define USB_CDC_0_OUT_BUFFERS_COUNT 3 // Command interface
+#define USB_CDC_1_OUT_BUFFERS_COUNT 5 // Accelerometer interface
+#define USB_CDC_2_OUT_BUFFERS_COUNT 20 // CAN0 interface
+#define USB_CDC_3_OUT_BUFFERS_COUNT 20 // CAN1 interface
+#define USB_CDC_4_OUT_BUFFERS_COUNT 10 // J1708 interface
+
+#define MIC_USB_CONTROL_CHANNEL_BUFF_SIZE       (DATA_BUFF_SIZE+2)
+#define MIC_USB_ACCELOROMETER_CHANNEL_BUFF_SIZE (MIC_USB_FRAME_BUFFER_SIZE)
+#define MIC_USB_CAN_CHANNEL_BUFF_SIZE           (DATA_BUFF_SIZE<<2)
+#define MIC_USB_J1708_CHANNEL_BUFF_SIZE         (DATA_BUFF_SIZE>>1) //????? Need to check the MAX packet size
+
+#define MIC_USB_CDC0_BUFF_ALLOC_SIZE            (sizeof(cdc_mic_queue_element_t)+MIC_USB_CONTROL_CHANNEL_BUFF_SIZE)
+#define MIC_USB_CDC1_BUFF_ALLOC_SIZE            (sizeof(cdc_mic_queue_element_t)+MIC_USB_ACCELOROMETER_CHANNEL_BUFF_SIZE)
+#define MIC_USB_CDC2_BUFF_ALLOC_SIZE            (sizeof(cdc_mic_queue_element_t)+MIC_USB_CAN_CHANNEL_BUFF_SIZE)
+#define MIC_USB_CDC3_BUFF_ALLOC_SIZE            (MIC_USB_CDC2_BUFF_ALLOC_SIZE)
+#define MIC_USB_CDC4_BUFF_ALLOC_SIZE            (sizeof(cdc_mic_queue_element_t)+MIC_USB_J1708_CHANNEL_BUFF_SIZE)
+
+const uint16_t   g_CanCDCPacketsize = MIC_USB_CAN_CHANNEL_BUFF_SIZE;
 
 //#define MIC_USB_DEBUG
 /*****************************************************************************
@@ -88,12 +108,6 @@ extern uint8_t USB_Desc_Set_Speed(uint32_t handle, uint16_t speed);
 void USB_App_Device_Callback(uint8_t event_type, void* val, void* arg);
 uint8_t USB_App_Class_Callback(uint8_t event, uint16_t value, uint8_t ** data, uint32_t* size, void* arg);
 
-static void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr );
-static void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr );
-static void CDC2_send ( APPLICATION_MESSAGE_PTR_T msg_ptr );
-static void CDC3_send ( APPLICATION_MESSAGE_PTR_T msg_ptr );
-static void CDC4_send ( APPLICATION_MESSAGE_PTR_T msg_ptr );
-
 static void USB_Recive_Data ( cdc_struct_t *handle );
 
 static void CDC0_resv ( cdc_struct_t *handle );
@@ -102,6 +116,10 @@ static void CDC2_resv ( cdc_struct_t *handle );
 static void CDC3_resv ( cdc_struct_t *handle );
 static void CDC4_resv ( cdc_struct_t *handle );
 
+static bool CDC_Queue_init (uint8_t cdcNum, uint8_t* memAdr, uint32_t ElemCount, uint32_t queueElemSize);
+
+static bool SDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle );
+
 
 /*****************************************************************************
  * Local Variables 
@@ -109,6 +127,96 @@ static void CDC4_resv ( cdc_struct_t *handle );
 static uint16_t g_cdc_device_speed;
 static uint16_t g_bulk_out_max_packet_size;
 static uint16_t g_bulk_in_max_packet_size;
+
+/*****************************************************************************
+ * Global Functions
+ *****************************************************************************/
+bool Virtual_Com_MemAlloc( )
+{
+    //This function should be call once on MCU power up
+    _mem_zero((void*)&g_app_composite_device, sizeof(app_composite_device_struct_t));
+ 
+    g_app_composite_device.DataBuffSize = (MIC_USB_CDC0_BUFF_ALLOC_SIZE * USB_CDC_0_OUT_BUFFERS_COUNT) 
+#if MIC_USB_CDC_INF_COUNT > 1
+                                        + (MIC_USB_CDC1_BUFF_ALLOC_SIZE * USB_CDC_1_OUT_BUFFERS_COUNT) 
+#endif
+#if MIC_USB_CDC_INF_COUNT > 2
+                                        + (MIC_USB_CDC2_BUFF_ALLOC_SIZE * USB_CDC_2_OUT_BUFFERS_COUNT) 
+#endif
+#if MIC_USB_CDC_INF_COUNT > 3
+                                        + (MIC_USB_CDC3_BUFF_ALLOC_SIZE * USB_CDC_3_OUT_BUFFERS_COUNT)
+#endif
+#if MIC_USB_CDC_INF_COUNT > 4
+                                        + (MIC_USB_CDC4_BUFF_ALLOC_SIZE * USB_CDC_4_OUT_BUFFERS_COUNT);
+#endif
+    ;
+
+    g_app_composite_device.pDataBuff = (uint8_t*)_mem_alloc(g_app_composite_device.DataBuffSize);
+    if (NULL == g_app_composite_device.pDataBuff) {
+        printf("ERROR allocate USB out buffers s=%d\n", g_app_composite_device.DataBuffSize);
+        return false;
+    }
+    printf("USB Out buffers allocated s=%d\n", g_app_composite_device.DataBuffSize);
+
+    if ( MQX_OK != _lwsem_create(&(g_app_composite_device.SendReadySem), 0) )
+    {
+        printf("ERROR USB sema\n");
+        return false;
+    }
+    return true;
+}
+
+pcdc_mic_queue_element_t GetUSBWriteBuffer(uint8_t cdcport) {
+    pcdc_mic_queue_element_t pqueueElem;
+
+    if (COMPOSITE_CFG_MAX <= cdcport) {
+        printf("%s:ERROR the USB port %d wrong\n", __func__, cdcport);
+        return NULL; 
+    }
+
+    pqueueElem = (pcdc_mic_queue_element_t)_queue_dequeue(&(g_app_composite_device.cdc_vcom[cdcport].qs_OutFreeMsg));
+    if (NULL == pqueueElem) {
+		if (true == g_app_composite_device.cdc_vcom[cdcport].start_app && true == g_app_composite_device.cdc_vcom[cdcport].start_transactions) {
+        	//printf("CDC%d no Free buff drop ready\n", cdcport);
+		}
+		
+		pqueueElem = (pcdc_mic_queue_element_t)_queue_dequeue(&(g_app_composite_device.cdc_vcom[cdcport].qs_OutInProcMsg));
+		if (NULL == pqueueElem) {
+			//printf("CDC%d ERROR get used buffer\n", cdcport);
+		}
+    }	  
+
+    return pqueueElem;
+}
+
+bool SetUSBWriteBuffer(pcdc_mic_queue_element_t pcdcBuff, uint8_t cdcport) {
+
+    if ((NULL == pcdcBuff) || (COMPOSITE_CFG_MAX <= cdcport)) {
+        printf("%s:ERROR parameters wrong\n", __func__);
+        return false; 
+    }
+
+    if (0 != pcdcBuff->send_size) {
+        if ( !_queue_enqueue((QUEUE_STRUCT_PTR)&(g_app_composite_device.cdc_vcom[cdcport].qs_OutInProcMsg), (QUEUE_ELEMENT_STRUCT_PTR)pcdcBuff ) ) {
+            printf("%s:ERROR add queue elem cdc%d, addr %x\n", __func__, cdcport, (uint32_t)pcdcBuff);
+            return false;
+        }
+
+        if (MQX_OK != _lwsem_post(&(g_app_composite_device.SendReadySem))) {
+            printf("%s:ERROR set sem for cdc%d\n", __func__, cdcport);
+            return false;
+        }
+    }
+    else {
+        if ( !_queue_enqueue((QUEUE_STRUCT_PTR)&(g_app_composite_device.cdc_vcom[cdcport].qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)pcdcBuff ) ) {
+            printf("%s:ERROR add to free queue elem cdc%d, addr %x\n", __func__, cdcport, (uint32_t)pcdcBuff);
+            return false;
+        }
+    }
+
+    
+    return true;
+}
 
 /*****************************************************************************
  * Local Functions
@@ -345,12 +453,13 @@ void cdc_vcom_preinit(cdc_struct_t* param)
  * 
  *    @param         None
  * 
- *    @return       None
+ *    @return       true on success or false
  **                  
  *****************************************************************************/
-void APP_init(void)
+bool APP_init(void)
 {
-    uint8_t i;
+    uint8_t i, j;
+    uint8_t* buff_ptr;
     uint8_t l_line_coding[LINE_CODING_SIZE] = {
                                             /*e.g. 0x00,0x10,0x0E,0x00 : 0x000E1000 is 921600 bits per second */
                                             (LINE_CODE_DTERATE_IFACE >> 0) & 0x000000FF,
@@ -373,6 +482,7 @@ void APP_init(void)
     USB_init_memory_Desc (  );
 	class_config_struct_t* cdc_vcom_config_callback_handle;
 
+    buff_ptr = g_app_composite_device.pDataBuff;
     for (i = 0; i < MIC_USB_CDC_INF_COUNT; i++)
     {
         cdc_vcom_config_callback_handle = &g_app_composite_device.composite_device_config_list[i];
@@ -389,7 +499,57 @@ void APP_init(void)
         _mem_copy( (void*)( l_abstract_state ), (void*)( g_app_composite_device.cdc_vcom[i].abstract_state ), sizeof ( l_abstract_state ) );
         _mem_copy( (void*)( l_country_code ), (void*)( g_app_composite_device.cdc_vcom[i].country_code ), sizeof ( l_country_code ) );
 
-        g_app_composite_device.cdc_vcom[i].send_ready = FALSE;
+        g_app_composite_device.cdc_vcom[i].send_ready   = FALSE;
+        g_app_composite_device.cdc_vcom[i].portNum      = i;
+
+        _queue_init(&(g_app_composite_device.cdc_vcom[i].qs_OutFreeMsg), 0);  
+        _queue_init(&(g_app_composite_device.cdc_vcom[i].qs_OutInProcMsg), 0);
+
+        switch (i) {
+        case 0:
+            if (!CDC_Queue_init (i, buff_ptr, USB_CDC_0_OUT_BUFFERS_COUNT, MIC_USB_CDC0_BUFF_ALLOC_SIZE )) {
+                printf("ERROR start CDC%d\n", i);
+                return false;
+            }
+            buff_ptr += MIC_USB_CDC0_BUFF_ALLOC_SIZE * USB_CDC_0_OUT_BUFFERS_COUNT;
+            break;
+        case 1:
+#if MIC_USB_CDC_INF_COUNT > 1
+            if (!CDC_Queue_init (i, buff_ptr, USB_CDC_1_OUT_BUFFERS_COUNT, MIC_USB_CDC1_BUFF_ALLOC_SIZE )) {
+                printf("ERROR start CDC%d\n", i);
+                return false;
+            }
+            buff_ptr += MIC_USB_CDC1_BUFF_ALLOC_SIZE * USB_CDC_1_OUT_BUFFERS_COUNT;
+#endif
+            break;
+        case 2:
+#if MIC_USB_CDC_INF_COUNT > 2
+            if (!CDC_Queue_init (i, buff_ptr, USB_CDC_2_OUT_BUFFERS_COUNT, MIC_USB_CDC2_BUFF_ALLOC_SIZE )) {
+                printf("ERROR start CDC%d\n", i);
+                return false;
+            }
+            buff_ptr += MIC_USB_CDC2_BUFF_ALLOC_SIZE * USB_CDC_2_OUT_BUFFERS_COUNT;
+#endif
+            break;
+        case 3:
+#if MIC_USB_CDC_INF_COUNT > 3
+            if (!CDC_Queue_init (i, buff_ptr, USB_CDC_3_OUT_BUFFERS_COUNT, MIC_USB_CDC3_BUFF_ALLOC_SIZE )) {
+                printf("ERROR start CDC%d\n", i);
+                return false;
+            }
+            buff_ptr += MIC_USB_CDC3_BUFF_ALLOC_SIZE * USB_CDC_3_OUT_BUFFERS_COUNT;
+#endif
+            break;
+        case 4:
+#if MIC_USB_CDC_INF_COUNT > 4
+            if (!CDC_Queue_init (i, buff_ptr, USB_CDC_4_OUT_BUFFERS_COUNT, MIC_USB_CDC4_BUFF_ALLOC_SIZE )) {
+                printf("ERROR start CDC%d\n", i);
+                return false;
+            }
+            buff_ptr += MIC_USB_CDC4_BUFF_ALLOC_SIZE * USB_CDC_4_OUT_BUFFERS_COUNT;
+#endif
+            break;
+        }
     }
     
     g_cdc_device_speed = USB_SPEED_FULL;
@@ -426,6 +586,7 @@ void APP_init(void)
     g_app_composite_device.cdc_vcom[4].cdc_handle   = (cdc_handle_t)g_app_composite_device.composite_device_config_list[4].class_handle;
 #endif
 
+    return true;
 }
 
 
@@ -475,6 +636,7 @@ void USB_App_Device_Callback(uint8_t event_type, void* val, void* arg)
     else if (event_type == USB_DEV_EVENT_ERROR)
     {
         /* add user code for error handling */
+        printf("ERROR USB get USB_DEV_EVENT_ERROR\n\n");
     }
     return;
 }
@@ -531,17 +693,17 @@ uint8_t USB_App_Class_Callback
     case USB_APP_CDC_DTE_ACTIVATED:
         if (phandle->start_app == TRUE)
         {
+            printf("%s: Port%d activated\n", __func__, phandle->portNum);
         	phandle->start_transactions = TRUE;
             phandle->send_ready = TRUE;
-            //GPIO_DRV_SetPinOutput (LED_BLUE);
         }
         break;
     case USB_APP_CDC_DTE_DEACTIVATED:
         if (phandle->start_app == TRUE)
         {
+            printf("%s: Port%d deactivated\n", __func__, phandle->portNum);
         	phandle->start_transactions = FALSE;
             phandle->send_ready = FALSE;
-            //GPIO_DRV_ClearPinOutput (LED_BLUE);
         }
         break;
     case USB_DEV_EVENT_DATA_RECEIVED:
@@ -564,9 +726,13 @@ uint8_t USB_App_Class_Callback
         }
         break;
     case USB_DEV_EVENT_SEND_COMPLETE:
-        {
+		//printf("%s: EvComp1 %x\n\n", __func__, (uint32_t)(phandle->pSendElem) );
+		//if (phandle->portNum == 1 && phandle->start_app && phandle->start_transactions)
+		//	printf("Stop\n");
+		
         if ((size != NULL) && (*size != 0) && (!(*size % g_bulk_in_max_packet_size)))
         {
+			//printf("%s: EvComp2 %x\n\n", __func__, (uint32_t)(phandle->pSendElem) );
             /* If the last packet is the size of endpoint, then send also zero-ended packet,
              ** meaning that we want to inform the host that we do not have any additional
              ** data, so it can flush the output.
@@ -575,15 +741,42 @@ uint8_t USB_App_Class_Callback
         }
         else if ((phandle->start_app == TRUE) && (phandle->start_transactions == TRUE))
         {
+			//printf("%s: EvComp3 %x\n\n", __func__, (uint32_t)(phandle->pSendElem) );
+#if 1
+			if (NULL != phandle->pSendElem) {
+			if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)(phandle->pSendElem))) {
+					printf("%s: Error add to free queue port%d mem %x\n", phandle->portNum, (uint32_t)(phandle->pSendElem));
+				}
+				phandle->pSendElem = NULL;
+			}
+            phandle->send_ready = TRUE;
+
+            if (MQX_OK != _lwsem_post(&(g_app_composite_device.SendReadySem))) {
+                printf("%s:ERROR set sem for cdc%d\n", __func__, phandle-> portNum);
+            }
+            
+#else
             if ((*data != NULL) || ((*data == NULL) && (*size == 0)))
             {
-            	phandle->send_ready = TRUE;
+				//printf("%s: EvComp4 %x\n\n", __func__, (uint32_t)(phandle->pSendElem) );
+                SDC_SendData (handle, phandle);
                 /* User: add your own code for send complete event */
                 /* Schedule buffer for next receive event */
             	//USB_Class_CDC_Recv_Data(handle, phandle->out_endpoint, phandle->curr_recv_buf, g_bulk_out_max_packet_size);
             }
+			else
+				printf("Stop\n");
+#endif
         }
-    }
+		else {
+			printf("%s: EvComp5 %x\n\n", __func__, (uint32_t)(phandle->pSendElem) );
+			if (NULL != phandle->pSendElem) {
+			if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)(phandle->pSendElem))) {
+					printf("%s: Error add to free queue port%d mem %x\n", phandle->portNum, (uint32_t)(phandle->pSendElem));
+				}
+				phandle->pSendElem = NULL;
+			}
+		}
         break;
     case USB_APP_CDC_SERIAL_STATE_NOTIF:
         {
@@ -591,11 +784,8 @@ uint8_t USB_App_Class_Callback
 		}
         break;
     default:
-        {
 			error = USBERR_INVALID_REQ_TYPE;
 			break;
-		}
-
     }
 
     return error;
@@ -610,61 +800,42 @@ _queue_id g_usb_test_qid = 0;
 
 void Usb_task(uint32_t arg)
 {
-    APPLICATION_MESSAGE_PTR_T msg_ptr;
+    TIME_STRUCT         stTime = {0};
+    MQX_TICK_STRUCT     stTick = {0};
+    _mqx_uint           wres, i;
 
-    const _queue_id usb_qid = _msgq_open ((_queue_number)USB_QUEUE, 0);
-    if (MSGQ_NULL_QUEUE_ID == usb_qid)
-    {
-       printf("\nCould not create a message pool USB_QUEUE\n");
-       _task_block();
+    if (false == APP_init() ) {
+        printf("Error inialize USB task blocked\n");
+        _task_block();
     }
 
-#ifdef MIC_USB_DEBUG
-    g_usb_test_qid = _msgq_open ((_queue_number)USB_TEST_QUEUE, 0);
-    if (MSGQ_NULL_QUEUE_ID == g_usb_test_qid)
-    {
-       printf("\nCould not create a message pool USB_QUEUE\n");
-       _task_block();
-    }
-#endif
-
-    APP_init();
-
-    while (1)
-    {
-       /* call the periodic task function */
-       USB_CDC_Periodic_Task();
-
-        msg_ptr = _msgq_receive(usb_qid, 1);
-        if(NULL == msg_ptr) {
-        	_time_delay(1); continue;
+    do {
+        stTime.SECONDS = 0;
+        stTime.MILLISECONDS = 100;
+        if (!_time_to_ticks(&stTime, &stTick)) {
+            printf("%s: Error conv time2tiks\n", __func__);
         }
 
-        switch (msg_ptr->portNum)
-        {
-        case MIC_CDC_USB_1: //Control function
-            CDC0_send ( msg_ptr );
-            break;
-        case MIC_CDC_USB_2: //Acc function
-            CDC1_send ( msg_ptr );
-            break;
-        case MIC_CDC_USB_3: //CAN0 function
-            CDC2_send ( msg_ptr );
-            break;
-        case MIC_CDC_USB_4: //CAN1 function
-            CDC3_send ( msg_ptr );
-            break;
-        case MIC_CDC_USB_5: //J1708 function
-            CDC4_send ( msg_ptr );
-            break;
-        default:
-            _msg_free(msg_ptr);
-            _time_delay(1);
-            break;
+        wres = _lwsem_wait_for(&(g_app_composite_device.SendReadySem), &stTick );
+        if (MQX_CANNOT_CALL_FUNCTION_FROM_ISR == wres || MQX_INVALID_LWSEM == wres) {
+            printf("%s: Error %d sem\n", wres);
+            _time_delay(100);
+            continue;
         }
-    }
+
+        for (i = 0; i < COMPOSITE_CFG_MAX; i++) {
+            if ( ( TRUE == g_app_composite_device.cdc_vcom[i].start_app ) && ( TRUE == g_app_composite_device.cdc_vcom[i].start_transactions ) &&
+                    g_app_composite_device.cdc_vcom[i].send_ready ) {
+                if (!SDC_SendData (g_app_composite_device.cdc_vcom[i].cdc_handle, ((g_app_composite_device.cdc_vcom) + i)) ) {
+                    printf("%s:WARN cdc_%d\n", __func__, g_app_composite_device.cdc_vcom[i].portNum);
+                }
+            }
+        }
+
+    } while (1);
 }
 
+#if 0
 void requeue_control_msg(APPLICATION_MESSAGE_T *ctl_tx_msg_old)
 {
 	APPLICATION_MESSAGE_T *ctl_tx_msg;
@@ -696,280 +867,7 @@ void requeue_control_msg(APPLICATION_MESSAGE_T *ctl_tx_msg_old)
 	}
 }
 
-/* Control/command messages are sent through this CDC port */
-void CDC0_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
-{
-    uint8_t error;
-
-    if( ( TRUE != g_app_composite_device.cdc_vcom[0].start_app ) ||
-            ( TRUE != g_app_composite_device.cdc_vcom[0].start_transactions ) ||
-            !g_app_composite_device.cdc_vcom[0].send_ready )
-    {
-        /* since we don't want to lose a control message, put it back in the Q */
-        _time_delay(1);
-        //requeue_control_msg(msg_ptr);
-        _msg_free(msg_ptr);
-        return;
-    }
-
-    /*check whether enumeration is complete or not */
-    else if ( ( TRUE == g_app_composite_device.cdc_vcom[0].start_app ) &&
-            ( TRUE == g_app_composite_device.cdc_vcom[0].start_transactions ) &&
-            g_app_composite_device.cdc_vcom[0].send_ready)
-    {
-#ifdef MIC_USB_DEBUG
-        _mem_copy( msg_ptr->data, g_app_composite_device.cdc_vcom[0].curr_send_buf, msg_ptr->header.SIZE );
-        g_app_composite_device.cdc_vcom[0].send_size = msg_ptr->header.SIZE;
-#else
-        g_app_composite_device.cdc_vcom[0].send_size = frame_encode(msg_ptr->data, g_app_composite_device.cdc_vcom[0].curr_send_buf, msg_ptr->header.SIZE);
-#endif
-
-        g_app_composite_device.cdc_vcom[0].send_ready = FALSE;
-        error = USB_Class_CDC_Send_Data(g_app_composite_device.cdc_vcom[0].cdc_handle,
-                                        g_app_composite_device.cdc_vcom[0].in_endpoint,
-                                        g_app_composite_device.cdc_vcom[0].curr_send_buf, 
-                                        g_app_composite_device.cdc_vcom[0].send_size);
-
-        if(error != USB_OK)
-        {
-            //GPIO_DRV_SetPinOutput(LED_RED);
-        }
-
-        _msg_free(msg_ptr);
-    }
-    else
-    {
-        _msg_free(msg_ptr);
-        _time_delay(1);
-    }
-}
-
-void CDC1_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
-{
-    uint8_t payload[ACC_MSG_SIZE];
-    uint8_t error;
-    //uint8_t * pld_size = &g_app_composite_device.cdc_vcom[1].send_size;
-    //uint8_t * buf = &g_app_composite_device.cdc_vcom[1].curr_send_buf;
-
-#if COMPOSITE_CFG_MAX > 1
-    // FIXME: bad predicate
-    if( ( TRUE != g_app_composite_device.cdc_vcom[1].start_app ) ||
-            ( TRUE != g_app_composite_device.cdc_vcom[1].start_transactions ) ||
-            !g_app_composite_device.cdc_vcom[1].send_ready )
-    {
-        _msg_free(msg_ptr);
-        _time_delay(1);
-        return;
-    }
-
-    /*check whether enumeration is complete or not */
-    else if ( ( TRUE == g_app_composite_device.cdc_vcom[1].start_app ) &&
-            ( TRUE == g_app_composite_device.cdc_vcom[1].start_transactions ) &&
-            g_app_composite_device.cdc_vcom[1].send_ready)
-    {
-#ifdef MIC_USB_DEBUG
-        _mem_copy( msg_ptr->data, g_app_composite_device.cdc_vcom[1].curr_send_buf, msg_ptr->header.SIZE );
-        g_app_composite_device.cdc_vcom[1].send_size = msg_ptr->header.SIZE;
-#else
-        // FIXME: endian assumption
-        _mem_copy (&(msg_ptr->timestamp), payload, sizeof(msg_ptr->timestamp ));
-        // FIXME: no single point definition of actual payload size here
-        _mem_copy( msg_ptr->data, payload + sizeof(msg_ptr->timestamp), msg_ptr->header.SIZE );
-        g_app_composite_device.cdc_vcom[1].send_size = \
-        		frame_encode(payload, g_app_composite_device.cdc_vcom[1].curr_send_buf, (msg_ptr->header.SIZE + sizeof(msg_ptr->timestamp )));
-
-#endif
-        g_app_composite_device.cdc_vcom[1].send_ready = FALSE;
-        error = USB_Class_CDC_Send_Data(g_app_composite_device.cdc_vcom[1].cdc_handle,
-                                        g_app_composite_device.cdc_vcom[1].in_endpoint,
-                                        g_app_composite_device.cdc_vcom[1].curr_send_buf, 
-                                        g_app_composite_device.cdc_vcom[1].send_size);
-
-        /*
-        printf("CDC1_send beg:%x,%x,%x,%x - end:%x,%x,%x,%x \t pld = %d, enc = %d\n", buf[0], buf[1], buf[2], buf[3], \
-        		buf[*pld_size -4], buf[*pld_size -3], buf[*pld_size-2], buf[*pld_size -1], (msg_ptr->header.SIZE + sizeof(msg_ptr->timestamp )), *pld_size );
-		*/
-
-        if(error != USB_OK)
-        {
-            //GPIO_DRV_SetPinOutput(LED_RED);
-        }
-        /*
-        else { GPIO_DRV_ClearPinOutput(LED_RED); }
-        static x = 0;
-        if(x) { GPIO_DRV_ClearPinOutput (LED_GREEN); x = 0; }
-        else { GPIO_DRV_SetPinOutput(LED_GREEN); x = 1; }
-        */
-        _msg_free(msg_ptr);
-        return;
-    }
-    else
-    {
-    	_msg_free(msg_ptr);
-    	_time_delay(1);
-    }
-#else
-    _msg_free(msg_ptr);
-    _time_delay(10);
-#endif
-    
-
-}
-
-void CDC2_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
-{
-#if COMPOSITE_CFG_MAX > 2
-    uint8_t error;
-
-    if( ( TRUE != g_app_composite_device.cdc_vcom[2].start_app ) ||
-            ( TRUE != g_app_composite_device.cdc_vcom[2].start_transactions ) ||
-            !g_app_composite_device.cdc_vcom[2].send_ready )
-    {
-        _msg_free(msg_ptr);
-        _time_delay(1);
-        return;
-    }
-
-    /*check whether enumeration is complete or not */
-    else if ( ( TRUE == g_app_composite_device.cdc_vcom[2].start_app ) &&
-            ( TRUE == g_app_composite_device.cdc_vcom[2].start_transactions ) &&
-            g_app_composite_device.cdc_vcom[2].send_ready)
-    {
-#ifdef MIC_USB_DEBUG
-        _mem_copy( msg_ptr->data, g_app_composite_device.cdc_vcom[2].curr_send_buf, msg_ptr->header.SIZE );
-        g_app_composite_device.cdc_vcom[2].send_size = msg_ptr->header.SIZE;
-#else
-        g_app_composite_device.cdc_vcom[2].send_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
-        _mem_copy ( msg_ptr->data, g_app_composite_device.cdc_vcom[2].curr_send_buf, g_app_composite_device.cdc_vcom[2].send_size );
-        
-#endif
-
-        g_app_composite_device.cdc_vcom[2].send_ready = FALSE;
-        error = USB_Class_CDC_Send_Data(g_app_composite_device.cdc_vcom[2].cdc_handle,
-                                        g_app_composite_device.cdc_vcom[2].in_endpoint,
-                                        g_app_composite_device.cdc_vcom[2].curr_send_buf, 
-                                        g_app_composite_device.cdc_vcom[2].send_size);
-
-        if(error != USB_OK)
-        {
-            //GPIO_DRV_SetPinOutput(LED_RED);
-        }
-
-        _msg_free(msg_ptr);
-    }
-    else
-    {
-        _msg_free(msg_ptr);
-        _time_delay(1);
-    }
-#else
-    _msg_free(msg_ptr);
-    _time_delay(1);
-#endif
-    
-}
-
-void CDC3_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
-{
-#if COMPOSITE_CFG_MAX > 3
-    uint8_t error;
-
-    if( ( TRUE != g_app_composite_device.cdc_vcom[3].start_app ) ||
-            ( TRUE != g_app_composite_device.cdc_vcom[3].start_transactions ) ||
-            !g_app_composite_device.cdc_vcom[3].send_ready )
-    {
-        _msg_free(msg_ptr);
-        _time_delay(1);
-        return;
-    }
-
-    /*check whether enumeration is complete or not */
-    else if ( ( TRUE == g_app_composite_device.cdc_vcom[3].start_app ) &&
-            ( TRUE == g_app_composite_device.cdc_vcom[3].start_transactions ) &&
-            g_app_composite_device.cdc_vcom[3].send_ready)
-    {
-#ifdef MIC_USB_DEBUG
-        _mem_copy( msg_ptr->data, g_app_composite_device.cdc_vcom[3].curr_send_buf, msg_ptr->header.SIZE );
-        g_app_composite_device.cdc_vcom[3].send_size = msg_ptr->header.SIZE;
-#else
-       g_app_composite_device.cdc_vcom[3].send_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
-       _mem_copy ( msg_ptr->data, g_app_composite_device.cdc_vcom[3].curr_send_buf, g_app_composite_device.cdc_vcom[2].send_size );
-#endif
-
-        g_app_composite_device.cdc_vcom[3].send_ready = FALSE;
-        error = USB_Class_CDC_Send_Data(g_app_composite_device.cdc_vcom[3].cdc_handle,
-                                        g_app_composite_device.cdc_vcom[3].in_endpoint,
-                                        g_app_composite_device.cdc_vcom[3].curr_send_buf, 
-                                        g_app_composite_device.cdc_vcom[3].send_size);
-
-        if(error != USB_OK)
-        {
-            //GPIO_DRV_SetPinOutput(LED_RED);
-        }
-
-        _msg_free(msg_ptr);
-    }
-    else
-    {
-        _msg_free(msg_ptr);
-        _time_delay(1);
-    }
-#else
-     _msg_free(msg_ptr);
-     _time_delay(1);
-#endif
-}
-
-void CDC4_send ( APPLICATION_MESSAGE_PTR_T msg_ptr )
-{
-#if COMPOSITE_CFG_MAX > 4
-	uint8_t error;
-
-    if( ( TRUE != g_app_composite_device.cdc_vcom[4].start_app ) ||
-    		( TRUE != g_app_composite_device.cdc_vcom[4].start_transactions ) ||
-			!g_app_composite_device.cdc_vcom[4].send_ready )
-    {
-        _msg_free(msg_ptr);
-        _time_delay(1);
-        return;
-    }
-
-    /*check whether enumeration is complete or not */
-    else if ( ( TRUE == g_app_composite_device.cdc_vcom[4].start_app ) &&
-    		( TRUE == g_app_composite_device.cdc_vcom[4].start_transactions ) &&
-			g_app_composite_device.cdc_vcom[4].send_ready)
-    {
-#ifdef MIC_USB_DEBUG
-        _mem_copy( msg_ptr->data, g_app_composite_device.cdc_vcom[4].curr_send_buf, msg_ptr->header.SIZE );
-        g_app_composite_device.cdc_vcom[4].send_size = msg_ptr->header.SIZE;
-#else
-        g_app_composite_device.cdc_vcom[4].send_size = frame_encode(msg_ptr->data, g_app_composite_device.cdc_vcom[4].curr_send_buf, msg_ptr->header.SIZE);
-#endif
-
-        g_app_composite_device.cdc_vcom[4].send_ready = FALSE;
-        error = USB_Class_CDC_Send_Data(g_app_composite_device.cdc_vcom[4].cdc_handle,
-                                        g_app_composite_device.cdc_vcom[4].in_endpoint,
-                                        g_app_composite_device.cdc_vcom[4].curr_send_buf, 
-                                        g_app_composite_device.cdc_vcom[4].send_size);
-
-        if(error != USB_OK)
-        {
-            //GPIO_DRV_SetPinOutput(LED_RED);
-        }
-
-        _msg_free(msg_ptr);
-    }
-    else
-    {
-        _msg_free(msg_ptr);
-        _time_delay(1);
-    }
-#else
-    _msg_free(msg_ptr);
-    _time_delay(1);
-#endif
-    
-}
+#endif //if 0
 
 void USB_Recive_Data ( cdc_struct_t *handle )
 {
@@ -1170,7 +1068,6 @@ void CDC4_resv ( cdc_struct_t *handle )
     _msgq_send (msg);
     handle->recv_size = 0;
 #else
-	
 	if ( 3 > handle->recv_size )
 	{
 		printf("CDC4_resv USB Task: rec data size %d < 3 \n", handle->recv_size);
@@ -1196,6 +1093,65 @@ void CDC4_resv ( cdc_struct_t *handle )
 #endif
 }
 
+static bool CDC_Queue_init (uint8_t cdcNum, uint8_t* memAdr, uint32_t ElemCount, uint32_t queueElemSize) {
+    uint16_t j;
+    uint8_t* buffPtr = memAdr;
+
+    if (NULL == buffPtr) {
+        printf("Erro param %s CDC %d\n", __func__, cdcNum);
+        return false;
+    }
+
+    g_app_composite_device.cdc_vcom[cdcNum].pOutBuffStart = memAdr;
+    g_app_composite_device.cdc_vcom[cdcNum].queue_elem_num = ElemCount;
+    for (j = 0; j < ElemCount; j++) {
+        ((pcdc_mic_queue_element_t)buffPtr)->packetNum = 0;
+		((pcdc_mic_queue_element_t)buffPtr)->send_size = 0;
+		//((pcdc_mic_queue_element_t)buffPtr)->data_buff = (uint8_t*)(buffPtr + sizeof(pcdc_mic_queue_element_t));
+        if (!_queue_enqueue (&(g_app_composite_device.cdc_vcom[cdcNum].qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)buffPtr)) {
+            printf("ERROR add element to CDC %d queue\n", cdcNum);
+            return false;
+        }
+        buffPtr += queueElemSize;
+    }
+    return true;
+}
+
+bool SDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle ) {
+
+    if (NULL == phandle) {
+        printf("%s: Error param\n", __func__);
+        return false;
+    }
+
+    if (NULL != phandle->pSendElem) {
+        if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)(phandle->pSendElem))) {
+            printf("%s: Error add to free queue port%d mem %x\n", phandle->portNum, (uint32_t)(phandle->pSendElem));
+        }
+        phandle->pSendElem = NULL;
+    }
+
+    phandle->pSendElem = (pcdc_mic_queue_element_t)_queue_dequeue(&(phandle->qs_OutInProcMsg));
+    if (NULL != phandle->pSendElem) {
+        if ( USB_OK != USB_Class_CDC_Send_Data(handle, phandle->in_endpoint, phandle->pSendElem->data_buff, phandle->pSendElem->send_size ) ) {
+            printf("%s: Error send USB port_%d\n", __func__, phandle->portNum );
+            if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)phandle->pSendElem)) {
+                printf("%s: Error add to free queue port%d mem %x\n", phandle->portNum, (uint32_t)(phandle->pSendElem));
+            }
+            phandle->pSendElem = NULL;
+            phandle->send_ready = TRUE;
+			//printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
+            return false;
+        }
+        phandle->send_ready = FALSE;
+		//printf ("%s: Set sendR F P_%d\n", __func__, phandle->portNum);
+    }
+	else {
+        phandle->send_ready = TRUE;
+		//printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
+	}
+    return true;
+}
 
 
 /* EOF */

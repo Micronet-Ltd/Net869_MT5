@@ -353,7 +353,7 @@ void* arg
     (void)usb_device_get_status(usb_fw_ptr->dev_handle, (uint8_t)USB_STATUS_DEVICE_STATE,
     &device_state);
 #if USB_DEBUG_PRINTF
-    USB_PRINTF("USB_Control_Service ++ \n");
+    USB_PRINTF("%s:USB_Control_Service ++ \n", __func__);
 #endif
     if (event->setup == TRUE)
     {
@@ -364,20 +364,20 @@ void* arg
         usb_fw_ptr->setup_packet.value = USB_SHORT_LE_TO_HOST(usb_fw_ptr->setup_packet.value);
         usb_fw_ptr->setup_packet.length = USB_SHORT_LE_TO_HOST(usb_fw_ptr->setup_packet.length);
 #if USB_DEBUG_PRINTF
-        USB_PRINTF("00++ Enter ++ type:%d \n",usb_fw_ptr->setup_packet.request_type);
+        USB_PRINTF("%s:00++ Enter ++ type:%d \n",__func__, usb_fw_ptr->setup_packet.request_type);
 #endif
         /* if the request is standard request */
         if ((usb_fw_ptr->setup_packet.request_type & USB_DEV_REQ_STD_REQUEST_TYPE_TYPE_POS) ==
         USB_DEV_REQ_STD_REQUEST_TYPE_TYPE_STANDARD)
         {
 #if USB_DEBUG_PRINTF
-            USB_PRINTF("11++ Enter ++ :%d \n",usb_fw_ptr->setup_packet.request);
+            USB_PRINTF("%s:11++ Enter ++ :%d \n",__func__, usb_fw_ptr->setup_packet.request);
 #endif
             /* if callback is not NULL */
             if (g_standard_request[usb_fw_ptr->setup_packet.request] != NULL)
             {
 #if USB_DEBUG_PRINTF
-                USB_PRINTF("22++ Enter ++ :%d \n",usb_fw_ptr->setup_packet.request);
+                USB_PRINTF("%s:22++ Enter ++ :%d \n",__func__, usb_fw_ptr->setup_packet.request);
 #endif
                 /* if the request is valid in this device state */
                 if((device_state < USB_STATE_POWERED) &&
@@ -405,8 +405,8 @@ void* arg
                 if((size + USB_SETUP_PKT_SIZE) > MAX_EXPECTED_CONTROL_OUT_SIZE)
                 {
 #if USB_DEBUG_PRINTF
-                    USB_PRINTF("MAX_EXPECTED_CONTROL_OUT_SIZE insufficient, needed %d\n", size + USB_SETUP_PKT_SIZE);
-                    USB_PRINTF("Please change the macro!!!\n");
+                    USB_PRINTF("%s:MAX_EXPECTED_CONTROL_OUT_SIZE insufficient, needed %d\n", __func__, size + USB_SETUP_PKT_SIZE);
+                    USB_PRINTF("%s:Please change the macro!!!\n", __func__);
 #endif  
                     usb_device_stall_endpoint(usb_fw_ptr->dev_handle,USB_CONTROL_ENDPOINT,USB_RECV);
                     return;
@@ -425,7 +425,7 @@ void* arg
             else if(usb_fw_ptr->request_notify_callback != NULL)
             {
 #if USB_DEBUG_PRINTF
-                USB_PRINTF("USB_Control_Service_Handler ++ #### \n");
+                USB_PRINTF("%s:USB_Control_Service_Handler ++ #### \n", __func__);
 #endif
                 error = usb_fw_ptr->request_notify_callback(
                 &usb_fw_ptr->setup_packet,&data,&size,usb_fw_ptr->request_notify_param);
@@ -439,7 +439,7 @@ void* arg
         /* Device state is PENDING_ADDRESS */
         /* Assign the new address to the Device */
 #if USB_DEBUG_PRINTF
-        USB_PRINTF("send ZLT done\n");
+        USB_PRINTF("%s:send ZLT done\n", __func__);
 #endif
         (void)USB_Strd_Req_Assign_Address(usb_fw_ptr);
     }
@@ -449,14 +449,14 @@ void* arg
     )
     {
 #if USB_DEBUG_PRINTF
-        USB_PRINTF("send OUT tr\n");
+        USB_PRINTF("%s:send OUT tr\n", __func__);
 #endif
         /* execution enters Control Service because of 
          OUT transaction on USB_CONTROL_ENDPOINT*/
         if(usb_fw_ptr->request_notify_callback != NULL)
         {
 #if USB_DEBUG_PRINTF
-            USB_PRINTF("send OUT tr callb\n");
+            USB_PRINTF("%s:send OUT tr callb\n", __func__);
 #endif
             /* class or vendor request */
             size = event->len+USB_SETUP_PKT_SIZE;
@@ -468,14 +468,14 @@ void* arg
         if(event->len != 0xFFFFFFFF)
         {
 #if _DEBUG
-            USB_PRINTF("send OUT tr len 0xFFFFFFFF\n");
+            USB_PRINTF("%s:send OUT tr len 0xFFFFFFFF\n", __func__);
 #endif
             USB_Control_Service_Handler(usb_fw_ptr,error,&usb_fw_ptr->setup_packet,
             &data,&size);
         }
     }
 #if USB_DEBUG_PRINTF
-    USB_PRINTF("USB_Control_Service -- \n");
+    USB_PRINTF("%s:USB_Control_Service -- \n", __func__);
 #endif
     return;
 }
@@ -667,7 +667,7 @@ uint32_t *size
     if (error == USBERR_INVALID_REQ_TYPE)
     {
 #if USB_DEBUG_PRINTF
-            USB_PRINTF("USB USBERR_INVALID_REQ_TYPE\n");
+            USB_PRINTF("%s:USB USBERR_INVALID_REQ_TYPE\n", __func__);
 #endif
         uint8_t direction = USB_SEND;
         uint8_t ep_num = USB_CONTROL_ENDPOINT;
@@ -685,7 +685,7 @@ uint32_t *size
         /* send the data to the host */
         (void)usb_device_send_data(usb_fw_ptr->dev_handle,USB_CONTROL_ENDPOINT, *data, *size);
 #if USB_DEBUG_PRINTF
-        USB_PRINTF("send %d to host\n", *size);
+        USB_PRINTF("%s:send %d to host\n", __func__, *size);
 #endif
         if ((setup_packet->request_type & USB_DEV_REQ_STD_REQUEST_TYPE_DIR_POS) == USB_DEV_REQ_STD_REQUEST_TYPE_DIR_IN)
         {
@@ -694,7 +694,7 @@ uint32_t *size
             (void)usb_device_recv_data(usb_fw_ptr->dev_handle,
             USB_CONTROL_ENDPOINT,NULL,0);
 #if USB_DEBUG_PRINTF
-            USB_PRINTF("ready to receive ZLT on EP0\n");
+            USB_PRINTF("%s:ready to receive ZLT on EP0\n", __func__);
 #endif
         }
     }
@@ -890,7 +890,7 @@ uint32_t *size
             if(set_request)
             {
 #if USB_DEBUG_PRINTF
-                USB_PRINTF("USB USB_DEV_EVENT_TYPE_SET_EP_HALT\n");
+                USB_PRINTF("%s:USB USB_DEV_EVENT_TYPE_SET_EP_HALT\n", __func__);
 #endif
                 event = USB_DEV_EVENT_TYPE_SET_EP_HALT;
                 error = usb_device_stall_endpoint(usb_fw_ptr->dev_handle,epinfo & 0x0F, (uint8_t)(epinfo & 0x80) >> 7);

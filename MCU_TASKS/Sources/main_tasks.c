@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <mqx.h>
 #include <bsp.h>
@@ -40,7 +41,7 @@ void configure_otg_for_host_or_device(void);
 //static i2c_master_state_t i2c0_master;
 //static i2c_master_state_t i2c1_master;
 
-_pool_id   g_out_message_pool;
+//_pool_id   g_out_message_pool;
 _pool_id   g_in_message_pool;
 
 _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
@@ -65,8 +66,7 @@ void Main_task( uint32_t initial_data ) {
 
     _time_delay (10);
 
-
-    printf("\nMain Task: Start \n");
+	printf("\n%s: Start\n", __func__);
 #if 0
     PinMuxConfig ();
     ADCInit      ();
@@ -80,14 +80,16 @@ void Main_task( uint32_t initial_data ) {
     OSA_Init();
     GPIO_Config();
     ADC_init ();
+	
+	
 
-    NVIC_SetPriority(PORTA_IRQn, 6U);
-    OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
-    NVIC_SetPriority(PORTC_IRQn, 6U);
-    OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
+	NVIC_SetPriority(PORTA_IRQn, 6U);
+	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
+	NVIC_SetPriority(PORTC_IRQn, 6U);
+	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 
-    NVIC_SetPriority(PORTB_IRQn, 6U);
-    OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
+	NVIC_SetPriority(PORTB_IRQn, 6U);
+	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
 //    // I2C0 Initialization
 //    NVIC_SetPriority(I2C0_IRQn, 6U);
@@ -99,32 +101,35 @@ void Main_task( uint32_t initial_data ) {
 //	OSA_InstallIntHandler(I2C1_IRQn, MQX_I2C1_IRQHandler);
 //	I2C_DRV_MasterInit(I2C1_IDX, &i2c1_master);
 
-    /* Initialize mutex attributes: */
-    if (_mutatr_init(&mutexattr) != MQX_OK)
-    {
-        printf("Initializing mutex attributes failed.\n");
-        _task_block();
-    }
-    /* Initialize the mutex: */
-    if (_mutex_init(&g_i2c0_mutex, &mutexattr) != MQX_OK)
-    {
-        printf("Initializing i2c0 mutex failed.\n");
-        _task_block();
-    }
+	/* Initialize mutex attributes: */
+	if (_mutatr_init(&mutexattr) != MQX_OK)
+	{
+		printf("Initializing mutex attributes failed.\n");
+		_task_block();
+	}
+	/* Initialize the mutex: */
+	if (_mutex_init(&g_i2c0_mutex, &mutexattr) != MQX_OK)
+	{
+		printf("Initializing i2c0 mutex failed.\n");
+		_task_block();
+	}
 
+    Virtual_Com_MemAlloc(); // Allocate USB out buffers
+	
     g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
     if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
     {
         printf("\nMain Could not create POWER_MGM_TASK\n");
     }
-    
+
+/*    
     g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
     if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
     {
         printf("\nCould not create a g_out_message_pool message pool\n");
         _task_block();
     }
-
+*/
     g_in_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
     if (g_in_message_pool == MSGPOOL_NULL_POOL_ID)
     {
@@ -244,7 +249,7 @@ void Main_task( uint32_t initial_data ) {
     FPGA_read_version(&FPGA_version);
     printf("\n FPGA version, %x", FPGA_version);
 
-    FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
+    FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */	
     printf("\nMain Task: Loop \n");
 
     while ( 1 ) 
@@ -252,6 +257,7 @@ void Main_task( uint32_t initial_data ) {
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
 #ifdef DEBUG_BLINKING_RIGHT_LED
         FPGA_write_led_status(LED_RIGHT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
+
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
         FPGA_write_led_status(LED_RIGHT, 0, 0, 0, 0); /*Blue LED */
 #endif
@@ -271,7 +277,7 @@ void OTG_CONTROL (void)
 		return;
 
 	user_switch = user_switch_status;
-    GPIO_DRV_SetPinOutput (USB_OTG_OE);
+	GPIO_DRV_SetPinOutput (USB_OTG_OE);
 	_time_delay (1000);
 
 	// disable OTG Switch
@@ -290,7 +296,7 @@ void OTG_CONTROL (void)
 		default            : break;
 
 		// enable OTG Switch
-        GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
 	}
 }
 #endif
@@ -301,19 +307,19 @@ void configure_otg_for_host_or_device(void)
 	{
 		/* Connect D1 <-> D MCU or HUB */
 		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
-        GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
-
-        GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-        GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
+		GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+                
+		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+		GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
 	}
 	else
 	{
 		/* Connect D2 <-> D A8 OTG */
 		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
-        GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
-
-        GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-        GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+		GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
+                
+		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+		GPIO_DRV_SetPinOutput (CPU_OTG_ID);
 	}
 }
 
@@ -481,4 +487,3 @@ void _test_CANFLEX( ) {
 #endif
 
 }
-

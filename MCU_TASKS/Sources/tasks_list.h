@@ -1,3 +1,4 @@
+
 #ifndef __tasks_list_h_
 #define __tasks_list_h_
 
@@ -7,14 +8,15 @@
 #include <stdio.h>
 
 #define MAX_MSG_DATA_LEN	 0x40
-#define NUM_CLIENTS			 40
+#define NUM_CLIENTS			 (10)
+
+//#define USB_CAN_MAX_USABLE      (NUM_CLIENTS-10)
 
 #define START_APPLICATION_PRIORITY (16)
 
 typedef enum {
 	//Regular priority tasks
-
-	USB_TASK_PRIORITY = (START_APPLICATION_PRIORITY + 1),
+    USB_TASK_PRIORITY = (START_APPLICATION_PRIORITY + 1),
 	POWER_MGM_TASK_PRIORITY,
     CAN_TASK_RX_PRIORITY,
 	UPDATER_EXEC_TASK_PRIORITY,

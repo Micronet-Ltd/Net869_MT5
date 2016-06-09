@@ -40,6 +40,7 @@
 /*******************************************************************************
  * Variables
  ******************************************************************************/
+FLEXCAN_Debug_t g_Flexdebug = {0};
 
 /* Pointer to runtime state structure.*/
 flexcan_state_t * g_flexcanStatePtr[CAN_INSTANCE_COUNT] = { NULL };
@@ -287,7 +288,7 @@ flexcan_status_t FLEXCAN_DRV_Init(
     state->isTxBusy = false;
     state->isRxBusyFIFO = false;
     _mem_zero((void*)( state->isRxBusyMB ), sizeof(state->isRxBusyMB)); 
-    state->fifo_message = NULL;
+    //state->fifo_message = NULL;
     state->rx_mb_idx = 0;
     state->tx_mb_idx = 0;
     /* Save runtime structure pointers so irq handler can point to the correct state structure */
@@ -548,7 +549,7 @@ flexcan_status_t FLEXCAN_DRV_RxMessageBuffer(
     flexcan_msgbuff_t *data)
 {
     assert(instance < CAN_INSTANCE_COUNT);
-    assert(data);
+    //assert(data);
 
     flexcan_status_t result;
     flexcan_state_t * state = g_flexcanStatePtr[instance];
@@ -600,7 +601,7 @@ flexcan_status_t FLEXCAN_DRV_RxFifoBlocking(
 
 /*FUNCTION**********************************************************************
  *
- * Function Name : FLEXCAN_DRV_RxFifoBlocking
+ * Function Name : FLEXCAN_DRV_RxFifo
  * Description   : Start receive data after a Rx FIFO interrupt occurs.
  *
  *END**************************************************************************/
@@ -609,7 +610,7 @@ flexcan_status_t FLEXCAN_DRV_RxFifo(
     flexcan_msgbuff_t *data)
 {
     assert(instance < CAN_INSTANCE_COUNT);
-    assert(data);
+    //assert(data);
 
     flexcan_status_t result;
     flexcan_state_t * state = g_flexcanStatePtr[instance];
@@ -665,6 +666,9 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
 {
     volatile uint32_t flag_reg;
     uint32_t temp, temp1, i;
+    _mqx_uint mRet;
+    flexcan_data_info_t rxInfo;
+    pFLEXCAN_queue_element_t pqueue_elem;
     CAN_Type * base = g_flexcanBase[instance];
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
@@ -677,40 +681,84 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
     {
         if ((flag_reg & 0x20) && CAN_BRD_MCR_RFEN(base))
         {
-            if (state->fifo_message != NULL)
+            //if (state->fifo_message != NULL)
+            if ( (NULL != state->fifo_free_messages) && (NULL != state->fifo_ready_messages) )
             {
-                /* Get RX FIFO field values */
-                FLEXCAN_HAL_ReadRxFifo(base, state->fifo_message);
-                /* Complete receive data */
-                FLEXCAN_DRV_CompleteRxMessageFifoData(instance);
-                FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
-            }
+                pqueue_elem = (pFLEXCAN_queue_element_t)_queue_dequeue(state->fifo_free_messages);
+                if (NULL == pqueue_elem) {
+                    //Reuse ready messages
+                    pqueue_elem = (pFLEXCAN_queue_element_t)_queue_dequeue(state->fifo_ready_messages);
+                    g_Flexdebug.rejectRX_FifoEmpty++;
+                }
+
+                if (NULL != pqueue_elem) {
+                    /* Get RX FIFO field values */
+                    FLEXCAN_HAL_ReadRxFifo(base, &(pqueue_elem->msg_buff));
+                    _queue_enqueue(state->fifo_ready_messages, (QUEUE_ELEMENT_STRUCT_PTR)pqueue_elem );
+                    /* Complete receive data */
+                    //RS FLEXCAN_DRV_CompleteRxMessageFifoData(instance);
+
+                    //Set event for task notification
+                    if (MQX_OK != _lwevent_set( state->pevent_ISR, 1))
+                    {
+                        //printf ( "Error _lwevent_set set ISR event %x", temp1 );
+                    }
+                    FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
+                    g_Flexdebug.acceptRX_IRQ++;
+                }
+                else
+                    g_Flexdebug.rejectRX_FifoEmpty++;
+			}
+			FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
         }
         else
         {
            /* Check mailbox completed reception*/
             temp1 = temp = state->rx_mb_idx & flag_reg;
-            if (temp)
-            {
-                for (i = 0; temp && (CAN_CS_COUNT > i); i++)
-                {
-                	if (temp & 0x00000001)
-                    {
-                        /* Unlock RX message buffer and RX FIFO*/
-                        FLEXCAN_HAL_LockRxMsgBuff(base, i);
-                        /* Get RX MB field values*/
-                        FLEXCAN_HAL_GetMsgBuff(base, i, state->mb_message[i]);
-                        /* Unlock RX message buffer and RX FIFO*/
-                        FLEXCAN_HAL_UnlockRxMsgBuff(base);
+            if (temp && (NULL != state->fifo_free_messages) && (NULL != state->fifo_ready_messages)) {
+                for (i = 0; temp && (CAN_CS_COUNT > i); i++) {
+                	if (temp & 0x00000001) {
+						if (!_queue_is_empty(state->fifo_free_messages)) {
+							pqueue_elem = (pFLEXCAN_queue_element_t)_queue_dequeue(state->fifo_free_messages);
+							if (NULL != pqueue_elem) {
+								/* Unlock RX message buffer and RX FIFO*/
+								FLEXCAN_HAL_LockRxMsgBuff(base, i);
+								/* Get RX MB field values*/
+								FLEXCAN_HAL_GetMsgBuff(base, i, &(pqueue_elem->msg_buff));
+								_queue_enqueue(state->fifo_ready_messages, (QUEUE_ELEMENT_STRUCT_PTR)pqueue_elem );
+								/* Unlock RX message buffer and RX FIFO*/
+								FLEXCAN_HAL_UnlockRxMsgBuff(base);
+                                g_Flexdebug.acceptRX_IRQ++;
+							}
+						}
+                        else
+                            g_Flexdebug.rejectRX_FifoEmpty++;
 
                         /* Complete receive data */
                         FLEXCAN_DRV_CompleteRxMessageBufferData(instance, i);
                         FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, (1 << i));
 
-                        g_flexacandevice_PacketCountRX1++; //Test counter
-                    }
+                        /* Rearm the MB back*/
+                        if ( state->MB_config[i].isEnable ) {
+                            rxInfo.msg_id_type = state->MB_config[i].iD_type;
+    						rxInfo.data_length = kFlexCanMessageSize;
+
+    						mRet = FLEXCAN_DRV_ConfigRxMb(instance, i, &rxInfo, state->MB_config[i].iD_Mask);
+    						if ( mRet ) {
+    							//numErrors++;
+    							//printf("\r\nFlexCAN RX MB configuration failed. result: 0x%lx\n", mRet);
+    						}
+    						//Enable Interrupt and start recieving
+    						mRet = FLEXCAN_DRV_RxMessageBuffer(instance, state->MB_config[i].iD, NULL);
+    						if ( mRet ) {
+    							//printf("\r\nFLEXCAN_DRV_RxMessageBuffer. result: 0x%lx\n", mRet);
+    						}
+    					}
+                    }//End if (temp & 0x00000001)
+
                     temp >>= 1;
-                }// end for
+
+                }// end for (i = 0; temp && (CAN_CS_COUNT > i); i++)
                 // Add set data to queue
 
                 //Set event for task notification
@@ -718,7 +766,9 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
                 {
                     //printf ( "Error _lwevent_set set ISR event %x", temp1 );
                 }
-            }
+
+            }//End if (temp && (NULL != state->fifo_free_messages) && (NULL != state->fifo_ready_messages))
+
             /* Check mailbox completed transmission*/
             temp = (1 << state->tx_mb_idx);
             if (temp & flag_reg)
@@ -728,14 +778,6 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
                 FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, temp & flag_reg);
             }
         }
-        /* Check mailbox completed transmission*/
-//        temp = (1 << state->tx_mb_idx);
-//        if (flag_reg & temp)
-//        {
-//                /* Complete transmit data */
-//                FLEXCAN_DRV_CompleteSendData(instance);
-//                FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, temp & flag_reg);
-//        }
     }
 
     /* Clear all other interrupts in ERRSTAT register (Error, Busoff, Wakeup) */
@@ -957,7 +999,7 @@ static flexcan_status_t FLEXCAN_DRV_StartRxMessageBufferData(
         return kStatus_FLEXCAN_RxBusy;
     }
     state->isRxBusyMB[mb_idx] = true;
-    state->mb_message[mb_idx] = data;
+    //state->mb_message[mb_idx] = data;
 
     /* Enable MB interrupt*/
     result = FLEXCAN_HAL_SetMsgBuffIntCmd(base, mb_idx, true);
@@ -993,7 +1035,7 @@ static flexcan_status_t FLEXCAN_DRV_StartRxMessageFifoData(
     state->isRxBusyFIFO = true;
 
     /* This will get filled by the interrupt handler */
-    state->fifo_message = data;
+    //state->fifo_message = data;
 
     /* Enable RX FIFO interrupts*/
     for (uint8_t i = 5; i <= 7; i++)
@@ -1096,7 +1138,7 @@ static void FLEXCAN_DRV_CompleteRxMessageFifoData(uint32_t instance)
 	FLEXCAN_HAL_SetErrIntCmd(base,kFlexCanIntErr,false);
 
     /* Clear fifo message*/
-    state->fifo_message = NULL;
+    //state->fifo_message = NULL;
 
     /* Update status for receive by using fifo*/
     state->isRxBusyFIFO = false;

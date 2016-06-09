@@ -1699,7 +1699,7 @@
         </option>
         <option>
           <name>OCImagesPath1</name>
-          <state>C:\Users\abid.esmail\Documents\micronet\source\Net869_MT5\BootLoader\Release\Exe\BootLoader.srec</state>
+          <state>$PROJ_DIR$\..\..\BootLoader\Release\Exe\BootLoader.srec</state>
         </option>
         <option>
           <name>OCImagesSuppressCheck2</name>
@@ -3110,7 +3110,7 @@
       </plugin>
       <plugin>
         <file>$TOOLKIT_DIR$\plugins\rtos\MQX\MQXRtosPlugin.ewplugin</file>
-        <loadFlag>0</loadFlag>
+        <loadFlag>1</loadFlag>
       </plugin>
       <plugin>
         <file>$TOOLKIT_DIR$\plugins\rtos\OpenRTOS\OpenRTOSPlugin.ewplugin</file>

@@ -107,9 +107,10 @@ void J1708_Tx_task (uint32_t initial_data)
 
 void J1708_Rx_task (uint32_t initial_data)
 {
-	APPLICATION_MESSAGE_T *msg;
+    pcdc_mic_queue_element_t    pqMemElem;
+	//APPLICATION_MESSAGE_T *msg;
 	_mqx_uint err_task;
-	const _queue_id     J1708_rx_qid  = _msgq_open (J1708_RX_QUEUE, 0);
+	//const _queue_id     J1708_rx_qid  = _msgq_open (J1708_RX_QUEUE, 0);
 	//_queue_id     USB_qid    	= _msgq_get_id (0, USB_QUEUE     );
 	//_queue_id     USB_qid       = _msgq_get_id (0, J1708_TX_QUEUE     );		// loop for test only
 
@@ -149,43 +150,25 @@ void J1708_Rx_task (uint32_t initial_data)
 		}
 
 		// send buffer - Since the buffer is cyclic, it might be needed to split buffer to 2 buffers
-		if ((msg = _msg_alloc(g_out_message_pool)) != NULL) {
-			msg->header.SOURCE_QID = J1708_rx_qid;
-			msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);;
-			msg->header.SIZE       = J1708_rx_len;
-			msg->portNum 			= MIC_CDC_USB_5;
-			 
-			_msgq_send (msg);
-			if (MQX_OK != (err_task = _task_get_error()))
-			{
-				printf("J1708_Rx_task Task: ERROR: message send failed %x\n", err_task);
-				_task_set_error(MQX_OK);
-			}
-		}
-		else {
-			if (MQX_OK != (err_task = _task_get_error()))
-			{
-				_task_set_error(MQX_OK);
-			}
-			printf("J1708_Rx_task Task: ERROR: message allocation failed %x\n", err_task);
-			continue;
-		}
+        pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_5);
+        if (NULL == pqMemElem) {
+            printf("%s: Error get mem for USB drop\n", __func__);
+            continue;
+        }
 
-		// calculate actual buffer size
-		if (!FPGA_read_J1708_packet (msg->data, msg->header.SIZE)) {
+        // add header size to message length
+		pqMemElem->send_size = J1708_rx_len;
+
+        // calculate actual buffer size
+		if (!FPGA_read_J1708_packet (pqMemElem->data_buff, pqMemElem->send_size)) {
 			printf ("\nJ1708_Rx: ERROR: Could not read UART message buffer\n");
 			J1708_reset ();
+            pqMemElem->send_size = 0;
 		}
 
-		// add header size to message length
-		msg->header.SIZE  += sizeof (MESSAGE_HEADER_STRUCT);
-#ifdef MIC_LED_TEST
-		GPIO_DRV_SetPinOutput(LED_BLUE);
-#endif
-
-#if 0
-		_msgq_send (msg);
-#endif
+        if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_5)) {
+            printf("%s: Error send data to CDC5\n", __func__);
+        }
 	}
 	
 	// should never get here

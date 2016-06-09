@@ -114,7 +114,7 @@
 #define USBCFG_DEV_MAX_ENDPOINTS          (16) 
 
 /* how many XDs are supported at most */
-#define USBCFG_DEV_MAX_XDS                (36)
+#define USBCFG_DEV_MAX_XDS                (48)
 
 /* how many instance should be supported for one class type device */
 #define USBCFG_DEV_MAX_CLASS_OBJECT       (1)

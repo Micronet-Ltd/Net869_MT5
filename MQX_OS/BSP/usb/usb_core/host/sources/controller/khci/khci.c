@@ -858,7 +858,7 @@ static void _usb_khci_task(void* dev_inst_ptr)
                     res = KHCI_ATOM_TR_BUS_TIMEOUT;
                     tr_state = KHCI_TR_TRANSMIT_DONE;
                     done_msg = curr_msg;
-                    USB_PRINTF("3TR Timeout!\n");
+                    USB_PRINTF("%s:3TR Timeout!\n", __func__);
                     return;
                 }
             }
@@ -910,7 +910,7 @@ static void _usb_khci_task(void* dev_inst_ptr)
                             done_msg.frame = _usb_khci_get_total_frame_count(usb_host_ptr);
                             done_msg.msg_state = TR_BUS_TIMEOUT;
                             _usb_khci_add_tr(usb_host_ptr, &done_msg, NAK_RETRY_TIME*5,TYPE_NAK);
-                         USB_PRINTF("Retry @@\n\r");
+                         USB_PRINTF("%s:Retry @@\n", __func__);
                             return;
                         }
 
@@ -1225,7 +1225,7 @@ usb_status usb_khci_init(uint8_t controller_id, usb_host_handle handle)
     if (usb_host_ptr->khci_event_ptr == NULL)
     {
 #if _DEBUG
-        USB_PRINTF(" memalloc failed in usb_khci_init\n");
+        USB_PRINTF("%s: memalloc failed in usb_khci_init\n", __func__);
 #endif
 
         return USBERR_ALLOC;
@@ -1473,12 +1473,12 @@ usb_pipe_handle pipe_handle
         }
         else
         {
-            USB_PRINTF("usb_khci_close_pipe can't find target pipe\n");
+            USB_PRINTF("%s: can't find target pipe\n", __func__);
         }
     }
     else
     {
-        USB_PRINTF("usb_khci_close_pipe invalid pipe \n");
+        USB_PRINTF("%s: invalid pipe \n", __func__);
     }
 
     OS_Unlock();
@@ -1705,7 +1705,7 @@ usb_status usb_khci_cancel_pipe(usb_host_handle handle, pipe_struct_t* pipe_ptr,
             /* this one should be put into the tr_que_bak and put back to tr_que later */
             if(OS_MSGQ_OK != OS_MsgQ_send(usb_host_ptr->tr_que_bak, (void *)&msg, 0))
             {
-                USB_PRINTF("some error on host tr_que_bak\n");
+                USB_PRINTF("%s:some error on host tr_que_bak\n", __func__);
             }
         }
     }
@@ -1714,7 +1714,7 @@ usb_status usb_khci_cancel_pipe(usb_host_handle handle, pipe_struct_t* pipe_ptr,
     {
         if (OS_MSGQ_OK != OS_MsgQ_send(usb_host_ptr->tr_iso_que, (void *)&msg, 0))
         {
-            USB_PRINTF("some error on host tr_que\n");
+            USB_PRINTF("%s: some error on host tr_que\n", __func__);
         }
     }
 
@@ -1734,7 +1734,7 @@ usb_status usb_khci_cancel_pipe(usb_host_handle handle, pipe_struct_t* pipe_ptr,
             /* this one should be put into the tr_que_bak and put back to tr_que later */
             if (OS_MSGQ_OK != OS_MsgQ_send(usb_host_ptr->tr_que_bak, (void *)&msg, 0))
             {
-                USB_PRINTF("some error on host tr_que_bak\n");
+                USB_PRINTF("%s:some error on host tr_que_bak\n", __func__);
             }
         }
     }
@@ -1743,7 +1743,7 @@ usb_status usb_khci_cancel_pipe(usb_host_handle handle, pipe_struct_t* pipe_ptr,
     {
         if (OS_MSGQ_OK != OS_MsgQ_send(usb_host_ptr->tr_que, (void *)&msg, 0))
         {
-            USB_PRINTF("some error on host tr_que\n");
+            USB_PRINTF("%s: some error on host tr_que\n", __func__);
         }
     }
 
@@ -2035,9 +2035,9 @@ tr_msg_struct_t msg
     {
         if (bd & USB_BD_OWN)
         {
-            USB_PRINTF("2 BIG ERROR 0x%x\n", (unsigned int)bd);
+            USB_PRINTF("%s:2 BIG ERROR 0x%x\n", __func__, (unsigned int)bd);
             *bd_ptr = 0;
-            USB_PRINTF("2 after change 0x%x\n", (unsigned int)USB_LONG_LE_TO_HOST(*bd_ptr));
+            USB_PRINTF("%s:2 after change 0x%x\n", __func__, (unsigned int)USB_LONG_LE_TO_HOST(*bd_ptr));
         }
         if((pipe_desc_ptr->pipetype == USB_ISOCHRONOUS_PIPE))
         {
