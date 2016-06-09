@@ -416,6 +416,7 @@ DEVICE_STATE_t Device_get_status (void) {return device_state_g;}
 void peripherals_enable (void)
 {
 	uint32_t i;
+    uint32_t total_wait_time = 0;
 
 	GPIO_DRV_ClearPinOutput (FPGA_RSTB);
 
@@ -453,13 +454,21 @@ void peripherals_enable (void)
 //	GPIO_DRV_SetPinOutput (CPU_MIC_EN);
 
     // wait till FPGA is loaded
-    for (i = 0; i < 100000; i++)
+    while(1)
     {
     	if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1)
     	{
-    		MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: INFO: FPGA is loaded\n");
+            MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: INFO: FPGA is loaded, wait_time: %d ms\n", total_wait_time );
     		break;
     	}
+        _time_delay(1);
+        total_wait_time++;
+        /* Measured to take 71ms typically (tested on 1 board, 10 reboot cycles) - Abid */
+        if(total_wait_time > 10000)
+        {
+            printf("\nPOWER_MGM: INFO: FPGA FAILED TO LOAD!, wait_time: %d ms\n", total_wait_time);
+            break;
+        }
     }
 
     // TODO: need to be removed after tasks enable will be set fro USB protocol

@@ -249,7 +249,6 @@ void Main_task( uint32_t initial_data ) {
     FPGA_read_version(&FPGA_version);
     printf("\n FPGA version, %x", FPGA_version);
 
-    FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */	
     printf("\nMain Task: Loop \n");
 
     while ( 1 ) 
