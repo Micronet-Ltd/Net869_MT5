@@ -683,13 +683,15 @@ void Supercap_charge_state (void)
 void Supercap_discharge_state (void)
 {
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN);
-
-	if (power_in_voltage <= POWER_IN_SHUTDOWN_TH)
+    uint32_t supercap_voltage = ADC_get_value (kADC_POWER_VCAP);
+    
+    /* we do not want to try to use the supercap when there isn't enough power to run the MCU */
+	if ((power_in_voltage <= POWER_IN_SHUTDOWN_TH) && (supercap_voltage >= MCU_MIN_OPERATING_VOLTAGE))
 	{
 		// send a message only once
 		if (GPIO_DRV_ReadPinInput (POWER_DISCHARGE_ENABLE) == 0)
 		{
-			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: SUPERCAP start DisCharged (power in voltage is: %d mV)\n", power_in_voltage);
+          MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: SUPERCAP start DisCharged (power in voltage is: %d mV, supercap voltage is: %d mV)\n", power_in_voltage, supercap_voltage);
 		}
 		GPIO_DRV_SetPinOutput (POWER_DISCHARGE_ENABLE);
 	}
@@ -698,7 +700,7 @@ void Supercap_discharge_state (void)
 		// send a message only once
 		if (GPIO_DRV_ReadPinInput (POWER_DISCHARGE_ENABLE) == 1)
 		{
-			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: SUPERCAP stop DisCharged (power in voltage is: %d mV)\n", power_in_voltage);
+			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: SUPERCAP stop DisCharged (power in voltage is: %d mV, supercap voltage is %d mV)\n", power_in_voltage, supercap_voltage);
 		}
 		GPIO_DRV_ClearPinOutput (POWER_DISCHARGE_ENABLE);
 	}
