@@ -600,7 +600,7 @@ void updater_task(uint32_t param)
 		
 		memset(bbb, 0, sizeof(bbb));
 		// Wait to receive input data
-		stat = UART_DRV_ReceiveDataBlocking(UART_UPDATE_FW_IDX, bbb, 1u, 2000u);//2 sec
+		stat = UART_DRV_ReceiveDataBlocking(UART_UPDATE_FW_IDX, bbb, 1u, 1000u);//1 sec
 		if(kStatus_UART_Success == stat && 0 != bbb[0])		  
 		{
 			tmp_len = recieve_with_timeout(&bbb[1], 2);
@@ -697,6 +697,7 @@ void updater_task(uint32_t param)
 		{
 		  	ClearUart_Reply(bbb, 0);//try normalize - sent nothing
 		}
+        _time_delay(10);
     }
 	
 	return;
