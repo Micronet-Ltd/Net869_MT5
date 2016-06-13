@@ -172,6 +172,9 @@ flexcan_status_t FLEXCAN_HAL_Init(CAN_Type * base)
     /* Rx reg 15 mask*/
     CAN_WR_RX15MASK(base, CAN_ID_EXT(CAN_RX15MASK_RX15M_MASK));
 
+    /* Disable ECHO recieve */
+    CAN_BWR_MCR_SRXDIS(base, 1);
+
     /* De-assert Freeze Mode*/
     FLEXCAN_HAL_ExitFreezeMode(base);
 
