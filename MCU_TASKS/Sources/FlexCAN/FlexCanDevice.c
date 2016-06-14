@@ -311,11 +311,11 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
                 pinstance->bScanInstanceStarted = true;
 
-				ret = FlexCanDevice_SetRxMaskType(pinstance, false);
-				printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
-
-                if (initCan.is_rx_fifo_needed)
+				if (initCan.is_rx_fifo_needed)
                 {
+					ret = FlexCanDevice_SetRxMaskType(pinstance, true);
+					printf("FlexCanDevice_SetRxMaskType( ) to global return %d\n", ret);
+
 				  	printf("Set FIFO for recieve\n");
                     if (pinstance->FIFOAceptableMask.isExtendedFrame)
 						ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(pinstance->instance, kFlexCanMsgIdExt, pinstance->FIFOAceptableMask.idFilter);
@@ -336,6 +336,8 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                 }
                 else {
 
+					ret = FlexCanDevice_SetRxMaskType(pinstance, false);
+					printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
                     //ret = FlexCanDevice_SetRxMaskType(pinstance, true);
                     //printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
 
