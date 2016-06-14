@@ -710,7 +710,7 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
                     {
                         //printf ( "Error _lwevent_set set ISR event %x", temp1 );
                     }
-                    FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
+                    //FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
                     g_Flexdebug.acceptRX_IRQ++;
                 }
                 else
