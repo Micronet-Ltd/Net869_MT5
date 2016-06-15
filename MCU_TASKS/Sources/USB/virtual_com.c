@@ -713,12 +713,6 @@ uint8_t USB_App_Class_Callback
 		if ((phandle->start_app == TRUE) && (phandle->start_transactions == TRUE)) {
         	phandle->recv_size = *size;
 
-            if (!phandle->recv_size)
-            {
-                /* Schedule buffer for next receive event */
-                USB_Class_CDC_Recv_Data(handle, phandle->out_endpoint, phandle->curr_recv_buf, g_bulk_out_max_packet_size);
-            }
-
             if ((0 != phandle->recv_size) && (0xFFFFFFFF != phandle->recv_size))
             {
 				USB_Recive_Data ( phandle );
