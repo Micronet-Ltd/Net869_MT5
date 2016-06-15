@@ -672,6 +672,9 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
     CAN_Type * base = g_flexcanBase[instance];
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
+    //Global interrupt counter
+    g_Flexdebug.GlInterrCount++;
+
     /* Get the interrupts that are enabled and ready */
     flag_reg = ((FLEXCAN_HAL_GetAllMsgBuffIntStatusFlag(base)) & CAN_IMASK1_BUFLM_MASK) &
                 CAN_RD_IMASK1(base);
@@ -782,6 +785,7 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
         temp = (1 << state->tx_mb_idx);
         if (temp & flag_reg)
         {
+            g_Flexdebug.TrInterrCount++;
             /* Complete transmit data */
             FLEXCAN_DRV_CompleteSendData(instance);
             FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, temp & flag_reg);

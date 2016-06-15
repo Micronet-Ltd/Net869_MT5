@@ -164,13 +164,16 @@ flexcan_status_t FLEXCAN_HAL_Init(CAN_Type * base)
     FLEXCAN_HAL_EnterFreezeMode(base);
 
     /* Rx global mask*/
-    CAN_WR_RXMGMASK(base, CAN_ID_EXT(CAN_RXMGMASK_MG_MASK));
+    //CAN_WR_RXMGMASK(base, CAN_ID_EXT(CAN_RXMGMASK_MG_MASK));
+    CAN_WR_RXMGMASK(base, 0xFFFFFFFF);
 
     /* Rx reg 14 mask*/
-    CAN_WR_RX14MASK(base, CAN_ID_EXT(CAN_RX14MASK_RX14M_MASK));
+    //CAN_WR_RX14MASK(base, CAN_ID_EXT(CAN_RX14MASK_RX14M_MASK));
+    CAN_WR_RX14MASK(base, 0xFFFFFFFF);
 
     /* Rx reg 15 mask*/
-    CAN_WR_RX15MASK(base, CAN_ID_EXT(CAN_RX15MASK_RX15M_MASK));
+    //CAN_WR_RX15MASK(base, CAN_ID_EXT(CAN_RX15MASK_RX15M_MASK));
+    CAN_WR_RX15MASK(base, 0xFFFFFFFF);
 
     /* Disable ECHO recieve */
     CAN_BWR_MCR_SRXDIS(base, 1);

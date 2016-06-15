@@ -426,11 +426,19 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				
 				pinstance->bScanInstanceStarted = false;
 
+
+                //TODO 
+                //Add function for init
+                if (NULL != pinstance->pFIFOIdFilterTable) {
+                    _mem_zero((void *)(pinstance->pFIFOIdFilterTable), pinstance->FIFOFilterTableSize);
+                }
+                pinstance->FIFOTableIndx = 0;
+
                 initCan.flexcanMode         = fdFlexCanNormalMode;
             	initCan.instanceBitrate     = fdBitrate_125_kHz;
             	initCan.is_rx_fifo_needed   = true;
             	initCan.max_num_mb          = MAX_MB_NUMBER;
-            	initCan.num_id_filters      = kFlexCanRxFifoIDFilters_8;
+            	initCan.num_id_filters      = kFlexCanRxFifoIDFilters_24;
                 initCan.fifoElemFormat      = kFlexCanRxFifoIdElementFormatA;
 
 				_time_delay(100);
@@ -1439,6 +1447,7 @@ bool AllocateFIFOFilterTable (pflexcanInstance_t pinst, flexcan_rx_fifo_id_filte
         pinst->FIFOFilterTableSize = 0;
         return false;
     }
+    pinst->FIFOTableIndx = 0;
 
     return true;
 }

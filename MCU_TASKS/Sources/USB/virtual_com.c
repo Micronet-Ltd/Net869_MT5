@@ -67,7 +67,7 @@
  *****************************************************************************/
 #define USB_MSGQ_MAX_POOL_SIZE      20
 
-#define USB_CDC_0_OUT_BUFFERS_COUNT 3 // Command interface
+#define USB_CDC_0_OUT_BUFFERS_COUNT 5 // Command interface
 #define USB_CDC_1_OUT_BUFFERS_COUNT 5 // Accelerometer interface
 #define USB_CDC_2_OUT_BUFFERS_COUNT 20 // CAN0 interface
 #define USB_CDC_3_OUT_BUFFERS_COUNT 20 // CAN1 interface
@@ -118,7 +118,7 @@ static void CDC4_resv ( cdc_struct_t *handle );
 
 static bool CDC_Queue_init (uint8_t cdcNum, uint8_t* memAdr, uint32_t ElemCount, uint32_t queueElemSize);
 
-static bool SDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle );
+static bool CDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle );
 
 
 /*****************************************************************************
@@ -443,7 +443,7 @@ void cdc_vcom_preinit(cdc_struct_t* param)
         return;
     }
     param->recv_size = 0;
-    param->send_size = 0;
+    //param->send_size = 0;
 }
 /*****************************************************************************
  *  
@@ -501,6 +501,9 @@ bool APP_init(void)
 
         g_app_composite_device.cdc_vcom[i].send_ready   = FALSE;
         g_app_composite_device.cdc_vcom[i].portNum      = i;
+		g_app_composite_device.cdc_vcom[i].recv_size	= 0;
+        g_app_composite_device.cdc_vcom[i].sendPackets  = 0;
+        g_app_composite_device.cdc_vcom[i].SendPacketsCompl = 0;
 
         _queue_init(&(g_app_composite_device.cdc_vcom[i].qs_OutFreeMsg), 0);  
         _queue_init(&(g_app_composite_device.cdc_vcom[i].qs_OutInProcMsg), 0);
@@ -693,7 +696,7 @@ uint8_t USB_App_Class_Callback
     case USB_APP_CDC_DTE_ACTIVATED:
         if (phandle->start_app == TRUE)
         {
-            printf("%s: Port%d activated\n", __func__, phandle->portNum);
+            //printf("%s: Port%d activated\n", __func__, phandle->portNum);
         	phandle->start_transactions = TRUE;
             phandle->send_ready = TRUE;
         }
@@ -701,14 +704,13 @@ uint8_t USB_App_Class_Callback
     case USB_APP_CDC_DTE_DEACTIVATED:
         if (phandle->start_app == TRUE)
         {
-            printf("%s: Port%d deactivated\n", __func__, phandle->portNum);
+            //printf("%s: Port%d deactivated\n", __func__, phandle->portNum);
         	phandle->start_transactions = FALSE;
             phandle->send_ready = FALSE;
         }
         break;
     case USB_DEV_EVENT_DATA_RECEIVED:
-		if ((phandle->start_app == TRUE) && (phandle->start_transactions == TRUE))
-        {
+		if ((phandle->start_app == TRUE) && (phandle->start_transactions == TRUE)) {
         	phandle->recv_size = *size;
 
             if (!phandle->recv_size)
@@ -726,10 +728,6 @@ uint8_t USB_App_Class_Callback
         }
         break;
     case USB_DEV_EVENT_SEND_COMPLETE:
-		//printf("%s: EvComp1 %x\n\n", __func__, (uint32_t)(phandle->pSendElem) );
-		//if (phandle->portNum == 1 && phandle->start_app && phandle->start_transactions)
-		//	printf("Stop\n");
-		
         if ((size != NULL) && (*size != 0) && (!(*size % g_bulk_in_max_packet_size)))
         {
 			//printf("%s: EvComp2 %x\n\n", __func__, (uint32_t)(phandle->pSendElem) );
@@ -741,38 +739,27 @@ uint8_t USB_App_Class_Callback
         }
         else if ((phandle->start_app == TRUE) && (phandle->start_transactions == TRUE))
         {
-			//printf("%s: EvComp3 %x\n\n", __func__, (uint32_t)(phandle->pSendElem) );
-#if 1
-			if (NULL != phandle->pSendElem) {
-			if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)(phandle->pSendElem))) {
-					printf("%s: Error add to free queue port%d mem %x\n", phandle->portNum, (uint32_t)(phandle->pSendElem));
-				}
-				phandle->pSendElem = NULL;
+			if ((*data != NULL) || ((*data == NULL) && (*size == 0))) {
+				
+				if (NULL != phandle->pSendElem) {
+					if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)(phandle->pSendElem))) {
+							printf("%s: Error add to free queue port%d mem %x\n", phandle->portNum, (uint32_t)(phandle->pSendElem));
+						}
+						phandle->pSendElem = NULL;
+					}
+				phandle->send_ready = TRUE;
+				phandle->SendPacketsCompl++;
 			}
-            phandle->send_ready = TRUE;
-
-            if (MQX_OK != _lwsem_post(&(g_app_composite_device.SendReadySem))) {
-                printf("%s:ERROR set sem for cdc%d\n", __func__, phandle-> portNum);
-            }
-            
-#else
-            if ((*data != NULL) || ((*data == NULL) && (*size == 0)))
-            {
-				//printf("%s: EvComp4 %x\n\n", __func__, (uint32_t)(phandle->pSendElem) );
-                SDC_SendData (handle, phandle);
-                /* User: add your own code for send complete event */
-                /* Schedule buffer for next receive event */
-            	//USB_Class_CDC_Recv_Data(handle, phandle->out_endpoint, phandle->curr_recv_buf, g_bulk_out_max_packet_size);
-            }
-			else
-				printf("Stop\n");
-#endif
+			else {
+				if (NULL != phandle->pSendElem)
+					printf ("stop1\n");
+			}
         }
 		else {
 			printf("%s: EvComp5 %x\n\n", __func__, (uint32_t)(phandle->pSendElem) );
 			if (NULL != phandle->pSendElem) {
-			if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)(phandle->pSendElem))) {
-					printf("%s: Error add to free queue port%d mem %x\n", phandle->portNum, (uint32_t)(phandle->pSendElem));
+				if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)(phandle->pSendElem))) {
+						printf("%s: Error add to free queue port%d mem %x\n", phandle->portNum, (uint32_t)(phandle->pSendElem));
 				}
 				phandle->pSendElem = NULL;
 			}
@@ -784,14 +771,14 @@ uint8_t USB_App_Class_Callback
 		}
         break;
     default:
-			error = USBERR_INVALID_REQ_TYPE;
-			break;
+        error = USBERR_INVALID_REQ_TYPE;
+		break;
     }
 
     return error;
 }
 
-#define ACC_MSG_SIZE (8 + 6 * 10)
+//#define ACC_MSG_SIZE (8 + 6 * 10)
 
 #ifdef MIC_USB_DEBUG
 _queue_id g_usb_test_qid = 0;
@@ -824,13 +811,17 @@ void Usb_task(uint32_t arg)
         }
 
         for (i = 0; i < COMPOSITE_CFG_MAX; i++) {
-            if ( ( TRUE == g_app_composite_device.cdc_vcom[i].start_app ) && ( TRUE == g_app_composite_device.cdc_vcom[i].start_transactions ) &&
-                    g_app_composite_device.cdc_vcom[i].send_ready ) {
-                if (!SDC_SendData (g_app_composite_device.cdc_vcom[i].cdc_handle, ((g_app_composite_device.cdc_vcom) + i)) ) {
+            if ( ( TRUE == g_app_composite_device.cdc_vcom[i].start_app ) && 
+                 ( TRUE == g_app_composite_device.cdc_vcom[i].start_transactions ) && 
+                 g_app_composite_device.cdc_vcom[i].send_ready ) {
+
+                if (!CDC_SendData (g_app_composite_device.cdc_vcom[i].cdc_handle, ((g_app_composite_device.cdc_vcom) + i)) ) {
                     printf("%s:WARN cdc_%d\n", __func__, g_app_composite_device.cdc_vcom[i].portNum);
                 }
             }
         }
+
+        _time_delay(1);
 
     } while (1);
 }
@@ -1117,7 +1108,7 @@ static bool CDC_Queue_init (uint8_t cdcNum, uint8_t* memAdr, uint32_t ElemCount,
     return true;
 }
 
-bool SDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle ) {
+bool CDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle ) {
 
     if (NULL == phandle) {
         printf("%s: Error param\n", __func__);
@@ -1139,17 +1130,20 @@ bool SDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle ) {
                 printf("%s: Error add to free queue port%d mem %x\n", phandle->portNum, (uint32_t)(phandle->pSendElem));
             }
             phandle->pSendElem = NULL;
-            phandle->send_ready = TRUE;
+            phandle->send_ready = true;
 			//printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
             return false;
         }
-        phandle->send_ready = FALSE;
+        phandle->send_ready = false;
 		//printf ("%s: Set sendR F P_%d\n", __func__, phandle->portNum);
+        phandle->sendPackets++;
     }
-	else {
-        phandle->send_ready = TRUE;
+
+	if (false == phandle->send_ready && NULL == phandle->pSendElem ) {
+        phandle->pSendElem = NULL;
 		//printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
 	}
+
     return true;
 }
 

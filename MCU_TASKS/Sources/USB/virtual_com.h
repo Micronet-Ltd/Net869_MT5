@@ -86,7 +86,7 @@ typedef struct _cdc_variable_struct
     uint8_t                     curr_recv_buf[DATA_BUFF_SIZE];
     //uint8_t                     curr_send_buf[MIC_USB_FRAME_BUFFER_SIZE];
     uint32_t                    recv_size;
-    uint8_t                     send_size;
+    //uint8_t                     send_size;
     bool                        start_app;
     bool                        start_transactions;
     bool                        send_ready;
@@ -101,6 +101,8 @@ typedef struct _cdc_variable_struct
     pcdc_mic_queue_element_t    pSendElem;
     uint8_t                     queue_elem_num;
     uint8_t*                    pOutBuffStart;
+    uint32_t                    sendPackets;
+    uint32_t                    SendPacketsCompl;
 }cdc_struct_t;
 
 /* cdc_struct_t represents cdc class */
