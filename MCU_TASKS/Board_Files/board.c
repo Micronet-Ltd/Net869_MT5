@@ -112,13 +112,26 @@ const clock_manager_user_config_t g_defaultClockConfigRun =
     }
 };
 
+// this function modifies the MCG configuration from FEI to BLPI
+void Board_SetVerySlowClk (void)
+{
+	uint32_t mode = (uint32_t) CLOCK_HAL_GetMcgMode(MCG);
+
+	//if ((mode & kMcgModeFEI) != kMcgModeFEI)
+		Board_SetSlowClk ();
+
+	CLOCK_SYS_BootToBlpi(&g_defaultClockConfigVlpr.mcgConfig);
+	SystemCoreClock = CORE_CLOCK_FREQ;
+	_bsp_MQX_tick_timer_init ();
+}
+
 // this function modifies the MCG configuration from FEI to PEE
 void Board_SetFastClk (void)
 {
 	uint32_t mode = (uint32_t) CLOCK_HAL_GetMcgMode(MCG);
 
-	if ((mode & kMcgModeFEI) != kMcgModeFEI)
-		Board_SetSlowClk ();
+	//if ((mode & kMcgModeFEI) != kMcgModeFEI)
+          //Board_SetSlowClk ();
 
 	CLOCK_SYS_BootToPee(&g_defaultClockConfigRun.mcgConfig);
 	SystemCoreClock = CORE_CLOCK_FREQ;
@@ -141,6 +154,7 @@ void Board_SetSlowClk (void)
 							break;
 
 		case kMcgModePEE :	MCG_WR_C1 (MCG, (MCG_RD_C1(MCG) & ~MCG_C1_IRCLKEN_MASK));	// Set MCG mode to PBE (disable MCGIRCLK)
+                                        break;
 
 		case kMcgModePBE :	// change MCG mode from PBE to FBE
 							MCG_BWR_C1_CLKS(MCG, kMcgClkOutSrcExternal);
@@ -155,7 +169,8 @@ void Board_SetSlowClk (void)
 		default : return;																// all other cases are not supported
 	}
 
-	CLOCK_SYS_BootToFei(&g_defaultClockConfigVlpr.mcgConfig);
+    CLOCK_SYS_BootToFei(&g_defaultClockConfigVlpr.mcgConfig);
+	//CLOCK_SYS_BootToBlpi(&g_defaultClockConfigVlpr.mcgConfig);
 	SystemCoreClock = CORE_LPM_CLOCK_FREQ;
 	_bsp_MQX_tick_timer_init ();
 }
@@ -205,8 +220,16 @@ static void CLOCK_SetBootConfig(clock_manager_user_config_t const* config)
 {
     CLOCK_SYS_SetSimConfigration   (&config->simConfig);
     CLOCK_SYS_SetOscerConfigration (0, &config->oscerConfig);
+    //Board_SetVerySlowClk ();
     //Board_SetSlowClk ();
     Board_SetFastClk();
+#if (CLOCK_INIT_CONFIG == CLOCK_VLPR)
+    CLOCK_SYS_BootToBlpi(&config->mcgConfig);
+#else
+    CLOCK_SYS_BootToPee(&config->mcgConfig);
+#endif
+
+    SystemCoreClock = CORE_CLOCK_FREQ;
 }
 
 /* Initialize clock. */
@@ -220,7 +243,7 @@ void BOARD_ClockInit(void)
     // Setup OSC0 if used.
     // Configure OSC0 pin mux.
     PORT_HAL_SetMuxMode(EXTAL0_PORT, EXTAL0_PIN, EXTAL0_PINMUX);
-	PORT_HAL_SetMuxMode(XTAL0_PORT, XTAL0_PIN, XTAL0_PINMUX);
+    PORT_HAL_SetMuxMode(XTAL0_PORT, XTAL0_PIN, XTAL0_PINMUX);
     BOARD_InitOsc0();
 
     // Setup RTC external clock if used.
@@ -262,6 +285,11 @@ void dbg_uart_init(void)
     DbgConsole_Init(BOARD_DEBUG_UART_INSTANCE, BOARD_DEBUG_UART_BAUD, kDebugConsoleUART);
 #endif
 }
+void update_fw_uart_init(void)
+{
+    configure_uart_pins(UART_UPDATE_FW_IDX);
+}
+
 /******************************************************************************
  *
  *   @name      usb_device_board_init

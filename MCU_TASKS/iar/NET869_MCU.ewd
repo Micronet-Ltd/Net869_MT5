@@ -81,7 +81,7 @@
         </option>
         <option>
           <name>OCProductVersion</name>
-          <state>6.50.6.4952</state>
+          <state>7.50.3.10745</state>
         </option>
         <option>
           <name>OCDynDriverList</name>
@@ -93,7 +93,7 @@
         </option>
         <option>
           <name>UseFlashLoader</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CLowLevel</name>
@@ -299,7 +299,7 @@
         <option>
           <name>CMSISDAPResetList</name>
           <version>1</version>
-          <state>5</state>
+          <state>10</state>
         </option>
         <option>
           <name>CMSISDAPHWResetDuration</name>
@@ -319,7 +319,7 @@
         </option>
         <option>
           <name>CMSISDAPInterfaceRadio</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CMSISDAPInterfaceCmdLine</name>
@@ -336,7 +336,7 @@
         <option>
           <name>CMSISDAPJtagSpeedList</name>
           <version>0</version>
-          <state>8</state>
+          <state>0</state>
         </option>
         <option>
           <name>CMSISDAPBreakpointRadio</name>
@@ -356,7 +356,7 @@
         </option>
         <option>
           <name>RDICatchUndef</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>RDICatchSWI</name>
@@ -364,11 +364,11 @@
         </option>
         <option>
           <name>RDICatchData</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>RDICatchPrefetch</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>RDICatchIRQ</name>
@@ -384,31 +384,31 @@
         </option>
         <option>
           <name>CatchMMERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchNOCPERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchCHKERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchSTATERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchBUSERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchINTERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchHARDERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchDummy</name>
@@ -436,7 +436,7 @@
         </option>
         <option>
           <name>CMSISDAPSelectedCPUBehaviour</name>
-          <state></state>
+          <state>0</state>
         </option>
         <option>
           <name>ICpuName</name>
@@ -469,7 +469,7 @@
         </option>
         <option>
           <name>TCPIP</name>
-          <state> localhost.3333</state>
+          <state>aaa.bbb.ccc.ddd</state>
         </option>
         <option>
           <name>DoLogfile</name>
@@ -607,7 +607,7 @@
         </option>
         <option>
           <name>IjetCpuClockEdit</name>
-          <state>100.0</state>
+          <state>72.0</state>
         </option>
         <option>
           <name>IjetSwoPrescalerList</name>
@@ -712,7 +712,7 @@
         </option>
         <option>
           <name>IjetSelectedCPUBehaviour</name>
-          <state></state>
+          <state>0</state>
         </option>
         <option>
           <name>ICpuName</name>
@@ -759,7 +759,7 @@
         <debug>1</debug>
         <option>
           <name>JLinkSpeed</name>
-          <state>32</state>
+          <state>1000</state>
         </option>
         <option>
           <name>CCJLinkDoLogfile</name>
@@ -779,11 +779,11 @@
         </option>
         <option>
           <name>JLinkInitialSpeed</name>
-          <state>32</state>
+          <state>1000</state>
         </option>
         <option>
           <name>CCDoJlinkMultiTarget</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCScanChainNonARMDevices</name>
@@ -922,11 +922,11 @@
         </option>
         <option>
           <name>CCCpuClockEdit</name>
-          <state>98.0</state>
+          <state>72.0</state>
         </option>
         <option>
           <name>CCSwoClockAuto</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCSwoClockEdit</name>
@@ -934,7 +934,7 @@
         </option>
         <option>
           <name>OCJLinkTraceSource</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>OCJLinkTraceSourceDummy</name>
@@ -1027,7 +1027,7 @@
         <option>
           <name>CEmuCommPort</name>
           <version>0</version>
-          <state>4</state>
+          <state>0</state>
         </option>
         <option>
           <name>jtago</name>
@@ -1081,7 +1081,7 @@
         </option>
         <option>
           <name>CCJPEMicroShowSettings</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>DoLogfile</name>
@@ -1102,7 +1102,7 @@
         <debug>1</debug>
         <option>
           <name>CRDIDriverDll</name>
-          <state>Browse to your RDI driver</state>
+          <state>###Uninitialized###</state>
         </option>
         <option>
           <name>CRDILogFileCheck</name>
@@ -1176,7 +1176,7 @@
         </option>
         <option>
           <name>CCCpuClockEdit</name>
-          <state>100.0</state>
+          <state>72.0</state>
         </option>
         <option>
           <name>CCSwoClockAuto</name>
@@ -1262,7 +1262,7 @@
         <debug>1</debug>
         <option>
           <name>CThirdPartyDriverDll</name>
-          <state>Browse to your third-party driver</state>
+          <state>###Uninitialized###</state>
         </option>
         <option>
           <name>CThirdPartyLogFileCheck</name>
@@ -1366,11 +1366,11 @@
         </option>
         <option>
           <name>TIPackage</name>
-          <state>C:\ti\ccs_base</state>
+          <state></state>
         </option>
         <option>
           <name>BoardFile</name>
-          <state>$TOOLKIT_DIR$\config\debugger\TexasInstruments\xds\UNKNOWN_XDS100v2_JTAG.dat</state>
+          <state></state>
         </option>
         <option>
           <name>DoLogfile</name>
@@ -1458,7 +1458,7 @@
         </option>
         <option>
           <name>CCXds100CpuClockEdit</name>
-          <state>100.0</state>
+          <state>72.0</state>
         </option>
         <option>
           <name>CCXds100SwoClockAuto</name>
@@ -1492,7 +1492,7 @@
         </option>
         <option>
           <name>CCXds100InterfaceRadio</name>
-          <state>0</state>
+          <state>2</state>
         </option>
         <option>
           <name>CCXds100InterfaceCmdLine</name>
@@ -1501,7 +1501,7 @@
         <option>
           <name>CCXds100ProbeList</name>
           <version>0</version>
-          <state>0</state>
+          <state>2</state>
         </option>
       </data>
     </settings>
@@ -1655,11 +1655,11 @@
         </option>
         <option>
           <name>OCDownloadVerifyAll</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>OCProductVersion</name>
-          <state>6.50.6.4952</state>
+          <state>7.50.3.10745</state>
         </option>
         <option>
           <name>OCDynDriverList</name>
@@ -1671,7 +1671,7 @@
         </option>
         <option>
           <name>UseFlashLoader</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CLowLevel</name>
@@ -1699,7 +1699,7 @@
         </option>
         <option>
           <name>OCImagesPath1</name>
-          <state></state>
+          <state>$PROJ_DIR$\..\..\BootLoader\Release\Exe\BootLoader.srec</state>
         </option>
         <option>
           <name>OCImagesSuppressCheck2</name>
@@ -1723,7 +1723,7 @@
         </option>
         <option>
           <name>OCImagesOffset1</name>
-          <state></state>
+          <state>0x0</state>
         </option>
         <option>
           <name>OCImagesOffset2</name>
@@ -1735,7 +1735,7 @@
         </option>
         <option>
           <name>OCImagesUse1</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OCImagesUse2</name>
@@ -1934,7 +1934,7 @@
         </option>
         <option>
           <name>RDICatchUndef</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>RDICatchSWI</name>
@@ -1942,11 +1942,11 @@
         </option>
         <option>
           <name>RDICatchData</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>RDICatchPrefetch</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>RDICatchIRQ</name>
@@ -1962,31 +1962,31 @@
         </option>
         <option>
           <name>CatchMMERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchNOCPERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchCHKERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchSTATERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchBUSERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchINTERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchHARDERR</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CatchDummy</name>
@@ -2337,7 +2337,7 @@
         <debug>0</debug>
         <option>
           <name>JLinkSpeed</name>
-          <state>32</state>
+          <state>1000</state>
         </option>
         <option>
           <name>CCJLinkDoLogfile</name>
@@ -2357,7 +2357,7 @@
         </option>
         <option>
           <name>JLinkInitialSpeed</name>
-          <state>32</state>
+          <state>1000</state>
         </option>
         <option>
           <name>CCDoJlinkMultiTarget</name>
@@ -2500,11 +2500,11 @@
         </option>
         <option>
           <name>CCCpuClockEdit</name>
-          <state>98.0</state>
+          <state>72.0</state>
         </option>
         <option>
           <name>CCSwoClockAuto</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCSwoClockEdit</name>
@@ -3070,7 +3070,7 @@
         </option>
         <option>
           <name>CCXds100InterfaceRadio</name>
-          <state>0</state>
+          <state>2</state>
         </option>
         <option>
           <name>CCXds100InterfaceCmdLine</name>
@@ -3079,7 +3079,7 @@
         <option>
           <name>CCXds100ProbeList</name>
           <version>0</version>
-          <state>0</state>
+          <state>2</state>
         </option>
       </data>
     </settings>
@@ -3110,7 +3110,7 @@
       </plugin>
       <plugin>
         <file>$TOOLKIT_DIR$\plugins\rtos\MQX\MQXRtosPlugin.ewplugin</file>
-        <loadFlag>0</loadFlag>
+        <loadFlag>1</loadFlag>
       </plugin>
       <plugin>
         <file>$TOOLKIT_DIR$\plugins\rtos\OpenRTOS\OpenRTOSPlugin.ewplugin</file>

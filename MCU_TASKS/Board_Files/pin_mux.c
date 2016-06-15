@@ -280,13 +280,13 @@ void configure_spi_pins( uint32_t instance ) {
 void configure_uart_pins( uint32_t instance ) {
 #if 1
     switch ( instance ) {
-//  case UART3_IDX:                        /* UART3 */
-//      /* Affects PORTC_PCR16 register */
-//      PORT_HAL_SetMuxMode(PORTC, 16u, kPortMuxAlt3);
-//      /* Affects PORTC_PCR17 register */
-//      PORT_HAL_SetMuxMode(PORTC, 17u, kPortMuxAlt3);
-//      break;
-    case UART4_IDX:                        /* UART3 */
+	case UART3_IDX:                        /* UART3 */
+      /* Affects PORTE_PCR4 register */
+      PORT_HAL_SetMuxMode(PORTE, 4u, kPortMuxAlt3);
+      /* Affects PORTE_PCR5 register */
+      PORT_HAL_SetMuxMode(PORTE, 5u, kPortMuxAlt3);
+      break;
+    case UART4_IDX:                        /* UART4 */
         /* Affects PORTC_PCR14 register */
         PORT_HAL_SetMuxMode(PORTC, 14u, kPortMuxAlt3);
         /* Affects PORTC_PCR14 register */

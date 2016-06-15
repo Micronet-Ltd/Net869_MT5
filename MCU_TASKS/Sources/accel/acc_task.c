@@ -144,8 +144,8 @@ void Acc_task (uint32_t initial_data)
 	{
 		_time_delay (10000);
 	}
-    
-    AccEnable();
+   
+	AccEnable();
 
 	//TODO: Remote Test acc message
 	//test_acc_msg.header.SOURCE_QID = acc_qid;

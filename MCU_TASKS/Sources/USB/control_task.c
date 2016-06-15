@@ -51,14 +51,14 @@ void send_control_msg(packet_t * msg, uint8_t msg_size)
 	{
 		//TODO: for now hard coding the sequence
 		msg->seq = 0x99;
-		/* copy seq and packet type */
-		memcpy(ctl_tx_msg->data,(uint8_t *) msg, 2);
-		/* copy the data */
-		memcpy(ctl_tx_msg->data+2, msg->data, msg_size);
-
+        /* copy seq(1byte) and packet type(1byte)*/
+        memcpy(ctl_tx_msg->data,(uint8_t *) msg, sizeof(msg->seq) + sizeof(msg->pkt_type));
+        /* copy the data */
+        memcpy(ctl_tx_msg->data + sizeof(msg->seq) + sizeof(msg->pkt_type), msg->data, msg_size);
+        
 		ctl_tx_msg->header.SOURCE_QID = _msgq_get_id(0, CONTROL_TX_QUEUE);
 		ctl_tx_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
-		ctl_tx_msg->header.SIZE = (msg_size + 2);//add seq and packet type
+		ctl_tx_msg->header.SIZE = (msg_size + sizeof(msg->seq) + sizeof(msg->pkt_type));//add seq and packet type
 		ctl_tx_msg->portNum = MIC_CDC_USB_1;
 		_msgq_send (ctl_tx_msg);
 
@@ -75,6 +75,9 @@ void control_task (uint32_t initial_data)
 {
 	APPLICATION_MESSAGE_T *ctl_rx_msg;
 	const _queue_id     control_rx_qid = _msgq_open (CONTROL_RX_QUEUE, 0);
+    uint32_t time_diff = 0;
+    uint32_t current_time = 0;
+    TIME_STRUCT time;
 
 	printf ("\n control_task: Start \n");
 
@@ -87,7 +90,11 @@ void control_task (uint32_t initial_data)
 		if (ctl_rx_msg != NULL)
 		{
 			//TODO: For debug only
-			printf("\n data : %x,%x, \t ,%x,%x, size %d \n", ctl_rx_msg->data[0],
+            _time_get(&time);
+            
+            time_diff = ((time.SECONDS * 1000) +  time.MILLISECONDS) - current_time;
+            current_time += time_diff;
+			printf("\n time diff: %d ms, data : %x,%x, \t ,%x,%x, size %d \n", time_diff, ctl_rx_msg->data[0],
 					ctl_rx_msg->data[1],ctl_rx_msg->data[ctl_rx_msg->header.SIZE -2],
 					ctl_rx_msg->data[ctl_rx_msg->header.SIZE -1], ctl_rx_msg->header.SIZE);
 			/* process message */

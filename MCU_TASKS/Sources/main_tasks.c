@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <mqx.h>
 #include <bsp.h>
@@ -24,6 +25,8 @@
 #include "rtc.h"
 #include "Wiggle_sensor.h"
 
+//#define DEBUG_BLINKING_RIGHT_LED 1
+
 //void MQX_I2C0_IRQHandler (void);
 //void MQX_I2C1_IRQHandler (void);
 void MQX_PORTA_IRQHandler(void);
@@ -46,6 +49,7 @@ volatile uint32_t cpu_watchdog_count_g = 0;
 extern WIGGLE_SENSOR_t sensor_g;
 
 extern void * g_acc_event_h;
+extern void * power_up_event_g;
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
@@ -58,9 +62,11 @@ void Main_task( uint32_t initial_data ) {
 	MUTEX_ATTR_STRUCT mutexattr;
 
     uint32_t FPGA_version = 0;
+    _mqx_uint event_result;
 
     _time_delay (10);
 
+	printf("\n%s: Start\n", __func__);
 #if 0
     PinMuxConfig ();
     ADCInit      ();
@@ -75,7 +81,7 @@ void Main_task( uint32_t initial_data ) {
     GPIO_Config();
     ADC_init ();
 	
-	printf("\n%s: Start\n", __func__);
+	
 
 	NVIC_SetPriority(PORTA_IRQn, 6U);
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
@@ -108,131 +114,152 @@ void Main_task( uint32_t initial_data ) {
 		_task_block();
 	}
 
+    Virtual_Com_MemAlloc(); // Allocate USB out buffers
+	
+    g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
+    if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create POWER_MGM_TASK\n");
+    }
+
+/*    
+    g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
+    if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
+    {
+        printf("\nCould not create a g_out_message_pool message pool\n");
+        _task_block();
+    }
+*/
+    g_in_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
+    if (g_in_message_pool == MSGPOOL_NULL_POOL_ID)
+    {
+        printf("\nCould not create a g_in_message_pool message pool\n");
+        _task_block();
+    }
+
+    main_qid = _msgq_open(MAIN_QUEUE, 0);
+    
+    event_result = _event_open("event.PowerUpEvent", &power_up_event_g);
+    if(MQX_OK != event_result){
+            printf("Main_task: Could not open PowerUp event \n");
+    }
+
+    printf("\nbefore power on event\n");
+    /* We are waiting until a wiggle event happens before starting everything up
+       The main reason for this is to stay below 5mA at 12V */
+    _event_wait_all(power_up_event_g, 1, 0);
+    _event_clear(power_up_event_g, 1);
+
+    printf("\nAfter power on event\n");
+
     // turn on device
     GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
-	GPIO_DRV_SetPinOutput(ACC_ENABLE       );
 
-    _time_delay(20);
+
     
+    g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
+    if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
+            printf("\nMain Could not create USB_TASK\n");
+    }
+
+
+    GPIO_DRV_SetPinOutput(ACC_ENABLE);
+
     //Enable UART
     GPIO_DRV_SetPinOutput(UART_ENABLE);
     GPIO_DRV_SetPinOutput(FTDI_RSTN);
 
-    Virtual_Com_MemAlloc(); // Allocate USB out buffers
-/*
-	g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
-	if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
+    _time_delay (1000);
+
+    FlexCanDevice_InitHW();
+
+    FPGA_init ();
+
+    J1708_enable  (7);
+
+    rtc_init();
+
+    g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
+    if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create J1708_TX_TASK\n");
+    }
+
+    g_TASK_ids[J1708_RX_TASK] = _task_create(0, J1708_RX_TASK, 0 );
+    if (g_TASK_ids[J1708_RX_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create J1708_RX_TASK\n");
+    }
+
+    g_TASK_ids[FPGA_UART_RX_TASK] = _task_create(0, FPGA_UART_RX_TASK, 0 );
+    if (g_TASK_ids[FPGA_UART_RX_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create FPGA_UART_RX_TASK\n");
+    }
+
+    //Start CAN RX TX Tasks
+    g_TASK_ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, BSP_CAN_DEVICE_0);
+    if ( g_TASK_ids[CAN_TASK_RX_0] == MQX_NULL_TASK_ID ) {
+        printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_0);
+    }
+
+    g_TASK_ids[CAN_TASK_RX_1] = _task_create(0, CAN_TASK_RX_1, BSP_CAN_DEVICE_1);
+    if ( g_TASK_ids[CAN_TASK_RX_1] == MQX_NULL_TASK_ID ) {
+        printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_1);
+    }
+
+    g_TASK_ids[CAN_TASK_TX_0] = _task_create(0, CAN_TASK_TX_0, BSP_CAN_DEVICE_0);
+    if ( g_TASK_ids[CAN_TASK_TX_0] == MQX_NULL_TASK_ID ) {
+        printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_0);
+    }
+
+    g_TASK_ids[CAN_TASK_TX_1] = _task_create(0, CAN_TASK_TX_1, BSP_CAN_DEVICE_1);
+    if ( g_TASK_ids[CAN_TASK_TX_1] == MQX_NULL_TASK_ID ) {
+            printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_1);
+    }
+
+    g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
+    if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create ACC_TASK\n");
+    }
+
+	g_TASK_ids[UPDATER_TASK] = _task_create(0, UPDATER_TASK, 0);
+	if (g_TASK_ids[UPDATER_TASK] == MQX_NULL_TASK_ID)
 	{
-		printf("\nCould not create a g_out_message_pool message pool\n");
-		_task_block();
+		printf("\nMain Could not create UPDATER_TASK\n");
 	}
-*/
-	g_in_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
-	if (g_in_message_pool == MSGPOOL_NULL_POOL_ID)
-	{
-		printf("\nCould not create a g_in_message_pool message pool\n");
-		_task_block();
-	}
-	
-	g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
-	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
-		printf("\nMain Could not create USB_TASK\n");
-	}
-
-	main_qid = _msgq_open(MAIN_QUEUE, 0);
-
-	_time_delay (1000);
-
-	FlexCanDevice_InitHW();
-
-	FPGA_init ();
-
-	J1708_enable  (7);
-
-	rtc_init();
-
-	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
-	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create J1708_TX_TASK\n");
-	}
-
-	g_TASK_ids[J1708_RX_TASK] = _task_create(0, J1708_RX_TASK, 0 );
-	if (g_TASK_ids[J1708_RX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create J1708_RX_TASK\n");
-	}
-	
-	g_TASK_ids[FPGA_UART_RX_TASK] = _task_create(0, FPGA_UART_RX_TASK, 0 );
-	if (g_TASK_ids[FPGA_UART_RX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create FPGA_UART_RX_TASK\n");
-	}
-
-	//Start CAN RX TX Tasks
-	g_TASK_ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, BSP_CAN_DEVICE_0);
-	if ( g_TASK_ids[CAN_TASK_RX_0] == MQX_NULL_TASK_ID ) {
-		printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_0);
-	}
-
-	g_TASK_ids[CAN_TASK_RX_1] = _task_create(0, CAN_TASK_RX_1, BSP_CAN_DEVICE_1);
-	if ( g_TASK_ids[CAN_TASK_RX_1] == MQX_NULL_TASK_ID ) {
-		printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_1);
-	}
-
-	g_TASK_ids[CAN_TASK_TX_0] = _task_create(0, CAN_TASK_TX_0, BSP_CAN_DEVICE_0);
-	if ( g_TASK_ids[CAN_TASK_TX_0] == MQX_NULL_TASK_ID ) {
-		printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_0);
-	}
-
-	g_TASK_ids[CAN_TASK_TX_1] = _task_create(0, CAN_TASK_TX_1, BSP_CAN_DEVICE_1);
-	if ( g_TASK_ids[CAN_TASK_TX_1] == MQX_NULL_TASK_ID ) {
-		printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_1);
-	}
-
-	g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
-	if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create POWER_MGM_TASK\n");
-	}
-	
-	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
-	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create ACC_TASK\n");
-	}
+	else
+		printf("\nMain UPDATER_TASK created\n");
+	  
 
 	g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
-	if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create CONTROL_TASK\n");
-	}
+    if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
+    {
+        printf("\nMain Could not create CONTROL_TASK\n");
+    }
 
-	configure_otg_for_host_or_device();
-	NVIC_SetPriority(PORTE_IRQn, 6U);
-	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
+    configure_otg_for_host_or_device();
+    NVIC_SetPriority(PORTE_IRQn, 6U);
+    OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
 
-	_event_create ("event.EXTERNAL_GPIOS");
-	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
+    _event_create ("event.EXTERNAL_GPIOS");
+    _event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
 
-	FPGA_read_version(&FPGA_version);
-	printf("\n FPGA version, %x", FPGA_version);
-
-#if 1
-	/* Simulate a power on button press on the A8 */
-//	GPIO_DRV_SetPinOutput   (LED_BLUE);
-//
-//    GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
-//    _time_delay (3000);
-//    GPIO_DRV_SetPinOutput(CPU_ON_OFF);
-//
-//    GPIO_DRV_ClearPinOutput   (LED_BLUE);
-#endif
+    FPGA_read_version(&FPGA_version);
+    printf("\n FPGA version, %x", FPGA_version);
 
     printf("\nMain Task: Loop \n");
 
-    while ( 1 ) {
-	    _time_delay(MAIN_TASK_SLEEP_PERIOD);            // context switch
+    while ( 1 ) 
+    {
+        _time_delay(MAIN_TASK_SLEEP_PERIOD);
+#ifdef DEBUG_BLINKING_RIGHT_LED
+        FPGA_write_led_status(LED_RIGHT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
+
+        _time_delay(MAIN_TASK_SLEEP_PERIOD);
+        FPGA_write_led_status(LED_RIGHT, 0, 0, 0, 0); /*Blue LED */
+#endif
     }
 
     printf("\nMain Task: End \n");
@@ -314,10 +341,26 @@ void MQX_PORTA_IRQHandler(void)
 
 void MQX_PORTB_IRQHandler(void)
 {
-	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG)) {
+	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG)) 
+    {
 		GPIO_DRV_ClearPinIntFlag(CPU_WATCHDOG);
 		cpu_watchdog_count_g++;
 	}
+    
+    if (GPIO_DRV_IsPinIntPending(CPU_SPKR_EN)) 
+    {
+        GPIO_DRV_ClearPinIntFlag(CPU_SPKR_EN);
+        if (GPIO_DRV_ReadPinInput(CPU_SPKR_EN))
+        {
+            GPIO_DRV_SetPinOutput (SPKR_RIGHT_EN);
+            GPIO_DRV_SetPinOutput (SPKR_LEFT_EN);       
+        }   
+        else 
+        {
+            GPIO_DRV_ClearPinOutput(SPKR_RIGHT_EN);
+            GPIO_DRV_ClearPinOutput(SPKR_LEFT_EN);
+        }
+    }
 }
 
 void MQX_PORTC_IRQHandler(void)
@@ -443,4 +486,3 @@ void _test_CANFLEX( ) {
 #endif
 
 }
-

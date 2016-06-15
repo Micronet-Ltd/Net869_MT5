@@ -383,8 +383,9 @@
           <state>$PROJ_DIR$\..\Sources\rtc</state>
           <state>$PROJ_DIR$\..\Sources</state>
           <state>$PROJ_DIR$\..\Board_Files</state>
-          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\platform\CMSIS\Include</state>
-          <state>$PROJ_DIR$\..\..\MQX_OS\BSP\platform\devices\MK20D10\startup</state>
+          <state>$PROJ_DIR$\..\Sources\ADC</state>
+          <state>$PROJ_DIR$\..\Sources\EXT_GPIOS</state>
+          <state>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -770,7 +771,7 @@
         <option>
           <name>IlinkConfigDefines</name>
           <state>__ram_vector_table__=1</state>
-          <state>__stack_size__=0x1000</state>
+          <state>__stack_size__=0x2000</state>
           <state>__heap_size__=0x4000</state>
         </option>
         <option>
@@ -779,7 +780,7 @@
         </option>
         <option>
           <name>IlinkLogFile</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogInitialization</name>
@@ -787,11 +788,11 @@
         </option>
         <option>
           <name>IlinkLogModule</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogSection</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogVeneer</name>
@@ -803,7 +804,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/devices/MK20D10/linker/iar/MK20DX256xxx10_flash.icf</state>
+          <state>$PROJ_DIR$\..\linker\MK20DX256xxx10_flash.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -851,10 +852,10 @@
         </option>
         <option>
           <name>IlinkAdditionalLibs</name>
-          <state>$PROJ_DIR$\..\..\MQX_OS\MQX_USB_DEVICE\iar\Debug_IAR\libusbd_mqx.a</state>
           <state>$PROJ_DIR$\..\..\MQX_OS\MQX_PSP\iar\Debug_IAR\lib_mqx.a</state>
           <state>$PROJ_DIR$\..\..\MQX_OS\MQX_LIB\iar\Debug_IAR\libksdk_mqx_lib.a</state>
           <state>$PROJ_DIR$\..\..\MQX_OS\MQX_STDLIB\iar\Debug_IAR\lib_mqx_stdlib.a</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\MQX_USB_DEVICE\iar\Debug_IAR\libusbd_mqx.a</state>
         </option>
         <option>
           <name>IlinkOverrideProgramEntryLabel</name>
@@ -1422,6 +1423,11 @@
           <state>$PROJ_DIR$\..\Sources\USB</state>
           <state>$PROJ_DIR$\..\Sources</state>
           <state>$PROJ_DIR$\..\Board_Files</state>
+          <state>$PROJ_DIR$\..\Sources\ADC</state>
+          <state>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include</state>
+          <state>$PROJ_DIR$\..\Sources\EXT_GPIOS</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS</state>
+          <state>$PROJ_DIR$\..\startup</state>
           <state>$PROJ_DIR$\..\Sources\rtc</state>
         </option>
         <option>
@@ -1806,8 +1812,8 @@
         <option>
           <name>IlinkConfigDefines</name>
           <state>__ram_vector_table__=1</state>
-          <state>__stack_size__=0x4000</state>
-          <state>__heap_size__=0x8000</state>
+          <state>__stack_size__=0x2000</state>
+          <state>__heap_size__=0x4000</state>
         </option>
         <option>
           <name>IlinkMapFile</name>
@@ -1839,7 +1845,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$/../../MQX_OS/BSP/platform/devices/MK20D10/linker/iar/MK20DX256xxx10_flash.icf</state>
+          <state>$PROJ_DIR$\..\linker\MK20DX256xxx10_flash.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1888,8 +1894,8 @@
         <option>
           <name>IlinkAdditionalLibs</name>
           <state>$PROJ_DIR$\..\..\MQX_OS\MQX_USB_DEVICE\iar\Release_IAR\libusbd_mqx.a</state>
-          <state>$PROJ_DIR$\..\..\MQX_OS\MQX_LIB\iar\Debug_IAR\libksdk_mqx_lib.a</state>
           <state>$PROJ_DIR$\..\..\MQX_OS\MQX_PSP\iar\Release_IAR\lib_mqx.a</state>
+          <state>$PROJ_DIR$\..\..\MQX_OS\MQX_LIB\iar\Release_IAR\libksdk_platform_mqx.a</state>
           <state>$PROJ_DIR$\..\..\MQX_OS\MQX_STDLIB\iar\Release_IAR\lib_mqx_stdlib.a</state>
         </option>
         <option>
@@ -2168,6 +2174,51 @@
       </file>
     </group>
     <group>
+      <name>C90TFS</name>
+      <group>
+        <name>inc</name>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\FTFx_KX_flash_config.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_FTFx.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_FTFx_Common.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_FTFx_Internal.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include\SSD_Types.h</name>
+        </file>
+      </group>
+      <group>
+        <name>src</name>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\DFlashGetProtection.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashCommandSequence.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashEraseSector.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashInit.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\FlashProgram.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\PFlashGetProtection.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\source\SetEEEEnable.c</name>
+        </file>
+      </group>
+    </group>
+    <group>
       <name>EXT_GPIOS</name>
       <file>
         <name>$PROJ_DIR$\..\Sources\EXT_GPIOS\EXT_GPIOS.c</name>
@@ -2234,6 +2285,24 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Sources\rtc\rtc.h</name>
+      </file>
+    </group>
+    <group>
+      <name>Update</name>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\flash_funcs.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\flash_funcs.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\update_exec.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\updater.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\updater.h</name>
       </file>
     </group>
     <group>

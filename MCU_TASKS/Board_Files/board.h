@@ -40,10 +40,10 @@
 
 #define CLOCK_VLPR 1U
 #define CLOCK_RUN  2U
-//#define CLOCK_NUMBER_OF_CONFIGURATIONS 3U
+#define CLOCK_NUMBER_OF_CONFIGURATIONS 3U
 
 #ifndef CLOCK_INIT_CONFIG
-#define CLOCK_INIT_CONFIG CLOCK_RUN
+#define CLOCK_INIT_CONFIG CLOCK_RUN //CLOCK_VLPR
 #endif
 
 #define CORE_CLOCK_FREQ 96000000U
@@ -81,12 +81,14 @@
 #define BOARD_RTC_CLK_FREQUENCY     32768U;
 /* The UART to use for debug messages. */
 #ifndef BOARD_DEBUG_UART_INSTANCE
-    #define BOARD_DEBUG_UART_INSTANCE  4 
+    #define BOARD_DEBUG_UART_INSTANCE  4
     #define BOARD_DEBUG_UART_BASEADDR   UART4
 #endif
 #ifndef BOARD_DEBUG_UART_BAUD
     #define BOARD_DEBUG_UART_BAUD       115200
 #endif
+
+#define	UART_UPDATE_FW_IDX				UART3_IDX
 
 /* This define to use for power manager demo */
 #define BOARD_LOW_POWER_UART_BAUD       9600
@@ -278,7 +280,9 @@ uint8_t usb_device_board_init(uint8_t controller_id);
 uint8_t usb_host_board_init(uint8_t controller_id);
 /*Function to handle board-specified initialization*/
 uint8_t usb_otg_board_init(uint8_t controller_id);
+void update_fw_uart_init(void);
 
+void Board_SetVerySlowClk  (void);
 void Board_SetFastClk (void);
 void Board_SetSlowClk (void);
 

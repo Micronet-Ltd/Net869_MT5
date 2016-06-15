@@ -4,6 +4,7 @@
 TASK_TEMPLATE_STRUCT MQX_template_list[] =
 {
 //  Task number,		Entry point,			Stack,     Pri,	    					Task name       	,	    Auto start        Creation Param      Time Slice
+
 	{ MAIN_TASK,			Main_task,			1024,       MAIN_TASK_PRIORITY,			"MAIN_TASK",			MQX_AUTO_START_TASK,		0,            	0 },
 	{ ACC_TASK,				Acc_task,			1024,      	ACC_TASK_PRIORITY,			"ACC_TASK",				0,        					0,              0 },
 	{ USB_TASK,				Usb_task,			1024,      	USB_TASK_PRIORITY,			"USB_TASK",				0,					        0,              0 },
@@ -15,6 +16,8 @@ TASK_TEMPLATE_STRUCT MQX_template_list[] =
 	{ J1708_TX_TASK,		J1708_Tx_task,		1024,		J1708_TX_TASK_PRIORITY,		"J1708_TX_TASK",		0,							0,				0 },
 	{ FPGA_UART_RX_TASK,	FPGA_UART_Rx_task,	1024,		FPGA_UART_RX_TASK_PRIORITY,	"FPGA_UART_RX_TASK",	0,							0,				0 },
 	{ POWER_MGM_TASK,		Power_MGM_task,		1024,		POWER_MGM_TASK_PRIORITY,	"POWER_MGM_TASK",		0,							0,				0 },
+	{ UPDATER_TASK,			updater_task,		1024,		UPDATER_TASK_PRIORITY,		"UPDATER_TASK",			0,							0,				0 },
+	{ UPDATER_EXEC_TASK,	upd_exec_task,		1024,		UPDATER_EXEC_TASK_PRIORITY,	"UPDATER_EXEC_TASK",	0,							0,				0 },
 	{ CONTROL_TASK,			control_task,		1024,		CONTROL_TASK_PRIORITY,		"CONTROL_TASK",			0,							0,				0 },
 	{ 0	}
 };
