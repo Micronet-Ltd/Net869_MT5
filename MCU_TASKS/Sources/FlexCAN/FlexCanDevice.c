@@ -117,17 +117,18 @@ void FlexCanDevice_InitHW ( )
     configure_can_pins(1);
     
     _mem_zero((void *)&g_flexcanDeviceInstance[BSP_CAN_DEVICE_0], sizeof(flexcanInstance_t));
-    _mem_zero((void *)&g_flexcanDeviceInstance[BSP_CAN_DEVICE_1], sizeof(flexcanInstance_t)); 
+    _mem_zero((void *)&g_flexcanDeviceInstance[BSP_CAN_DEVICE_1], sizeof(flexcanInstance_t));
+
+    g_flexcanDeviceInstance[BSP_CAN_DEVICE_0].instance = BSP_CAN_DEVICE_0;
+    g_flexcanDeviceInstance[BSP_CAN_DEVICE_1].instance = BSP_CAN_DEVICE_1;
 }
 
 void FLEXCAN_Tx_Task( uint32_t param ) {
-	uint32_t                    result, can_instance;
+	uint32_t                    result;
 	uint16_t					msg_ID;
-	pflexcanInstance_t          pinstance;
 	_queue_id               	msg_qid;
 	APPLICATION_MESSAGE_PTR_T   msg_ptr;
 	flexcan_device_status_t     ret;
-	LWEVENT_STRUCT              event_ISR;
 	flexcandevice_TX_data_t     Tx_data;
 	uint8_t                     termination, baudrate, Baudrate_notSet = 1;
     char*                       pbuff;
@@ -137,12 +138,10 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
 	flexcandevice_initparams_t  initCan;
 
-	if ( BOARD_CAN_INSTANCE <= param ) {
-		printf( "CAN_TX thread wrong param %u\n", param );
+    if ( NULL == ((pflexcanInstance_t)param) || BOARD_CAN_INSTANCE <= ((pflexcanInstance_t)param)->instance ) {
+		printf( "CAN_TX thread wrong param %u\n", ((pflexcanInstance_t)param)->instance );
 		return;
 	}
-	can_instance = param;
-	pinstance = &g_flexcanDeviceInstance[can_instance];
 
 	initCan.flexcanMode         = fdFlexCanDisableMode;
 	initCan.instanceBitrate     = fdBitrate_500_kHz;
@@ -151,21 +150,21 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 	initCan.num_id_filters      = kFlexCanRxFifoIDFilters_24;
     initCan.fifoElemFormat      = kFlexCanRxFifoIdElementFormatA;
 
-    pinstance->pMesagebuff = _mem_alloc(RX_FLEXCAN_MSGQ_MESAGES * sizeof(FLEXCAN_queue_element_t));
-    if (NULL == pinstance->pMesagebuff) {
+    ((pflexcanInstance_t)param)->pMesagebuff = _mem_alloc(RX_FLEXCAN_MSGQ_MESAGES * sizeof(FLEXCAN_queue_element_t));
+    if (NULL == ((pflexcanInstance_t)param)->pMesagebuff) {
         printf( "ERROR alocate message queue buffer\n");
         _task_block();
     }
 
-    if (!AllocateFIFOFilterTable(pinstance, initCan.num_id_filters, initCan.fifoElemFormat)) {
+    if (!AllocateFIFOFilterTable(((pflexcanInstance_t)param), initCan.num_id_filters, initCan.fifoElemFormat)) {
         printf( "ERROR alocate FIFO ID filter table\n");
         _task_block();
     }
 
-    _queue_init(&(pinstance->Rx_FreeMSGQueue), 0);
-    _queue_init(&(pinstance->Rx_ReadyMSGQueue), 0);
+    _queue_init(&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue), 0);
+    _queue_init(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue), 0);
 
-	if ( BSP_CAN_DEVICE_0 == can_instance ) {
+	if ( BSP_CAN_DEVICE_0 == ((pflexcanInstance_t)param)->instance ) {
 		msg_qid = _msgq_open(CAN1_TX_QUEUE, 0);
 	}
 	else {
@@ -174,15 +173,17 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
     if (MSGQ_NULL_QUEUE_ID == msg_qid)
     {
-       printf("\nCould not create a message pool CAN %u _TX_QUEU\n", param);
+       printf("\nCould not create a message pool CAN %u _TX_QUEU\n", ((pflexcanInstance_t)param)->instance);
        _task_block();
     }
 
-	if (MQX_OK != _lwevent_create(&event_ISR, LWEVENT_AUTO_CLEAR)) // Not set auto clean bits
+	if (MQX_OK != _lwevent_create(&(((pflexcanInstance_t)param)->canState.event_ISR), LWEVENT_AUTO_CLEAR)) // Not set auto clean bits
     {
         printf("Make event failed\n");
         _task_block();// ( kStatus_FLEXCAN_Fail );
     }
+
+    printf("FLEXCAN_Tx_Task Task: Loop instance %u \n", ((pflexcanInstance_t)param)->instance);
 
 	do {
 		msg_ptr = _msgq_receive(msg_qid, 1);
@@ -192,13 +193,13 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 		msg_size = msg_ptr->header.SIZE - APP_MESSAGE_NO_ARRAY_SIZE;
 		erroResp = CAN_OK_RESPONCE;
         pqMemElem = NULL;
-        printf("Cmd rec %c=%d, s %d, Inst %d\n", (char)pbuff[0], (char)pbuff[0], msg_size, pinstance->instance );
+        printf("Cmd rec %c=%d, s %d, Inst %d\n", (char)pbuff[0], (char)pbuff[0], msg_size, ((pflexcanInstance_t)param)->instance );
 		do {
 			msg_ID = 0;
 			switch ( *pbuff ) {
 			case 'S':
 				if ( msg_size > 2 ) {
-                    if (true == pinstance->bScanInstanceStarted && fdFlexCanListenOnlyMode != initCan.flexcanMode) {
+                    if (true == ((pflexcanInstance_t)param)->bScanInstanceStarted && fdFlexCanListenOnlyMode != initCan.flexcanMode) {
 						printf("The baudrate tried change on open instance\n");
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
@@ -221,9 +222,9 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                     }
 					
 					if ( (fdBitrate_10_kHz <= baudrate) && ( fdBitrate_MAX > baudrate ) ) {
-						if ( BSP_CAN_DEVICE_0 == can_instance && fdBitrate_33_kHz == baudrate )
+						if ( BSP_CAN_DEVICE_0 == ((pflexcanInstance_t)param)->instance && fdBitrate_33_kHz == baudrate )
 						{
-							printf("Error set baudrate 33Khz to instance %d\n", can_instance);
+							printf("Error set baudrate 33Khz to instance %d\n", ((pflexcanInstance_t)param)->instance);
 							erroResp = CAN_ERROR_RESPONCE;
 							break;
 						}
@@ -281,12 +282,12 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				pbuff++;
 				msg_size--;
 				
-				if ( true == pinstance->bScanInstanceStarted ) {
-					printf("%s:CAN%d already opened\n", __func__, pinstance->instance);
+				if ( true == ((pflexcanInstance_t)param)->bScanInstanceStarted ) {
+					printf("%s:CAN%d already opened\n", __func__, ((pflexcanInstance_t)param)->instance);
 					break;
 				}
 				
-				if ( BSP_CAN_DEVICE_0 == can_instance ) {
+				if ( BSP_CAN_DEVICE_0 == ((pflexcanInstance_t)param)->instance ) {
 					ret = FlexCanDevice_Init(&initCan, NULL);
 				}
 				else {
@@ -294,68 +295,68 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				}
 				printf("FlexCanDevice_Init( ) return %d\n", ret);
 
-				pinstance->canState.pevent_ISR = &event_ISR;
-                pinstance->canState.fifo_free_messages = &(pinstance->Rx_FreeMSGQueue);
-                pinstance->canState.fifo_ready_messages = &(pinstance->Rx_ReadyMSGQueue);
+				//((pflexcanInstance_t)param)->canState.pevent_ISR = &event_ISR;
+                ((pflexcanInstance_t)param)->canState.fifo_free_messages = &(((pflexcanInstance_t)param)->Rx_FreeMSGQueue);
+                ((pflexcanInstance_t)param)->canState.fifo_ready_messages = &(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue);
 
                 if ( 0 == termination ){
-				    ret = FlexCanDevice_SetTermination(pinstance, false);
+				    ret = FlexCanDevice_SetTermination(((pflexcanInstance_t)param), false);
 				}
 				else{
-					ret = FlexCanDevice_SetTermination(pinstance, true);
+					ret = FlexCanDevice_SetTermination(((pflexcanInstance_t)param), true);
 				}
 				printf("FlexCanDevice_SetTermination( ) return %d on set %d\n", ret, termination);
 
-				ret = FlexCanDevice_Start(pinstance);
+				ret = FlexCanDevice_Start((pflexcanInstance_t)param);
 				printf("FlexCanDevice_Start( ) return %d\n", ret);
 
-                pinstance->bScanInstanceStarted = true;
+                ((pflexcanInstance_t)param)->bScanInstanceStarted = true;
 
 				if (initCan.is_rx_fifo_needed)
                 {
-					ret = FlexCanDevice_SetRxMaskType(pinstance, true);
+					ret = FlexCanDevice_SetRxMaskType(((pflexcanInstance_t)param), true);
 					printf("FlexCanDevice_SetRxMaskType( ) to global return %d\n", ret);
 
 				  	printf("Set FIFO for recieve\n");
-                    if (pinstance->FIFOAceptableMask.isExtendedFrame)
-						ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(pinstance->instance, kFlexCanMsgIdExt, pinstance->FIFOAceptableMask.idFilter);
+                    if (((pflexcanInstance_t)param)->FIFOAceptableMask.isExtendedFrame)
+						ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdExt, ((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter);
 					else
-						ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(pinstance->instance, kFlexCanMsgIdStd, pinstance->FIFOAceptableMask.idFilter);
+						ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdStd, ((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter);
                     if (ret)
                     {
                         printf("\r\nFLEXCAN set rx fifo global mask failed. result: 0x%lx", result);
                     }
 
-					ret = (flexcan_device_status_t)FLEXCAN_DRV_ConfigRxFifo(pinstance->instance, initCan.fifoElemFormat, pinstance->pFIFOIdFilterTable);
+					ret = (flexcan_device_status_t)FLEXCAN_DRV_ConfigRxFifo(((pflexcanInstance_t)param)->instance, initCan.fifoElemFormat, ((pflexcanInstance_t)param)->pFIFOIdFilterTable);
 					if (ret)
                     {
                         printf("\r\nFLEXCAN_DRV_ConfigRxFifo failed. result: 0x%lx", result);
                     }
 
-                    FLEXCAN_DRV_RxFifo(pinstance->instance, NULL);
+                    FLEXCAN_DRV_RxFifo(((pflexcanInstance_t)param)->instance, NULL);
                 }
                 else {
 
-					ret = FlexCanDevice_SetRxMaskType(pinstance, false);
+					ret = FlexCanDevice_SetRxMaskType(((pflexcanInstance_t)param), false);
 					printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
-                    //ret = FlexCanDevice_SetRxMaskType(pinstance, true);
+                    //ret = FlexCanDevice_SetRxMaskType(((pflexcanInstance_t)param), true);
                     //printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
 
-                    //ret = FlexCanDevice_SetRxMbGlobalMask ( pinstance, kFlexCanMsgIdStd , 0x120 );
+                    //ret = FlexCanDevice_SetRxMbGlobalMask ( ((pflexcanInstance_t)param), kFlexCanMsgIdStd , 0x120 );
                     //printf("FlexCanDevice_SetRxMbGlobalMask( ) return %d\n", ret);
                     
                     for (int i = 0; i < 14; i++) {
-                        //ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0xF00 );
-                        ret = FlexCanDevice_SetRxIndividualMask ( pinstance, kFlexCanMsgIdStd, i, 0x700 ); // Mask Value
+                        //ret = FlexCanDevice_SetRxIndividualMask ( ((pflexcanInstance_t)param), kFlexCanMsgIdStd, i, 0xF00 );
+                        ret = FlexCanDevice_SetRxIndividualMask ( ((pflexcanInstance_t)param), kFlexCanMsgIdStd, i, 0x700 ); // Mask Value
                         printf("FlexCanDevice_SetRxIndividualMask %d return %d\n", i, ret);
-                        ret = FlexCanDevice_setMailbox(pinstance, kFlexCanMsgIdStd, i, 0x700, true); //Filter value
+                        ret = FlexCanDevice_setMailbox(((pflexcanInstance_t)param), kFlexCanMsgIdStd, i, 0x700, true); //Filter value
                         printf("FlexCanDevice_setMailbox %d return %d\n", i, ret);
                     }
 
                 }
 				
 				//Enable CAN
-				if ( BSP_CAN_DEVICE_0 == can_instance ){
+				if ( BSP_CAN_DEVICE_0 == ((pflexcanInstance_t)param)->instance ){
 					GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
 				}
 				else {
@@ -411,28 +412,28 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				
 				//Disable CAN
 				Baudrate_notSet = 1; 
-				if ( BSP_CAN_DEVICE_0 == can_instance ) {
+				if ( BSP_CAN_DEVICE_0 == ((pflexcanInstance_t)param)->instance ) {
 					GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE);
 				}
 				else {
 					GPIO_DRV_ClearPinOutput(CAN2_SWC_PWR_ENABLE);
 				}
 
-				ret = FlexCanDevice_SetTermination(pinstance, false);
+				ret = FlexCanDevice_SetTermination(((pflexcanInstance_t)param), false);
 				printf("FlexCanDevice_SetTermination( ) return %d\n", ret);
 
-				ret = FlexCanDevice_DeInit(pinstance);
+				ret = FlexCanDevice_DeInit(((pflexcanInstance_t)param));
 				printf("FlexCanDevice_DeInit( ) return %d\n", ret);
 				
-				pinstance->bScanInstanceStarted = false;
+				((pflexcanInstance_t)param)->bScanInstanceStarted = false;
 
 
                 //TODO 
                 //Add function for init
-                if (NULL != pinstance->pFIFOIdFilterTable) {
-                    _mem_zero((void *)(pinstance->pFIFOIdFilterTable), pinstance->FIFOFilterTableSize);
+                if (NULL != ((pflexcanInstance_t)param)->pFIFOIdFilterTable) {
+                    _mem_zero((void *)(((pflexcanInstance_t)param)->pFIFOIdFilterTable), ((pflexcanInstance_t)param)->FIFOFilterTableSize);
                 }
-                pinstance->FIFOTableIndx = 0;
+                ((pflexcanInstance_t)param)->FIFOTableIndx = 0;
 
                 initCan.flexcanMode         = fdFlexCanNormalMode;
             	initCan.instanceBitrate     = fdBitrate_125_kHz;
@@ -468,13 +469,13 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                     pbuff++;
                     msg_size--;
                     if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data ) ) {
-                        if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage ( pinstance, 14, &Tx_data ) )
+                        if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage ( ((pflexcanInstance_t)param), 14, &Tx_data ) )
                             erroResp = CAN_ERROR_RESPONCE;
 
 						_msg_free(msg_ptr);
                         msg_ptr = NULL;
 #if 0
-                        pqMemElem = GetUSBWriteBuffer (pinstance->instance + 2);
+                        pqMemElem = GetUSBWriteBuffer (((pflexcanInstance_t)param)->instance + 2);
                         if (NULL == pqMemElem) {
                             printf("%s: Error get mem for USB responce\n", __func__);
                             break;
@@ -491,8 +492,8 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                         *pbuff = erroResp;
                         pqMemElem->send_size = 2;
 
-                        if (!SetUSBWriteBuffer(pqMemElem, (pinstance->instance + 2)) ) {
-                            printf("%s: Error send data to CDC_%d\n", __func__, (uint32_t)(pinstance->instance + 2));
+                        if (!SetUSBWriteBuffer(pqMemElem, (((pflexcanInstance_t)param)->instance + 2)) ) {
+                            printf("%s: Error send data to CDC_%d\n", __func__, (uint32_t)(((pflexcanInstance_t)param)->instance + 2));
                         }
                         pqMemElem = NULL;
 #endif
@@ -505,7 +506,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				break;
             case 'm': //FIFO acceptable mask set
                 do {
-                    if ((10 > msg_size) || (true == pinstance->bScanInstanceStarted)) {
+                    if ((10 > msg_size) || (true == ((pflexcanInstance_t)param)->bScanInstanceStarted)) {
                         printf("ERROR set FIFO MASK\n" );
                         erroResp = CAN_ERROR_RESPONCE;
                         break;
@@ -513,15 +514,15 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					pbuff++;
                     msg_size--;
                     
-                    _mem_zero ((void*)&(pinstance->FIFOAceptableMask), sizeof(flexcan_id_table_t) );
+                    _mem_zero ((void*)&(((pflexcanInstance_t)param)->FIFOAceptableMask), sizeof(flexcan_id_table_t) );
                     switch (*pbuff) {
                     case 'R':
-                        pinstance->FIFOAceptableMask.isExtendedFrame = true;
+                        ((pflexcanInstance_t)param)->FIFOAceptableMask.isExtendedFrame = true;
                     case 'r':
-                        pinstance->FIFOAceptableMask.isRemoteFrame = true;
+                        ((pflexcanInstance_t)param)->FIFOAceptableMask.isRemoteFrame = true;
                         break;
                     case 'T':
-                        pinstance->FIFOAceptableMask.isExtendedFrame = true;
+                        ((pflexcanInstance_t)param)->FIFOAceptableMask.isExtendedFrame = true;
                     case 't':
                         break;
                     default:
@@ -532,7 +533,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                     pbuff++;
                     msg_size--;
 
-                    if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(pinstance->FIFOAceptableMask.idFilter))) {
+                    if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter))) {
                         printf("ERROR parse ID FIFO MASK\n");
                         erroResp = CAN_ERROR_RESPONCE;
                         break;
@@ -548,7 +549,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					if (CAN_OK_RESPONCE != *pbuff) {
 						printf("Wrong Set FIFO acceptable mask set \r not found\n");
 						erroResp = CAN_ERROR_RESPONCE;
-						_mem_zero ((void*)&(pinstance->FIFOAceptableMask), sizeof(flexcan_id_table_t) );
+						_mem_zero ((void*)&(((pflexcanInstance_t)param)->FIFOAceptableMask), sizeof(flexcan_id_table_t) );
 						break;
 					}
 					pbuff++;
@@ -557,7 +558,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                 break;
             case 'M':
                 do {
-                    if ((10 > msg_size) || (true == pinstance->bScanInstanceStarted)) {
+                    if ((10 > msg_size) || (true == ((pflexcanInstance_t)param)->bScanInstanceStarted)) {
                         printf("ERROR set FIFO ID filder\n" );
                         erroResp = CAN_ERROR_RESPONCE;
                         break;
@@ -565,27 +566,27 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                     pbuff++;
                     msg_size--;
 
-                    if (NULL == pinstance->pFIFOIdFilterTable) {
+                    if (NULL == ((pflexcanInstance_t)param)->pFIFOIdFilterTable) {
                         printf("ERROR set FIFO ID table NULL\n" );
                         erroResp = CAN_ERROR_RESPONCE;
                         break;
                     }
 
-                    if (pinstance->FIFOTableIndx >= (pinstance->FIFOFilterTableSize/sizeof(flexcan_id_table_t))) {
+                    if (((pflexcanInstance_t)param)->FIFOTableIndx >= (((pflexcanInstance_t)param)->FIFOFilterTableSize/sizeof(flexcan_id_table_t))) {
 					  	printf ("Overwrite FIFO ID Filter table start\n");
-                        pinstance->FIFOTableIndx = 0;
+                        ((pflexcanInstance_t)param)->FIFOTableIndx = 0;
                     }
 
-                    _mem_zero ((void*)(pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx), sizeof(flexcan_id_table_t) );
+                    _mem_zero ((void*)(((pflexcanInstance_t)param)->pFIFOIdFilterTable + ((pflexcanInstance_t)param)->FIFOTableIndx), sizeof(flexcan_id_table_t) );
 
                     switch (*pbuff) {
                     case 'R':
-                        (pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->isExtendedFrame = true;
+                        (((pflexcanInstance_t)param)->pFIFOIdFilterTable + ((pflexcanInstance_t)param)->FIFOTableIndx)->isExtendedFrame = true;
                     case 'r':
-                        (pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->isRemoteFrame = true;
+                        (((pflexcanInstance_t)param)->pFIFOIdFilterTable + ((pflexcanInstance_t)param)->FIFOTableIndx)->isRemoteFrame = true;
                         break;
                     case 'T':
-                        (pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->isExtendedFrame = true;
+                        (((pflexcanInstance_t)param)->pFIFOIdFilterTable + ((pflexcanInstance_t)param)->FIFOTableIndx)->isExtendedFrame = true;
                     case 't':
                         break;
                     default:
@@ -596,7 +597,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                     pbuff++;
                     msg_size--;
 
-                    if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->idFilter)) {
+                    if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(((pflexcanInstance_t)param)->pFIFOIdFilterTable + ((pflexcanInstance_t)param)->FIFOTableIndx)->idFilter)) {
                         printf("ERROR parse FIFO ID table value\n");
                         erroResp = CAN_ERROR_RESPONCE;
                         break;
@@ -612,19 +613,19 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
 					if (CAN_OK_RESPONCE != *pbuff) {
 						printf("Wrong Set FIFO ID filter table set \r not found\n");
-						_mem_zero ((void*)(pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx), sizeof(flexcan_id_table_t) );
+						_mem_zero ((void*)(((pflexcanInstance_t)param)->pFIFOIdFilterTable + ((pflexcanInstance_t)param)->FIFOTableIndx), sizeof(flexcan_id_table_t) );
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
                     pbuff++;
                     msg_size--;
 
-                    printf("Set FIFO table[%d] RTR %d IDE %d val %x\n", pinstance->FIFOTableIndx, 
-                           (pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->isRemoteFrame, 
-                           (pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->isExtendedFrame,
-                           (pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx)->idFilter);
+                    printf("Set FIFO table[%d] RTR %d IDE %d val %x\n", ((pflexcanInstance_t)param)->FIFOTableIndx, 
+                           (((pflexcanInstance_t)param)->pFIFOIdFilterTable + ((pflexcanInstance_t)param)->FIFOTableIndx)->isRemoteFrame, 
+                           (((pflexcanInstance_t)param)->pFIFOIdFilterTable + ((pflexcanInstance_t)param)->FIFOTableIndx)->isExtendedFrame,
+                           (((pflexcanInstance_t)param)->pFIFOIdFilterTable + ((pflexcanInstance_t)param)->FIFOTableIndx)->idFilter);
 					
-					pinstance->FIFOTableIndx++;
+					((pflexcanInstance_t)param)->FIFOTableIndx++;
 
                 } while (0);
                 break;
@@ -639,7 +640,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
 				if (CAN_OK_RESPONCE != *pbuff) {
 					printf("Wrong Set FIFO ID filter table set \r not found\n");
-					_mem_zero ((void*)(pinstance->pFIFOIdFilterTable + pinstance->FIFOTableIndx), sizeof(flexcan_id_table_t) );
+					_mem_zero ((void*)(((pflexcanInstance_t)param)->pFIFOIdFilterTable + ((pflexcanInstance_t)param)->FIFOTableIndx), sizeof(flexcan_id_table_t) );
 					erroResp = CAN_ERROR_RESPONCE;
 					break;
 				}
@@ -674,7 +675,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 			msg_ptr = NULL;
 
             do {
-                pqMemElem = GetUSBWriteBuffer(pinstance->instance + 2);
+                pqMemElem = GetUSBWriteBuffer(((pflexcanInstance_t)param)->instance + 2);
                 if (NULL == pqMemElem) {
                     printf("%s: Error get mem for USB responce_\n", __func__);
                     break;
@@ -690,8 +691,8 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
                 *pbuff = erroResp;
                 pqMemElem->send_size += 1;
 
-                if (!SetUSBWriteBuffer(pqMemElem, (pinstance->instance + 2)) ) {
-                    printf("%s: Error send data to CDC_%d\n", __func__, (uint32_t)(pinstance->instance + 2));
+                if (!SetUSBWriteBuffer(pqMemElem, (((pflexcanInstance_t)param)->instance + 2)) ) {
+                    printf("%s: Error send data to CDC_%d\n", __func__, (uint32_t)(((pflexcanInstance_t)param)->instance + 2));
                 }
                 pqMemElem = NULL;
 				pbuff = NULL;
@@ -703,7 +704,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 			msg_ptr->data[0] = (uint8_t)erroResp;
 			msg_ptr->data[1] = 0;
 			msg_ptr->header.SIZE = APP_MESSAGE_NO_ARRAY_SIZE + 1;
-			if ( BSP_CAN_DEVICE_0 == can_instance ) {
+			if ( BSP_CAN_DEVICE_0 == ((pflexcanInstance_t)param)->instance ) {
 				msg_ptr->portNum = MIC_CDC_USB_3;
 			}
 			else {
@@ -718,7 +719,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 	} while ( 1 );
 
 	//TODO
-	if (MQX_OK != _lwevent_destroy(&(event_ISR)))
+	if (MQX_OK != _lwevent_destroy(&(((pflexcanInstance_t)param)->canState.event_ISR)))
 	{
 		printf("_lwevent_destroy event failed\n");
 		return;// ( kStatus_FLEXCAN_Fail );
@@ -731,46 +732,28 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
 void FLEXCAN_Rx_Task( uint32_t param ) {
 
-	uint32_t                    result, can_instance, icount;
+	uint32_t                    result, icount;
     _mqx_uint                   queue_count;
-	pflexcanInstance_t          pinstance;
     pFLEXCAN_queue_element_t    pqueue_msg;
 	uint8_t                     *pmsg_str;
     uint32_t                    idx, i;
     int32_t                     curr_msg_len;
-	//uint8_t                     *pmsg_data;
     pcdc_mic_queue_element_t    pqMemElem;
 
-	if ( BOARD_CAN_INSTANCE <= param ) {
+    if ( (NULL == ((pflexcanInstance_t)param)) || (BOARD_CAN_INSTANCE <= ((pflexcanInstance_t)param)->instance) ) {
+        printf( "CAN_RX thread wrong param %u\n", ((pflexcanInstance_t)param)->instance );
 		return;
 	}
-	can_instance = param;
-	
-	printf("FLEXCAN_Rx_Task Task: Loop instance %u \n", can_instance);
 
-#if 0
-	if ( BSP_CAN_DEVICE_0 == can_instance ) {
-		msg_qid = _msgq_open(CAN1_RX_QUEUE, 0);
-	}
-	else {
-		msg_qid = _msgq_open(CAN2_RX_QUEUE, 0);
-	}
-
-	if (MSGQ_NULL_QUEUE_ID == msg_qid)
-    {
-       printf("\nCould not create a message pool CAN %u _TX_QUEU\n", param);
-       _task_block();
-    }
-#endif
-	pinstance = &g_flexcanDeviceInstance[can_instance];
+    printf("FLEXCAN_Rx_Task Task: Loop instance %u \n", ((pflexcanInstance_t)param)->instance);
 
 	do {
-		if (false == pinstance->bScanInstanceStarted )
+		if (false == ((pflexcanInstance_t)param)->bScanInstanceStarted )
 		{
 			_time_delay(2);
 			continue;
 		}
-		result = FLEXCAN_DRV_GetReceiveStatusBlocking(pinstance->instance, &idx, 0);
+		result = FLEXCAN_DRV_GetReceiveStatusBlocking(((pflexcanInstance_t)param)->instance, &idx, 0);
 
 		if ( !result ) {
 			pmsg_str = NULL;
@@ -778,7 +761,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 			icount = 0;
             do {
                 //Accamulate the CAN messages before USB send
-				queue_count = _queue_get_size(&(pinstance->Rx_ReadyMSGQueue));
+				queue_count = _queue_get_size(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue));
                 if ( (RX_FLEXCAN_MSGQ_TRESHOLD_MIN < queue_count || (20 < icount++))/* && ( USB_CAN_MAX_USABLE > _msg_available(g_out_message_pool) )*/ ) {
                     printf("Rx_task: Ready buff %d\n", queue_count/*, _msg_available(g_out_message_pool)*/);
 					break;
@@ -791,7 +774,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 
                 for ( i = 0; i < queue_count; i++ ) {
                     if (NULL == pqMemElem) {
-                        pqMemElem = GetUSBWriteBuffer (pinstance->instance + 2);
+                        pqMemElem = GetUSBWriteBuffer (((pflexcanInstance_t)param)->instance + 2);
                         if (NULL == pqMemElem) {
                             printf("%s: Error get mem for USB drop\n", __func__);
                             continue;
@@ -804,17 +787,17 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 
                     if (NULL != pqMemElem) {
 #ifdef FLEXCAN_DEVICE_DEBUG_
-						printf("Get from queue %x elm %x\n",(uint32_t)(&(pinstance->Rx_ReadyMSGQueue)), (uint32_t)pqueue_msg );
+						printf("Get from queue %x elm %x\n",(uint32_t)(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue)), (uint32_t)pqueue_msg );
 #endif
-						pqueue_msg = (pFLEXCAN_queue_element_t)_queue_dequeue(&(pinstance->Rx_ReadyMSGQueue));
+						pqueue_msg = (pFLEXCAN_queue_element_t)_queue_dequeue(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue));
                     }
 
                     if ( pqMemElem && pqueue_msg ) {
                         curr_msg_len = ParseCanMessToString (pqueue_msg, (const uint8_t*)pmsg_str);
 
-                        _queue_enqueue (&(pinstance->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
+                        _queue_enqueue (&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
 #ifdef FLEXCAN_DEVICE_DEBUG_
-						printf("Return to queue %x elm %x\n",(uint32_t)(&(pinstance->Rx_FreeMSGQueue)), (uint32_t)pqueue_msg );
+						printf("Return to queue %x elm %x\n",(uint32_t)(&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue)), (uint32_t)pqueue_msg );
 #endif
 						pqueue_msg = NULL;
 
@@ -829,7 +812,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
                                 pmsg_str = NULL;
 
                                 //put message to USB send
-                                if (!SetUSBWriteBuffer(pqMemElem, (pinstance->instance + 2))) {
+                                if (!SetUSBWriteBuffer(pqMemElem, (((pflexcanInstance_t)param)->instance + 2))) {
                                     printf("%s: Error send data to CDC1\n", __func__);
                                     //TODO
                                     //ADD error handler
@@ -846,7 +829,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
                     }//End if ( pqMemElem && pqueue_msg )
                     else {
                         if (pqMemElem) {
-                            if (!SetUSBWriteBuffer(pqMemElem, (pinstance->instance + 2))) {
+                            if (!SetUSBWriteBuffer(pqMemElem, (((pflexcanInstance_t)param)->instance + 2))) {
                                 printf("%s: Error send data to CDC1\n", __func__);
                                 //TODO
                                 //ADD error handler
@@ -854,7 +837,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
                             pqMemElem = NULL;
                         }
                         if (pqueue_msg) {
-                            _queue_enqueue (&(pinstance->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
+                            _queue_enqueue (&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
                             pqueue_msg = NULL;
                         }
                         _time_delay(2);
@@ -862,7 +845,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 
                 }//End for ( i = 0; i < queue_count; i++ )
 				if (pqMemElem) {
-					if (!SetUSBWriteBuffer(pqMemElem, (pinstance->instance + 2))) {
+					if (!SetUSBWriteBuffer(pqMemElem, (((pflexcanInstance_t)param)->instance + 2))) {
 						printf("%s: Error send data to CDC1\n", __func__);
 						//TODO
 						//ADD error handler
@@ -896,11 +879,9 @@ flexcan_device_status_t FlexCanDevice_InitInstance(  uint8_t instNum, pflexcande
 		return fcStatus_FLEXCAN_Error;
 	}
 
-	//_mem_zero((void *)&g_flexcanDeviceInstance[instNum], sizeof(flexcanInstance_t));
     _mem_zero((void *)(g_flexcanDeviceInstance[instNum].canState.MB_config), sizeof(g_flexcanDeviceInstance[instNum].canState.MB_config));
-    //_mem_zero((void *)(g_flexcanDeviceInstance[instNum].MB_msgbuff), sizeof(g_flexcanDeviceInstance[instNum].MB_msgbuff));
 
-	g_flexcanDeviceInstance[instNum].instance                         = (uint32_t)instNum;
+	//g_flexcanDeviceInstance[instNum].instance                         = (uint32_t)instNum;
 	g_flexcanDeviceInstance[instNum].flexcanData.flexcanMode          = (flexcan_operation_modes_t)pinstance_Can->flexcanMode; //kFlexCanDisableMode;
 	g_flexcanDeviceInstance[instNum].flexcanData.is_rx_fifo_needed    = pinstance_Can->is_rx_fifo_needed; //false;
 	g_flexcanDeviceInstance[instNum].flexcanData.max_num_mb           = pinstance_Can->max_num_mb; //16;
@@ -945,14 +926,14 @@ flexcan_device_status_t FlexCanDevice_Init( pflexcandevice_initparams_t pinstanc
 	flexcan_device_status_t ret = fcStatus_FLEXCAN_Success;
 
 	if ( NULL != pinstance_Can0 ) {
-		ret = FlexCanDevice_InitInstance(0, pinstance_Can0);
+		ret = FlexCanDevice_InitInstance(BSP_CAN_DEVICE_0, pinstance_Can0);
 		if ( 0 > ret ) {
 			printf("Error Initialize instance 0\n");
 		}
 	}
 
 	if ( NULL != pinstance_Can1 ) {
-		ret = FlexCanDevice_InitInstance(1, pinstance_Can1);
+		ret = FlexCanDevice_InitInstance(BSP_CAN_DEVICE_1, pinstance_Can1);
 		if ( 0 > ret ) {
 			printf("Error Initialize instance 1\n");
 		}

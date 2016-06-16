@@ -198,24 +198,24 @@ void Main_task( uint32_t initial_data ) {
     }
 
     //Start CAN RX TX Tasks
-    g_TASK_ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, BSP_CAN_DEVICE_0);
+    g_TASK_ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, (uint32_t)(can_Device_0));
     if ( g_TASK_ids[CAN_TASK_RX_0] == MQX_NULL_TASK_ID ) {
-        printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_0);
+        printf("Could not create CAN_TASK_RX for inst %u \n", can_Device_0->instance);
     }
 
-    g_TASK_ids[CAN_TASK_RX_1] = _task_create(0, CAN_TASK_RX_1, BSP_CAN_DEVICE_1);
+    g_TASK_ids[CAN_TASK_RX_1] = _task_create(0, CAN_TASK_RX_1, (uint32_t)(can_Device_1));
     if ( g_TASK_ids[CAN_TASK_RX_1] == MQX_NULL_TASK_ID ) {
-        printf("Could not create CAN_TASK_RX for inst %u \n", BSP_CAN_DEVICE_1);
+        printf("Could not create CAN_TASK_RX for inst %u \n", can_Device_1->instance);
     }
 
-    g_TASK_ids[CAN_TASK_TX_0] = _task_create(0, CAN_TASK_TX_0, BSP_CAN_DEVICE_0);
+    g_TASK_ids[CAN_TASK_TX_0] = _task_create(0, CAN_TASK_TX_0, (uint32_t)(can_Device_0));
     if ( g_TASK_ids[CAN_TASK_TX_0] == MQX_NULL_TASK_ID ) {
-        printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_0);
+        printf("Could not create CAN_TASK_TX for inst %u \n", can_Device_0->instance);
     }
 
-    g_TASK_ids[CAN_TASK_TX_1] = _task_create(0, CAN_TASK_TX_1, BSP_CAN_DEVICE_1);
+    g_TASK_ids[CAN_TASK_TX_1] = _task_create(0, CAN_TASK_TX_1, (uint32_t)(can_Device_1));
     if ( g_TASK_ids[CAN_TASK_TX_1] == MQX_NULL_TASK_ID ) {
-            printf("Could not create CAN_TASK_TX for inst %u \n", BSP_CAN_DEVICE_1);
+            printf("Could not create CAN_TASK_TX for inst %u \n", can_Device_1->instance);
     }
 
     g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
