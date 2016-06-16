@@ -672,6 +672,9 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
     CAN_Type * base = g_flexcanBase[instance];
     flexcan_state_t * state = g_flexcanStatePtr[instance];
 
+    //Global interrupt counter
+    g_Flexdebug.GlInterrCount++;
+
     /* Get the interrupts that are enabled and ready */
     flag_reg = ((FLEXCAN_HAL_GetAllMsgBuffIntStatusFlag(base)) & CAN_IMASK1_BUFLM_MASK) &
                 CAN_RD_IMASK1(base);
@@ -679,8 +682,15 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
     /* Check Tx/Rx interrupt flag and clear the interrupt */
     if(flag_reg)
     {
+        FLEXCAN_HAL_GetErrCounter ( base, &(g_Flexdebug.errorCount) ) ;
         if ((flag_reg & 0x20) && CAN_BRD_MCR_RFEN(base))
         {
+            if (FLEXCAN_HAL_GetMsgBuffIntStatusFlag(base, 0x40)) {
+                g_Flexdebug.IRQ_FIFOWarning++;
+            }
+            if (FLEXCAN_HAL_GetMsgBuffIntStatusFlag(base, 0x80)) {
+                g_Flexdebug.IRQ_FIFOOverflow++;
+            }
             //if (state->fifo_message != NULL)
             if ( (NULL != state->fifo_free_messages) && (NULL != state->fifo_ready_messages) )
             {
@@ -703,7 +713,7 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
                     {
                         //printf ( "Error _lwevent_set set ISR event %x", temp1 );
                     }
-                    FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
+                    //FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
                     g_Flexdebug.acceptRX_IRQ++;
                 }
                 else
@@ -769,14 +779,16 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
 
             }//End if (temp && (NULL != state->fifo_free_messages) && (NULL != state->fifo_ready_messages))
 
-            /* Check mailbox completed transmission*/
-            temp = (1 << state->tx_mb_idx);
-            if (temp & flag_reg)
-            {
-                /* Complete transmit data */
-                FLEXCAN_DRV_CompleteSendData(instance);
-                FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, temp & flag_reg);
-            }
+        }
+
+        /* Check mailbox completed transmission*/
+        temp = (1 << state->tx_mb_idx);
+        if (temp & flag_reg)
+        {
+            g_Flexdebug.TrInterrCount++;
+            /* Complete transmit data */
+            FLEXCAN_DRV_CompleteSendData(instance);
+            FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, temp & flag_reg);
         }
     }
 

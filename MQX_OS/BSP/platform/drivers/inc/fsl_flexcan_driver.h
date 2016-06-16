@@ -121,6 +121,11 @@ typedef struct FLEXCAN_Debug {
     uint32_t acceptRX_IRQ;
     uint32_t rejectRX_FifoEmpty;
     uint32_t sendUSB;
+    uint32_t IRQ_FIFOOverflow;
+    uint32_t IRQ_FIFOWarning;
+    flexcan_buserr_counter_t errorCount;
+    uint32_t TrInterrCount;
+    uint32_t GlInterrCount;
 }FLEXCAN_Debug_t;
 
 /*******************************************************************************
