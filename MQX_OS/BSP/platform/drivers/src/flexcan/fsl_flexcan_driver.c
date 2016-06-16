@@ -709,7 +709,7 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
                     //RS FLEXCAN_DRV_CompleteRxMessageFifoData(instance);
 
                     //Set event for task notification
-                    if (MQX_OK != _lwevent_set( state->pevent_ISR, 1))
+                    if (MQX_OK != _lwevent_set( &(state->event_ISR), 1))
                     {
                         //printf ( "Error _lwevent_set set ISR event %x", temp1 );
                     }
@@ -772,7 +772,7 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
                 // Add set data to queue
 
                 //Set event for task notification
-                if (MQX_OK != _lwevent_set( state->pevent_ISR, temp1))
+                if (MQX_OK != _lwevent_set( &(state->event_ISR), temp1))
                 {
                     //printf ( "Error _lwevent_set set ISR event %x", temp1 );
                 }
@@ -860,10 +860,10 @@ flexcan_status_t FLEXCAN_DRV_GetReceiveStatusBlocking(uint32_t instance, uint32_
         MQX_TICK_STRUCT tick;
         _time_get_ticks ( &tick );
         _time_add_msec_to_ticks( &tick, timeout_ms );
-        res = (flexcan_status_t)_lwevent_wait_for ( state->pevent_ISR, 0xffffffff, false, &tick );
+        res = (flexcan_status_t)_lwevent_wait_for ( &(state->event_ISR), 0xffffffff, false, &tick );
     }
     else
-        res = (flexcan_status_t)_lwevent_wait_for ( state->pevent_ISR, 0xffffffff, false, NULL );
+        res = (flexcan_status_t)_lwevent_wait_for ( &(state->event_ISR), 0xffffffff, false, NULL );
 
     if ( MQX_OK == res )
     {
