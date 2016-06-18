@@ -125,7 +125,14 @@ typedef struct FLEXCAN_Debug {
     uint32_t IRQ_FIFOWarning;
     flexcan_buserr_counter_t errorCount;
     uint32_t TrInterrCount;
-    uint32_t GlInterrCount;
+    uint32_t DataInterrCount_0;
+    uint32_t ErrorCount_0;
+    uint32_t WakeUpCount_0;
+    uint32_t BusOffCount_0;
+    uint32_t DataInterrCount_1;
+    uint32_t ErrorCount_1;
+    uint32_t WakeUpCountCount_1;
+    uint32_t BusOffCount_1;
 }FLEXCAN_Debug_t;
 
 /*******************************************************************************

@@ -61,6 +61,7 @@ flexcan_time_segment_t bitRateTable48Mhz[] = {
 	{ 6, 7, 7, 15, 3 },  /* 125 kHz */
 	{ 6, 7, 7,  7, 3 },  /* 250 kHz */
 	{ 2, 3, 3,  7, 1 },  /* 500 kHz */
+    //{ 6, 7, 7,  3, 3 },  /* 500 kHz */
 	{ 6, 3, 3,  3, 3 },  /* 750 kHz */
 	{ 6, 3, 3,  2, 3 },  /* 1   MHz */
 };
@@ -317,11 +318,24 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					ret = FlexCanDevice_SetRxMaskType(((pflexcanInstance_t)param), true);
 					printf("FlexCanDevice_SetRxMaskType( ) to global return %d\n", ret);
 
+                    for (int i = 0; i < 16; i++) {
+                        ret = FlexCanDevice_SetRxIndividualMask ( ((pflexcanInstance_t)param), kFlexCanMsgIdStd, i, 0x00000000 );
+                        ret = FlexCanDevice_SetRxIndividualMask ( ((pflexcanInstance_t)param), kFlexCanMsgIdExt, i, 0x00000000 );
+                    }
+
 				  	printf("Set FIFO for recieve\n");
+//                  if (0 != ((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter) {
+//                      ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdExt, 0xFFFFFFFF );
+//                      ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdStd, 0xFFFFFFFF );
+//                  }
+//                  else {
+//                      ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdExt, 0x00000000 );
+//                      ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdStd, 0x00000000 );
+//                  }
                     if (((pflexcanInstance_t)param)->FIFOAceptableMask.isExtendedFrame)
-						ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdExt, ((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter);
-					else
-						ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdStd, ((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter);
+                        ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdExt, ((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter);
+                    else
+                        ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdStd, ((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter);
                     if (ret)
                     {
                         printf("\r\nFLEXCAN set rx fifo global mask failed. result: 0x%lx", result);
@@ -884,7 +898,7 @@ flexcan_device_status_t FlexCanDevice_InitInstance(  uint8_t instNum, pflexcande
 	//g_flexcanDeviceInstance[instNum].instance                         = (uint32_t)instNum;
 	g_flexcanDeviceInstance[instNum].flexcanData.flexcanMode          = (flexcan_operation_modes_t)pinstance_Can->flexcanMode; //kFlexCanDisableMode;
 	g_flexcanDeviceInstance[instNum].flexcanData.is_rx_fifo_needed    = pinstance_Can->is_rx_fifo_needed; //false;
-	g_flexcanDeviceInstance[instNum].flexcanData.max_num_mb           = pinstance_Can->max_num_mb; //16;
+	g_flexcanDeviceInstance[instNum].flexcanData.max_num_mb           = pinstance_Can->max_num_mb - 1; //16;
 	g_flexcanDeviceInstance[instNum].flexcanData.num_id_filters       = pinstance_Can->num_id_filters; //kFlexCanRxFifoIDFilters_8;
 	g_flexcanDeviceInstance[instNum].instanceBitrate                  = pinstance_Can->instanceBitrate;
 	g_flexcanDeviceInstance[instNum].initialize                       = true;
@@ -1463,11 +1477,11 @@ int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *
     pmsg_str++;
     curr_msg_len++;
     //set message ID;
-    if (tmp) {
+    if (tmp1) {
         //Extended
         sprintf ( (char*)pmsg_str, "%08x", pCanMess->msg_buff.msgId);
-        pmsg_str += 9;
-        curr_msg_len += 9;
+        pmsg_str += 8;
+        curr_msg_len += 8;
     }
     else {
         //Standard
