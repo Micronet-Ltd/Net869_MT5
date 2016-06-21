@@ -302,7 +302,7 @@ void OTG_CONTROL (void)
 
 void configure_otg_for_host_or_device(void)
 {
-	if (GPIO_DRV_ReadPinInput (OTG_ID) == 0)
+	if (GPIO_DRV_ReadPinInput (OTG_ID) == 1)
 	{
 		/* Connect D1 <-> D MCU or HUB */
 		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
