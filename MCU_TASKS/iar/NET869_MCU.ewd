@@ -121,7 +121,7 @@
         </option>
         <option>
           <name>OCImagesPath1</name>
-          <state></state>
+          <state>$PROJ_DIR$\..\..\BootLoader\Debug\Exe\BootLoader.srec</state>
         </option>
         <option>
           <name>OCImagesSuppressCheck2</name>
@@ -145,7 +145,7 @@
         </option>
         <option>
           <name>OCImagesOffset1</name>
-          <state></state>
+          <state>0x0</state>
         </option>
         <option>
           <name>OCImagesOffset2</name>
@@ -157,7 +157,7 @@
         </option>
         <option>
           <name>OCImagesUse1</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OCImagesUse2</name>
