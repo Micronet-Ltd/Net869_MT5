@@ -91,7 +91,7 @@ typedef struct FlexCANState {
     volatile bool           isRxBlockingFIFO;               /*!< True if receive is blocking transaction on FIFO. */
     volatile bool           isRxBlockingMB[CAN_CS_COUNT];   /*!< True if receive is blocking transaction on MB. */
     FLEXCAN_MailboxConfig_t MB_config[CAN_CS_COUNT];        /*!< MB configuration */
-    LWEVENT_STRUCT_PTR      pevent_ISR;                     /*!< Event signaling interrupt occure. */
+    LWEVENT_STRUCT          event_ISR;                     /*!< Event signaling interrupt occure. */
 	QUEUE_STRUCT_PTR	    fifo_free_messages;				/*!< Queue of available FIFO data elements. */
 	QUEUE_STRUCT_PTR	    fifo_ready_messages;			/*!< Queue of ready FIFO data elements. */ 
 } flexcan_state_t;
@@ -125,7 +125,14 @@ typedef struct FLEXCAN_Debug {
     uint32_t IRQ_FIFOWarning;
     flexcan_buserr_counter_t errorCount;
     uint32_t TrInterrCount;
-    uint32_t GlInterrCount;
+    uint32_t DataInterrCount_0;
+    uint32_t ErrorCount_0;
+    uint32_t WakeUpCount_0;
+    uint32_t BusOffCount_0;
+    uint32_t DataInterrCount_1;
+    uint32_t ErrorCount_1;
+    uint32_t WakeUpCountCount_1;
+    uint32_t BusOffCount_1;
 }FLEXCAN_Debug_t;
 
 /*******************************************************************************

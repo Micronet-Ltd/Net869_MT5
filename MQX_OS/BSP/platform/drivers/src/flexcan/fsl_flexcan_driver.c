@@ -662,6 +662,8 @@ uint32_t FLEXCAN_DRV_Deinit(uint8_t instance)
  *
  *END**************************************************************************/
 extern uint32_t g_flexacandevice_PacketCountRX1;
+uint32_t g_CanDataCurr = 0;
+uint32_t g_CanDataPrev = 0;
 void FLEXCAN_DRV_IRQHandler(uint8_t instance)
 {
     volatile uint32_t flag_reg;
@@ -671,55 +673,89 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
     pFLEXCAN_queue_element_t pqueue_elem;
     CAN_Type * base = g_flexcanBase[instance];
     flexcan_state_t * state = g_flexcanStatePtr[instance];
-
-    //Global interrupt counter
-    g_Flexdebug.GlInterrCount++;
-
+	
+	FLEXCAN_HAL_GetErrCounter ( base, &(g_Flexdebug.errorCount) ) ;
+  
     /* Get the interrupts that are enabled and ready */
-    flag_reg = ((FLEXCAN_HAL_GetAllMsgBuffIntStatusFlag(base)) & CAN_IMASK1_BUFLM_MASK) &
-                CAN_RD_IMASK1(base);
+    flag_reg = ((FLEXCAN_HAL_GetAllMsgBuffIntStatusFlag(base)) & CAN_IMASK1_BUFLM_MASK) & CAN_RD_IMASK1(base);
 
     /* Check Tx/Rx interrupt flag and clear the interrupt */
     if(flag_reg)
     {
-        FLEXCAN_HAL_GetErrCounter ( base, &(g_Flexdebug.errorCount) ) ;
-        if ((flag_reg & 0x20) && CAN_BRD_MCR_RFEN(base))
+		/* Check mailbox completed transmission*/
+        temp = (1 << state->tx_mb_idx);
+        if (temp & (CAN_RD_IFLAG1(base)))
         {
-            if (FLEXCAN_HAL_GetMsgBuffIntStatusFlag(base, 0x40)) {
+            g_Flexdebug.TrInterrCount++;
+            /* Complete transmit data */
+            FLEXCAN_DRV_CompleteSendData(instance);
+            FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, temp & (CAN_RD_IFLAG1(base)));
+        }
+
+        if ((CAN_RD_IFLAG1(base) & 0x20) && CAN_BRD_MCR_RFEN(base))
+        {
+            temp = 0;
+            if (FLEXCAN_HAL_GetMsgBuffIntStatusFlag(base, 5)) {
                 g_Flexdebug.IRQ_FIFOWarning++;
+                temp = 5;
             }
-            if (FLEXCAN_HAL_GetMsgBuffIntStatusFlag(base, 0x80)) {
+            if (FLEXCAN_HAL_GetMsgBuffIntStatusFlag(base, 6)) {
                 g_Flexdebug.IRQ_FIFOOverflow++;
             }
-            //if (state->fifo_message != NULL)
-            if ( (NULL != state->fifo_free_messages) && (NULL != state->fifo_ready_messages) )
-            {
-                pqueue_elem = (pFLEXCAN_queue_element_t)_queue_dequeue(state->fifo_free_messages);
-                if (NULL == pqueue_elem) {
-                    //Reuse ready messages
-                    pqueue_elem = (pFLEXCAN_queue_element_t)_queue_dequeue(state->fifo_ready_messages);
-                    g_Flexdebug.rejectRX_FifoEmpty++;
-                }
-
-                if (NULL != pqueue_elem) {
-                    /* Get RX FIFO field values */
-                    FLEXCAN_HAL_ReadRxFifo(base, &(pqueue_elem->msg_buff));
-                    _queue_enqueue(state->fifo_ready_messages, (QUEUE_ELEMENT_STRUCT_PTR)pqueue_elem );
-                    /* Complete receive data */
-                    //RS FLEXCAN_DRV_CompleteRxMessageFifoData(instance);
-
-                    //Set event for task notification
-                    if (MQX_OK != _lwevent_set( state->pevent_ISR, 1))
+			
+            do {
+                if ((CAN_RD_IFLAG1(base) & 0x20)) {
+                    if ((NULL != state->fifo_free_messages) && (NULL != state->fifo_ready_messages))
                     {
-                        //printf ( "Error _lwevent_set set ISR event %x", temp1 );
+                        pqueue_elem = (pFLEXCAN_queue_element_t)_queue_dequeue(state->fifo_free_messages);
+                        if (NULL == pqueue_elem) {
+                            //Reuse ready messages
+                            pqueue_elem = (pFLEXCAN_queue_element_t)_queue_dequeue(state->fifo_ready_messages);
+                            g_Flexdebug.rejectRX_FifoEmpty++;
+                        }
+
+                        if (NULL != pqueue_elem) {
+                            /* Get RX FIFO field values */
+                            FLEXCAN_HAL_ReadRxFifo(base, &(pqueue_elem->msg_buff));
+                            FLEXCAN_HAL_ClearMsgBuffIntStatusFlag( base, (CAN_RD_IFLAG1(base) & 0x20) );
+                            //_time_delay_ticks(3);
+#if 0
+                            if (pqueue_elem->msg_buff.msgId == 0x788) {
+                                g_CanDataCurr = 0;
+                                for (i = 4; i; i--) {
+                                    g_CanDataCurr = (pqueue_elem->msg_buff.data[i-1] & 0xFF)|  (g_CanDataCurr << 8);
+                                }
+
+                                if (0 != g_CanDataPrev ) {
+                                    if (g_CanDataCurr - g_CanDataPrev > 1) {
+                                        i = 0;
+                                    }
+                                }
+                                g_CanDataPrev = g_CanDataCurr;
+                            }
+#endif
+                            _queue_enqueue(state->fifo_ready_messages, (QUEUE_ELEMENT_STRUCT_PTR)pqueue_elem );
+                            /* Complete receive data */
+
+                            //Set event for task notification
+                            if (MQX_OK != _lwevent_set( &(state->event_ISR), 1))
+                            {
+                                //printf ( "Error _lwevent_set set ISR event %x", temp1 );
+                            }
+                            g_Flexdebug.acceptRX_IRQ++;
+                        }
+                        else
+                            g_Flexdebug.rejectRX_FifoEmpty++;
                     }
-                    //FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
-                    g_Flexdebug.acceptRX_IRQ++;
                 }
-                else
-                    g_Flexdebug.rejectRX_FifoEmpty++;
-			}
-			FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
+//				else {
+//					FLEXCAN_HAL_ClearMsgBuffIntStatusFlag( base, (CAN_RD_IFLAG1(base) & 0xC0) );
+//					break;
+//				}
+            } while (--temp);
+			FLEXCAN_HAL_ClearMsgBuffIntStatusFlag( base, (CAN_RD_IFLAG1(base) & 0xC0) );
+
+			//FLEXCAN_HAL_ClearMsgBuffIntStatusFlag( base, (CAN_RD_IFLAG1(base) & 0xE0) );
         }
         else
         {
@@ -772,7 +808,7 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
                 // Add set data to queue
 
                 //Set event for task notification
-                if (MQX_OK != _lwevent_set( state->pevent_ISR, temp1))
+                if (MQX_OK != _lwevent_set( &(state->event_ISR), temp1))
                 {
                     //printf ( "Error _lwevent_set set ISR event %x", temp1 );
                 }
@@ -780,18 +816,10 @@ void FLEXCAN_DRV_IRQHandler(uint8_t instance)
             }//End if (temp && (NULL != state->fifo_free_messages) && (NULL != state->fifo_ready_messages))
 
         }
-
-        /* Check mailbox completed transmission*/
-        temp = (1 << state->tx_mb_idx);
-        if (temp & flag_reg)
-        {
-            g_Flexdebug.TrInterrCount++;
-            /* Complete transmit data */
-            FLEXCAN_DRV_CompleteSendData(instance);
-            FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, temp & flag_reg);
-        }
     }
 
+	//FLEXCAN_HAL_ClearMsgBuffIntStatusFlag(base, flag_reg);
+	
     /* Clear all other interrupts in ERRSTAT register (Error, Busoff, Wakeup) */
     FLEXCAN_HAL_ClearErrIntStatusFlag(base);
 
@@ -860,10 +888,10 @@ flexcan_status_t FLEXCAN_DRV_GetReceiveStatusBlocking(uint32_t instance, uint32_
         MQX_TICK_STRUCT tick;
         _time_get_ticks ( &tick );
         _time_add_msec_to_ticks( &tick, timeout_ms );
-        res = (flexcan_status_t)_lwevent_wait_for ( state->pevent_ISR, 0xffffffff, false, &tick );
+        res = (flexcan_status_t)_lwevent_wait_for ( &(state->event_ISR), 0xffffffff, false, &tick );
     }
     else
-        res = (flexcan_status_t)_lwevent_wait_for ( state->pevent_ISR, 0xffffffff, false, NULL );
+        res = (flexcan_status_t)_lwevent_wait_for ( &(state->event_ISR), 0xffffffff, false, NULL );
 
     if ( MQX_OK == res )
     {
