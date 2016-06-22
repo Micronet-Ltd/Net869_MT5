@@ -224,13 +224,13 @@ void Main_task( uint32_t initial_data ) {
         printf("\nMain Could not create ACC_TASK\n");
     }
 
-	g_TASK_ids[UPDATER_TASK] = _task_create(0, UPDATER_TASK, 0);
-	if (g_TASK_ids[UPDATER_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create UPDATER_TASK\n");
-	}
-	else
-		printf("\nMain UPDATER_TASK created\n");
+//	g_TASK_ids[UPDATER_TASK] = _task_create(0, UPDATER_TASK, 0);
+//	if (g_TASK_ids[UPDATER_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create UPDATER_TASK\n");
+//	}
+//	else
+//		printf("\nMain UPDATER_TASK created\n");
 	  
 
 	g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
