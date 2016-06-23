@@ -220,7 +220,7 @@ size_t const powerConfigsSize = sizeof(powerConfigs)/sizeof(power_manager_user_c
 size_t const pm_callback_tbl_size = sizeof(pm_callback_tbl)/sizeof(power_manager_callback_user_config_t *);
 
 void Supercap_charge_state (void);
-void Supercap_discharge_state (void);
+//void Supercap_discharge_state (void);
 
 void * power_up_event_g;
 
@@ -546,6 +546,7 @@ void Power_MGM_task (uint32_t initial_data )
 	uint64_t ext_gpio_last_time    = 0;
 	uint64_t cable_type_last_time  = 0;
 	uint32_t cable_type_voltage    = 0;
+	KADC_CHANNELS_t adc_input = kADC_ANALOG_IN1;
     uint32_t time_diff = 0;
 	KADC_CHANNELS_t i = kADC_ANALOG_IN1;
 	TIME_STRUCT time;
@@ -573,6 +574,9 @@ void Power_MGM_task (uint32_t initial_data )
 	{
 		ADC_sample_input (i);
 	}
+
+	ADC_Set_IRQ_TH (kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
+	ADC_Compare_enable (kADC_POWER_IN);
 
     CLOCK_SYS_Init(g_defaultClockConfigurations,
                    CLOCK_NUMBER_OF_CONFIGURATIONS,
@@ -602,6 +606,17 @@ void Power_MGM_task (uint32_t initial_data )
 
 	while (1)
 	{
+		ADC_Compare_disable ();
+
+		if (adc_input < kADC_POWER_IN)
+			GPIO_sample_all (adc_input);
+		else
+			ADC_sample_input (adc_input);
+			
+		if (++adc_input >= kADC_CHANNELS)
+			adc_input = kADC_ANALOG_IN1;
+
+#if 0
 		ADC_sample_input (kADC_POWER_IN);
 		ADC_sample_input (kADC_POWER_VCAP);
 
@@ -636,10 +651,13 @@ void Power_MGM_task (uint32_t initial_data )
 			ext_gpio_last_time = current_time;
 			GPIO_sample_all ();
 		}
+#endif
 		
+		ADC_Compare_enable (kADC_POWER_IN);	//kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
+
 #ifdef SUPERCAP_CHRG_DISCHRG_ENABLE
         Supercap_charge_state    ();
-        Supercap_discharge_state ();
+//        Supercap_discharge_state ();
 #endif
 		_time_delay (POWER_MGM_TIME_DELAY);
 
@@ -678,7 +696,7 @@ void Supercap_charge_state (void)
 	}
 }
 
-
+#if 0
 // discharge supercap if input power is below threshold
 void Supercap_discharge_state (void)
 {
@@ -705,6 +723,7 @@ void Supercap_discharge_state (void)
 		GPIO_DRV_ClearPinOutput (POWER_DISCHARGE_ENABLE);
 	}
 }
+#endif
 
 void get_ignition_threshold(uint32_t * p_ignition_threshold)
 {
