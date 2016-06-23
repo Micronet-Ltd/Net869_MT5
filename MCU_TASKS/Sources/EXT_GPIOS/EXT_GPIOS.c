@@ -19,9 +19,6 @@
 #include "control_task.h"
 #include "protocol.h"
 
-#define NUM_OF_GPI	8
-#define NUM_OF_GPO  4
-
 typedef struct {
 	const KADC_CHANNELS_t adc_channel;
 	      uint32_t        gpio_input_voltage;
@@ -54,13 +51,14 @@ void *g_GPIO_event_h;
 
 KINPUT_LOGIC_LEVEL GPIO_INPUT_convert_voltage_to_level (uint32_t voltage);
 
-void GPIO_sample_all (void)
+//void GPIO_sample_all (void)
+void GPIO_sample_all (KGPIOS_INPUT_CHANNELS i)
 {
 	uint32_t gpio_event = 0;
-	KGPIOS_INPUT_CHANNELS i;
+//	KGPIOS_INPUT_CHANNELS i;
 	KINPUT_LOGIC_LEVEL state_prev, state_current, state_temp;
 
-	for (i = kANALOG_EXT_IN; i < NUM_OF_GPI; i++) {
+//	for (i = kANALOG_EXT_IN; i < NUM_OF_GPI; i++) {
 		state_prev = GPIO_INPUT_get_logic_level (i);
 		ADC_sample_input (gpio_inputs[i].adc_channel);
 		gpio_inputs[i].gpio_input_voltage = ADC_get_value (gpio_inputs[i].adc_channel);
@@ -80,7 +78,7 @@ void GPIO_sample_all (void)
 			MIC_DEBUG_UART_PRINTF ("GPIO_IN %d level became %d\n", i, state_current);
 			gpio_event |= (1 << i);
 		}
-	}
+//	}
 
 	//TODO: for now just send the control message from within the GPIO driver
 	if (gpio_event != 0){
