@@ -85,7 +85,7 @@
 #define DEVICE_CONTROL_TIME_OFF_TH				 3200		// number of mili-seconds pulse for turning device off
 #define DEVICE_CONTROL_TIME_RESET_TH			  500		// number of mili-seconds pulse for reseting device
 
-#define BACKUP_RECOVER_TIME_TH					 1000		// number of mili-seconds to try power failure overcome (device is powered by supercap)
+#define BACKUP_RECOVER_TIME_TH					 5000		// number of mili-seconds to try power failure overcome (device is powered by supercap)
 #define BACKUP_POWER_TIME_TH					20000		// number of mili-seconds to power device by supercap
 
 #define CPU_OFF_CHECK_TIME						1000		// time between checks for CPU/A8 off

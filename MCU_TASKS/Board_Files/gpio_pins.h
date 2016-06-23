@@ -185,6 +185,8 @@ enum _gpio_pins_pinNames {
 #define ADC_GPIO_IN6					kAdc16Chn0			// dp0
 #define ADC_GPIO_IN7					kAdc16Chn18
 
+#define ADC_POWER_IN_ISR                kAdc16Chn3
+
 #ifdef __cplusplus
 extern "C"
 {
