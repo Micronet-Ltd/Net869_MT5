@@ -5,7 +5,8 @@
 #include "fsl_adc16_driver.h"
 #include "fsl_adc16_hal.h"
 
-#define ADC16_INSTANCE              1
+#define ADC16_INSTANCE0              0
+#define ADC16_INSTANCE1              1
 
 #define ADC16_CHN_GROUP_0			0
 #define ADC16_CHN_GROUP_1			1
@@ -32,8 +33,8 @@ extern "C"
 #endif
 
 void ADC_convert_sample_to_value (ADC_INTPUT_t *adc_intput);
-void calibrateParams(void);
-void MQX_ADC1_IRQHandler (void);
+void calibrateParams (uint32_t adc16_interface);
+void MQX_ADC0_IRQHandler (void);
 
 void ADC_channel_init (
 		ADC_INTPUT_t *adc_intput,
@@ -57,7 +58,11 @@ void ADC_init (void)
     // normal convert speed, VREFH/L as reference,
     // disable continuous convert mode.
     ADC16_DRV_StructInitUserConfigDefault (&adcConfig);    
-    ADC16_DRV_Init (ADC16_INSTANCE, &adcConfig);
+    ADC16_DRV_Init (ADC16_INSTANCE0, &adcConfig);
+
+        
+        ADC16_DRV_StructInitUserConfigDefault (&adcConfig);    
+    ADC16_DRV_Init (ADC16_INSTANCE1, &adcConfig);
 
 	// initalize all channels
 	//                         channel                   index         factor  factor  factor    diff
@@ -74,16 +79,18 @@ void ADC_init (void)
 	ADC_channel_init (&adc_input[kADC_POWER_VCAP ], ADC_POWER_VCAP ,     0,       3,      1,    false);
 	ADC_channel_init (&adc_input[kADC_TEMPERATURE], ADC_TEMPERATURE,     0,       1,      1,    false);
 	ADC_channel_init (&adc_input[kADC_CABLE_TYPE ], ADC_CABLE_TYPE ,     0,       1,      1,    false);
+        ADC_channel_init (&adc_input[kADC_POWER_IN_ISR],ADC_POWER_IN_ISR,    0,     110,     10,    false);
 
-    NVIC_SetPriority(ADC1_IRQn, 6U);
-    OSA_InstallIntHandler(ADC1_IRQn, MQX_ADC1_IRQHandler);
+    NVIC_SetPriority(ADC0_IRQn, 4U);
+    OSA_InstallIntHandler(ADC0_IRQn, MQX_ADC0_IRQHandler);
 
-	calibrateParams ();
+	calibrateParams (ADC16_INSTANCE0);
+        calibrateParams (ADC16_INSTANCE1);
 }
 
 void ADC_Set_IRQ_TH (KADC_CHANNELS_t channel, uint16_t low_thrashold, uint16_t high_thrashold)
 {
-	ADC_Type *base = g_adcBase[ADC16_INSTANCE];
+	ADC_Type *base = g_adcBase[ADC16_INSTANCE0];
 	uint32_t val;
 
 	val  = low_thrashold;
@@ -109,50 +116,54 @@ void ADC_Set_IRQ_TH (KADC_CHANNELS_t channel, uint16_t low_thrashold, uint16_t h
 
 void ADC_Compare_enable (KADC_CHANNELS_t channel)
 {
-	ADC_Type *base = g_adcBase[ADC16_INSTANCE];
+	ADC_Type *base = g_adcBase[ADC16_INSTANCE0];
+        
+        assert (channel < kADC_CHANNELS);
 
-	ADC_WR_SC2_ACFE  (base, 1);
+	//ADC_WR_SC2_ACFE  (base, 1);
 
 	// trigger the conversion with IRQ enable
-	adc_input[channel].chnConfig.convCompletedIntEnable = true;
-	ADC16_DRV_ConfigConvChn (ADC16_INSTANCE, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);
-	adc_input[channel].chnConfig.convCompletedIntEnable = false;
+	//adc_input[channel].chnConfig.convCompletedIntEnable = true;
+	ADC16_DRV_ConfigConvChn (ADC16_INSTANCE0, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);
 }
 
-void ADC_Compare_disable (void)
+void ADC_Compare_disable (KADC_CHANNELS_t channel)
 {
-	ADC_Type *base = g_adcBase[ADC16_INSTANCE];
+	ADC_Type *base = g_adcBase[ADC16_INSTANCE0];
+        
+        assert (channel < kADC_CHANNELS);
 
 	ADC_WR_SC2_ACFE (base, 0);
 	ADC_WR_SC1_AIEN (base, ADC16_CHN_GROUP_0, 0);
+        adc_input[channel].chnConfig.convCompletedIntEnable = false;
 }
 
 void ADC_sample_input (KADC_CHANNELS_t channel)
 {
        assert (channel < kADC_CHANNELS);
  
-       ADC16_DRV_ConfigConvChn (ADC16_INSTANCE, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);         // trigger the conversion
-       ADC16_DRV_WaitConvDone  (ADC16_INSTANCE, ADC16_CHN_GROUP_0);                                        // Wait for the conversion to be done
+       ADC16_DRV_ConfigConvChn (ADC16_INSTANCE1, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);         // trigger the conversion
+       ADC16_DRV_WaitConvDone  (ADC16_INSTANCE1, ADC16_CHN_GROUP_0);                                        // Wait for the conversion to be done
  
        if (adc_input[channel].chnConfig.diffConvEnable) 
        {
               // in case of differential channel read differential value represented in signed 16bit.
               // In order to convert it to signed 32 bit range, the value needs to be multiply by 2
-              int32_t   sample_diff_chn = (int32_t) (ADC16_DRV_GetConvValueSigned (ADC16_INSTANCE, ADC16_CHN_GROUP_0) << 1);
+              int32_t   sample_diff_chn = (int32_t) (ADC16_DRV_GetConvValueSigned (ADC16_INSTANCE1, ADC16_CHN_GROUP_0) << 1);
               uint32_t  sample_pos_chn;
  
               // sample positive input and calculate the value of negative pad
               adc_input[channel].chnConfig.diffConvEnable = false;
-              ADC16_DRV_ConfigConvChn (ADC16_INSTANCE, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);   // trigger the conversion
-              ADC16_DRV_WaitConvDone  (ADC16_INSTANCE, ADC16_CHN_GROUP_0);                                  // Wait for the conversion to be done
+              ADC16_DRV_ConfigConvChn (ADC16_INSTANCE1, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);   // trigger the conversion
+              ADC16_DRV_WaitConvDone  (ADC16_INSTANCE1, ADC16_CHN_GROUP_0);                                  // Wait for the conversion to be done
               adc_input[channel].chnConfig.diffConvEnable = true;
  
-              sample_pos_chn = ADC16_DRV_GetConvValueRAW (ADC16_INSTANCE, ADC16_CHN_GROUP_0);               // get value of positive channel
+              sample_pos_chn = ADC16_DRV_GetConvValueRAW (ADC16_INSTANCE1, ADC16_CHN_GROUP_0);               // get value of positive channel
               adc_input[channel].sample = sample_pos_chn - sample_diff_chn;                                 // calculate differential value
        }
        else
        {
-              adc_input[channel].sample = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE, ADC16_CHN_GROUP_0);     // get  value for single ended channel
+              adc_input[channel].sample = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE1, ADC16_CHN_GROUP_0);     // get  value for single ended channel
        }
  
        ADC_convert_sample_to_value (&adc_input[channel]);
@@ -191,8 +202,10 @@ void ADC_convert_sample_to_value (ADC_INTPUT_t *adc_intput)
 }
 
 
-void calibrateParams(void)
+void calibrateParams (uint32_t adc16_interface)
 {
+  assert (adc16_interface <= ADC16_INSTANCE1);
+  
 #if FSL_FEATURE_ADC16_HAS_HW_AVERAGE
     adc16_hw_average_config_t userHwAverageConfig;
 #endif
@@ -200,8 +213,8 @@ void calibrateParams(void)
 #if FSL_FEATURE_ADC16_HAS_CALIBRATION
     // Auto calibration
     adc16_calibration_param_t adcCalibraitionParam;
-    ADC16_DRV_GetAutoCalibrationParam(ADC16_INSTANCE, &adcCalibraitionParam);
-    ADC16_DRV_SetCalibrationParam(ADC16_INSTANCE, &adcCalibraitionParam);
+    ADC16_DRV_GetAutoCalibrationParam(adc16_interface, &adcCalibraitionParam);
+    ADC16_DRV_SetCalibrationParam(adc16_interface, &adcCalibraitionParam);
 #endif // FSL_FEATURE_ADC16_HAS_CALIBRATION.
 
 
@@ -209,7 +222,7 @@ void calibrateParams(void)
     // Use hardware average to increase stability of the measurement.
     userHwAverageConfig.hwAverageEnable = true;
     userHwAverageConfig.hwAverageCountMode = kAdc16HwAverageCountOf32;
-    ADC16_DRV_ConfigHwAverage(ADC16_INSTANCE, &userHwAverageConfig);
+    ADC16_DRV_ConfigHwAverage(adc16_interface, &userHwAverageConfig);
 #endif // FSL_FEATURE_ADC16_HAS_HW_AVERAGE
 
 }
@@ -220,14 +233,14 @@ uint32_t ADC_get_value (KADC_CHANNELS_t channel)
 	return adc_input[channel].value;
 }
 
-void MQX_ADC1_IRQHandler (void)
+void MQX_ADC0_IRQHandler (void)
 {
-	ADC_Type *base  = g_adcBase[ADC16_INSTANCE];
-	uint32_t sample;// = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE, ADC16_CHN_GROUP_0);     // get  value for single ended channel
+	ADC_Type *base  = g_adcBase[ADC16_INSTANCE0];
+	uint32_t sample;// = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE1, ADC16_CHN_GROUP_0);     // get  value for single ended channel
 
 	GPIO_DRV_SetPinOutput (POWER_DISCHARGE_ENABLE);
 
-	sample = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE, ADC16_CHN_GROUP_0);     // get  value for single ended channel
+	sample = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE0, ADC16_CHN_GROUP_0);     // get  value for single ended channel
 
 	if (sample < adc_irq_th.min_value)
 	{

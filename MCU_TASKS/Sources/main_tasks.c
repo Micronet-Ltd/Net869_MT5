@@ -253,6 +253,32 @@ void Main_task( uint32_t initial_data ) {
 
     while ( 1 ) 
     {
+
+    	{
+    		uint8_t Br, R,G,B;
+    		R = 0xff;
+    		G = 0xff;
+    		B = 0xff;
+    		Br = 0x05;
+    		FPGA_write_led_status (LED_LEFT  , Br, R, G, B);
+    		_time_delay (10);
+    		FPGA_write_led_status (LED_RIGHT , Br, R, G, B);
+    		_time_delay (10);
+//    		FPGA_write_led_status (LED_MIDDLE, Br, R, G, B);
+    		_time_delay (10);
+    	}
+
+
+    	{
+    		uint8_t Br, R,G,B;
+    		Br = R = G = B = 0;
+    		FPGA_read_led_status (LED_LEFT  , &Br, &R, &G, &B);
+    		_time_delay (10);
+    		FPGA_read_led_status (LED_RIGHT , &Br, &R, &G, &B);
+    		_time_delay (10);
+    		FPGA_read_led_status (LED_MIDDLE, &Br, &R, &G, &B);
+    		_time_delay (10);
+    	}
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
 #ifdef DEBUG_BLINKING_RIGHT_LED
         FPGA_write_led_status(LED_RIGHT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */

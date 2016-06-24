@@ -62,6 +62,9 @@ power_manager_error_code_t rtos_pm_callback(power_manager_notify_struct_t * noti
 clock_manager_error_code_t rtos_cm_callback(clock_notify_struct_t *notify, void* callbackData);
 extern void MQX_PORTA_IRQHandler(void);
 
+void set_lptm (uint32_t time_us);
+void MQX_LPTMR_IRQHandler (void);
+
 typedef enum demo_power_modes {
     kDemoMin  = 0,
     kDemoRun,           // Normal RUN mode
@@ -575,8 +578,10 @@ void Power_MGM_task (uint32_t initial_data )
 		ADC_sample_input (i);
 	}
 
-	ADC_Set_IRQ_TH (kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
-	ADC_Compare_enable (kADC_POWER_IN);
+//	ADC_Set_IRQ_TH (kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
+        ADC_Set_IRQ_TH (kADC_POWER_IN, 2000, 3000);        
+	ADC_Compare_enable (kADC_POWER_IN_ISR);
+        set_lptm (0);
 
     CLOCK_SYS_Init(g_defaultClockConfigurations,
                    CLOCK_NUMBER_OF_CONFIGURATIONS,
@@ -606,14 +611,14 @@ void Power_MGM_task (uint32_t initial_data )
 
 	while (1)
 	{
-		ADC_Compare_disable ();
+//		ADC_Compare_disable ();
 
 		if (adc_input < kADC_POWER_IN)
 			GPIO_sample_all (adc_input);
 		else
 			ADC_sample_input (adc_input);
 			
-		if (++adc_input >= kADC_CHANNELS)
+		if (++adc_input >= kADC_CHANNELS-1)
 			adc_input = kADC_ANALOG_IN1;
 
 #if 0
@@ -653,7 +658,7 @@ void Power_MGM_task (uint32_t initial_data )
 		}
 #endif
 		
-		ADC_Compare_enable (kADC_POWER_IN);	//kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
+//		ADC_Compare_enable (kADC_POWER_IN_ISR);	//kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
 
 #ifdef SUPERCAP_CHRG_DISCHRG_ENABLE
         Supercap_charge_state    ();
@@ -733,4 +738,77 @@ void get_ignition_threshold(uint32_t * p_ignition_threshold)
 void set_ignition_threshold(uint32_t ignition_threshold)
 {
 	ignition_threshold_g = ignition_threshold;
+}
+
+
+#define LPTMR_INSTANCE     0U
+void set_lptm (uint32_t time_us)
+{
+    LPTMR_Type * base = g_lptmrBase[0];
+    uint32_t tick_count = 0x800;
+    lptmr_state_t lptmrState;
+    
+    lptmr_user_config_t lptmrUserConfig =
+    {
+        .timerMode            = kLptmrTimerModeTimeCounter, /*! Use LPTMR in Time Counter mode */
+        .freeRunningEnable    = false, /*! When hit compare value, set counter back to zero */
+        .prescalerEnable      = false, /*! bypass prescaler */
+        .prescalerClockSource = kClockLptmrSrcLpoClk, /*! use 1kHz Low Power Clock */
+        .isInterruptEnabled   = true
+    };
+
+#if 0
+    CLOCK_SYS_EnableLptmrClock (LPTMR_INSTANCE);        // Enable clock for lptmr
+    LPTMR_WR_CSR (base, 0);                             // Disable lptmr and reset lptmr logic
+    LPTMR_WR_PSR (base, 5);                             // based on LPTR code example
+    LPTMR_WR_CMR (base, tick_count - 1);                // set number of pulses
+    
+    LPTMR_BWR_CSR_TIE(base, true);                      // enable interrupt
+    LPTMR_BWR_CSR_TEN(base, true);                      // start
+    
+    
+      
+#else
+    
+  LPTMR_DRV_Init(LPTMR_INSTANCE, &lptmrState, &lptmrUserConfig);      // Initialize LPTMR
+//  LPTMR_DRV_SetTimerPeriodUs(LPTMR_INSTANCE,tick_count);                    // Set the timer period for 1 second   
+    LPTMR_WR_CMR (base, tick_count - 1);                // set number of pulses  
+//  LPTMR_DRV_InstallCallback(LPTMR_INSTANCE,MQX_LPTMR_IRQHandler);       // Specify the IRQ handler      
+    LPTMR_WR_PSR (base, 0);                             // based on LPTR code example  
+    LPTMR_DRV_Start(LPTMR_INSTANCE);
+#endif    
+  
+    NVIC_SetPriority(LPTMR0_IRQn, 6U);
+    OSA_InstallIntHandler(LPTMR0_IRQn, MQX_LPTMR_IRQHandler);  
+}
+
+#include "fsl_adc16_driver.h"
+#include "fsl_adc16_hal.h"
+
+void MQX_LPTMR_IRQHandler (void)
+{
+ LPTMR_Type *lptmr_base = g_lptmrBase[0];
+ ADC_Type   *adc_base = g_adcBase[0];
+ uint32_t sample;
+
+  LPTMR_WR_CSR (lptmr_base, 0);                             // Disable lptmr and reset lptmr logic 
+//  ADC_Compare_enable (kADC_POWER_IN_ISR);
+//  GPIO_DRV_TogglePinOutput (POWER_DISCHARGE_ENABLE);
+  
+//    sample = ADC16_DRV_GetConvValueRAW(0, 0);     // get  value for single ended channel  
+    sample = (uint16_t)(ADC_BRD_R_D(adc_base, 0) );    
+
+    if (sample < 1900)
+      GPIO_DRV_TogglePinOutput (POWER_DISCHARGE_ENABLE);
+ //     GPIO_DRV_SetPinOutput (POWER_DISCHARGE_ENABLE);
+//    else if (sample > 2900)
+ //    else
+//     GPIO_DRV_ClearPinOutput (POWER_DISCHARGE_ENABLE);
+
+    
+    
+    ADC_WR_SC1  (adc_base, 0, 3);                         //  trigger ADC
+  
+    LPTMR_BWR_CSR_TIE(lptmr_base, true);                      // enable interrupt
+    LPTMR_BWR_CSR_TEN(lptmr_base, true);                      // start
 }
