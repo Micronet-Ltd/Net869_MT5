@@ -41,8 +41,8 @@
 #define CABLE_TYPE_MIN_VOLTAGE		(CABLE_TYPE_VOLTAGE *  90/100)
 #define CABLE_TYPE_MAX_VOLTAGE		(CABLE_TYPE_VOLTAGE * 110/100)
 
-#define SUPERCAP_MIN_TH		4500//5000
-#define SUPERCAP_MAX_TH		4800//5300
+#define SUPERCAP_MIN_TH		5000//4500//5000
+#define SUPERCAP_MAX_TH		5300//4800//5300
 
 /* The LPTMR instance used for LPTMR */
 #define PM_RTOS_DEMO_LPTMR_FUNC_INSTANCE                0
@@ -670,7 +670,7 @@ void Power_MGM_task (uint32_t initial_data )
 		_time_get(&time);
         time_diff = ((time.SECONDS * 1000) +  time.MILLISECONDS) - current_time;
 		current_time += time_diff;
-        time_diff = 100;
+        //time_diff = 100;
         
         Device_update_state(&time_diff);
 	}
