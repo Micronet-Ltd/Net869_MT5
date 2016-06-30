@@ -118,7 +118,7 @@ static void CDC4_resv ( cdc_struct_t *handle );
 
 static bool CDC_Queue_init (uint8_t cdcNum, uint8_t* memAdr, uint32_t ElemCount, uint32_t queueElemSize);
 
-static bool CDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle );
+static bool CDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle, uint8_t cdcNum);
 
 
 /*****************************************************************************
@@ -744,10 +744,10 @@ uint8_t USB_App_Class_Callback
 				phandle->send_ready = TRUE;
 				phandle->SendPacketsCompl++;
 			}
-			else {
+			/*else {
 				if (NULL != phandle->pSendElem)
-					printf ("stop1\n");
-			}
+					//printf ("stop1\n");
+			}*/
         }
 		else {
 			printf("%s: EvComp5 %x\n\n", __func__, (uint32_t)(phandle->pSendElem) );
@@ -809,7 +809,7 @@ void Usb_task(uint32_t arg)
                  ( TRUE == g_app_composite_device.cdc_vcom[i].start_transactions ) && 
                  g_app_composite_device.cdc_vcom[i].send_ready ) {
 
-                if (!CDC_SendData (g_app_composite_device.cdc_vcom[i].cdc_handle, ((g_app_composite_device.cdc_vcom) + i)) ) {
+                if (!CDC_SendData (g_app_composite_device.cdc_vcom[i].cdc_handle, ((g_app_composite_device.cdc_vcom) + i), (uint8_t) i ) ) {
                     printf("%s:WARN cdc_%d\n", __func__, g_app_composite_device.cdc_vcom[i].portNum);
                 }
             }
@@ -1102,41 +1102,54 @@ static bool CDC_Queue_init (uint8_t cdcNum, uint8_t* memAdr, uint32_t ElemCount,
     return true;
 }
 
-bool CDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle ) {
+bool CDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle, uint8_t cdcNum) {
 
     if (NULL == phandle) {
-        printf("%s: Error param\n", __func__);
+        printf("%s: Error param, for cdcNum: %d\n", __func__, cdcNum);
         return false;
     }
 
     if (NULL != phandle->pSendElem) {
         if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)(phandle->pSendElem))) {
-            printf("%s: Error add to free queue port%d mem %x\n", phandle->portNum, (uint32_t)(phandle->pSendElem));
+            printf("%s: Error add to free queue port%d mem %x, for cdcNum: %d\n", phandle->portNum, (uint32_t)(phandle->pSendElem), cdcNum);
         }
         phandle->pSendElem = NULL;
     }
 
     phandle->pSendElem = (pcdc_mic_queue_element_t)_queue_dequeue(&(phandle->qs_OutInProcMsg));
     if (NULL != phandle->pSendElem) {
+    	// this is the real fix for a control channel that stops being able to transmit messages
+        phandle->send_ready = false;
         if ( USB_OK != USB_Class_CDC_Send_Data(handle, phandle->in_endpoint, phandle->pSendElem->data_buff, phandle->pSendElem->send_size ) ) {
-            printf("%s: Error send USB port_%d\n", __func__, phandle->portNum );
+            printf("%s: Error send USB port_%d, for cdcNum: %d\n", __func__, phandle->portNum, cdcNum );
             if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)phandle->pSendElem)) {
-                printf("%s: Error add to free queue port%d mem %x\n", phandle->portNum, (uint32_t)(phandle->pSendElem));
+                printf("%s: Error add to free queue port%d mem %x, for cdcNum: %d\n", phandle->portNum, (uint32_t)(phandle->pSendElem), cdcNum);
             }
             phandle->pSendElem = NULL;
             phandle->send_ready = true;
-			//printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
+            //printf ("%s: Set sendR T P_%d, for cdcNum: %d, sendPackets: %d, compl: %d\n", __func__, phandle->portNum, cdcNum, phandle->sendPackets, phandle->SendPacketsCompl);
             return false;
         }
-        phandle->send_ready = false;
-		//printf ("%s: Set sendR F P_%d\n", __func__, phandle->portNum);
+        
+        
         phandle->sendPackets++;
+        if (phandle->sendPackets <= phandle->SendPacketsCompl) {
+        	// this is the race condition.  The packet can be sent prior to getting to this point in the code
+        	// which is why we need to set the send_ready flag to false prior to attempting to send the packet
+        	// instead of after attempting to send the message.
+            printf ("%s: packet already sent T P_%d for cdcNum: %d, sendPackets: %d, compl: %d, %d (%d)\n", __func__, phandle->portNum, cdcNum, phandle->sendPackets, phandle->SendPacketsCompl);
+        }
+        
+        //if (cdcNum != 1) printf ("%s: Set sendR F P_%d for cdcNum: %d, sendPackets: %d, compl: %d, %d (%d)\n", __func__, phandle->portNum, cdcNum, phandle->sendPackets, phandle->SendPacketsCompl,
+        //                         pAccHandle->sendPackets, pAccHandle->SendPacketsCompl);
     }
 
-	if (false == phandle->send_ready && NULL == phandle->pSendElem ) {
-        phandle->pSendElem = NULL;
-		//printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
-	}
+    if (false == phandle->send_ready && NULL == phandle->pSendElem ) {
+    		// there is no reason to set the pSendElem to NULL as it is already null
+    		// this is however what helped me find the race condition
+            //phandle->pSendElem = NULL;
+            printf ("%s: Set sendR T P_%d, for cdcNum: %d, pSendElem == NULL, sendP: %d, sendPCompl: %d, %d (%d)\n", __func__, phandle->portNum, cdcNum, phandle->sendPackets, phandle->SendPacketsCompl);
+    }
 
     return true;
 }
