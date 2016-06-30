@@ -95,6 +95,8 @@ typedef struct queue_struct
      */
     uint16_t                           MAX;
 
+    uint32_t                           ATOMIC;
+
 } QUEUE_STRUCT, * QUEUE_STRUCT_PTR;
 
 
