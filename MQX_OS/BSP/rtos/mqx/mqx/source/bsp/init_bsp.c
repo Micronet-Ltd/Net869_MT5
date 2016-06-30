@@ -65,7 +65,7 @@ int _bsp_MQX_tick_timer_init (void);
         .PARITY_MODE         = kNioSerialParityDisabled,
         .STOPBIT_COUNT       = kNioSerialOneStopBit,
         .BITCOUNT_PERCHAR    = 8,
-        .RXTX_PRIOR          = 4,
+        .RXTX_PRIOR          = 0xCU,
         .MODULE              = NIO_SERIAL_DEF_MODULE,
     /* Check whether individual clock source for debug peripheral is defined */
     #if defined(BOARD_USE_UART) && defined(BOARD_UART_CLOCK_SOURCE)
