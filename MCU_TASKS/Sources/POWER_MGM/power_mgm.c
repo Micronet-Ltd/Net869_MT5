@@ -576,11 +576,11 @@ void Power_MGM_task (uint32_t initial_data )
 		ADC_sample_input (i);
 	}
 
-	ADC_Set_IRQ_TH (kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
-    //ADC_Set_IRQ_TH (kADC_POWER_IN_ISR, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
+	//ADC_Set_IRQ_TH (kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
+    ADC_Set_IRQ_TH (kADC_POWER_IN_ISR, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
     //ADC_Set_IRQ_TH (kADC_POWER_IN, 2000, 3000);
-	ADC_Compare_enable (kADC_POWER_IN);
-    //ADC_Compare_enable (kADC_POWER_IN_ISR);
+	//ADC_Compare_enable (kADC_POWER_IN);
+    ADC_Compare_enable (kADC_POWER_IN_ISR);
 
     CLOCK_SYS_Init(g_defaultClockConfigurations,
                    CLOCK_NUMBER_OF_CONFIGURATIONS,
@@ -610,7 +610,7 @@ void Power_MGM_task (uint32_t initial_data )
 
 	while (1)
 	{
-		ADC_Compare_disable (kADC_POWER_IN);
+		//ADC_Compare_disable (kADC_POWER_IN);
 
 		if (adc_input < kADC_POWER_IN)
 			GPIO_sample_all (adc_input);
@@ -659,7 +659,7 @@ void Power_MGM_task (uint32_t initial_data )
 		}
 #endif
 		
-		ADC_Compare_enable (kADC_POWER_IN);	//kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
+		//ADC_Compare_enable (kADC_POWER_IN);	//kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
 
 #ifdef SUPERCAP_CHRG_DISCHRG_ENABLE
         Supercap_charge_state    ();

@@ -52,20 +52,21 @@ void ADC_init (void)
 {
 	adc_irq_th.max_value = 0;
 	adc_irq_th.min_value = 0;
-
+    
     // Initialization ADC for 16bit resolution.
     // interrupt mode and HW trigger disabled,
     // normal convert speed, VREFH/L as reference,
     // disable continuous convert mode.    
     ADC16_DRV_StructInitUserConfigDefault (&adcConfig);  
-    adcConfig.longSampleTimeEnable = false;
+    adcConfig.longSampleTimeEnable = true;
     adcConfig.highSpeedEnable = true;
-    adcConfig.continuousConvEnable = true;
-    ADC16_DRV_Init (ADC16_INSTANCE1, &adcConfig);         
+    adcConfig.clkDividerMode = kAdc16ClkDividerOf2;
+    ADC16_DRV_Init (ADC16_INSTANCE1, &adcConfig);
     
     adcConfig.longSampleTimeEnable = false;
     adcConfig.highSpeedEnable = true;
     adcConfig.continuousConvEnable = true;
+    adcConfig.clkDividerMode = kAdc16ClkDividerOf2;
     ADC16_DRV_Init (ADC16_INSTANCE0, &adcConfig);
 
 	// initalize all channels
@@ -84,10 +85,14 @@ void ADC_init (void)
 	ADC_channel_init (&adc_input[kADC_TEMPERATURE], ADC_TEMPERATURE,     0,       1,      1,    false);
 	ADC_channel_init (&adc_input[kADC_CABLE_TYPE ], ADC_CABLE_TYPE ,     0,       1,      1,    false);
     
-    ADC_channel_init (&adc_input[kADC_POWER_IN_ISR],ADC_POWER_IN_ISR,    0,     110,     10,    false);
+    ADC_channel_init (&adc_input[kADC_POWER_IN_ISR],ADC_POWER_IN_ISR,    0,     105,      5,    false);
 
-    NVIC_SetPriority(ADC1_IRQn, 4U);
-    OSA_InstallIntHandler(ADC1_IRQn, MQX_ADC0_IRQHandler);
+    //NVIC_SetPriority(ADC1_IRQn, 4U);
+    //OSA_InstallIntHandler(ADC1_IRQn, MQX_ADC0_IRQHandler);
+    //_int_install_kernel_isr(ADC1_IRQn, MQX_ADC0_IRQHandler); 
+    //OSA_InstallIntHandler(ADC0_IRQn, MQX_ADC0_IRQHandler);
+    NVIC_SetPriority(ADC0_IRQn, 4U);
+    _int_install_kernel_isr(ADC0_IRQn, MQX_ADC0_IRQHandler); 
 
 	calibrateParams (ADC16_INSTANCE0);
     calibrateParams (ADC16_INSTANCE1);
@@ -95,8 +100,8 @@ void ADC_init (void)
 
 void ADC_Set_IRQ_TH (KADC_CHANNELS_t channel, uint16_t low_threshold, uint16_t high_threshold)
 {
-	//ADC_Type *base = g_adcBase[ADC16_INSTANCE0];
-    ADC_Type *base = g_adcBase[ADC16_INSTANCE1];
+	ADC_Type *base = g_adcBase[ADC16_INSTANCE0];
+    //ADC_Type *base = g_adcBase[ADC16_INSTANCE1];
 	uint32_t val;
 
 	val  = low_threshold;
@@ -122,23 +127,23 @@ void ADC_Set_IRQ_TH (KADC_CHANNELS_t channel, uint16_t low_threshold, uint16_t h
 
 void ADC_Compare_enable (KADC_CHANNELS_t channel)
 {
-	//ADC_Type *base = g_adcBase[ADC16_INSTANCE0];
-    ADC_Type *base = g_adcBase[ADC16_INSTANCE1];
+	ADC_Type *base = g_adcBase[ADC16_INSTANCE0];
+    //ADC_Type *base = g_adcBase[ADC16_INSTANCE1];
 
 	ADC_WR_SC2_ACFE  (base, 1);
     ADC_WR_SC1_AIEN (base, ADC16_CHN_GROUP_0, 1);
 
 	// trigger the conversion with IRQ enable
 	adc_input[channel].chnConfig.convCompletedIntEnable = true;
-	//ADC16_DRV_ConfigConvChn (ADC16_INSTANCE0, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);
-    ADC16_DRV_ConfigConvChn (ADC16_INSTANCE1, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);
+	ADC16_DRV_ConfigConvChn (ADC16_INSTANCE0, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);
+    //ADC16_DRV_ConfigConvChn (ADC16_INSTANCE1, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);
 	//adc_input[channel].chnConfig.convCompletedIntEnable = true;
 }
 
 void ADC_Compare_disable (KADC_CHANNELS_t channel)
 {
-	//ADC_Type *base = g_adcBase[ADC16_INSTANCE0];
-    ADC_Type *base = g_adcBase[ADC16_INSTANCE1];
+	ADC_Type *base = g_adcBase[ADC16_INSTANCE0];
+    //ADC_Type *base = g_adcBase[ADC16_INSTANCE1];
 
 	ADC_WR_SC2_ACFE (base, 0);
 	ADC_WR_SC1_AIEN (base, ADC16_CHN_GROUP_0, 0);
@@ -240,14 +245,15 @@ uint32_t ADC_get_value (KADC_CHANNELS_t channel)
 
 void MQX_ADC0_IRQHandler (void)
 {
-	//ADC_Type *base  = g_adcBase[ADC16_INSTANCE0];
-    ADC_Type *base  = g_adcBase[ADC16_INSTANCE1];
+	ADC_Type *base  = g_adcBase[ADC16_INSTANCE0];
+    //ADC_Type *base  = g_adcBase[ADC16_INSTANCE1];
 	uint32_t sample;// = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE0, ADC16_CHN_GROUP_0);     // get  value for single ended channel
     
     GPIO_DRV_SetPinOutput (POWER_DISCHARGE_ENABLE);
-	//sample = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE0, ADC16_CHN_GROUP_0);     // get  value for single ended channel
-    sample = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE1, ADC16_CHN_GROUP_0);     // get  value for single ended channel
-
+	sample = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE0, ADC16_CHN_GROUP_0);     // get  value for single ended channel
+    //sample = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE1, ADC16_CHN_GROUP_0);     // get  value for single ended channel
+    adc_input[kADC_POWER_IN].sample = sample;
+    ADC_convert_sample_to_value (&adc_input[kADC_POWER_IN]);
 	if (sample < adc_irq_th.min_value)
 	{
         
