@@ -76,28 +76,28 @@ void Main_task( uint32_t initial_data ) {
 #endif
 
     // board Initialization
-    hardware_init();
+    //hardware_init();
     OSA_Init();
     GPIO_Config();
     ADC_init ();
 	
 	
 
-	NVIC_SetPriority(PORTA_IRQn, 6U);
+	NVIC_SetPriority(PORTA_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
-	NVIC_SetPriority(PORTC_IRQn, 6U);
+	NVIC_SetPriority(PORTC_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 
-	NVIC_SetPriority(PORTB_IRQn, 6U);
+	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
 //    // I2C0 Initialization
-//    NVIC_SetPriority(I2C0_IRQn, 6U);
+//    NVIC_SetPriority(I2C0_IRQn, I2C_NVIC_IRQ_Priority);
 //    OSA_InstallIntHandler(I2C0_IRQn, MQX_I2C0_IRQHandler);
 //    I2C_DRV_MasterInit(I2C0_IDX, &i2c0_master);
 //
 //    // I2C1 Initialization
-//	NVIC_SetPriority(I2C1_IRQn, 6U);
+//	NVIC_SetPriority(I2C1_IRQn, I2C_NVIC_IRQ_Priority);
 //	OSA_InstallIntHandler(I2C1_IRQn, MQX_I2C1_IRQHandler);
 //	I2C_DRV_MasterInit(I2C1_IDX, &i2c1_master);
 
@@ -240,7 +240,7 @@ void Main_task( uint32_t initial_data ) {
     }
 
     configure_otg_for_host_or_device();
-    NVIC_SetPriority(PORTE_IRQn, 6U);
+    NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
     OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
 
     _event_create ("event.EXTERNAL_GPIOS");

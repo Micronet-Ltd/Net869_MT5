@@ -218,6 +218,16 @@ bool SetUSBWriteBuffer(pcdc_mic_queue_element_t pcdcBuff, uint8_t cdcport) {
     return true;
 }
 
+uint32_t GetUSBFreeBufferCount (uint8_t cdcport) {
+	
+	if (COMPOSITE_CFG_MAX <= cdcport) {
+        printf("%s:ERROR the USB port %d wrong\n", __func__, cdcport);
+        return NULL; 
+    }
+	
+	return (uint32_t)(_queue_get_size(&(g_app_composite_device.cdc_vcom[cdcport].qs_OutFreeMsg)));
+}
+
 /*****************************************************************************
  * Local Functions
  *****************************************************************************/
