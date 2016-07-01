@@ -41,8 +41,8 @@
 #define CABLE_TYPE_MIN_VOLTAGE		(CABLE_TYPE_VOLTAGE *  90/100)
 #define CABLE_TYPE_MAX_VOLTAGE		(CABLE_TYPE_VOLTAGE * 110/100)
 
-#define SUPERCAP_MIN_TH		5000//4500//5000
-#define SUPERCAP_MAX_TH		5300//4800//5300
+#define SUPERCAP_MIN_TH		5000//4500
+#define SUPERCAP_MAX_TH		5300//4800
 
 /* The LPTMR instance used for LPTMR */
 #define PM_RTOS_DEMO_LPTMR_FUNC_INSTANCE                0
@@ -541,22 +541,21 @@ void switch_power_mode(power_manager_modes_t mode)
 
 void Power_MGM_task (uint32_t initial_data )
 {
-	uint64_t current_time          = 0;
-	uint64_t temperature_last_time = 0;
-	uint64_t ignition_last_time    = 0;
-	uint64_t ext_gpio_last_time    = 0;
-	uint64_t cable_type_last_time  = 0;
-	uint32_t cable_type_voltage    = 0;
 	KADC_CHANNELS_t adc_input = kADC_ANALOG_IN1;
-    uint32_t time_diff = 0;
 	KADC_CHANNELS_t i = kADC_ANALOG_IN1;
-	TIME_STRUCT time;
     uint32_t ret;
     uint8_t mode;
     uint8_t cmConfigMode = CLOCK_RUN;
     uint32_t freq = 0;
+    MQX_TICK_STRUCT ticks_now;
+    MQX_TICK_STRUCT ticks_prev;
+    int32_t time_diff_milli = 0;
+    uint32_t time_diff_milli_u = 0;
+    int32_t time_diff_micro = 0;
+    bool time_diff_overflow = false;
 
 	_mqx_uint event_result;
+    _time_get_elapsed_ticks_fast(&ticks_prev);
 
 	event_result = _event_create("event.PowerUpEvent");
 	if(MQX_OK != event_result){
@@ -613,66 +612,37 @@ void Power_MGM_task (uint32_t initial_data )
 		//ADC_Compare_disable (kADC_POWER_IN);
 
 		if (adc_input < kADC_POWER_IN)
+        {
 			GPIO_sample_all (adc_input);
+        }
 		else
+        {
 			ADC_sample_input (adc_input);
+        }
 			
 		if (++adc_input >= (kADC_CHANNELS - 1))
         {
 			adc_input = kADC_ANALOG_IN1;
         }
-
-#if 0
-		ADC_sample_input (kADC_POWER_IN);
-		ADC_sample_input (kADC_POWER_VCAP);
-
-		if ((current_time - ignition_last_time) >= IGNITION_TIME_DELAY)
-		{
-			ignition_last_time = current_time;
-			ADC_sample_input (kADC_ANALOG_IN1);
-		}
-
-		if ((current_time - temperature_last_time) >= TEMPERATURE_TIME_DELAY)
-		{
-			temperature_last_time = current_time;
-			ADC_sample_input (kADC_TEMPERATURE);
-		}
-
-		// check cable type - report if not detected (tamper) or not as expected
-		if ((current_time - cable_type_last_time) >= CABLE_TYPE_TIME_DELAY)
-		{
-			cable_type_last_time = current_time;
-			ADC_sample_input (kADC_CABLE_TYPE);
-
-			cable_type_voltage = ADC_get_value(kADC_CABLE_TYPE);
-			if ((cable_type_voltage < CABLE_TYPE_MIN_VOLTAGE) ||
-				(cable_type_voltage > CABLE_TYPE_MAX_VOLTAGE) )
-			{
-				//MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
-			}
-		}
-
-		if ((current_time - ext_gpio_last_time) >= EXT_GPIO_TIME_DELAY)
-		{
-			ext_gpio_last_time = current_time;
-			GPIO_sample_all ();
-		}
-#endif
 		
-		//ADC_Compare_enable (kADC_POWER_IN);	//kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
 
 #ifdef SUPERCAP_CHRG_DISCHRG_ENABLE
         Supercap_charge_state    ();
         check_supercap_voltage   ();
 #endif
 		_time_delay (POWER_MGM_TIME_DELAY);
-
-		_time_get(&time);
-        time_diff = ((time.SECONDS * 1000) +  time.MILLISECONDS) - current_time;
-		current_time += time_diff;
-        //time_diff = 100;
+     
+        _time_get_elapsed_ticks_fast(&ticks_now);
+        time_diff_milli = _time_diff_milliseconds(&ticks_now, &ticks_prev, &time_diff_overflow);
+        _time_get_elapsed_ticks_fast(&ticks_prev);
         
-        Device_update_state(&time_diff);
+        if (time_diff_milli < 0)
+        {
+            printf("Power_MGM_task: timediff -ve!");
+        }
+        time_diff_milli_u = (uint32_t) time_diff_milli;
+        
+        Device_update_state(&time_diff_milli_u);
 	}
 }
 
