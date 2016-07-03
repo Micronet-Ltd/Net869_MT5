@@ -89,6 +89,54 @@
                     <F N="MCU_TASKS/Sources/ADC/ADC.c"/>
                     <F N="MCU_TASKS/Sources/ADC/ADC.h"/>
                 </Folder>
+                <Folder Name="C90TFS">
+                    <Folder Name="drvsrc">
+                        <Folder Name="include">
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/include/FTFx_KX_flash_config.h"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/include/SSD_FTFx.h"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/include/SSD_FTFx_Common.h"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/include/SSD_FTFx_Internal.h"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/include/SSD_Types.h"/>
+                        </Folder>
+                        <Folder Name="source">
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/CopyToRam.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/DEFlashPartition.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/DFlashGetProtection.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/DFlashSetProtection.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/EEEWrite.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/EERAMGetProtection.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/EERAMSetProtection.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashCheckSum.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashCommandSequence.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashEraseAllBlock.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashEraseAllBlockUnsecure.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashEraseBlock.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashEraseResume.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashEraseSector.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashEraseSuspend.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashGetSecurityState.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashInit.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashProgram.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashProgramCheck.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashProgramOnce.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashProgramSection.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashReadOnce.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashReadResource.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashSecurityBypass.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashVerifyAllBlock.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashVerifyBlock.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/FlashVerifySection.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/PFlashFacGetSAProtection.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/PFlashFacGetXAProtection.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/PFlashGetProtection.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/PFlashSetProtection.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/PFlashSwap.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/PFlashSwapCtl.c"/>
+                            <F N="MCU_TASKS/Sources/C90TFS/drvsrc/source/SetEEEEnable.c"/>
+                        </Folder>
+                    </Folder>
+                    <F N="MCU_TASKS/Sources/C90TFS/FSL_eNVM_FTFx_UM.pdf"/>
+                </Folder>
                 <Folder Name="EXT_GPIOS">
                     <F N="MCU_TASKS/Sources/EXT_GPIOS/EXT_GPIOS.c"/>
                     <F N="MCU_TASKS/Sources/EXT_GPIOS/EXT_GPIOS.h"/>
@@ -97,6 +145,8 @@
                     <F N="MCU_TASKS/Sources/FlexCAN/FlexCanDevice.c"/>
                     <F N="MCU_TASKS/Sources/FlexCAN/FlexCanDevice.h"/>
                     <F N="MCU_TASKS/Sources/FlexCAN/FlexCanDevice_IRQ.c"/>
+                    <F N="MCU_TASKS/Sources/FlexCAN/FlexCanMsg_queue.c"/>
+                    <F N="MCU_TASKS/Sources/FlexCAN/FlexCanMsg_queue.h"/>
                 </Folder>
                 <Folder Name="FPGA_API">
                     <F N="MCU_TASKS/Sources/FPGA_API/fpga_API.c"/>
@@ -117,6 +167,15 @@
                 <Folder Name="rtc">
                     <F N="MCU_TASKS/Sources/rtc/rtc.c"/>
                     <F N="MCU_TASKS/Sources/rtc/rtc.h"/>
+                </Folder>
+                <Folder Name="Update">
+                    <Folder Name="SRC">
+                        <F N="MCU_TASKS/Sources/Update/SRC/flash_funcs.c"/>
+                        <F N="MCU_TASKS/Sources/Update/SRC/flash_funcs.h"/>
+                        <F N="MCU_TASKS/Sources/Update/SRC/update_exec.c"/>
+                        <F N="MCU_TASKS/Sources/Update/SRC/updater.c"/>
+                        <F N="MCU_TASKS/Sources/Update/SRC/updater.h"/>
+                    </Folder>
                 </Folder>
                 <Folder Name="USB">
                     <F N="MCU_TASKS/Sources/USB/command.c"/>
