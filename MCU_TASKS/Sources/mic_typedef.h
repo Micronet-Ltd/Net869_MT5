@@ -29,6 +29,7 @@ typedef struct cdc_mic_queue_element_struct {
 typedef enum {
     //USB_NVIC_IRQ_Priority = (BSP_SYSTIMER_ISR_PRIOR + 2),
     CAN_NVIC_IRQ_Priority = 0x03U,
+    ADC_NVIC_IRQ_Priority = 0x04U,
     ACC_NVIC_IRQ_Priority = 0x0CU,
     I2C_NVIC_IRQ_Priority = 0x0CU,
     PORT_NVIC_IRQ_Priority = 0x0CU,

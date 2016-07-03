@@ -1,9 +1,15 @@
+#include <mqx.h>
+#include <bsp.h>
+#include <message.h>
+#include <lwmsgq.h>
+
+#include "fsl_adc16_driver.h"
+#include "fsl_adc16_hal.h"
 
 #include "ADC.h"
 #include "gpio_pins.h"
 
-#include "fsl_adc16_driver.h"
-#include "fsl_adc16_hal.h"
+#include "mic_typedef.h"
 
 #define ADC16_INSTANCE0              0
 #define ADC16_INSTANCE1              1
@@ -93,7 +99,7 @@ void ADC_init (void)
     
     ADC_channel_init (&adc_input[kADC_POWER_IN_ISR],ADC_POWER_IN_ISR,    0,     105,      5,    false);
 
-    NVIC_SetPriority(ADC0_IRQn, 4U);
+    NVIC_SetPriority(ADC0_IRQn, ADC_NVIC_IRQ_Priority);
     _int_install_kernel_isr(ADC0_IRQn, MQX_ADC0_IRQHandler); 
 
 	calibrateParams (ADC16_INSTANCE0);
