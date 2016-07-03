@@ -1128,6 +1128,8 @@ bool CDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle ) {
 
     phandle->pSendElem = (pcdc_mic_queue_element_t)_queue_dequeue(&(phandle->qs_OutInProcMsg));
     if (NULL != phandle->pSendElem) {
+    	// this is the real fix for a control channel that stops being able to transmit messages
+        phandle->send_ready = false;
         if ( USB_OK != USB_Class_CDC_Send_Data(handle, phandle->in_endpoint, phandle->pSendElem->data_buff, phandle->pSendElem->send_size ) ) {
             printf("%s: Error send USB port_%d\n", __func__, phandle->portNum );
             if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)phandle->pSendElem)) {
@@ -1138,9 +1140,18 @@ bool CDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle ) {
 			//printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
             return false;
         }
-        phandle->send_ready = false;
-		//printf ("%s: Set sendR F P_%d\n", __func__, phandle->portNum);
+        
+        
         phandle->sendPackets++;
+        if (phandle->sendPackets <= phandle->SendPacketsCompl) {
+        	// this is the race condition.  The packet can be sent prior to getting to this point in the code
+        	// which is why we need to set the send_ready flag to false prior to attempting to send the packet
+        	// instead of after attempting to send the message.
+            printf ("%s: packet already sent T P_%d: sendPackets: %d, compl: %d\n", __func__, phandle->portNum, phandle->sendPackets, phandle->SendPacketsCompl);
+        }
+        
+        //if (cdcNum != 1) printf ("%s: Set sendR F P_%d for cdcNum: %d, sendPackets: %d, compl: %d, %d (%d)\n", __func__, phandle->portNum, cdcNum, phandle->sendPackets, phandle->SendPacketsCompl,
+        //                         pAccHandle->sendPackets, pAccHandle->SendPacketsCompl);
     }
 
 	if (false == phandle->send_ready && NULL == phandle->pSendElem ) {
