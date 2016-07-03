@@ -51,7 +51,8 @@ extern "C"
 
 extern void *g_GPIO_event_h;
 
-void GPIO_sample_all (void);
+//void GPIO_sample_all (void);
+void GPIO_sample_all (KGPIOS_INPUT_CHANNELS i);
 KINPUT_LOGIC_LEVEL GPIO_INPUT_get_logic_level   (KGPIOS_INPUT_CHANNELS gpio_input);
 uint32_t           GPIO_INPUT_get_voltage_level (KGPIOS_INPUT_CHANNELS gpio_input);
 

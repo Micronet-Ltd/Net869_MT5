@@ -18,6 +18,6 @@ TASK_TEMPLATE_STRUCT MQX_template_list[] =
 	{ POWER_MGM_TASK,		Power_MGM_task,		1024,		POWER_MGM_TASK_PRIORITY,	"POWER_MGM_TASK",		0,							0,				0 },
 	{ UPDATER_TASK,			updater_task,		1024,		UPDATER_TASK_PRIORITY,		"UPDATER_TASK",			0,							0,				0 },
 	{ UPDATER_EXEC_TASK,	upd_exec_task,		1024,		UPDATER_EXEC_TASK_PRIORITY,	"UPDATER_EXEC_TASK",	0,							0,				0 },
-	{ CONTROL_TASK,			control_task,		1024,		CONTROL_TASK_PRIORITY,		"CONTROL_TASK",			0,							0,				0 },
+	{ CONTROL_TASK,			control_task,		2048,		CONTROL_TASK_PRIORITY,		"CONTROL_TASK",			0,							0,				0 },
 	{ 0	}
 };

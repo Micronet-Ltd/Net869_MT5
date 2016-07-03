@@ -44,8 +44,8 @@
 #define CABLE_TYPE_MIN_VOLTAGE		(CABLE_TYPE_VOLTAGE *  90/100)
 #define CABLE_TYPE_MAX_VOLTAGE		(CABLE_TYPE_VOLTAGE * 110/100)
 
-#define SUPERCAP_MIN_TH		5000
-#define SUPERCAP_MAX_TH		5300
+#define SUPERCAP_MIN_TH		5000//4500
+#define SUPERCAP_MAX_TH		5300//4800
 
 /* The LPTMR instance used for LPTMR */
 #define PM_RTOS_DEMO_LPTMR_FUNC_INSTANCE                0
@@ -223,7 +223,8 @@ size_t const powerConfigsSize = sizeof(powerConfigs)/sizeof(power_manager_user_c
 size_t const pm_callback_tbl_size = sizeof(pm_callback_tbl)/sizeof(power_manager_callback_user_config_t *);
 
 void Supercap_charge_state (void);
-void Supercap_discharge_state (void);
+void check_supercap_voltage (void);
+//void Supercap_discharge_state (void);
 
 void * power_up_event_g;
 
@@ -543,21 +544,21 @@ void switch_power_mode(power_manager_modes_t mode)
 
 void Power_MGM_task (uint32_t initial_data )
 {
-	uint64_t current_time          = 0;
-	uint64_t temperature_last_time = 0;
-	uint64_t ignition_last_time    = 0;
-	uint64_t ext_gpio_last_time    = 0;
-	uint64_t cable_type_last_time  = 0;
-	uint32_t cable_type_voltage    = 0;
-    uint32_t time_diff = 0;
+	KADC_CHANNELS_t adc_input = kADC_ANALOG_IN1;
 	KADC_CHANNELS_t i = kADC_ANALOG_IN1;
-	TIME_STRUCT time;
     uint32_t ret;
     uint8_t mode;
     uint8_t cmConfigMode = CLOCK_RUN;
     uint32_t freq = 0;
+    MQX_TICK_STRUCT ticks_now;
+    MQX_TICK_STRUCT ticks_prev;
+    int32_t time_diff_milli = 0;
+    uint32_t time_diff_milli_u = 0;
+    int32_t time_diff_micro = 0;
+    bool time_diff_overflow = false;
 
 	_mqx_uint event_result;
+    _time_get_elapsed_ticks_fast(&ticks_prev);
 
 	event_result = _event_create("event.PowerUpEvent");
 	if(MQX_OK != event_result){
@@ -572,10 +573,16 @@ void Power_MGM_task (uint32_t initial_data )
 	Device_init (POWER_MGM_TIME_DELAY);
 	ADC_init ();
 	/* Get all the initial ADC values */
-	for (i = kADC_ANALOG_IN1; i < kADC_CHANNELS; i++)
+	for (i = kADC_ANALOG_IN1; i < (kADC_CHANNELS-1); i++)
 	{
 		ADC_sample_input (i);
 	}
+
+	//ADC_Set_IRQ_TH (kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
+    ADC_Set_IRQ_TH (kADC_POWER_IN_ISR, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
+    //ADC_Set_IRQ_TH (kADC_POWER_IN, 2000, 3000);
+	//ADC_Compare_enable (kADC_POWER_IN);
+    ADC_Compare_enable (kADC_POWER_IN_ISR);
 
     CLOCK_SYS_Init(g_defaultClockConfigurations,
                    CLOCK_NUMBER_OF_CONFIGURATIONS,
@@ -605,53 +612,41 @@ void Power_MGM_task (uint32_t initial_data )
 
 	while (1)
 	{
-		ADC_sample_input (kADC_POWER_IN);
-		ADC_sample_input (kADC_POWER_VCAP);
+		//ADC_Compare_disable (kADC_POWER_IN);
 
-		if ((current_time - ignition_last_time) >= IGNITION_TIME_DELAY)
-		{
-			ignition_last_time = current_time;
-			ADC_sample_input (kADC_ANALOG_IN1);
-		}
-
-		if ((current_time - temperature_last_time) >= TEMPERATURE_TIME_DELAY)
-		{
-			temperature_last_time = current_time;
-			ADC_sample_input (kADC_TEMPERATURE);
-		}
-
-		// check cable type - report if not detected (tamper) or not as expected
-		if ((current_time - cable_type_last_time) >= CABLE_TYPE_TIME_DELAY)
-		{
-			cable_type_last_time = current_time;
-			ADC_sample_input (kADC_CABLE_TYPE);
-
-			cable_type_voltage = ADC_get_value(kADC_CABLE_TYPE);
-			if ((cable_type_voltage < CABLE_TYPE_MIN_VOLTAGE) ||
-				(cable_type_voltage > CABLE_TYPE_MAX_VOLTAGE) )
-			{
+		if (adc_input < kADC_POWER_IN)
+        {
+			GPIO_sample_all (adc_input);
+        }
+		else
+        {
+			ADC_sample_input (adc_input);
+        }
+			
+		if (++adc_input >= (kADC_CHANNELS - 1))
+        {
 				//printf ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
-			}
-		}
-
-		if ((current_time - ext_gpio_last_time) >= EXT_GPIO_TIME_DELAY)
-		{
-			ext_gpio_last_time = current_time;
-			GPIO_sample_all ();
-		}
+			adc_input = kADC_ANALOG_IN1;
+        }
 		
+
 #ifdef SUPERCAP_CHRG_DISCHRG_ENABLE
         Supercap_charge_state    ();
-        Supercap_discharge_state ();
+        check_supercap_voltage   ();
 #endif
 		_time_delay (POWER_MGM_TIME_DELAY);
-
-		_time_get(&time);
-        time_diff = ((time.SECONDS * 1000) +  time.MILLISECONDS) - current_time;
-		current_time += time_diff;
-        time_diff = 100;
+     
+        _time_get_elapsed_ticks_fast(&ticks_now);
+        time_diff_milli = _time_diff_milliseconds(&ticks_now, &ticks_prev, &time_diff_overflow);
+        _time_get_elapsed_ticks_fast(&ticks_prev);
         
-        Device_update_state(&time_diff);
+        if (time_diff_milli < 0)
+        {
+            printf("Power_MGM_task: timediff -ve!");
+        }
+        time_diff_milli_u = (uint32_t) time_diff_milli;
+        
+        Device_update_state(&time_diff_milli_u);
 	}
 }
 
@@ -681,7 +676,25 @@ void Supercap_charge_state (void)
 	}
 }
 
+/* Disable the supercap if we do not have enough power to run the MCU */
+void check_supercap_voltage (void)
+{
+	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN);
+    uint32_t supercap_voltage = ADC_get_value (kADC_POWER_VCAP);
 
+    /* we do not want to try to use the supercap when there isn't enough power to run the MCU */
+	if ((power_in_voltage < POWER_IN_SHUTDOWN_TH) && (supercap_voltage < MCU_MIN_OPERATING_VOLTAGE))
+	{
+		// send a message only once
+		if (GPIO_DRV_ReadPinInput (POWER_DISCHARGE_ENABLE) == 1)
+		{
+			printf ("\nPOWER_MGM: SUPERCAP stop DisCharged (power in voltage is: %d mV, supercap voltage is %d mV)\n", power_in_voltage, supercap_voltage);
+		}
+		GPIO_DRV_ClearPinOutput (POWER_DISCHARGE_ENABLE);
+	}
+}
+
+#if 0
 // discharge supercap if input power is below threshold
 void Supercap_discharge_state (void)
 {
@@ -708,6 +721,7 @@ void Supercap_discharge_state (void)
 		GPIO_DRV_ClearPinOutput (POWER_DISCHARGE_ENABLE);
 	}
 }
+#endif
 
 void get_ignition_threshold(uint32_t * p_ignition_threshold)
 {
