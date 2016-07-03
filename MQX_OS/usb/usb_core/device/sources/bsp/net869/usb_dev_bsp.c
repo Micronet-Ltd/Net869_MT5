@@ -34,7 +34,7 @@
 #include "fsl_clock_manager.h"
 #include "fsl_usb_khci_hal.h"
 
-#define BSP_USB_INT_LEVEL                (0x05U)
+#define BSP_USB_INT_LEVEL                (0x04U)
 
 extern uint8_t soc_get_usb_vector_number(uint8_t controller_id);
 extern uint32_t soc_get_usb_base_address(uint8_t controller_id);
