@@ -36,9 +36,36 @@
 #include "flash_funcs.h"
 #include <event.h>
 #include "version.h"
+#include "nio_serial.h"
+#include "spi_settings.h"
+#include "W25X40CL.h"
 
-extern void UART_Enable   (uint8_t port, const uart_user_config_t *uartConfig);
+extern int32_t	Set_IRQHandler_spec(void);
+
+#ifdef DEB_PRINT_FIRST_IRQS
+extern uint8_t s1[];
+extern uint8_t rcfifo[];
+extern uint8_t sfifo[];
+extern uint8_t ch[];
+extern TIME_STRUCT tt[];
+
+void print_first_irqs(void)
+{
+  	uint8_t i;
+	printf("-------\n");  
+	for(i = 0; i < 16; i++)
+	{
+		printf("%x %x %x %x %d:%d\n", s1[i], rcfifo[i], sfifo[i], ch[i], tt[i].SECONDS, tt[i].MILLISECONDS); 
+	}
+	printf("-------\n");
+}
+#else
+	void print_first_irqs(void) {}
+#endif
+
 extern _task_id   g_TASK_ids[];
+
+uint32_t transmit_polling(const uint8_t* pbuf, uint32_t length);
 //
 #define UPDATE_START		    0xFEFFFFFF
 #define READY_RUN			    0xFCFFFFFF
@@ -46,11 +73,14 @@ extern _task_id   g_TASK_ids[];
 #define RESET_OFFSET			0x10
 #define READY_OFFSET			0x0C
 
+const 	char*	dev_name = "nser3:";
+
 const 	char*	OK_str   = "OK";
 const	char*	ERR_str  = "ERR";
 const	char*	AA_str   = "AA";
 const	char*	BB_str   = "BB";
 const	char*	nRDY_str = "nRDY";
+const	char*	nCRC_str = "nCRC";
 //
 typedef enum
 {
@@ -61,6 +91,10 @@ typedef enum
   ERB,
   RAB,
   PFD,
+//------- FPGA commands --------  
+  FRE,
+  STF,
+  SFD,
   UNN	= -1
 } cmd_id;
 
@@ -73,6 +107,10 @@ const char*	cmds[] =
   "ERB",
   "RAB",
   "PFD",
+//------- FPGA commands --------  
+  "FRE",
+  "STF",
+  "SFD",
   ""	
 };
 const char*	cmds_srec[] =	
@@ -86,14 +124,15 @@ const char*	cmds_srec[] =
   ""
 };
 uint32_t 	g_offset = NVFLASH_BASE;
-uint32_t 	g_errors = 0;
-uint8_t 	bbb[64] = {0};
+uint8_t 	bbb[264] = {0};//[64] = {0};
 uint8_t 	tmp_buf[32] = {0};
 void*		g_event_ptr;
 uint32_t	client_queue[sizeof(LWMSGQ_STRUCT)/sizeof(uint32_t) + NUM_MESSAGES * UPD_MSG_SIZE];
 _mqx_uint  	msgf[UPD_MSG_SIZE];
 _task_id	Upd_idTask = MQX_NULL_TASK_ID;//temp place
 uint32_t	g_start_flag = 0;
+uint8_t 	g_ok = 0;
+int32_t		g_fd = -1; 
 
 int32_t cs_get(uint8_t* arr, uint32_t len)
 {
@@ -101,16 +140,6 @@ int32_t cs_get(uint8_t* arr, uint32_t len)
   for(i = 0; i < len; ++i)
 	cs += arr[i];
   return cs;
-}
-void uint_to_hex_string( uint32_t num, char  *string, uint32_t bytes_qty  )
-{
-	const char str_hex_array[] = "0123456789ABCDEF";
-  	uint32_t i;
-	
-	for(i = 0; i < bytes_qty * 8; i++)
-	{
-	   string[i]  = str_hex_array[(num >> (bytes_qty * 8 - (i + 1)*4 ))&0xF];
-	}
 }
 
 int32_t find_cmd(const char* names[], char* buf, int32_t len)
@@ -151,6 +180,7 @@ char char2hex(char *num)
 
     return (digh << 4) | digl; 
 }
+
 uint32_t chars2uint(char* num)
 {
 	uint32_t i = 0, n = 0;
@@ -163,11 +193,9 @@ uint32_t chars2uint(char* num)
 }
 void ClearUart_Reply(uint8_t* buf, char* pReply)
 {
-  	g_errors++;
-	UART_DRV_ReceiveData(UART_UPDATE_FW_IDX, buf, 1000);//workaround: set busy for abort
-	UART_DRV_AbortReceivingData(UART_UPDATE_FW_IDX);
+//	ResetRxCounter(UART_UPDATE_FW_IDX);
 	if(pReply)
-		UART_DRV_SendDataBlocking(UART_UPDATE_FW_IDX, (uint8_t*)pReply, strlen(pReply), 1000u);
+		transmit_polling((const uint8_t*)pReply, strlen(pReply));
 }
 uint32_t chars2hex_arr(uint8_t* arr, char *nums, uint32_t len)
 {
@@ -189,11 +217,12 @@ void tasks_kill(void)
 		{
 		  	if(MQX_INVALID_TASK_ID == _task_destroy(g_TASK_ids[i]) )
 			{
-			  	printf("updater: cannot destroy task %d\n", i);
+			  	//printf("updater: cannot destroy task %d\n", i);
 			}
 		}
 		i++;
 	}
+}
 /*
  	KERNEL_DATA_STRUCT_PTR   kernel_data;
     _GET_KERNEL_DATA(kernel_data);
@@ -221,41 +250,11 @@ void tasks_kill(void)
 //    _int_enable();
     // END SPR
 */  
-}
 
 int32_t start_update(uint32_t id)
 {	
 	tasks_kill();
 	
-/* 	KERNEL_DATA_STRUCT_PTR   kernel_data;
-    _GET_KERNEL_DATA(kernel_data);
-
-      TASK_TEMPLATE_STRUCT_PTR     task_template_ptr = kernel_data->INIT.TASK_TEMPLATE_LIST;
-
-            while(task_template_ptr->TASK_TEMPLATE_INDEX)
-			{
-			  	if(	task_template_ptr->TASK_TEMPLATE_INDEX != MAIN_TASK && 
-				   	task_template_ptr->TASK_TEMPLATE_INDEX != POWER_MGM_TASK &&
-					task_template_ptr->TASK_TEMPLATE_INDEX != UPDATER_TASK && 
-				   	task_template_ptr->TASK_TEMPLATE_INDEX != UPDATER_EXEC_TASK )
-				{
-	            	_task_destroy(task_template_ptr->TASK_TEMPLATE_INDEX);
-				  	
-				}
-                ++task_template_ptr;
-            }
-*/
-/*               TASK_TEMPLATE_STRUCT    task_template = {0};
-               task_template.TASK_NAME          = "Clock_child";
-               task_template.TASK_PRIORITY      = SHELL_CLOCK_CHILD_PRIO;
-               task_template.TASK_STACKSIZE     = SHELL_CLOCK_CHILD_STACK;
-               task_template.TASK_ADDRESS       = Clock_child_task;
-               task_template.CREATION_PARAMETER = (uint32_t) &server_cxt;
-               if ((Upd_idTask = _task_create(0, 0, (uint32_t)&task_template)) == MQX_NULL_TASK_ID) 
-			   {
-                  printf("updater: failed to spawn child task\n");
-               } 
-*/
   	Upd_idTask = _task_create(0, UPDATER_EXEC_TASK, 0);
 	if(MQX_NULL_TASK_ID == Upd_idTask)
 	{
@@ -329,27 +328,6 @@ uint32_t choose_flash(void)
 }
 void version_srec(char* out_buf)
 {
-//	char tmp_str[4] = {0};
-//	uint32_t i; 
-//  	uint32_t ver = 0;
-
-//	memcpy(out_buf, "4E455438", 8);//temp!!!
-//	out_buf[8] = 0;
-//	memset(out_buf, '0', 10); 
-//4E455438
-//	tmp_str[0] = FW_VER_BTLD_OR_APP;
-//	tmp_str[1] = FW_VER_MAJOR;
-//	tmp_str[2] = FW_VER_MINOR;
-//	tmp_str[3] = FW_VER_BUILD;
-//	ver = ((FW_VER_BTLD_OR_APP & 0xFF) << 3*4) + ((FW_VER_MAJOR & 0xFF) << 2*4) + ((FW_VER_MINOR & 0xFF) << 1*4) + (FW_VER_BUILD & 0xFF);  
-//	uint_to_hex_string(ver, out_buf, 4);
-//	out_buf[8] = 0;
-//	for(i = 0; i < 4; ++i)
-//	{
-//		uint_to_hex_string(tmp_str[i], &out_buf[i * 2], 1);
-//	}
-		  
-//	out_buf[8] = 0;
   	sprintf(out_buf, "%02X%02X%02X%02X", FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD); 
 }
 
@@ -414,10 +392,30 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 		break;
 		case PFD:
 		{
+			print_first_irqs();			
 			printf("updater: PFD\n");			
+			
 			g_start_flag = 0;
-			end_update();
+			if(g_ok)
+				end_update();
 			NVIC_SystemReset();
+		}
+		break;
+		case FRE:
+		{
+		 	fpga_get_version(out_buf);
+			printf("updater: FRE %s\n", out_buf);
+		}
+		break;
+//		case STF:
+//		{		  	
+//		}
+//		break;
+		case SFD:
+		{
+			printf("updater: SFD\n");			
+			fpga_deinit();
+			g_start_flag = 0;
 		}
 		break;
 		default:
@@ -429,69 +427,17 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 	return ret;
 }
 
-uint32_t transmit_with_timeout(const uint8_t* pbuf, uint32_t length)//return received
+uint32_t transmit_polling(const uint8_t* pbuf, uint32_t length)//return received
 {
   	uint32_t st = kStatus_UART_Success;
-	uint32_t count = 60000; //33err - 50000 * length;
-	do
-	{
-        if(kStatus_UART_TxBusy != (st = UART_DRV_GetTransmitStatus(UART_UPDATE_FW_IDX, NULL)))
-		{
-			break;
-		}
-	}while(count--);
-	if(kStatus_UART_Success != st)
-	{
-	  	printf("updater: transmit failed, stat 0x%x\n", st);
-	  	return st;
-	} 
-	st = UART_DRV_SendDataBlocking(UART_UPDATE_FW_IDX, (const uint8_t*)pbuf, length, 500 * length);
-//	st = UART_DRV_SendData(UART_UPDATE_FW_IDX, (const uint8_t*)pbuf, length);
+	UART_Type * base = g_uartBase[UART_UPDATE_FW_IDX];
 
-//	while(kStatus_UART_TxBusy == (st = UART_DRV_GetTransmitStatus(UART_UPDATE_FW_IDX, NULL)))///temp!!! debug
-//	{
-//	  	printf("updater: transmit failed, stat 0x%x\n", st);
-//	}
+	UART_HAL_SendDataPolling(base, (const uint8_t*)pbuf, length);
+	//int32_t err;
+	//int32_t st;
 	
+	//st = _nio_write(g_fd, pbuf, length, &err);
 	return st;
-}
-//buffer MUST be 0
-uint32_t recieve_with_timeout(uint8_t* pbuf, uint32_t length)//return received
-{
-  	uint32_t r_length = 0;
-	uint32_t count = 60000 * length; //33err - 60000 * length;
-  	uint64_t to = length * 2000;//temp!!!
-	
-//  	TIME_STRUCT	start_tick, end_tick;
-//	bool overflow;
-	
-	UART_DRV_ReceiveData(UART_UPDATE_FW_IDX, pbuf, length);
-
-//	_time_get(&start_tick);
-	
-	do
-	{
-        if(kStatus_UART_RxBusy != UART_DRV_GetReceiveStatus(UART_UPDATE_FW_IDX, NULL))
-		{
-			break;
-		}
-
-//		_time_get(&end_tick);
-	   	//if(to > _time_diff_milliseconds(&end_tick, &start_tick, &overflow))
-//		if(to > (end_tick.SECONDS * 1000 + end_tick.MILLISECONDS - start_tick.SECONDS * 1000 - start_tick.MILLISECONDS))
-//		{
-//		  	printf("timeout\n");
-//		 	break;
-//		}
-	}
-    while(count--);//(to > _time_diff_milliseconds(&end_tick, &start_tick, &overflow));
-	  
-	r_length = strlen((char*)pbuf);  
-	if(r_length < length)
-	{
-	  	printf("updater[%s]: timeout\n", __func__);
-	}
-	return r_length;
 }
 int32_t	make_msg_cs_check(uint32_t* mm, uint8_t* buf, uint8_t* tmp_buf)
 {
@@ -547,39 +493,165 @@ void	set_result(uint32_t res)
 	  printf("update: Flash_Program return error 0x%x\n", res);
 	  ptr = (uint8_t*)ERR_str;
 	}
-	transmit_with_timeout(ptr, strlen((char*)ptr));
+	transmit_polling(ptr, strlen((char*)ptr));
+}
+uint32_t rstr_32_dig(uint8_t* buf)
+{
+	uint32_t  dig = 0;
+	int32_t i;
+	char b[2] = {0};
+	for(i = 0; i < 8; i++)
+	{
+	  	b[0] = buf[i * 2 + 1];
+		dig |= (strtol(b, 0, 16) & 0xFF) << (28 - i * 4); 	  
+	}
+	return dig;
+}
+void fpga_data(uint8_t* buf, uint32_t len)
+{
+  	int32_t		err = 0;//, count = 0;
+  	uint32_t 	tmp_len = 0, wr_len = 0, diff, crc;
+	uint8_t* 	ptr = (uint8_t*)OK_str;
+	uint32_t*	pTmp;
+//	TIME_STRUCT tt;
+	
+  	g_start_flag = 2;
+	tasks_kill();
+
+	len = rstr_32_dig(buf);
+//	len = 135180;//temp!!!
+	
+	if(0 != fpga_init())
+	{
+	  	ptr = (uint8_t*)ERR_str;
+		transmit_polling(ptr, strlen((char*)ptr));
+		return;
+	}
+	transmit_polling((uint8_t*)OK_str, strlen((char*)OK_str));
+
+	do
+	{
+	  	err = 0;
+	  	ptr = (uint8_t*)OK_str;
+	  	diff = (SPI_FLASH_SECTOR_SIZE < len - wr_len) ? SPI_FLASH_SECTOR_SIZE : len - wr_len;
+		
+		tmp_len = _nio_read(g_fd, &buf[4], diff + 4, &err);
+		
+		if(tmp_len < diff)
+		{
+		  	ptr = (uint8_t*)nCRC_str;// or ERR ???;
+			err = 1;
+		}
+		
+		if(0 == err)
+		{
+		  	pTmp = (uint32_t*)(&buf[diff + 4]);
+
+			tmp_len = *pTmp;
+			crc = crc_32(&buf[4], diff);
+			//if(crc_32(buf, diff) != tmp_len) 
+			if(crc != tmp_len) 
+			{
+				printf("updater: fpga crc error %x (%x)\n", crc, tmp_len);			
+			  	ptr = (uint8_t*)nCRC_str;
+				err = 2;
+			}
+		}		
+		if(0 == err)
+		{
+		  	uint32_t deb = wr_len % ERASABLE_BLOCK_SIZE;
+			if(0 == (wr_len % ERASABLE_BLOCK_SIZE))//sector offset
+			{
+//				_time_get(&tt);
+//				printf("erase %d:%d\n", tt.SECONDS, tt.MILLISECONDS); 
+//			  	printf("erase 0x%x (%d)\n", wr_len, deb);
+				if(0 != fpga_erase_sector(wr_len))
+				{
+					ptr = (uint8_t*)ERR_str;
+					err = 4;
+				}
+//				_time_get(&tt);
+//				printf("erase %d:%d\n", tt.SECONDS, tt.MILLISECONDS); 				
+			}
+		}
+		if(0 == err)
+		{
+//			_time_get(&tt);
+//			printf("fpga_write_data %d:%d\n", tt.SECONDS, tt.MILLISECONDS); 
+//		  	printf("fpga_write_data 0x%x + 0x%x (count %d)\n", wr_len, diff, ++count);
+			if(0 != fpga_write_data(wr_len, buf, diff))
+			{
+			  	ptr = (uint8_t*)ERR_str;
+				err = 5;
+			}
+//			_time_get(&tt);
+//			printf("fpga_write_data %d:%d\n", tt.SECONDS, tt.MILLISECONDS); 
+		}
+
+		transmit_polling(ptr, strlen((char*)ptr));
+		
+		if(0 == err)
+			wr_len += diff;
+
+	}while((len > wr_len) && (3 > err)); 
+	buf[0] = 0;
 }
 void updater_task(uint32_t param)
 {
+/*  
 	const uart_user_config_t uart_config = {
-		.bitCountPerChar = kUart8BitsPerChar,
-		.parityMode      = kUartParityDisabled,
+		.bitCountPerChar = kUart9BitsPerChar, //kUart8BitsPerChar,
+		.parityMode      = kUartParityOdd, //kUartParityDisabled,
 		.stopBitCount    = kUartOneStopBit,
-		.baudRate        = BAUD_115200
+		.baudRate        = BAUD_115200 //38400
 	};
-	
-  	_mqx_uint  	result;
-  	//uart_status_t stat = kStatus_UART_Success;
-	uint32_t stat = kStatus_UART_Success;
-	uint32_t len = 0;
-//	uint32_t abort_res_flag = 0;
-  	uint32_t tmp_len = 0;
-	cmd_id id = UNN;
-	
+*/
+	const NIO_SERIAL_INIT_DATA_STRUCT nserial3_init =
+	{
+        .SERIAL_INSTANCE		= UART_UPDATE_FW_IDX,
+        .BAUDRATE            	= 115228,
+        .PARITY_MODE         	= kNioSerialParityOdd,
+        .STOPBIT_COUNT       	= kNioSerialOneStopBit,
+        .BITCOUNT_PERCHAR    	= 9,
+		.MODULE					= kNioSerialUart,
+		.RXTX_PRIOR		       	= 3,
+    #if defined(BOARD_USE_UART) && defined(BOARD_UART_CLOCK_SOURCE)
+        .CLK_SOURCE          = BOARD_UART_CLOCK_SOURCE,
+    #else
+        .CLK_SOURCE          = 1,
+    #endif
+	   	.RX_BUFF_SIZE        	= NIO_SERIAL_BUFF_SIZE,
+        .TX_BUFF_SIZE        	= NIO_SERIAL_BUFF_SIZE,
+	};  
+//	UART_Type* 	base = g_uartBase[UART_UPDATE_FW_IDX];
+  	_mqx_uint 	result;
+	int32_t 	stat = -1;
+	uint32_t 	len = 0;
+  	uint32_t 	tmp_len = 0;
+	cmd_id 		id = UNN;
+    int32_t 	error;
+	NIO_DEV_STRUCT*	pNio = 0;
 
 	printf("updater: task started\n");
 	
-/*  	Upd_idTask = _task_create(0, UPDATER_EXEC_TASK, 0);//temp!!! place
-	if(MQX_NULL_TASK_ID == Upd_idTask)
-	{
-      	printf("updater: _task_create failed\n");
-		_mqx_exit(0);
-	}
-*/
 	update_fw_uart_init();//muxing
-	UART_Enable(UART_UPDATE_FW_IDX, &uart_config);
-    
-   result = _lwmsgq_init((void *)client_queue, NUM_MESSAGES, UPD_MSG_SIZE);
+	
+ 	pNio = _nio_dev_install(dev_name, &nio_serial_dev_fn, (void*)&nserial3_init, NULL);
+   	if(0 == pNio) 
+   	{
+    	printf("updater: _nio_dev_install failed\n");
+		_mqx_exit(0);
+   	}
+	Set_IRQHandler_spec();
+	
+	g_fd = _nio_open(dev_name, O_RDWR, 0);
+	if(0 > g_fd)
+   	{
+    	printf("updater: cannot open nio dev\n");
+		_mqx_exit(0);
+   	}
+
+   	result = _lwmsgq_init((void *)client_queue, NUM_MESSAGES, UPD_MSG_SIZE);
    	if (result != MQX_OK) 
    	{
     	printf("updater: lwmsgq_init client_queue failed\n");
@@ -600,104 +672,101 @@ void updater_task(uint32_t param)
 		
 		memset(bbb, 0, sizeof(bbb));
 		// Wait to receive input data
-		stat = UART_DRV_ReceiveDataBlocking(UART_UPDATE_FW_IDX, bbb, 1u, 1000u);//1 sec
-		if(kStatus_UART_Success == stat && 0 != bbb[0])		  
+		stat = _nio_read(g_fd, bbb, 3, &error);
+		if(0 < stat)
 		{
-			tmp_len = recieve_with_timeout(&bbb[1], 2);
-//			if (kStatus_UART_Success == UART_DRV_ReceiveDataBlocking(UART_UPDATE_FW_IDX, &bbb[1], 2u, 2000u))//2 sec
-			{
-				if(2 != tmp_len)//3 != strlen((char*)bbb))
+	  		tmp_len = 3;
+	  
+			if(-1 != (id = (cmd_id)find_cmd(cmds_srec, (char*)bbb, 2)))
+			{		  
+				///S-records part started				  
+			  	tmp_len += 1;
+				stat = _nio_read(g_fd, &bbb[3], 1, &error);
+				if(0 > stat)//== 1
 				{
 					printf("updater: error rcv len %d\n", tmp_len);
-					ClearUart_Reply(bbb, (g_start_flag ? ((char*)nRDY_str) : ((char*)ERR_str)));
+					ClearUart_Reply(bbb, (char*)nRDY_str);
 					continue;
 				}
-				if(-1 != (id = (cmd_id)find_cmd(cmds_srec, (char*)bbb, 2)))
+				len = char2hex((char*)&bbb[2]);
+
+				tmp_len += len * 2;
+				stat = _nio_read(g_fd, &bbb[4], len * 2, &error);
+
+				if(0 > stat)//== len * 2
 				{
-				  	//maybe check g_start_flag???
-				  
-					///S-records part started				  
-					tmp_len = recieve_with_timeout(&bbb[3], 1);
-					if(1 != tmp_len)
-					{
-						printf("updater: error rcv len %d\n", tmp_len);
-						ClearUart_Reply(bbb, (char*)nRDY_str);
-						continue;
-					}
-					
-					len = char2hex((char*)&bbb[2]);
-
-					tmp_len = recieve_with_timeout(&bbb[4], len * 2);
-					if(tmp_len < len * 2)
-					{
-						ClearUart_Reply(bbb, (char*)nRDY_str);
-						continue;
-					}
-					
-					if(0 > make_msg_cs_check(msgf, bbb, tmp_buf))
-					{
-						ClearUart_Reply(bbb, (char*)nRDY_str);
-						continue;
-					}
-
-					//stat = Flash_Program(msgf[1], msgf[2], (uint8_t*)&msgf[3]);///debug - 1 task
-					//if(FTFx_OK != stat)
-					//{
-					//	printf("Flash_Program failed 0x%x\n", stat);
-					//	stat = transmit_with_timeout((uint8_t*)ERR_str, strlen(ERR_str));
-					//	//UART_DRV_SendDataBlocking(UART_UPDATE_FW_IDX, (uint8_t*)ERR_str, strlen(ERR_str), 1000u);
-							//error exit
-					//}
-					_event_get_value(g_event_ptr, &tmp_len);
-					if(1 == tmp_len)
-					{
-					  stat = transmit_with_timeout((uint8_t*)nRDY_str, strlen(nRDY_str));
-					  continue;
-					}
-					_event_set(g_event_ptr, 1);
-					_lwmsgq_send((void *)client_queue, msgf, LWMSGQ_SEND_BLOCK_ON_FULL);
+					printf("updater: error rcv len %d\n", len * 2);
+					ClearUart_Reply(bbb, (char*)nRDY_str);
+					continue;
 				}
-				else
-				{
-				  	uint8_t* ptr = 0;
-				  	int32_t res = -1;
-					int32_t len = 0;
-
-					id = (cmd_id)find_cmd(cmds, (char*)bbb, 3);
 					
-					res = -1;
-
-					if(UNN != id)
-					{
-					  	res = exec_cmd((int32_t)id, (char*)bbb);
-					  	if(0 > res)
+				if(0 > make_msg_cs_check(msgf, bbb, tmp_buf))
+				{
+					ClearUart_Reply(bbb, (char*)nRDY_str);
+					continue;
+				}
+				if('7' <= bbb[1] && '9' >= bbb[1])
+				{
+				  	g_ok = 1;
+					printf("ok %s\n", bbb);
+					stat = transmit_polling((uint8_t*)OK_str, strlen(OK_str));
+					continue;
+				}
+				_event_get_value(g_event_ptr, &tmp_len);
+				if(1 == tmp_len)
+				{
+				  	stat = transmit_polling((uint8_t*)nRDY_str, strlen(nRDY_str));
+				  	continue;
+				}
+				_event_set(g_event_ptr, 1);
+				_lwmsgq_send((void *)client_queue, msgf, LWMSGQ_SEND_BLOCK_ON_FULL);
+			}
+			else //commands
+			{
+			  	uint8_t* ptr = 0;
+			  	int32_t res = -1;
+				int32_t len = 0;
+				
+				id = (cmd_id)find_cmd(cmds, (char*)bbb, 3);
+					
+				res = -1;
+					
+				if(UNN != id)
+				{
+						if(STF == id)
 						{
-							ptr = (uint8_t*)ERR_str;
+						  	len = _nio_read(g_fd, bbb, 17, &error);
+							printf("updater: read len %d (%d)\n", len, error);
+						  	fpga_data(bbb, len);
+							continue;
 						}
-						else
-						  ptr = bbb;
-					}
-					else//error
+				  	res = exec_cmd((int32_t)id, (char*)tmp_buf);
+					if(0 == res)
 					{
-					  	printf("updater: cmd is not found (%s)\n", bbb);
-					  	//if(error > max or burn is not started -(char*)ERR_str
-						ClearUart_Reply(bbb, (g_start_flag ? ((char*)nRDY_str) : ((char*)ERR_str)));
-						continue;
+					  	ptr = tmp_buf;
+						len = strlen((char*)ptr);
+						if(REV == id)
+						  	len += 1;//for NULL
+						if(SFD != id)	
+							stat = transmit_polling(ptr, len);
 					}
-					
-					len = strlen((char*)ptr);
-					if(REV == id)
-					  len += 1;//for NULL
-					
-					stat = transmit_with_timeout(ptr, len);
+					else
+					{
+						print_first_irqs();								  	
+						ClearUart_Reply(bbb, (char*)ERR_str);
+					}
 				}
+				else//error
+				{
+					print_first_irqs();								  	
+					ClearUart_Reply(bbb, (g_start_flag ? ((char*)nRDY_str) : ((char*)ERR_str)));
+				}					
 			}
 		}
-		else if(kStatus_UART_RxBusy == stat)
+		else
 		{
-		  	ClearUart_Reply(bbb, 0);//try normalize - sent nothing
+		  	printf("updater: r1 %d (0x%x)\n", stat, bbb[0]);
 		}
-        _time_delay(10);
     }
 	
 	return;

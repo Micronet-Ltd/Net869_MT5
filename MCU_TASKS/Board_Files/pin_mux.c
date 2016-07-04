@@ -275,6 +275,22 @@ void configure_spi_pins( uint32_t instance ) {
         break;
     }
 #endif
+    switch(instance) {
+    case SPI2_IDX:                       /* SPI2 */
+        /* Affects register CLK */
+        PORT_HAL_SetMuxMode(PORTB,20u,kPortMuxAlt2);
+        /* Affects register PCS0 */
+        PORT_HAL_SetMuxMode(PORTB,21u,kPortMuxAlt2);
+        /* Affects register MOSI */
+        PORT_HAL_SetMuxMode(PORTB,22u,kPortMuxAlt2);
+        /* Affects register MISO */
+        PORT_HAL_SetMuxMode(PORTB,23u,kPortMuxAlt2);
+        /* Affects register PCS1 - disabled*/
+//        PORT_HAL_SetMuxMode(PORTD,15u,kPortMuxAlt2);
+        break;
+    default:
+        break;
+    }
 }
 
 void configure_uart_pins( uint32_t instance ) {

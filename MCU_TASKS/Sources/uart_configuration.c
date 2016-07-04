@@ -8,6 +8,7 @@
  * Prototypes
  ******************************************************************************/
 extern void UART_DRV_IRQHandler(uint32_t instance);
+extern void UART_DRV_IRQHandler_spec(uint32_t instance);
 
 static uart_state_t  uartState [UART_INSTANCE_COUNT];
 
@@ -21,11 +22,11 @@ void UART_Enable  (uint8_t port, const uart_user_config_t *uartConfig)
 		case UART1_IDX:	NVIC_SetPriority      (UART1_RX_TX_IRQn, 6U);
 						OSA_InstallIntHandler (UART1_RX_TX_IRQn, MQX_UART1_RX_TX_IRQHandler);
 						break;
-						
-		case UART3_IDX:	NVIC_SetPriority      (UART3_RX_TX_IRQn, 6U);
+/*						
+		case UART3_IDX:	NVIC_SetPriority      (UART3_RX_TX_IRQn, 3U);//6U);
 						OSA_InstallIntHandler (UART3_RX_TX_IRQn, MQX_UART3_RX_TX_IRQHandler);
 						break;
-
+*/
 		default:		printf("\nUART Enable - illeagal port\n");
 						return;
 	}
@@ -48,4 +49,4 @@ void UART_Reset  (uint8_t port, const uart_user_config_t *uartConfig)
 
 void MQX_UART0_RX_TX_IRQHandler (void)		{ UART_DRV_IRQHandler (0); }
 void MQX_UART1_RX_TX_IRQHandler (void)		{ UART_DRV_IRQHandler (1); }
-void MQX_UART3_RX_TX_IRQHandler (void)		{ UART_DRV_IRQHandler (3); }
+void MQX_UART3_RX_TX_IRQHandler (void)		{ UART_DRV_IRQHandler_spec(3); }//{ UART_DRV_IRQHandler (3); }

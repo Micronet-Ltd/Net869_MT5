@@ -24,7 +24,9 @@ extern "C" {
 
 extern uint32_t client_queue[];
 extern void	set_result(uint32_t res);
-  
+
+//#define DEB_PRINT_FIRST_IRQS
+
 #ifdef __cplusplus
 extern "C"
 }
