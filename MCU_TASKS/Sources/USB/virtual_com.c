@@ -65,7 +65,7 @@
 /*****************************************************************************
  * Constant and Macro's - None
  *****************************************************************************/
-#define USB_MSGQ_MAX_POOL_SIZE      20
+//#define USB_MSGQ_MAX_POOL_SIZE      20
 
 #define USB_CDC_0_OUT_BUFFERS_COUNT 5 // Command interface
 #define USB_CDC_1_OUT_BUFFERS_COUNT 5 // Accelerometer interface
@@ -453,7 +453,6 @@ void cdc_vcom_preinit(cdc_struct_t* param)
         return;
     }
     param->recv_size = 0;
-    //param->send_size = 0;
 }
 /*****************************************************************************
  *  
@@ -706,7 +705,7 @@ uint8_t USB_App_Class_Callback
     case USB_APP_CDC_DTE_ACTIVATED:
         if (phandle->start_app == TRUE)
         {
-            //printf("%s: Port%d activated\n", __func__, phandle->portNum);
+            printf("Port%d activated\n", phandle->portNum);
         	phandle->start_transactions = TRUE;
             phandle->send_ready = TRUE;
         }
@@ -714,7 +713,7 @@ uint8_t USB_App_Class_Callback
     case USB_APP_CDC_DTE_DEACTIVATED:
         if (phandle->start_app == TRUE)
         {
-            //printf("%s: Port%d deactivated\n", __func__, phandle->portNum);
+            printf("Port%d deactivated\n", phandle->portNum);
         	phandle->start_transactions = FALSE;
             phandle->send_ready = FALSE;
         }
@@ -781,8 +780,6 @@ uint8_t USB_App_Class_Callback
 
     return error;
 }
-
-//#define ACC_MSG_SIZE (8 + 6 * 10)
 
 #ifdef MIC_USB_DEBUG
 _queue_id g_usb_test_qid = 0;
@@ -1155,8 +1152,8 @@ bool CDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle ) {
     }
 
 	if (false == phandle->send_ready && NULL == phandle->pSendElem ) {
-        phandle->pSendElem = NULL;
-		//printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
+        //phandle->pSendElem = NULL;
+		printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
 	}
 
     return true;
