@@ -18,6 +18,8 @@ typedef enum {
 	kADC_POWER_VCAP	   ,
 	kADC_TEMPERATURE   ,
 	kADC_CABLE_TYPE	   ,
+    
+    kADC_POWER_IN_ISR   ,
 	kADC_CHANNELS
 } KADC_CHANNELS_t;
 
@@ -29,6 +31,10 @@ extern "C"
 
 
 void ADC_init (void);
+void ADC_Set_IRQ_TH (KADC_CHANNELS_t channel, uint16_t low_thrashold, uint16_t high_thrashold);
+void ADC_Compare_enable (KADC_CHANNELS_t channel);
+void ADC_Compare_disable (KADC_CHANNELS_t channel);
+
 void ADC_sample_input (KADC_CHANNELS_t channel);
 uint32_t ADC_get_value (KADC_CHANNELS_t channel);
 

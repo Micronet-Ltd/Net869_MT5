@@ -19,9 +19,6 @@
 #include "control_task.h"
 #include "protocol.h"
 
-#define NUM_OF_GPI	8
-#define NUM_OF_GPO  4
-
 typedef struct {
 	const KADC_CHANNELS_t adc_channel;
 	      uint32_t        gpio_input_voltage;
@@ -54,13 +51,14 @@ void *g_GPIO_event_h;
 
 KINPUT_LOGIC_LEVEL GPIO_INPUT_convert_voltage_to_level (uint32_t voltage);
 
-void GPIO_sample_all (void)
+//void GPIO_sample_all (void)
+void GPIO_sample_all (KGPIOS_INPUT_CHANNELS i)
 {
 	uint32_t gpio_event = 0;
-	KGPIOS_INPUT_CHANNELS i;
+//	KGPIOS_INPUT_CHANNELS i;
 	KINPUT_LOGIC_LEVEL state_prev, state_current, state_temp;
 
-	for (i = kANALOG_EXT_IN; i < NUM_OF_GPI; i++) {
+//	for (i = kANALOG_EXT_IN; i < NUM_OF_GPI; i++) {
 		state_prev = GPIO_INPUT_get_logic_level (i);
 		ADC_sample_input (gpio_inputs[i].adc_channel);
 		gpio_inputs[i].gpio_input_voltage = ADC_get_value (gpio_inputs[i].adc_channel);
@@ -77,10 +75,10 @@ void GPIO_sample_all (void)
 
 		
 		if (state_current != state_prev) {
-			MIC_DEBUG_UART_PRINTF ("GPIO_IN %d level became %d\n", i, state_current);
+			printf ("GPIO_IN %d level became %d\n", i, state_current);
 			gpio_event |= (1 << i);
 		}
-	}
+//	}
 
 	//TODO: for now just send the control message from within the GPIO driver
 	if (gpio_event != 0){
@@ -119,9 +117,9 @@ void GPIO_OUTPUT_set_level (KGPIOS_OUTPUT_CHANNELS gpio_output, KOUTPUT_LEVEL le
 		case (kGPIO_OUT2) : if (level == GPIO_OUT_LOW)	GPIO_DRV_SetPinOutput (GPIO_OUT2);  else GPIO_DRV_ClearPinOutput (GPIO_OUT2); break;
 		case (kGPIO_OUT3) : if (level == GPIO_OUT_LOW)	GPIO_DRV_SetPinOutput (GPIO_OUT3);  else GPIO_DRV_ClearPinOutput (GPIO_OUT3); break;
 		case (kGPIO_OUT4) : if (level == GPIO_OUT_LOW)	GPIO_DRV_SetPinOutput (GPIO_OUT4);  else GPIO_DRV_ClearPinOutput (GPIO_OUT4); break;
-		default           : MIC_DEBUG_UART_PRINTF ("ERROR: Illegal GPIO_OUT %d\n", gpio_output); return;
+		default           : printf ("ERROR: Illegal GPIO_OUT %d\n", gpio_output); return;
 	}
-	MIC_DEBUG_UART_PRINTF ("GPIO_OUT %d level is set to %s\n", gpio_output,  (level == GPIO_OUT_LOW) ? "LOW" : "OPEN DRAIN");
+	printf ("GPIO_OUT %d level is set to %s\n", gpio_output,  (level == GPIO_OUT_LOW) ? "LOW" : "OPEN DRAIN");
 }
 
 void send_gpi_change(uint8_t * gpio_mask)
@@ -149,7 +147,7 @@ void send_gpi_change(uint8_t * gpio_mask)
 void gpio_set_output (KGPIOS_OUTPUT_CHANNELS gpo_num, KOUTPUT_LEVEL level)
 {
 	GPIO_DRV_WritePinOutput(gp_out_mapping[gpo_num], level );
-	MIC_DEBUG_UART_PRINTF("set GPIO num: %d to val %d \n", gpo_num, level);
+	printf("set GPIO num: %d to val %d \n", gpo_num, level);
 }
 
 void gpio_set_multiple_outputs(uint8_t * mask, uint8_t * value)

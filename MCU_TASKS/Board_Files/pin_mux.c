@@ -52,10 +52,15 @@
 
 /* MODULE pin_mux. */
 #if 1
+#include <mqx.h>
+#include <bsp.h>
+#include <lwmsgq.h>
+#include <message.h>
 #include "fsl_device_registers.h"
 #include "fsl_port_hal.h"
 #include "fsl_sim_hal.h"
 #include "pin_mux.h"
+#include "mic_typedef.h"
 
 void configure_can_pins( uint32_t instance ) {
 #if 1
@@ -65,12 +70,24 @@ void configure_can_pins( uint32_t instance ) {
         PORT_HAL_SetMuxMode(PORTB, 19u, kPortMuxAlt2);
         /* Affects PORTB_PCR18 register */
         PORT_HAL_SetMuxMode(PORTB, 18u, kPortMuxAlt2);
+        NVIC_SetPriority(CAN0_ORed_Message_buffer_IRQn, CAN_NVIC_IRQ_Priority);
+        NVIC_SetPriority(CAN0_Bus_Off_IRQn, CAN_NVIC_IRQ_Priority);
+        NVIC_SetPriority(CAN0_Error_IRQn, CAN_NVIC_IRQ_Priority);
+        NVIC_SetPriority(CAN0_Tx_Warning_IRQn, CAN_NVIC_IRQ_Priority);
+        NVIC_SetPriority(CAN0_Rx_Warning_IRQn, CAN_NVIC_IRQ_Priority);
+        NVIC_SetPriority(CAN0_Wake_Up_IRQn, CAN_NVIC_IRQ_Priority);
         break;
     case CAN1_IDX:                       /* CAN1 */
         /* Affects PORTE_PCR25 register */
         PORT_HAL_SetMuxMode(PORTC, 16u, kPortMuxAlt2);
         /* Affects PORTE_PCR24 register */
         PORT_HAL_SetMuxMode(PORTC, 17u, kPortMuxAlt2);
+        NVIC_SetPriority(CAN1_ORed_Message_buffer_IRQn, CAN_NVIC_IRQ_Priority);
+        NVIC_SetPriority(CAN1_Bus_Off_IRQn, CAN_NVIC_IRQ_Priority);
+        NVIC_SetPriority(CAN1_Error_IRQn, CAN_NVIC_IRQ_Priority);
+        NVIC_SetPriority(CAN1_Tx_Warning_IRQn, CAN_NVIC_IRQ_Priority);
+        NVIC_SetPriority(CAN1_Rx_Warning_IRQn, CAN_NVIC_IRQ_Priority);
+        NVIC_SetPriority(CAN1_Wake_Up_IRQn, CAN_NVIC_IRQ_Priority);
         break;
     default:
         break;

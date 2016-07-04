@@ -25,6 +25,7 @@
 #include "tasks_list.h"
 #include "FlexCanDevice.h"
 #include "mic_typedef.h"
+#include "FlexCanMsg_queue.h"
 
 /* Definition */
 
@@ -162,8 +163,8 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
         _task_block();
     }
 
-    _queue_init(&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue), 0);
-    _queue_init(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue), 0);
+    FlexCanMsg_queue_init(&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue), 0);
+    FlexCanMsg_queue_init(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue), 0);
 
 	if ( BSP_CAN_DEVICE_0 == ((pflexcanInstance_t)param)->instance ) {
 		msg_qid = _msgq_open(CAN1_TX_QUEUE, 0);
@@ -178,11 +179,11 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
        _task_block();
     }
 
-	if (MQX_OK != _lwevent_create(&(((pflexcanInstance_t)param)->canState.event_ISR), LWEVENT_AUTO_CLEAR)) // Not set auto clean bits
-    {
-        printf("Make event failed\n");
-        _task_block();// ( kStatus_FLEXCAN_Fail );
-    }
+//	if (MQX_OK != _lwevent_create(&(((pflexcanInstance_t)param)->canState.event_ISR), LWEVENT_AUTO_CLEAR)) // Not set auto clean bits
+//    {
+//        printf("Make event failed\n");
+//        _task_block();// ( kStatus_FLEXCAN_Fail );
+//    }
 
     printf("FLEXCAN_Tx_Task Task: Loop instance %u \n", ((pflexcanInstance_t)param)->instance);
 
@@ -733,11 +734,11 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 	} while ( 1 );
 
 	//TODO
-	if (MQX_OK != _lwevent_destroy(&(((pflexcanInstance_t)param)->canState.event_ISR)))
-	{
-		printf("_lwevent_destroy event failed\n");
-		return;// ( kStatus_FLEXCAN_Fail );
-	}
+//	if (MQX_OK != _lwevent_destroy(&(((pflexcanInstance_t)param)->canState.event_ISR)))
+//	{
+//		printf("_lwevent_destroy event failed\n");
+//		return;// ( kStatus_FLEXCAN_Fail );
+//	}
 }
 
 //#define MIC_LED_TEST
@@ -775,13 +776,13 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 			icount = 0;
             do {
                 //Accamulate the CAN messages before USB send
-				queue_count = _queue_get_size(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue));
+				queue_count = FlexCanMsg_queue_get_size(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue));
                 if ( (RX_FLEXCAN_MSGQ_TRESHOLD_MIN < queue_count || (20 < icount++))/* && ( USB_CAN_MAX_USABLE > _msg_available(g_out_message_pool) )*/ ) {
-                    printf("Rx_task: Ready buff %d\n", queue_count/*, _msg_available(g_out_message_pool)*/);
+                    printf("CanRxT: RB_%d URB_%d\n", queue_count, GetUSBFreeBufferCount(((pflexcanInstance_t)param)->instance + 2)/*, _msg_available(g_out_message_pool)*/);
 					break;
                 }
 
-				_time_delay(3);
+				_time_delay(1);
             } while (1);
 
 			if (queue_count) {
@@ -803,13 +804,13 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 #ifdef FLEXCAN_DEVICE_DEBUG_
 						printf("Get from queue %x elm %x\n",(uint32_t)(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue)), (uint32_t)pqueue_msg );
 #endif
-						pqueue_msg = (pFLEXCAN_queue_element_t)_queue_dequeue(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue));
+                        pqueue_msg = (pFLEXCAN_queue_element_t)FlexCanMsg_queue_dequeue(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue));
                     }
 
                     if ( pqMemElem && pqueue_msg ) {
                         curr_msg_len = ParseCanMessToString (pqueue_msg, (const uint8_t*)pmsg_str);
 
-                        _queue_enqueue (&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
+                        FlexCanMsg_queue_enqueue (&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
 #ifdef FLEXCAN_DEVICE_DEBUG_
 						printf("Return to queue %x elm %x\n",(uint32_t)(&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue)), (uint32_t)pqueue_msg );
 #endif
@@ -851,7 +852,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
                             pqMemElem = NULL;
                         }
                         if (pqueue_msg) {
-                            _queue_enqueue (&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
+                            FlexCanMsg_queue_enqueue (&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
                             pqueue_msg = NULL;
                         }
                         _time_delay(2);
@@ -915,16 +916,16 @@ flexcan_device_status_t FlexCanDevice_InitInstance(  uint8_t instNum, pflexcande
     if (NULL != g_flexcanDeviceInstance[instNum].pMesagebuff) {
         pqueue_elem = (pFLEXCAN_queue_element_t)(g_flexcanDeviceInstance[instNum].pMesagebuff);
 
-        while (!_queue_is_empty(&(g_flexcanDeviceInstance[instNum].Rx_ReadyMSGQueue))) {
-            _queue_dequeue (&(g_flexcanDeviceInstance[instNum].Rx_ReadyMSGQueue));
+        while (!FlexCanMsg_queue_is_empty(&(g_flexcanDeviceInstance[instNum].Rx_ReadyMSGQueue))) {
+            FlexCanMsg_queue_dequeue (&(g_flexcanDeviceInstance[instNum].Rx_ReadyMSGQueue));
         }
 
-        while (!_queue_is_empty(&(g_flexcanDeviceInstance[instNum].Rx_FreeMSGQueue))) {
-            _queue_dequeue (&(g_flexcanDeviceInstance[instNum].Rx_FreeMSGQueue));
+        while (!FlexCanMsg_queue_is_empty(&(g_flexcanDeviceInstance[instNum].Rx_FreeMSGQueue))) {
+            FlexCanMsg_queue_dequeue (&(g_flexcanDeviceInstance[instNum].Rx_FreeMSGQueue));
         }
 
         for (i = 0; i < RX_FLEXCAN_MSGQ_MESAGES; i++) {
-            if (!_queue_enqueue (&(g_flexcanDeviceInstance[instNum].Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_elem)) {
+            if (!FlexCanMsg_queue_enqueue (&(g_flexcanDeviceInstance[instNum].Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_elem)) {
                 printf("ERROR add element to queue\n");
                 ret = fcStatus_FLEXCAN_Error;
                 break;
@@ -1017,9 +1018,6 @@ flexcan_device_status_t FlexCanDevice_Stop( pflexcanInstance_t pInstance ) {
 	if ( !pInstance->bScanInstanceStarted ) {
 		return ret;
 	}
-
-	//TODO
-	//Clear all before stop HW
 
 	FLEXCAN_DRV_Deinit(pInstance->instance);
 	//pInstance->bScanInstanceStarted = false;

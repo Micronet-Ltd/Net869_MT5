@@ -94,7 +94,7 @@ void AccIntEnable()
 
 	// FIXME: hardcoded index
 	port = GPIO_EXTRACT_PORT(ACC_INT);
-	NVIC_SetPriority(g_portIrqId[port], 6U);
+	NVIC_SetPriority(g_portIrqId[port], ACC_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(g_portIrqId[port], acc_irq);
 
 	GPIO_DRV_InputPinInit(&inputPin);

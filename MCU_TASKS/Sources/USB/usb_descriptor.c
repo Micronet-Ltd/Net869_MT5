@@ -36,7 +36,9 @@
  * Includes
  *****************************************************************************/
 #include <mqx.h>
+#include <bsp.h>
 #include <message.h>
+#include <lwmsgq.h>
 
 #include "usb_device_config.h"
 #include "usb.h"

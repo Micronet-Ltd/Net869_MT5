@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <mqx.h>
 #include <bsp.h>
-
+#include <message.h>
+#include <lwmsgq.h>
+#include "fsl_device_registers.h"
+#include "fsl_port_hal.h"
+#include "fsl_sim_hal.h"
 #include "i2c_configuration.h"
+#include "mic_typedef.h"
 
 typedef struct i2c_master_state_with_enable_s
 {
@@ -29,12 +34,12 @@ void I2C_Enable  (uint8_t port)
 		switch (port)
 		{
 			case I2C0_IDX:
-				NVIC_SetPriority      (I2C0_IRQn, 6U);
+				NVIC_SetPriority      (I2C0_IRQn, I2C_NVIC_IRQ_Priority);
 				OSA_InstallIntHandler (I2C0_IRQn, MQX_I2C0_IRQHandler);
 				break;
 
 			case I2C1_IDX:
-				NVIC_SetPriority      (I2C1_IRQn, 6U);
+				NVIC_SetPriority      (I2C1_IRQn, I2C_NVIC_IRQ_Priority);
 				OSA_InstallIntHandler (I2C1_IRQn, MQX_I2C1_IRQHandler);
 				break;
 
