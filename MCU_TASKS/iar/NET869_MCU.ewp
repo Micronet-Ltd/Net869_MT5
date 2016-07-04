@@ -2302,6 +2302,15 @@
         <name>$PROJ_DIR$\..\Sources\Update\SRC\flash_funcs.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\fpga_funcs.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\spi_settings.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\uart.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Sources\Update\SRC\update_exec.c</name>
       </file>
       <file>
@@ -2309,6 +2318,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Sources\Update\SRC\updater.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\W25X40CL.h</name>
       </file>
     </group>
     <group>
