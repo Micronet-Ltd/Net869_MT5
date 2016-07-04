@@ -39,7 +39,7 @@
 /* Implementation of CAN0 handler named in startup code. */
 void CAN0_IRQHandler(void)
 {
-    FLEXCAN_DRV_IRQHandler(0);
+    FLEXCAN_DRV_IRQHandler(g_flexcanBase[0], g_flexcanStatePtr[0]);
 }
 #endif
 
@@ -47,7 +47,7 @@ void CAN0_IRQHandler(void)
 /* Implementation of CAN1 handler named in startup code. */
 void CAN1_IRQHandler(void)
 {
-    FLEXCAN_DRV_IRQHandler(1);
+    FLEXCAN_DRV_IRQHandler(g_flexcanBase[1], g_flexcanStatePtr[1]);
 }
 #endif
 #else
@@ -55,25 +55,25 @@ void CAN1_IRQHandler(void)
 /* Implementation of CAN0 handler named in startup code. */
 void CAN0_ORed_Message_buffer_IRQHandler(void)
 {
-    FLEXCAN_DRV_IRQHandler(0);
+    FLEXCAN_DRV_IRQHandler(g_flexcanBase[0], g_flexcanStatePtr[0]);
 }
 
 /* Implementation of CAN0 handler named in startup code. */
 void CAN0_Bus_Off_IRQHandler(void)
 {
-    FLEXCAN_DRV_IRQHandler(0);
+    FLEXCAN_DRV_IRQHandler(g_flexcanBase[0], g_flexcanStatePtr[0]);
 }
 
 /* Implementation of CAN0 handler named in startup code. */
 void CAN0_Error_IRQHandler(void)
 {
-    FLEXCAN_DRV_IRQHandler(0);
+    FLEXCAN_DRV_IRQHandler(g_flexcanBase[0], g_flexcanStatePtr[0]);
 }
 
 /* Implementation of CAN0 handler named in startup code. */
 void CAN0_Wake_Up_IRQHandler(void)
 {
-    FLEXCAN_DRV_IRQHandler(0);
+    FLEXCAN_DRV_IRQHandler(g_flexcanBase[0], g_flexcanStatePtr[0]);
 }
 #endif
 
@@ -81,25 +81,25 @@ void CAN0_Wake_Up_IRQHandler(void)
 /* Implementation of CAN1 handler named in startup code. */
 void CAN1_ORed_Message_buffer_IRQHandler(void)
 {
-    FLEXCAN_DRV_IRQHandler(1);
+    FLEXCAN_DRV_IRQHandler(g_flexcanBase[1], g_flexcanStatePtr[1]);
 }
 
 /* Implementation of CAN1 handler named in startup code. */
 void CAN1_Bus_Off_IRQHandler(void)
 {
-    FLEXCAN_DRV_IRQHandler(1);
+    FLEXCAN_DRV_IRQHandler(g_flexcanBase[1], g_flexcanStatePtr[1]);
 }
 
 /* Implementation of CAN1 handler named in startup code. */
 void CAN1_Error_IRQHandler(void)
 {
-    FLEXCAN_DRV_IRQHandler(1);
+    FLEXCAN_DRV_IRQHandler(g_flexcanBase[1], g_flexcanStatePtr[1]);
 }
 
 /* Implementation of CAN1 handler named in startup code. */
 void CAN1_Wake_Up_IRQHandler(void)
 {
-    FLEXCAN_DRV_IRQHandler(1);
+    FLEXCAN_DRV_IRQHandler(g_flexcanBase[1], g_flexcanStatePtr[1]);
 }
 #endif
 #endif

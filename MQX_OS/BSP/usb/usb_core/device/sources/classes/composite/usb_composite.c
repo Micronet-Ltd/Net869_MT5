@@ -505,7 +505,8 @@ void* arg)
                 {
                     for(count = 0; count < devicePtr->cl_count; count++)
                     {
-                        if (device_class_interface_map[intf_map_count].type == devicePtr->class_app_callback[count].type)
+                        if (device_class_interface_map[intf_map_count].type == devicePtr->class_app_callback[count].type &&
+                            itf_num == devicePtr->class_composite_info.class_handle[count].interfaces.interface->index)
                         {
                             status = device_class_interface_map[intf_map_count].class_request_callback(setup_packet,data,size,(void *)devicePtr->class_app_callback[count].class_handle);
                         }

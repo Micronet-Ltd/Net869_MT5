@@ -75,7 +75,7 @@ void GPIO_sample_all (KGPIOS_INPUT_CHANNELS i)
 
 		
 		if (state_current != state_prev) {
-			MIC_DEBUG_UART_PRINTF ("GPIO_IN %d level became %d\n", i, state_current);
+			printf ("GPIO_IN %d level became %d\n", i, state_current);
 			gpio_event |= (1 << i);
 		}
 //	}
@@ -117,9 +117,9 @@ void GPIO_OUTPUT_set_level (KGPIOS_OUTPUT_CHANNELS gpio_output, KOUTPUT_LEVEL le
 		case (kGPIO_OUT2) : if (level == GPIO_OUT_LOW)	GPIO_DRV_SetPinOutput (GPIO_OUT2);  else GPIO_DRV_ClearPinOutput (GPIO_OUT2); break;
 		case (kGPIO_OUT3) : if (level == GPIO_OUT_LOW)	GPIO_DRV_SetPinOutput (GPIO_OUT3);  else GPIO_DRV_ClearPinOutput (GPIO_OUT3); break;
 		case (kGPIO_OUT4) : if (level == GPIO_OUT_LOW)	GPIO_DRV_SetPinOutput (GPIO_OUT4);  else GPIO_DRV_ClearPinOutput (GPIO_OUT4); break;
-		default           : MIC_DEBUG_UART_PRINTF ("ERROR: Illegal GPIO_OUT %d\n", gpio_output); return;
+		default           : printf ("ERROR: Illegal GPIO_OUT %d\n", gpio_output); return;
 	}
-	MIC_DEBUG_UART_PRINTF ("GPIO_OUT %d level is set to %s\n", gpio_output,  (level == GPIO_OUT_LOW) ? "LOW" : "OPEN DRAIN");
+	printf ("GPIO_OUT %d level is set to %s\n", gpio_output,  (level == GPIO_OUT_LOW) ? "LOW" : "OPEN DRAIN");
 }
 
 void send_gpi_change(uint8_t * gpio_mask)
@@ -147,7 +147,7 @@ void send_gpi_change(uint8_t * gpio_mask)
 void gpio_set_output (KGPIOS_OUTPUT_CHANNELS gpo_num, KOUTPUT_LEVEL level)
 {
 	GPIO_DRV_WritePinOutput(gp_out_mapping[gpo_num], level );
-	MIC_DEBUG_UART_PRINTF("set GPIO num: %d to val %d \n", gpo_num, level);
+	printf("set GPIO num: %d to val %d \n", gpo_num, level);
 }
 
 void gpio_set_multiple_outputs(uint8_t * mask, uint8_t * value)

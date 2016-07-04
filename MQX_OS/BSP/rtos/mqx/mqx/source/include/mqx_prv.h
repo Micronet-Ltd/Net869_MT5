@@ -898,7 +898,8 @@ typedef struct {
    ((QUEUE_STRUCT_PTR)(queue))->PREV =                              \
       (QUEUE_ELEMENT_STRUCT_PTR)((void *)&((QUEUE_STRUCT_PTR)(queue))->NEXT); \
    ((QUEUE_STRUCT_PTR)(queue))->SIZE = (uint16_t)0;                  \
-   ((QUEUE_STRUCT_PTR)(queue))->MAX  = (uint16_t)max
+   ((QUEUE_STRUCT_PTR)(queue))->MAX  = (uint16_t)max; \
+   ((QUEUE_STRUCT_PTR)(queue))->ATOMIC = 0;
 #else
 #define _QUEUE_INIT(queue, max) _queue_init((QUEUE_STRUCT_PTR)(queue), max)
 #endif

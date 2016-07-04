@@ -706,6 +706,14 @@ static inline uint32_t  FLEXCAN_HAL_GetRxFifoHitIdAcceptanceFilter(CAN_Type * ba
     return CAN_BRD_RXFIR_IDHIT(base);
 }
 
+/*!
+ * @brief Reset the FlexCAN controler 
+ *
+ * @param   base  The FlexCAN base address
+ * @return  None
+ */
+void FLEXCAN_HAL_ResetControler (CAN_Type * base);
+
 /*@}*/
 
 #if defined(__cplusplus)

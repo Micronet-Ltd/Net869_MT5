@@ -25,22 +25,26 @@ extern "C"
 #if BSPCFG_ENABLE_IO_SUBSYSTEM
 
 int UART_debug_printf( const char  *fmt_s, ... ) {
-    va_list  ap;
-    int  result;
-    char tmpBuff[MAX_DEBUG_OUT_STR_SIZE];
+    return 0;
 
-    char *str_ptr = tmpBuff;
+    {
+        va_list  ap;
+        int  result;
+        char tmpBuff[MAX_DEBUG_OUT_STR_SIZE];
 
-    va_start(ap, fmt_s);
-    result = _io_doprint((FILE *)((void *)&str_ptr), _io_sputc, MAX_DEBUG_OUT_STR_SIZE, (char *)fmt_s, ap);
-    *str_ptr = '\0';
-    va_end(ap);
+        char *str_ptr = tmpBuff;
 
-    str_ptr = tmpBuff;
+        va_start(ap, fmt_s);
+        result = _io_doprint((FILE *)((void *)&str_ptr), _io_sputc, MAX_DEBUG_OUT_STR_SIZE, (char *)fmt_s, ap);
+        *str_ptr = '\0';
+        va_end(ap);
 
-    result = write(0, (const void *)str_ptr, strlen(str_ptr));
+        str_ptr = tmpBuff;
 
-    return result;
+        result = write(0, (const void *)str_ptr, strlen(str_ptr));
+        
+		return result;
+	}
 }
 
 static int UART_debug_putc( int ch ) {

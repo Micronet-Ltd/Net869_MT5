@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <mqx.h>
 #include <bsp.h>
+#include <message.h>
+#include <lwmsgq.h>
 
 #include "MK20D10_extension.h"
 #include "fsl_power_manager.h"
@@ -28,6 +30,7 @@
 #include "fsl_interrupt_manager.h"
 #include "board.h"
 #include "bsp.h"
+#include "mic_typedef.h"
 
 #define SUPERCAP_CHRG_DISCHRG_ENABLE   1
 //#define DEBUGGING_ENABLED                1
@@ -440,7 +443,7 @@ void gpioEnableWakeUp(void)
 	PORT_HAL_SetPinIntMode (portBase, pin, kPortIntFallingEdge);
     INT_SYS_EnableIRQ(PORTA_IRQn);
     
-    NVIC_SetPriority(PORTA_IRQn, 6U);
+    NVIC_SetPriority(PORTA_IRQn, PORT_NVIC_IRQ_Priority);
     OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
     
     //LLWU_HAL_ClearExternalPinWakeupFlag(LLWU_BASE_PTR, (llwu_wakeup_pin_t)BOARD_SW_LLWU_EXT_PIN);
@@ -605,7 +608,7 @@ void Power_MGM_task (uint32_t initial_data )
 	peripherals_disable ();
     disable_peripheral_clocks();
 
-	MIC_DEBUG_UART_PRINTF ("\nPower Management Task: Start \n");
+	printf ("\nPower Management Task: Start \n");
 
 	while (1)
 	{
@@ -622,6 +625,7 @@ void Power_MGM_task (uint32_t initial_data )
 			
 		if (++adc_input >= (kADC_CHANNELS - 1))
         {
+				//printf ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
 			adc_input = kADC_ANALOG_IN1;
         }
 		
@@ -657,7 +661,7 @@ void Supercap_charge_state (void)
 		// send a message only once
 		if (GPIO_DRV_ReadPinInput (POWER_CHARGE_ENABLE) == 1)
 		{
-			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: SUPERCAP full Charged %d mV\n", supercap_voltage);
+			printf ("\nPOWER_MGM: SUPERCAP full Charged %d mV\n", supercap_voltage);
 		}
 		GPIO_DRV_ClearPinOutput (POWER_CHARGE_ENABLE);
 	}
@@ -666,7 +670,7 @@ void Supercap_charge_state (void)
 		// send a message only once
 		if (GPIO_DRV_ReadPinInput (POWER_CHARGE_ENABLE) == 0)
 		{
-			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: SUPERCAP low %d mV - Start Charging\n", supercap_voltage);
+			printf ("\nPOWER_MGM: SUPERCAP low %d mV - Start Charging\n", supercap_voltage);
 		}
 		GPIO_DRV_SetPinOutput (POWER_CHARGE_ENABLE);
 	}
@@ -684,7 +688,7 @@ void check_supercap_voltage (void)
 		// send a message only once
 		if (GPIO_DRV_ReadPinInput (POWER_DISCHARGE_ENABLE) == 1)
 		{
-			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: SUPERCAP stop DisCharged (power in voltage is: %d mV, supercap voltage is %d mV)\n", power_in_voltage, supercap_voltage);
+			printf ("\nPOWER_MGM: SUPERCAP stop DisCharged (power in voltage is: %d mV, supercap voltage is %d mV)\n", power_in_voltage, supercap_voltage);
 		}
 		GPIO_DRV_ClearPinOutput (POWER_DISCHARGE_ENABLE);
 	}
@@ -703,7 +707,7 @@ void Supercap_discharge_state (void)
 		// send a message only once
 		if (GPIO_DRV_ReadPinInput (POWER_DISCHARGE_ENABLE) == 0)
 		{
-          MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: SUPERCAP start DisCharged (power in voltage is: %d mV, supercap voltage is: %d mV)\n", power_in_voltage, supercap_voltage);
+          printf ("\nPOWER_MGM: SUPERCAP start DisCharged (power in voltage is: %d mV, supercap voltage is: %d mV)\n", power_in_voltage, supercap_voltage);
 		}
 		GPIO_DRV_SetPinOutput (POWER_DISCHARGE_ENABLE);
 	}
@@ -712,7 +716,7 @@ void Supercap_discharge_state (void)
 		// send a message only once
 		if (GPIO_DRV_ReadPinInput (POWER_DISCHARGE_ENABLE) == 1)
 		{
-			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: SUPERCAP stop DisCharged (power in voltage is: %d mV, supercap voltage is %d mV)\n", power_in_voltage, supercap_voltage);
+			printf ("\nPOWER_MGM: SUPERCAP stop DisCharged (power in voltage is: %d mV, supercap voltage is %d mV)\n", power_in_voltage, supercap_voltage);
 		}
 		GPIO_DRV_ClearPinOutput (POWER_DISCHARGE_ENABLE);
 	}

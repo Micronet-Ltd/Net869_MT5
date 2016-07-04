@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <mqx.h>
 #include <bsp.h>
+#include <lwmsgq.h>
+#include <message.h>
 
 #include "uart_configuration.h"
+#include "mic_typedef.h"
 
 /*******************************************************************************
  * Prototypes
@@ -14,15 +17,15 @@ static uart_state_t  uartState [UART_INSTANCE_COUNT];
 void UART_Enable  (uint8_t port, const uart_user_config_t *uartConfig) 
 {
 	switch (port) {
-		case UART0_IDX:	NVIC_SetPriority      (UART0_RX_TX_IRQn, 6U);
+		case UART0_IDX:	NVIC_SetPriority      (UART0_RX_TX_IRQn, UART_NVIC_IRQ_Priority);
 						OSA_InstallIntHandler (UART0_RX_TX_IRQn, MQX_UART0_RX_TX_IRQHandler);
 						break;
 
-		case UART1_IDX:	NVIC_SetPriority      (UART1_RX_TX_IRQn, 6U);
+		case UART1_IDX:	NVIC_SetPriority      (UART1_RX_TX_IRQn, UART_NVIC_IRQ_Priority);
 						OSA_InstallIntHandler (UART1_RX_TX_IRQn, MQX_UART1_RX_TX_IRQHandler);
 						break;
 						
-		case UART3_IDX:	NVIC_SetPriority      (UART3_RX_TX_IRQn, 6U);
+		case UART3_IDX:	NVIC_SetPriority      (UART3_RX_TX_IRQn, UART_NVIC_IRQ_Priority);
 						OSA_InstallIntHandler (UART3_RX_TX_IRQn, MQX_UART3_RX_TX_IRQHandler);
 						break;
 

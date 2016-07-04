@@ -65,7 +65,7 @@
 /*****************************************************************************
  * Constant and Macro's - None
  *****************************************************************************/
-#define USB_MSGQ_MAX_POOL_SIZE      20
+//#define USB_MSGQ_MAX_POOL_SIZE      20
 
 #define USB_CDC_0_OUT_BUFFERS_COUNT 5 // Command interface
 #define USB_CDC_1_OUT_BUFFERS_COUNT 5 // Accelerometer interface
@@ -216,6 +216,16 @@ bool SetUSBWriteBuffer(pcdc_mic_queue_element_t pcdcBuff, uint8_t cdcport) {
 
     
     return true;
+}
+
+uint32_t GetUSBFreeBufferCount (uint8_t cdcport) {
+	
+	if (COMPOSITE_CFG_MAX <= cdcport) {
+        printf("%s:ERROR the USB port %d wrong\n", __func__, cdcport);
+        return NULL; 
+    }
+	
+	return (uint32_t)(_queue_get_size(&(g_app_composite_device.cdc_vcom[cdcport].qs_OutFreeMsg)));
 }
 
 /*****************************************************************************
@@ -443,7 +453,6 @@ void cdc_vcom_preinit(cdc_struct_t* param)
         return;
     }
     param->recv_size = 0;
-    //param->send_size = 0;
 }
 /*****************************************************************************
  *  
@@ -696,7 +705,7 @@ uint8_t USB_App_Class_Callback
     case USB_APP_CDC_DTE_ACTIVATED:
         if (phandle->start_app == TRUE)
         {
-            //printf("%s: Port%d activated\n", __func__, phandle->portNum);
+            printf("Port%d activated\n", phandle->portNum);
         	phandle->start_transactions = TRUE;
             phandle->send_ready = TRUE;
         }
@@ -704,7 +713,7 @@ uint8_t USB_App_Class_Callback
     case USB_APP_CDC_DTE_DEACTIVATED:
         if (phandle->start_app == TRUE)
         {
-            //printf("%s: Port%d deactivated\n", __func__, phandle->portNum);
+            printf("Port%d deactivated\n", phandle->portNum);
         	phandle->start_transactions = FALSE;
             phandle->send_ready = FALSE;
         }
@@ -771,8 +780,6 @@ uint8_t USB_App_Class_Callback
 
     return error;
 }
-
-//#define ACC_MSG_SIZE (8 + 6 * 10)
 
 #ifdef MIC_USB_DEBUG
 _queue_id g_usb_test_qid = 0;
@@ -1118,6 +1125,8 @@ bool CDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle ) {
 
     phandle->pSendElem = (pcdc_mic_queue_element_t)_queue_dequeue(&(phandle->qs_OutInProcMsg));
     if (NULL != phandle->pSendElem) {
+    	// this is the real fix for a control channel that stops being able to transmit messages
+        phandle->send_ready = false;
         if ( USB_OK != USB_Class_CDC_Send_Data(handle, phandle->in_endpoint, phandle->pSendElem->data_buff, phandle->pSendElem->send_size ) ) {
             printf("%s: Error send USB port_%d\n", __func__, phandle->portNum );
             if (!_queue_enqueue(&(phandle->qs_OutFreeMsg), (QUEUE_ELEMENT_STRUCT_PTR)phandle->pSendElem)) {
@@ -1128,14 +1137,23 @@ bool CDC_SendData (cdc_handle_t handle, cdc_struct_t *phandle ) {
 			//printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
             return false;
         }
-        phandle->send_ready = false;
-		//printf ("%s: Set sendR F P_%d\n", __func__, phandle->portNum);
+        
+        
         phandle->sendPackets++;
+        if (phandle->sendPackets <= phandle->SendPacketsCompl) {
+        	// this is the race condition.  The packet can be sent prior to getting to this point in the code
+        	// which is why we need to set the send_ready flag to false prior to attempting to send the packet
+        	// instead of after attempting to send the message.
+            printf ("%s: packet already sent T P_%d: sendPackets: %d, compl: %d\n", __func__, phandle->portNum, phandle->sendPackets, phandle->SendPacketsCompl);
+        }
+        
+        //if (cdcNum != 1) printf ("%s: Set sendR F P_%d for cdcNum: %d, sendPackets: %d, compl: %d, %d (%d)\n", __func__, phandle->portNum, cdcNum, phandle->sendPackets, phandle->SendPacketsCompl,
+        //                         pAccHandle->sendPackets, pAccHandle->SendPacketsCompl);
     }
 
 	if (false == phandle->send_ready && NULL == phandle->pSendElem ) {
-        phandle->pSendElem = NULL;
-		//printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
+        //phandle->pSendElem = NULL;
+		printf ("%s: Set sendR T P_%d\n", __func__, phandle->portNum);
 	}
 
     return true;

@@ -37,47 +37,47 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_RTR_SHIFT  (31U)          /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format A&B RTR mask.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_IDE_SHIFT  (30U)          /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format A&B IDE mask.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_RTR_SHIFT  (15U)           /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format B RTR-2 mask.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_IDE_SHIFT  (14U)           /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format B IDE-2 mask.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_EXT_MASK    (0x3FFFFFFFU)  /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format A extended mask.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_EXT_SHIFT   (1U)           /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format A extended shift.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_STD_MASK    (0x3FF80000U)  /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format A standard mask.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_STD_SHIFT   (19U)          /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format A standard shift.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_EXT_MASK    (0x3FFFU)      /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format B extended mask.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_EXT_SHIFT1  (16U)          /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format B extended mask.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_EXT_SHIFT2  (0U)           /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format B extended mask.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_MASK    (0x7FFU)      /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format B standard mask.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_SHIFT1  (19U)          /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format B standard shift1.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_SHIFT2  (3U)           /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format B standard shift2.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_MASK        (0xFFU)        /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format C mask.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT1      (24U)          /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format C shift1.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT2      (16U)          /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format C shift2.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT3      (8U)           /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format C shift3.*/
-#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT4      (0U)           /*!< FlexCAN RX FIFO ID filter*/
-                                                                     /*! format C shift4.*/
-#define FLEXCAN_ALL_INT                               (0x0007U)      /*!< Masks for wakeup, error, bus off*/
-                                                                     /*! interrupts*/
-#define FLEXCAN_BYTE_DATA_FIELD_MASK                  (0xFFU)        /*!< Masks for byte data field.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_RTR_SHIFT  (31U)                         /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format A&B RTR mask.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATAB_IDE_SHIFT  (30U)                         /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format A&B IDE mask.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_RTR_SHIFT  (15U)                          /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format B RTR-2 mask.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_IDE_SHIFT  (14U)                          /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format B IDE-2 mask.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_EXT_MASK    (0x3FFFFFFFU)                 /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format A extended mask.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_EXT_SHIFT   (1U)                          /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format A extended shift.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_STD_MASK    (0x3FF80000U)                 /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format A standard mask.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATA_STD_SHIFT   (19U)                         /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format A standard shift.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_EXT_MASK    (0x3FFFU)                     /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format B extended mask.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_EXT_SHIFT1  (16U)                         /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format B extended mask.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_EXT_SHIFT2  (0U)                          /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format B extended mask.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_MASK    (0x7FFU)                      /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format B standard mask.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_SHIFT1  (19U)                         /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format B standard shift1.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATB_STD_SHIFT2  (3U)                          /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format B standard shift2.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_MASK        (0xFFU)                       /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format C mask.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT1      (24U)                         /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format C shift1.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT2      (16U)                         /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format C shift2.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT3      (8U)                          /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format C shift3.*/
+#define FLEXCAN_RX_FIFO_ID_FILTER_FORMATC_SHIFT4      (0U)                          /*!< FlexCAN RX FIFO ID filter*/
+                                                                                    /*! format C shift4.*/
+#define FLEXCAN_ALL_INT                               ((CAN_ESR1_WAKINT_MASK | CAN_ESR1_ERRINT_MASK | CAN_ESR1_BOFFINT_MASK | CAN_ESR1_RXWRN_MASK | CAN_ESR1_TXWRN_MASK))      /*!< Masks for wakeup, error, bus off*/
+                                                                                    /*! interrupts*/
+#define FLEXCAN_BYTE_DATA_FIELD_MASK                  (0xFFU)                       /*!< Masks for byte data field.*/
 
 /*******************************************************************************
  * Code
@@ -268,7 +268,7 @@ flexcan_status_t FLEXCAN_HAL_SetTxMsgBuff(
         return kStatus_FLEXCAN_InvalidArgument;
     }
 
-    if (msgBuffIdx >= CAN_BRD_MCR_MAXMB(base))
+    if (msgBuffIdx > CAN_BRD_MCR_MAXMB(base))
     {
         return kStatus_FLEXCAN_OutOfRange;
     }
@@ -410,7 +410,7 @@ flexcan_status_t FLEXCAN_HAL_SetRxMsgBuff(
         return kStatus_FLEXCAN_InvalidArgument;
     }
 
-    if (msgBuffIdx >= CAN_BRD_MCR_MAXMB(base))
+    if (msgBuffIdx > CAN_BRD_MCR_MAXMB(base))
     {
         return kStatus_FLEXCAN_OutOfRange;
     }
@@ -509,7 +509,7 @@ flexcan_status_t FLEXCAN_HAL_GetMsgBuff(
         return kStatus_FLEXCAN_InvalidArgument;
     }
 
-    if (msgBuffIdx >= CAN_BRD_MCR_MAXMB(base))
+    if (msgBuffIdx > CAN_BRD_MCR_MAXMB(base))
     {
         return kStatus_FLEXCAN_OutOfRange;
     }
@@ -580,16 +580,16 @@ flexcan_status_t FLEXCAN_HAL_LockRxMsgBuff(
         return (kStatus_FLEXCAN_InvalidArgument);
     }
 
-    if (msgBuffIdx >= CAN_BRD_MCR_MAXMB(base))
+    if (msgBuffIdx > CAN_BRD_MCR_MAXMB(base))
     {
         return (kStatus_FLEXCAN_OutOfRange);
     }
 
     /* Lock the mailbox*/
-		if(tmp)
-		{
+	if(tmp)
+	{
         tmp = flexcan_reg_ptr->MB[msgBuffIdx].CS;
-		}
+	}
 
     return kStatus_FLEXCAN_Success;
 }
@@ -614,7 +614,7 @@ void FLEXCAN_HAL_EnableRxFifo(CAN_Type * base, uint32_t numOfFilters)
     /* RX FIFO global mask*/
     CAN_WR_RXFGMASK(base, CAN_ID_EXT(CAN_RXFGMASK_FGM_MASK));
     maxNumMb = CAN_BRD_MCR_MAXMB(base);
-    for (i = 0; i < maxNumMb; i++)
+    for (i = 0; i <= maxNumMb; i++)
     {
         /* RX individual mask*/
         CAN_WR_RXIMR(base, i, CAN_ID_EXT(CAN_RXIMR_MI_MASK));
@@ -686,7 +686,7 @@ void FLEXCAN_HAL_SetMaxMsgBuffNum(
     CAN_BWR_MCR_MAXMB(base, maxMsgBuffNum);
 
     /* Initialize all message buffers as inactive*/
-    for (i = 0; i < maxMsgBuffNum; i++)
+    for (i = 0; i <= maxMsgBuffNum; i++)
     {
         flexcan_reg_ptr->MB[i].CS = 0x0;
         flexcan_reg_ptr->MB[i].ID = 0x0;
@@ -839,7 +839,7 @@ flexcan_status_t FLEXCAN_HAL_SetMsgBuffIntCmd(
 {
     uint32_t temp;
 
-    if (msgBuffIdx >= CAN_BRD_MCR_MAXMB(base))
+    if (msgBuffIdx > CAN_BRD_MCR_MAXMB(base))
     {
         return kStatus_FLEXCAN_OutOfRange;
     }
@@ -1027,6 +1027,8 @@ flexcan_status_t FLEXCAN_HAL_ReadRxFifo(
         }
     }
 
+    FLEXCAN_HAL_UnlockRxMsgBuff (base);
+
     return kStatus_FLEXCAN_Success;
 }
 
@@ -1112,7 +1114,7 @@ flexcan_status_t FLEXCAN_HAL_SetRxIndividualStdMask(
     uint32_t msgBuffIdx,
     uint32_t stdMask)
 {
-    if (msgBuffIdx >= CAN_BRD_MCR_MAXMB(base))
+    if (msgBuffIdx > CAN_BRD_MCR_MAXMB(base))
     {
         return kStatus_FLEXCAN_OutOfRange;
     }
@@ -1140,7 +1142,7 @@ flexcan_status_t FLEXCAN_HAL_SetRxIndividualExtMask(
     uint32_t msgBuffIdx,
     uint32_t extMask)
 {
-    if (msgBuffIdx >= CAN_BRD_MCR_MAXMB(base))
+    if (msgBuffIdx > CAN_BRD_MCR_MAXMB(base))
     {
         return kStatus_FLEXCAN_OutOfRange;
     }
@@ -1378,6 +1380,22 @@ flexcan_status_t FLEXCAN_HAL_ExitOperationMode(
 
     return kStatus_FLEXCAN_Success;
 }
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : FLEXCAN_HAL_ResetControler
+ * Description   : Reset FlexCan controler.
+ * This function will reset the CAN Controler.
+ *
+ *END**************************************************************************/
+void FLEXCAN_HAL_ResetControler (CAN_Type * base) {
+    if (0 == CAN_BRD_MCR_SOFTRST(base)) {
+        CAN_BWR_MCR_SOFTRST (base, 0x1);
+
+        while (!CAN_BRD_MCR_SOFTRST(base)) {}
+    }
+}
+
 #endif
 
 /*******************************************************************************
