@@ -778,7 +778,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
                 //Accamulate the CAN messages before USB send
 				queue_count = FlexCanMsg_queue_get_size(&(((pflexcanInstance_t)param)->Rx_ReadyMSGQueue));
                 if ( (RX_FLEXCAN_MSGQ_TRESHOLD_MIN < queue_count || (20 < icount++))/* && ( USB_CAN_MAX_USABLE > _msg_available(g_out_message_pool) )*/ ) {
-                    printf("CanRxT: RB_%d URB_%d\n", queue_count, GetUSBFreeBufferCount(((pflexcanInstance_t)param)->instance + 2)/*, _msg_available(g_out_message_pool)*/);
+                    //printf("CanRxT: RB_%d URB_%d\n", queue_count, GetUSBFreeBufferCount(((pflexcanInstance_t)param)->instance + 2)/*, _msg_available(g_out_message_pool)*/);
 					break;
                 }
 
