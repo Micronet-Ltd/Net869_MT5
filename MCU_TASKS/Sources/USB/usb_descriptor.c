@@ -36,7 +36,9 @@
  * Includes
  *****************************************************************************/
 #include <mqx.h>
+#include <bsp.h>
 #include <message.h>
+#include <lwmsgq.h>
 
 #include "usb_device_config.h"
 #include "usb.h"
@@ -392,8 +394,8 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_CALL_MANAG_DESC_SIZE,               /* Size of this descriptor */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	CALL_MANAGEMENT_FUNC_DESC,
-	CM_D0_D1,                                   /*D0(if set): device handles call management itself
-											D1(if set): process commands multiplexed over the data interface*/
+	CM_D0_D1,                               /* D0(if set): device handles call management itself
+											    D1(if set): process commands multiplexed over the data interface*/
 	0x01,                                   /* Indicates multiplexed commands are handled via data interface */
 
 	CDC_ABSTRACT_DESC_SIZE,                 /* Size of this descriptor */
@@ -554,7 +556,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	0x02,                                   /* Number of contiguous CDC interfaces
 											that are associated with this function */
 	CDC_CLASS,                              /* CDC_CC */
-	DEVICE_DESC_DEVICE_SUBCLASS_CAN,
+	DEVICE_DESC_DEVICE_SUBCLASS,
 	DEVICE_DESC_DEVICE_PROTOCOL,
 	0x00,                                   /* Index of string */
 
@@ -566,7 +568,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CIC_ENDP_COUNT,                         /* management and notification(optional)element present */
 	CDC_CLASS,                              /* Communication Interface Class */
 	CIC_SUBCLASS_CODE,
-	AT_250_PROTOCOL,
+	CIC_PROTOCOL_CODE,
 	0x00, /* Interface Description String Index*/
 
 	/* CDC Class-Specific descriptor */
@@ -579,15 +581,15 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	CDC_CALL_MANAG_DESC_SIZE,               /* Size of this descriptor */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	CALL_MANAGEMENT_FUNC_DESC,
-	CM_DO_D1_CAN,                           /*D0(if set): device handles call management itself
-											D1(if set): process commands multiplexed over the data interface*/
+	CM_D0_D1,                           	/* D0(if set): device handles call management itself
+											D1(if set): process commands multiplexed over the data interface */
 	0x01,                                   /* Indicates multiplexed commands are handled via data interface */
 
 	//ACM Functional descriptor
 	CDC_ABSTRACT_DESC_SIZE,                 /* Size of this descriptor */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	ABSTRACT_CONTROL_FUNC_DESC,
-	0x02,                                   /* Device supports request send break, device supports request
+	0x06,                                   /* Device supports request send break, device supports request
 											 combination o set_line_coding, set_control_line_state, 
 											 get_line_coding and the notification serial state */
 
@@ -1033,7 +1035,7 @@ uint16_t g_std_desc_size[USB_MAX_STD_DESCRIPTORS + 1] =
 uint8_t *g_std_descriptors[USB_MAX_STD_DESCRIPTORS + 1] = {
 	NULL,
 	g_device_descriptor,
-	g_config_descriptor,
+	(uint8_t*)g_config_descriptor,
 	NULL, /* string */
 	NULL, /* Interface */
 	NULL, /* Endpoint */
@@ -1452,8 +1454,8 @@ uint8_t USB_Desc_Set_Speed ( uint32_t handle, uint16_t speed )
 #endif
 	}
 
-	ptr1.pntr = g_config_descriptor;
-	ptr2.pntr = g_config_descriptor + CONFIG_DESC_SIZE;
+	ptr1.pntr = (void*)g_config_descriptor;
+	ptr2.pntr = (void*)(g_config_descriptor + CONFIG_DESC_SIZE);
 
 	while ( ptr1.word < ptr2.word )
 	{

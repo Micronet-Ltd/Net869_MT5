@@ -771,7 +771,7 @@
         <option>
           <name>IlinkConfigDefines</name>
           <state>__ram_vector_table__=1</state>
-          <state>__stack_size__=0x2000</state>
+          <state>__stack_size__=0x1200</state>
           <state>__heap_size__=0x4000</state>
         </option>
         <option>
@@ -942,7 +942,7 @@
         </option>
         <option>
           <name>IlinkLogRedirSymbols</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogUnusedFragments</name>
@@ -1012,7 +1012,7 @@
         </option>
         <option>
           <name>IlinkLogCallGraph</name>
-          <state>0</state>
+          <state>1</state>
         </option>
       </data>
     </settings>
@@ -1812,7 +1812,7 @@
         <option>
           <name>IlinkConfigDefines</name>
           <state>__ram_vector_table__=1</state>
-          <state>__stack_size__=0x2000</state>
+          <state>__stack_size__=0x1200</state>
           <state>__heap_size__=0x4000</state>
         </option>
         <option>
@@ -2238,6 +2238,12 @@
       <file>
         <name>$PROJ_DIR$\..\Sources\FlexCAN\FlexCanDevice_IRQ.c</name>
       </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\FlexCAN\FlexCanMsg_queue.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\FlexCAN\FlexCanMsg_queue.h</name>
+      </file>
     </group>
     <group>
       <name>FPGA_API</name>
@@ -2296,6 +2302,15 @@
         <name>$PROJ_DIR$\..\Sources\Update\SRC\flash_funcs.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\fpga_funcs.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\spi_settings.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\uart.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Sources\Update\SRC\update_exec.c</name>
       </file>
       <file>
@@ -2303,6 +2318,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Sources\Update\SRC\updater.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\Update\SRC\W25X40CL.h</name>
       </file>
     </group>
     <group>

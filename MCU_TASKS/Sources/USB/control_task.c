@@ -87,31 +87,27 @@ void control_task (uint32_t initial_data)
 	{
 		/* wait forever for interrupt message */
 		ctl_rx_msg = _msgq_receive(control_rx_qid, 0);
-		if (ctl_rx_msg != NULL && ctl_rx_msg->header.SIZE >= 2)
-		{
-			//TODO: For debug only
-                        _time_get(&time);
-                        
-                        time_diff = ((time.SECONDS * 1000) +  time.MILLISECONDS) - current_time;
-                        current_time += time_diff;
-                        
-                                    printf("\n time diff: %d ms, data : %x,%x, \t ,%x,%x, size %d \n", time_diff, ctl_rx_msg->data[0],
-                                                    ctl_rx_msg->data[1],ctl_rx_msg->data[ctl_rx_msg->header.SIZE -2],
-                                                    ctl_rx_msg->data[ctl_rx_msg->header.SIZE -1], ctl_rx_msg->header.SIZE);
-                        
-			/* process message */
-			protocol_process_receive_data(CONTEXT_CONTROL_EP, ctl_rx_msg->data, ctl_rx_msg->header.SIZE);
+		do {
+			if (ctl_rx_msg != NULL && ctl_rx_msg->header.SIZE >= 2)
+			{
+				//TODO: For debug only
+	            _time_get(&time);
+            
+	            time_diff = ((time.SECONDS * 1000) +  time.MILLISECONDS) - current_time;
+	            current_time += time_diff;
+				printf("\n time diff: %d ms, data : %x,%x, \t ,%x,%x, size %d \n", time_diff, ctl_rx_msg->data[0],
+						ctl_rx_msg->data[1],ctl_rx_msg->data[ctl_rx_msg->header.SIZE -2],
+						ctl_rx_msg->data[ctl_rx_msg->header.SIZE -1], ctl_rx_msg->header.SIZE);
+				/* process message */
+				protocol_process_receive_data(CONTEXT_CONTROL_EP, ctl_rx_msg->data, ctl_rx_msg->header.SIZE);
+				break;
+			}
+		} while (0);
+		
+		if (NULL != ctl_rx_msg) {
 			_msg_free   (ctl_rx_msg);
-                        ctl_rx_msg = NULL;
-		} else if (ctl_rx_msg != NULL) {
-                      _msg_free   (ctl_rx_msg);
-                      ctl_rx_msg = NULL;
-                }
-                  
-
-		//_event_wait_all(g_GPIO_event_h, 0xff, 1);
-
-		//_event_clear(g_GPIO_event_h, 0xff);
+			ctl_rx_msg = NULL;
+		}
 	}
 
 	/* should never get here */

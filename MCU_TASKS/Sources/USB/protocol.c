@@ -177,7 +177,7 @@ int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t s
 	// transmissions, this will need to be determined through testing.
 	// TODO: implement or add conversion for clock ticks to ms here
 	//if( now - lastrx > MS(10) ) // MS(N) returns 10ms in clock ticks.
-		frame_reset(frame);
+	frame_reset(frame);
 
 
 	while(size - offset > 0)

@@ -85,7 +85,7 @@
 #define DEVICE_CONTROL_TIME_OFF_TH				 3200		// number of mili-seconds pulse for turning device off
 #define DEVICE_CONTROL_TIME_RESET_TH			  500		// number of mili-seconds pulse for reseting device
 
-#define BACKUP_RECOVER_TIME_TH					 1000		// number of mili-seconds to try power failure overcome (device is powered by supercap)
+#define BACKUP_RECOVER_TIME_TH					 2000		// number of mili-seconds to try power failure overcome (device is powered by supercap)
 #define BACKUP_POWER_TIME_TH					20000		// number of mili-seconds to power device by supercap
 
 #define CPU_OFF_CHECK_TIME						1000		// time between checks for CPU/A8 off
@@ -170,13 +170,13 @@ void Device_update_state (uint32_t * time_diff)
             
 			if (ignition_voltage >= ignition_threshold_g)
 			{
-				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
+				printf ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
 				turn_on_condition_g |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;
 			}
 
 			if (Wiggle_sensor_cross_TH ())
 			{
-				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
+				printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
 				turn_on_condition_g |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
 			}
 
@@ -201,7 +201,7 @@ void Device_update_state (uint32_t * time_diff)
                 //Board_SetFastClk ();
 				Device_turn_on     ();
 				device_state_g = DEVICE_STATE_ON;
-				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE RUNNING\n");
+				printf ("\nPOWER_MGM: DEVICE RUNNING\n");
                 FPGA_init ();
                 FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
                 GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
@@ -214,7 +214,7 @@ void Device_update_state (uint32_t * time_diff)
 			// if power drops below threshold - shutdown
 			if (power_in_voltage < POWER_IN_SHUTDOWN_TH)
 			{
-				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - SHUTING DOWN !!! \n", power_in_voltage);
+				printf ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - SHUTING DOWN !!! \n", power_in_voltage);
 				device_state_g = DEVICE_STATE_BACKUP_RECOVERY;
                 FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
 				break;
@@ -224,7 +224,7 @@ void Device_update_state (uint32_t * time_diff)
 			if ((temperature < TEMPERATURE_MIN_TH)   ||
 				(temperature > TEMPERATURE_MAX_TH)    )
 			{
-				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
+				printf ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
                 device_state_g = DEVICE_STATE_OFF;
                 Device_off_req(0);
 			}
@@ -242,14 +242,14 @@ void Device_update_state (uint32_t * time_diff)
                 //switch_power_mode(kPowerManagerVlpr);
 				//Board_SetVerySlowClk ();
 				device_state_g = DEVICE_STATE_BACKUP_POWER;
-				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: Recovery period is over\n");
+				printf ("\nPOWER_MGM: Recovery period is over\n");
 				break;
 			}
 
 			// if power is back during recovery period - return to DEVICE_ON state, like nothing happen
 			if (power_in_voltage >= POWER_IN_TURN_ON_TH)
 			{
-				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: INPUT POWER OK %d\n", power_in_voltage);
+				printf ("\nPOWER_MGM: INPUT POWER OK %d\n", power_in_voltage);
 				backup_power_cnt_g = 0;
 				device_state_g = DEVICE_STATE_ON;
                 FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
@@ -260,7 +260,7 @@ void Device_update_state (uint32_t * time_diff)
 			// if power is back during backup period - turn on a YELLOW LED
 			if (power_in_voltage >= POWER_IN_TURN_ON_TH)
 			{
-                MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE_STATE_BACKUP_POWER power back up");
+                printf ("\nPOWER_MGM: DEVICE_STATE_BACKUP_POWER power back up");
 			}
 
 			backup_power_cnt_g += *time_diff;
@@ -272,7 +272,7 @@ void Device_update_state (uint32_t * time_diff)
 				Device_turn_off ();
 				device_state_g = DEVICE_STATE_TURN_OFF;
                 supercap_voltage = ADC_get_value (kADC_POWER_VCAP);
-				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: backup period is over - shutting down, supercap voltage = %d\n", supercap_voltage);
+				printf ("\nPOWER_MGM: backup period is over - shutting down, supercap voltage = %d\n", supercap_voltage);
 			}
 			break;
 
@@ -280,7 +280,7 @@ void Device_update_state (uint32_t * time_diff)
 			// wait while pulse is still generated (time period didn't reach threshold)
 			if (!Device_control_GPIO_status())
 			{
-				MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF\n");
+				printf ("\nPOWER_MGM: DEVICE IS OFF\n");
 				device_state_g = DEVICE_STATE_OFF;
                 Device_off_req(0);
 				//Wiggle_sensor_restart ();
@@ -291,7 +291,7 @@ void Device_update_state (uint32_t * time_diff)
 			break;
 
 		default:
-			MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: ERROR: UNKNOWN STATE %d\n", device_state_g );
+			printf ("\nPOWER_MGM: ERROR: UNKNOWN STATE %d\n", device_state_g );
 			device_state_g = DEVICE_STATE_OFF;
 			Wiggle_sensor_restart ();
             enable_peripheral_clocks();
@@ -328,7 +328,7 @@ void Device_off_req(uint8_t wait_time)
 		cpu_status_pin = GPIO_DRV_ReadPinInput (CPU_STATUS);
 		if (cpu_status_pin == 0)
 		{
-			MIC_DEBUG_UART_PRINTF ("Device_off_req: CPU_status pin %d, wait_time %d ms\n", cpu_status_pin, cpu_off_wait_time);
+			printf ("Device_off_req: CPU_status pin %d, wait_time %d ms\n", cpu_status_pin, cpu_off_wait_time);
 			break;
 		}
 	}
@@ -339,7 +339,7 @@ void Device_off_req(uint8_t wait_time)
 	 */
 	if (cpu_off_wait_time >= MAX_CPU_OFF_CHECK_TIME)
 	{
-		MIC_DEBUG_UART_PRINTF ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
+		printf ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
 		GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
 	}
 #endif
@@ -347,7 +347,7 @@ void Device_off_req(uint8_t wait_time)
 	led_blink_cnt_g = 0;
 	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 	//Board_SetSlowClk ();
-	MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
+	printf ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
 	device_state_g = DEVICE_STATE_OFF;
     WDG_RESET_MCU();
 	//Wiggle_sensor_restart ();
@@ -458,7 +458,7 @@ void peripherals_enable (void)
     {
     	if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1)
     	{
-            MIC_DEBUG_UART_PRINTF ("\nPOWER_MGM: INFO: FPGA is loaded, wait_time: %d ms\n", total_wait_time );
+            printf ("\nPOWER_MGM: INFO: FPGA is loaded, wait_time: %d ms\n", total_wait_time );
     		break;
     	}
         _time_delay(1);

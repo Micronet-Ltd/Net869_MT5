@@ -91,7 +91,8 @@ typedef struct FlexCANState {
     volatile bool           isRxBlockingFIFO;               /*!< True if receive is blocking transaction on FIFO. */
     volatile bool           isRxBlockingMB[CAN_CS_COUNT];   /*!< True if receive is blocking transaction on MB. */
     FLEXCAN_MailboxConfig_t MB_config[CAN_CS_COUNT];        /*!< MB configuration */
-    LWEVENT_STRUCT          event_ISR;                     /*!< Event signaling interrupt occure. */
+    bool                    FIFO_ISR_busy;                  /*!< ISR FIFO busy flag */
+//    LWEVENT_STRUCT          event_ISR;                     /*!< Event signaling interrupt occure. */
 	QUEUE_STRUCT_PTR	    fifo_free_messages;				/*!< Queue of available FIFO data elements. */
 	QUEUE_STRUCT_PTR	    fifo_ready_messages;			/*!< Queue of ready FIFO data elements. */ 
 } flexcan_state_t;
@@ -134,6 +135,11 @@ typedef struct FLEXCAN_Debug {
     uint32_t WakeUpCountCount_1;
     uint32_t BusOffCount_1;
 }FLEXCAN_Debug_t;
+
+extern FLEXCAN_Debug_t g_Flexdebug;
+
+/* Pointer to runtime state structure.*/
+extern flexcan_state_t * g_flexcanStatePtr[CAN_INSTANCE_COUNT];
 
 /*******************************************************************************
  * API
@@ -408,7 +414,7 @@ flexcan_status_t FLEXCAN_DRV_RxFifo(
  *
  * @param   instance    The FlexCAN instance number.
  */
-void FLEXCAN_DRV_IRQHandler(uint8_t instance);
+void FLEXCAN_DRV_IRQHandler(CAN_Type *base, flexcan_state_t *state);
 
 /*!
  * @brief Returns whether the previous FLEXCAN transmit has finished.
