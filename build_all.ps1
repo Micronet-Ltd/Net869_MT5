@@ -5,7 +5,7 @@ $tproj_m = 'release'
 $core_num = 4
 #-log errors|warnings|info|all	
 $jar_log = 'info'
-$out_path = "$PSScriptRoot\MCU_TASKS\iar\out"
+$out_path = "$PSScriptRoot\out"
 $bl_path = "$PSScriptRoot\BootLoader\$tproj\Exe"
 $app_file = "NET869_MCU.srec"
 $app0_file = "NET869_MCU_0.srec"
@@ -68,18 +68,31 @@ Function vers_srec
 ############################################
 # CODE START
 ############################################
-Write-Host "Num Args:" $args.Length
+#Write-Host "Num Args:" $args.Length
 #check arguments
 foreach ($arg in $args)
 {
-	Write-Host "Arg: $arg";
+#Write-Host "Arg: $arg";
 	if($arg -eq '-nr')
 	{ 
-		$nr = $true	
+		$nr = $true
+		Write-Host "-nr 		- Does not rebuild OS libraries";	
 	}
 	elseif($arg -eq '-bbl')
 	{ 
-		$bbl = $true	
+		$bbl = $true
+		Write-Host 	"-bbl		- Rebuilds BootLoader";
+	}
+	elseif(($arg -eq '-h') -or ($arg -eq '-?') -or ($arg -eq '-help'))
+	{
+		Write-Host 	"------------------------------------------------"
+					"Optional arguments:"
+					"------------------------------------------------"
+					"-bbl		- Rebuilds BootLoader"
+					"-nr 		- Does not rebuild OS libraries"
+					"-help, -h, -?	- Help message"
+					"------------------------------------------------";
+		exit
 	}	
 }
 
@@ -87,11 +100,17 @@ foreach ($arg in $args)
 Write-Host "psscript root: $PSScriptRoot";
 $PSScriptRoot = $pwd
 Write-Host "psscript root after change: $PSScriptRoot";
-$out_path = "$PSScriptRoot\MCU_TASKS\iar\out"
+$out_path = "$PSScriptRoot\out"
 $bl_path = "$PSScriptRoot\BootLoader\$tproj\Exe"
 
-
-Remove-Item $out_path\*.*
+if(!(Test-Path -Path $out_path))
+{
+	New-Item -ItemType directory -Path $out_path
+}	
+else
+{
+	Remove-Item $out_path\*.*
+}	
 # New-Item $out_path PowerShell -type directory
 
 #build version S0 s-record
