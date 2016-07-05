@@ -740,7 +740,7 @@ void updater_task(uint32_t param)
 							fpga_data(bbb, len);
 							continue;
 						}
-					res = exec_cmd((int32_t)id, (char*)tmp_buf);
+					res = exec_cmd((cmd_id)id, (char*)tmp_buf);
 					if(0 == res)
 					{
 						ptr = tmp_buf;

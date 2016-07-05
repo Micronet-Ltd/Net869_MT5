@@ -616,7 +616,7 @@ void Power_MGM_task (uint32_t initial_data )
 
 		if (adc_input < kADC_POWER_IN)
 		{
-			GPIO_sample_all (adc_input);
+			GPIO_sample_all ((KGPIOS_INPUT_CHANNELS)adc_input);
 		}
 		else
 		{
