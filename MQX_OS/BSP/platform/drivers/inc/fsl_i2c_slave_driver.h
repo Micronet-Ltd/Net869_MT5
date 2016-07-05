@@ -63,16 +63,16 @@ extern void * g_i2cStatePtr[I2C_INSTANCE_COUNT];
 typedef enum _i2c_slave_event
 {
 #if FSL_FEATURE_I2C_HAS_START_STOP_DETECT
-    kI2CSlaveStartDetect  = 0x01u,   /*!< The slave I2C detecting START signal event. */
+	kI2CSlaveStartDetect  = 0x01u,   /*!< The slave I2C detecting START signal event. */
 #endif
-    kI2CSlaveTxReq   = 0x02u,        /*!< The slave I2C Transmitting Request event. */
-    kI2CSlaveRxReq   = 0x04u,        /*!< The slave I2C Receiving Request event. */
-    kI2CSlaveTxNAK   = 0x08u,        /*!< The slave I2C Transmitting NAK event. */
-    kI2CSlaveTxEmpty = 0x10u,        /*!< The slave I2C Transmitting Buffer Empty event. */
-    kI2CSlaveRxFull  = 0x20u,        /*!< The slave I2C Receiving Buffer Full event. */
-    kI2CSlaveAbort   = 0x40u,        /*!< The slave I2C Slave abort transaction event.*/
+	kI2CSlaveTxReq   = 0x02u,        /*!< The slave I2C Transmitting Request event. */
+	kI2CSlaveRxReq   = 0x04u,        /*!< The slave I2C Receiving Request event. */
+	kI2CSlaveTxNAK   = 0x08u,        /*!< The slave I2C Transmitting NAK event. */
+	kI2CSlaveTxEmpty = 0x10u,        /*!< The slave I2C Transmitting Buffer Empty event. */
+	kI2CSlaveRxFull  = 0x20u,        /*!< The slave I2C Receiving Buffer Full event. */
+	kI2CSlaveAbort   = 0x40u,        /*!< The slave I2C Slave abort transaction event.*/
 #if (FSL_FEATURE_I2C_HAS_START_STOP_DETECT || FSL_FEATURE_I2C_HAS_STOP_DETECT)
-    kI2CSlaveStopDetect = 0x80u,     /*!< The slave I2C detecting STOP signal event.*/
+	kI2CSlaveStopDetect = 0x80u,     /*!< The slave I2C detecting STOP signal event.*/
 #endif
 } i2c_slave_event_t;
 
@@ -88,19 +88,19 @@ typedef void (*i2c_slave_callback_t)(uint8_t instance,i2c_slave_event_t slaveEve
  */
 typedef struct I2CSlaveState
 {
-    i2c_status_t status;                 /*!< The slave I2C status. */
-    volatile uint32_t txSize;            /*!< Size of the TX buffer.*/
-    volatile uint32_t rxSize;            /*!< Size of the RX buffer.*/
-    const uint8_t *txBuff;               /*!< Pointer to Tx Buffer.*/
-    uint8_t *rxBuff;                     /*!< Pointer to Rx Buffer.*/
-    bool isTxBusy;                       /*!< True if the driver is sending data.*/
-    bool isRxBusy;                       /*!< True if the driver is receiving data.*/
-    bool isTxBlocking;                   /*!< True if transmit is blocking transaction. */
-    bool isRxBlocking;                   /*!< True if receive is blocking transaction. */
-    event_t irqEvent;                    /*!< Use to wait for ISR to complete its Tx, Rx business */
-    bool slaveListening;                 /*!< True if slave is in listening mode. */
-    i2c_slave_callback_t slaveCallback;  /*!< Pointer to user callback function. */
-    void *callbackParam;                 /*!< Pointer to user callback param. */
+	i2c_status_t status;                 /*!< The slave I2C status. */
+	volatile uint32_t txSize;            /*!< Size of the TX buffer.*/
+	volatile uint32_t rxSize;            /*!< Size of the RX buffer.*/
+	const uint8_t *txBuff;               /*!< Pointer to Tx Buffer.*/
+	uint8_t *rxBuff;                     /*!< Pointer to Rx Buffer.*/
+	bool isTxBusy;                       /*!< True if the driver is sending data.*/
+	bool isRxBusy;                       /*!< True if the driver is receiving data.*/
+	bool isTxBlocking;                   /*!< True if transmit is blocking transaction. */
+	bool isRxBlocking;                   /*!< True if receive is blocking transaction. */
+	event_t irqEvent;                    /*!< Use to wait for ISR to complete its Tx, Rx business */
+	bool slaveListening;                 /*!< True if slave is in listening mode. */
+	i2c_slave_callback_t slaveCallback;  /*!< Pointer to user callback function. */
+	void *callbackParam;                 /*!< Pointer to user callback param. */
 } i2c_slave_state_t;
 
 /*!
@@ -112,16 +112,16 @@ typedef struct I2CSlaveState
  */
 typedef struct I2CSlaveUserConfig
 {
-    uint16_t address;                   /*!< Slave's 7-bit or 10-bit address. If 10-bit address,
-                                             the first 6 bits must be 011110 in binary. @internal gui name="Address" id="SlaveAddress" */
-    bool slaveListening;                /*!< The slave configuration mode. @internal gui name="Slave listening" id="SlaveListening" */
-    i2c_slave_callback_t slaveCallback; /*!< The slave callback function. @internal gui name="Callback" id="SlaveCallback" */
-    void *callbackParam;                /*!< The slave callback data. @internal gui name="Callback parameter" id="SlaveCallbackParam" */
+	uint16_t address;                   /*!< Slave's 7-bit or 10-bit address. If 10-bit address,
+											 the first 6 bits must be 011110 in binary. @internal gui name="Address" id="SlaveAddress" */
+	bool slaveListening;                /*!< The slave configuration mode. @internal gui name="Slave listening" id="SlaveListening" */
+	i2c_slave_callback_t slaveCallback; /*!< The slave callback function. @internal gui name="Callback" id="SlaveCallback" */
+	void *callbackParam;                /*!< The slave callback data. @internal gui name="Callback parameter" id="SlaveCallbackParam" */
 #if FSL_FEATURE_I2C_HAS_START_STOP_DETECT
-    bool startStopDetect;               /*!< The slave startStop detect configuration @internal gui name="Start and Stop detect" id="SlaveStartStopDetect" */
+	bool startStopDetect;               /*!< The slave startStop detect configuration @internal gui name="Start and Stop detect" id="SlaveStartStopDetect" */
 #endif
 #if FSL_FEATURE_I2C_HAS_STOP_DETECT
-    bool stopDetect;                    /*!< The slave Stop detect configuration @internal gui name="Stop detect" id="SlaveStopDetect" */
+	bool stopDetect;                    /*!< The slave Stop detect configuration @internal gui name="Stop detect" id="SlaveStopDetect" */
 #endif
 }i2c_slave_user_config_t;
 
@@ -151,8 +151,8 @@ extern "C" {
  * @return Error or success status returned by API.
  */
 i2c_status_t I2C_DRV_SlaveInit(uint32_t instance,
-                               const i2c_slave_user_config_t * userConfigPtr,
-                               i2c_slave_state_t * slave);
+							   const i2c_slave_user_config_t * userConfigPtr,
+							   i2c_slave_state_t * slave);
 
 /*!
  * @brief Shuts down the I2C slave driver.
@@ -190,8 +190,8 @@ i2c_slave_state_t * I2C_DRV_SlaveGetHandler(uint32_t instance);
  * @return          success (if I2C slave status is not error) or error code in others.
  */
 i2c_status_t I2C_DRV_SlaveSendData(uint32_t instance,
-                                   const uint8_t * txBuff,
-                                   uint32_t txSize);
+								   const uint8_t * txBuff,
+								   uint32_t txSize);
 
 
 /*!
@@ -209,9 +209,9 @@ i2c_status_t I2C_DRV_SlaveSendData(uint32_t instance,
  */
 
 i2c_status_t I2C_DRV_SlaveSendDataBlocking(uint32_t    instance,
-                                           const uint8_t *  txBuff,
-                                           uint32_t   txSize,
-                                           uint32_t   timeout_ms);
+										   const uint8_t *  txBuff,
+										   uint32_t   txSize,
+										   uint32_t   timeout_ms);
 
 /*!
  * @brief Receives the data by using a non-blocking method.
@@ -228,8 +228,8 @@ i2c_status_t I2C_DRV_SlaveSendDataBlocking(uint32_t    instance,
  * @return          success (if I2C slave status is not error) or error code in others.
  */
 i2c_status_t I2C_DRV_SlaveReceiveData(uint32_t   instance,
-                                       uint8_t * rxBuff,
-                                       uint32_t  rxSize);
+									   uint8_t * rxBuff,
+									   uint32_t  rxSize);
 
 /*!
  * @brief Receives data by using a blocking method.
@@ -245,9 +245,9 @@ i2c_status_t I2C_DRV_SlaveReceiveData(uint32_t   instance,
  * @return          success (if I2C slave status is not error) or error code in others.
  */
 i2c_status_t I2C_DRV_SlaveReceiveDataBlocking(uint32_t instance,
-                                       uint8_t  * rxBuff,
-                                       uint32_t   rxSize,
-                                       uint32_t   timeout_ms);
+									   uint8_t  * rxBuff,
+									   uint32_t   rxSize,
+									   uint32_t   timeout_ms);
 
 /*!
  * @brief Gets the current status of the I2C slave driver.
@@ -258,7 +258,7 @@ i2c_status_t I2C_DRV_SlaveReceiveDataBlocking(uint32_t instance,
  *                        complete (success) or idle (I2C bus is idle).
  */
 i2c_status_t I2C_DRV_SlaveGetReceiveStatus(uint32_t instance,
-                                            uint32_t *bytesRemaining);
+											uint32_t *bytesRemaining);
 
 /*!
  * @brief Gets the current status of the I2C slave driver.
@@ -269,7 +269,7 @@ i2c_status_t I2C_DRV_SlaveGetReceiveStatus(uint32_t instance,
  *                        complete (success) or idle (I2C bus is idle).
  */
 i2c_status_t I2C_DRV_SlaveGetTransmitStatus(uint32_t instance,
-                                            uint32_t *bytesRemaining);
+											uint32_t *bytesRemaining);
 
 /*!
  * @brief Terminates a non-blocking receive of the I2C slave early.
@@ -319,10 +319,10 @@ static inline bool I2C_DRV_SlaveIsBusBusy(uint32_t instance)
 * @return Error or success status returned by API.
 */
 static inline i2c_status_t I2C_DRV_SlaveSendDataPolling(uint32_t instance,
-                                                        const uint8_t* txBuff,
-                                                        uint32_t txSize)
+														const uint8_t* txBuff,
+														uint32_t txSize)
 {
-    return I2C_HAL_SlaveSendDataPolling(g_i2cBase[instance], txBuff, txSize);
+	return I2C_HAL_SlaveSendDataPolling(g_i2cBase[instance], txBuff, txSize);
 }
 
 /*!
@@ -334,10 +334,10 @@ static inline i2c_status_t I2C_DRV_SlaveSendDataPolling(uint32_t instance,
 * @return Error or success status returned by the API.
 */
 static inline i2c_status_t I2C_DRV_SlaveReceiveDataPolling(uint32_t instance,
-                                                           uint8_t *rxBuff,
-                                                           uint32_t rxSize)
+														   uint8_t *rxBuff,
+														   uint32_t rxSize)
 {
-    return I2C_HAL_SlaveReceiveDataPolling(g_i2cBase[instance], rxBuff, rxSize);
+	return I2C_HAL_SlaveReceiveDataPolling(g_i2cBase[instance], rxBuff, rxSize);
 }
 
 /*!

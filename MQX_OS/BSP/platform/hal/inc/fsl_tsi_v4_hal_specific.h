@@ -55,12 +55,12 @@ extern uint32_t tsi_hal_gencs/*[TSI_INSTANCE_COUNT]*/;
  * Set up TSI analog modes in a TSI instance.
  */
 typedef enum _tsi_analog_mode_select {
-    kTsiAnalogModeSel_Capacitive = 0,     /*!< Active TSI capacitive sensing mode */
-    kTsiAnalogModeSel_NoiseNoFreqLim = 4, /*!< TSI works in single threshold noise detection mode and the freq. limitation
+	kTsiAnalogModeSel_Capacitive = 0,     /*!< Active TSI capacitive sensing mode */
+	kTsiAnalogModeSel_NoiseNoFreqLim = 4, /*!< TSI works in single threshold noise detection mode and the freq. limitation
 is disabled */
-    kTsiAnalogModeSel_NoiseFreqLim = 8,   /*!< TSI analog works in single threshold noise detection mode and the freq. limitation
+	kTsiAnalogModeSel_NoiseFreqLim = 8,   /*!< TSI analog works in single threshold noise detection mode and the freq. limitation
 is enabled */
-    kTsiAnalogModeSel_AutoNoise = 12,     /*!/ Active TSI analog in automatic noise detection mode */
+	kTsiAnalogModeSel_AutoNoise = 12,     /*!/ Active TSI analog in automatic noise detection mode */
 } tsi_analog_mode_select_t;
 
 /*!
@@ -69,14 +69,14 @@ is enabled */
  * These constants define the tsi Reference oscillator charge current select in a TSI (REFCHRG) instance.
  */
 typedef enum _tsi_reference_osc_charge_current {
-    kTsiRefOscChargeCurrent_500nA = 0, /*!< Reference oscillator charge current is 500nA */
-    kTsiRefOscChargeCurrent_1uA = 1,   /*!< Reference oscillator charge current is 1uA */
-    kTsiRefOscChargeCurrent_2uA = 2,   /*!< Reference oscillator charge current is 2uA */
-    kTsiRefOscChargeCurrent_4uA = 3,   /*!< Reference oscillator charge current is 4uA */
-    kTsiRefOscChargeCurrent_8uA = 4,   /*!< Reference oscillator charge current is 8uA */
-    kTsiRefOscChargeCurrent_16uA = 5,  /*!< Reference oscillator charge current is 16uA */
-    kTsiRefOscChargeCurrent_32uA = 6,  /*!< Reference oscillator charge current is 32uA */
-    kTsiRefOscChargeCurrent_64uA = 7,  /*!< Reference oscillator charge current is 64uA */
+	kTsiRefOscChargeCurrent_500nA = 0, /*!< Reference oscillator charge current is 500nA */
+	kTsiRefOscChargeCurrent_1uA = 1,   /*!< Reference oscillator charge current is 1uA */
+	kTsiRefOscChargeCurrent_2uA = 2,   /*!< Reference oscillator charge current is 2uA */
+	kTsiRefOscChargeCurrent_4uA = 3,   /*!< Reference oscillator charge current is 4uA */
+	kTsiRefOscChargeCurrent_8uA = 4,   /*!< Reference oscillator charge current is 8uA */
+	kTsiRefOscChargeCurrent_16uA = 5,  /*!< Reference oscillator charge current is 16uA */
+	kTsiRefOscChargeCurrent_32uA = 6,  /*!< Reference oscillator charge current is 32uA */
+	kTsiRefOscChargeCurrent_64uA = 7,  /*!< Reference oscillator charge current is 64uA */
 } tsi_reference_osc_charge_current_t;
 
 /*!
@@ -97,10 +97,10 @@ typedef struct _tsi_reference_osc_charge_current_limits
  * These bits indicate the oscillator's voltage rails.
  */
 typedef enum _tsi_oscilator_voltage_rails {
-    kTsiOscVolRails_Dv_103 = 0,        /*!< DV = 1.03 V; VP = 1.33 V; Vm = 0.30 V */
-    kTsiOscVolRails_Dv_073 = 1,        /*!< DV = 0.73 V; VP = 1.18 V; Vm = 0.45 V */
-    kTsiOscVolRails_Dv_043 = 2,        /*!< DV = 0.43 V; VP = 1.03 V; Vm = 0.60 V */
-    kTsiOscVolRails_Dv_029 = 3,        /*!< DV = 0.29 V; VP = 0.95 V; Vm = 0.67 V */
+	kTsiOscVolRails_Dv_103 = 0,        /*!< DV = 1.03 V; VP = 1.33 V; Vm = 0.30 V */
+	kTsiOscVolRails_Dv_073 = 1,        /*!< DV = 0.73 V; VP = 1.18 V; Vm = 0.45 V */
+	kTsiOscVolRails_Dv_043 = 2,        /*!< DV = 0.43 V; VP = 1.03 V; Vm = 0.60 V */
+	kTsiOscVolRails_Dv_029 = 3,        /*!< DV = 0.29 V; VP = 0.95 V; Vm = 0.67 V */
 } tsi_oscilator_voltage_rails_t;
 
 /*!
@@ -110,14 +110,14 @@ typedef enum _tsi_oscilator_voltage_rails {
  * in TSI (EXTCHRG) instance.
  */
 typedef enum _tsi_external_osc_charge_current {
-    kTsiExtOscChargeCurrent_500nA = 0,  /*!< External oscillator charge current is 500nA */
-    kTsiExtOscChargeCurrent_1uA = 1,    /*!< External oscillator charge current is 1uA */
-    kTsiExtOscChargeCurrent_2uA = 2,    /*!< External oscillator charge current is 2uA */
-    kTsiExtOscChargeCurrent_4uA = 3,    /*!< External oscillator charge current is 4uA */
-    kTsiExtOscChargeCurrent_8uA = 4,    /*!< External oscillator charge current is 8uA */
-    kTsiExtOscChargeCurrent_16uA = 5,   /*!< External oscillator charge current is 16uA */
-    kTsiExtOscChargeCurrent_32uA = 6,   /*!< External oscillator charge current is 32uA */
-    kTsiExtOscChargeCurrent_64uA = 7,   /*!< External oscillator charge current is 64uA */
+	kTsiExtOscChargeCurrent_500nA = 0,  /*!< External oscillator charge current is 500nA */
+	kTsiExtOscChargeCurrent_1uA = 1,    /*!< External oscillator charge current is 1uA */
+	kTsiExtOscChargeCurrent_2uA = 2,    /*!< External oscillator charge current is 2uA */
+	kTsiExtOscChargeCurrent_4uA = 3,    /*!< External oscillator charge current is 4uA */
+	kTsiExtOscChargeCurrent_8uA = 4,    /*!< External oscillator charge current is 8uA */
+	kTsiExtOscChargeCurrent_16uA = 5,   /*!< External oscillator charge current is 16uA */
+	kTsiExtOscChargeCurrent_32uA = 6,   /*!< External oscillator charge current is 32uA */
+	kTsiExtOscChargeCurrent_64uA = 7,   /*!< External oscillator charge current is 64uA */
 } tsi_external_osc_charge_current_t;
 
 /*!
@@ -138,22 +138,22 @@ typedef struct _tsi_external_osc_charge_current_limits
  * These bits specify current channel to be measured.
  */
 typedef enum _tsi_channel_number {
-    kTsiChannelNumber_0 = 0,       /*!< Channel Number 0 */
-    kTsiChannelNumber_1 = 1,       /*!< Channel Number 1 */
-    kTsiChannelNumber_2 = 2,       /*!< Channel Number 2 */
-    kTsiChannelNumber_3 = 3,       /*!< Channel Number 3 */
-    kTsiChannelNumber_4 = 4,       /*!< Channel Number 4 */
-    kTsiChannelNumber_5 = 5,       /*!< Channel Number 5 */
-    kTsiChannelNumber_6 = 6,       /*!< Channel Number 6 */
-    kTsiChannelNumber_7 = 7,       /*!< Channel Number 7 */
-    kTsiChannelNumber_8 = 8,       /*!< Channel Number 8 */
-    kTsiChannelNumber_9 = 9,       /*!< Channel Number 9 */
-    kTsiChannelNumber_10 = 10,     /*!< Channel Number 10 */
-    kTsiChannelNumber_11 = 11,     /*!< Channel Number 11 */
-    kTsiChannelNumber_12 = 12,     /*!< Channel Number 12 */
-    kTsiChannelNumber_13 = 13,     /*!< Channel Number 13 */
-    kTsiChannelNumber_14 = 14,     /*!< Channel Number 14 */
-    kTsiChannelNumber_15 = 15,     /*!< Channel Number 15 */
+	kTsiChannelNumber_0 = 0,       /*!< Channel Number 0 */
+	kTsiChannelNumber_1 = 1,       /*!< Channel Number 1 */
+	kTsiChannelNumber_2 = 2,       /*!< Channel Number 2 */
+	kTsiChannelNumber_3 = 3,       /*!< Channel Number 3 */
+	kTsiChannelNumber_4 = 4,       /*!< Channel Number 4 */
+	kTsiChannelNumber_5 = 5,       /*!< Channel Number 5 */
+	kTsiChannelNumber_6 = 6,       /*!< Channel Number 6 */
+	kTsiChannelNumber_7 = 7,       /*!< Channel Number 7 */
+	kTsiChannelNumber_8 = 8,       /*!< Channel Number 8 */
+	kTsiChannelNumber_9 = 9,       /*!< Channel Number 9 */
+	kTsiChannelNumber_10 = 10,     /*!< Channel Number 10 */
+	kTsiChannelNumber_11 = 11,     /*!< Channel Number 11 */
+	kTsiChannelNumber_12 = 12,     /*!< Channel Number 12 */
+	kTsiChannelNumber_13 = 13,     /*!< Channel Number 13 */
+	kTsiChannelNumber_14 = 14,     /*!< Channel Number 14 */
+	kTsiChannelNumber_15 = 15,     /*!< Channel Number 15 */
 } tsi_channel_number_t;
 
 /*!
@@ -163,14 +163,14 @@ typedef enum _tsi_channel_number {
  * the TSI module charge currents, number of scans, thresholds, and so on.
  */
 typedef struct TsiConfig {
-    tsi_electrode_osc_prescaler_t ps;       /*!< Prescaler */
-    tsi_external_osc_charge_current_t extchrg;  /*!< Electrode charge current */
-    tsi_reference_osc_charge_current_t refchrg;  /*!< Reference charge current */
-    tsi_n_consecutive_scans_t nscn;     /*!< Number of scans. */
-    tsi_analog_mode_select_t mode;      /*!< TSI mode of operation. */
-    tsi_oscilator_voltage_rails_t dvolt;       /*!< Oscillator's voltage rails. */
-    uint16_t thresh;   /*!< High threshold. */
-    uint16_t thresl;   /*!< Low threshold. */
+	tsi_electrode_osc_prescaler_t ps;       /*!< Prescaler */
+	tsi_external_osc_charge_current_t extchrg;  /*!< Electrode charge current */
+	tsi_reference_osc_charge_current_t refchrg;  /*!< Reference charge current */
+	tsi_n_consecutive_scans_t nscn;     /*!< Number of scans. */
+	tsi_analog_mode_select_t mode;      /*!< TSI mode of operation. */
+	tsi_oscilator_voltage_rails_t dvolt;       /*!< Oscillator's voltage rails. */
+	uint16_t thresh;   /*!< High threshold. */
+	uint16_t thresl;   /*!< Low threshold. */
 }tsi_config_t;
 
 /*!
@@ -196,8 +196,8 @@ extern "C" {
 */
 static inline void TSI_HAL_EnableOutOfRangeInterrupt(TSI_Type * base)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_ESOR_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);    
+	tsi_hal_gencs &= ~TSI_GENCS_ESOR_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -208,8 +208,8 @@ static inline void TSI_HAL_EnableOutOfRangeInterrupt(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableEndOfScanInterrupt(TSI_Type * base)
 {
-    tsi_hal_gencs |= TSI_GENCS_ESOR_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs |= TSI_GENCS_ESOR_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -220,8 +220,8 @@ static inline void TSI_HAL_EnableEndOfScanInterrupt(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableModule(TSI_Type * base)
 {
-    tsi_hal_gencs |= TSI_GENCS_TSIEN_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs |= TSI_GENCS_TSIEN_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -232,8 +232,8 @@ static inline void TSI_HAL_EnableModule(TSI_Type * base)
 */
 static inline void TSI_HAL_DisableModule(TSI_Type * base)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_TSIEN_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs &= ~TSI_GENCS_TSIEN_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -244,8 +244,8 @@ static inline void TSI_HAL_DisableModule(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableInterrupt(TSI_Type * base)
 {
-    tsi_hal_gencs |= TSI_GENCS_TSIIEN_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs |= TSI_GENCS_TSIIEN_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -256,8 +256,8 @@ static inline void TSI_HAL_EnableInterrupt(TSI_Type * base)
 */
 static inline void TSI_HAL_DisableInterrupt(TSI_Type * base)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_TSIIEN_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs &= ~TSI_GENCS_TSIIEN_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -268,7 +268,7 @@ static inline void TSI_HAL_DisableInterrupt(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_IsInterruptEnabled(TSI_Type * base)
 {
-    return TSI_BRD_GENCS_TSIIEN(base);
+	return TSI_BRD_GENCS_TSIIEN(base);
 }
 
 /*!
@@ -279,7 +279,7 @@ static inline uint32_t TSI_HAL_IsInterruptEnabled(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_GetEnableStop(TSI_Type * base)
 {
-    return (uint32_t)TSI_BRD_GENCS_STPE(base);
+	return (uint32_t)TSI_BRD_GENCS_STPE(base);
 }
 
 /*!
@@ -290,8 +290,8 @@ static inline uint32_t TSI_HAL_GetEnableStop(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableStop(TSI_Type * base)
 {
-    tsi_hal_gencs |= TSI_GENCS_STPE_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs |= TSI_GENCS_STPE_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -302,8 +302,8 @@ static inline void TSI_HAL_EnableStop(TSI_Type * base)
 */
 static inline void TSI_HAL_DisableStop(TSI_Type * base)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_STPE_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs &= ~TSI_GENCS_STPE_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -314,8 +314,8 @@ static inline void TSI_HAL_DisableStop(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableHardwareTriggerScan(TSI_Type * base)
 {
-    tsi_hal_gencs |= TSI_GENCS_STM_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs |= TSI_GENCS_STM_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -326,8 +326,8 @@ static inline void TSI_HAL_EnableHardwareTriggerScan(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableSoftwareTriggerScan(TSI_Type * base)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_STM_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs &= ~TSI_GENCS_STM_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -339,8 +339,8 @@ static inline void TSI_HAL_EnableSoftwareTriggerScan(TSI_Type * base)
 */
 static inline void TSI_HAL_CurrentSourcePairSwapped(TSI_Type * base)
 {
-    tsi_hal_gencs |= TSI_GENCS_CURSW_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs |= TSI_GENCS_CURSW_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -352,8 +352,8 @@ static inline void TSI_HAL_CurrentSourcePairSwapped(TSI_Type * base)
 */
 static inline void TSI_HAL_CurrentSourcePairNotSwapped(TSI_Type * base)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_CURSW_MASK;
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs &= ~TSI_GENCS_CURSW_MASK;
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -364,7 +364,7 @@ static inline void TSI_HAL_CurrentSourcePairNotSwapped(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_GetCurrentSourcePairSwapped(TSI_Type * base)
 {
-    return (uint32_t)TSI_BRD_GENCS_CURSW(base);
+	return (uint32_t)TSI_BRD_GENCS_CURSW(base);
 }
 
 /*!
@@ -374,8 +374,8 @@ static inline uint32_t TSI_HAL_GetCurrentSourcePairSwapped(TSI_Type * base)
 * @return   None.
 */
 static inline void TSI_HAL_ClearOutOfRangeFlag(TSI_Type * base)
-{    
-    TSI_WR_GENCS(base, (tsi_hal_gencs | TSI_GENCS_OUTRGF_MASK));
+{
+	TSI_WR_GENCS(base, (tsi_hal_gencs | TSI_GENCS_OUTRGF_MASK));
 }
 
 
@@ -387,7 +387,7 @@ static inline void TSI_HAL_ClearOutOfRangeFlag(TSI_Type * base)
 */
 static inline void TSI_HAL_ClearEndOfScanFlag(TSI_Type * base)
 {
-    TSI_WR_GENCS(base, (tsi_hal_gencs | TSI_GENCS_EOSF_MASK));
+	TSI_WR_GENCS(base, (tsi_hal_gencs | TSI_GENCS_EOSF_MASK));
 }
 
 /*!
@@ -399,9 +399,9 @@ static inline void TSI_HAL_ClearEndOfScanFlag(TSI_Type * base)
 */
 static inline void TSI_HAL_SetPrescaler(TSI_Type * base, tsi_electrode_osc_prescaler_t prescaler)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_PS_MASK;
-    tsi_hal_gencs |= TSI_GENCS_PS(prescaler);
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs &= ~TSI_GENCS_PS_MASK;
+	tsi_hal_gencs |= TSI_GENCS_PS(prescaler);
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -413,9 +413,9 @@ static inline void TSI_HAL_SetPrescaler(TSI_Type * base, tsi_electrode_osc_presc
 */
 static inline void TSI_HAL_SetNumberOfScans(TSI_Type * base, tsi_n_consecutive_scans_t number)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_NSCN_MASK;
-    tsi_hal_gencs |= TSI_GENCS_NSCN(number);
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs &= ~TSI_GENCS_NSCN_MASK;
+	tsi_hal_gencs |= TSI_GENCS_NSCN(number);
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -427,8 +427,8 @@ static inline void TSI_HAL_SetNumberOfScans(TSI_Type * base, tsi_n_consecutive_s
 */
 static inline void TSI_HAL_SetMeasuredChannelNumber(TSI_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);  
-    TSI_BWR_DATA_TSICH(base, channel);
+	assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);
+	TSI_BWR_DATA_TSICH(base, channel);
 }
 
 /*!
@@ -439,7 +439,7 @@ static inline void TSI_HAL_SetMeasuredChannelNumber(TSI_Type * base, uint32_t ch
 */
 static inline uint32_t TSI_HAL_GetMeasuredChannelNumber(TSI_Type * base)
 {
-    return (uint32_t)TSI_BRD_DATA_TSICH(base);
+	return (uint32_t)TSI_BRD_DATA_TSICH(base);
 }
 
 /*!
@@ -450,7 +450,7 @@ static inline uint32_t TSI_HAL_GetMeasuredChannelNumber(TSI_Type * base)
 */
 static inline void TSI_HAL_DmaTransferEnable(TSI_Type * base)
 {
-    TSI_BWR_DATA_DMAEN(base, 1);
+	TSI_BWR_DATA_DMAEN(base, 1);
 }
 
 /*!
@@ -461,7 +461,7 @@ static inline void TSI_HAL_DmaTransferEnable(TSI_Type * base)
 */
 static inline void TSI_HAL_DmaTransferDisable(TSI_Type * base)
 {
-    TSI_BWR_DATA_DMAEN(base, 0);
+	TSI_BWR_DATA_DMAEN(base, 0);
 }
 
 /*!
@@ -472,7 +472,7 @@ static inline void TSI_HAL_DmaTransferDisable(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_IsDmaTransferEnable(TSI_Type * base)
 {
-    return TSI_BRD_DATA_DMAEN(base);
+	return TSI_BRD_DATA_DMAEN(base);
 }
 
 /*!
@@ -483,7 +483,7 @@ static inline uint32_t TSI_HAL_IsDmaTransferEnable(TSI_Type * base)
 */
 static inline void TSI_HAL_StartSoftwareTrigger(TSI_Type * base)
 {
-    TSI_SET_DATA(base, TSI_DATA_SWTS(1));
+	TSI_SET_DATA(base, TSI_DATA_SWTS(1));
 }
 
 /*!
@@ -494,7 +494,7 @@ static inline void TSI_HAL_StartSoftwareTrigger(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_GetCounter(TSI_Type * base)
 {
-    return (uint32_t)TSI_BRD_DATA_TSICNT(base);
+	return (uint32_t)TSI_BRD_DATA_TSICNT(base);
 }
 
 /*!
@@ -506,8 +506,8 @@ static inline uint32_t TSI_HAL_GetCounter(TSI_Type * base)
 */
 static inline void TSI_HAL_SetLowThreshold(TSI_Type * base, uint32_t low_threshold)
 {
-    assert(low_threshold < 65535U);
-    TSI_BWR_TSHD_THRESL(base, low_threshold);
+	assert(low_threshold < 65535U);
+	TSI_BWR_TSHD_THRESL(base, low_threshold);
 }
 
 /*!
@@ -519,8 +519,8 @@ static inline void TSI_HAL_SetLowThreshold(TSI_Type * base, uint32_t low_thresho
 */
 static inline void TSI_HAL_SetHighThreshold(TSI_Type * base, uint32_t high_threshold)
 {
-    assert(high_threshold < 65535U);  
-    TSI_BWR_TSHD_THRESH(base, high_threshold);
+	assert(high_threshold < 65535U);
+	TSI_BWR_TSHD_THRESH(base, high_threshold);
 }
 
 /*!
@@ -532,9 +532,9 @@ static inline void TSI_HAL_SetHighThreshold(TSI_Type * base, uint32_t high_thres
 */
 static inline void TSI_HAL_SetMode(TSI_Type * base, tsi_analog_mode_select_t mode)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_MODE_MASK;
-    tsi_hal_gencs |= TSI_GENCS_MODE(mode);
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs &= ~TSI_GENCS_MODE_MASK;
+	tsi_hal_gencs |= TSI_GENCS_MODE(mode);
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -545,7 +545,7 @@ static inline void TSI_HAL_SetMode(TSI_Type * base, tsi_analog_mode_select_t mod
 */
 static inline tsi_analog_mode_select_t TSI_HAL_GetMode(TSI_Type * base)
 {
-    return (tsi_analog_mode_select_t)((tsi_hal_gencs & TSI_GENCS_MODE_MASK) >> TSI_GENCS_MODE_SHIFT);
+	return (tsi_analog_mode_select_t)((tsi_hal_gencs & TSI_GENCS_MODE_MASK) >> TSI_GENCS_MODE_SHIFT);
 }
 
 /*!
@@ -556,9 +556,9 @@ static inline tsi_analog_mode_select_t TSI_HAL_GetMode(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_GetNoiseResult(TSI_Type * base)
 {
-    uint32_t gencs = TSI_RD_GENCS(base);
-    
-    return (gencs & TSI_GENCS_MODE_MASK) >> TSI_GENCS_MODE_SHIFT;
+	uint32_t gencs = TSI_RD_GENCS(base);
+
+	return (gencs & TSI_GENCS_MODE_MASK) >> TSI_GENCS_MODE_SHIFT;
 }
 
 /*!
@@ -570,9 +570,9 @@ static inline uint32_t TSI_HAL_GetNoiseResult(TSI_Type * base)
 */
 static inline void TSI_HAL_SetReferenceChargeCurrent(TSI_Type * base, tsi_reference_osc_charge_current_t current)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_REFCHRG_MASK;
-    tsi_hal_gencs |= TSI_GENCS_REFCHRG(current);
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs &= ~TSI_GENCS_REFCHRG_MASK;
+	tsi_hal_gencs |= TSI_GENCS_REFCHRG(current);
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -583,7 +583,7 @@ static inline void TSI_HAL_SetReferenceChargeCurrent(TSI_Type * base, tsi_refere
 */
 static inline tsi_reference_osc_charge_current_t TSI_HAL_GetReferenceChargeCurrent(TSI_Type * base)
 {
-    return (tsi_reference_osc_charge_current_t)TSI_GENCS_REFCHRG(tsi_hal_gencs);
+	return (tsi_reference_osc_charge_current_t)TSI_GENCS_REFCHRG(tsi_hal_gencs);
 }
 
 /*!
@@ -595,9 +595,9 @@ static inline tsi_reference_osc_charge_current_t TSI_HAL_GetReferenceChargeCurre
 */
 static inline void TSI_HAL_SetOscilatorVoltageRails(TSI_Type * base, tsi_oscilator_voltage_rails_t dvolt)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_DVOLT_MASK;
-    tsi_hal_gencs |= TSI_GENCS_DVOLT(dvolt);
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs &= ~TSI_GENCS_DVOLT_MASK;
+	tsi_hal_gencs |= TSI_GENCS_DVOLT(dvolt);
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -608,7 +608,7 @@ static inline void TSI_HAL_SetOscilatorVoltageRails(TSI_Type * base, tsi_oscilat
 */
 static inline tsi_oscilator_voltage_rails_t TSI_HAL_GetOscilatorVoltageRails(TSI_Type * base)
 {
-    return (tsi_oscilator_voltage_rails_t)TSI_BRD_GENCS_DVOLT(base);
+	return (tsi_oscilator_voltage_rails_t)TSI_BRD_GENCS_DVOLT(base);
 }
 
 /*!
@@ -620,9 +620,9 @@ static inline tsi_oscilator_voltage_rails_t TSI_HAL_GetOscilatorVoltageRails(TSI
 */
 static inline void TSI_HAL_SetElectrodeChargeCurrent(TSI_Type * base, tsi_external_osc_charge_current_t current)
 {
-    tsi_hal_gencs &= ~TSI_GENCS_EXTCHRG_MASK;
-    tsi_hal_gencs |= TSI_GENCS_EXTCHRG(current);
-    TSI_WR_GENCS(base, tsi_hal_gencs);
+	tsi_hal_gencs &= ~TSI_GENCS_EXTCHRG_MASK;
+	tsi_hal_gencs |= TSI_GENCS_EXTCHRG(current);
+	TSI_WR_GENCS(base, tsi_hal_gencs);
 }
 
 /*!
@@ -633,7 +633,7 @@ static inline void TSI_HAL_SetElectrodeChargeCurrent(TSI_Type * base, tsi_extern
 */
 static inline tsi_external_osc_charge_current_t TSI_HAL_GetElectrodeChargeCurrent(TSI_Type * base)
 {
-    return (tsi_external_osc_charge_current_t)TSI_BRD_GENCS_EXTCHRG(base);
+	return (tsi_external_osc_charge_current_t)TSI_BRD_GENCS_EXTCHRG(base);
 }
 
 #ifdef __cplusplus
@@ -648,4 +648,3 @@ static inline tsi_external_osc_charge_current_t TSI_HAL_GetElectrodeChargeCurren
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

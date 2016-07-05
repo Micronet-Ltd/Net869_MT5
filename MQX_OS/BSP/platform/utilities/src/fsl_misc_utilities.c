@@ -48,7 +48,7 @@
  *END**************************************************************************/
 void __aeabi_assert(const char *expr, const char *file, int line)
 {
-    printf("assert failed:%s, file %s:%d\r\n",expr,file,line);
+	printf("assert failed:%s, file %s:%d\r\n",expr,file,line);
 }
 
 #endif
@@ -63,19 +63,19 @@ _sbrk (int incr)
   char *        prev_heap_end;
 
   if (heap_end == NULL)
-    heap_end = & end;
+	heap_end = & end;
 
   prev_heap_end = heap_end;
 
   if (heap_end + incr > &heap_limit)
-    {
+	{
 #ifdef NIO_ENOMEM   //TODO: Update NIO error code for MQX
-        errno = NIO_ENOMEM;
+		errno = NIO_ENOMEM;
 #else
-        errno = ENOMEM;
+		errno = ENOMEM;
 #endif
-      return (caddr_t) -1;
-    }
+	  return (caddr_t) -1;
+	}
 
   heap_end += incr;
 
@@ -92,10 +92,10 @@ _sbrk (int incr)
  *END**************************************************************************/
 void assert_func(const char *file, int line, const char *func, const char *failedExpr)
 {
-    PRINTF("ASSERT ERROR \" %s \": file \"%s\" Line \"%d\" function name \"%s\" \n", failedExpr, file , line, func);
+	PRINTF("ASSERT ERROR \" %s \": file \"%s\" Line \"%d\" function name \"%s\" \n", failedExpr, file , line, func);
 
-    for (;;)
-    {}
+	for (;;)
+	{}
 
 }
 /*******************************************************************************

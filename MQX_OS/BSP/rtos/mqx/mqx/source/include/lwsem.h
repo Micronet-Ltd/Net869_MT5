@@ -66,29 +66,29 @@
 typedef struct lwsem_struct
 {
 
-    /* The next two fields are used to maintain a list of all LWSEMS */
+	/* The next two fields are used to maintain a list of all LWSEMS */
 
-    /*! \brief Pointer to the next lightweight semaphore in the list of lightweight
-     *  semaphores. */
-    struct lwsem_struct       *NEXT;
+	/*! \brief Pointer to the next lightweight semaphore in the list of lightweight
+	 *  semaphores. */
+	struct lwsem_struct       *NEXT;
 
-    /*! \brief Pointer to the previous lightweight semaphore in the list of
-     *  lightweight semaphores. */
-    struct lwsem_struct       *PREV;
+	/*! \brief Pointer to the previous lightweight semaphore in the list of
+	 *  lightweight semaphores. */
+	struct lwsem_struct       *PREV;
 
-    /*! \brief  Manages the queue of tasks that are waiting for the lightweight
-     *  semaphore. The NEXT and PREV fields in the task descriptors link the tasks. */
-    QUEUE_STRUCT               TD_QUEUE;
+	/*! \brief  Manages the queue of tasks that are waiting for the lightweight
+	 *  semaphore. The NEXT and PREV fields in the task descriptors link the tasks. */
+	QUEUE_STRUCT               TD_QUEUE;
 
-    /*! \brief When MQX creates the lightweight semaphore, it initializes the field.
-     *  When MQX destroys the lightweight semaphore, it clears the field. */
-    _mqx_uint                  VALID;
+	/*! \brief When MQX creates the lightweight semaphore, it initializes the field.
+	 *  When MQX destroys the lightweight semaphore, it clears the field. */
+	_mqx_uint                  VALID;
 
-    /*! \brief Count of the semaphore. MQX decrements the field when a task waits
-     *  for the semaphore. If the field is not 0, the task gets the semaphore. If
-     *  the field is 0, MQX puts the task in the lightweight semaphore queue until
-     *  the count is a non-zero value.the semaphore value. */
-    _mqx_int                   VALUE;
+	/*! \brief Count of the semaphore. MQX decrements the field when a task waits
+	 *  for the semaphore. If the field is not 0, the task gets the semaphore. If
+	 *  the field is 0, MQX puts the task in the lightweight semaphore queue until
+	 *  the count is a non-zero value.the semaphore value. */
+	_mqx_int                   VALUE;
 
 } LWSEM_STRUCT, * LWSEM_STRUCT_PTR;
 
@@ -102,27 +102,27 @@ typedef struct lwsem_struct
 extern "C" {
 #endif
 
-    extern _mqx_uint        _lwsem_create(LWSEM_STRUCT_PTR, _mqx_int);
-    extern _mqx_uint        _lwsem_create_hidden(LWSEM_STRUCT_PTR, _mqx_int);
-    extern _mqx_uint        _lwsem_destroy(LWSEM_STRUCT_PTR);
-    extern   bool        _lwsem_poll(LWSEM_STRUCT_PTR);
-    extern _mqx_uint        _lwsem_post(LWSEM_STRUCT_PTR);
-    extern _mqx_uint        _lwsem_test(void **, void **);
-    extern _mqx_uint        _lwsem_wait(LWSEM_STRUCT_PTR);
-    extern _mqx_uint        _lwsem_wait_ticks(LWSEM_STRUCT_PTR, _mqx_uint);
-    extern _mqx_uint        _lwsem_wait_for(LWSEM_STRUCT_PTR, MQX_TICK_STRUCT_PTR);
-    extern _mqx_uint        _lwsem_wait_until(LWSEM_STRUCT_PTR, MQX_TICK_STRUCT_PTR);
+	extern _mqx_uint        _lwsem_create(LWSEM_STRUCT_PTR, _mqx_int);
+	extern _mqx_uint        _lwsem_create_hidden(LWSEM_STRUCT_PTR, _mqx_int);
+	extern _mqx_uint        _lwsem_destroy(LWSEM_STRUCT_PTR);
+	extern   bool        _lwsem_poll(LWSEM_STRUCT_PTR);
+	extern _mqx_uint        _lwsem_post(LWSEM_STRUCT_PTR);
+	extern _mqx_uint        _lwsem_test(void **, void **);
+	extern _mqx_uint        _lwsem_wait(LWSEM_STRUCT_PTR);
+	extern _mqx_uint        _lwsem_wait_ticks(LWSEM_STRUCT_PTR, _mqx_uint);
+	extern _mqx_uint        _lwsem_wait_for(LWSEM_STRUCT_PTR, MQX_TICK_STRUCT_PTR);
+	extern _mqx_uint        _lwsem_wait_until(LWSEM_STRUCT_PTR, MQX_TICK_STRUCT_PTR);
 
 #if MQX_ENABLE_USER_MODE
-    extern _mqx_uint        _usr_lwsem_create(LWSEM_STRUCT_PTR, _mqx_int);
-    extern _mqx_uint        _usr_lwsem_destroy(LWSEM_STRUCT_PTR);
-    extern   bool        _usr_lwsem_poll(LWSEM_STRUCT_PTR);
-    extern _mqx_uint        _usr_lwsem_post(LWSEM_STRUCT_PTR);
-    extern _mqx_uint        _usr_lwsem_wait(LWSEM_STRUCT_PTR);
-    extern _mqx_uint        _usr_lwsem_wait_ticks(LWSEM_STRUCT_PTR, _mqx_uint);
-    extern _mqx_uint        _usr_lwsem_wait_for(LWSEM_STRUCT_PTR, MQX_TICK_STRUCT_PTR);
-    extern _mqx_uint        _usr_lwsem_wait_until(LWSEM_STRUCT_PTR, MQX_TICK_STRUCT_PTR);
-    extern _mqx_uint        _lwsem_usr_check(LWSEM_STRUCT_PTR);
+	extern _mqx_uint        _usr_lwsem_create(LWSEM_STRUCT_PTR, _mqx_int);
+	extern _mqx_uint        _usr_lwsem_destroy(LWSEM_STRUCT_PTR);
+	extern   bool        _usr_lwsem_poll(LWSEM_STRUCT_PTR);
+	extern _mqx_uint        _usr_lwsem_post(LWSEM_STRUCT_PTR);
+	extern _mqx_uint        _usr_lwsem_wait(LWSEM_STRUCT_PTR);
+	extern _mqx_uint        _usr_lwsem_wait_ticks(LWSEM_STRUCT_PTR, _mqx_uint);
+	extern _mqx_uint        _usr_lwsem_wait_for(LWSEM_STRUCT_PTR, MQX_TICK_STRUCT_PTR);
+	extern _mqx_uint        _usr_lwsem_wait_until(LWSEM_STRUCT_PTR, MQX_TICK_STRUCT_PTR);
+	extern _mqx_uint        _lwsem_usr_check(LWSEM_STRUCT_PTR);
 #endif /* MQX_ENABLE_USER_MODE */
 
 #ifdef __cplusplus

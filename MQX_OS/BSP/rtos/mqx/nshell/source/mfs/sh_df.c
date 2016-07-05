@@ -46,77 +46,77 @@
 
 int32_t  Shell_df(int32_t argc, char *argv[])
 { /* Body */
-    bool              print_usage;
-    bool              shorthelp = FALSE;
-    int32_t               return_code = SHELL_EXIT_SUCCESS;
-    SHELL_CONTEXT_PTR    shell_ptr = Shell_get_context(argv);
-    int fs;
-    int64_t               space;
-    int32_t               clusters;
-    uint32_t              cluster_size;
-    int32_t               error = 0;
-    char             *fs_name;
+	bool              print_usage;
+	bool              shorthelp = FALSE;
+	int32_t               return_code = SHELL_EXIT_SUCCESS;
+	SHELL_CONTEXT_PTR    shell_ptr = Shell_get_context(argv);
+	int fs;
+	int64_t               space;
+	int32_t               clusters;
+	uint32_t              cluster_size;
+	int32_t               error = 0;
+	char             *fs_name;
 
-    print_usage = Shell_check_help_request(argc, argv, &shorthelp);
+	print_usage = Shell_check_help_request(argc, argv, &shorthelp);
 
-    if (!print_usage)  {
-        if (argc > 2)  {
-            fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
-            return_code = SHELL_EXIT_ERROR;
-            print_usage=TRUE;
-        }
-    }
+	if (!print_usage)  {
+		if (argc > 2)  {
+			fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
+			return_code = SHELL_EXIT_ERROR;
+			print_usage=TRUE;
+		}
+	}
 
-    if (print_usage)  {
-        if (shorthelp)  {
-            fprintf(shell_ptr->STDOUT, "%s [<filesystem>]\n", argv[0]);
-        }
-        else {
-            fprintf(shell_ptr->STDOUT, "Usage: %s [filesystem]\n", argv[0]);
-            fprintf(shell_ptr->STDOUT, "   <filesystem> = filesystem to query for free space\n");
-        }
-        return return_code;
-    }
-
-
-    if (argc == 2) {
-        fs_name = argv[1];
-        fs = _io_get_fs_by_name(fs_name);
-    }
-    else {
-        fs_name = Shell_get_current_filesystem_name(shell_ptr);
-        fs = Shell_get_current_filesystem(argv);
-    }
-
-    /* check if filesystem is mounted */
-    if (0 > fs)  {
-        fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n");
-        return return_code = SHELL_EXIT_ERROR;
-    }
+	if (print_usage)  {
+		if (shorthelp)  {
+			fprintf(shell_ptr->STDOUT, "%s [<filesystem>]\n", argv[0]);
+		}
+		else {
+			fprintf(shell_ptr->STDOUT, "Usage: %s [filesystem]\n", argv[0]);
+			fprintf(shell_ptr->STDOUT, "   <filesystem> = filesystem to query for free space\n");
+		}
+		return return_code;
+	}
 
 
-    error = ioctl(fs, IO_IOCTL_FREE_SPACE, &space);
-    if (0 > error) {
-        fprintf(shell_ptr->STDOUT, "Error, could not get free space\n");
-        return return_code = SHELL_EXIT_ERROR;
-    }
+	if (argc == 2) {
+		fs_name = argv[1];
+		fs = _io_get_fs_by_name(fs_name);
+	}
+	else {
+		fs_name = Shell_get_current_filesystem_name(shell_ptr);
+		fs = Shell_get_current_filesystem(argv);
+	}
 
-    error = ioctl(fs, IO_IOCTL_FREE_CLUSTERS, &clusters);
-    if (0 > error) {
-        fprintf(shell_ptr->STDOUT, "Error, could not get free space\n");
-        return return_code = SHELL_EXIT_ERROR;
-    }
-    error = ioctl(fs, IO_IOCTL_GET_CLUSTER_SIZE, &cluster_size);
-    if (0 > error) {
-        fprintf(shell_ptr->STDOUT, "Error, could not get free space\n");
-        return return_code = SHELL_EXIT_ERROR;
-    }
+	/* check if filesystem is mounted */
+	if (0 > fs)  {
+		fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n");
+		return return_code = SHELL_EXIT_ERROR;
+	}
 
-    fprintf(shell_ptr->STDOUT, "Free disk space on %s\n", fs_name);
-    fprintf(shell_ptr->STDOUT, "%ld clusters, %ld bytes each\n", (long int)clusters, (long int)cluster_size);
-    fprintf(shell_ptr->STDOUT, "%lu KB\n", (unsigned long int)(space>>10));
 
-    return return_code;
+	error = ioctl(fs, IO_IOCTL_FREE_SPACE, &space);
+	if (0 > error) {
+		fprintf(shell_ptr->STDOUT, "Error, could not get free space\n");
+		return return_code = SHELL_EXIT_ERROR;
+	}
+
+	error = ioctl(fs, IO_IOCTL_FREE_CLUSTERS, &clusters);
+	if (0 > error) {
+		fprintf(shell_ptr->STDOUT, "Error, could not get free space\n");
+		return return_code = SHELL_EXIT_ERROR;
+	}
+	error = ioctl(fs, IO_IOCTL_GET_CLUSTER_SIZE, &cluster_size);
+	if (0 > error) {
+		fprintf(shell_ptr->STDOUT, "Error, could not get free space\n");
+		return return_code = SHELL_EXIT_ERROR;
+	}
+
+	fprintf(shell_ptr->STDOUT, "Free disk space on %s\n", fs_name);
+	fprintf(shell_ptr->STDOUT, "%ld clusters, %ld bytes each\n", (long int)clusters, (long int)cluster_size);
+	fprintf(shell_ptr->STDOUT, "%lu KB\n", (unsigned long int)(space>>10));
+
+	return return_code;
 } /* Endbody */
 
 #endif //SHELLCFG_USES_MFS

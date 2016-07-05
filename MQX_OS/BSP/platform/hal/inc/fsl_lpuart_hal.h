@@ -56,60 +56,60 @@
 /*! @brief Error codes for the LPUART driver.*/
 typedef enum _lpuart_status
 {
-    kStatus_LPUART_Success                  = 0x00U,
-    kStatus_LPUART_Fail                     = 0x01U,
-    kStatus_LPUART_BaudRateCalculationError = 0x02U,
-    kStatus_LPUART_RxStandbyModeError       = 0x03U,
-    kStatus_LPUART_ClearStatusFlagError     = 0x04U,
-    kStatus_LPUART_TxNotDisabled            = 0x05U,
-    kStatus_LPUART_RxNotDisabled            = 0x06U,
-    kStatus_LPUART_TxOrRxNotDisabled        = 0x07U,
-    kStatus_LPUART_TxBusy                   = 0x08U,
-    kStatus_LPUART_RxBusy                   = 0x09U,
-    kStatus_LPUART_NoTransmitInProgress     = 0x0AU,
-    kStatus_LPUART_NoReceiveInProgress      = 0x0BU,
-    kStatus_LPUART_Timeout                  = 0x0CU,
-    kStatus_LPUART_Initialized              = 0x0DU,
-    kStatus_LPUART_NoDataToDeal             = 0x0EU,
-    kStatus_LPUART_RxOverRun                = 0x0FU
+	kStatus_LPUART_Success                  = 0x00U,
+	kStatus_LPUART_Fail                     = 0x01U,
+	kStatus_LPUART_BaudRateCalculationError = 0x02U,
+	kStatus_LPUART_RxStandbyModeError       = 0x03U,
+	kStatus_LPUART_ClearStatusFlagError     = 0x04U,
+	kStatus_LPUART_TxNotDisabled            = 0x05U,
+	kStatus_LPUART_RxNotDisabled            = 0x06U,
+	kStatus_LPUART_TxOrRxNotDisabled        = 0x07U,
+	kStatus_LPUART_TxBusy                   = 0x08U,
+	kStatus_LPUART_RxBusy                   = 0x09U,
+	kStatus_LPUART_NoTransmitInProgress     = 0x0AU,
+	kStatus_LPUART_NoReceiveInProgress      = 0x0BU,
+	kStatus_LPUART_Timeout                  = 0x0CU,
+	kStatus_LPUART_Initialized              = 0x0DU,
+	kStatus_LPUART_NoDataToDeal             = 0x0EU,
+	kStatus_LPUART_RxOverRun                = 0x0FU
 } lpuart_status_t;
 
 /*! @brief LPUART number of stop bits*/
 typedef enum _lpuart_stop_bit_count {
-    kLpuartOneStopBit = 0x0U, /*!< one stop bit @internal gui name="1" */
-    kLpuartTwoStopBit = 0x1U, /*!< two stop bits @internal gui name="2" */
+	kLpuartOneStopBit = 0x0U, /*!< one stop bit @internal gui name="1" */
+	kLpuartTwoStopBit = 0x1U, /*!< two stop bits @internal gui name="2" */
 } lpuart_stop_bit_count_t;
 
 /*! @brief LPUART parity mode*/
 typedef enum _lpuart_parity_mode {
-    kLpuartParityDisabled = 0x0U, /*!< parity disabled @internal gui name="Disabled" */
-    kLpuartParityEven     = 0x2U, /*!< parity enabled, type even, bit setting: PE|PT = 10 @internal gui name="Even" */
-    kLpuartParityOdd      = 0x3U, /*!< parity enabled, type odd,  bit setting: PE|PT = 11 @internal gui name="Odd" */
+	kLpuartParityDisabled = 0x0U, /*!< parity disabled @internal gui name="Disabled" */
+	kLpuartParityEven     = 0x2U, /*!< parity enabled, type even, bit setting: PE|PT = 10 @internal gui name="Even" */
+	kLpuartParityOdd      = 0x3U, /*!< parity enabled, type odd,  bit setting: PE|PT = 11 @internal gui name="Odd" */
 } lpuart_parity_mode_t;
 
 /*! @brief LPUART number of bits in a character*/
 typedef enum  _lpuart_bit_count_per_char {
-    kLpuart8BitsPerChar  = 0x0U, /*!< 8-bit data characters @internal gui name="8" */
-    kLpuart9BitsPerChar  = 0x1U, /*!< 9-bit data characters @internal gui name="9" */
-    kLpuart10BitsPerChar = 0x2U, /*!< 10-bit data characters @internal gui name="10" */
+	kLpuart8BitsPerChar  = 0x0U, /*!< 8-bit data characters @internal gui name="8" */
+	kLpuart9BitsPerChar  = 0x1U, /*!< 9-bit data characters @internal gui name="9" */
+	kLpuart10BitsPerChar = 0x2U, /*!< 10-bit data characters @internal gui name="10" */
 } lpuart_bit_count_per_char_t;
 
 /*! @brief LPUART operation configuration constants*/
 typedef enum _lpuart_operation_config {
-    kLpuartOperates = 0x0U, /*!< LPUART continues to operate normally.*/
-    kLpuartStops    = 0x1U, /*!< LPUART stops operation. */
+	kLpuartOperates = 0x0U, /*!< LPUART continues to operate normally.*/
+	kLpuartStops    = 0x1U, /*!< LPUART stops operation. */
 } lpuart_operation_config_t;
 
 /*! @brief LPUART wakeup from standby method constants*/
 typedef enum _lpuart_wakeup_method {
-    kLpuartIdleLineWake = 0x0U, /*!< Idle-line wakes the LPUART receiver from standby. */
-    kLpuartAddrMarkWake = 0x1U, /*!< Addr-mark wakes LPUART receiver from standby.*/
+	kLpuartIdleLineWake = 0x0U, /*!< Idle-line wakes the LPUART receiver from standby. */
+	kLpuartAddrMarkWake = 0x1U, /*!< Addr-mark wakes LPUART receiver from standby.*/
 } lpuart_wakeup_method_t;
 
 /*! @brief LPUART idle line detect selection types*/
 typedef enum _lpuart_idle_line_select {
-    kLpuartIdleLineAfterStartBit = 0x0U, /*!< LPUART idle character bit count start after start bit */
-    kLpuartIdleLineAfterStopBit  = 0x1U, /*!< LPUART idle character bit count start after stop bit */
+	kLpuartIdleLineAfterStartBit = 0x0U, /*!< LPUART idle character bit count start after start bit */
+	kLpuartIdleLineAfterStopBit  = 0x1U, /*!< LPUART idle character bit count start after stop bit */
 } lpuart_idle_line_select_t;
 
 /*!
@@ -118,34 +118,34 @@ typedef enum _lpuart_idle_line_select {
  * The actual maximum bit times may vary depending on the LPUART instance.
  */
 typedef enum _lpuart_break_char_length {
-    kLpuartBreakChar10BitMinimum = 0x0U, /*!< LPUART break char length 10 bit times (if M = 0, SBNS = 0)
-                                      or 11 (if M = 1, SBNS = 0 or M = 0, SBNS = 1) or 12 (if M = 1,
-                                      SBNS = 1 or M10 = 1, SNBS = 0) or 13 (if M10 = 1, SNBS = 1) */
-    kLpuartBreakChar13BitMinimum = 0x1U, /*!< LPUART break char length 13 bit times (if M = 0, SBNS = 0
-                                           or M10 = 0, SBNS = 1) or 14 (if M = 1, SBNS = 0 or M = 1,
-                                           SBNS = 1) or 15 (if M10 = 1, SBNS = 1 or M10 = 1, SNBS = 0) */
+	kLpuartBreakChar10BitMinimum = 0x0U, /*!< LPUART break char length 10 bit times (if M = 0, SBNS = 0)
+									  or 11 (if M = 1, SBNS = 0 or M = 0, SBNS = 1) or 12 (if M = 1,
+									  SBNS = 1 or M10 = 1, SNBS = 0) or 13 (if M10 = 1, SNBS = 1) */
+	kLpuartBreakChar13BitMinimum = 0x1U, /*!< LPUART break char length 13 bit times (if M = 0, SBNS = 0
+										   or M10 = 0, SBNS = 1) or 14 (if M = 1, SBNS = 0 or M = 1,
+										   SBNS = 1) or 15 (if M10 = 1, SBNS = 1 or M10 = 1, SNBS = 0) */
 } lpuart_break_char_length_t;
 
 /*! @brief LPUART single-wire mode TX direction*/
 typedef enum _lpuart_singlewire_txdir {
-    kLpuartSinglewireTxdirIn  = 0x0U, /*!< LPUART Single Wire mode TXDIR input*/
-    kLpuartSinglewireTxdirOut = 0x1U, /*!< LPUART Single Wire mode TXDIR output*/
+	kLpuartSinglewireTxdirIn  = 0x0U, /*!< LPUART Single Wire mode TXDIR input*/
+	kLpuartSinglewireTxdirOut = 0x1U, /*!< LPUART Single Wire mode TXDIR output*/
 } lpuart_singlewire_txdir_t;
 
 /*! @brief LPUART Configures the match addressing mode used.*/
 typedef enum _lpuart_match_config {
-    kLpuartAddressMatchWakeup    = 0x0U, /*!< Address Match Wakeup*/
-    kLpuartIdleMatchWakeup       = 0x1U, /*!< Idle Match Wakeup*/
-    kLpuartMatchOnAndMatchOff    = 0x2U, /*!< Match On and Match Off*/
-    kLpuartEnablesRwuOnDataMatch = 0x3U, /*!< Enables RWU on Data Match and Match On/Off for transmitter CTS input*/
+	kLpuartAddressMatchWakeup    = 0x0U, /*!< Address Match Wakeup*/
+	kLpuartIdleMatchWakeup       = 0x1U, /*!< Idle Match Wakeup*/
+	kLpuartMatchOnAndMatchOff    = 0x2U, /*!< Match On and Match Off*/
+	kLpuartEnablesRwuOnDataMatch = 0x3U, /*!< Enables RWU on Data Match and Match On/Off for transmitter CTS input*/
 } lpuart_match_config_t;
 
 /*! @brief LPUART infra-red transmitter pulse width options*/
 typedef enum _lpuart_ir_tx_pulsewidth {
-    kLpuartIrThreeSixteenthsWidth  = 0x0U, /*!< 3/16 pulse*/
-    kLpuartIrOneSixteenthWidth     = 0x1U, /*!< 1/16 pulse*/
-    kLpuartIrOneThirtysecondsWidth = 0x2U, /*!< 1/32 pulse*/
-    kLpuartIrOneFourthWidth        = 0x3U, /*!< 1/4 pulse*/
+	kLpuartIrThreeSixteenthsWidth  = 0x0U, /*!< 3/16 pulse*/
+	kLpuartIrOneSixteenthWidth     = 0x1U, /*!< 1/16 pulse*/
+	kLpuartIrOneThirtysecondsWidth = 0x2U, /*!< 1/32 pulse*/
+	kLpuartIrOneFourthWidth        = 0x3U, /*!< 1/4 pulse*/
 } lpuart_ir_tx_pulsewidth_t;
 
 /*!
@@ -153,20 +153,20 @@ typedef enum _lpuart_ir_tx_pulsewidth {
  * before the IDLE flag is set.
  */
 typedef enum _lpuart_idle_char {
-    kLpuart_1_IdleChar   = 0x0U, /*!< 1 idle character*/
-    kLpuart_2_IdleChar   = 0x1U, /*!< 2 idle character*/
-    kLpuart_4_IdleChar   = 0x2U, /*!< 4 idle character*/
-    kLpuart_8_IdleChar   = 0x3U, /*!< 8 idle character*/
-    kLpuart_16_IdleChar  = 0x4U, /*!< 16 idle character*/
-    kLpuart_32_IdleChar  = 0x5U, /*!< 32 idle character*/
-    kLpuart_64_IdleChar  = 0x6U, /*!< 64 idle character*/
-    kLpuart_128_IdleChar = 0x7U, /*!< 128 idle character*/
+	kLpuart_1_IdleChar   = 0x0U, /*!< 1 idle character*/
+	kLpuart_2_IdleChar   = 0x1U, /*!< 2 idle character*/
+	kLpuart_4_IdleChar   = 0x2U, /*!< 4 idle character*/
+	kLpuart_8_IdleChar   = 0x3U, /*!< 8 idle character*/
+	kLpuart_16_IdleChar  = 0x4U, /*!< 16 idle character*/
+	kLpuart_32_IdleChar  = 0x5U, /*!< 32 idle character*/
+	kLpuart_64_IdleChar  = 0x6U, /*!< 64 idle character*/
+	kLpuart_128_IdleChar = 0x7U, /*!< 128 idle character*/
 } lpuart_idle_char_t;
 
 /*! @brief LPUART Transmits the CTS Configuration. Configures the source of the CTS input.*/
 typedef enum _lpuart_cts_source {
-    kLpuartCtsSourcePin = 0x0U,  /*!< CTS input is the LPUART_CTS pin.*/
-    kLpuartCtsSourceInvertedReceiverMatch = 0x1U, /*!< CTS input is the inverted Receiver Match result.*/
+	kLpuartCtsSourcePin = 0x0U,  /*!< CTS input is the LPUART_CTS pin.*/
+	kLpuartCtsSourceInvertedReceiverMatch = 0x1U, /*!< CTS input is the inverted Receiver Match result.*/
 } lpuart_cts_source_t;
 
 /*!
@@ -174,31 +174,31 @@ typedef enum _lpuart_cts_source {
  * the start of each character or only when the transmitter is idle.
  */
 typedef enum _lpuart_cts_config {
-    kLpuartCtsSampledOnEachChar = 0x0U, /*!< CTS input is sampled at the start of each character.*/
-    kLpuartCtsSampledOnIdle     = 0x1U, /*!< CTS input is sampled when the transmitter is idle.*/
+	kLpuartCtsSampledOnEachChar = 0x0U, /*!< CTS input is sampled at the start of each character.*/
+	kLpuartCtsSampledOnIdle     = 0x1U, /*!< CTS input is sampled when the transmitter is idle.*/
 } lpuart_cts_config_t;
 
 /*! @brief Structure for idle line configuration settings*/
 typedef struct LpuartIdleLineConfig {
-    unsigned idleLineType : 1; /*!< ILT, Idle bit count start: 0 - after start bit (default),
-                                    1 - after stop bit */
-    unsigned rxWakeIdleDetect : 1; /*!< RWUID, Receiver Wake Up Idle Detect. IDLE status bit
-                                        operation during receive standbyControls whether idle
-                                        character that wakes up receiver will also set
-                                        IDLE status bit 0 - IDLE status bit doesn't
-                                        get set (default), 1 - IDLE status bit gets set*/
+	unsigned idleLineType : 1; /*!< ILT, Idle bit count start: 0 - after start bit (default),
+									1 - after stop bit */
+	unsigned rxWakeIdleDetect : 1; /*!< RWUID, Receiver Wake Up Idle Detect. IDLE status bit
+										operation during receive standbyControls whether idle
+										character that wakes up receiver will also set
+										IDLE status bit 0 - IDLE status bit doesn't
+										get set (default), 1 - IDLE status bit gets set*/
 } lpuart_idle_line_config_t;
 
 /*! @brief LPUART Receiver Idle Empty Enable constants.*/
 typedef enum _lpuart_rx_idle_empty_config {
-    kLpuartRxidDisabled         = 0x0U,  /*!< Disable RDRF assertion due to partially filled FIFO when receiver is idle.*/
-    kLpuartRxidEnabledFor1Char  = 0x1U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 1 character.*/
-    kLpuartRxidEnabledFor2Char  = 0x2U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 2 characters.*/
-    kLpuartRxidEnabledFor4Char  = 0x3U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 4 characters.*/
-    kLpuartRxidEnabledFor8Char  = 0x4U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 8 characters.*/
-    kLpuartRxidEnabledFor16Char = 0x5U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 16 characters.*/
-    kLpuartRxidEnabledFor32Char = 0x6U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 32 characters.*/
-    kLpuartRxidEnabledFor64Char = 0x7U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 64 characters.*/
+	kLpuartRxidDisabled         = 0x0U,  /*!< Disable RDRF assertion due to partially filled FIFO when receiver is idle.*/
+	kLpuartRxidEnabledFor1Char  = 0x1U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 1 character.*/
+	kLpuartRxidEnabledFor2Char  = 0x2U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 2 characters.*/
+	kLpuartRxidEnabledFor4Char  = 0x3U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 4 characters.*/
+	kLpuartRxidEnabledFor8Char  = 0x4U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 8 characters.*/
+	kLpuartRxidEnabledFor16Char = 0x5U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 16 characters.*/
+	kLpuartRxidEnabledFor32Char = 0x6U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 32 characters.*/
+	kLpuartRxidEnabledFor64Char = 0x7U,  /*!< Enable RDRF assertion due to partially filled FIFO when receiver is idle for 64 characters.*/
 } lpuart_rx_idle_empty_config_t;
 
 /*!
@@ -207,51 +207,51 @@ typedef enum _lpuart_rx_idle_empty_config {
  * This provides constants for the LPUART status flags for use in the UART functions.
  */
 typedef enum _lpuart_status_flag {
-    kLpuartTxDataRegEmpty         = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_TDRE_SHIFT,    /*!< Transmit data register empty flag, sets when transmit buffer is empty */
-    kLpuartTxComplete             = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_TC_SHIFT,      /*!< Transmission complete flag, sets when transmission activity complete */
-    kLpuartRxDataRegFull          = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_RDRF_SHIFT,    /*!< Receive data register full flag, sets when the receive data buffer is full */
-    kLpuartIdleLineDetect         = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_IDLE_SHIFT,    /*!< Idle line detect flag, sets when idle line detected */
-    kLpuartRxOverrun              = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_OR_SHIFT,      /*!< Receive Overrun, sets when new data is received before data is read from receive register */
-    kLpuartNoiseDetect            = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_NF_SHIFT,      /*!< Receive takes 3 samples of each received bit.  If any of these samples differ, noise flag sets */
-    kLpuartFrameErr               = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_FE_SHIFT,      /*!< Frame error flag, sets if logic 0 was detected where stop bit expected */
-    kLpuartParityErr              = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_PF_SHIFT,      /*!< If parity enabled, sets upon parity error detection */
-    kLpuartLineBreakDetect        = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_LBKDE_SHIFT,   /*!< LIN break detect interrupt flag, sets when LIN break char detected and LIN circuit enabled */
-    kLpuartRxActiveEdgeDetect     = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_RXEDGIF_SHIFT, /*!< Receive pin active edge interrupt flag, sets when active edge detected */
-    kLpuartRxActive               = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_RAF_SHIFT,     /*!< Receiver Active Flag (RAF), sets at beginning of valid start bit */
-    kLpuartNoiseInCurrentWord     = LPUART_DATA_REG_ID << LPUART_SHIFT | LPUART_DATA_NOISY_SHIFT,     /*!< NOISY bit, sets if noise detected in current data word */
-    kLpuartParityErrInCurrentWord = LPUART_DATA_REG_ID << LPUART_SHIFT | LPUART_DATA_PARITYE_SHIFT,   /*!< PARITYE bit, sets if noise detected in current data word */
+	kLpuartTxDataRegEmpty         = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_TDRE_SHIFT,    /*!< Transmit data register empty flag, sets when transmit buffer is empty */
+	kLpuartTxComplete             = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_TC_SHIFT,      /*!< Transmission complete flag, sets when transmission activity complete */
+	kLpuartRxDataRegFull          = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_RDRF_SHIFT,    /*!< Receive data register full flag, sets when the receive data buffer is full */
+	kLpuartIdleLineDetect         = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_IDLE_SHIFT,    /*!< Idle line detect flag, sets when idle line detected */
+	kLpuartRxOverrun              = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_OR_SHIFT,      /*!< Receive Overrun, sets when new data is received before data is read from receive register */
+	kLpuartNoiseDetect            = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_NF_SHIFT,      /*!< Receive takes 3 samples of each received bit.  If any of these samples differ, noise flag sets */
+	kLpuartFrameErr               = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_FE_SHIFT,      /*!< Frame error flag, sets if logic 0 was detected where stop bit expected */
+	kLpuartParityErr              = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_PF_SHIFT,      /*!< If parity enabled, sets upon parity error detection */
+	kLpuartLineBreakDetect        = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_LBKDE_SHIFT,   /*!< LIN break detect interrupt flag, sets when LIN break char detected and LIN circuit enabled */
+	kLpuartRxActiveEdgeDetect     = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_RXEDGIF_SHIFT, /*!< Receive pin active edge interrupt flag, sets when active edge detected */
+	kLpuartRxActive               = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_RAF_SHIFT,     /*!< Receiver Active Flag (RAF), sets at beginning of valid start bit */
+	kLpuartNoiseInCurrentWord     = LPUART_DATA_REG_ID << LPUART_SHIFT | LPUART_DATA_NOISY_SHIFT,     /*!< NOISY bit, sets if noise detected in current data word */
+	kLpuartParityErrInCurrentWord = LPUART_DATA_REG_ID << LPUART_SHIFT | LPUART_DATA_PARITYE_SHIFT,   /*!< PARITYE bit, sets if noise detected in current data word */
 #if FSL_FEATURE_LPUART_HAS_ADDRESS_MATCHING
-    kLpuartMatchAddrOne           = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_MA1F_SHIFT,    /*!< Address one match flag */
-    kLpuartMatchAddrTwo           = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_MA2F_SHIFT,    /*!< Address two match flag */
+	kLpuartMatchAddrOne           = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_MA1F_SHIFT,    /*!< Address one match flag */
+	kLpuartMatchAddrTwo           = LPUART_STAT_REG_ID << LPUART_SHIFT | LPUART_STAT_MA2F_SHIFT,    /*!< Address two match flag */
 #endif
 #if FSL_FEATURE_LPUART_HAS_FIFO
-    kLpuartTxBuffEmpty              = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_TXEMPT_SHIFT,  /*!< TXEMPT bit, sets if transmit buffer is empty */
-    kLpuartRxBuffEmpty              = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_RXEMPT_SHIFT,  /*!< RXEMPT bit, sets if receive buffer is empty */
-    kLpuartTxBuffOverflow           = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_TXOF_SHIFT,    /*!< TXOF bit, sets if transmit buffer overflow occurred */
-    kLpuartRxBuffUnderflow          = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_RXUF_SHIFT,    /*!< RXUF bit, sets if receive buffer underflow occurred */
+	kLpuartTxBuffEmpty              = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_TXEMPT_SHIFT,  /*!< TXEMPT bit, sets if transmit buffer is empty */
+	kLpuartRxBuffEmpty              = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_RXEMPT_SHIFT,  /*!< RXEMPT bit, sets if receive buffer is empty */
+	kLpuartTxBuffOverflow           = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_TXOF_SHIFT,    /*!< TXOF bit, sets if transmit buffer overflow occurred */
+	kLpuartRxBuffUnderflow          = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_RXUF_SHIFT,    /*!< RXUF bit, sets if receive buffer underflow occurred */
 #endif
 } lpuart_status_flag_t;
 
 /*! @brief LPUART interrupt configuration structure, default settings are 0 (disabled)*/
 typedef enum _lpuart_interrupt {
-    kLpuartIntLinBreakDetect = LPUART_BAUD_REG_ID << LPUART_SHIFT | LPUART_BAUD_LBKDIE_SHIFT,  /*!< LIN break detect. */
-    kLpuartIntRxActiveEdge   = LPUART_BAUD_REG_ID << LPUART_SHIFT | LPUART_BAUD_RXEDGIE_SHIFT, /*!< Receive Active Edge. */
-    kLpuartIntTxDataRegEmpty = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_TIE_SHIFT,     /*!< Transmit data register empty. */
-    kLpuartIntTxComplete     = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_TCIE_SHIFT,    /*!< Transmission complete. */
-    kLpuartIntRxDataRegFull  = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_RIE_SHIFT,     /*!< Receiver data register full. */
-    kLpuartIntIdleLine       = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_ILIE_SHIFT,    /*!< Idle line. */
-    kLpuartIntRxOverrun      = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_ORIE_SHIFT,    /*!< Receiver Overrun. */
-    kLpuartIntNoiseErrFlag   = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_NEIE_SHIFT,    /*!< Noise error flag. */
-    kLpuartIntFrameErrFlag   = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_FEIE_SHIFT,    /*!< Framing error flag. */
-    kLpuartIntParityErrFlag  = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_PEIE_SHIFT,    /*!< Parity error flag. */
+	kLpuartIntLinBreakDetect = LPUART_BAUD_REG_ID << LPUART_SHIFT | LPUART_BAUD_LBKDIE_SHIFT,  /*!< LIN break detect. */
+	kLpuartIntRxActiveEdge   = LPUART_BAUD_REG_ID << LPUART_SHIFT | LPUART_BAUD_RXEDGIE_SHIFT, /*!< Receive Active Edge. */
+	kLpuartIntTxDataRegEmpty = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_TIE_SHIFT,     /*!< Transmit data register empty. */
+	kLpuartIntTxComplete     = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_TCIE_SHIFT,    /*!< Transmission complete. */
+	kLpuartIntRxDataRegFull  = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_RIE_SHIFT,     /*!< Receiver data register full. */
+	kLpuartIntIdleLine       = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_ILIE_SHIFT,    /*!< Idle line. */
+	kLpuartIntRxOverrun      = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_ORIE_SHIFT,    /*!< Receiver Overrun. */
+	kLpuartIntNoiseErrFlag   = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_NEIE_SHIFT,    /*!< Noise error flag. */
+	kLpuartIntFrameErrFlag   = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_FEIE_SHIFT,    /*!< Framing error flag. */
+	kLpuartIntParityErrFlag  = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_PEIE_SHIFT,    /*!< Parity error flag. */
 #if FSL_FEATURE_LPUART_HAS_ADDRESS_MATCHING
-    kLpuartIntMatchAddrOne   = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_MA1IE_SHIFT,   /*!< Match address one flag. */
-    kLpuartIntMatchAddrTwo   = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_MA2IE_SHIFT,   /*!< Match address two flag. */
+	kLpuartIntMatchAddrOne   = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_MA1IE_SHIFT,   /*!< Match address one flag. */
+	kLpuartIntMatchAddrTwo   = LPUART_CTRL_REG_ID << LPUART_SHIFT | LPUART_CTRL_MA2IE_SHIFT,   /*!< Match address two flag. */
 #endif
 #if FSL_FEATURE_LPUART_HAS_FIFO
-    kLpuartIntTxFifoOverflow  = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_TXOFE_SHIFT,   /*!< Transmit FIFO Overflow. */
-    kLpuartIntRxFifoUnderflow = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_RXUFE_SHIFT,   /*!< Receive FIFO Underflow. */
-#endif    
+	kLpuartIntTxFifoOverflow  = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_TXOFE_SHIFT,   /*!< Transmit FIFO Overflow. */
+	kLpuartIntRxFifoUnderflow = LPUART_FIFO_REG_ID << LPUART_SHIFT | LPUART_FIFO_RXUFE_SHIFT,   /*!< Receive FIFO Underflow. */
+#endif
 } lpuart_interrupt_t;
 
 
@@ -283,7 +283,7 @@ void LPUART_HAL_Init(LPUART_Type * base);
  */
 static inline void LPUART_HAL_SetTransmitterCmd(LPUART_Type * base, bool enable)
 {
-    LPUART_BWR_CTRL_TE(base, enable);
+	LPUART_BWR_CTRL_TE(base, enable);
 }
 
 /*!
@@ -294,7 +294,7 @@ static inline void LPUART_HAL_SetTransmitterCmd(LPUART_Type * base, bool enable)
  */
 static inline bool LPUART_HAL_GetTransmitterCmd(LPUART_Type * base)
 {
-    return LPUART_BRD_CTRL_TE(base);
+	return LPUART_BRD_CTRL_TE(base);
 }
 
 /*!
@@ -305,7 +305,7 @@ static inline bool LPUART_HAL_GetTransmitterCmd(LPUART_Type * base)
  */
 static inline void LPUART_HAL_SetReceiverCmd(LPUART_Type * base, bool enable)
 {
-    LPUART_BWR_CTRL_RE(base, enable);
+	LPUART_BWR_CTRL_RE(base, enable);
 }
 
 /*!
@@ -316,7 +316,7 @@ static inline void LPUART_HAL_SetReceiverCmd(LPUART_Type * base, bool enable)
  */
 static inline bool LPUART_HAL_GetReceiverCmd(LPUART_Type * base)
 {
-    return LPUART_BRD_CTRL_RE(base);
+	return LPUART_BRD_CTRL_RE(base);
 }
 
 /*!
@@ -332,8 +332,8 @@ static inline bool LPUART_HAL_GetReceiverCmd(LPUART_Type * base)
  * @return  An error code or kStatus_Success
  */
 lpuart_status_t LPUART_HAL_SetBaudRate(LPUART_Type * base,
-                                       uint32_t sourceClockInHz,
-                                       uint32_t desiredBaudRate);
+									   uint32_t sourceClockInHz,
+									   uint32_t desiredBaudRate);
 
 /*!
  * @brief Sets the LPUART baud rate modulo divisor.
@@ -343,8 +343,8 @@ lpuart_status_t LPUART_HAL_SetBaudRate(LPUART_Type * base,
  */
 static inline void LPUART_HAL_SetBaudRateDivisor(LPUART_Type * base, uint32_t baudRateDivisor)
 {
-    assert ((baudRateDivisor < 0x1FFF) && (baudRateDivisor > 1));
-    LPUART_BWR_BAUD_SBR(base, baudRateDivisor);
+	assert ((baudRateDivisor < 0x1FFF) && (baudRateDivisor > 1));
+	LPUART_BWR_BAUD_SBR(base, baudRateDivisor);
 }
 
 #if FSL_FEATURE_LPUART_HAS_BAUD_RATE_OVER_SAMPLING_SUPPORT
@@ -362,8 +362,8 @@ static inline void LPUART_HAL_SetBaudRateDivisor(LPUART_Type * base, uint32_t ba
  */
 static inline void LPUART_HAL_SetOversamplingRatio(LPUART_Type * base, uint32_t overSamplingRatio)
 {
-    assert(overSamplingRatio < 0x1F);
-    LPUART_BWR_BAUD_OSR(base, overSamplingRatio);
+	assert(overSamplingRatio < 0x1F);
+	LPUART_BWR_BAUD_OSR(base, overSamplingRatio);
 }
 #endif
 
@@ -381,7 +381,7 @@ static inline void LPUART_HAL_SetOversamplingRatio(LPUART_Type * base, uint32_t 
  */
 static inline void LPUART_HAL_SetBothEdgeSamplingCmd(LPUART_Type * base, bool enable)
 {
-    LPUART_BWR_BAUD_BOTHEDGE(base, enable);
+	LPUART_BWR_BAUD_BOTHEDGE(base, enable);
 }
 #endif
 
@@ -421,7 +421,7 @@ void LPUART_HAL_SetParityMode(LPUART_Type * base, lpuart_parity_mode_t parityMod
  */
 static inline void LPUART_HAL_SetStopBitCount(LPUART_Type * base, lpuart_stop_bit_count_t stopBitCount)
 {
-    LPUART_BWR_BAUD_SBNS(base, stopBitCount);
+	LPUART_BWR_BAUD_SBNS(base, stopBitCount);
 }
 
 /*!
@@ -432,7 +432,7 @@ static inline void LPUART_HAL_SetStopBitCount(LPUART_Type * base, lpuart_stop_bi
  */
 static inline uint32_t LPUART_HAL_GetDataRegAddr(LPUART_Type * base)
 {
-    return (uint32_t)(&LPUART_DATA_REG(base));
+	return (uint32_t)(&LPUART_DATA_REG(base));
 }
 
 /*@}*/
@@ -469,7 +469,7 @@ bool LPUART_HAL_GetIntMode(LPUART_Type * base, lpuart_interrupt_t interrupt);
  */
 static inline void LPUART_HAL_SetTxDmaCmd(LPUART_Type * base, bool enable)
 {
-    LPUART_BWR_BAUD_TDMAE(base, enable);
+	LPUART_BWR_BAUD_TDMAE(base, enable);
 }
 
 /*!
@@ -480,7 +480,7 @@ static inline void LPUART_HAL_SetTxDmaCmd(LPUART_Type * base, bool enable)
  */
 static inline void LPUART_HAL_SetRxDmaCmd(LPUART_Type * base, bool enable)
 {
-    LPUART_BWR_BAUD_RDMAE(base, enable);
+	LPUART_BWR_BAUD_RDMAE(base, enable);
 }
 
 /*!
@@ -491,7 +491,7 @@ static inline void LPUART_HAL_SetRxDmaCmd(LPUART_Type * base, bool enable)
  */
 static inline bool LPUART_HAL_IsTxDmaEnabled(LPUART_Type * base)
 {
-    return LPUART_BRD_BAUD_TDMAE(base);
+	return LPUART_BRD_BAUD_TDMAE(base);
 }
 
 /*!
@@ -502,7 +502,7 @@ static inline bool LPUART_HAL_IsTxDmaEnabled(LPUART_Type * base)
  */
 static inline bool LPUART_HAL_IsRxDmaEnabled(LPUART_Type * base)
 {
-    return LPUART_BRD_BAUD_RDMAE(base);
+	return LPUART_BRD_BAUD_RDMAE(base);
 }
 
 #endif
@@ -522,7 +522,7 @@ static inline bool LPUART_HAL_IsRxDmaEnabled(LPUART_Type * base)
  */
 static inline void LPUART_HAL_Putchar(LPUART_Type * base, uint8_t data)
 {
-    LPUART_WR_DATA(base, data);
+	LPUART_WR_DATA(base, data);
 }
 
 /*!
@@ -550,7 +550,7 @@ lpuart_status_t LPUART_HAL_Putchar10(LPUART_Type * base, uint16_t data);
  */
 static inline void  LPUART_HAL_Getchar(LPUART_Type * base, uint8_t *readData)
 {
-    *readData = (uint8_t)LPUART_RD_DATA(base);
+	*readData = (uint8_t)LPUART_RD_DATA(base);
 }
 
 /*!
@@ -632,7 +632,7 @@ lpuart_status_t LPUART_HAL_ClearStatusFlag(LPUART_Type * base, lpuart_status_fla
  */
 static inline void LPUART_HAL_SetIdleChar(LPUART_Type * base, lpuart_idle_char_t idleConfig)
 {
-    LPUART_BWR_CTRL_IDLECFG(base, idleConfig);
+	LPUART_BWR_CTRL_IDLECFG(base, idleConfig);
 }
 
 /*!
@@ -644,7 +644,7 @@ static inline void LPUART_HAL_SetIdleChar(LPUART_Type * base, lpuart_idle_char_t
  */
 static inline lpuart_idle_char_t LPUART_HAL_GetIdleChar(LPUART_Type * base)
 {
-    return (lpuart_idle_char_t)LPUART_BRD_CTRL_IDLECFG(base);
+	return (lpuart_idle_char_t)LPUART_BRD_CTRL_IDLECFG(base);
 }
 
 /*!
@@ -655,7 +655,7 @@ static inline lpuart_idle_char_t LPUART_HAL_GetIdleChar(LPUART_Type * base)
  */
 static inline bool LPUART_HAL_IsCurrentDataWithNoise(LPUART_Type * base)
 {
-    return LPUART_BRD_DATA_NOISY(base);
+	return LPUART_BRD_DATA_NOISY(base);
 }
 
 /*!
@@ -666,7 +666,7 @@ static inline bool LPUART_HAL_IsCurrentDataWithNoise(LPUART_Type * base)
  */
 static inline bool LPUART_HAL_IsCurrentDataWithFrameError(LPUART_Type * base)
 {
-    return LPUART_BRD_DATA_FRETSC(base);
+	return LPUART_BRD_DATA_FRETSC(base);
 }
 
 /*!
@@ -679,7 +679,7 @@ static inline bool LPUART_HAL_IsCurrentDataWithFrameError(LPUART_Type * base)
  */
 static inline void LPUART_HAL_SetTxSpecialChar(LPUART_Type * base, uint8_t specialChar)
 {
-    LPUART_BWR_DATA_FRETSC(base, specialChar);
+	LPUART_BWR_DATA_FRETSC(base, specialChar);
 }
 
 /*!
@@ -690,7 +690,7 @@ static inline void LPUART_HAL_SetTxSpecialChar(LPUART_Type * base, uint8_t speci
  */
 static inline bool LPUART_HAL_IsCurrentDataWithParityError(LPUART_Type * base)
 {
-    return LPUART_BRD_DATA_PARITYE(base);
+	return LPUART_BRD_DATA_PARITYE(base);
 }
 
 /*!
@@ -701,7 +701,7 @@ static inline bool LPUART_HAL_IsCurrentDataWithParityError(LPUART_Type * base)
  */
 static inline bool LPUART_HAL_IsReceiveBufferEmpty(LPUART_Type * base)
 {
-    return LPUART_BRD_DATA_RXEMPT(base);
+	return LPUART_BRD_DATA_RXEMPT(base);
 }
 
 /*!
@@ -712,7 +712,7 @@ static inline bool LPUART_HAL_IsReceiveBufferEmpty(LPUART_Type * base)
  */
 static inline bool LPUART_HAL_WasPreviousReceiverStateIdle(LPUART_Type * base)
 {
-    return LPUART_BRD_DATA_IDLINE(base);
+	return LPUART_BRD_DATA_IDLINE(base);
 }
 
 /*!
@@ -727,8 +727,8 @@ static inline bool LPUART_HAL_WasPreviousReceiverStateIdle(LPUART_Type * base)
  */
 static inline void  LPUART_HAL_SetWaitModeOperation(LPUART_Type * base, lpuart_operation_config_t mode)
 {
-    /* In CPU wait mode: 0 - LPUART clocks continue to run; 1 - LPUART clocks freeze */
-    LPUART_BWR_CTRL_DOZEEN(base, mode);
+	/* In CPU wait mode: 0 - LPUART clocks continue to run; 1 - LPUART clocks freeze */
+	LPUART_BWR_CTRL_DOZEEN(base, mode);
 }
 
 /*!
@@ -740,8 +740,8 @@ static inline void  LPUART_HAL_SetWaitModeOperation(LPUART_Type * base, lpuart_o
  */
 static inline lpuart_operation_config_t LPUART_HAL_GetWaitModeOperation(LPUART_Type * base)
 {
-    /* In CPU wait mode: 0 - LPUART clocks continue to run; 1 - LPUART clocks freeze  */
-    return (lpuart_operation_config_t)LPUART_BRD_CTRL_DOZEEN(base);
+	/* In CPU wait mode: 0 - LPUART clocks continue to run; 1 - LPUART clocks freeze  */
+	return (lpuart_operation_config_t)LPUART_BRD_CTRL_DOZEEN(base);
 }
 
 /*!
@@ -775,9 +775,9 @@ void LPUART_HAL_SetSingleWireCmd(LPUART_Type * base, bool enable);
  * @param direction LPUART single-wire transmit direction - input or output
  */
 static inline void LPUART_HAL_SetTxdirInSinglewireMode(LPUART_Type * base,
-                                                 lpuart_singlewire_txdir_t direction)
+												 lpuart_singlewire_txdir_t direction)
 {
-    LPUART_BWR_CTRL_TXDIR(base, direction);
+	LPUART_BWR_CTRL_TXDIR(base, direction);
 }
 
 /*!
@@ -795,7 +795,7 @@ lpuart_status_t LPUART_HAL_SetReceiverInStandbyMode(LPUART_Type * base);
  */
 static inline void LPUART_HAL_PutReceiverInNormalMode(LPUART_Type * base)
 {
-    LPUART_BWR_CTRL_RWU(base, 0);
+	LPUART_BWR_CTRL_RWU(base, 0);
 }
 
 /*!
@@ -806,7 +806,7 @@ static inline void LPUART_HAL_PutReceiverInNormalMode(LPUART_Type * base)
  */
 static inline bool LPUART_HAL_IsReceiverInStandby(LPUART_Type * base)
 {
-    return LPUART_BRD_CTRL_RWU(base);
+	return LPUART_BRD_CTRL_RWU(base);
 }
 
 /*!
@@ -816,9 +816,9 @@ static inline bool LPUART_HAL_IsReceiverInStandby(LPUART_Type * base)
  * @param method   LPUART wakeup method: 0 - Idle-line wake (default), 1 - addr-mark wake
  */
 static inline void LPUART_HAL_SetReceiverWakeupMode(LPUART_Type * base,
-                                                    lpuart_wakeup_method_t method)
+													lpuart_wakeup_method_t method)
 {
-    LPUART_BWR_CTRL_WAKE(base, method);
+	LPUART_BWR_CTRL_WAKE(base, method);
 }
 
 /*!
@@ -830,7 +830,7 @@ static inline void LPUART_HAL_SetReceiverWakeupMode(LPUART_Type * base,
  */
 static inline lpuart_wakeup_method_t LPUART_HAL_GetReceiverWakeupMode(LPUART_Type * base)
 {
-    return (lpuart_wakeup_method_t)LPUART_BRD_CTRL_WAKE(base);
+	return (lpuart_wakeup_method_t)LPUART_BRD_CTRL_WAKE(base);
 }
 
 /*!
@@ -845,7 +845,7 @@ static inline lpuart_wakeup_method_t LPUART_HAL_GetReceiverWakeupMode(LPUART_Typ
  * @param config   LPUART configuration data for idle line detect operation
  */
 void LPUART_HAL_SetIdleLineDetect(LPUART_Type * base,
-                                  const lpuart_idle_line_config_t *config);
+								  const lpuart_idle_line_config_t *config);
 
 /*!
  * @brief  LPUART break character transmit length configuration.
@@ -858,9 +858,9 @@ void LPUART_HAL_SetIdleLineDetect(LPUART_Type * base,
  *                   1 - minimum 13-bit times
  */
 static inline void LPUART_HAL_SetBreakCharTransmitLength(LPUART_Type * base,
-                                             lpuart_break_char_length_t length)
+											 lpuart_break_char_length_t length)
 {
-    LPUART_BWR_STAT_BRK13(base, length);
+	LPUART_BWR_STAT_BRK13(base, length);
 }
 
 /*!
@@ -871,9 +871,9 @@ static inline void LPUART_HAL_SetBreakCharTransmitLength(LPUART_Type * base,
  *                  1 - minimum 13-bit times
  */
 static inline void LPUART_HAL_SetBreakCharDetectLength(LPUART_Type * base,
-                                           lpuart_break_char_length_t length)
+										   lpuart_break_char_length_t length)
 {
-    LPUART_BWR_STAT_LBKDE(base, length);
+	LPUART_BWR_STAT_LBKDE(base, length);
 }
 
 /*!
@@ -885,7 +885,7 @@ static inline void LPUART_HAL_SetBreakCharDetectLength(LPUART_Type * base,
  */
 static inline void LPUART_HAL_QueueBreakCharToSend(LPUART_Type * base, bool enable)
 {
-    LPUART_BWR_CTRL_SBK(base, enable);
+	LPUART_BWR_CTRL_SBK(base, enable);
 }
 
 /*!
@@ -896,7 +896,7 @@ static inline void LPUART_HAL_QueueBreakCharToSend(LPUART_Type * base, bool enab
  */
 static inline void LPUART_HAL_SetMatchAddressMode(LPUART_Type * base, lpuart_match_config_t config)
 {
-    LPUART_BWR_BAUD_MATCFG(base, config);
+	LPUART_BWR_BAUD_MATCFG(base, config);
 }
 
 /*!
@@ -935,7 +935,7 @@ void LPUART_HAL_SetMatchAddressReg2(LPUART_Type * base, bool enable, uint8_t val
  */
 static inline void LPUART_HAL_SetSendMsbFirstCmd(LPUART_Type * base, bool enable)
 {
-    LPUART_BWR_STAT_MSBF(base, enable);
+	LPUART_BWR_STAT_MSBF(base, enable);
 }
 
 /*!
@@ -948,10 +948,10 @@ static inline void LPUART_HAL_SetSendMsbFirstCmd(LPUART_Type * base, bool enable
  */
 static inline void LPUART_HAL_SetReceiveResyncCmd(LPUART_Type * base, bool enable)
 {
-    /* When disabled, the resynchronization of the received data word when a data
-     * one followed by data zero transition is detected. This bit should only be
-     * changed when the receiver is disabled. */
-    LPUART_BWR_BAUD_RESYNCDIS(base, enable);
+	/* When disabled, the resynchronization of the received data word when a data
+	 * one followed by data zero transition is detected. This bit should only be
+	 * changed when the receiver is disabled. */
+	LPUART_BWR_BAUD_RESYNCDIS(base, enable);
 }
 
 #if FSL_FEATURE_LPUART_HAS_MODEM_SUPPORT
@@ -962,9 +962,9 @@ static inline void LPUART_HAL_SetReceiveResyncCmd(LPUART_Type * base, bool enabl
  * @param source   LPUART CTS source
  */
 static inline void LPUART_HAL_SetCtsSource(LPUART_Type * base,
-                                           lpuart_cts_source_t source)
+										   lpuart_cts_source_t source)
 {
-    LPUART_BWR_MODIR_TXCTSSRC(base, source);
+	LPUART_BWR_MODIR_TXCTSSRC(base, source);
 }
 
 /*!
@@ -978,7 +978,7 @@ static inline void LPUART_HAL_SetCtsSource(LPUART_Type * base,
  */
 static inline void LPUART_HAL_SetCtsMode(LPUART_Type * base, lpuart_cts_config_t mode)
 {
-    LPUART_BWR_MODIR_TXCTSC(base, mode);
+	LPUART_BWR_MODIR_TXCTSC(base, mode);
 }
 
 /*!
@@ -989,7 +989,7 @@ static inline void LPUART_HAL_SetCtsMode(LPUART_Type * base, lpuart_cts_config_t
  */
 static inline void LPUART_HAL_SetTxCtsCmd(LPUART_Type * base, bool enable)
 {
-    LPUART_BWR_MODIR_TXCTSE(base, enable);
+	LPUART_BWR_MODIR_TXCTSE(base, enable);
 }
 
 /*!
@@ -1002,7 +1002,7 @@ static inline void LPUART_HAL_SetTxCtsCmd(LPUART_Type * base, bool enable)
  */
 static inline void LPUART_HAL_SetRxRtsCmd(LPUART_Type * base, bool enable)
 {
-    LPUART_BWR_MODIR_RXRTSE(base, enable);
+	LPUART_BWR_MODIR_RXRTSE(base, enable);
 }
 
 /*!
@@ -1014,7 +1014,7 @@ static inline void LPUART_HAL_SetRxRtsCmd(LPUART_Type * base, bool enable)
  */
 static inline void LPUART_HAL_SetTxRtsCmd(LPUART_Type * base, bool enable)
 {
-    LPUART_BWR_MODIR_TXRTSE(base, enable);
+	LPUART_BWR_MODIR_TXRTSE(base, enable);
 }
 
 /*!
@@ -1025,7 +1025,7 @@ static inline void LPUART_HAL_SetTxRtsCmd(LPUART_Type * base, bool enable)
  */
 static inline void LPUART_HAL_SetTxRtsPolarityMode(LPUART_Type * base, bool polarity)
 {
-    LPUART_BWR_MODIR_TXRTSPOL(base, polarity);
+	LPUART_BWR_MODIR_TXRTSPOL(base, polarity);
 }
 
 #endif  /* FSL_FEATURE_LPUART_HAS_MODEM_SUPPORT */
@@ -1039,7 +1039,7 @@ static inline void LPUART_HAL_SetTxRtsPolarityMode(LPUART_Type * base, bool pola
  * @param pulseWidth The transmit narrow pulse width of type lpuart_ir_tx_pulsewidth_t
  */
 void LPUART_HAL_SetInfrared(LPUART_Type * base, bool enable,
-                            lpuart_ir_tx_pulsewidth_t pulseWidth);
+							lpuart_ir_tx_pulsewidth_t pulseWidth);
 #endif  /* FSL_FEATURE_LPUART_HAS_IR_SUPPORT */
 
 /*!
@@ -1091,7 +1091,7 @@ lpuart_status_t LPUART_HAL_SetRxFifoCmd(LPUART_Type * base, bool enable);
  */
 static inline uint8_t LPUART_HAL_GetTxFifoSize(LPUART_Type * base)
 {
-    return LPUART_BRD_FIFO_TXFIFOSIZE(base);
+	return LPUART_BRD_FIFO_TXFIFOSIZE(base);
 }
 
 /*!
@@ -1107,7 +1107,7 @@ static inline uint8_t LPUART_HAL_GetTxFifoSize(LPUART_Type * base)
  */
 static inline uint8_t LPUART_HAL_GetRxFifoSize(LPUART_Type * base)
 {
-    return LPUART_BRD_FIFO_RXFIFOSIZE(base);
+	return LPUART_BRD_FIFO_RXFIFOSIZE(base);
 }
 
 /*!
@@ -1147,7 +1147,7 @@ lpuart_status_t LPUART_HAL_FlushRxFifo(LPUART_Type * base);
  */
 static inline bool LPUART_HAL_IsTxFifoEmpty(LPUART_Type * base)
 {
-    return LPUART_BRD_FIFO_TXEMPT(base);
+	return LPUART_BRD_FIFO_TXEMPT(base);
 }
 
 /*!
@@ -1161,7 +1161,7 @@ static inline bool LPUART_HAL_IsTxFifoEmpty(LPUART_Type * base)
  */
 static inline bool LPUART_HAL_IsRxFifoEmpty(LPUART_Type * base)
 {
-    return LPUART_BRD_FIFO_RXEMPT(base);
+	return LPUART_BRD_FIFO_RXEMPT(base);
 }
 
 /*!
@@ -1184,7 +1184,7 @@ lpuart_status_t LPUART_HAL_SetRxIdleEmpty(LPUART_Type * base, lpuart_rx_idle_emp
  */
 static inline lpuart_rx_idle_empty_config_t LPUART_HAL_GetRxIdleEmpty(LPUART_Type * base)
 {
-    return (lpuart_rx_idle_empty_config_t)LPUART_BRD_FIFO_RXIDEN(base);
+	return (lpuart_rx_idle_empty_config_t)LPUART_BRD_FIFO_RXIDEN(base);
 }
 
 /*!
@@ -1207,7 +1207,7 @@ lpuart_status_t LPUART_HAL_SetTxFifoWatermark(LPUART_Type * base, uint8_t waterm
  */
 static inline uint8_t LPUART_HAL_GetTxFifoWatermark(LPUART_Type * base)
 {
-    return LPUART_BRD_WATER_TXWATER(base);
+	return LPUART_BRD_WATER_TXWATER(base);
 }
 
 /*!
@@ -1221,7 +1221,7 @@ static inline uint8_t LPUART_HAL_GetTxFifoWatermark(LPUART_Type * base)
  */
 static inline uint8_t LPUART_HAL_GetTxDatawordCountInFifo(LPUART_Type * base)
 {
-    return LPUART_BRD_WATER_TXCOUNT(base);
+	return LPUART_BRD_WATER_TXCOUNT(base);
 }
 
 /*!
@@ -1248,7 +1248,7 @@ lpuart_status_t LPUART_HAL_SetRxFifoWatermark(LPUART_Type * base, uint8_t waterm
  */
 static inline uint8_t LPUART_HAL_GetRxDatawordCountInFifo(LPUART_Type * base)
 {
-    return LPUART_BRD_WATER_RXCOUNT(base);
+	return LPUART_BRD_WATER_RXCOUNT(base);
 }
 
 /*!
@@ -1259,7 +1259,7 @@ static inline uint8_t LPUART_HAL_GetRxDatawordCountInFifo(LPUART_Type * base)
  */
 static inline uint8_t LPUART_HAL_GetRxFifoWatermark(LPUART_Type * base)
 {
-    return LPUART_BRD_WATER_RXWATER(base);
+	return LPUART_BRD_WATER_RXWATER(base);
 }
 
 #endif  /* FSL_FEATURE_LPUART_HAS_FIFO*/
@@ -1276,4 +1276,3 @@ static inline uint8_t LPUART_HAL_GetRxFifoWatermark(LPUART_Type * base)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

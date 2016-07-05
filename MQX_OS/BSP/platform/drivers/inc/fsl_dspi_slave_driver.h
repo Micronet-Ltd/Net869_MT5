@@ -51,14 +51,14 @@ extern const IRQn_Type g_dspiIrqId[SPI_INSTANCE_COUNT];
  ******************************************************************************/
 
 #define DSPI_DEFAULT_DUMMY_PATTERN      (0x0U)      /*!< Dummy pattern, that DSPI slave will send
-                                                         when transmit data was not configured */
+														 when transmit data was not configured */
 
 /*!
  *  @brief User configuration structure for the DSPI slave driver.
  */
 typedef struct DSPISlaveUserConfig {
-    dspi_data_format_config_t dataConfig;       /*!< Data format configuration structure */
-    uint16_t dummyPattern;                      /*!< Dummy data value */
+	dspi_data_format_config_t dataConfig;       /*!< Data format configuration structure */
+	uint16_t dummyPattern;                      /*!< Dummy data value */
 } dspi_slave_user_config_t;
 
 /*!
@@ -70,18 +70,18 @@ typedef struct DSPISlaveUserConfig {
  * the members.
  */
 typedef struct DSPISlaveState {
-    uint32_t bitsPerFrame;                      /*!< Desired number of bits per frame */
-    dspi_status_t status;                       /*!< Current state of slave */
-    event_t event;                              /*!< Event to notify waiting task */
-    uint16_t errorCount;                        /*!< Driver error count */
-    uint32_t dummyPattern;                      /*!< Dummy data will be send when do not have data
-                                                     in transmit buffer */
-    volatile bool isTransferInProgress;         /*!< True if there is an active transfer.*/
-    const uint8_t * sendBuffer;        /*!< Pointer to transmit buffer */
-    uint8_t * receiveBuffer;           /*!< Pointer to receive buffer */
-    volatile int32_t remainingSendByteCount;    /*!< Number of bytes remaining to send.*/
-    volatile int32_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
-    bool isSync;                                /*!< Indicates the function call is sync or async */
+	uint32_t bitsPerFrame;                      /*!< Desired number of bits per frame */
+	dspi_status_t status;                       /*!< Current state of slave */
+	event_t event;                              /*!< Event to notify waiting task */
+	uint16_t errorCount;                        /*!< Driver error count */
+	uint32_t dummyPattern;                      /*!< Dummy data will be send when do not have data
+													 in transmit buffer */
+	volatile bool isTransferInProgress;         /*!< True if there is an active transfer.*/
+	const uint8_t * sendBuffer;        /*!< Pointer to transmit buffer */
+	uint8_t * receiveBuffer;           /*!< Pointer to receive buffer */
+	volatile int32_t remainingSendByteCount;    /*!< Number of bytes remaining to send.*/
+	volatile int32_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
+	bool isSync;                                /*!< Indicates the function call is sync or async */
 } dspi_slave_state_t;
 
 /*******************************************************************************
@@ -114,8 +114,8 @@ extern "C" {
  */
 
 dspi_status_t DSPI_DRV_SlaveInit(uint32_t instance,
-                                 dspi_slave_state_t * dspiState,
-                                 const dspi_slave_user_config_t * slaveConfig);
+								 dspi_slave_state_t * dspiState,
+								 const dspi_slave_user_config_t * slaveConfig);
 
 /*!
  * @brief Shuts down a DSPI instance - interrupt mechanism.
@@ -159,10 +159,10 @@ dspi_status_t DSPI_DRV_SlaveDeinit(uint32_t instance);
  *          kStatus_DSPI_Timeout if time out reached while transferring is in progress.
  */
 dspi_status_t DSPI_DRV_SlaveTransferBlocking(uint32_t instance,
-                                             const uint8_t *sendBuffer,
-                                             uint8_t *receiveBuffer,
-                                             uint32_t transferByteCount,
-                                             uint32_t timeout);
+											 const uint8_t *sendBuffer,
+											 uint8_t *receiveBuffer,
+											 uint32_t transferByteCount,
+											 uint32_t timeout);
 
 /*@}*/
 
@@ -192,9 +192,9 @@ dspi_status_t DSPI_DRV_SlaveTransferBlocking(uint32_t instance,
  *                  available.
  */
 dspi_status_t DSPI_DRV_SlaveTransfer(uint32_t instance,
-                                     const uint8_t *sendBuffer,
-                                     uint8_t *receiveBuffer,
-                                     uint32_t transferByteCount);
+									 const uint8_t *sendBuffer,
+									 uint8_t *receiveBuffer,
+									 uint32_t transferByteCount);
 
 /*!
  * @brief Aborts the transfer that started by a non-blocking call to a transfer function.
@@ -227,7 +227,7 @@ dspi_status_t DSPI_DRV_SlaveAbortTransfer(uint32_t instance);
  *         is filled with the number of words that have been transferred so far.
  */
 dspi_status_t DSPI_DRV_SlaveGetTransferStatus(uint32_t instance,
-                                              uint32_t * framesTransferred);
+											  uint32_t * framesTransferred);
 
 /*!
  * @brief DSPI Slave Generic IRQ handler.
@@ -252,4 +252,3 @@ void DSPI_DRV_SlaveIRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

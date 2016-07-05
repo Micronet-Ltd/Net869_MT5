@@ -41,17 +41,17 @@
  *END*************************************************************************/
 crc_status_t CRC_DRV_Init(uint32_t instance, const crc_user_config_t *userConfigPtr)
 {
-    if (!userConfigPtr)
-    {
-        return kStatus_CRC_InvalidArgument;
-    }
-    /* Enable clock for CRC. */
-    if (!CLOCK_SYS_GetCrcGateCmd(instance))
-    {
-        CLOCK_SYS_EnableCrcClock(instance);
-    }
+	if (!userConfigPtr)
+	{
+		return kStatus_CRC_InvalidArgument;
+	}
+	/* Enable clock for CRC. */
+	if (!CLOCK_SYS_GetCrcGateCmd(instance))
+	{
+		CLOCK_SYS_EnableCrcClock(instance);
+	}
 
-    return CRC_DRV_Configure(instance, userConfigPtr);
+	return CRC_DRV_Configure(instance, userConfigPtr);
 }
 
 /*FUNCTION**********************************************************************
@@ -62,8 +62,8 @@ crc_status_t CRC_DRV_Init(uint32_t instance, const crc_user_config_t *userConfig
  *END**************************************************************************/
 void CRC_DRV_Deinit(uint32_t instance)
 {
-    /* Gate the clock for CRC.*/
-    CLOCK_SYS_DisableCrcClock(instance);
+	/* Gate the clock for CRC.*/
+	CLOCK_SYS_DisableCrcClock(instance);
 }
 
 /*FUNCTION**********************************************************************
@@ -75,71 +75,71 @@ void CRC_DRV_Deinit(uint32_t instance)
  *END**************************************************************************/
 uint32_t CRC_DRV_GetCrcBlock(uint32_t instance, uint8_t *data, uint32_t dataLen)
 {
-    crc_transpose_t oldInputTranspose;
-    uint32_t *data32;
-    uint8_t *data8;
-    uint32_t result;
+	crc_transpose_t oldInputTranspose;
+	uint32_t *data32;
+	uint8_t *data8;
+	uint32_t result;
 
-    assert(data != NULL);
-    assert(dataLen != 0);
+	assert(data != NULL);
+	assert(dataLen != 0);
 
-    /* flip bytes because of little endian architecture */
-    oldInputTranspose = CRC_HAL_GetWriteTranspose(g_crcBase[instance]);
+	/* flip bytes because of little endian architecture */
+	oldInputTranspose = CRC_HAL_GetWriteTranspose(g_crcBase[instance]);
 
-    switch (oldInputTranspose) {
-        case kCrcNoTranspose:
-             CRC_HAL_SetWriteTranspose(g_crcBase[instance], kCrcTransposeBytes);
-             break;
-        case kCrcTransposeBits:
-             CRC_HAL_SetWriteTranspose(g_crcBase[instance], kCrcTransposeBoth);
-             break;
-        case kCrcTransposeBoth:
-             CRC_HAL_SetWriteTranspose(g_crcBase[instance], kCrcTransposeBits);
-             break;
-        case kCrcTransposeBytes:
-             CRC_HAL_SetWriteTranspose(g_crcBase[instance], kCrcNoTranspose);
-             break;
-        default:
-             break;
-    }
+	switch (oldInputTranspose) {
+		case kCrcNoTranspose:
+			 CRC_HAL_SetWriteTranspose(g_crcBase[instance], kCrcTransposeBytes);
+			 break;
+		case kCrcTransposeBits:
+			 CRC_HAL_SetWriteTranspose(g_crcBase[instance], kCrcTransposeBoth);
+			 break;
+		case kCrcTransposeBoth:
+			 CRC_HAL_SetWriteTranspose(g_crcBase[instance], kCrcTransposeBits);
+			 break;
+		case kCrcTransposeBytes:
+			 CRC_HAL_SetWriteTranspose(g_crcBase[instance], kCrcNoTranspose);
+			 break;
+		default:
+			 break;
+	}
 
-    /* Start the checksum calculation */
-    /* If address is not word-aligned, then read initial bytes in 8bit mode till word-aligned */
-    while (((uint32_t)data & 3U) && (dataLen > 0))
-    {
-        CRC_HAL_SetDataLLReg(g_crcBase[instance], *(data++));
-        dataLen--;
-    }
+	/* Start the checksum calculation */
+	/* If address is not word-aligned, then read initial bytes in 8bit mode till word-aligned */
+	while (((uint32_t)data & 3U) && (dataLen > 0))
+	{
+		CRC_HAL_SetDataLLReg(g_crcBase[instance], *(data++));
+		dataLen--;
+	}
 
-    data32 = (uint32_t *)data;
-    while (dataLen >= sizeof(uint32_t))
-    {
-        CRC_HAL_SetDataReg(g_crcBase[instance], *(data32++)); /* 32bit access */
-        dataLen -= sizeof(uint32_t);
-    }
+	data32 = (uint32_t *)data;
+	while (dataLen >= sizeof(uint32_t))
+	{
+		CRC_HAL_SetDataReg(g_crcBase[instance], *(data32++)); /* 32bit access */
+		dataLen -= sizeof(uint32_t);
+	}
 
-    data8 = (uint8_t *)data32;
+	data8 = (uint8_t *)data32;
 
-    switch(dataLen)
-    {
-        case 3U:
-            CRC_HAL_SetDataLReg(g_crcBase[instance], *(uint16_t *)data8);   /* 16 bit */
-            CRC_HAL_SetDataLLReg(g_crcBase[instance], *(data8 + 2U));         /* 8 bit */
-            break;
-        case 2U:
-            CRC_HAL_SetDataLReg(g_crcBase[instance], *(uint16_t *)data8);   /* 16 bit */
-            break;
-        case 1U:
-            CRC_HAL_SetDataLLReg(g_crcBase[instance], *data8);         /* 8 bit */
-            break;
-        default:
-            break;
-    }
+	switch(dataLen)
+	{
+		case 3U:
+			CRC_HAL_SetDataLReg(g_crcBase[instance], *(uint16_t *)data8);   /* 16 bit */
+			CRC_HAL_SetDataLLReg(g_crcBase[instance], *(data8 + 2U));         /* 8 bit */
+			break;
+		case 2U:
+			CRC_HAL_SetDataLReg(g_crcBase[instance], *(uint16_t *)data8);   /* 16 bit */
+			break;
+		case 1U:
+			CRC_HAL_SetDataLLReg(g_crcBase[instance], *data8);         /* 8 bit */
+			break;
+		default:
+			break;
+	}
 
-    result = CRC_HAL_GetCrcResult(g_crcBase[instance]);
-    CRC_HAL_SetWriteTranspose(g_crcBase[instance], oldInputTranspose);
+	result = CRC_HAL_GetCrcResult(g_crcBase[instance]);
+	CRC_HAL_SetWriteTranspose(g_crcBase[instance], oldInputTranspose);
 
-    return result;
+	return result;
 }
 
 /*FUNCTION**********************************************************************
@@ -150,28 +150,28 @@ uint32_t CRC_DRV_GetCrcBlock(uint32_t instance, uint8_t *data, uint32_t dataLen)
  *END**************************************************************************/
 crc_status_t CRC_DRV_Configure(uint32_t instance, const crc_user_config_t *userConfigPtr)
 {
-    if((!userConfigPtr))
-    {
-        return kStatus_CRC_InvalidArgument;
-    }
+	if((!userConfigPtr))
+	{
+		return kStatus_CRC_InvalidArgument;
+	}
 
-    /* 1. set 16 or 32-bit crc width */
-    CRC_HAL_SetProtocolWidth(g_crcBase[instance], userConfigPtr->crcWidth);
+	/* 1. set 16 or 32-bit crc width */
+	CRC_HAL_SetProtocolWidth(g_crcBase[instance], userConfigPtr->crcWidth);
 
-    /* 2. set transpose and complement options */
-    CRC_HAL_SetWriteTranspose(g_crcBase[instance], userConfigPtr->writeTranspose);
-    CRC_HAL_SetReadTranspose(g_crcBase[instance], userConfigPtr->readTranspose);
-    CRC_HAL_SetXorMode(g_crcBase[instance], userConfigPtr->complementRead);
+	/* 2. set transpose and complement options */
+	CRC_HAL_SetWriteTranspose(g_crcBase[instance], userConfigPtr->writeTranspose);
+	CRC_HAL_SetReadTranspose(g_crcBase[instance], userConfigPtr->readTranspose);
+	CRC_HAL_SetXorMode(g_crcBase[instance], userConfigPtr->complementRead);
 
-    /* 3. Write polynomial */
-    CRC_HAL_SetPolyReg(g_crcBase[instance], userConfigPtr->polynomial);
+	/* 3. Write polynomial */
+	CRC_HAL_SetPolyReg(g_crcBase[instance], userConfigPtr->polynomial);
 
-    /* 4. Set seed value */
-    CRC_HAL_SetSeedOrDataMode(g_crcBase[instance], true);
-    CRC_HAL_SetDataReg(g_crcBase[instance], userConfigPtr->seed);
-    CRC_HAL_SetSeedOrDataMode(g_crcBase[instance], false);
+	/* 4. Set seed value */
+	CRC_HAL_SetSeedOrDataMode(g_crcBase[instance], true);
+	CRC_HAL_SetDataReg(g_crcBase[instance], userConfigPtr->seed);
+	CRC_HAL_SetSeedOrDataMode(g_crcBase[instance], false);
 
-    return kStatus_CRC_Success;
+	return kStatus_CRC_Success;
 }
 #endif
 

@@ -77,10 +77,10 @@ extern "C" {
  * @return Error or success returned by API.
  */
 irtc_status_t IRTC_DRV_Init(uint32_t instance,
-                            const irtc_datetime_t * datetime,
-                            const irtc_datetime_t * alarmDatetime,
-                            irtc_alarm_match_t alarmMode,
-                            const irtc_daylight_time_t * daylightTime);
+							const irtc_datetime_t * datetime,
+							const irtc_datetime_t * alarmDatetime,
+							irtc_alarm_match_t alarmMode,
+							const irtc_daylight_time_t * daylightTime);
 
 /*!
  * @brief  Disables the IRTC module clock gate control.
@@ -106,7 +106,7 @@ irtc_status_t IRTC_DRV_Deinit(uint32_t instance);
  */
 static inline void IRTC_DRV_SetDatetime(uint32_t instance, irtc_datetime_t *datetime)
 {
-    IRTC_HAL_SetDatetime(g_irtcBase[instance], datetime);
+	IRTC_HAL_SetDatetime(g_irtcBase[instance], datetime);
 }
 
 /*!
@@ -118,7 +118,7 @@ static inline void IRTC_DRV_SetDatetime(uint32_t instance, irtc_datetime_t *date
  */
 static inline void IRTC_DRV_GetDatetime(uint32_t instance, irtc_datetime_t *datetime)
 {
-    IRTC_HAL_GetDatetime(g_irtcBase[instance], datetime);
+	IRTC_HAL_GetDatetime(g_irtcBase[instance], datetime);
 }
 
 /* @} */
@@ -136,7 +136,7 @@ static inline void IRTC_DRV_GetDatetime(uint32_t instance, irtc_datetime_t *date
  */
 static inline void IRTC_DRV_SetAlarmMatchMode(uint32_t instance, irtc_alarm_match_t alarmType)
 {
-    IRTC_HAL_SetAlarmMatchMode(g_irtcBase[instance], alarmType);
+	IRTC_HAL_SetAlarmMatchMode(g_irtcBase[instance], alarmType);
 }
 
 /*!
@@ -147,7 +147,7 @@ static inline void IRTC_DRV_SetAlarmMatchMode(uint32_t instance, irtc_alarm_matc
  */
 static inline void IRTC_DRV_SetAlarm(uint32_t instance, irtc_datetime_t *alarmTime)
 {
-    IRTC_HAL_SetAlarm(g_irtcBase[instance], alarmTime);
+	IRTC_HAL_SetAlarm(g_irtcBase[instance], alarmTime);
 }
 
 /*!
@@ -159,7 +159,7 @@ static inline void IRTC_DRV_SetAlarm(uint32_t instance, irtc_datetime_t *alarmTi
  */
 static inline void IRTC_DRV_GetAlarm(uint32_t instance, irtc_datetime_t *date)
 {
-    IRTC_HAL_GetAlarm(g_irtcBase[instance], date);
+	IRTC_HAL_GetAlarm(g_irtcBase[instance], date);
 }
 /* @} */
 
@@ -177,7 +177,7 @@ static inline void IRTC_DRV_GetAlarm(uint32_t instance, irtc_datetime_t *date)
  */
 static inline void IRTC_DRV_SetIntCmd(uint32_t instance, irtc_int_t interrupt, bool enable)
 {
-    IRTC_HAL_SetIntCmd(g_irtcBase[instance], interrupt, enable);
+	IRTC_HAL_SetIntCmd(g_irtcBase[instance], interrupt, enable);
 }
 
 /*!
@@ -191,7 +191,7 @@ static inline void IRTC_DRV_SetIntCmd(uint32_t instance, irtc_int_t interrupt, b
  */
 static inline bool IRTC_DRV_GetIntCmd(uint32_t instance, irtc_int_t interrupt)
 {
-    return IRTC_HAL_GetIntCmd(g_irtcBase[instance], interrupt);
+	return IRTC_HAL_GetIntCmd(g_irtcBase[instance], interrupt);
 }
 
 /*!
@@ -205,7 +205,7 @@ static inline bool IRTC_DRV_GetIntCmd(uint32_t instance, irtc_int_t interrupt)
  */
 static inline bool IRTC_DRV_GetIntStatusFlag(uint32_t instance, irtc_int_status_flag_t statusFlag)
 {
-    return IRTC_HAL_GetIntStatusFlag(g_irtcBase[instance], statusFlag);
+	return IRTC_HAL_GetIntStatusFlag(g_irtcBase[instance], statusFlag);
 }
 
 /*!
@@ -218,7 +218,7 @@ static inline bool IRTC_DRV_GetIntStatusFlag(uint32_t instance, irtc_int_status_
  */
 static inline void IRTC_DRV_ClearIntStatusFlag(uint32_t instance, irtc_int_status_flag_t statusFlag)
 {
-    IRTC_HAL_ClearIntStatusFlag(g_irtcBase[instance], statusFlag);
+	IRTC_HAL_ClearIntStatusFlag(g_irtcBase[instance], statusFlag);
 }
 
 /*@}*/
@@ -236,4 +236,3 @@ static inline void IRTC_DRV_ClearIntStatusFlag(uint32_t instance, irtc_int_statu
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

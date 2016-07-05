@@ -51,10 +51,10 @@
 */
 typedef struct
 {
-    bool useInt;           /*!< Enables supporting interrupts. @internal gui name="Interrupt" */
-    bool onDozeEnable;     /*!< Controls the FlexIO operation in doze modes. @internal gui name="Operation in Doze modes" */
-    bool onDebugEnable;    /*!< Enables FlexIO operation when in debug mode. @internal gui name="Operation in Debug modes" */
-    bool fastAccessEnable; /*!< Enables fast register accesses to FlexIO registers. @internal gui name="Fast register access" */
+	bool useInt;           /*!< Enables supporting interrupts. @internal gui name="Interrupt" */
+	bool onDozeEnable;     /*!< Controls the FlexIO operation in doze modes. @internal gui name="Operation in Doze modes" */
+	bool onDebugEnable;    /*!< Enables FlexIO operation when in debug mode. @internal gui name="Operation in Debug modes" */
+	bool fastAccessEnable; /*!< Enables fast register accesses to FlexIO registers. @internal gui name="Fast register access" */
 } flexio_user_config_t;
 /*! @brief Shifter interrupt handler function type */
 typedef void (* flexio_shifter_int_handler_t)(void * param);
@@ -63,8 +63,8 @@ typedef void (* flexio_shifter_int_handler_t)(void * param);
 */
 typedef struct
 {
-    flexio_shifter_int_handler_t shifterIntHandler;
-    void *param;
+	flexio_shifter_int_handler_t shifterIntHandler;
+	void *param;
 
 }flexio_shifter_callback_t;
 /*!
@@ -89,7 +89,7 @@ extern "C" {
  * @name FlexIO Driver
  * @{
  */
- 
+
 /*!
  * @brief Initializes the FlexIO module before using the FlexIO module.
  *
@@ -100,7 +100,7 @@ extern "C" {
 flexio_status_t FLEXIO_DRV_Init(uint32_t instance, const flexio_user_config_t *userConfigPtr);
 
 /*!
- * @brief Enables the FlexIO after configuring the FlexIO devices. 
+ * @brief Enables the FlexIO after configuring the FlexIO devices.
  *
  * @param instance FlexIO instance ID.
  */
@@ -122,8 +122,8 @@ void FLEXIO_DRV_Pause(uint32_t instance);
  * @param param Parameter for callback function.
  */
 void FLEXIO_DRV_RegisterCallback(uint32_t instance, uint32_t shifterId,
-                           flexio_shifter_int_handler_t shifterIntHandler,
-                           void *param);
+						   flexio_shifter_int_handler_t shifterIntHandler,
+						   void *param);
 
 /*!
  * @brief Deinitializes the FlexIO module.
@@ -154,4 +154,3 @@ void FLEXIO_DRV_IRQHandler(uint32_t instance);
 /******************************************************************************
  * EOF
  *****************************************************************************/
-

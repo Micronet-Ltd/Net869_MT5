@@ -89,7 +89,7 @@ register int _lr __asm("lr");
    (semicolon on a new line after preprocessing) */
 #define PACKED_STRUCT_BEGIN _Pragma("pack(1)")
 #define PACKED_STRUCT_END ; _Pragma("pack()") \
-                            void dummy(void)
+							void dummy(void)
 
 /* compiler dependent union packing option -
    dummy function prototype is added to avoid
@@ -97,7 +97,7 @@ register int _lr __asm("lr");
    (semicolon on a new line after preprocessing) */
 #define PACKED_UNION_BEGIN _Pragma("pack(1)")
 #define PACKED_UNION_END ; _Pragma("pack()") \
-                           void dummy(void)
+						   void dummy(void)
 
 typedef int64_t off_t;
 typedef int32_t ssize_t;

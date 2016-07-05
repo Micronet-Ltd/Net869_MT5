@@ -46,20 +46,20 @@
 #define FLEXIO_CAMERA_PARALLEL_DATA_WIDTH    (8U)
 
 /*!
- * @brief Define structure of configuring the FlexIO camera device. 
+ * @brief Define structure of configuring the FlexIO camera device.
  */
 typedef struct
 {
-    FLEXIO_Type * flexioBase; /*!< FlexIO module base address. */
-    uint32_t datPinStartIdx;  /*!< First data pin (D0) index for flexio_camera.
-                                   Then the successive following FLEXIO_CAMERA_DATA_WIDTH-1 pins
-                                   would be used as D1-D7.*/
-    uint32_t pclkPinIdx;      /*!< Pixel clock pin (PCLK) index for flexio_camera. */
-    uint32_t hrefPinIdx;      /*!< Horizontal sync pin (HREF) index for flexio_camera. */
+	FLEXIO_Type * flexioBase; /*!< FlexIO module base address. */
+	uint32_t datPinStartIdx;  /*!< First data pin (D0) index for flexio_camera.
+								   Then the successive following FLEXIO_CAMERA_DATA_WIDTH-1 pins
+								   would be used as D1-D7.*/
+	uint32_t pclkPinIdx;      /*!< Pixel clock pin (PCLK) index for flexio_camera. */
+	uint32_t hrefPinIdx;      /*!< Horizontal sync pin (HREF) index for flexio_camera. */
 
-    uint32_t shifterStartIdx; /*!< First shifter index used for flexio_camera data FIFO. */
-    uint32_t shifterCount;    /*!< The count of shifters that are used as flexio_camera data FIFO. */
-    uint32_t timerIdx;        /*!< Timer index used for flexio_camera in FlexIO. */
+	uint32_t shifterStartIdx; /*!< First shifter index used for flexio_camera data FIFO. */
+	uint32_t shifterCount;    /*!< The count of shifters that are used as flexio_camera data FIFO. */
+	uint32_t timerIdx;        /*!< Timer index used for flexio_camera in FlexIO. */
 } flexio_camera_dev_t;
 
 #if defined(__cplusplus)
@@ -82,7 +82,7 @@ flexio_status_t FLEXIO_Camera_HAL_Configure(flexio_camera_dev_t *devPtr);
  * @return The mask of shifters that have been filled.
  *
  * Description for mask for the flags:
- *  The mask value: [..., bit2, bit1, bit0] is for 
+ *  The mask value: [..., bit2, bit1, bit0] is for
  *  [... shifterStartIdx+2, shifterStartIdx+1, shifterStartIdx]
  */
 uint32_t FLEXIO_Camera_HAL_GetRxBufferFullFlag(flexio_camera_dev_t *devPtr);
@@ -128,7 +128,7 @@ void FLEXIO_Camera_HAL_GetRxBufferData(flexio_camera_dev_t *devPtr, uint32_t *da
  *  [... shifterStartIdx+2, shifterStartIdx+1, shifterStartIdx]
  */
 void FLEXIO_Camera_HAL_SetRxBufferDmaCmd(
-    flexio_camera_dev_t *devPtr, uint32_t syncMsk, bool enable);
+	flexio_camera_dev_t *devPtr, uint32_t syncMsk, bool enable);
 
 /*!
  * @brief Gets the receive buffer's address for the DMA use.
@@ -151,4 +151,3 @@ uint32_t FLEXIO_Camera_HAL_GetRxBufferAddr(flexio_camera_dev_t *devPtr);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

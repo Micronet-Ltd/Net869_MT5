@@ -47,8 +47,8 @@
 /*! @brief Error codes for PIT driver. */
 typedef enum _pit_status
 {
-    kStatus_PIT_Success = 0x00U,
-    kStatus_PIT_Fail    = 0x01U
+	kStatus_PIT_Success = 0x00U,
+	kStatus_PIT_Fail    = 0x01U
 } pit_status_t;
 
 /*******************************************************************************
@@ -75,7 +75,7 @@ extern "C" {
  */
 static inline void PIT_HAL_Enable(PIT_Type * base)
 {
-    PIT_BWR_MCR_MDIS(base, 0U);
+	PIT_BWR_MCR_MDIS(base, 0U);
 }
 
 /*!
@@ -88,7 +88,7 @@ static inline void PIT_HAL_Enable(PIT_Type * base)
  */
 static inline void PIT_HAL_Disable(PIT_Type * base)
 {
-    PIT_BWR_MCR_MDIS(base, 1U);
+	PIT_BWR_MCR_MDIS(base, 1U);
 }
 
 /*!
@@ -106,7 +106,7 @@ static inline void PIT_HAL_Disable(PIT_Type * base)
  */
 static inline void PIT_HAL_SetTimerRunInDebugCmd(PIT_Type * base, bool timerRun)
 {
-    PIT_BWR_MCR_FRZ(base, !timerRun);
+	PIT_BWR_MCR_FRZ(base, !timerRun);
 }
 
 #if FSL_FEATURE_PIT_HAS_CHAIN_MODE
@@ -127,8 +127,8 @@ static inline void PIT_HAL_SetTimerRunInDebugCmd(PIT_Type * base, bool timerRun)
  */
 static inline void PIT_HAL_SetTimerChainCmd(PIT_Type * base, uint32_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
-    PIT_BWR_TCTRL_CHN(base, channel, enable);
+	assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
+	PIT_BWR_TCTRL_CHN(base, channel, enable);
 }
 
 #endif /* FSL_FEATURE_PIT_HAS_CHAIN_MODE*/
@@ -153,8 +153,8 @@ static inline void PIT_HAL_SetTimerChainCmd(PIT_Type * base, uint32_t channel, b
  */
 static inline void PIT_HAL_StartTimer(PIT_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
-    PIT_BWR_TCTRL_TEN(base, channel, 1U);
+	assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
+	PIT_BWR_TCTRL_TEN(base, channel, 1U);
 }
 
 /*!
@@ -168,8 +168,8 @@ static inline void PIT_HAL_StartTimer(PIT_Type * base, uint32_t channel)
  */
 static inline void PIT_HAL_StopTimer(PIT_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
-    PIT_BWR_TCTRL_TEN(base, channel, 0U);
+	assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
+	PIT_BWR_TCTRL_TEN(base, channel, 0U);
 }
 
 /*!
@@ -183,8 +183,8 @@ static inline void PIT_HAL_StopTimer(PIT_Type * base, uint32_t channel)
  */
 static inline bool PIT_HAL_IsTimerRunning(PIT_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
-    return PIT_BRD_TCTRL_TEN(base, channel);
+	assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
+	return PIT_BRD_TCTRL_TEN(base, channel);
 }
 
 /* @} */
@@ -209,8 +209,8 @@ static inline bool PIT_HAL_IsTimerRunning(PIT_Type * base, uint32_t channel)
  */
 static inline void PIT_HAL_SetTimerPeriodByCount(PIT_Type * base, uint32_t channel, uint32_t count)
 {
-    assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
-    PIT_WR_LDVAL(base, channel, count);
+	assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
+	PIT_WR_LDVAL(base, channel, count);
 }
 
 /*!
@@ -222,8 +222,8 @@ static inline void PIT_HAL_SetTimerPeriodByCount(PIT_Type * base, uint32_t chann
  */
 static inline uint32_t PIT_HAL_GetTimerPeriodByCount(PIT_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
-    return PIT_RD_LDVAL(base, channel);
+	assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
+	return PIT_RD_LDVAL(base, channel);
 }
 
 /*!
@@ -238,8 +238,8 @@ static inline uint32_t PIT_HAL_GetTimerPeriodByCount(PIT_Type * base, uint32_t c
  */
 static inline uint32_t PIT_HAL_ReadTimerCount(PIT_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
-    return PIT_RD_CVAL(base, channel);
+	assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
+	return PIT_RD_CVAL(base, channel);
 }
 
 #if FSL_FEATURE_PIT_HAS_LIFETIME_TIMER
@@ -279,8 +279,8 @@ uint64_t PIT_HAL_ReadLifetimeTimerCount(PIT_Type * base);
  */
 static inline void PIT_HAL_SetIntCmd(PIT_Type * base, uint32_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
-    PIT_BWR_TCTRL_TIE(base, channel, enable);
+	assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
+	PIT_BWR_TCTRL_TIE(base, channel, enable);
 }
 
 /*!
@@ -294,8 +294,8 @@ static inline void PIT_HAL_SetIntCmd(PIT_Type * base, uint32_t channel, bool ena
  */
 static inline bool PIT_HAL_GetIntCmd(PIT_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
-    return PIT_BRD_TCTRL_TIE(base, channel);
+	assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
+	return PIT_BRD_TCTRL_TIE(base, channel);
 }
 
 /*!
@@ -309,9 +309,9 @@ static inline bool PIT_HAL_GetIntCmd(PIT_Type * base, uint32_t channel)
  */
 static inline void PIT_HAL_ClearIntFlag(PIT_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
-    /* Write 1 will clear the flag. */
-    PIT_WR_TFLG(base, channel, 1U);
+	assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
+	/* Write 1 will clear the flag. */
+	PIT_WR_TFLG(base, channel, 1U);
 }
 
 /*!
@@ -327,8 +327,8 @@ static inline void PIT_HAL_ClearIntFlag(PIT_Type * base, uint32_t channel)
  */
 static inline bool PIT_HAL_IsIntPending(PIT_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
-    return PIT_RD_TFLG(base, channel);
+	assert(channel < FSL_FEATURE_PIT_TIMER_COUNT);
+	return PIT_RD_TFLG(base, channel);
 }
 
 /* @} */
@@ -343,4 +343,3 @@ static inline bool PIT_HAL_IsIntPending(PIT_Type * base, uint32_t channel)
 /*******************************************************************************
 * EOF
 *******************************************************************************/
-

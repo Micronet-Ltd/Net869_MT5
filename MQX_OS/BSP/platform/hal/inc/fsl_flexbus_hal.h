@@ -50,121 +50,121 @@
 /*! @brief Flexbus status return codes.*/
 typedef enum _flexbus_status
 {
-    kStatus_FLEXBUS_Success = 0x00U,
-    kStatus_FLEXBUS_OutOfRange,
-    kStatus_FLEXBUS_InvalidArgument,
-    kStatus_FLEXBUS_Failed,
+	kStatus_FLEXBUS_Success = 0x00U,
+	kStatus_FLEXBUS_OutOfRange,
+	kStatus_FLEXBUS_InvalidArgument,
+	kStatus_FLEXBUS_Failed,
 } flexbus_status_t;
 
 /*! @brief Defines port size for Flexbus peripheral.*/
 typedef enum _flexbus_port_size
 {
-    kFlexbus4bytes  = 0x00U, /*!< 32-bit port size */
-    kFlexbus1byte   = 0x01U, /*!< 8-bit port size */
-    kFlexbus2bytes  = 0x02U  /*!< 16-bit port size */
+	kFlexbus4bytes  = 0x00U, /*!< 32-bit port size */
+	kFlexbus1byte   = 0x01U, /*!< 8-bit port size */
+	kFlexbus2bytes  = 0x02U  /*!< 16-bit port size */
 } flexbus_port_size_t;
 
 /*! @brief Defines number of cycles to hold address and attributes for Flexbus peripheral.*/
 typedef enum _flexbus_write_address_hold
 {
-    kFlexbusHold1cycle  = 0x00U, /*!< Hold address and attributes one cycle after FB_CSn negates on writes. @internal gui name="One cycle" */
-    kFlexbusHold2cycles = 0x01U, /*!< Hold address and attributes two cycle after FB_CSn negates on writes. @internal gui name="Two cycle" */
-    kFlexbusHold3cycles = 0x02U, /*!< Hold address and attributes three cycle after FB_CSn negates on writes. @internal gui name="Three cycle" */
-    kFlexbusHold4cycles = 0x03U  /*!< Hold address and attributes four cycle after FB_CSn negates on writes. @internal gui name="Four cycle" */
+	kFlexbusHold1cycle  = 0x00U, /*!< Hold address and attributes one cycle after FB_CSn negates on writes. @internal gui name="One cycle" */
+	kFlexbusHold2cycles = 0x01U, /*!< Hold address and attributes two cycle after FB_CSn negates on writes. @internal gui name="Two cycle" */
+	kFlexbusHold3cycles = 0x02U, /*!< Hold address and attributes three cycle after FB_CSn negates on writes. @internal gui name="Three cycle" */
+	kFlexbusHold4cycles = 0x03U  /*!< Hold address and attributes four cycle after FB_CSn negates on writes. @internal gui name="Four cycle" */
 } flexbus_write_address_hold_t;
 
 
 /*! @brief Defines number of cycles to hold address and attributes for Flexbus peripheral.*/
 typedef enum _flexbus_read_address_hold
 {
-    kFlexbusHold4or3cycles = 0x03U,    /*!< Hold address and attributes 4 or 3 cycles on reads. @internal gui name="4 or 3 cycles" */
-    kFlexbusHold3or2cycles = 0x02U,    /*!< Hold address and attributes 3 or 2 cycles on reads. @internal gui name="3 or 2 cycles" */
-    kFlexbusHold2or1cycle  = 0x01U,    /*!< Hold address and attributes 2 or 1 cycles on reads. @internal gui name="2 or 1 cycles" */
-    kFlexbusHold1or0cycle  = 0x00U     /*!< Hold address and attributes 1 or 0 cycles on reads. @internal gui name="1 or 0 cycles" */
+	kFlexbusHold4or3cycles = 0x03U,    /*!< Hold address and attributes 4 or 3 cycles on reads. @internal gui name="4 or 3 cycles" */
+	kFlexbusHold3or2cycles = 0x02U,    /*!< Hold address and attributes 3 or 2 cycles on reads. @internal gui name="3 or 2 cycles" */
+	kFlexbusHold2or1cycle  = 0x01U,    /*!< Hold address and attributes 2 or 1 cycles on reads. @internal gui name="2 or 1 cycles" */
+	kFlexbusHold1or0cycle  = 0x00U     /*!< Hold address and attributes 1 or 0 cycles on reads. @internal gui name="1 or 0 cycles" */
 } flexbus_read_address_hold_t;
 
 
 /*! @brief Address setup for Flexbus peripheral.*/
 typedef enum _flexbus_address_setup
 {
-    kFlexbusFirstRisingEdge  = 0x00U, /*!< Assert FB_CSn on first rising clock edge after address is asserted. @internal gui name="First rising clock edge" */
-    kFlexbusSecondRisingEdge = 0x01U, /*!< Assert FB_CSn on second rising clock edge after address is asserted. @internal gui name="Second rising clock edge" */
-    kFlexbusThirdRisingEdge  = 0x02U, /*!< Assert FB_CSn on third rising clock edge after address is asserted. @internal gui name="Third rising clock edge" */
-    kFlexbusFourthRisingEdge = 0x03U, /*!< Assert FB_CSn on fourth rising clock edge after address is asserted. @internal gui name="Fourth rising clock edge" */
+	kFlexbusFirstRisingEdge  = 0x00U, /*!< Assert FB_CSn on first rising clock edge after address is asserted. @internal gui name="First rising clock edge" */
+	kFlexbusSecondRisingEdge = 0x01U, /*!< Assert FB_CSn on second rising clock edge after address is asserted. @internal gui name="Second rising clock edge" */
+	kFlexbusThirdRisingEdge  = 0x02U, /*!< Assert FB_CSn on third rising clock edge after address is asserted. @internal gui name="Third rising clock edge" */
+	kFlexbusFourthRisingEdge = 0x03U, /*!< Assert FB_CSn on fourth rising clock edge after address is asserted. @internal gui name="Fourth rising clock edge" */
 } flexbus_address_setup_t;
 
 /*! @brief Defines byte-lane shift for Flexbus peripheral.*/
 typedef enum _flexbus_bytelane_shift
 {
-    kFlexbusNotShifted = 0x00U, /*!< Not shifted. Data is left-justfied on FB_AD. @internal gui name="Not shifted" */
-    kFlexbusShifted    = 0x01U, /*!< Shifted. Data is right justified on FB_AD. @internal gui name="Shifted" */
+	kFlexbusNotShifted = 0x00U, /*!< Not shifted. Data is left-justfied on FB_AD. @internal gui name="Not shifted" */
+	kFlexbusShifted    = 0x01U, /*!< Shifted. Data is right justified on FB_AD. @internal gui name="Shifted" */
 } flexbus_bytelane_shift_t;
 
 /*! @brief Defines multiplex group1 valid signals.*/
 typedef enum _flexbus_multiplex_group1_signal
 {
-    kFlexbusMultiplexGroup1_FB_ALE = 0x00U, /*!< FB_ALE */
-    kFlexbusMultiplexGroup1_FB_CS1 = 0x01U, /*!< FB_CS1 */
-    kFlexbusMultiplexGroup1_FB_TS  = 0x02U, /*!< FB_TS */
+	kFlexbusMultiplexGroup1_FB_ALE = 0x00U, /*!< FB_ALE */
+	kFlexbusMultiplexGroup1_FB_CS1 = 0x01U, /*!< FB_CS1 */
+	kFlexbusMultiplexGroup1_FB_TS  = 0x02U, /*!< FB_TS */
 } flexbus_multiplex_group1_t;
 
 /*! @brief Defines multiplex group2 valid signals.*/
 typedef enum _flexbus_multiplex_group2_signal
 {
-    kFlexbusMultiplexGroup2_FB_CS4      = 0x00U, /*!< FB_CS4 */
-    kFlexbusMultiplexGroup2_FB_TSIZ0    = 0x01U, /*!< FB_TSIZ0 */
-    kFlexbusMultiplexGroup2_FB_BE_31_24 = 0x02U, /*!< FB_BE_31_24 */
+	kFlexbusMultiplexGroup2_FB_CS4      = 0x00U, /*!< FB_CS4 */
+	kFlexbusMultiplexGroup2_FB_TSIZ0    = 0x01U, /*!< FB_TSIZ0 */
+	kFlexbusMultiplexGroup2_FB_BE_31_24 = 0x02U, /*!< FB_BE_31_24 */
 } flexbus_multiplex_group2_t;
 
 /*! @brief Defines multiplex group3 valid signals.*/
 typedef enum _flexbus_multiplex_group3_signal
 {
-    kFlexbusMultiplexGroup3_FB_CS5      = 0x00U, /*!< FB_CS5 */
-    kFlexbusMultiplexGroup3_FB_TSIZ1    = 0x01U, /*!< FB_TSIZ1 */
-    kFlexbusMultiplexGroup3_FB_BE_23_16 = 0x02U, /*!< FB_BE_23_16 */
+	kFlexbusMultiplexGroup3_FB_CS5      = 0x00U, /*!< FB_CS5 */
+	kFlexbusMultiplexGroup3_FB_TSIZ1    = 0x01U, /*!< FB_TSIZ1 */
+	kFlexbusMultiplexGroup3_FB_BE_23_16 = 0x02U, /*!< FB_BE_23_16 */
 } flexbus_multiplex_group3_t;
 
 /*! @brief Defines multiplex group4 valid signals.*/
 typedef enum _flexbus_multiplex_group4_signal
 {
-    kFlexbusMultiplexGroup4_FB_TBST    = 0x00U, /*!< FB_TBST */
-    kFlexbusMultiplexGroup4_FB_CS2     = 0x01U, /*!< FB_CS2 */
-    kFlexbusMultiplexGroup4_FB_BE_15_8 = 0x02U, /*!< FB_BE_15_8 */
+	kFlexbusMultiplexGroup4_FB_TBST    = 0x00U, /*!< FB_TBST */
+	kFlexbusMultiplexGroup4_FB_CS2     = 0x01U, /*!< FB_CS2 */
+	kFlexbusMultiplexGroup4_FB_BE_15_8 = 0x02U, /*!< FB_BE_15_8 */
 } flexbus_multiplex_group4_t;
 
 /*! @brief Defines multiplex group5 valid signals.*/
 typedef enum _flexbus_multiplex_group5_signal
 {
-    kFlexbusMultiplexGroup5_FB_TA     = 0x00U, /*!< FB_TA */
-    kFlexbusMultiplexGroup5_FB_CS3    = 0x01U, /*!< FB_CS3 */
-    kFlexbusMultiplexGroup5_FB_BE_7_0 = 0x02U, /*!< FB_BE_7_0 */
+	kFlexbusMultiplexGroup5_FB_TA     = 0x00U, /*!< FB_TA */
+	kFlexbusMultiplexGroup5_FB_CS3    = 0x01U, /*!< FB_CS3 */
+	kFlexbusMultiplexGroup5_FB_BE_7_0 = 0x02U, /*!< FB_BE_7_0 */
 } flexbus_multiplex_group5_t;
 
-/*! @brief Configuration structure that the user needs to set 
+/*! @brief Configuration structure that the user needs to set
  * @internal gui name="FlexBus configuration" id="fbCfg"
  */
 typedef struct _flexbus_user_config {
-    uint8_t chip;                                               /*!< Chip FlexBus for validation @internal gui name="Chip" range="0..5" */
-    uint8_t waitStates;                                         /*!< Value of wait states @internal gui name="WaitStates" range="0..63" */
-    uint32_t baseAddress;                                       /*!< Base address for using FlexBus @internal gui name="Base address" */
-    uint32_t baseAddressMask;                                   /*!< Base address mask @internal gui name="Base address mask" range="0..65535" */
-    bool writeProtect;                                          /*!< Write protected @internal gui name="Write protect" */
-    bool burstWrite;                                            /*!< Burst-Write enable @internal gui name="Burst write" */
-    bool burstRead;                                             /*!< Burst-Read enable @internal gui name="Burst read" */
-    bool byteEnableMode;                                        /*!< Byte-enable mode support @internal gui name="Byte-enable mode" */
-    bool autoAcknowledge;                                       /*!< Auto acknowledge setting @internal gui name="Auto ACK" */
-    bool extendTransferAddress;                                 /*!< Extend transfer start/extend address latch enable @internal gui name="Address latch enable" */
-    bool secondaryWaitStates;                                   /*!< Secondary wait states number @internal gui name="Secondary wait states" */
-    flexbus_port_size_t portSize;                               /*!< Port size of transfer @internal gui name="Port size" */
-    flexbus_bytelane_shift_t byteLaneShift;                     /*!< Byte-lane shift enable @internal gui name="Byte-lane shift" */
-    flexbus_write_address_hold_t writeAddressHold;              /*!< Write address hold or deselect option @internal gui name="Write address hold" */
-    flexbus_read_address_hold_t readAddressHold;                /*!< Read address hold or deselect option @internal gui name="Read address hold" */
-    flexbus_address_setup_t addressSetup;                       /*!< Address setup setting @internal gui name="Address setup" */
-    flexbus_multiplex_group1_t group1MultiplexControl;          /*!< FlexBus Signal Group 1 Multiplex control @internal gui name="Signal Multiplex Group 1" */
-    flexbus_multiplex_group2_t group2MultiplexControl;          /*!< FlexBus Signal Group 2 Multiplex control @internal gui name="Signal Multiplex Group 2"*/
-    flexbus_multiplex_group3_t group3MultiplexControl;          /*!< FlexBus Signal Group 3 Multiplex control @internal gui name="Signal Multiplex Group 3" */
-    flexbus_multiplex_group4_t group4MultiplexControl;          /*!< FlexBus Signal Group 4 Multiplex control @internal gui name="Signal Multiplex Group 4" */
-    flexbus_multiplex_group5_t group5MultiplexControl;          /*!< FlexBus Signal Group 5 Multiplex control @internal gui name="Signal Multiplex Group 5" */
+	uint8_t chip;                                               /*!< Chip FlexBus for validation @internal gui name="Chip" range="0..5" */
+	uint8_t waitStates;                                         /*!< Value of wait states @internal gui name="WaitStates" range="0..63" */
+	uint32_t baseAddress;                                       /*!< Base address for using FlexBus @internal gui name="Base address" */
+	uint32_t baseAddressMask;                                   /*!< Base address mask @internal gui name="Base address mask" range="0..65535" */
+	bool writeProtect;                                          /*!< Write protected @internal gui name="Write protect" */
+	bool burstWrite;                                            /*!< Burst-Write enable @internal gui name="Burst write" */
+	bool burstRead;                                             /*!< Burst-Read enable @internal gui name="Burst read" */
+	bool byteEnableMode;                                        /*!< Byte-enable mode support @internal gui name="Byte-enable mode" */
+	bool autoAcknowledge;                                       /*!< Auto acknowledge setting @internal gui name="Auto ACK" */
+	bool extendTransferAddress;                                 /*!< Extend transfer start/extend address latch enable @internal gui name="Address latch enable" */
+	bool secondaryWaitStates;                                   /*!< Secondary wait states number @internal gui name="Secondary wait states" */
+	flexbus_port_size_t portSize;                               /*!< Port size of transfer @internal gui name="Port size" */
+	flexbus_bytelane_shift_t byteLaneShift;                     /*!< Byte-lane shift enable @internal gui name="Byte-lane shift" */
+	flexbus_write_address_hold_t writeAddressHold;              /*!< Write address hold or deselect option @internal gui name="Write address hold" */
+	flexbus_read_address_hold_t readAddressHold;                /*!< Read address hold or deselect option @internal gui name="Read address hold" */
+	flexbus_address_setup_t addressSetup;                       /*!< Address setup setting @internal gui name="Address setup" */
+	flexbus_multiplex_group1_t group1MultiplexControl;          /*!< FlexBus Signal Group 1 Multiplex control @internal gui name="Signal Multiplex Group 1" */
+	flexbus_multiplex_group2_t group2MultiplexControl;          /*!< FlexBus Signal Group 2 Multiplex control @internal gui name="Signal Multiplex Group 2"*/
+	flexbus_multiplex_group3_t group3MultiplexControl;          /*!< FlexBus Signal Group 3 Multiplex control @internal gui name="Signal Multiplex Group 3" */
+	flexbus_multiplex_group4_t group4MultiplexControl;          /*!< FlexBus Signal Group 4 Multiplex control @internal gui name="Signal Multiplex Group 4" */
+	flexbus_multiplex_group5_t group5MultiplexControl;          /*!< FlexBus Signal Group 5 Multiplex control @internal gui name="Signal Multiplex Group 5" */
 } flexbus_user_config_t;
 
 /*******************************************************************************
@@ -213,9 +213,9 @@ void FLEXBUS_HAL_Configure(FB_Type* base, const flexbus_user_config_t* userConfi
 */
 static inline void FLEXBUS_HAL_WriteAddr(FB_Type* base, uint8_t chip, uint16_t addr, uint16_t addrMask)
 {
-    assert(chip < FB_CSAR_COUNT);
-    FB_BWR_CSAR_BA(base, chip, addr);
-    FB_BWR_CSMR_BAM(base, chip, addrMask);
+	assert(chip < FB_CSAR_COUNT);
+	FB_BWR_CSAR_BA(base, chip, addr);
+	FB_BWR_CSMR_BAM(base, chip, addrMask);
 }
 
 /*!
@@ -233,8 +233,8 @@ static inline void FLEXBUS_HAL_WriteAddr(FB_Type* base, uint8_t chip, uint16_t a
 */
 static inline void FLEXBUS_HAL_SetChipSelectValidCmd(FB_Type* base, uint8_t chip, bool valid)
 {
-    assert(chip < FB_CSMR_COUNT);
-    FB_BWR_CSMR_V(base, chip, valid);
+	assert(chip < FB_CSMR_COUNT);
+	FB_BWR_CSMR_V(base, chip, valid);
 }
 
 /*!
@@ -250,8 +250,8 @@ static inline void FLEXBUS_HAL_SetChipSelectValidCmd(FB_Type* base, uint8_t chip
 */
 static inline void FLEXBUS_HAL_SetWriteProtectionCmd(FB_Type* base, uint8_t chip, bool enable)
 {
-    assert(chip < FB_CSMR_COUNT);
-    FB_BWR_CSMR_WP(base, chip, enable);
+	assert(chip < FB_CSMR_COUNT);
+	FB_BWR_CSMR_WP(base, chip, enable);
 }
 
 /*!
@@ -272,8 +272,8 @@ static inline void FLEXBUS_HAL_SetWriteProtectionCmd(FB_Type* base, uint8_t chip
 */
 static inline void FLEXBUS_HAL_SetBurstWriteCmd(FB_Type* base, uint8_t chip, bool enable)
 {
-    assert(chip < FB_CSCR_COUNT);
-    FB_BWR_CSCR_BSTW(base, chip, enable);
+	assert(chip < FB_CSCR_COUNT);
+	FB_BWR_CSCR_BSTW(base, chip, enable);
 }
 
 /*!
@@ -294,8 +294,8 @@ static inline void FLEXBUS_HAL_SetBurstWriteCmd(FB_Type* base, uint8_t chip, boo
 */
 static inline void FLEXBUS_HAL_SetBurstReadCmd(FB_Type* base, uint8_t chip, bool enable)
 {
-    assert(chip < FB_CSCR_COUNT);
-    FB_BWR_CSCR_BSTR(base, chip, enable);
+	assert(chip < FB_CSCR_COUNT);
+	FB_BWR_CSCR_BSTR(base, chip, enable);
 }
 
 /*!
@@ -313,8 +313,8 @@ static inline void FLEXBUS_HAL_SetBurstReadCmd(FB_Type* base, uint8_t chip, bool
 */
 static inline void FLEXBUS_HAL_SetByteModeCmd(FB_Type* base, uint8_t chip, bool enable)
 {
-    assert(chip < FB_CSCR_COUNT);
-    FB_BWR_CSCR_BEM(base, chip, enable);
+	assert(chip < FB_CSCR_COUNT);
+	FB_BWR_CSCR_BEM(base, chip, enable);
 }
 
 /*!
@@ -329,8 +329,8 @@ static inline void FLEXBUS_HAL_SetByteModeCmd(FB_Type* base, uint8_t chip, bool 
 */
 static inline void FLEXBUS_HAL_SetPortSize(FB_Type* base, uint8_t chip, flexbus_port_size_t size)
 {
-    assert(chip < FB_CSCR_COUNT);
-    FB_BWR_CSCR_PS(base, chip, size);
+	assert(chip < FB_CSCR_COUNT);
+	FB_BWR_CSCR_PS(base, chip, size);
 }
 
 /*!
@@ -354,8 +354,8 @@ static inline void FLEXBUS_HAL_SetPortSize(FB_Type* base, uint8_t chip, flexbus_
 */
 static inline void FLEXBUS_HAL_SetAutoAcknowledgeCmd(FB_Type* base, uint8_t chip, bool enable)
 {
-    assert(chip < FB_CSCR_COUNT);
-    FB_BWR_CSCR_AA(base, chip, enable);
+	assert(chip < FB_CSCR_COUNT);
+	FB_BWR_CSCR_AA(base, chip, enable);
 }
 
 /*!
@@ -373,8 +373,8 @@ static inline void FLEXBUS_HAL_SetAutoAcknowledgeCmd(FB_Type* base, uint8_t chip
 */
 static inline void FLEXBUS_HAL_SetByteLaneShift(FB_Type* base, uint8_t chip, flexbus_bytelane_shift_t shift)
 {
-    assert(chip < FB_CSCR_COUNT);
-    FB_BWR_CSCR_BLS(base, chip, shift);
+	assert(chip < FB_CSCR_COUNT);
+	FB_BWR_CSCR_BLS(base, chip, shift);
 }
 
 /*!
@@ -389,9 +389,9 @@ static inline void FLEXBUS_HAL_SetByteLaneShift(FB_Type* base, uint8_t chip, fle
 */
 static inline void FLEXBUS_HAL_SetWaitStates(FB_Type* base, uint8_t chip, uint8_t waitStates)
 {
-    assert(chip < FB_CSCR_COUNT);
-    assert(waitStates <= 0x3F);
-    FB_BWR_CSCR_WS(base, chip, waitStates);
+	assert(chip < FB_CSCR_COUNT);
+	assert(waitStates <= 0x3F);
+	FB_BWR_CSCR_WS(base, chip, waitStates);
 }
 
 /*!
@@ -409,8 +409,8 @@ static inline void FLEXBUS_HAL_SetWaitStates(FB_Type* base, uint8_t chip, uint8_
 */
 static inline void FLEXBUS_HAL_SetWriteAddrHoldOrDeselect(FB_Type* base, uint8_t chip, flexbus_write_address_hold_t addrHold)
 {
-    assert(chip < FB_CSCR_COUNT);
-    FB_BWR_CSCR_WRAH(base, chip, addrHold);
+	assert(chip < FB_CSCR_COUNT);
+	FB_BWR_CSCR_WRAH(base, chip, addrHold);
 }
 
 /*!
@@ -428,8 +428,8 @@ static inline void FLEXBUS_HAL_SetWriteAddrHoldOrDeselect(FB_Type* base, uint8_t
 */
 static inline void FLEXBUS_HAL_SetReadAddrHoldOrDeselect(FB_Type* base, uint8_t chip, flexbus_read_address_hold_t addrHold)
 {
-    assert(chip < FB_CSCR_COUNT);
-    FB_BWR_CSCR_RDAH(base, chip, addrHold);
+	assert(chip < FB_CSCR_COUNT);
+	FB_BWR_CSCR_RDAH(base, chip, addrHold);
 }
 
 /*!
@@ -444,8 +444,8 @@ static inline void FLEXBUS_HAL_SetReadAddrHoldOrDeselect(FB_Type* base, uint8_t 
 */
 static inline void FLEXBUS_HAL_SetAddrSetup(FB_Type* base, uint8_t chip, flexbus_address_setup_t delay)
 {
-    assert(chip < FB_CSCR_COUNT);
-    FB_BWR_CSCR_ASET(base, chip, delay);
+	assert(chip < FB_CSCR_COUNT);
+	FB_BWR_CSCR_ASET(base, chip, delay);
 }
 
 /*!
@@ -462,8 +462,8 @@ static inline void FLEXBUS_HAL_SetAddrSetup(FB_Type* base, uint8_t chip, flexbus
 */
 static inline void FLEXBUS_HAL_SetExtendedAddrLatchCmd(FB_Type* base, uint8_t chip, bool enable)
 {
-    assert(chip < FB_CSCR_COUNT);
-    FB_BWR_CSCR_EXTS(base, chip, enable);
+	assert(chip < FB_CSCR_COUNT);
+	FB_BWR_CSCR_EXTS(base, chip, enable);
 }
 
 /*!
@@ -482,8 +482,8 @@ static inline void FLEXBUS_HAL_SetExtendedAddrLatchCmd(FB_Type* base, uint8_t ch
 */
 static inline void FLEXBUS_HAL_SetSecondaryWaitStateCmd(FB_Type* base, uint8_t chip, bool enable)
 {
-    assert(chip < FB_CSCR_COUNT);
-    FB_BWR_CSCR_SWSEN(base, chip, enable);
+	assert(chip < FB_CSCR_COUNT);
+	FB_BWR_CSCR_SWSEN(base, chip, enable);
 }
 
 /*!
@@ -498,7 +498,7 @@ static inline void FLEXBUS_HAL_SetSecondaryWaitStateCmd(FB_Type* base, uint8_t c
 */
 static inline void FLEXBUS_HAL_SetMultiplexControlGroup1(FB_Type* base, flexbus_multiplex_group1_t controls)
 {
-    FB_BWR_CSPMCR_GROUP1(base, controls);
+	FB_BWR_CSPMCR_GROUP1(base, controls);
 }
 
 /*!
@@ -512,7 +512,7 @@ static inline void FLEXBUS_HAL_SetMultiplexControlGroup1(FB_Type* base, flexbus_
 */
 static inline flexbus_multiplex_group1_t FLEXBUS_HAL_GetMultiplexControlGroup1(FB_Type* base)
 {
-    return (flexbus_multiplex_group1_t)FB_BRD_CSPMCR_GROUP1(base);
+	return (flexbus_multiplex_group1_t)FB_BRD_CSPMCR_GROUP1(base);
 }
 
 /*!
@@ -530,7 +530,7 @@ static inline flexbus_multiplex_group1_t FLEXBUS_HAL_GetMultiplexControlGroup1(F
 */
 static inline void FLEXBUS_HAL_SetMultiplexControlGroup2(FB_Type* base, flexbus_multiplex_group2_t controls)
 {
-    FB_BWR_CSPMCR_GROUP2(base, controls);
+	FB_BWR_CSPMCR_GROUP2(base, controls);
 }
 
 /*!
@@ -546,7 +546,7 @@ static inline void FLEXBUS_HAL_SetMultiplexControlGroup2(FB_Type* base, flexbus_
 */
 static inline flexbus_multiplex_group2_t FLEXBUS_HAL_GetMultiplexControlGroup2(FB_Type* base)
 {
-    return (flexbus_multiplex_group2_t)FB_BRD_CSPMCR_GROUP2(base);
+	return (flexbus_multiplex_group2_t)FB_BRD_CSPMCR_GROUP2(base);
 }
 
 /*!
@@ -562,7 +562,7 @@ static inline flexbus_multiplex_group2_t FLEXBUS_HAL_GetMultiplexControlGroup2(F
 */
 static inline void FLEXBUS_HAL_SetMultiplexControlGroup3(FB_Type* base, flexbus_multiplex_group3_t controls)
 {
-    FB_BWR_CSPMCR_GROUP3(base, controls);
+	FB_BWR_CSPMCR_GROUP3(base, controls);
 }
 
 /*!
@@ -577,7 +577,7 @@ static inline void FLEXBUS_HAL_SetMultiplexControlGroup3(FB_Type* base, flexbus_
 */
 static inline flexbus_multiplex_group3_t FLEXBUS_HAL_GetMultiplexControlGroup3(FB_Type* base)
 {
-    return (flexbus_multiplex_group3_t)FB_BRD_CSPMCR_GROUP3(base);
+	return (flexbus_multiplex_group3_t)FB_BRD_CSPMCR_GROUP3(base);
 }
 
 /*!
@@ -593,7 +593,7 @@ static inline flexbus_multiplex_group3_t FLEXBUS_HAL_GetMultiplexControlGroup3(F
 */
 static inline void FLEXBUS_HAL_SetMultiplexControlGroup4(FB_Type* base, flexbus_multiplex_group4_t controls)
 {
-    FB_BWR_CSPMCR_GROUP4(base, controls);
+	FB_BWR_CSPMCR_GROUP4(base, controls);
 }
 
 /*!
@@ -608,7 +608,7 @@ static inline void FLEXBUS_HAL_SetMultiplexControlGroup4(FB_Type* base, flexbus_
 */
 static inline flexbus_multiplex_group4_t FLEXBUS_HAL_GetMultiplexControlGroup4(FB_Type* base)
 {
-    return (flexbus_multiplex_group4_t)FB_BRD_CSPMCR_GROUP4(base);
+	return (flexbus_multiplex_group4_t)FB_BRD_CSPMCR_GROUP4(base);
 }
 
 /*!
@@ -624,7 +624,7 @@ static inline flexbus_multiplex_group4_t FLEXBUS_HAL_GetMultiplexControlGroup4(F
 */
 static inline void FLEXBUS_HAL_SetMultiplexControlGroup5(FB_Type* base, flexbus_multiplex_group5_t controls)
 {
-    FB_BWR_CSPMCR_GROUP5(base, controls);
+	FB_BWR_CSPMCR_GROUP5(base, controls);
 }
 
 /*!
@@ -639,7 +639,7 @@ static inline void FLEXBUS_HAL_SetMultiplexControlGroup5(FB_Type* base, flexbus_
 */
 static inline flexbus_multiplex_group5_t FLEXBUS_HAL_GetMultiplexControlGroup5(FB_Type* base)
 {
-    return (flexbus_multiplex_group5_t)FB_BRD_CSPMCR_GROUP5(base);
+	return (flexbus_multiplex_group5_t)FB_BRD_CSPMCR_GROUP5(base);
 }
 
 /*! @}*/
@@ -656,4 +656,3 @@ static inline flexbus_multiplex_group5_t FLEXBUS_HAL_GetMultiplexControlGroup5(F
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

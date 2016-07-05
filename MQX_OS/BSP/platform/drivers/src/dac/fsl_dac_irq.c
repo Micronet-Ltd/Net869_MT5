@@ -38,13 +38,13 @@
 /* DAC IRQ handler that would cover the same name's APIs in startup code. */
 void DAC0_IRQHandler(void)
 {
-    /* Add user-defined ISR for DAC0. */
+	/* Add user-defined ISR for DAC0. */
 }
 
 #if (DAC_INSTANCE_COUNT > 1U)
 void DAC1_IRQHandler(void)
 {
-    /* Add user-defined ISR for DAC1. */
+	/* Add user-defined ISR for DAC1. */
 }
 
 #endif

@@ -39,16 +39,16 @@ static FS_TABLE_ENTRY _opened_fs_table[MAX_FS_INSTANCES];
  * \return TRUE or FALSE (Arg is NULL.)
  */
 int strtolower(char *arg) {
-    char *p = arg;
+	char *p = arg;
 
-    if (p) {
-        while (*p) {
-            *p = tolower((unsigned char)*p);
-            p++;
-        }
-    }
+	if (p) {
+		while (*p) {
+			*p = tolower((unsigned char)*p);
+			p++;
+		}
+	}
 
-    return 0;
+	return 0;
 }
 
 /*!
@@ -64,7 +64,7 @@ int _nio_supp_validate_device(char *arg) {
    while (isgraph((unsigned char)arg[i]) && (arg[i] != ':')) i++;
 
    if (i && (arg[i]==':') && (arg[i+1]=='\0'))
-       return 1;
+	   return 1;
 
    return 0;
 }
@@ -83,9 +83,9 @@ _mqx_int _io_strcasecmp(const char *s1, const char *s2)
 {
    while (tolower((int)*s1) == tolower((int)*s2))
    {
-      if (*s1++ == '\0')
-         return (0);
-      s2++;
+	  if (*s1++ == '\0')
+		 return (0);
+	  s2++;
    }
    return (tolower((int)*s1) - tolower((int)*s2));
 }
@@ -104,14 +104,14 @@ _mqx_int _io_strncasecmp(const char *s1, const char *s2, uint32_t n)
 {
    if (n != 0)
    {
-      do
-      {
-         if (tolower((int)*s1) != tolower((int)*s2))
-            return (tolower((int)*s1) - tolower((int)*s2));
-         if (*s1++ == '\0')
-            break;
-         s2++;
-      } while (--n != 0);
+	  do
+	  {
+		 if (tolower((int)*s1) != tolower((int)*s2))
+			return (tolower((int)*s1) - tolower((int)*s2));
+		 if (*s1++ == '\0')
+			break;
+		 s2++;
+	  } while (--n != 0);
    }
    return (0);
 }
@@ -131,11 +131,11 @@ char *_io_find_filename(char *arg)
 
    while (isgraph((unsigned char)arg[i]) && (arg[i] != ':')) i++;
    if (arg[i] == ':')  {
-      return &arg[i+1];
+	  return &arg[i+1];
    } else  if (arg[i] == '\0')  {
-      return arg;
+	  return arg;
    } else  {
-      return NULL;
+	  return NULL;
    }
 }
 
@@ -155,8 +155,8 @@ void _io_create_prefixed_filename( char *new_ptr, char *in_ptr,  char *dev_ptr)
    new_ptr[0] = '\0';
    file_ptr = _io_find_filename(in_ptr);
    if (file_ptr == in_ptr)  {
-      // No device name supplied, use current
-      strcpy(new_ptr, dev_ptr);
+	  // No device name supplied, use current
+	  strcpy(new_ptr, dev_ptr);
    }
    strcat(new_ptr, in_ptr);
 }
@@ -176,31 +176,31 @@ int _io_get_fs_by_name(char *fs_name)
    char *b;
 
    if ((fs_name == NULL) || (*fs_name == '\0'))
-     return 0;
+	 return 0;
 
    for(i=0; i<MAX_FS_INSTANCES; i++)
    {
-      a = _opened_fs_table[i].FS_NAME;
-      b = fs_name;
+	  a = _opened_fs_table[i].FS_NAME;
+	  b = fs_name;
 
-      // skip blank entries in the table
-      if (*a == '\0')
-      {
-          continue;
-      }
+	  // skip blank entries in the table
+	  if (*a == '\0')
+	  {
+		  continue;
+	  }
 
-      // match with fs_name char by char
-      while (*a && (*a == *b))
-      {
-         a++;
-         b++;
-      }
+	  // match with fs_name char by char
+	  while (*a && (*a == *b))
+	  {
+		 a++;
+		 b++;
+	  }
 
-      // check whether name from the table is prefix of fs_name
-      if (*a == '\0')
-      {
-         return _opened_fs_table[i].FD;
-      }
+	  // check whether name from the table is prefix of fs_name
+	  if (*a == '\0')
+	  {
+		 return _opened_fs_table[i].FD;
+	  }
    }
 
    // filesystem not found in table
@@ -218,9 +218,9 @@ int _io_get_first_valid_fs(void) {
    int i;
    // find first used field in table
    for (i = 0; i < MAX_FS_INSTANCES; i++) {
-       if (0 != _opened_fs_table[i].FD) {
-           return _opened_fs_table[i].FD;
-      }
+	   if (0 != _opened_fs_table[i].FD) {
+		   return _opened_fs_table[i].FD;
+	  }
    }
 
    return 0;
@@ -234,20 +234,20 @@ int _io_get_first_valid_fs(void) {
  * \return TRUE (File system is in table.) of FALSE (failure).
  */
 int _io_is_fs_valid(int fd) {
-    int i;
+	int i;
 
-    /* First check that file pointer is not null */
-    if (0 == fd) {
-        return FALSE;
-    }
+	/* First check that file pointer is not null */
+	if (0 == fd) {
+		return FALSE;
+	}
 
-    /* find first used field in table */
-    for (i = 0; i < MAX_FS_INSTANCES; i++) {
-        if (_opened_fs_table[i].FD == fd) {
-            return TRUE;
-        }
-    }
-    return FALSE;
+	/* find first used field in table */
+	for (i = 0; i < MAX_FS_INSTANCES; i++) {
+		if (_opened_fs_table[i].FD == fd) {
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
 
 /*!
@@ -262,27 +262,27 @@ int _io_is_fs_valid(int fd) {
  * \return MQX_INVALID_SIZE (Invalid file system name length.)
  */
 int _io_get_fs_name(int fd, char *fs_name, int32_t fs_name_len) {
-    int i;
+	int i;
 
-    /* First check that input parameters are not not null */
-    if (0 == fd || fs_name == NULL) {
-        return MQX_INVALID_POINTER;
-    }
+	/* First check that input parameters are not not null */
+	if (0 == fd || fs_name == NULL) {
+		return MQX_INVALID_POINTER;
+	}
 
-    /* find first used field in table */
-    for (i = 0; i < MAX_FS_INSTANCES; i++) {
-        if (_opened_fs_table[i].FD == fd) {
-            if(fs_name_len > strlen(_opened_fs_table[i].FS_NAME)) {
-                strcpy(fs_name,_opened_fs_table[i].FS_NAME);
-                return MQX_OK;
-            }
-            else
-            {
-                return MQX_INVALID_SIZE;
-            }
-        }
-    }
-    return MQX_INVALID_POINTER;
+	/* find first used field in table */
+	for (i = 0; i < MAX_FS_INSTANCES; i++) {
+		if (_opened_fs_table[i].FD == fd) {
+			if(fs_name_len > strlen(_opened_fs_table[i].FS_NAME)) {
+				strcpy(fs_name,_opened_fs_table[i].FS_NAME);
+				return MQX_OK;
+			}
+			else
+			{
+				return MQX_INVALID_SIZE;
+			}
+		}
+	}
+	return MQX_INVALID_POINTER;
 }
 
 /*!
@@ -296,26 +296,26 @@ int _io_get_fs_name(int fd, char *fs_name, int32_t fs_name_len) {
  * \return MQX_OUT_OF_MEMORY (There is no empty slot.)
  */
 uint32_t _io_register_file_system(int fd, char *name_ptr) {
-    int i;
+	int i;
 
-    /* First check that file pointer is not null */
-    if (0 == fd || name_ptr == NULL)
-    {
-        return MQX_INVALID_POINTER;
-    }
+	/* First check that file pointer is not null */
+	if (0 == fd || name_ptr == NULL)
+	{
+		return MQX_INVALID_POINTER;
+	}
 
 
-    /* find first empty field in table */
-    for (i = 0; i < MAX_FS_INSTANCES; i++) {
-        if (0 == _opened_fs_table[i].FD) {
-            /* store filesystem pointer and name into the table */
-            _opened_fs_table[i].FD = fd;
-            strncpy(_opened_fs_table[i].FS_NAME, name_ptr, FS_MAX_DEVLEN);
-            return MQX_OK;
-        }
-    }
-    /* there is no empty slot, report error */
-    return MQX_OUT_OF_MEMORY;
+	/* find first empty field in table */
+	for (i = 0; i < MAX_FS_INSTANCES; i++) {
+		if (0 == _opened_fs_table[i].FD) {
+			/* store filesystem pointer and name into the table */
+			_opened_fs_table[i].FD = fd;
+			strncpy(_opened_fs_table[i].FS_NAME, name_ptr, FS_MAX_DEVLEN);
+			return MQX_OK;
+		}
+	}
+	/* there is no empty slot, report error */
+	return MQX_OUT_OF_MEMORY;
 }
 
 /*!
@@ -328,27 +328,27 @@ uint32_t _io_register_file_system(int fd, char *name_ptr) {
  * \return MQX_INVALID_HANDLE (File system not found.)
  */
 uint32_t _io_unregister_file_system(int fd) {
-    int i;
+	int i;
 
-    /* First check that file pointer is not null */
-    if (0 == fd) {
-        return MQX_INVALID_POINTER;
-    }
+	/* First check that file pointer is not null */
+	if (0 == fd) {
+		return MQX_INVALID_POINTER;
+	}
 
-    // find the corresponding entry in the table
-    for (i = 0; i < MAX_FS_INSTANCES; i++) {
-        if (_opened_fs_table[i].FD == fd)
-        {
-            // store filesystem pointer and name into the table
-            _opened_fs_table[i].FD = 0;
-            _opened_fs_table[i].FS_NAME[0] ='\0' ;
-            // return MQX_OK
-            return MQX_OK;
-        }
-    }
+	// find the corresponding entry in the table
+	for (i = 0; i < MAX_FS_INSTANCES; i++) {
+		if (_opened_fs_table[i].FD == fd)
+		{
+			// store filesystem pointer and name into the table
+			_opened_fs_table[i].FD = 0;
+			_opened_fs_table[i].FS_NAME[0] ='\0' ;
+			// return MQX_OK
+			return MQX_OK;
+		}
+	}
 
-    // filesystem not found report error
-    return MQX_INVALID_HANDLE;
+	// filesystem not found report error
+	return MQX_INVALID_HANDLE;
 }
 
 /*!
@@ -370,36 +370,36 @@ int32_t _io_get_dev_for_path(char *out_dev, bool * is_dev_in_path, int32_t dev_l
    if (input_path==NULL) return MQX_INVALID_POINTER;
 
    while (i < (dev_len-1) && isgraph((unsigned char)input_path[i]) && (input_path[i] != ':'))
-      i++;
+	  i++;
 
    if (input_path[i] == ':')
    {
-      // there is device name in input path
-      if (is_dev_in_path != NULL)
-      {
-        *is_dev_in_path = TRUE;
-      }
-      strncpy(out_dev, input_path, ++i);
-      out_dev[i] = '\0';
-      return i;
+	  // there is device name in input path
+	  if (is_dev_in_path != NULL)
+	  {
+		*is_dev_in_path = TRUE;
+	  }
+	  strncpy(out_dev, input_path, ++i);
+	  out_dev[i] = '\0';
+	  return i;
    }
    else
    {
-      // device name is NOT in input path
-      if (is_dev_in_path != NULL)
-      {
-        *is_dev_in_path = FALSE;
-      }
-      i = strlen(cur_dev);
-      if (i < (dev_len - 1))
-      {
-         strcpy(out_dev,cur_dev);
-         return i;
-      }
-      else
-      {
-         return 0;
-      }
+	  // device name is NOT in input path
+	  if (is_dev_in_path != NULL)
+	  {
+		*is_dev_in_path = FALSE;
+	  }
+	  i = strlen(cur_dev);
+	  if (i < (dev_len - 1))
+	  {
+		 strcpy(out_dev,cur_dev);
+		 return i;
+	  }
+	  else
+	  {
+		 return 0;
+	  }
    }
 }
 
@@ -415,81 +415,81 @@ int32_t _io_get_dev_for_path(char *out_dev, bool * is_dev_in_path, int32_t dev_l
  */
 int32_t _io_path_add(char *result, int32_t len, char *path)
 {
-    int result_end;
+	int result_end;
 
-    if (len == 0) return MQX_INVALID_PARAMETER;
+	if (len == 0) return MQX_INVALID_PARAMETER;
 
-    if (*path == '\\' || *path == '/')
-    {
-        result_end = 0;
-        result[result_end++] = '\\';
-        if (result_end >= len) return MQX_INVALID_PARAMETER;
-    }
-    else
-    {
-        for (result_end=0; result[result_end]; result_end++)
-        {
-            if (result_end >= len) return MQX_INVALID_PARAMETER;
-        }
-    }
+	if (*path == '\\' || *path == '/')
+	{
+		result_end = 0;
+		result[result_end++] = '\\';
+		if (result_end >= len) return MQX_INVALID_PARAMETER;
+	}
+	else
+	{
+		for (result_end=0; result[result_end]; result_end++)
+		{
+			if (result_end >= len) return MQX_INVALID_PARAMETER;
+		}
+	}
 
-    while (*path)
-    {
-        /* skip consecutive delimiters in the in the source path */
-        while (*path == '\\' || *path == '/')
-        {
-            path++;
-        }
+	while (*path)
+	{
+		/* skip consecutive delimiters in the in the source path */
+		while (*path == '\\' || *path == '/')
+		{
+			path++;
+		}
 
-        /* check for '.' and '..' */
-        if (path[0] == '.')
-        {
-            if ((path[1] == '\\') || (path[1] == '/') || (path[1]=='\0'))
-            {
-                /* single dot, just skip it */
-                path++;
-                continue;
-            }
-            else if ((path[1] == '.') && ((path[2] == '\\') || (path[2] == '/') || (path[2]=='\0')))
-            {
-                /* double dot, go up one directory level */
-                if ((result_end > 0) && (result[result_end-1] == '\\'))
-                {
-                    /* remove trailing directory delimiter */
-                    result_end--;
-                }
-                if (result_end == 0)
-                {
-                    /* underflow, relative path refers to non-existing upper directory level */
-                    return MQX_INVALID_PARAMETER;
-                }
-                while (result_end > 0 && result[result_end-1] != '\\')
-                {
-                    /* trim the path until delimiter is reached */
-                    result_end--;
-                }
-                path += 2;
-                continue;
-            }
-        }
+		/* check for '.' and '..' */
+		if (path[0] == '.')
+		{
+			if ((path[1] == '\\') || (path[1] == '/') || (path[1]=='\0'))
+			{
+				/* single dot, just skip it */
+				path++;
+				continue;
+			}
+			else if ((path[1] == '.') && ((path[2] == '\\') || (path[2] == '/') || (path[2]=='\0')))
+			{
+				/* double dot, go up one directory level */
+				if ((result_end > 0) && (result[result_end-1] == '\\'))
+				{
+					/* remove trailing directory delimiter */
+					result_end--;
+				}
+				if (result_end == 0)
+				{
+					/* underflow, relative path refers to non-existing upper directory level */
+					return MQX_INVALID_PARAMETER;
+				}
+				while (result_end > 0 && result[result_end-1] != '\\')
+				{
+					/* trim the path until delimiter is reached */
+					result_end--;
+				}
+				path += 2;
+				continue;
+			}
+		}
 
-        /* check if there is a delimiter at the end of the result and eventually add it */
-        if ((result_end > 0) && (result[result_end-1] != '\\'))
-        {
-            result[result_end++] = '\\';
-            if (result_end >= len) return MQX_INVALID_PARAMETER;
-        }
+		/* check if there is a delimiter at the end of the result and eventually add it */
+		if ((result_end > 0) && (result[result_end-1] != '\\'))
+		{
+			result[result_end++] = '\\';
+			if (result_end >= len) return MQX_INVALID_PARAMETER;
+		}
 
-        /* copy source path until next delimiter or null-term */
-        while (*path && *path != '\\' && *path != '/')
-        {
-            result[result_end++] = *path++;
-            if (result_end >= len) return MQX_INVALID_PARAMETER;
-        }
-    }
+		/* copy source path until next delimiter or null-term */
+		while (*path && *path != '\\' && *path != '/')
+		{
+			result[result_end++] = *path++;
+			if (result_end >= len) return MQX_INVALID_PARAMETER;
+		}
+	}
 
-    result[result_end] = '\0';
-    return MQX_OK;
+	result[result_end] = '\0';
+	return MQX_OK;
 }
 
 
@@ -507,44 +507,44 @@ int32_t _io_path_add(char *result, int32_t len, char *path)
  */
 int32_t _io_rel2abs(char *result, char *curdir, char *inputpath, int32_t len, char *cur_dev)
 {
-    int32_t devlen;
-    int32_t error_code = MQX_OK;
-    bool is_dev_in_path = FALSE;
+	int32_t devlen;
+	int32_t error_code = MQX_OK;
+	bool is_dev_in_path = FALSE;
 
-    devlen = _io_get_dev_for_path(result, &is_dev_in_path, len, inputpath, cur_dev);
+	devlen = _io_get_dev_for_path(result, &is_dev_in_path, len, inputpath, cur_dev);
 
-    /* device name during path parsing will be skiped */
-    result +=  devlen;
-    if(is_dev_in_path == TRUE)
-    {
-        /* there was device name in input path -> skip it in parsing */
-        inputpath += devlen;
-    }
+	/* device name during path parsing will be skiped */
+	result +=  devlen;
+	if(is_dev_in_path == TRUE)
+	{
+		/* there was device name in input path -> skip it in parsing */
+		inputpath += devlen;
+	}
 
-    /* the remaining length of the buffer */
-    len -= devlen;
-    if (len < 2)
-    {
-        return MQX_INVALID_PARAMETER;
-    }
+	/* the remaining length of the buffer */
+	len -= devlen;
+	if (len < 2)
+	{
+		return MQX_INVALID_PARAMETER;
+	}
 
-    /* start with root */
-    result[0] = '\\';
-    result[1] = '\0';
+	/* start with root */
+	result[0] = '\\';
+	result[1] = '\0';
 
-    /* if inputpath is a relative path, add current directory first */
-    if ((*inputpath != '/') && (*inputpath != '\\'))
-    {
-        error_code = _io_path_add(result, len, curdir);
-    }
+	/* if inputpath is a relative path, add current directory first */
+	if ((*inputpath != '/') && (*inputpath != '\\'))
+	{
+		error_code = _io_path_add(result, len, curdir);
+	}
 
-    /* add inputpath to the result */
-    if (error_code == MQX_OK)
-    {
-        error_code = _io_path_add(result, len, inputpath);
-    }
+	/* add inputpath to the result */
+	if (error_code == MQX_OK)
+	{
+		error_code = _io_path_add(result, len, inputpath);
+	}
 
-    return error_code;
+	return error_code;
 }
 
 #if 0 /* Currently not needed, may be reused in the future. */
@@ -559,31 +559,31 @@ int32_t _io_rel2abs(char *result, char *curdir, char *inputpath, int32_t len, ch
  * \return NULL (Len is larger then max_len.)
  */
 static char *_parse_next_filename
-    (
-    char   *src,
-    int32_t *len,
-    int32_t     max_len
-    )
+	(
+	char   *src,
+	int32_t *len,
+	int32_t     max_len
+	)
 {
-    *len = 0;
+	*len = 0;
 
-    while ( *src && *src != '/' && *src != '\\' )
-    {
-        src++;
-        (*len)++;
-        if ( *len > max_len )
-        {
-            *len = 0;
-            return NULL;
-        }
-    }
+	while ( *src && *src != '/' && *src != '\\' )
+	{
+		src++;
+		(*len)++;
+		if ( *len > max_len )
+		{
+			*len = 0;
+			return NULL;
+		}
+	}
 
-    if ( *src == '\\' || *src == '/' )
-    {
-        src++;
-    }
+	if ( *src == '\\' || *src == '/' )
+	{
+		src++;
+	}
 
-    return(src);
+	return(src);
 }
 #endif
 
@@ -597,23 +597,23 @@ static char *_parse_next_filename
  * \return 0 (failure)
  */
 _mqx_int _io_atoi(const char *str) {
-    int value = 0, sign = 1;
-    while (*str == ' ') ++str; // skip leading whitespace
+	int value = 0, sign = 1;
+	while (*str == ' ') ++str; // skip leading whitespace
 
    if ( *str == '-' ) {
-        sign = -1;
-        str++;
+		sign = -1;
+		str++;
    }
 
-    while ( *str) {
-        if ((*str >= '0') && (*str <= '9'))
-            value = 10*value + (*str - '0');
-        else
-            break; // non-digit
-        str++;
-    }
-    if (value < 0) return 0; // integer overflow
-    return value*sign;
+	while ( *str) {
+		if ((*str >= '0') && (*str <= '9'))
+			value = 10*value + (*str - '0');
+		else
+			break; // non-digit
+		str++;
+	}
+	if (value < 0) return 0; // integer overflow
+	return value*sign;
 }
 #endif
 

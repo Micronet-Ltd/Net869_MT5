@@ -94,41 +94,41 @@
  */
 typedef struct lwmsgq_struct
 {
-    /*! \brief Queue data structures. */
-    QUEUE_ELEMENT_STRUCT LINK;
+	/*! \brief Queue data structures. */
+	QUEUE_ELEMENT_STRUCT LINK;
 
-    /*! \brief A Queue of task descriptors waiting to write. */
-    QUEUE_STRUCT WAITING_WRITERS;
+	/*! \brief A Queue of task descriptors waiting to write. */
+	QUEUE_STRUCT WAITING_WRITERS;
 
-    /*! \brief A Queue of task descriptors waiting to read. */
-    QUEUE_STRUCT WAITING_READERS;
+	/*! \brief A Queue of task descriptors waiting to read. */
+	QUEUE_STRUCT WAITING_READERS;
 
-    /*! \brief The validity check field. */
-    _mqx_uint    VALID;
+	/*! \brief The validity check field. */
+	_mqx_uint    VALID;
 
-    /*! \brief The size of the message chunk in the queue in _mqx_max_type's. */
-    _mqx_uint    MSG_SIZE;
+	/*! \brief The size of the message chunk in the queue in _mqx_max_type's. */
+	_mqx_uint    MSG_SIZE;
 
-    /*!
-     * \brief The maximum number of msgs for the queue, as specified in queue's
-     * initialization.
-     */
-    _mqx_uint     MAX_SIZE;
+	/*!
+	 * \brief The maximum number of msgs for the queue, as specified in queue's
+	 * initialization.
+	 */
+	_mqx_uint     MAX_SIZE;
 
-    /*! \brief The current number of messages in the queue. */
-    _mqx_uint    CURRENT_SIZE;
+	/*! \brief The current number of messages in the queue. */
+	_mqx_uint    CURRENT_SIZE;
 
-    /*! \brief Next message location to write to. */
-    _mqx_max_type_ptr MSG_WRITE_LOC;
+	/*! \brief Next message location to write to. */
+	_mqx_max_type_ptr MSG_WRITE_LOC;
 
-    /*! \brief Next message location to read from. */
-    _mqx_max_type_ptr MSG_READ_LOC;
+	/*! \brief Next message location to read from. */
+	_mqx_max_type_ptr MSG_READ_LOC;
 
-    /*! \brief Starting location of messages. */
-    _mqx_max_type_ptr MSG_START_LOC;
+	/*! \brief Starting location of messages. */
+	_mqx_max_type_ptr MSG_START_LOC;
 
-    /*! \brief Location past end of messages. */
-    _mqx_max_type_ptr MSG_END_LOC;
+	/*! \brief Location past end of messages. */
+	_mqx_max_type_ptr MSG_END_LOC;
 
 } LWMSGQ_STRUCT, * LWMSGQ_STRUCT_PTR;
 

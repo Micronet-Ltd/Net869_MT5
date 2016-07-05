@@ -41,30 +41,30 @@
  *END**************************************************************************/
 void CRC_HAL_Init(CRC_Type * base)
 {
-    uint32_t seedAndData = 0;
+	uint32_t seedAndData = 0;
 
-    CRC_BWR_CTRL_TCRC(base, kCrc32Bits);
-    /*SetReadTranspose (no transpose)*/
-    CRC_BWR_CTRL_TOTR(base, kCrcNoTranspose);
-    /*SetWriteTranspose (no transpose)*/
-    CRC_BWR_CTRL_TOT(base, kCrcNoTranspose);
-    /*SetXorMode (xor mode disabled)*/
-    CRC_BWR_CTRL_FXOR(base, false);
-    /*SetSeedOrDataMode (seed selected)*/
-    CRC_BWR_CTRL_WAS(base, true);
+	CRC_BWR_CTRL_TCRC(base, kCrc32Bits);
+	/*SetReadTranspose (no transpose)*/
+	CRC_BWR_CTRL_TOTR(base, kCrcNoTranspose);
+	/*SetWriteTranspose (no transpose)*/
+	CRC_BWR_CTRL_TOT(base, kCrcNoTranspose);
+	/*SetXorMode (xor mode disabled)*/
+	CRC_BWR_CTRL_FXOR(base, false);
+	/*SetSeedOrDataMode (seed selected)*/
+	CRC_BWR_CTRL_WAS(base, true);
 
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    CRC_WR_CRC(base, seedAndData);
+	CRC_WR_CRC(base, seedAndData);
 #else
-    CRC_WR_DATA(base, seedAndData);
+	CRC_WR_DATA(base, seedAndData);
 #endif
-    /*SetSeedOrDataMode (seed selected)*/
-    CRC_BWR_CTRL_WAS(base, false);
+	/*SetSeedOrDataMode (seed selected)*/
+	CRC_BWR_CTRL_WAS(base, false);
 
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    CRC_WR_CRC(base, seedAndData);
+	CRC_WR_CRC(base, seedAndData);
 #else
-    CRC_WR_DATA(base, seedAndData);
+	CRC_WR_DATA(base, seedAndData);
 #endif
 }
 
@@ -77,19 +77,19 @@ void CRC_HAL_Init(CRC_Type * base)
  *END**************************************************************************/
 uint32_t CRC_HAL_GetCrc32(CRC_Type * base, uint32_t data, bool newSeed, uint32_t seed)
 {
-    if (newSeed == true)
-    {
-        CRC_HAL_SetSeedOrDataMode(base, true);
-        CRC_HAL_SetDataReg(base, seed);
-        CRC_HAL_SetSeedOrDataMode(base, false);
-        CRC_HAL_SetDataReg(base, data);
-        return CRC_HAL_GetCrcResult(base);
-    }
-    else
-    {
-        CRC_HAL_SetDataReg(base, data);
-        return CRC_HAL_GetCrcResult(base);
-    }
+	if (newSeed == true)
+	{
+		CRC_HAL_SetSeedOrDataMode(base, true);
+		CRC_HAL_SetDataReg(base, seed);
+		CRC_HAL_SetSeedOrDataMode(base, false);
+		CRC_HAL_SetDataReg(base, data);
+		return CRC_HAL_GetCrcResult(base);
+	}
+	else
+	{
+		CRC_HAL_SetDataReg(base, data);
+		return CRC_HAL_GetCrcResult(base);
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -101,19 +101,19 @@ uint32_t CRC_HAL_GetCrc32(CRC_Type * base, uint32_t data, bool newSeed, uint32_t
  *END**************************************************************************/
 uint32_t CRC_HAL_GetCrc16(CRC_Type * base, uint16_t data, bool newSeed, uint32_t seed)
 {
-    if (newSeed == true)
-    {
-        CRC_HAL_SetSeedOrDataMode(base, true);
-        CRC_HAL_SetDataReg(base, seed);
-        CRC_HAL_SetSeedOrDataMode(base, false);
-        CRC_HAL_SetDataLReg(base, data);
-        return CRC_HAL_GetCrcResult(base);
-    }
-    else
-    {
-        CRC_HAL_SetDataLReg(base, data);
-        return CRC_HAL_GetCrcResult(base);
-    }
+	if (newSeed == true)
+	{
+		CRC_HAL_SetSeedOrDataMode(base, true);
+		CRC_HAL_SetDataReg(base, seed);
+		CRC_HAL_SetSeedOrDataMode(base, false);
+		CRC_HAL_SetDataLReg(base, data);
+		return CRC_HAL_GetCrcResult(base);
+	}
+	else
+	{
+		CRC_HAL_SetDataLReg(base, data);
+		return CRC_HAL_GetCrcResult(base);
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -125,19 +125,19 @@ uint32_t CRC_HAL_GetCrc16(CRC_Type * base, uint16_t data, bool newSeed, uint32_t
  *END**************************************************************************/
 uint32_t CRC_HAL_GetCrc8(CRC_Type * base, uint8_t data, bool newSeed, uint32_t seed)
 {
-    if (newSeed == true)
-    {
-        CRC_HAL_SetSeedOrDataMode(base, true);
-        CRC_HAL_SetDataReg(base, seed);
-        CRC_HAL_SetSeedOrDataMode(base, false);
-        CRC_HAL_SetDataLLReg(base, data);
-        return CRC_HAL_GetCrcResult(base);
-    }
-    else
-    {
-        CRC_HAL_SetDataLLReg(base, data);
-        return CRC_HAL_GetCrcResult(base);
-    }
+	if (newSeed == true)
+	{
+		CRC_HAL_SetSeedOrDataMode(base, true);
+		CRC_HAL_SetDataReg(base, seed);
+		CRC_HAL_SetSeedOrDataMode(base, false);
+		CRC_HAL_SetDataLLReg(base, data);
+		return CRC_HAL_GetCrcResult(base);
+	}
+	else
+	{
+		CRC_HAL_SetDataLLReg(base, data);
+		return CRC_HAL_GetCrcResult(base);
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -148,40 +148,37 @@ uint32_t CRC_HAL_GetCrc8(CRC_Type * base, uint8_t data, bool newSeed, uint32_t s
  *END**************************************************************************/
 uint32_t CRC_HAL_GetCrcResult(CRC_Type * base)
 {
-    uint32_t result = 0;
-    crc_transpose_t transpose;
-    crc_prot_width_t width;
+	uint32_t result = 0;
+	crc_transpose_t transpose;
+	crc_prot_width_t width;
 
-    width = CRC_HAL_GetProtocolWidth(base);
+	width = CRC_HAL_GetProtocolWidth(base);
 
-    switch(width)
-    {
-    case kCrc16Bits:
-        transpose = CRC_HAL_GetReadTranspose(base);
+	switch(width)
+	{
+	case kCrc16Bits:
+		transpose = CRC_HAL_GetReadTranspose(base);
 
-        if( (transpose == kCrcTransposeBoth) || (transpose == kCrcTransposeBytes) )
-        {
-            /* Return upper 16bits of CRC because of transposition in 16bit mode */
-            result = CRC_HAL_GetDataHReg(base);
-        }
-        else
-        {
-            result = CRC_HAL_GetDataLReg(base);
-        }
-        break;
-    case kCrc32Bits:
-        result = CRC_HAL_GetDataReg(base);
-        break;
-    default:
-        break;
-    }
-    return result;
+		if( (transpose == kCrcTransposeBoth) || (transpose == kCrcTransposeBytes) )
+		{
+			/* Return upper 16bits of CRC because of transposition in 16bit mode */
+			result = CRC_HAL_GetDataHReg(base);
+		}
+		else
+		{
+			result = CRC_HAL_GetDataLReg(base);
+		}
+		break;
+	case kCrc32Bits:
+		result = CRC_HAL_GetDataReg(base);
+		break;
+	default:
+		break;
+	}
+	return result;
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-
-
-

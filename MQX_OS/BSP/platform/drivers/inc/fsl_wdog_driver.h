@@ -36,7 +36,7 @@
 #include "fsl_wdog_hal.h"
 #if FSL_FEATURE_SOC_WDOG_COUNT
 
-/*! 
+/*!
  * @addtogroup wdog_driver
  * @{
  */
@@ -54,7 +54,7 @@ extern const IRQn_Type g_wdogIrqId[WDOG_INSTANCE_COUNT];
  * Definitions
  *******************************************************************************/
 
-/*! 
+/*!
  * @brief Data structure for Watchdog initialization
  *
  * This structure is used when initializing the WDOG during the wdog_init function call.
@@ -70,18 +70,18 @@ extern const IRQn_Type g_wdogIrqId[WDOG_INSTANCE_COUNT];
 extern "C" {
 #endif
 
-/*! 
+/*!
  * @name Watchdog Driver
  * @{
  */
- 
+
 
 /*!
  * @brief Initializes the Watchdog.
  *
- * This function  initializes the WDOG. When called, the WDOG 
+ * This function  initializes the WDOG. When called, the WDOG
  * runs according to the requirements of the configuration.
- * 
+ *
  * @param userConfigPtr Watchdog user configure data structure, see #wdog_user_config_t.
  * @return kStatus_WDOG_Success means success. Otherwise, means failure.
  *
@@ -91,7 +91,7 @@ wdog_status_t WDOG_DRV_Init(const wdog_config_t* userConfigPtr);
 /*!
  * @brief Shuts down the Watchdog.
  *
- * This function shuts down the WDOG. 
+ * This function shuts down the WDOG.
  *
  * @return kStatus_WDOG_Success means success. Otherwise, means failure.
  */
@@ -100,7 +100,7 @@ wdog_status_t WDOG_DRV_Deinit(void);
 /*!
  * @brief Refreshes the Watchdog.
  *
- *  This function feeds the WDOG. It sets the WDOG timer count to zero and 
+ *  This function feeds the WDOG. It sets the WDOG timer count to zero and
  *  should be called before the Watchdog timer times out. Otherwise, a reset is asserted.
  *  Enough time should be allowed for the
  *  refresh sequence to be detected by the Watchdog timer on the Watchdog clock.
@@ -120,7 +120,7 @@ bool WDOG_DRV_IsRunning(void);
 /*!
  * @brief Resets the MCU by using the Watchdog.
  *
- * This function resets the MCU by using the WDOG. 
+ * This function resets the MCU by using the WDOG.
  *
  */
 void WDOG_DRV_ResetSystem(void);
@@ -138,4 +138,3 @@ void WDOG_DRV_ResetSystem(void);
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

@@ -41,13 +41,13 @@
 /* Implementation of I2C handler named in startup code. */
 void I2C0_I2C1_IRQHandler(void)
 {
-    for(uint32_t i=0; i < I2C_INSTANCE_COUNT; i++)
-    {
-        if (CLOCK_SYS_GetI2cGateCmd(i))
-        {
-            I2C_DRV_IRQHandler(i);
-        }
-    }
+	for(uint32_t i=0; i < I2C_INSTANCE_COUNT; i++)
+	{
+		if (CLOCK_SYS_GetI2cGateCmd(i))
+		{
+			I2C_DRV_IRQHandler(i);
+		}
+	}
 }
 #else
 
@@ -55,7 +55,7 @@ void I2C0_I2C1_IRQHandler(void)
 /* Implementation of I2C0 handler named in startup code. */
 void I2C0_IRQHandler(void)
 {
-    I2C_DRV_IRQHandler(I2C0_IDX);
+	I2C_DRV_IRQHandler(I2C0_IDX);
 }
 #endif
 
@@ -63,7 +63,7 @@ void I2C0_IRQHandler(void)
 /* Implementation of I2C1 handler named in startup code. */
 void I2C1_IRQHandler(void)
 {
-    I2C_DRV_IRQHandler(I2C1_IDX);
+	I2C_DRV_IRQHandler(I2C1_IDX);
 }
 #endif
 
@@ -71,7 +71,7 @@ void I2C1_IRQHandler(void)
 /* Implementation of I2C2 handler named in startup code. */
 void I2C2_IRQHandler(void)
 {
-    I2C_DRV_IRQHandler(I2C2_IDX);
+	I2C_DRV_IRQHandler(I2C2_IDX);
 }
 #endif
 
@@ -79,11 +79,10 @@ void I2C2_IRQHandler(void)
 /* Implementation of I2C3 handler named in startup code. */
 void I2C3_IRQHandler(void)
 {
-    I2C_DRV_IRQHandler(I2C3_IDX);
+	I2C_DRV_IRQHandler(I2C3_IDX);
 }
 #endif
 #endif
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

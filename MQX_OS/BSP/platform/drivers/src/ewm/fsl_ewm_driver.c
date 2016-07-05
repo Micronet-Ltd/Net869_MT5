@@ -49,31 +49,31 @@
  *
  * Function Name : EWM_DRV_Init
  * Description   : Initialize EWM
- * This function is used to initialize the EWM, after called, the EWM 
+ * This function is used to initialize the EWM, after called, the EWM
  * will run immediately according to the configure.
  *
  *END*********************************************************************/
 ewm_status_t EWM_DRV_Init(uint32_t instance, const ewm_config_t* ConfigPtr)
 {
-    assert(instance < EWM_INSTANCE_COUNT);
-    EWM_Type * base;
-    base = g_ewmBase[instance];
-    if(!ConfigPtr)
-    {
+	assert(instance < EWM_INSTANCE_COUNT);
+	EWM_Type * base;
+	base = g_ewmBase[instance];
+	if(!ConfigPtr)
+	{
 	return kStatus_EWM_NullArgument;
-    }
-    if(ConfigPtr->intEnable)
-    {
-        INT_SYS_EnableIRQ(g_ewmIrqId[instance]);    /*!< Enable EWM interrupt in NVIC level  */
-    }
-    else
-    {
-        INT_SYS_DisableIRQ(g_ewmIrqId[instance]);   /*!< Disable EWM interrupt in NVIC level */
-    }
-    CLOCK_SYS_EnableEwmClock(instance);             /*!< Enable ewm clock 					 */
-    EWM_HAL_SetConfig(base, ConfigPtr);
-    
-    return kStatus_EWM_Success;
+	}
+	if(ConfigPtr->intEnable)
+	{
+		INT_SYS_EnableIRQ(g_ewmIrqId[instance]);    /*!< Enable EWM interrupt in NVIC level  */
+	}
+	else
+	{
+		INT_SYS_DisableIRQ(g_ewmIrqId[instance]);   /*!< Disable EWM interrupt in NVIC level */
+	}
+	CLOCK_SYS_EnableEwmClock(instance);             /*!< Enable ewm clock 					 */
+	EWM_HAL_SetConfig(base, ConfigPtr);
+
+	return kStatus_EWM_Success;
 }
 
 /*FUNCTION****************************************************************
@@ -85,10 +85,10 @@ ewm_status_t EWM_DRV_Init(uint32_t instance, const ewm_config_t* ConfigPtr)
  *END*********************************************************************/
 void EWM_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < EWM_INSTANCE_COUNT);
-    EWM_Type * base = g_ewmBase[instance];
-    EWM_HAL_SetIntCmd(base, false);
-    CLOCK_SYS_DisableEwmClock(instance);
+	assert(instance < EWM_INSTANCE_COUNT);
+	EWM_Type * base = g_ewmBase[instance];
+	EWM_HAL_SetIntCmd(base, false);
+	CLOCK_SYS_DisableEwmClock(instance);
 }
 
 /*FUNCTION****************************************************************
@@ -100,27 +100,27 @@ void EWM_DRV_Deinit(uint32_t instance)
  *END*********************************************************************/
 bool EWM_DRV_IsRunning(uint32_t instance)
 {
-    assert(instance < EWM_INSTANCE_COUNT);
-    EWM_Type * base = g_ewmBase[instance];
-    return EWM_HAL_IsEnable(base);
+	assert(instance < EWM_INSTANCE_COUNT);
+	EWM_Type * base = g_ewmBase[instance];
+	return EWM_HAL_IsEnable(base);
 }
 
 /*FUNCTION****************************************************************
  *
  * Function Name : EWM_DRV_Refresh
  * Description   : Refresh EWM counter.
- * This function is used to feed the EWM, it will set the EWM timer count to zero and 
+ * This function is used to feed the EWM, it will set the EWM timer count to zero and
  * should be called before EWM timer is timeout, otherwise a EWM_out output signal will assert.
  *
   *END*********************************************************************/
 void EWM_DRV_Refresh(uint32_t instance)
 {
-    assert(instance < EWM_INSTANCE_COUNT);
-    EWM_Type * base;
-    base = g_ewmBase[instance];
-    INT_SYS_DisableIRQGlobal();
-    EWM_HAL_Refresh(base);
-    INT_SYS_EnableIRQGlobal();
+	assert(instance < EWM_INSTANCE_COUNT);
+	EWM_Type * base;
+	base = g_ewmBase[instance];
+	INT_SYS_DisableIRQGlobal();
+	EWM_HAL_Refresh(base);
+	INT_SYS_EnableIRQGlobal();
 }
 
 /*FUNCTION*********************************************************************
@@ -130,13 +130,12 @@ void EWM_DRV_Refresh(uint32_t instance)
  *END*************************************************************************/
 void EWM_DRV_SetIntCmd(uint32_t instance, bool enable)
 {
-    EWM_Type * base;
-    base = g_ewmBase[instance];
-    EWM_HAL_SetIntCmd(base, enable);
+	EWM_Type * base;
+	base = g_ewmBase[instance];
+	EWM_HAL_SetIntCmd(base, enable);
 }
 
 #endif
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

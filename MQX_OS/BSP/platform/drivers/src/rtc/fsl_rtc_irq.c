@@ -51,8 +51,8 @@
  */
 void RTC_IRQHandler(void)
 {
-    RTC_DRV_AlarmIntAction(0);
-    /* Add user-defined handling for the RTC alarm */
+	RTC_DRV_AlarmIntAction(0);
+	/* Add user-defined handling for the RTC alarm */
 }
 
 /*
@@ -60,8 +60,8 @@ void RTC_IRQHandler(void)
  */
 void RTC_Seconds_IRQHandler(void)
 {
-    RTC_DRV_SecsIntAction(0);
-    /* Add user-defined handling for the per second RTC interrupt */
+	RTC_DRV_SecsIntAction(0);
+	/* Add user-defined handling for the per second RTC interrupt */
 }
 
 /*! @}*/
@@ -69,4 +69,3 @@ void RTC_Seconds_IRQHandler(void)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

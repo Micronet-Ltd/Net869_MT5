@@ -1,23 +1,23 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
  * All Rights Reserved
  *
  * Copyright (c) 1989-2008 ARC International;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
@@ -54,67 +54,67 @@ extern void LPSCI_DRV_IRQHandler(uint32_t instance);
  */
 usb_uart_status_t _USB_UART_DRV_Convert_RetVal(uint32_t retval)
 {
-    switch(retval)
-    {
-    case kStatus_LPSCI_Success:
-        return kStatus_USB_UART_Success;
-        break;
+	switch(retval)
+	{
+	case kStatus_LPSCI_Success:
+		return kStatus_USB_UART_Success;
+		break;
 
-    case kStatus_LPSCI_BaudRateCalculationError:
-        return kStatus_USB_UART_BaudRateCalculationError;
-        break;
+	case kStatus_LPSCI_BaudRateCalculationError:
+		return kStatus_USB_UART_BaudRateCalculationError;
+		break;
 
-    case kStatus_LPSCI_RxStandbyModeError:
-        return kStatus_USB_UART_RxStandbyModeError;
-        break;
+	case kStatus_LPSCI_RxStandbyModeError:
+		return kStatus_USB_UART_RxStandbyModeError;
+		break;
 
-    case kStatus_LPSCI_ClearStatusFlagError:
-        return kStatus_USB_UART_ClearStatusFlagError;
-        break;
+	case kStatus_LPSCI_ClearStatusFlagError:
+		return kStatus_USB_UART_ClearStatusFlagError;
+		break;
 
-    case kStatus_LPSCI_TxNotDisabled:
-        return kStatus_USB_UART_TxNotDisabled;
-        break;
+	case kStatus_LPSCI_TxNotDisabled:
+		return kStatus_USB_UART_TxNotDisabled;
+		break;
 
-    case kStatus_LPSCI_RxNotDisabled:
-        return kStatus_USB_UART_RxNotDisabled;
-        break;
+	case kStatus_LPSCI_RxNotDisabled:
+		return kStatus_USB_UART_RxNotDisabled;
+		break;
 
-    case kStatus_LPSCI_TxOrRxNotDisabled:
-        return kStatus_USB_UART_TxOrRxNotDisabled;
-        break;
+	case kStatus_LPSCI_TxOrRxNotDisabled:
+		return kStatus_USB_UART_TxOrRxNotDisabled;
+		break;
 
-    case kStatus_LPSCI_TxBusy:
-        return kStatus_USB_UART_TxBusy;
-        break;
+	case kStatus_LPSCI_TxBusy:
+		return kStatus_USB_UART_TxBusy;
+		break;
 
-    case kStatus_LPSCI_RxBusy:
-        return kStatus_USB_UART_RxBusy;
-        break;
+	case kStatus_LPSCI_RxBusy:
+		return kStatus_USB_UART_RxBusy;
+		break;
 
-    case kStatus_LPSCI_NoTransmitInProgress:
-        return kStatus_USB_UART_NoTransmitInProgress;
-        break;
+	case kStatus_LPSCI_NoTransmitInProgress:
+		return kStatus_USB_UART_NoTransmitInProgress;
+		break;
 
-    case kStatus_LPSCI_NoReceiveInProgress:
-        return kStatus_USB_UART_NoReceiveInProgress;
-        break;
+	case kStatus_LPSCI_NoReceiveInProgress:
+		return kStatus_USB_UART_NoReceiveInProgress;
+		break;
 
-    case kStatus_LPSCI_Timeout:
-        return kStatus_USB_UART_Timeout;
-        break;
+	case kStatus_LPSCI_Timeout:
+		return kStatus_USB_UART_Timeout;
+		break;
 
-    case kStatus_LPSCI_Initialized:
-        return kStatus_USB_UART_Initialized;
-        break;
+	case kStatus_LPSCI_Initialized:
+		return kStatus_USB_UART_Initialized;
+		break;
 
-    case kStatus_LPSCI_NoDataToDeal:
-        return kStatus_USB_UART_NoDataToDeal;
-        break;
-    default:
-        return kStatus_USB_UART_Success;
-        break;
-    }
+	case kStatus_LPSCI_NoDataToDeal:
+		return kStatus_USB_UART_NoDataToDeal;
+		break;
+	default:
+		return kStatus_USB_UART_Success;
+		break;
+	}
 }
 
 /*!
@@ -125,7 +125,7 @@ usb_uart_status_t _USB_UART_DRV_Convert_RetVal(uint32_t retval)
  */
 IRQn_Type USB_UART_Get_USB_iRQ_Num(uint32_t instance)
 {
-    return g_lpsciRxTxIrqId[instance];
+	return g_lpsciRxTxIrqId[instance];
 }
 
 /*!
@@ -154,7 +154,7 @@ IRQn_Type USB_UART_Get_USB_iRQ_Num(uint32_t instance)
  @endcode
  *
  * @param instance The UART instance number.
- * @param uartStatePtr A pointer to the UART driver state structure memory. The user 
+ * @param uartStatePtr A pointer to the UART driver state structure memory. The user
  * passes in the memory for this run-time state structure. The UART driver
  *  populates the members. The run-time state structure keeps track of the
  *  current transfer in progress.
@@ -164,17 +164,17 @@ IRQn_Type USB_UART_Get_USB_iRQ_Num(uint32_t instance)
  * @return An error code or kStatus_UART_Success.
  */
 usb_uart_status_t USB_UART_DRV_Init(uint32_t instance, usb_uart_state_t * uartStatePtr,
-    const usb_uart_user_config_t * uartUserConfig)
+	const usb_uart_user_config_t * uartUserConfig)
 {
-    lpsci_status_t uart_sts;
-    lpsci_user_config_t lpsciUserCfg;
-    lpsciUserCfg.baudRate = uartUserConfig->baudRate;
-    lpsciUserCfg.parityMode = (lpsci_parity_mode_t) uartUserConfig->parityMode;
-    lpsciUserCfg.stopBitCount = (lpsci_stop_bit_count_t) uartUserConfig->stopBitCount;
-    lpsciUserCfg.bitCountPerChar = (lpsci_bit_count_per_char_t) uartUserConfig->bitCountPerChar;
-    lpsciUserCfg.clockSource = kClockLpsciSrcPllFllSel;
-    uart_sts = LPSCI_DRV_Init(instance, (lpsci_state_t *) uartStatePtr, &lpsciUserCfg);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	lpsci_status_t uart_sts;
+	lpsci_user_config_t lpsciUserCfg;
+	lpsciUserCfg.baudRate = uartUserConfig->baudRate;
+	lpsciUserCfg.parityMode = (lpsci_parity_mode_t) uartUserConfig->parityMode;
+	lpsciUserCfg.stopBitCount = (lpsci_stop_bit_count_t) uartUserConfig->stopBitCount;
+	lpsciUserCfg.bitCountPerChar = (lpsci_bit_count_per_char_t) uartUserConfig->bitCountPerChar;
+	lpsciUserCfg.clockSource = kClockLpsciSrcPllFllSel;
+	uart_sts = LPSCI_DRV_Init(instance, (lpsci_state_t *) uartStatePtr, &lpsciUserCfg);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -187,7 +187,7 @@ usb_uart_status_t USB_UART_DRV_Init(uint32_t instance, usb_uart_state_t * uartSt
  */
 void USB_UART_DRV_Deinit(uint32_t instance)
 {
-    LPSCI_DRV_Deinit(instance);
+	LPSCI_DRV_Deinit(instance);
 }
 
 /*FUNCTION**********************************************************************
@@ -200,7 +200,7 @@ void USB_UART_DRV_Deinit(uint32_t instance)
  *END**************************************************************************/
 void USB_UART_DRV_IRQHandler(uint32_t instance)
 {
-    LPSCI_DRV_IRQHandler(instance);
+	LPSCI_DRV_IRQHandler(instance);
 }
 
 /*!
@@ -217,12 +217,12 @@ void USB_UART_DRV_IRQHandler(uint32_t instance)
  * @return Former UART receive callback function pointer.
  */
 usb_uart_rx_callback_t USB_UART_DRV_InstallRxCallback(uint32_t instance,
-    usb_uart_rx_callback_t function,
-    uint8_t * rxBuff,
-    void * callbackParam,
-    bool alwaysEnableRxIrq)
+	usb_uart_rx_callback_t function,
+	uint8_t * rxBuff,
+	void * callbackParam,
+	bool alwaysEnableRxIrq)
 {
-    return (usb_uart_rx_callback_t) LPSCI_DRV_InstallRxCallback(instance, (lpsci_rx_callback_t) function, rxBuff, callbackParam, alwaysEnableRxIrq);
+	return (usb_uart_rx_callback_t) LPSCI_DRV_InstallRxCallback(instance, (lpsci_rx_callback_t) function, rxBuff, callbackParam, alwaysEnableRxIrq);
 }
 
 /*!
@@ -238,13 +238,13 @@ usb_uart_rx_callback_t USB_UART_DRV_InstallRxCallback(uint32_t instance,
  * @return An error code or kStatus_UART_Success.
  */
 usb_uart_status_t USB_UART_DRV_SendDataBlocking(uint32_t instance,
-    const uint8_t * txBuff,
-    uint32_t txSize,
-    uint32_t timeout)
+	const uint8_t * txBuff,
+	uint32_t txSize,
+	uint32_t timeout)
 {
-    lpsci_status_t uart_sts;
-    uart_sts = LPSCI_DRV_SendDataBlocking(instance, txBuff, txSize, timeout);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	lpsci_status_t uart_sts;
+	uart_sts = LPSCI_DRV_SendDataBlocking(instance, txBuff, txSize, timeout);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -265,9 +265,9 @@ usb_uart_status_t USB_UART_DRV_SendDataBlocking(uint32_t instance,
  */
 usb_uart_status_t USB_UART_DRV_SendData(uint32_t instance, const uint8_t * txBuff, uint32_t txSize)
 {
-    lpsci_status_t uart_sts;
-    uart_sts = LPSCI_DRV_SendData(instance, txBuff, txSize);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	lpsci_status_t uart_sts;
+	uart_sts = LPSCI_DRV_SendData(instance, txBuff, txSize);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -288,9 +288,9 @@ usb_uart_status_t USB_UART_DRV_SendData(uint32_t instance, const uint8_t * txBuf
  */
 usb_uart_status_t USB_UART_DRV_GetTransmitStatus(uint32_t instance, uint32_t * bytesRemaining)
 {
-    lpsci_status_t uart_sts;
-    uart_sts = LPSCI_DRV_GetTransmitStatus(instance, bytesRemaining);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	lpsci_status_t uart_sts;
+	uart_sts = LPSCI_DRV_GetTransmitStatus(instance, bytesRemaining);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -306,9 +306,9 @@ usb_uart_status_t USB_UART_DRV_GetTransmitStatus(uint32_t instance, uint32_t * b
  */
 usb_uart_status_t USB_UART_DRV_AbortSendingData(uint32_t instance)
 {
-    lpsci_status_t uart_sts;
-    uart_sts = LPSCI_DRV_AbortSendingData(instance);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	lpsci_status_t uart_sts;
+	uart_sts = LPSCI_DRV_AbortSendingData(instance);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -324,13 +324,13 @@ usb_uart_status_t USB_UART_DRV_AbortSendingData(uint32_t instance)
  * @return An error code or kStatus_UART_Success.
  */
 usb_uart_status_t USB_UART_DRV_ReceiveDataBlocking(uint32_t instance,
-    uint8_t * rxBuff,
-    uint32_t rxSize,
-    uint32_t timeout)
+	uint8_t * rxBuff,
+	uint32_t rxSize,
+	uint32_t timeout)
 {
-    lpsci_status_t uart_sts;
-    uart_sts = LPSCI_DRV_ReceiveDataBlocking(instance, rxBuff, rxSize, timeout);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	lpsci_status_t uart_sts;
+	uart_sts = LPSCI_DRV_ReceiveDataBlocking(instance, rxBuff, rxSize, timeout);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 /*!
  * @brief Gets (receives) data from the UART module using a non-blocking method.
@@ -350,9 +350,9 @@ usb_uart_status_t USB_UART_DRV_ReceiveDataBlocking(uint32_t instance,
  */
 usb_uart_status_t USB_UART_DRV_ReceiveData(uint32_t instance, uint8_t * rxBuff, uint32_t rxSize)
 {
-    lpsci_status_t uart_sts;
-    uart_sts = LPSCI_DRV_ReceiveData(instance, rxBuff, rxSize);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	lpsci_status_t uart_sts;
+	uart_sts = LPSCI_DRV_ReceiveData(instance, rxBuff, rxSize);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -373,9 +373,9 @@ usb_uart_status_t USB_UART_DRV_ReceiveData(uint32_t instance, uint8_t * rxBuff, 
  */
 usb_uart_status_t USB_UART_DRV_GetReceiveStatus(uint32_t instance, uint32_t * bytesRemaining)
 {
-    lpsci_status_t uart_sts;
-    uart_sts = LPSCI_DRV_GetReceiveStatus(instance, bytesRemaining);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	lpsci_status_t uart_sts;
+	uart_sts = LPSCI_DRV_GetReceiveStatus(instance, bytesRemaining);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -391,9 +391,9 @@ usb_uart_status_t USB_UART_DRV_GetReceiveStatus(uint32_t instance, uint32_t * by
  */
 usb_uart_status_t USB_UART_DRV_AbortReceivingData(uint32_t instance)
 {
-    lpsci_status_t uart_sts;
-    uart_sts = LPSCI_DRV_AbortReceivingData(instance);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	lpsci_status_t uart_sts;
+	uart_sts = LPSCI_DRV_AbortReceivingData(instance);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*@}*/

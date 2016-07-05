@@ -36,25 +36,25 @@
 #include "sh_rtcs.h"
 #include "sh_enet.h"
 
- 
+
 
 bool Shell_parse_enet_address( char *arg, _enet_address enet_address)
 {
    unsigned int i;
    unsigned int j=0;
-   
+
    if (strlen(arg) != 17)  {
-      return FALSE;
+	  return FALSE;
    }
-   
+
    for (i=0;i<16;i+=3)  {
-      if ( isxdigit((int)arg[i]) && isxdigit((int)arg[i+1]) && (((int)arg[i+2]==':') || ((int)arg[i+2]=='\0')) )  {
-         enet_address[j++] = hexnum(arg[i]) * 16 + hexnum(arg[i+1]);
-      } else  {
-         return FALSE;
-      }
-   } 
-   return TRUE;   
+	  if ( isxdigit((int)arg[i]) && isxdigit((int)arg[i+1]) && (((int)arg[i+2]==':') || ((int)arg[i+2]=='\0')) )  {
+		 enet_address[j++] = hexnum(arg[i]) * 16 + hexnum(arg[i+1]);
+	  } else  {
+		 return FALSE;
+	  }
+   }
+   return TRUE;
 }
 
 #endif /* SHELLCFG_USES_RTCS */

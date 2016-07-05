@@ -175,11 +175,11 @@ typedef struct esdhc_card_presence_callback_struct
 
 typedef struct esdhc_command_struct
 {
-    uint32_t COMMAND;
-    uint32_t ARGUMENT;
-    uint32_t BLOCKS;
-    uint32_t BLOCKSIZE;
-    uint32_t RESPONSE[4];
+	uint32_t COMMAND;
+	uint32_t ARGUMENT;
+	uint32_t BLOCKS;
+	uint32_t BLOCKSIZE;
+	uint32_t RESPONSE[4];
 } ESDHC_COMMAND_STRUCT, * ESDHC_COMMAND_STRUCT_PTR;
 
 
@@ -191,14 +191,14 @@ typedef struct esdhc_command_struct
 */
 typedef struct esdhc_init_struct
 {
-    /* Interrupt vector of the ESDHC controller */
-    uint32_t                     VECTOR;
+	/* Interrupt vector of the ESDHC controller */
+	uint32_t                     VECTOR;
 
-    /* ESDHC registers (base address) */
-    uint32_t                     DEV_BASE;
-    
-    /* The communication board allowed maximal baud rate */
-    uint32_t                     MAX_BAUD_RATE;
+	/* ESDHC registers (base address) */
+	uint32_t                     DEV_BASE;
+
+	/* The communication board allowed maximal baud rate */
+	uint32_t                     MAX_BAUD_RATE;
 
 } ESDHC_INIT_STRUCT, * ESDHC_INIT_STRUCT_PTR;
 

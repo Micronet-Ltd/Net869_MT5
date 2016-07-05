@@ -62,16 +62,16 @@ extern const IRQn_Type g_dmaIrqId[DMA_INSTANCE_COUNT][FSL_FEATURE_DMA_DMAMUX_CHA
  * function.
  */
 typedef enum _dma_channel_status {
-    kDmaIdle,                    /*!< DMA channel is idle. */
-    kDmaNormal,                /*!< DMA channel is occupied. */
-    kDmaError                    /*!< Error occurs in the DMA channel. */
+	kDmaIdle,                    /*!< DMA channel is idle. */
+	kDmaNormal,                /*!< DMA channel is occupied. */
+	kDmaError                    /*!< Error occurs in the DMA channel. */
 } dma_channel_status_t;
 
 /*! @brief Type for the DMA channel, which is used for the DMA channel allocation. */
 typedef enum _dma_channel_type {
-    kDmaInvalidChannel = 0xFFU,  /*!< Macros indicating the failure of the channel request. */
-    kDmaAnyChannel = 0xFEU       /*!< Macros used when requesting a channel.  */
-                                /*!< kEdmaAnyChannel means a request of dynamic channel allocation. */
+	kDmaInvalidChannel = 0xFFU,  /*!< Macros indicating the failure of the channel request. */
+	kDmaAnyChannel = 0xFEU       /*!< Macros used when requesting a channel.  */
+								/*!< kEdmaAnyChannel means a request of dynamic channel allocation. */
 } dma_channel_type_t;
 
 /*!
@@ -83,19 +83,19 @@ typedef void (*dma_callback_t)(void *parameter, dma_channel_status_t status);
 
 /*! @brief Data structure for the DMA channel management. */
 typedef struct DmaChannel {
-    uint8_t channel;            /*!< Channel number */
-    uint8_t dmamuxModule;       /*!< DMAMUX module index */
-    uint8_t dmamuxChannel;      /*!< DMAMUX module channel */
-    dma_callback_t callback;    /*!< Callback function for this channel */
-    void *parameter;            /*!< Parameter for the callback function */
-    volatile dma_channel_status_t status;/*!< Channel status */
+	uint8_t channel;            /*!< Channel number */
+	uint8_t dmamuxModule;       /*!< DMAMUX module index */
+	uint8_t dmamuxChannel;      /*!< DMAMUX module channel */
+	dma_callback_t callback;    /*!< Callback function for this channel */
+	void *parameter;            /*!< Parameter for the callback function */
+	volatile dma_channel_status_t status;/*!< Channel status */
 } dma_channel_t;
 
 /*! @brief Data structure for the DMA controller management. */
 typedef struct DmaState {
-    dma_channel_t * volatile dmaChan[FSL_FEATURE_DMA_DMAMUX_CHANNELS];
+	dma_channel_t * volatile dmaChan[FSL_FEATURE_DMA_DMAMUX_CHANNELS];
 #if USE_RTOS
-    mutex_t lock;
+	mutex_t lock;
 #endif
 } dma_state_t;
 
@@ -160,7 +160,7 @@ dma_status_t DMA_DRV_SetSourceTransferSize(dma_channel_t *chn, uint32_t transfer
  * @return If successful, returns the kStatus_DMA_Success. Otherwise, it returns an error.
  */
 dma_status_t DMA_DRV_RegisterCallback(
-        dma_channel_t *chn, dma_callback_t callback, void *para);
+		dma_channel_t *chn, dma_callback_t callback, void *para);
 
 /*!
  * @brief Gets the number of unfinished bytes.
@@ -181,7 +181,7 @@ uint32_t DMA_DRV_GetUnfinishedBytes(dma_channel_t *chn);
  * @return If successful, returns the kStatus_DMA_Success. Otherwise, it returns an error.
  */
 dma_status_t DMA_DRV_ClaimChannel(
-        uint32_t channel, dma_request_source_t source, dma_channel_t *chn);
+		uint32_t channel, dma_request_source_t source, dma_channel_t *chn);
 
 
 /*!
@@ -208,7 +208,7 @@ dma_status_t DMA_DRV_ClaimChannel(
  * not, the driver  returns a  kDmaInvalidChannel value to indicate that the request operation has failed.
  */
 uint32_t DMA_DRV_RequestChannel(
-        uint32_t channel, dma_request_source_t source, dma_channel_t *chn);
+		uint32_t channel, dma_request_source_t source, dma_channel_t *chn);
 
 /*!
  * @brief Frees DMA channel hardware and software resource.
@@ -256,8 +256,8 @@ dma_status_t DMA_DRV_StopChannel(dma_channel_t *chn);
  * @return If successful, returns the kStatus_DMA_Success. Otherwise, it returns an error.
  */
 dma_status_t DMA_DRV_ConfigTransfer(
-        dma_channel_t *chn, dma_transfer_type_t type,
-        uint32_t size, uint32_t sourceAddr, uint32_t destAddr, uint32_t length);
+		dma_channel_t *chn, dma_transfer_type_t type,
+		uint32_t size, uint32_t sourceAddr, uint32_t destAddr, uint32_t length);
 
 /*!
  * @brief Configures the channel link feature.
@@ -267,7 +267,7 @@ dma_status_t DMA_DRV_ConfigTransfer(
  * @return If successful, returns the kStatus_DMA_Success. Otherwise, it returns an error.
  */
 dma_status_t DMA_DRV_ConfigChanLink(
-        dma_channel_t *chn, dma_channel_link_config_t *link_config);
+		dma_channel_t *chn, dma_channel_link_config_t *link_config);
 
 /*!
  * @brief DMA IRQ handler for both an interrupt and an error.
@@ -290,4 +290,3 @@ void DMA_DRV_IRQhandler(uint32_t channel);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

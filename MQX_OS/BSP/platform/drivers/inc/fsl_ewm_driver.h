@@ -36,7 +36,7 @@
 #include "fsl_ewm_hal.h"
 #if FSL_FEATURE_SOC_EWM_COUNT
 
-/*! 
+/*!
  * @addtogroup ewm_driver
  * @{
  */
@@ -68,7 +68,7 @@ extern "C" {
 /*!
  * @brief Initializes the EWM.
  *
- * This function initializes the EWM. When called, the EWM 
+ * This function initializes the EWM. When called, the EWM
  * runs according to the configuration.
  *
  * @param instance EWM instance ID
@@ -89,7 +89,7 @@ void EWM_DRV_Deinit(uint32_t instance);
 /*!
  * @brief Refreshes the EWM.
  *
- * This function feeds the EWM. It sets the EWM timer count to zero and 
+ * This function feeds the EWM. It sets the EWM timer count to zero and
  * should be called before the EWM timer times out.
  *
  * @param instance EWM instance ID
@@ -127,4 +127,3 @@ void EWM_DRV_SetIntCmd(uint32_t instance, bool enable);
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

@@ -96,57 +96,57 @@
 
 typedef struct esdhc_adma2_desc
 {
-    uint32_t LEN_ATTR;
-    uint32_t DATA_ADDR;
+	uint32_t LEN_ATTR;
+	uint32_t DATA_ADDR;
 } ESDHC_ADMA2_DESC;
 
 
 typedef struct esdhc_adma2_data
 {
-    uint8_t HEAD_BUF[PSP_MEMORY_ALIGNMENT+1];
-    uint8_t TAIL_BUF[PSP_MEMORY_ALIGNMENT+1];
-    ESDHC_ADMA2_DESC DESC[3];
+	uint8_t HEAD_BUF[PSP_MEMORY_ALIGNMENT+1];
+	uint8_t TAIL_BUF[PSP_MEMORY_ALIGNMENT+1];
+	ESDHC_ADMA2_DESC DESC[3];
 } ESDHC_ADMA2_DATA;
 
 
 typedef struct esdhc_device_struct
 {
-    /* The number of opened file descriptors */
-    uint32_t                     COUNT;
+	/* The number of opened file descriptors */
+	uint32_t                     COUNT;
 
-    /* The actual card status */
-    uint32_t                     CARD;
+	/* The actual card status */
+	uint32_t                     CARD;
 
-    /* Interrupt vector of the ESDHC controller */
-    uint32_t                     VECTOR;
+	/* Interrupt vector of the ESDHC controller */
+	uint32_t                     VECTOR;
 
-    /* ESDHC registers (base address) */
-    uint32_t                     DEV_BASE;
-    
-    /* The communication board allowed maximal baud rate */
-    uint32_t                     MAX_BAUD_RATE;
+	/* ESDHC registers (base address) */
+	uint32_t                     DEV_BASE;
 
-    /* The pointer to callback and data for IO card interrupt*/
-    ESDHC_IO_INT_CALLBACK_STRUCT         IO_CALLBACK_STR;
+	/* The communication board allowed maximal baud rate */
+	uint32_t                     MAX_BAUD_RATE;
+
+	/* The pointer to callback and data for IO card interrupt*/
+	ESDHC_IO_INT_CALLBACK_STRUCT         IO_CALLBACK_STR;
 
 #if ESDHC_CARD_DETECTION_SUPPORT
-    /* The pointer to callback and data for card presence change*/
-    ESDHC_CARD_PRESENCE_CALLBACK_STRUCT  CARD_PRESENCE_CALLBACK_STR;
+	/* The pointer to callback and data for card presence change*/
+	ESDHC_CARD_PRESENCE_CALLBACK_STRUCT  CARD_PRESENCE_CALLBACK_STR;
 #endif
 
-    /* Buffers and descriptors for ADMA2 are dynamically allocated to be properly aligned */
-    ESDHC_ADMA2_DATA             *ADMA2_DATA;
+	/* Buffers and descriptors for ADMA2 are dynamically allocated to be properly aligned */
+	ESDHC_ADMA2_DATA             *ADMA2_DATA;
 
-    /* The buffered command for data operations */
-    ESDHC_COMMAND_STRUCT         BUFFERED_CMD;
+	/* The buffered command for data operations */
+	ESDHC_COMMAND_STRUCT         BUFFERED_CMD;
 
-    /* Semaphore signalled from ISR when to notify about job done */
-    LWSEM_STRUCT                 EVENT_IO_FINISHED;
+	/* Semaphore signalled from ISR when to notify about job done */
+	LWSEM_STRUCT                 EVENT_IO_FINISHED;
 
-    /* LightWeight Events to manage the interrupt & DMA style of driver */
-    LWEVENT_STRUCT               LWEVENT;
-    
-    int                          FLAGS;
+	/* LightWeight Events to manage the interrupt & DMA style of driver */
+	LWEVENT_STRUCT               LWEVENT;
+
+	int                          FLAGS;
 
 } ESDHC_DEVICE_STRUCT, * ESDHC_DEVICE_STRUCT_PTR;
 

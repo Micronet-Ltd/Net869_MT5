@@ -48,9 +48,9 @@
 
 /* Select one of common configurations according to project settings. */
 #if MQX_COMMON_CONFIG == MQX_LITE_CONFIG
-    #include "lite_config.h"
+	#include "lite_config.h"
 #elif MQX_COMMON_CONFIG == MQX_SMALL_RAM_CONFIG
-    #include "small_ram_config.h"
+	#include "small_ram_config.h"
 #endif
 
 /* In the case the I/O subsystem is not used,

@@ -40,37 +40,37 @@
  */
 
 /*!
- * @brief Define structure of configuring the FlexIO UART transmit device. 
+ * @brief Define structure of configuring the FlexIO UART transmit device.
  */
 typedef struct
 {
-    FLEXIO_Type * flexioBase; /*!< FlexIO module base address. */
-    uint32_t txPinIdx;        /*!< Pin index for UART transmit in FlexIO. */
+	FLEXIO_Type * flexioBase; /*!< FlexIO module base address. */
+	uint32_t txPinIdx;        /*!< Pin index for UART transmit in FlexIO. */
 
-    uint32_t shifterIdx;      /*!< Shifter index used for UART transmit in FlexIO. */
-    uint32_t timerIdx;        /*!< Timer index used for UART transmit in FlexIO. */
+	uint32_t shifterIdx;      /*!< Shifter index used for UART transmit in FlexIO. */
+	uint32_t timerIdx;        /*!< Timer index used for UART transmit in FlexIO. */
 } flexio_uart_tx_dev_t;
 
  /*!
- * @brief Define structure of configuring the FlexIO UART receive device. 
+ * @brief Define structure of configuring the FlexIO UART receive device.
  */
 typedef struct
 {
-    FLEXIO_Type * flexioBase; /*!< FlexIO module base address. */
-    uint32_t rxPinIdx;       /*!< Pin index for UART receive in FlexIO. */
+	FLEXIO_Type * flexioBase; /*!< FlexIO module base address. */
+	uint32_t rxPinIdx;       /*!< Pin index for UART receive in FlexIO. */
 
-    uint32_t shifterIdx;     /*!< Shifter index used for UART receive in FlexIO. */
-    uint32_t timerIdx;       /*!< Timer index used for UART receive in FlexIO. */
+	uint32_t shifterIdx;     /*!< Shifter index used for UART receive in FlexIO. */
+	uint32_t timerIdx;       /*!< Timer index used for UART receive in FlexIO. */
 } flexio_uart_rx_dev_t;
 
 /*!
- * @brief Define structure of configuring the FlexIO UART bus. 
+ * @brief Define structure of configuring the FlexIO UART bus.
  */
 typedef struct
 {
-    uint32_t flexioBusClk; /*!< FlexIO bus clock frequency in Hertz. */
-    uint32_t baudrate;     /*!< UART transfer bandrate in bps. */
-    uint32_t bitCount;     /*!< UART transfer data length in bit. */
+	uint32_t flexioBusClk; /*!< FlexIO bus clock frequency in Hertz. */
+	uint32_t baudrate;     /*!< UART transfer bandrate in bps. */
+	uint32_t bitCount;     /*!< UART transfer data length in bit. */
 } flexio_uart_config_t;
 
 #if defined(__cplusplus)
@@ -88,7 +88,7 @@ extern "C" {
  * @return Execution status.
  */
 flexio_status_t FLEXIO_UART_Tx_HAL_Configure(
-    flexio_uart_tx_dev_t *devPtr, const flexio_uart_config_t *configPtr);
+	flexio_uart_tx_dev_t *devPtr, const flexio_uart_config_t *configPtr);
 
 /*!
  * @brief Gets the flag which indicates whether the transmit buffer is empty.
@@ -196,7 +196,7 @@ uint32_t FLEXIO_UART_Tx_HAL_GetTxBufferAddr(flexio_uart_tx_dev_t *devPtr);
  * @return Execution status.
  */
 flexio_status_t FLEXIO_UART_Rx_HAL_Configure(
-    flexio_uart_rx_dev_t *devPtr, const flexio_uart_config_t *configPtr);
+	flexio_uart_rx_dev_t *devPtr, const flexio_uart_config_t *configPtr);
 
 /*!
  * @brief Gets the flag which indicates whether the receive buffer is full.
@@ -304,4 +304,3 @@ uint32_t FLEXIO_UART_Rx_HAL_GetRxBufferAddr(flexio_uart_rx_dev_t *devPtr);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

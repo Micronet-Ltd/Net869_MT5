@@ -39,23 +39,23 @@
  */
 bool _psp_build_stack_frame
    (
-      /* [IN] the address of the task descriptor */
-      TD_STRUCT_PTR    td_ptr,
+	  /* [IN] the address of the task descriptor */
+	  TD_STRUCT_PTR    td_ptr,
 
-      /* [IN] the address of the stack memory block */
-      void            *stack_ptr,
+	  /* [IN] the address of the stack memory block */
+	  void            *stack_ptr,
 
-      /* [IN] the size of the stack */
-      _mem_size        stack_size,
+	  /* [IN] the size of the stack */
+	  _mem_size        stack_size,
 
-      /* [IN] the task's template */
-      TASK_TEMPLATE_STRUCT_PTR template_ptr,
+	  /* [IN] the task's template */
+	  TASK_TEMPLATE_STRUCT_PTR template_ptr,
 
-      /* [IN] the status register to use in creating the task */
-      _mqx_uint        status_register,
+	  /* [IN] the status register to use in creating the task */
+	  _mqx_uint        status_register,
 
-      /* [IN] the task creation parameter */
-      uint32_t          create_parameter
+	  /* [IN] the task creation parameter */
+	  uint32_t          create_parameter
    )
 {
    unsigned char *stack_base_ptr;
@@ -87,15 +87,15 @@ bool _psp_build_stack_frame
 #endif
 
 #if MQXCFG_ENABLE_FP
-    if (td_ptr->FLAGS & MQX_FLOATING_POINT_TASK) {
-      #if MQXCFG_STATIC_FP_CONTEXT
-        fp_ptr->TID = td_ptr->TASK_ID;    /* This field should never be overwitten */
-        td_ptr->FLOAT_CONTEXT_PTR = td_ptr->STACK_LIMIT;
-        td_ptr->STACK_LIMIT += sizeof(PSP_BLOCKED_FP_STRUCT);
-      #else
-        res = _psp_build_float_context(td_ptr);
-      #endif
-    }
+	if (td_ptr->FLAGS & MQX_FLOATING_POINT_TASK) {
+	  #if MQXCFG_STATIC_FP_CONTEXT
+		fp_ptr->TID = td_ptr->TASK_ID;    /* This field should never be overwitten */
+		td_ptr->FLOAT_CONTEXT_PTR = td_ptr->STACK_LIMIT;
+		td_ptr->STACK_LIMIT += sizeof(PSP_BLOCKED_FP_STRUCT);
+	  #else
+		res = _psp_build_float_context(td_ptr);
+	  #endif
+	}
 #endif /* MQXCFG_ENABLE_FP */
 
    return res;
@@ -112,36 +112,36 @@ bool _psp_build_stack_frame
  */
 bool _psp_build_float_context
    (
-      /* [IN] the address of the task descriptor */
-      TD_STRUCT_PTR    td_ptr
+	  /* [IN] the address of the task descriptor */
+	  TD_STRUCT_PTR    td_ptr
    )
 {
-    PSP_BLOCKED_FP_STRUCT_PTR fp_ptr;
-    KERNEL_DATA_STRUCT_PTR   kernel_data;
+	PSP_BLOCKED_FP_STRUCT_PTR fp_ptr;
+	KERNEL_DATA_STRUCT_PTR   kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    /* Allocate space for saving/restoring the DSP registers */
-    fp_ptr = (PSP_BLOCKED_FP_STRUCT_PTR)_mem_alloc_zero((_mem_size)sizeof(PSP_BLOCKED_FP_STRUCT));
+	/* Allocate space for saving/restoring the DSP registers */
+	fp_ptr = (PSP_BLOCKED_FP_STRUCT_PTR)_mem_alloc_zero((_mem_size)sizeof(PSP_BLOCKED_FP_STRUCT));
 
 #if MQX_CHECK_MEMORY_ALLOCATION_ERRORS
-    if (!fp_ptr) {
-        /* Couldn't allocate memory for the DSP register context */
-        _task_set_error_td_internal(td_ptr, MQX_OUT_OF_MEMORY);
-        return FALSE;
-    }
+	if (!fp_ptr) {
+		/* Couldn't allocate memory for the DSP register context */
+		_task_set_error_td_internal(td_ptr, MQX_OUT_OF_MEMORY);
+		return FALSE;
+	}
 #endif
 
-    _mem_set_type(fp_ptr, MEM_TYPE_FP_CONTEXT);
-    _mem_transfer_td_internal(fp_ptr, kernel_data->ACTIVE_PTR, td_ptr);
+	_mem_set_type(fp_ptr, MEM_TYPE_FP_CONTEXT);
+	_mem_transfer_td_internal(fp_ptr, kernel_data->ACTIVE_PTR, td_ptr);
 
 
-    /* This field should never be overwitten */
-    fp_ptr->TID = td_ptr->TASK_ID;
+	/* This field should never be overwitten */
+	fp_ptr->TID = td_ptr->TASK_ID;
 
-    td_ptr->FLOAT_CONTEXT_PTR = (void *)fp_ptr;
+	td_ptr->FLOAT_CONTEXT_PTR = (void *)fp_ptr;
 
-    return TRUE;
+	return TRUE;
 }
 /*! \endcond */
 

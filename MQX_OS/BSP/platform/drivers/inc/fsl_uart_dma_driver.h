@@ -58,14 +58,14 @@ extern UART_Type * const g_uartBase[UART_INSTANCE_COUNT];
  * @brief Runtime state structure for UART driver with DMA.
  */
 typedef struct UartDmaState {
-    volatile bool isTxBusy;     /*!< True if there is an active transmit. */
-    volatile bool isRxBusy;     /*!< True if there is an active receive. */
-    volatile bool isTxBlocking; /*!< True if transmit is blocking transaction. */
-    volatile bool isRxBlocking; /*!< True if receive is blocking transaction. */
-    semaphore_t txIrqSync;      /*!< Used to wait for ISR to complete its transmit. */
-    semaphore_t rxIrqSync;      /*!< Used to wait for ISR to complete its receive. */
-    dma_channel_t dmaUartTx;    /*!< DMA channel used for send. */
-    dma_channel_t dmaUartRx;   /*!< DMA channel used for receive. */
+	volatile bool isTxBusy;     /*!< True if there is an active transmit. */
+	volatile bool isRxBusy;     /*!< True if there is an active receive. */
+	volatile bool isTxBlocking; /*!< True if transmit is blocking transaction. */
+	volatile bool isRxBlocking; /*!< True if receive is blocking transaction. */
+	semaphore_t txIrqSync;      /*!< Used to wait for ISR to complete its transmit. */
+	semaphore_t rxIrqSync;      /*!< Used to wait for ISR to complete its receive. */
+	dma_channel_t dmaUartTx;    /*!< DMA channel used for send. */
+	dma_channel_t dmaUartRx;   /*!< DMA channel used for receive. */
 } uart_dma_state_t;
 
 /*!
@@ -77,11 +77,11 @@ typedef struct UartDmaState {
  * the number of bits per data word.
  */
 typedef struct UartDmaUserConfig {
-    uint32_t baudRate;            /*!< UART baud rate*/
-    uart_parity_mode_t parityMode;      /*!< parity mode, disabled (default), even, odd */
-    uart_stop_bit_count_t stopBitCount; /*!< number of stop bits, 1 stop bit (default) or 2 stop bits */
-    uart_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in
-                                                    a word (up to 10-bits in some UART instances) */
+	uint32_t baudRate;            /*!< UART baud rate*/
+	uart_parity_mode_t parityMode;      /*!< parity mode, disabled (default), even, odd */
+	uart_stop_bit_count_t stopBitCount; /*!< number of stop bits, 1 stop bit (default) or 2 stop bits */
+	uart_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in
+													a word (up to 10-bits in some UART instances) */
 } uart_dma_user_config_t;
 
 /*******************************************************************************
@@ -108,13 +108,13 @@ extern "C" {
  * uart_user_config_t parameters and how to call the UART_DRV_DmaInit function by passing
  * in these parameters:
    @code
-    uart_user_config_t uartConfig;
-    uartConfig.baudRate = 9600;
-    uartConfig.bitCountPerChar = kUart8BitsPerChar;
-    uartConfig.parityMode = kUartParityDisabled;
-    uartConfig.stopBitCount = kUartOneStopBit;
-    uart_dma_state_t uartDmaState;
-    UART_DRV_DmaInit(instance, &uartDmaState, &uartConfig);
+	uart_user_config_t uartConfig;
+	uartConfig.baudRate = 9600;
+	uartConfig.bitCountPerChar = kUart8BitsPerChar;
+	uartConfig.parityMode = kUartParityDisabled;
+	uartConfig.stopBitCount = kUartOneStopBit;
+	uart_dma_state_t uartDmaState;
+	UART_DRV_DmaInit(instance, &uartDmaState, &uartConfig);
    @endcode
  *
  * @param instance The UART instance number.
@@ -128,7 +128,7 @@ extern "C" {
  * @return An error code or kStatus_UART_Success.
  */
 uart_status_t UART_DRV_DmaInit(uint32_t instance, uart_dma_state_t * uartDmaStatePtr,
-                               const uart_dma_user_config_t * uartUserConfig);
+							   const uart_dma_user_config_t * uartUserConfig);
 /*!
  * @brief Shuts down the UART.
  *
@@ -149,9 +149,9 @@ uart_status_t UART_DRV_DmaDeinit(uint32_t instance);
  * @return An error code or kStatus_UART_Success.
  */
 uart_status_t UART_DRV_DmaSendDataBlocking(uint32_t instance,
-                                           const uint8_t * txBuff,
-                                           uint32_t txSize,
-                                           uint32_t timeout);
+										   const uint8_t * txBuff,
+										   uint32_t txSize,
+										   uint32_t timeout);
 
 /*!
  * @brief Sends (transmits) data through the UART-DMA module using a non-blocking method.
@@ -162,8 +162,8 @@ uart_status_t UART_DRV_DmaSendDataBlocking(uint32_t instance,
  * @return An error code or kStatus_UART_Success.
  */
 uart_status_t UART_DRV_DmaSendData(uint32_t instance,
-                                   const uint8_t * txBuff,
-                                   uint32_t txSize);
+								   const uint8_t * txBuff,
+								   uint32_t txSize);
 /*!
  * @brief Returns whether the previous UART-DMA transmit has finished.
  *
@@ -197,9 +197,9 @@ uart_status_t UART_DRV_DmaAbortSendingData(uint32_t instance);
  * @return An error code or kStatus_UART_Success.
  */
 uart_status_t UART_DRV_DmaReceiveDataBlocking(uint32_t instance,
-                                              uint8_t * rxBuff,
-                                              uint32_t rxSize,
-                                              uint32_t timeout);
+											  uint8_t * rxBuff,
+											  uint32_t rxSize,
+											  uint32_t timeout);
 /*!
  * @brief Gets (receives) data from the UART-DMA module using a non-blocking method.
  *
@@ -209,8 +209,8 @@ uart_status_t UART_DRV_DmaReceiveDataBlocking(uint32_t instance,
  * @return An error code or kStatus_UART_Success.
  */
 uart_status_t UART_DRV_DmaReceiveData(uint32_t instance,
-                                      uint8_t * rxBuff,
-                                      uint32_t rxSize);
+									  uint8_t * rxBuff,
+									  uint32_t rxSize);
 
 /*!
  * @brief Returns whether the previous UART-DMA receive is complete.
@@ -248,4 +248,3 @@ uart_status_t UART_DRV_DmaAbortReceivingData(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

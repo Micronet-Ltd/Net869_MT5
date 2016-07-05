@@ -7,7 +7,7 @@
 * Use of this software is governed by the Freescale License
 * distributed with this Material.
 * See the LICENSE file distributed for more details.
-* 
+*
 *
 *******************************************************************************/
 
@@ -42,34 +42,34 @@ extern const IRQn_Type g_encIndexIrqId[ENC_INSTANCE_COUNT];
  * @internal gui name="ENC configuration" id="encCfg"
  */
 typedef struct EncUserConfig {
-    uint32_t posCntInitValue;           /*!< Value to put in Initialization Register. @internal gui name="Initialization register" id="InitReg" */
-    uint32_t posCmpValue;               /*!< Value to put in Position Compare Register. @internal gui name="Position compare register" id="PosCompReg" */
-    uint32_t moduloValue;               /*!< Value to put in Modulus Register. @internal gui name="Modulus register" id="ModReg" */
-    uint16_t watchdogTimeout;           /*!< Value to put in Watchdog Timeout Register. @internal gui name="Watchdog time-out register" id="WdogTimetReg" */
-    uint8_t filterCount;                /*!< Value represents the number of consecutive samples that must agree prior to the input filter accepting an input transition. @internal gui name="Filter sample count" id="FilterCount" */
-    uint8_t filterPeriod;               /*!< Value represents the sampling period (in IPBus clock cycles) of the decoder input signals. @internal gui name="Filter sample period" id="FilterPeriod" */
-    enc_operation_mode_t operationMode; /*!< Operation mode: Normal mode, modulo counting mode or bypass (signal phase count) mode. @internal gui name="Operation mode" id="OpMode" */
-    bool reverseCounting;               /*!< Counting direction: Normal (false) or reverse (true) counting direction. @internal gui name="Reverse counting" id="ReverseCnt" */
-    bool indexInputNegativeEdge;        /*!< Type of transition edge of INDEX input signal: positive (false) or negative (true). @internal gui name="INDEX input signal" id="IdxNegEdge" */
-    bool homeInputNegativeEdge;         /*!< Type of transition edge of HOME input signal: positive (false) or negative (true). @internal gui name="HOME input signal" id="HomeNegEdge" */
-    bool indexPulsePosInit;             /*!< To use HOME (false) or INDEX (true) input to initialize position counter to value in Initialization Register. @internal gui name="Position counter init. type" id="IdxPulsePosInit" */
-    bool triggerUpdateHoldRegEnable;    /*!< Enable/disable updating hold registers on TRIGGER input. @internal gui name="Update hold registers" id="UpdateHoldReg" */
-    bool triggerClearPosRegEnable;      /*!< Enable/disable clear of position registers on TRIGGER input. @internal gui name="Clear position registers" id="ClearPosReg" */
-    bool moduloRevolutionCounting;      /*!< Type of revolution counter - index pulse counting (on false) or modulo counting (on true). @internal gui name="Revolution counter" id="TypeRevCnt" */
-    bool outputControlOnReading;        /*!< Used to control the behaviour of the POSMATCH output signal. True - output control on reading position register, false - OC on match position register. @internal gui name="POSMATCH output signal" id="PosMatchOut" */
+	uint32_t posCntInitValue;           /*!< Value to put in Initialization Register. @internal gui name="Initialization register" id="InitReg" */
+	uint32_t posCmpValue;               /*!< Value to put in Position Compare Register. @internal gui name="Position compare register" id="PosCompReg" */
+	uint32_t moduloValue;               /*!< Value to put in Modulus Register. @internal gui name="Modulus register" id="ModReg" */
+	uint16_t watchdogTimeout;           /*!< Value to put in Watchdog Timeout Register. @internal gui name="Watchdog time-out register" id="WdogTimetReg" */
+	uint8_t filterCount;                /*!< Value represents the number of consecutive samples that must agree prior to the input filter accepting an input transition. @internal gui name="Filter sample count" id="FilterCount" */
+	uint8_t filterPeriod;               /*!< Value represents the sampling period (in IPBus clock cycles) of the decoder input signals. @internal gui name="Filter sample period" id="FilterPeriod" */
+	enc_operation_mode_t operationMode; /*!< Operation mode: Normal mode, modulo counting mode or bypass (signal phase count) mode. @internal gui name="Operation mode" id="OpMode" */
+	bool reverseCounting;               /*!< Counting direction: Normal (false) or reverse (true) counting direction. @internal gui name="Reverse counting" id="ReverseCnt" */
+	bool indexInputNegativeEdge;        /*!< Type of transition edge of INDEX input signal: positive (false) or negative (true). @internal gui name="INDEX input signal" id="IdxNegEdge" */
+	bool homeInputNegativeEdge;         /*!< Type of transition edge of HOME input signal: positive (false) or negative (true). @internal gui name="HOME input signal" id="HomeNegEdge" */
+	bool indexPulsePosInit;             /*!< To use HOME (false) or INDEX (true) input to initialize position counter to value in Initialization Register. @internal gui name="Position counter init. type" id="IdxPulsePosInit" */
+	bool triggerUpdateHoldRegEnable;    /*!< Enable/disable updating hold registers on TRIGGER input. @internal gui name="Update hold registers" id="UpdateHoldReg" */
+	bool triggerClearPosRegEnable;      /*!< Enable/disable clear of position registers on TRIGGER input. @internal gui name="Clear position registers" id="ClearPosReg" */
+	bool moduloRevolutionCounting;      /*!< Type of revolution counter - index pulse counting (on false) or modulo counting (on true). @internal gui name="Revolution counter" id="TypeRevCnt" */
+	bool outputControlOnReading;        /*!< Used to control the behaviour of the POSMATCH output signal. True - output control on reading position register, false - OC on match position register. @internal gui name="POSMATCH output signal" id="PosMatchOut" */
 } enc_user_config_t;
 
 /*!
  * @brief User configuration structure for ENC driver - ENC test module configuration.
  *
- * Use an instance of this structure with the ENC_DRV_TestInit()function. 
+ * Use an instance of this structure with the ENC_DRV_TestInit()function.
  * This enables configuration of the Test module of the ENC peripheral
  * with a single function call.
  */
 typedef struct EncTestConfig {
-    uint8_t testCount;                  /*!< Test count - holds the number of quadrature advances to generate. */       
-    uint8_t testPeriod;                 /*!< Test period - holds the period of quadrature phase in IPBus clock cycles. */
-    bool testNegativeSignalEnable;      /*!< Test signal type, positive (false) or negative (true). */
+	uint8_t testCount;                  /*!< Test count - holds the number of quadrature advances to generate. */
+	uint8_t testPeriod;                 /*!< Test period - holds the period of quadrature phase in IPBus clock cycles. */
+	bool testNegativeSignalEnable;      /*!< Test signal type, positive (false) or negative (true). */
 } enc_test_config_t;
 
 /*!
@@ -80,23 +80,23 @@ typedef struct EncTestConfig {
  * Position, PositionDifference, Revolution Counter.
  */
 typedef struct EncCounter {
-    int32_t position;                  /*!< Position Counter/Hold Register. */
-    int16_t posDiff;                   /*!< Position Difference Counter/Hold Register. */
-    int16_t revolution;                /*!< Revolution Counter/Hold Register. */
+	int32_t position;                  /*!< Position Counter/Hold Register. */
+	int16_t posDiff;                   /*!< Position Difference Counter/Hold Register. */
+	int16_t revolution;                /*!< Revolution Counter/Hold Register. */
 } enc_counter_t;
 
 /*!
  * @brief Input monitor structure for ENC driver.
  *
- * Use an instance of this structure with the ENC_DRV_ReadInputMonitorRegister(). 
+ * Use an instance of this structure with the ENC_DRV_ReadInputMonitorRegister().
  * This reads Input Monitor register that contains the values of the raw or filtered
  * PHASEA, PHASEB, INDEX and HOME input signals.
  */
 typedef struct EncInputMonitor {
-    bool phaseA;                        /*!< PHASEA input. */
-    bool phaseB;                        /*!< PHASEB input. */
-    bool index;                         /*!< INDEX input. */
-    bool home;                          /*!< HOME input. */
+	bool phaseA;                        /*!< PHASEA input. */
+	bool phaseB;                        /*!< PHASEB input. */
+	bool index;                         /*!< INDEX input. */
+	bool home;                          /*!< HOME input. */
 } enc_input_monitor_t;
 
 /*******************************************************************************
@@ -111,7 +111,7 @@ extern "C" {
  * @name Configuration
  * @{
  */
-  
+
 /*!
  * @brief Fills the initial user configuration for the ENC module
  * without the interrupts enablement.
@@ -121,28 +121,28 @@ extern "C" {
  * a simple Quadrature Encoder. The settings are:
  *
   @code
-    encUserConfig.operationMode = kEncNormalMode;
-    encUserConfig.reverseCounting = false;
-    encUserConfig.indexInputNegativeEdge = false;
-    encUserConfig.homeInputNegativeEdge = false;
-    encUserConfig.indexPulsePosInit = true;
-    encUserConfig.posCntInitValue = 0U;
-    encUserConfig.posCmpValue = 0xFFFFU;
-    encUserConfig.moduloValue = 0U;
-    encUserConfig.triggerUpdateHoldRegEnable = false;
-    encUserConfig.triggerClearPosRegEnable = false;
-    encUserConfig.moduloRevolutionCounting = false;
-    encUserConfig.outputControlOnReading = false;
-    encUserConfig.watchdogTimeout = 0U;
-    encUserConfig.filterCount = 0U;
-    encUserConfig.filterPeriod = 0U;
+	encUserConfig.operationMode = kEncNormalMode;
+	encUserConfig.reverseCounting = false;
+	encUserConfig.indexInputNegativeEdge = false;
+	encUserConfig.homeInputNegativeEdge = false;
+	encUserConfig.indexPulsePosInit = true;
+	encUserConfig.posCntInitValue = 0U;
+	encUserConfig.posCmpValue = 0xFFFFU;
+	encUserConfig.moduloValue = 0U;
+	encUserConfig.triggerUpdateHoldRegEnable = false;
+	encUserConfig.triggerClearPosRegEnable = false;
+	encUserConfig.moduloRevolutionCounting = false;
+	encUserConfig.outputControlOnReading = false;
+	encUserConfig.watchdogTimeout = 0U;
+	encUserConfig.filterCount = 0U;
+	encUserConfig.filterPeriod = 0U;
   @endcode
  *
  * @param userConfigPtr Pointer to the user configuration structure.
  * @return              Execution status.
  */
 enc_status_t ENC_DRV_StructInitUserConfigNormal(enc_user_config_t * userConfigPtr);
-  
+
 /*!
  * @brief Initializes an ENC instance for operation.
  *
@@ -153,37 +153,37 @@ enc_status_t ENC_DRV_StructInitUserConfigNormal(enc_user_config_t * userConfigPt
  * enc_user_config_t parameters and how to call the ENC_DRV_Init function by passing
  * in these parameters:
    @code
-    enc_user_config_t encUserConfig;
-    encUserConfig.operationMode = kEncNormalMode;
-    encUserConfig.reverseCounting = false;
-    encUserConfig.indexInputNegativeEdge = false;
-    encUserConfig.homeInputNegativeEdge = false;
-    encUserConfig.indexPulsePosInit = true;
-    encUserConfig.posCntInitValue = 0U;
-    encUserConfig.posCmpValue = 0xFFFFU;
-    encUserConfig.moduloValue = 0U;
-    encUserConfig.triggerUpdateHoldRegEnable = false;
-    encUserConfig.triggerClearPosRegEnable = false;
-    encUserConfig.moduloRevolutionCounting = false;
-    encUserConfig.outputControlOnReading = false;
-    encUserConfig.watchdogTimeout = 0U;
-    encUserConfig.filterCount = 0U;
-    encUserConfig.filterPeriod = 0U;
-    ENC_DRV_Init(&encUserConfig);
+	enc_user_config_t encUserConfig;
+	encUserConfig.operationMode = kEncNormalMode;
+	encUserConfig.reverseCounting = false;
+	encUserConfig.indexInputNegativeEdge = false;
+	encUserConfig.homeInputNegativeEdge = false;
+	encUserConfig.indexPulsePosInit = true;
+	encUserConfig.posCntInitValue = 0U;
+	encUserConfig.posCmpValue = 0xFFFFU;
+	encUserConfig.moduloValue = 0U;
+	encUserConfig.triggerUpdateHoldRegEnable = false;
+	encUserConfig.triggerClearPosRegEnable = false;
+	encUserConfig.moduloRevolutionCounting = false;
+	encUserConfig.outputControlOnReading = false;
+	encUserConfig.watchdogTimeout = 0U;
+	encUserConfig.filterCount = 0U;
+	encUserConfig.filterPeriod = 0U;
+	ENC_DRV_Init(&encUserConfig);
    @endcode
  *
  * @param instance      ENC instance ID.
  * @param userConfigPtr The user configuration structure of type enc_user_config_t. The user
- *  is responsible to fill out the members of this structure and to pass the pointer 
+ *  is responsible to fill out the members of this structure and to pass the pointer
  *  of this structure into this function.
  * @return              Execution status.
  */
-enc_status_t ENC_DRV_Init(uint32_t instance, const enc_user_config_t *userConfigPtr);  
-  
+enc_status_t ENC_DRV_Init(uint32_t instance, const enc_user_config_t *userConfigPtr);
+
 /*!
  * @brief De-initializes the ENC peripheral.
  *
- * This function shuts down the ENC clock to reduce power consumption. 
+ * This function shuts down the ENC clock to reduce power consumption.
  *
  * @param instance      ENC instance ID.
  */
@@ -194,16 +194,16 @@ void ENC_DRV_Deinit(uint32_t instance);
  *
  * This function initializes the run-time state structure to enable the test module
  * and sets the test period and test count values.
- * This example shows how to set up the enc_test_config_t parameters and 
+ * This example shows how to set up the enc_test_config_t parameters and
  * how to call the ENC_DRV_TestInit function by passing in these parameters:
    @code
-    enc_test_config_t encTestConfig;
-    encTestConfig.testNegativeSignalEnable = false;
-    encTestConfig.testCount = 100;
-    encTestConfig.testPeriod = 10;
-    ENC_DRV_TestInit(&encTestConfig);
+	enc_test_config_t encTestConfig;
+	encTestConfig.testNegativeSignalEnable = false;
+	encTestConfig.testCount = 100;
+	encTestConfig.testPeriod = 10;
+	ENC_DRV_TestInit(&encTestConfig);
    @endcode
- * 
+ *
  * @param instance      ENC instance ID.
  * @param userConfigPtr The user configuration structure of type enc_test_config_t.
  * @return              Execution status.
@@ -243,7 +243,7 @@ enc_status_t ENC_DRV_SetIntMode
 bool ENC_DRV_GetIntMode(uint32_t instance, enc_int_source_t intSrc);
 
 /*!
- * @brief Gets the interrupt status flag of the selected interrupt source. 
+ * @brief Gets the interrupt status flag of the selected interrupt source.
  *
  * @param instance      ENC instance ID.
  * @param flag          Selected type of status flag.
@@ -252,13 +252,13 @@ bool ENC_DRV_GetIntMode(uint32_t instance, enc_int_source_t intSrc);
 bool ENC_DRV_GetStatusFlag(uint32_t instance, enc_status_flag_t flag);
 
 /*!
- * @brief Clears the status flag of the selected status source. 
+ * @brief Clears the status flag of the selected status source.
  *
  * @param instance      ENC instance ID.
  * @param flag          Selected type of status flag.
  */
 void ENC_DRV_ClearStatusFlag(uint32_t instance, enc_status_flag_t flag);
- 
+
 /*!
  * @brief Reads the actual values of the ENC counter registers.
  *

@@ -58,23 +58,22 @@ extern void DSPI_DRV_SlaveIRQHandler(uint32_t instance);
  */
 void DSPI_DRV_IRQHandler(uint32_t instance)
 {
-    assert(instance < SPI_INSTANCE_COUNT);
-    SPI_Type *base = g_dspiBase[instance];
+	assert(instance < SPI_INSTANCE_COUNT);
+	SPI_Type *base = g_dspiBase[instance];
 
-    if (DSPI_HAL_IsMaster(base))
-    {
-        /* Master mode.*/
-        DSPI_DRV_MasterIRQHandler(instance);
-    }
-    else
-    {
-        /* Slave mode.*/
-        DSPI_DRV_SlaveIRQHandler(instance);
-    }
+	if (DSPI_HAL_IsMaster(base))
+	{
+		/* Master mode.*/
+		DSPI_DRV_MasterIRQHandler(instance);
+	}
+	else
+	{
+		/* Slave mode.*/
+		DSPI_DRV_SlaveIRQHandler(instance);
+	}
 }
 
 #endif /* FSL_FEATURE_SOC_DSPI_COUNT */
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

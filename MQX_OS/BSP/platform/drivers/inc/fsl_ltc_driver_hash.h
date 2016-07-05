@@ -42,37 +42,37 @@
 
 /*! Internal states of the HASH creation process */
 typedef enum _ltc_drv_hash_algo_state {
-    kLtcHashInit = 1u,        /*!< Key in the HASH context is the input key. */
-    kLtcHashUpdate,           /*!< HASH context has algorithm specific context: MAC, K2 and K3 (XCBC-MAC) or MAC and L (CMAC). Key in the HASH context is the derived key. */
+	kLtcHashInit = 1u,        /*!< Key in the HASH context is the input key. */
+	kLtcHashUpdate,           /*!< HASH context has algorithm specific context: MAC, K2 and K3 (XCBC-MAC) or MAC and L (CMAC). Key in the HASH context is the derived key. */
 } ltc_drv_hash_algo_state;
 
 /*! Supported cryptographic block cipher functions for HASH creation */
 typedef enum _ltc_drv_hash_algo {
-    kLtcXcbcMac = kLTCMode_XCBC_MAC,  /*!< XCBC-MAC (AES engine) */
-    kLtcCMAC = kLTCMode_CMAC,         /*!< CMAC (AES engine) */
+	kLtcXcbcMac = kLTCMode_XCBC_MAC,  /*!< XCBC-MAC (AES engine) */
+	kLtcCMAC = kLTCMode_CMAC,         /*!< CMAC (AES engine) */
 } ltc_drv_hash_algo;
 
 /*! 16-byte block represented as byte array or four 32-bit words */
 typedef union _ltc_drv_hash_block {
-    uint8_t  b[16]; /*!< byte array */
-    uint32_t w[4];  /*!< array of 32-bit words */
+	uint8_t  b[16]; /*!< byte array */
+	uint32_t w[4];  /*!< array of 32-bit words */
 } ltc_drv_hash_block;
 
 /*! Definitions of indexes into hash context array */
-typedef enum _ltc_drv_hash_ctx_indexes {    
-    kLtcHashCtxKeyStartIdx = 12, /*!< context word array index where key is stored */
-    kLtcHashCtxKeySize = 20,  /*!< context word array index where key size is stored */
-    kLtcHashCtxNumWords = 21, /*!< number of context array 32-bit words  */
+typedef enum _ltc_drv_hash_ctx_indexes {
+	kLtcHashCtxKeyStartIdx = 12, /*!< context word array index where key is stored */
+	kLtcHashCtxKeySize = 20,  /*!< context word array index where key size is stored */
+	kLtcHashCtxNumWords = 21, /*!< number of context array 32-bit words  */
 } ltc_drv_hash_ctx_indexes;
 
 /*!
  * @brief Data structure with hash context.
- * 
+ *
  * XCBC-MAC needs to store 48 bytes of context (MAC, K2 and K3) between message chunks processing. @n
  * CMAC needs less (32 bytes) of context (MAC and L) between message chunks processing. @n
  * @n
  * In both modes, also the derived AES key must be restored from the context. @n
- * @n 
+ * @n
  * If state of the hash software process is kLtcCmacInit, the context is defined as follows @n
  * word[20] = key_size = word[kLtcCmacCtxKeySize] @n
  * word[12-19] = init key @n
@@ -91,21 +91,21 @@ typedef enum _ltc_drv_hash_ctx_indexes {
  * word[20] = key_size = word[kLtcCmacCtxKeySize] @n
  * @n
  * During hash updates we only process 16-byte blocks. If we have less data then keep them only in context.
- * The 'blk' memory buffer is flushed to LTC during hash finish.     
+ * The 'blk' memory buffer is flushed to LTC during hash finish.
  */
 typedef struct _ltc_drv_hash_ctx {
-    ltc_drv_hash_block blk; /*!< memory buffer. only full 16-byte blocks are written to LTC during hash updates */
-    uint32_t blksz;         /*!< number of valid bytes in memory buffer */
-    uint32_t instance;      /*!< LTC module instance number */
-    ltc_drv_hash_algo algo; /*!< selected algorithm from the set of supported algorithms in ltc_drv_hash_algo */
-    ltc_drv_hash_algo_state state; /*!< finite machine state of the hash software process */
-    uint32_t word[kLtcHashCtxNumWords]; /*!< LTC module context that needs to be saved/restored between LTC jobs */
+	ltc_drv_hash_block blk; /*!< memory buffer. only full 16-byte blocks are written to LTC during hash updates */
+	uint32_t blksz;         /*!< number of valid bytes in memory buffer */
+	uint32_t instance;      /*!< LTC module instance number */
+	ltc_drv_hash_algo algo; /*!< selected algorithm from the set of supported algorithms in ltc_drv_hash_algo */
+	ltc_drv_hash_algo_state state; /*!< finite machine state of the hash software process */
+	uint32_t word[kLtcHashCtxNumWords]; /*!< LTC module context that needs to be saved/restored between LTC jobs */
 } ltc_drv_hash_ctx;
 
 /*******************************************************************************
  * API
  ******************************************************************************/
- 
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -128,10 +128,10 @@ extern "C" {
  * @return 0 on succes, or kFSLCryptErrInvalidKeyLength
  */
 ltc_status_t LTC_DRV_hash_init(uint32_t instance,
-                               ltc_drv_hash_ctx *ctx,
-                               ltc_drv_hash_algo algo,
-                               const uint8_t *key,
-                               uint32_t keySize);
+							   ltc_drv_hash_ctx *ctx,
+							   ltc_drv_hash_algo algo,
+							   const uint8_t *key,
+							   uint32_t keySize);
 
 /*!
  * @brief Add data to current HASH
@@ -145,8 +145,8 @@ ltc_status_t LTC_DRV_hash_init(uint32_t instance,
  * @return Status of the hash update operation
  */
 ltc_status_t LTC_DRV_hash_update(ltc_drv_hash_ctx *ctx,
-                     const uint8_t *input,
-                     uint32_t inputSize);
+					 const uint8_t *input,
+					 uint32_t inputSize);
 
 /*!
  * @brief Finalize hashing
@@ -159,8 +159,8 @@ ltc_status_t LTC_DRV_hash_update(ltc_drv_hash_ctx *ctx,
  * @return Status of the hash finish operation
  */
 ltc_status_t LTC_DRV_hash_finish(ltc_drv_hash_ctx *ctx,
-                                 uint8_t *output,
-                                 uint32_t *outputSize);
+								 uint8_t *output,
+								 uint32_t *outputSize);
 
 /*!
  * @brief Create HASH on given data
@@ -177,14 +177,14 @@ ltc_status_t LTC_DRV_hash_finish(ltc_drv_hash_ctx *ctx,
  * @param[out] outputSize Output param storing the size of the output hash in bytes
  * @return Status of the one call hash operation.
  */
-ltc_status_t LTC_DRV_hash(uint32_t instance, 
-                          ltc_drv_hash_algo algo,
-                          const uint8_t *input,
-                          uint32_t inputSize,
-                          const uint8_t *key,
-                          uint32_t keySize,
-                          uint8_t *output,
-                          uint32_t *outputSize);
+ltc_status_t LTC_DRV_hash(uint32_t instance,
+						  ltc_drv_hash_algo algo,
+						  const uint8_t *input,
+						  uint32_t inputSize,
+						  const uint8_t *key,
+						  uint32_t keySize,
+						  uint8_t *output,
+						  uint32_t *outputSize);
 
 #if defined(__cplusplus)
 }

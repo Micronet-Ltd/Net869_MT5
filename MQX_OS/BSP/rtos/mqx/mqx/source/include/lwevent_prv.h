@@ -46,9 +46,9 @@ extern "C" {
  * \cond DOXYGEN_PRIVATE
  */
 _mqx_uint _lwevent_create_internal(
-    LWEVENT_STRUCT_PTR event_ptr,
-    _mqx_uint flags,
-    bool user
+	LWEVENT_STRUCT_PTR event_ptr,
+	_mqx_uint flags,
+	bool user
 );
 /*! \endcond */
 
@@ -56,8 +56,8 @@ _mqx_uint _lwevent_create_internal(
  * \cond DOXYGEN_PRIVATE
  */
 _mqx_uint _lwevent_destroy_internal(
-    LWEVENT_STRUCT_PTR event_ptr,
-    bool user
+	LWEVENT_STRUCT_PTR event_ptr,
+	bool user
 );
 /*! \endcond */
 
@@ -65,11 +65,11 @@ _mqx_uint _lwevent_destroy_internal(
  * \cond DOXYGEN_PRIVATE
  */
 _mqx_uint _lwevent_wait_internal(
-    LWEVENT_STRUCT_PTR event_ptr,
-    _mqx_uint bit_mask,
-    bool all,
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    bool ticks_are_absolute
+	LWEVENT_STRUCT_PTR event_ptr,
+	_mqx_uint bit_mask,
+	bool all,
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	bool ticks_are_absolute
 );
 /*! \endcond */
 

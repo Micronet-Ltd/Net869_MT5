@@ -50,10 +50,10 @@
  */
 typedef struct PdbAdcPreTriggerConfig
 {
-    uint32_t adcPreTriggerIdx; /*!< Setting pre_trigger's index. @internal gui name="Pre-Trigger index value" id="adcPreTriggerIdx" range="0..7" */
-    bool preTriggerEnable; /*!< Enables the pre_trigger. @internal gui name="Pre-Trigger index" id="preTriggerEnable" */
-    bool preTriggerOutputEnable; /*!< Enables the pre_trigger output. @internal gui name="Pre-Trigger output" id="AdcTriggerOutput" */
-    bool preTriggerBackToBackEnable; /*!< Enables the back to back mode for ADC pre_trigger. @internal gui name="Back-To-Back mode" id="AdcBackToBackMode" */
+	uint32_t adcPreTriggerIdx; /*!< Setting pre_trigger's index. @internal gui name="Pre-Trigger index value" id="adcPreTriggerIdx" range="0..7" */
+	bool preTriggerEnable; /*!< Enables the pre_trigger. @internal gui name="Pre-Trigger index" id="preTriggerEnable" */
+	bool preTriggerOutputEnable; /*!< Enables the pre_trigger output. @internal gui name="Pre-Trigger output" id="AdcTriggerOutput" */
+	bool preTriggerBackToBackEnable; /*!< Enables the back to back mode for ADC pre_trigger. @internal gui name="Back-To-Back mode" id="AdcBackToBackMode" */
 } pdb_adc_pretrigger_config_t;
 
 #if FSL_FEATURE_PDB_HAS_DAC
@@ -63,8 +63,8 @@ typedef struct PdbAdcPreTriggerConfig
  */
 typedef struct PdbDacIntervalConfig
 {
-    bool intervalTriggerEnable; /*!< Enable the DAC interval trigger. @internal gui name="Interval trigger" id="intervalTriggerEnable" */
-    bool extTriggerInputEnable; /*!< Enable DAC external trigger input . @internal gui name="External trigger" id="DacExternalTrigger" */
+	bool intervalTriggerEnable; /*!< Enable the DAC interval trigger. @internal gui name="Interval trigger" id="intervalTriggerEnable" */
+	bool extTriggerInputEnable; /*!< Enable DAC external trigger input . @internal gui name="External trigger" id="DacExternalTrigger" */
 } pdb_dac_interval_config_t;
 #endif
 
@@ -82,7 +82,7 @@ extern "C" {
  * @brief Initializes the PDB counter and triggers input.
  *
  * This function initializes the PDB counter and triggers the input.
- * It resets PDB registers and enables the PDB clock. Therefore, it should be 
+ * It resets PDB registers and enables the PDB clock. Therefore, it should be
  * called before any other operation. After it is initialized, the PDB can
  * act as a triggered timer, which enables other features in PDB module.
  *
@@ -142,7 +142,7 @@ bool PDB_DRV_GetTimerIntFlag(uint32_t instance);
  * @param instance PDB instance ID.
  */
 void PDB_DRV_ClearTimerIntFlag(uint32_t instance);
-   
+
 /*!
  * @brief Executes the command of loading values.
  *
@@ -194,7 +194,7 @@ pdb_status_t PDB_DRV_ConfigAdcPreTrigger(uint32_t instance, uint32_t chn, const 
  * @param chn ADC channel.
  * @param preChnMask ADC pre_trigger channels mask.
  * @return Assertion of indicated flag.
- */    
+ */
 uint32_t PDB_DRV_GetAdcPreTriggerFlags(uint32_t instance, uint32_t chn, uint32_t preChnMask);
 
 /*!
@@ -205,7 +205,7 @@ uint32_t PDB_DRV_GetAdcPreTriggerFlags(uint32_t instance, uint32_t chn, uint32_t
  * @param instance PDB instance ID.
  * @param chn ADC channel.
  * @param preChnMask ADC pre_trigger channels mask.
- */    
+ */
 void PDB_DRV_ClearAdcPreTriggerFlags(uint32_t instance, uint32_t chn, uint32_t preChnMask);
 
 /*!
@@ -217,7 +217,7 @@ void PDB_DRV_ClearAdcPreTriggerFlags(uint32_t instance, uint32_t chn, uint32_t p
  * @param chn ADC channel.
  * @param preChnMask ADC pre_trigger channels mask.
  * @return Assertion of indicated flag.
- */  
+ */
 uint32_t PDB_DRV_GetAdcPreTriggerSeqErrFlags(uint32_t instance, uint32_t chn, uint32_t preChnMask);
 
 /*!
@@ -228,7 +228,7 @@ uint32_t PDB_DRV_GetAdcPreTriggerSeqErrFlags(uint32_t instance, uint32_t chn, ui
  * @param instance PDB instance ID.
  * @param chn ADC channel.
  * @param preChnMask ADC pre_trigger channels mask.
- */ 
+ */
 void PDB_DRV_ClearAdcPreTriggerSeqErrFlags(uint32_t instance, uint32_t chn, uint32_t preChnMask);
 
 /*!
@@ -314,4 +314,3 @@ void PDB_DRV_SetCmpPulseOutDelayForLow(uint32_t instance, uint32_t pulseChn, uin
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

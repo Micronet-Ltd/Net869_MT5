@@ -51,29 +51,29 @@
  */
 typedef enum _pdb_status
 {
-    kStatus_PDB_Success = 0U, /*!< Success. */
-    kStatus_PDB_InvalidArgument = 1U, /*!< Invalid argument existed. */
-    kStatus_PDB_Failed = 2U /*!< Execution failed. */
+	kStatus_PDB_Success = 0U, /*!< Success. */
+	kStatus_PDB_InvalidArgument = 1U, /*!< Invalid argument existed. */
+	kStatus_PDB_Failed = 2U /*!< Execution failed. */
 } pdb_status_t;
 
 /*!
  * @brief Defines the type of value load mode for the PDB module.
  *
- * Some timing related registers, such as the MOD, IDLY, CHnDLYm, INTx and POyDLY, 
+ * Some timing related registers, such as the MOD, IDLY, CHnDLYm, INTx and POyDLY,
  * buffer the setting values. Only the load operation is triggered.
  * The setting value is loaded from a buffer and takes effect. There are
  * four loading modes to fit different applications.
  */
 typedef enum _pdb_load_value_mode
 {
-    kPdbLoadValueImmediately = 0U, 
-        /*!<  Loaded immediately after load operation. @internal gui name="Immediately" */
-    kPdbLoadValueAtModuloCounter = 1U, 
-        /*!< Loaded when counter hits the modulo after load operation. @internal gui name="Modulo counter" */
-    kPdbLoadValueAtNextTrigger = 2U,
-        /*!< Loaded when detecting an input trigger after load operation. @internal gui name="Next trigger" */
-    kPdbLoadValueAtModuloCounterOrNextTrigger = 3U 
-        /*!< Loaded when counter hits the modulo or detecting an input trigger after load operation. @internal gui name="Modulo counter/Next trigger" */
+	kPdbLoadValueImmediately = 0U,
+		/*!<  Loaded immediately after load operation. @internal gui name="Immediately" */
+	kPdbLoadValueAtModuloCounter = 1U,
+		/*!< Loaded when counter hits the modulo after load operation. @internal gui name="Modulo counter" */
+	kPdbLoadValueAtNextTrigger = 2U,
+		/*!< Loaded when detecting an input trigger after load operation. @internal gui name="Next trigger" */
+	kPdbLoadValueAtModuloCounterOrNextTrigger = 3U
+		/*!< Loaded when counter hits the modulo or detecting an input trigger after load operation. @internal gui name="Modulo counter/Next trigger" */
 } pdb_load_value_mode_t;
 
 /*!
@@ -81,14 +81,14 @@ typedef enum _pdb_load_value_mode
  */
 typedef enum _pdb_clk_prescaler_div
 {
-    kPdbClkPreDivBy1   = 0U, /*!< Counting divided by multiplication factor selected by MULT. @internal gui name="1" */
-    kPdbClkPreDivBy2   = 1U, /*!< Counting divided by multiplication factor selected by 2 times of MULT. @internal gui name="2" */
-    kPdbClkPreDivBy4   = 2U, /*!< Counting divided by multiplication factor selected by 4 times of MULT. @internal gui name="4" */
-    kPdbClkPreDivBy8   = 3U, /*!< Counting divided by multiplication factor selected by 8 times of MULT. @internal gui name="8" */
-    kPdbClkPreDivBy16  = 4U, /*!< Counting divided by multiplication factor selected by 16 times of MULT. @internal gui name="16" */
-    kPdbClkPreDivBy32  = 5U, /*!< Counting divided by multiplication factor selected by 32 times of MULT. @internal gui name="32" */
-    kPdbClkPreDivBy64  = 6U, /*!< Counting divided by multiplication factor selected by 64 times of MULT. @internal gui name="64" */
-    kPdbClkPreDivBy128 = 7U, /*!< Counting divided by multiplication factor selected by 128 times of MULT. @internal gui name="128" */
+	kPdbClkPreDivBy1   = 0U, /*!< Counting divided by multiplication factor selected by MULT. @internal gui name="1" */
+	kPdbClkPreDivBy2   = 1U, /*!< Counting divided by multiplication factor selected by 2 times of MULT. @internal gui name="2" */
+	kPdbClkPreDivBy4   = 2U, /*!< Counting divided by multiplication factor selected by 4 times of MULT. @internal gui name="4" */
+	kPdbClkPreDivBy8   = 3U, /*!< Counting divided by multiplication factor selected by 8 times of MULT. @internal gui name="8" */
+	kPdbClkPreDivBy16  = 4U, /*!< Counting divided by multiplication factor selected by 16 times of MULT. @internal gui name="16" */
+	kPdbClkPreDivBy32  = 5U, /*!< Counting divided by multiplication factor selected by 32 times of MULT. @internal gui name="32" */
+	kPdbClkPreDivBy64  = 6U, /*!< Counting divided by multiplication factor selected by 64 times of MULT. @internal gui name="64" */
+	kPdbClkPreDivBy128 = 7U, /*!< Counting divided by multiplication factor selected by 128 times of MULT. @internal gui name="128" */
 } pdb_clk_prescaler_div_t;
 
 /*!
@@ -99,22 +99,22 @@ typedef enum _pdb_clk_prescaler_div
  */
 typedef enum _pdb_trigger_src
 {
-    kPdbTrigger0  = 0U,  /*!< Select trigger-In 0. @internal gui name="External trigger" */
-    kPdbTrigger1  = 1U,  /*!< Select trigger-In 1. @internal gui name="Trigger 1" */
-    kPdbTrigger2  = 2U,  /*!< Select trigger-In 2. @internal gui name="Trigger 2" */
-    kPdbTrigger3  = 3U,  /*!< Select trigger-In 3. @internal gui name="Trigger 3" */
-    kPdbTrigger4  = 4U,  /*!< Select trigger-In 4. @internal gui name="Trigger 4" */
-    kPdbTrigger5  = 5U,  /*!< Select trigger-In 5. @internal gui name="Trigger 5" */
-    kPdbTrigger6  = 6U,  /*!< Select trigger-In 6. @internal gui name="Trigger 6" */
-    kPdbTrigger7  = 7U,  /*!< Select trigger-In 7. @internal gui name="Trigger 7" */
-    kPdbTrigger8  = 8U,  /*!< Select trigger-In 8. @internal gui name="Trigger 8" */
-    kPdbTrigger9  = 9U,  /*!< Select trigger-In 8. @internal gui name="Trigger 9" */
-    kPdbTrigger10 = 10U, /*!< Select trigger-In 10. @internal gui name="Trigger 10" */
-    kPdbTrigger11 = 11U, /*!< Select trigger-In 11. @internal gui name="Trigger 11" */
-    kPdbTrigger12 = 12U, /*!< Select trigger-In 12. @internal gui name="Trigger 12" */
-    kPdbTrigger13 = 13U, /*!< Select trigger-In 13. @internal gui name="Trigger 13" */
-    kPdbTrigger14 = 14U, /*!< Select trigger-In 14. @internal gui name="Trigger 14" */
-    kPdbSoftTrigger = 15U, /*!< Select software trigger. @internal gui name="Software trigger" */
+	kPdbTrigger0  = 0U,  /*!< Select trigger-In 0. @internal gui name="External trigger" */
+	kPdbTrigger1  = 1U,  /*!< Select trigger-In 1. @internal gui name="Trigger 1" */
+	kPdbTrigger2  = 2U,  /*!< Select trigger-In 2. @internal gui name="Trigger 2" */
+	kPdbTrigger3  = 3U,  /*!< Select trigger-In 3. @internal gui name="Trigger 3" */
+	kPdbTrigger4  = 4U,  /*!< Select trigger-In 4. @internal gui name="Trigger 4" */
+	kPdbTrigger5  = 5U,  /*!< Select trigger-In 5. @internal gui name="Trigger 5" */
+	kPdbTrigger6  = 6U,  /*!< Select trigger-In 6. @internal gui name="Trigger 6" */
+	kPdbTrigger7  = 7U,  /*!< Select trigger-In 7. @internal gui name="Trigger 7" */
+	kPdbTrigger8  = 8U,  /*!< Select trigger-In 8. @internal gui name="Trigger 8" */
+	kPdbTrigger9  = 9U,  /*!< Select trigger-In 8. @internal gui name="Trigger 9" */
+	kPdbTrigger10 = 10U, /*!< Select trigger-In 10. @internal gui name="Trigger 10" */
+	kPdbTrigger11 = 11U, /*!< Select trigger-In 11. @internal gui name="Trigger 11" */
+	kPdbTrigger12 = 12U, /*!< Select trigger-In 12. @internal gui name="Trigger 12" */
+	kPdbTrigger13 = 13U, /*!< Select trigger-In 13. @internal gui name="Trigger 13" */
+	kPdbTrigger14 = 14U, /*!< Select trigger-In 14. @internal gui name="Trigger 14" */
+	kPdbSoftTrigger = 15U, /*!< Select software trigger. @internal gui name="Software trigger" */
 } pdb_trigger_src_t;
 
 /*!
@@ -124,10 +124,10 @@ typedef enum _pdb_trigger_src
  */
 typedef enum _pdb_clk_prescaler_mult_factor
 {
-    kPdbClkPreMultFactorAs1  = 0U, /*!< Multiplication factor is 1. @internal gui name="1" */
-    kPdbClkPreMultFactorAs10 = 1U, /*!< Multiplication factor is 10. @internal gui name="10" */
-    kPdbClkPreMultFactorAs20 = 2U, /*!< Multiplication factor is 20. @internal gui name="20" */
-    kPdbClkPreMultFactorAs40 = 3U  /*!< Multiplication factor is 40. @internal gui name="40" */
+	kPdbClkPreMultFactorAs1  = 0U, /*!< Multiplication factor is 1. @internal gui name="1" */
+	kPdbClkPreMultFactorAs10 = 1U, /*!< Multiplication factor is 10. @internal gui name="10" */
+	kPdbClkPreMultFactorAs20 = 2U, /*!< Multiplication factor is 20. @internal gui name="20" */
+	kPdbClkPreMultFactorAs40 = 3U  /*!< Multiplication factor is 40. @internal gui name="40" */
 } pdb_clk_prescaler_mult_factor_t;
 
 /*!
@@ -137,14 +137,14 @@ typedef enum _pdb_clk_prescaler_mult_factor
  */
 typedef struct PdbTimerConfig
 {
-    pdb_load_value_mode_t loadValueMode; /*!< Select the load mode. @internal gui name="Load mode" id="LoadMode" */
-    bool seqErrIntEnable; /*!< Enable PDB Sequence Error Interrupt. @internal gui name="Sequence error interrupt" id="SequenceErrorInterrupt" */
-    pdb_clk_prescaler_div_t clkPreDiv; /*!< Select the prescaler divider. @internal gui name="Prescaler divider" id="Divider" */
-    pdb_clk_prescaler_mult_factor_t clkPreMultFactor; /*!< Select multiplication factor for prescaler. @internal gui name="Prescaler multiplication factor" id="Multiplier" */
-    pdb_trigger_src_t triggerInput; /*!< Select the trigger input source. @internal gui name="Trigger" id="Trigger" */
-    bool continuousModeEnable; /*!< Enable the continuous mode. @internal gui name="Continuous mode" id="ContinuousMode" */
-    bool dmaEnable; /*!< Enable the dma for timer. @internal gui name="DMA" id="DMA" */
-    bool intEnable; /*!< Enable the interrupt for timer. @internal gui name="Interrupt" id="Interrupt" */
+	pdb_load_value_mode_t loadValueMode; /*!< Select the load mode. @internal gui name="Load mode" id="LoadMode" */
+	bool seqErrIntEnable; /*!< Enable PDB Sequence Error Interrupt. @internal gui name="Sequence error interrupt" id="SequenceErrorInterrupt" */
+	pdb_clk_prescaler_div_t clkPreDiv; /*!< Select the prescaler divider. @internal gui name="Prescaler divider" id="Divider" */
+	pdb_clk_prescaler_mult_factor_t clkPreMultFactor; /*!< Select multiplication factor for prescaler. @internal gui name="Prescaler multiplication factor" id="Multiplier" */
+	pdb_trigger_src_t triggerInput; /*!< Select the trigger input source. @internal gui name="Trigger" id="Trigger" */
+	bool continuousModeEnable; /*!< Enable the continuous mode. @internal gui name="Continuous mode" id="ContinuousMode" */
+	bool dmaEnable; /*!< Enable the dma for timer. @internal gui name="DMA" id="DMA" */
+	bool intEnable; /*!< Enable the interrupt for timer. @internal gui name="Interrupt" id="Interrupt" */
 } pdb_timer_config_t;
 
 #if defined(__cplusplus)
@@ -185,7 +185,7 @@ pdb_status_t PDB_HAL_ConfigTimer(PDB_Type * base, const pdb_timer_config_t *conf
  */
 static inline void PDB_HAL_SetSoftTriggerCmd(PDB_Type * base)
 {
-    PDB_BWR_SC_SWTRIG(base, 1U);
+	PDB_BWR_SC_SWTRIG(base, 1U);
 }
 
 /*!
@@ -197,7 +197,7 @@ static inline void PDB_HAL_SetSoftTriggerCmd(PDB_Type * base)
  */
 static inline void PDB_HAL_Enable(PDB_Type * base)
 {
-    PDB_BWR_SC_PDBEN(base, 1U);
+	PDB_BWR_SC_PDBEN(base, 1U);
 }
 /*!
  * @brief Switches to disable the PDB module.
@@ -208,7 +208,7 @@ static inline void PDB_HAL_Enable(PDB_Type * base)
  */
 static inline void PDB_HAL_Disable(PDB_Type * base)
 {
-    PDB_BWR_SC_PDBEN(base, 0U);
+	PDB_BWR_SC_PDBEN(base, 0U);
 }
 
 /*!
@@ -221,7 +221,7 @@ static inline void PDB_HAL_Disable(PDB_Type * base)
  */
 static inline bool PDB_HAL_GetTimerIntFlag(PDB_Type * base)
 {
-    return (1U == PDB_BRD_SC_PDBIF(base));
+	return (1U == PDB_BRD_SC_PDBIF(base));
 }
 
 /*!
@@ -234,20 +234,20 @@ static inline bool PDB_HAL_GetTimerIntFlag(PDB_Type * base)
  */
 static inline void PDB_HAL_ClearTimerIntFlag(PDB_Type * base)
 {
-    PDB_BWR_SC_PDBIF(base, 0U);
+	PDB_BWR_SC_PDBIF(base, 0U);
 }
 
 /*!
  * @brief Loads the delay registers value for the PDB module.
  *
  * This function sets the LDOK bit and loads the delay registers value.
- * Writing one  to this bit updates the internal registers MOD, IDLY, CHnDLYm, 
- * DACINTx, and POyDLY with the values written to their buffers. The MOD, IDLY, 
+ * Writing one  to this bit updates the internal registers MOD, IDLY, CHnDLYm,
+ * DACINTx, and POyDLY with the values written to their buffers. The MOD, IDLY,
  * CHnDLYm, DACINTx, and POyDLY take effect according to the load mode settings.
  *
- * After one is written to the LDOK bit, the values in the buffers of the above mentioned registers 
+ * After one is written to the LDOK bit, the values in the buffers of the above mentioned registers
  * are not effective and cannot be written until the values in the
- * buffers are loaded into their internal registers. 
+ * buffers are loaded into their internal registers.
  * The LDOK can be written only when the the PDB is enabled or as alone with it. It is
  * automatically cleared either when the values in the buffers are loaded into the
  * internal registers or when the PDB is disabled.
@@ -256,7 +256,7 @@ static inline void PDB_HAL_ClearTimerIntFlag(PDB_Type * base)
  */
 static inline void PDB_HAL_SetLoadValuesCmd(PDB_Type * base)
 {
-    PDB_BWR_SC_LDOK(base, 1U);
+	PDB_BWR_SC_LDOK(base, 1U);
 }
 
 /*!
@@ -272,7 +272,7 @@ static inline void PDB_HAL_SetLoadValuesCmd(PDB_Type * base)
  */
 static inline void PDB_HAL_SetTimerModulusValue(PDB_Type * base, uint32_t value)
 {
-    PDB_BWR_MOD_MOD(base, value);
+	PDB_BWR_MOD_MOD(base, value);
 }
 
 /*!
@@ -285,22 +285,22 @@ static inline void PDB_HAL_SetTimerModulusValue(PDB_Type * base, uint32_t value)
  */
 static inline uint32_t PDB_HAL_GetTimerValue(PDB_Type * base)
 {
-    return PDB_BRD_CNT_CNT(base);
+	return PDB_BRD_CNT_CNT(base);
 }
 
 /*!
  * @brief Sets the interrupt delay milestone of the PDB counter.
  *
  * This function sets the interrupt delay milestone of the PDB counter.
- * If enabled, a PDB interrupt is generated when the counter is equal to the 
- * setting value. 
+ * If enabled, a PDB interrupt is generated when the counter is equal to the
+ * setting value.
  *
  * @param base Register base address for the module.
  * @param value The setting value for interrupt delay milestone of PDB counter.
  */
 static inline void PDB_HAL_SetValueForTimerInterrupt(PDB_Type * base, uint32_t value)
 {
-    PDB_BWR_IDLY_IDLY(base, value);
+	PDB_BWR_IDLY_IDLY(base, value);
 }
 
 /*!
@@ -352,8 +352,8 @@ void PDB_HAL_SetAdcPreTriggerEnable(PDB_Type * base, uint32_t chn, uint32_t preC
  */
 static inline uint32_t PDB_HAL_GetAdcPreTriggerFlags(PDB_Type * base, uint32_t chn, uint32_t preChnMask)
 {
-    assert(chn < PDB_C1_COUNT);
-    return (preChnMask & PDB_BRD_S_CF(base, chn) );
+	assert(chn < PDB_C1_COUNT);
+	return (preChnMask & PDB_BRD_S_CF(base, chn) );
 }
 
 /*!
@@ -380,8 +380,8 @@ void PDB_HAL_ClearAdcPreTriggerFlags(PDB_Type * base, uint32_t chn, uint32_t pre
  */
 static inline uint32_t PDB_HAL_GetAdcPreTriggerSeqErrFlags(PDB_Type * base, uint32_t chn, uint32_t preChnMask)
 {
-    assert(chn < PDB_C1_COUNT);
-    return ( preChnMask & PDB_BRD_S_ERR(base, chn) );
+	assert(chn < PDB_C1_COUNT);
+	return ( preChnMask & PDB_BRD_S_ERR(base, chn) );
 }
 
 /*!
@@ -420,8 +420,8 @@ void PDB_HAL_SetAdcPreTriggerDelayValue(PDB_Type * base, uint32_t chn, uint32_t 
  */
 static inline void PDB_HAL_SetDacExtTriggerInputEnable(PDB_Type * base, uint32_t dacChn, bool enable)
 {
-    assert(dacChn < PDB_INTC_COUNT);
-    PDB_BWR_INTC_EXT(base, dacChn, (enable ? 1U: 0U) );
+	assert(dacChn < PDB_INTC_COUNT);
+	PDB_BWR_INTC_EXT(base, dacChn, (enable ? 1U: 0U) );
 }
 
 /*!
@@ -435,8 +435,8 @@ static inline void PDB_HAL_SetDacExtTriggerInputEnable(PDB_Type * base, uint32_t
  */
 static inline void PDB_HAL_SetDacIntervalTriggerEnable(PDB_Type * base, uint32_t dacChn, bool enable)
 {
-    assert(dacChn < PDB_INTC_COUNT);
-    PDB_BWR_INTC_TOE(base, dacChn, (enable ? 1U: 0U) );
+	assert(dacChn < PDB_INTC_COUNT);
+	PDB_BWR_INTC_TOE(base, dacChn, (enable ? 1U: 0U) );
 }
 
 /*!
@@ -450,8 +450,8 @@ static inline void PDB_HAL_SetDacIntervalTriggerEnable(PDB_Type * base, uint32_t
  */
 static inline void PDB_HAL_SetDacIntervalValue(PDB_Type * base, uint32_t dacChn, uint32_t value)
 {
-    assert(dacChn < PDB_INT_COUNT);
-    PDB_BWR_INT_INT(base, dacChn, value);
+	assert(dacChn < PDB_INT_COUNT);
+	PDB_BWR_INT_INT(base, dacChn, value);
 }
 #endif
 
@@ -477,8 +477,8 @@ void PDB_HAL_SetCmpPulseOutEnable(PDB_Type * base, uint32_t pulseChnMask, bool e
  */
 static inline void PDB_HAL_SetCmpPulseOutDelayForHigh(PDB_Type * base, uint32_t pulseChn, uint32_t value)
 {
-    assert(pulseChn < PDB_PODLY_COUNT);
-    PDB_BWR_PODLY_DLY1(base, pulseChn, value);
+	assert(pulseChn < PDB_PODLY_COUNT);
+	PDB_BWR_PODLY_DLY1(base, pulseChn, value);
 }
 
 /*!
@@ -492,8 +492,8 @@ static inline void PDB_HAL_SetCmpPulseOutDelayForHigh(PDB_Type * base, uint32_t 
  */
 static inline void PDB_HAL_SetCmpPulseOutDelayForLow(PDB_Type * base, uint32_t pulseChn, uint32_t value)
 {
-    assert(pulseChn < PDB_PODLY_COUNT);
-    PDB_BWR_PODLY_DLY2(base, pulseChn, value);
+	assert(pulseChn < PDB_PODLY_COUNT);
+	PDB_BWR_PODLY_DLY2(base, pulseChn, value);
 }
 
 #if defined(__cplusplus)
@@ -510,4 +510,3 @@ static inline void PDB_HAL_SetCmpPulseOutDelayForLow(PDB_Type * base, uint32_t p
 /******************************************************************************
  * EOF
  *****************************************************************************/
-

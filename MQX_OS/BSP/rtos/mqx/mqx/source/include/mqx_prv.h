@@ -192,47 +192,47 @@
  */
 
 typedef enum {
-    MQX_API_LWSEM_POLL,
-    MQX_API_LWSEM_POST,
-    MQX_API_LWSEM_WAIT,
-    MQX_API_LWSEM_WAIT_FOR,
-    MQX_API_LWSEM_WAIT_TICKS,
-    MQX_API_LWSEM_WAIT_UNTIL,
-    MQX_API_LWSEM_CREATE,
-    MQX_API_LWSEM_DESTROY,
+	MQX_API_LWSEM_POLL,
+	MQX_API_LWSEM_POST,
+	MQX_API_LWSEM_WAIT,
+	MQX_API_LWSEM_WAIT_FOR,
+	MQX_API_LWSEM_WAIT_TICKS,
+	MQX_API_LWSEM_WAIT_UNTIL,
+	MQX_API_LWSEM_CREATE,
+	MQX_API_LWSEM_DESTROY,
 
-    MQX_API_LWEVENT_CLEAR,
-    MQX_API_LWEVENT_SET,
-    MQX_API_LWEVENT_SET_AUTO_CLEAR,
-    MQX_API_LWEVENT_WAIT_FOR,
-    MQX_API_LWEVENT_WAIT_FOR_TICKS,
-    MQX_API_LWEVENT_WAIT_UNTIL,
-    MQX_API_LWEVENT_GET_SIGNALLED,
-    MQX_API_LWEVENT_CREATE,
-    MQX_API_LWEVENT_DESTROY,
+	MQX_API_LWEVENT_CLEAR,
+	MQX_API_LWEVENT_SET,
+	MQX_API_LWEVENT_SET_AUTO_CLEAR,
+	MQX_API_LWEVENT_WAIT_FOR,
+	MQX_API_LWEVENT_WAIT_FOR_TICKS,
+	MQX_API_LWEVENT_WAIT_UNTIL,
+	MQX_API_LWEVENT_GET_SIGNALLED,
+	MQX_API_LWEVENT_CREATE,
+	MQX_API_LWEVENT_DESTROY,
 
-    MQX_API_LWMSGQ_INIT,
-    MQX_API_LWMSGQ_DEINIT,
-    MQX_API_LWMSGQ_SEND,
-    MQX_API_LWMSGQ_RECEIVE,
+	MQX_API_LWMSGQ_INIT,
+	MQX_API_LWMSGQ_DEINIT,
+	MQX_API_LWMSGQ_SEND,
+	MQX_API_LWMSGQ_RECEIVE,
 
-    MQX_API_TASK_CREATE,
-    MQX_API_TASK_DESTROY,
-    MQX_API_TASK_SET_ERROR,
-    MQX_API_TASK_GET_TD,
-    MQX_API_TASK_ABORT,
-    MQX_API_TASK_READY,
-    MQX_API_TASK_SET_PRIORITY,
+	MQX_API_TASK_CREATE,
+	MQX_API_TASK_DESTROY,
+	MQX_API_TASK_SET_ERROR,
+	MQX_API_TASK_GET_TD,
+	MQX_API_TASK_ABORT,
+	MQX_API_TASK_READY,
+	MQX_API_TASK_SET_PRIORITY,
 
-    MQX_API_LWMEM_ALLOC,
-    MQX_API_LWMEM_ALLOC_FROM,
-    MQX_API_LWMEM_FREE,
-    MQX_API_LWMEM_CREATE_POOL,
-    MQX_API_LWMEM_REALLOC,
+	MQX_API_LWMEM_ALLOC,
+	MQX_API_LWMEM_ALLOC_FROM,
+	MQX_API_LWMEM_FREE,
+	MQX_API_LWMEM_CREATE_POOL,
+	MQX_API_LWMEM_REALLOC,
 
-    MQX_API_TIME_DELAY,
-    MQX_API_TIME_DELAY_TICKS,
-    MQX_API_TIME_GET_ELAPSED_TICKS
+	MQX_API_TIME_DELAY,
+	MQX_API_TIME_DELAY_TICKS,
+	MQX_API_TIME_GET_ELAPSED_TICKS
 } MQX_API_NUMBER_ENUM;
 
 /*!
@@ -241,16 +241,16 @@ typedef enum {
  * \brief Data structure for calling API functions.
  */
 typedef struct {
-    /*! \brief Parameter 0. */
-    uint32_t param0;
-    /*! \brief Parameter 1. */
-    uint32_t param1;
-    /*! \brief Parameter 2. */
-    uint32_t param2;
-    /*! \brief Parameter 3. */
-    uint32_t param3;
-    /*! \brief Parameter 4. */
-    uint32_t param4;
+	/*! \brief Parameter 0. */
+	uint32_t param0;
+	/*! \brief Parameter 1. */
+	uint32_t param1;
+	/*! \brief Parameter 2. */
+	uint32_t param2;
+	/*! \brief Parameter 3. */
+	uint32_t param3;
+	/*! \brief Parameter 4. */
+	uint32_t param4;
 } MQX_API_CALL_PARAMS, * MQX_API_CALL_PARAMS_PTR;
 /*! \endcond */
 
@@ -305,20 +305,20 @@ typedef struct {
 #  define _KLOGM(x) x                                   /*C*/
 #  if (PSP_ENDIAN == MQX_BIG_ENDIAN)                    /*C*/
 #    define _KLOG(x) \
-      kernel_data->MQX_KLOG_COUNT++;                    /*C*/\
-      if ((kernel_data->TIME.TICKS[1] > 240000) ||      /*C*/\
-         (kernel_data->MQX_KLOG_COUNT > MQX_KLOG_KILL_COUNT)) \
-      {  _INT_DISABLE();                                /*C*/\
-         MQX_LONGJMP(_mqx_exit_jump_buffer_internal,1); /*C*/\
-      } else if (kernel_data->LOG_CONTROL & 1) x        /*C*/
+	  kernel_data->MQX_KLOG_COUNT++;                    /*C*/\
+	  if ((kernel_data->TIME.TICKS[1] > 240000) ||      /*C*/\
+		 (kernel_data->MQX_KLOG_COUNT > MQX_KLOG_KILL_COUNT)) \
+	  {  _INT_DISABLE();                                /*C*/\
+		 MQX_LONGJMP(_mqx_exit_jump_buffer_internal,1); /*C*/\
+	  } else if (kernel_data->LOG_CONTROL & 1) x        /*C*/
 #  else /*PSP is LITTLE ENDIAN */
 #    define _KLOG(x)                                    /*C*/\
-      kernel_data->MQX_KLOG_COUNT++;                    /*C*/\
-      if ((kernel_data->TIME.TICKS[0] > 240000) ||      /*C*/\
-         (kernel_data->MQX_KLOG_COUNT > MQX_KLOG_KILL_COUNT)) \
-      {  _INT_DISABLE();                                /*C*/\
-         MQX_LONGJMP(_mqx_exit_jump_buffer_internal,1); /*C*/\
-      } else if (kernel_data->LOG_CONTROL & 1) x        /*C*/
+	  kernel_data->MQX_KLOG_COUNT++;                    /*C*/\
+	  if ((kernel_data->TIME.TICKS[0] > 240000) ||      /*C*/\
+		 (kernel_data->MQX_KLOG_COUNT > MQX_KLOG_KILL_COUNT)) \
+	  {  _INT_DISABLE();                                /*C*/\
+		 MQX_LONGJMP(_mqx_exit_jump_buffer_internal,1); /*C*/\
+	  } else if (kernel_data->LOG_CONTROL & 1) x        /*C*/
 #  endif /*PSP is LITTLE ENDIAN */
 # else /* MQX_CRIPPLED_EVALUATION */
 #  define _KLOGM(x) x
@@ -332,20 +332,20 @@ typedef struct {
 #  define _KLOGM(x) x
 #  if (PSP_ENDIAN == MQX_BIG_ENDIAN)                    /*C*/
 #    define _KLOG(x) \
-      kernel_data->MQX_KLOG_COUNT++;      /*C*/\
-      if ((kernel_data->TIME.TICKS[1] > 240000) ||      /*C*/\
-         (kernel_data->MQX_KLOG_COUNT > MQX_KLOG_KILL_COUNT)) \
-      {  _INT_DISABLE();                                /*C*/\
-         MQX_LONGJMP(_mqx_exit_jump_buffer_internal,1); /*C*/\
-      }                                                 /*C*/
+	  kernel_data->MQX_KLOG_COUNT++;      /*C*/\
+	  if ((kernel_data->TIME.TICKS[1] > 240000) ||      /*C*/\
+		 (kernel_data->MQX_KLOG_COUNT > MQX_KLOG_KILL_COUNT)) \
+	  {  _INT_DISABLE();                                /*C*/\
+		 MQX_LONGJMP(_mqx_exit_jump_buffer_internal,1); /*C*/\
+	  }                                                 /*C*/
 #  else /*PSP is LITTLE ENDIAN */
 #    define _KLOG(x)                                    /*C*/\
-      kernel_data->MQX_KLOG_COUNT++;                    /*C*/\
-      if ((kernel_data->TIME.TICKS[0] > 240000) ||      /*C*/\
-         (kernel_data->MQX_KLOG_COUNT > MQX_KLOG_KILL_COUNT)) \
-      {  _INT_DISABLE();                                /*C*/\
-         MQX_LONGJMP(_mqx_exit_jump_buffer_internal,1); /*C*/\
-      }                                                 /*C*/
+	  kernel_data->MQX_KLOG_COUNT++;                    /*C*/\
+	  if ((kernel_data->TIME.TICKS[0] > 240000) ||      /*C*/\
+		 (kernel_data->MQX_KLOG_COUNT > MQX_KLOG_KILL_COUNT)) \
+	  {  _INT_DISABLE();                                /*C*/\
+		 MQX_LONGJMP(_mqx_exit_jump_buffer_internal,1); /*C*/\
+	  }                                                 /*C*/
 #  endif /*PSP is LITTLE ENDIAN */
 # else /* MQX_CRIPPLED_EVALUATION */
 #define _KLOGM(x)
@@ -530,13 +530,13 @@ typedef struct {
    n++;                                         \
    n &= 0xFFFF;                                 \
    if (n == 0) {                                \
-      n = 1;                                    \
+	  n = 1;                                    \
    }
 #else
 #define INC_TASK_NUMBER(n)                      \
    n++;                                         \
    if (n == 0) {                                \
-      n = 1;                                    \
+	  n = 1;                                    \
    }
 #endif
 
@@ -572,8 +572,8 @@ typedef struct {
    (out_secs)  = 0;                                                \
    (out_msecs) = (in_msecs);                                       \
    if ((out_msecs) >= MILLISECS_IN_SECOND) {                       \
-      (out_secs)   = (out_msecs) / MILLISECS_IN_SECOND;            \
-      (out_msecs) -= ((out_secs) * MILLISECS_IN_SECOND);           \
+	  (out_secs)   = (out_msecs) / MILLISECS_IN_SECOND;            \
+	  (out_msecs) -= ((out_secs) * MILLISECS_IN_SECOND);           \
    } /* Endif */                                                   \
    (out_secs) += (in_secs)
 
@@ -583,10 +583,10 @@ typedef struct {
  */
 #define MQX_NORMALIZE_TIME_STRUCT(t_ptr)                     \
    if ( ((TIME_STRUCT_PTR)(t_ptr))->MILLISECONDS >= 1000 ) { \
-      ((TIME_STRUCT_PTR)(t_ptr))->SECONDS      +=            \
-         ((TIME_STRUCT_PTR)(t_ptr))->MILLISECONDS / 1000;    \
-      ((TIME_STRUCT_PTR)(t_ptr))->MILLISECONDS  =            \
-         ((TIME_STRUCT_PTR)(t_ptr))->MILLISECONDS % 1000;    \
+	  ((TIME_STRUCT_PTR)(t_ptr))->SECONDS      +=            \
+		 ((TIME_STRUCT_PTR)(t_ptr))->MILLISECONDS / 1000;    \
+	  ((TIME_STRUCT_PTR)(t_ptr))->MILLISECONDS  =            \
+		 ((TIME_STRUCT_PTR)(t_ptr))->MILLISECONDS % 1000;    \
    }
 
 /* This macro initializes a TICK structure to zero */
@@ -718,7 +718,7 @@ typedef struct {
  _KLOGE2(KLOG_task_ready, the_td);                         \
  if ( ((unsigned char *) (the_td)->MY_QUEUE) >                 \
  (unsigned char *) (the_kernel_data->CURRENT_READY_Q) ) {      \
-    the_kernel_data->CURRENT_READY_Q = (the_td)->MY_QUEUE; \
+	the_kernel_data->CURRENT_READY_Q = (the_td)->MY_QUEUE; \
  } /* Endif */                                             \
  (the_td)->STATE = READY;                                  \
  (the_td)->TD_PREV = ((the_td)->MY_QUEUE)->TAIL_READY_Q;   \
@@ -736,23 +736,23 @@ typedef struct {
 
 #define _INT_DISABLE_CODE()                             \
    if (kernel_data->ACTIVE_PTR->DISABLED_LEVEL == 0)  { \
-      _PSP_SET_DISABLE_SR(kernel_data->DISABLE_SR);     \
+	  _PSP_SET_DISABLE_SR(kernel_data->DISABLE_SR);     \
    } /* Endif */                                        \
    ++kernel_data->ACTIVE_PTR->DISABLED_LEVEL;
 
 #define _INT_ENABLE_CODE()                                                     \
    if (kernel_data->ACTIVE_PTR->DISABLED_LEVEL) {                              \
-      if (--kernel_data->ACTIVE_PTR->DISABLED_LEVEL == 0) {                    \
-         if (kernel_data->IN_ISR) {                                            \
-            _PSP_SET_ENABLE_SR(kernel_data->INTERRUPT_CONTEXT_PTR->ENABLE_SR); \
-         } else {                                                              \
-            _PSP_SET_ENABLE_SR(kernel_data->ACTIVE_SR);                        \
-         } /* Endif */                                                         \
-      } /* Endif */                                                            \
+	  if (--kernel_data->ACTIVE_PTR->DISABLED_LEVEL == 0) {                    \
+		 if (kernel_data->IN_ISR) {                                            \
+			_PSP_SET_ENABLE_SR(kernel_data->INTERRUPT_CONTEXT_PTR->ENABLE_SR); \
+		 } else {                                                              \
+			_PSP_SET_ENABLE_SR(kernel_data->ACTIVE_SR);                        \
+		 } /* Endif */                                                         \
+	  } /* Endif */                                                            \
    } /* Endif */
 #else
-    #define _INT_DISABLE_CODE()
-    #define _INT_ENABLE_CODE()
+	#define _INT_DISABLE_CODE()
+	#define _INT_ENABLE_CODE()
 #endif
 
 #if MQX_USE_INLINE_MACROS
@@ -767,9 +767,9 @@ typedef struct {
 #if MQX_HAS_TICK
 #define _TIME_DEQUEUE(td,kd)                             \
    if ( ((TD_STRUCT_PTR)td)->STATE & IS_ON_TIMEOUT_Q ) { \
-      _QUEUE_REMOVE(&kd->TIMEOUT_QUEUE,td);              \
-      ((TD_STRUCT_PTR)td)->STATE &= ~IS_ON_TIMEOUT_Q;    \
-      ((TD_STRUCT_PTR)td)->STATE |= BLOCKED;             \
+	  _QUEUE_REMOVE(&kd->TIMEOUT_QUEUE,td);              \
+	  ((TD_STRUCT_PTR)td)->STATE &= ~IS_ON_TIMEOUT_Q;    \
+	  ((TD_STRUCT_PTR)td)->STATE |= BLOCKED;             \
    } /* Endif */
 #else
 #define _TIME_DEQUEUE(td,kd)
@@ -894,9 +894,9 @@ typedef struct {
 #if MQX_USE_INLINE_MACROS
 #define _QUEUE_INIT(queue,max)                                      \
    ((QUEUE_STRUCT_PTR)(queue))->NEXT =                              \
-      (QUEUE_ELEMENT_STRUCT_PTR)((void *)&((QUEUE_STRUCT_PTR)(queue))->NEXT); \
+	  (QUEUE_ELEMENT_STRUCT_PTR)((void *)&((QUEUE_STRUCT_PTR)(queue))->NEXT); \
    ((QUEUE_STRUCT_PTR)(queue))->PREV =                              \
-      (QUEUE_ELEMENT_STRUCT_PTR)((void *)&((QUEUE_STRUCT_PTR)(queue))->NEXT); \
+	  (QUEUE_ELEMENT_STRUCT_PTR)((void *)&((QUEUE_STRUCT_PTR)(queue))->NEXT); \
    ((QUEUE_STRUCT_PTR)(queue))->SIZE = (uint16_t)0;                  \
    ((QUEUE_STRUCT_PTR)(queue))->MAX  = (uint16_t)max; \
    ((QUEUE_STRUCT_PTR)(queue))->ATOMIC = 0;
@@ -919,10 +919,10 @@ typedef struct {
 #define _QUEUE_LINK(queue_member,element)               \
 {                                                       \
    QUEUE_ELEMENT_STRUCT_PTR nxt = (queue_member)->NEXT; \
-      (element)->NEXT = nxt;                            \
-      (queue_member)->NEXT = element;                   \
-      (element)->PREV = queue_member;                   \
-      nxt->PREV = element;                              \
+	  (element)->NEXT = nxt;                            \
+	  (queue_member)->NEXT = element;                   \
+	  (element)->PREV = queue_member;                   \
+	  nxt->PREV = element;                              \
 }
 
 /*
@@ -931,14 +931,14 @@ typedef struct {
  */
 #if MQX_USE_INLINE_MACROS
 #define _QUEUE_INSERT(queue,queue_member,element)           \
-      _QUEUE_LINK((QUEUE_ELEMENT_STRUCT_PTR)((void *)(queue_member)), \
-         (QUEUE_ELEMENT_STRUCT_PTR)((void *)(element)));              \
-      ++((QUEUE_STRUCT_PTR)(queue))->SIZE;
+	  _QUEUE_LINK((QUEUE_ELEMENT_STRUCT_PTR)((void *)(queue_member)), \
+		 (QUEUE_ELEMENT_STRUCT_PTR)((void *)(element)));              \
+	  ++((QUEUE_STRUCT_PTR)(queue))->SIZE;
 #else
 #define _QUEUE_INSERT(queue,queue_member,element) \
    _queue_insert((QUEUE_STRUCT_PTR)(queue), \
-      (QUEUE_ELEMENT_STRUCT_PTR)((void *)(queue_member)), \
-      (QUEUE_ELEMENT_STRUCT_PTR)((void *)(element)))
+	  (QUEUE_ELEMENT_STRUCT_PTR)((void *)(queue_member)), \
+	  (QUEUE_ELEMENT_STRUCT_PTR)((void *)(element)))
 #endif
 
 /* Enqueue an element at the end of the queue */
@@ -949,7 +949,7 @@ typedef struct {
 #else
 #define _QUEUE_ENQUEUE(queue,element) \
    _queue_enqueue((QUEUE_STRUCT_PTR)(queue), \
-      (QUEUE_ELEMENT_STRUCT_PTR)((void *)(element)))
+	  (QUEUE_ELEMENT_STRUCT_PTR)((void *)(element)))
 #endif
 
 
@@ -957,9 +957,9 @@ typedef struct {
 #define _QUEUE_UNLINK(queue_member) \
 { \
    QUEUE_ELEMENT_STRUCT_PTR prev_ptr = \
-      ((QUEUE_ELEMENT_STRUCT_PTR)((void *)(queue_member)))->PREV; \
+	  ((QUEUE_ELEMENT_STRUCT_PTR)((void *)(queue_member)))->PREV; \
    QUEUE_ELEMENT_STRUCT_PTR next_ptr = \
-      ((QUEUE_ELEMENT_STRUCT_PTR)((void *)(queue_member)))->NEXT; \
+	  ((QUEUE_ELEMENT_STRUCT_PTR)((void *)(queue_member)))->NEXT; \
    prev_ptr->NEXT = next_ptr; \
    next_ptr->PREV = prev_ptr; \
 }
@@ -971,8 +971,8 @@ typedef struct {
  * the element must be known
  */
 #define _QUEUE_REMOVE(queue,element)        \
-      _QUEUE_UNLINK(element);               \
-      --((QUEUE_STRUCT_PTR)(queue))->SIZE;
+	  _QUEUE_UNLINK(element);               \
+	  --((QUEUE_STRUCT_PTR)(queue))->SIZE;
 
 /* Dequeue an element from the front of the queue, the element is not known */
 #if MQX_USE_INLINE_MACROS
@@ -1047,30 +1047,30 @@ typedef struct {
  * \brief Interrupt sparse record structure.
  */
 typedef struct interrupt_sparse_rec_struct {
-    /*! \brief Vector number. */
-    int32_t VEC_NUM;
+	/*! \brief Vector number. */
+	int32_t VEC_NUM;
 
-    /*! \bief The application ISR to call for this interrupt. */
-    INT_ISR_FPTR APP_ISR;
+	/*! \bief The application ISR to call for this interrupt. */
+	INT_ISR_FPTR APP_ISR;
 
 #if MQXCFG_EXCEPTION_HANDLING
-    /*!
-     * \brief The exception handler for this ISR.
-     *
-     * If the exception handling has been installed as the default ISR, then when
-     * an exception occurs during an ISR, the ISR (and the exception) are aborted,
-     * and this function is called. This function is passed the ISR vector number,
-     * the exception vector number and the parameter for the application ISR, and
-     * the an exception frame pointer.
-     */
-    INT_EXCEPTION_FPTR APP_ISR_EXCEPTION_HANDLER;
+	/*!
+	 * \brief The exception handler for this ISR.
+	 *
+	 * If the exception handling has been installed as the default ISR, then when
+	 * an exception occurs during an ISR, the ISR (and the exception) are aborted,
+	 * and this function is called. This function is passed the ISR vector number,
+	 * the exception vector number and the parameter for the application ISR, and
+	 * the an exception frame pointer.
+	 */
+	INT_EXCEPTION_FPTR APP_ISR_EXCEPTION_HANDLER;
 #endif /* MQXCFG_EXCEPTION_HANDLING */
 
-    /*! \br1ief The parameter to pass to this ISR. */
-    void   *APP_ISR_DATA;
+	/*! \br1ief The parameter to pass to this ISR. */
+	void   *APP_ISR_DATA;
 
-    /*! \brief Pointer to the next structure. */
-    struct interrupt_sparse_rec_struct *NEXT;
+	/*! \brief Pointer to the next structure. */
+	struct interrupt_sparse_rec_struct *NEXT;
 } INTERRUPT_SPARSE_REC_STRUCT, * INTERRUPT_SPARSE_REC_STRUCT_PTR;
 /*! \endcond */
 
@@ -1101,14 +1101,14 @@ typedef struct interrupt_table_struct
 
 #if MQXCFG_EXCEPTION_HANDLING
    /*!
-    * \brief The exception handler for this ISR.
-    *
-    * If the exception handling has been installed as the default ISR, then when
-    * an exception occurs during an ISR, the ISR (and the exception) are aborted,
-    * and this function is called. This function is passed the ISR vector number,
-    * the exception vector number and the parameter for the application ISR, and
-    * the an exception frame pointer.
-    */
+	* \brief The exception handler for this ISR.
+	*
+	* If the exception handling has been installed as the default ISR, then when
+	* an exception occurs during an ISR, the ISR (and the exception) are aborted,
+	* and this function is called. This function is passed the ISR vector number,
+	* the exception vector number and the parameter for the application ISR, and
+	* the an exception frame pointer.
+	*/
    INT_EXCEPTION_FPTR  APP_ISR_EXCEPTION_HANDLER;
 #endif /* MQXCFG_EXCEPTION_HANDLING */
 
@@ -1173,35 +1173,35 @@ typedef struct ready_q_struct
 {
 
    /*!
-    * \brief The head of the ready queue for this priority level.
-    *
-    * Points to itself if empty. Otherwise points to first task descriptor ready
-    * to run. The queue is circular, so the first task descriptor points to the
-    * next task descriptor ready to run.
-    */
+	* \brief The head of the ready queue for this priority level.
+	*
+	* Points to itself if empty. Otherwise points to first task descriptor ready
+	* to run. The queue is circular, so the first task descriptor points to the
+	* next task descriptor ready to run.
+	*/
    TD_STRUCT_PTR                HEAD_READY_Q;
 
    /*! \brief The tail of the ready queue.
-    *
-    * Points to itself if empty. Otherwise, it points to the last task descriptor
-    * on the queue, to which new tasks are added as they become ready.
-    */
+	*
+	* Points to itself if empty. Otherwise, it points to the last task descriptor
+	* on the queue, to which new tasks are added as they become ready.
+	*/
    TD_STRUCT_PTR                TAIL_READY_Q;
 
    /*! \brief The address of the next priority queue, of lower priority. */
    struct ready_q_struct       *NEXT_Q;
 
    /*!
-    * \brief The hardware priority of this priority queue.
-    *
-    * This field is copied to the tasks TASK_SR field when this task is assigned
-    * to the ready queue (ie. when the task is created, or when the task changes
-    * priority levels).
-    * The task TASK_SR field is assigned to the ACTIVE_SR field in the kernel data
-    * structure when the task becomes the ACTIVE(running) task.
-    * \n The ACTIVE_SR field in the kernel data is used by _int_enable, to set
-    * the correct hardware interrupt level for this task.
-    */
+	* \brief The hardware priority of this priority queue.
+	*
+	* This field is copied to the tasks TASK_SR field when this task is assigned
+	* to the ready queue (ie. when the task is created, or when the task changes
+	* priority levels).
+	* The task TASK_SR field is assigned to the ACTIVE_SR field in the kernel data
+	* structure when the task becomes the ACTIVE(running) task.
+	* \n The ACTIVE_SR field in the kernel data is used by _int_enable, to set
+	* the correct hardware interrupt level for this task.
+	*/
    uint16_t                      ENABLE_SR;
 
    /*! \brief The software priority of this queue, 0 being the highest priority. */
@@ -1234,10 +1234,10 @@ typedef void (_CODE_PTR_ MQX_COMPONENT_CLEANUP_FPTR)(TD_STRUCT_PTR);
 typedef struct  kernel_data_struct
 {
    /*
-    * ----------------------------------------------------------
-    * Configuration information. Used by MQX tools and debuggers
-    * ----------------------------------------------------------
-    */
+	* ----------------------------------------------------------
+	* Configuration information. Used by MQX tools and debuggers
+	* ----------------------------------------------------------
+	*/
 
    /*! \brief The addressing capability of the processor. */
    uint32_t                         ADDRESSING_CAPABILITY;
@@ -1260,60 +1260,60 @@ typedef struct  kernel_data_struct
    uint16_t                         PSP_CFG_MEM_STOREBLOCK_ALIGNMENT;
 
    /*!
-    * \brief The configuration used to compile this kernel.
-    *
-    * Written to at mqx initialization time.
-    */
+	* \brief The configuration used to compile this kernel.
+	*
+	* Written to at mqx initialization time.
+	*/
    uint16_t                         CONFIG1;
    /*!
-    * \brief The configuration used to compile this kernel.
-    *
-    * Written to at mqx initialization time.
-    */
+	* \brief The configuration used to compile this kernel.
+	*
+	* Written to at mqx initialization time.
+	*/
    uint16_t                         CONFIG2;
 
    /*
-    * ----------------------------------------------------------
-    */
+	* ----------------------------------------------------------
+	*/
 
    /*! \brief This field is used to store bit flags for use by MQX primitives. */
    uint16_t                         FLAGS;
 
    /*!
-    * \brief This field is used to by _int_disable to program the hardware correctly
-    * when interrupts are to be disabled.
-    *
-    * The value of this field is set by the psp upon system initialization.
-    * This field is equivalent to the ENABLE_SR field for the highest
-    * priority MQX task (ie tasks at priority 0) which run with interrupts
-    * disabled.
-    */
+	* \brief This field is used to by _int_disable to program the hardware correctly
+	* when interrupts are to be disabled.
+	*
+	* The value of this field is set by the psp upon system initialization.
+	* This field is equivalent to the ENABLE_SR field for the highest
+	* priority MQX task (ie tasks at priority 0) which run with interrupts
+	* disabled.
+	*/
    uint16_t                         DISABLE_SR;
 
    /*!
-    * \brief A count incremented when an interrupt service routine is entered.
-    *
-    * It thus indicates the interrupt nesting level for the current
-    * interrupt being serviced.
-    */
+	* \brief A count incremented when an interrupt service routine is entered.
+	*
+	* It thus indicates the interrupt nesting level for the current
+	* interrupt being serviced.
+	*/
    uint16_t                         IN_ISR;
 
    /*!
-    * \brief This field is used by _int_enable to program the hardware correctly
-    * when interrupts are to be re-enabled.
-    *
-    * When a READY task becomes the ACTIVE task the TASK_SR field from the
-    * task descriptor is copied to this field.
-    */
+	* \brief This field is used by _int_enable to program the hardware correctly
+	* when interrupts are to be re-enabled.
+	*
+	* When a READY task becomes the ACTIVE task the TASK_SR field from the
+	* task descriptor is copied to this field.
+	*/
    uint16_t                         ACTIVE_SR;
 
    /*!
-    * \brief The address of the task descriptor of the currently running task.
-    *
-    * Note that the currently running task (the ACTIVE task) is the
-    * first task on the highest priority ready queue and will be in the
-    * READY state.
-    */
+	* \brief The address of the task descriptor of the currently running task.
+	*
+	* Note that the currently running task (the ACTIVE task) is the
+	* first task on the highest priority ready queue and will be in the
+	* READY state.
+	*/
    TD_STRUCT_PTR                   ACTIVE_PTR;
 
    /*! \brief The address of the highest priority ready q. */
@@ -1324,26 +1324,26 @@ typedef struct  kernel_data_struct
 
 
    /*!
-    * \brief This is the default ISR that is called whenever a users ISR is
-    * not available
-    */
+	* \brief This is the default ISR that is called whenever a users ISR is
+	* not available
+	*/
    INT_ISR_FPTR                    DEFAULT_ISR;
 
    /*!
-    * \brief The interrupt vector for the first interrupt that the
-    * application wants to have a 'C' ISR for.
-    */
+	* \brief The interrupt vector for the first interrupt that the
+	* application wants to have a 'C' ISR for.
+	*/
    _mqx_uint                       FIRST_USER_ISR_VECTOR;
 
    /*! \brief The last interrupt vector that the application wants to handle. */
    _mqx_uint                       LAST_USER_ISR_VECTOR;
 
    /*!
-    * \brief A pointer to the CURRENT interrupt handler context.
-    *
-    * This is a link list of context information kept on the interrupt stack
-    * which keeps an error code and a status register for each nested interrupt.
-    */
+	* \brief A pointer to the CURRENT interrupt handler context.
+	*
+	* This is a link list of context information kept on the interrupt stack
+	* which keeps an error code and a status register for each nested interrupt.
+	*/
    PSP_INT_CONTEXT_STRUCT_PTR      INTERRUPT_CONTEXT_PTR;
 
    /*! \brief A pointer to a table of 'C' handlers for interrupts. */
@@ -1359,24 +1359,24 @@ typedef struct  kernel_data_struct
    void                           *LOG_OLD_TD;
 
    /*!
-    * \brief The address of the task descriptor of the currently running task
-    * that uses the floating point co-processor.
-    *
-    * Note this may be different from the ACTIVE_PTR, as the floating point
-    * register context switches are only performed between FLOATING_POINT_TASKS
-    * (where applicable).
-    */
+	* \brief The address of the task descriptor of the currently running task
+	* that uses the floating point co-processor.
+	*
+	* Note this may be different from the ACTIVE_PTR, as the floating point
+	* register context switches are only performed between FLOATING_POINT_TASKS
+	* (where applicable).
+	*/
    TD_STRUCT_PTR                   FP_ACTIVE_PTR;
 
 
 
    /*!
-    * \brief The address of the task descriptor of the currently running task
-    * that uses the DSP co-processor.
-    *
-    * Note this may be different from the ACTIVE_PTR, as the DSP register
-    * context switches are only performed between DSP_TASKS (where applicable).
-    */
+	* \brief The address of the task descriptor of the currently running task
+	* that uses the DSP co-processor.
+	*
+	* Note this may be different from the ACTIVE_PTR, as the DSP register
+	* context switches are only performed between DSP_TASKS (where applicable).
+	*/
    TD_STRUCT_PTR                   DSP_ACTIVE_PTR;
 
 
@@ -1449,10 +1449,10 @@ typedef struct  kernel_data_struct
    MQX_TICK_STRUCT                 TIME_OFFSET;
 
    /*!
-    * \brief The MQX timeout queue.
-    *
-    * Tasks waiting for a timeout are placed into this queue.
-    */
+	* \brief The MQX timeout queue.
+	*
+	* Tasks waiting for a timeout are placed into this queue.
+	*/
    QUEUE_STRUCT                    TIMEOUT_QUEUE;
 
    /*! \brief The system clock interrupt vector number. */
@@ -1471,18 +1471,18 @@ typedef struct  kernel_data_struct
    uint32_t                         HW_TICKS_PER_TICK;
 
    /*!
-    * \brief This is the function that is called when the number of HW ticks
-    * is needed.
-    */
+	* \brief This is the function that is called when the number of HW ticks
+	* is needed.
+	*/
    MQX_GET_HWTICKS_FPTR            GET_HWTICKS;
 
    /*! \brief This is the parameter that is passed to the get HW ticks function. */
    void                           *GET_HWTICKS_PARAM;
 
    /*
-    * \brief This field holds a function pointer for a secondary timer,
-    * if installed.
-    */
+	* \brief This field holds a function pointer for a secondary timer,
+	* if installed.
+	*/
    // UNUSED: void                (_CODE_PTR_ TIMER2)(void *);
 
 
@@ -1498,21 +1498,21 @@ typedef struct  kernel_data_struct
    LWSEM_STRUCT                    COMPONENT_CREATE_LWSEM;
 
    /*!
-    * \brief Kernel component data pointers.
-    *
-    * When a kernel component is installed, it allocates memory and stores a
-    * pointer to this memory in this array.
-    */
+	* \brief Kernel component data pointers.
+	*
+	* When a kernel component is installed, it allocates memory and stores a
+	* pointer to this memory in this array.
+	*/
    void                           *KERNEL_COMPONENTS[MAX_KERNEL_COMPONENTS];
 
 
 #if MQX_COMPONENT_DESTRUCTION
    /*!
-    * \brief Kernel component task destruction cleanup functions.
-    *
-    * When a task is destroyed, each component's cleanup function is called to
-    * free any resources that the task may have acquired.
-    */
+	* \brief Kernel component task destruction cleanup functions.
+	*
+	* When a task is destroyed, each component's cleanup function is called to
+	* free any resources that the task may have acquired.
+	*/
    MQX_COMPONENT_CLEANUP_FPTR      COMPONENT_CLEANUP[MAX_KERNEL_COMPONENTS];
 
 #endif
@@ -1521,43 +1521,43 @@ typedef struct  kernel_data_struct
    LWSEM_STRUCT                    IO_LWSEM;
 
    /*!
-    * \brief When I/O device drivers are added, their initialization tables are
-    * linked onto this queue by the I/O driver installation function.
-    */
+	* \brief When I/O device drivers are added, their initialization tables are
+	* linked onto this queue by the I/O driver installation function.
+	*/
    QUEUE_STRUCT                    IO_DEVICES;
 
    /*!
-    * \brief The default stdin I/O FILE pointer constructed at initialization
-    * time from the IO_FUNCTION field of the MQX_INITIALIZATION_STRUCT.
-    */
+	* \brief The default stdin I/O FILE pointer constructed at initialization
+	* time from the IO_FUNCTION field of the MQX_INITIALIZATION_STRUCT.
+	*/
    void                           *PROCESSOR_STDIN;
    /*!
-    * \brief The default stdout I/O FILE pointer constructed at initialization
-    * time from the IO_FUNCTION field of the MQX_INITIALIZATION_STRUCT.
-    */
+	* \brief The default stdout I/O FILE pointer constructed at initialization
+	* time from the IO_FUNCTION field of the MQX_INITIALIZATION_STRUCT.
+	*/
    void                           *PROCESSOR_STDOUT;
    /*!
-    * \brief The default stderr I/O FILE pointer constructed at initialization
-    * time from the IO_FUNCTION field of the MQX_INITIALIZATION_STRUCT.
-    */
+	* \brief The default stderr I/O FILE pointer constructed at initialization
+	* time from the IO_FUNCTION field of the MQX_INITIALIZATION_STRUCT.
+	*/
    void                           *PROCESSOR_STDERR;
 
    /*!
-    * \brief IO component data pointers.
-    *
-    * When an IO component is installed, it allocates memory and stores a
-    * pointer to this memory in this array.
-    */
+	* \brief IO component data pointers.
+	*
+	* When an IO component is installed, it allocates memory and stores a
+	* pointer to this memory in this array.
+	*/
    void                           *IO_COMPONENTS[MAX_IO_COMPONENTS];
 
 #if MQX_USE_IDLE_TASK
 
    /*!
-    * \brief Idle loop counters, incremented by the idle task as it executes.
-    *
-    * IDLE_LOOP1 in incremented until it reaches 0. When IDLE_LOOP1 wraps to 0,
-    * IDLE_LOOP2 is incremented etc.
-    */
+	* \brief Idle loop counters, incremented by the idle task as it executes.
+	*
+	* IDLE_LOOP1 in incremented until it reaches 0. When IDLE_LOOP1 wraps to 0,
+	* IDLE_LOOP2 is incremented etc.
+	*/
    IDLE_LOOP_STRUCT                IDLE_LOOP;
 
    /*! \brief System Task Templates. */
@@ -1592,11 +1592,11 @@ typedef struct  kernel_data_struct
 #if MQX_USE_TIMER
 
    /*!
-    * \brief When this field is not NULL, the kernel timer ISR will call it at
-    * each timer interrupt.
-    *
-    * It is set by the timer component.
-    */
+	* \brief When this field is not NULL, the kernel timer ISR will call it at
+	* each timer interrupt.
+	*
+	* It is set by the timer component.
+	*/
    TIMER_COMPONENT_ISR_FPTR        TIMER_COMPONENT_ISR;
 #endif
 
@@ -1634,19 +1634,19 @@ typedef struct  kernel_data_struct
 
 #if MQX_IS_MULTI_PROCESSOR
    /*!
-    * \brief This function is called to handle IPC functionality.
-    *
-    * When a component determines that a request is for a different processor,
-    * it calls this function.
-    * The first parameter indicates which processor number to send
-    *    the message to,
-    * the second parameter indicates which component is to handle the
-    *    IPC message on the remote CPU.
-    * The third parameter indicates which function in the component to perform,
-    * the fourth parameter indicates the number of additional parameters
-    *    (All _mqx_uint).
-    * Following are the additional parameters.
-    */
+	* \brief This function is called to handle IPC functionality.
+	*
+	* When a component determines that a request is for a different processor,
+	* it calls this function.
+	* The first parameter indicates which processor number to send
+	*    the message to,
+	* the second parameter indicates which component is to handle the
+	*    IPC message on the remote CPU.
+	* The third parameter indicates which function in the component to perform,
+	* the fourth parameter indicates the number of additional parameters
+	*    (All _mqx_uint).
+	* Following are the additional parameters.
+	*/
    MQX_IPC_FPTR                    IPC;
 
    /*! \brief A pointer to the context information required by the IPC. */
@@ -1674,14 +1674,14 @@ typedef struct  kernel_data_struct
 
 #if MQX_EXTRA_TASK_STACK_ENABLE
    /*!
-    * \brief Size of extra memory reserved at the top of each task
-    * (user-defined.).
-    */
+	* \brief Size of extra memory reserved at the top of each task
+	* (user-defined.).
+	*/
    _mqx_uint                       TOS_RESERVED_SIZE;
    /*!
-    * \brief Align mask of extra memory reserved at the top of each task
-    * (user-defined).
-    */
+	* \brief Align mask of extra memory reserved at the top of each task
+	* (user-defined).
+	*/
    uint8_t                          TOS_RESERVED_ALIGN_MASK;
    /*! \brief Spare fields. */
    uint8_t                          RESERVED_FOR_ALIGNMENT_FILL[3];
@@ -1689,9 +1689,9 @@ typedef struct  kernel_data_struct
 
 #if MQXCFG_SPARSE_ISR_TABLE
    /*! \brief Sparse table ISR count.*/
-    uint16_t                        SPARSE_ISR_COUNT;
+	uint16_t                        SPARSE_ISR_COUNT;
    /*! \brief Sparse table ISR shift.*/
-    uint16_t                        SPARSE_ISR_SHIFT;
+	uint16_t                        SPARSE_ISR_SHIFT;
 #endif
 #if MQX_KERNEL_LOGGING
 # if MQX_CRIPPLED_EVALUATION
@@ -1777,9 +1777,9 @@ extern char *_klog_get_function_name_internal(uint32_t index);
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _klog_get_task_stack_usage_internal(
-    TD_STRUCT_PTR td_ptr,
-    _mem_size_ptr stack_size_ptr,
-    _mem_size_ptr stack_used_ptr
+	TD_STRUCT_PTR td_ptr,
+	_mem_size_ptr stack_size_ptr,
+	_mem_size_ptr stack_used_ptr
 );
 /*! \endcond */
 
@@ -1799,12 +1799,12 @@ extern void _klog_isr_start_internal(_mqx_uint vector_number);
  * \cond DOXYGEN_PRIVATE
  */
 extern void _klog_log(
-    _mqx_uint type,
-    _mqx_max_type p1,
-    _mqx_max_type p2,
-    _mqx_max_type p3,
-    _mqx_max_type p4,
-    _mqx_max_type p5
+	_mqx_uint type,
+	_mqx_max_type p1,
+	_mqx_max_type p2,
+	_mqx_max_type p3,
+	_mqx_max_type p4,
+	_mqx_max_type p5
 );
 /*! \endcond */
 
@@ -1818,8 +1818,8 @@ extern void _klog_yield_internal(void);
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _lwsem_wait_timed_internal(
-    LWSEM_STRUCT_PTR sem_ptr,
-    TD_STRUCT_PTR td_ptr
+	LWSEM_STRUCT_PTR sem_ptr,
+	TD_STRUCT_PTR td_ptr
 );
 /*! \endcond */
 
@@ -1833,10 +1833,10 @@ extern void _mqx_init_kernel_data_internal(void);
  * \cond DOXYGEN_PRIVATE
  */
 extern _task_id _task_create_internal(
-    _processor_number processor_number,
-    _mqx_uint template_index,
-    uint32_t parameter,
-    bool user
+	_processor_number processor_number,
+	_mqx_uint template_index,
+	uint32_t parameter,
+	bool user
 );
 /*! \endcond */
 
@@ -1844,10 +1844,10 @@ extern _task_id _task_create_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern TD_STRUCT_PTR _task_alloc_td_internal(
-    _mem_size stack_size,
-    _mem_size_ptr overhead,
-    void *input_stack_ptr,
-    _mqx_uint user
+	_mem_size stack_size,
+	_mem_size_ptr overhead,
+	void *input_stack_ptr,
+	_mqx_uint user
 );
 /*! \endcond */
 
@@ -1855,11 +1855,11 @@ extern TD_STRUCT_PTR _task_alloc_td_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern TD_STRUCT_PTR _task_build_internal(
-    _mqx_uint template_index,
-    uint32_t parameter,
-    void *stack_ptr,
-    _mqx_uint stack_size,
-    bool user
+	_mqx_uint template_index,
+	uint32_t parameter,
+	void *stack_ptr,
+	_mqx_uint stack_size,
+	bool user
 );
 /*! \endcond */
 
@@ -1867,8 +1867,8 @@ extern TD_STRUCT_PTR _task_build_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _task_fill_stack_internal(
-    _mqx_uint_ptr addr_ptr,
-    _mqx_uint size
+	_mqx_uint_ptr addr_ptr,
+	_mqx_uint size
 );
 /*! \endcond */
 
@@ -1876,12 +1876,12 @@ extern void _task_fill_stack_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern TD_STRUCT_PTR _task_init_internal(
-    TASK_TEMPLATE_STRUCT_PTR template_ptr,
-    _task_id creator_task_id,
-    uint32_t create_parameter,
-    bool dynamic,
-    void *input_stack_ptr,
-    _mem_size input_stack_size
+	TASK_TEMPLATE_STRUCT_PTR template_ptr,
+	_task_id creator_task_id,
+	uint32_t create_parameter,
+	bool dynamic,
+	void *input_stack_ptr,
+	_mem_size input_stack_size
 );
 /*! \endcond */
 
@@ -1895,8 +1895,8 @@ extern void _task_ready_internal(TD_STRUCT_PTR td_ptr);
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _task_set_error_td_internal(
-    TD_STRUCT_PTR td_ptr,
-    _mqx_uint new_error_code
+	TD_STRUCT_PTR td_ptr,
+	_mqx_uint new_error_code
 );
 /*! \endcond */
 
@@ -1904,8 +1904,8 @@ extern _mqx_uint _task_set_error_td_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _task_destroy_internal(
-    _task_id task_id,
-    bool  user
+	_task_id task_id,
+	bool  user
 );
 /*! \endcond */
 
@@ -1913,8 +1913,8 @@ extern _mqx_uint _task_destroy_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _task_abort_internal(
-    _task_id task_id,
-    bool user
+	_task_id task_id,
+	bool user
 );
 /*! \endcond */
 
@@ -1922,8 +1922,8 @@ extern _mqx_uint _task_abort_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _sched_boost_priority_internal(
-    register TD_STRUCT_PTR td_ptr,
-    register _mqx_uint priority
+	register TD_STRUCT_PTR td_ptr,
+	register _mqx_uint priority
 );
 /*! \endcond */
 
@@ -1931,7 +1931,7 @@ extern void _sched_boost_priority_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _sched_get_max_priority_on_q_internal(
-    register QUEUE_STRUCT_PTR queue_ptr
+	register QUEUE_STRUCT_PTR queue_ptr
 );
 /*! \endcond */
 
@@ -1939,8 +1939,8 @@ extern _mqx_uint _sched_get_max_priority_on_q_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _sched_insert_priorityq_internal(
-    register QUEUE_STRUCT_PTR queue_ptr,
-    register TD_STRUCT_PTR td_ptr
+	register QUEUE_STRUCT_PTR queue_ptr,
+	register TD_STRUCT_PTR td_ptr
 );
 /*! \endcond */
 
@@ -1948,8 +1948,8 @@ extern void _sched_insert_priorityq_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _sched_set_priority_internal(
-    register TD_STRUCT_PTR td_ptr,
-    register _mqx_uint new_priority
+	register TD_STRUCT_PTR td_ptr,
+	register _mqx_uint new_priority
 );
 /*! \endcond */
 
@@ -1957,8 +1957,8 @@ extern void _sched_set_priority_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _sched_unboost_priority_internal(
-    register TD_STRUCT_PTR td_ptr,
-    register _mqx_uint number_of_boosts
+	register TD_STRUCT_PTR td_ptr,
+	register _mqx_uint number_of_boosts
 );
 /*! \endcond */
 
@@ -1971,10 +1971,10 @@ extern void _sched_unboost_priority_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void *_mem_alloc_internal(
-    _mem_size requested_size,
-    TD_STRUCT_PTR td_ptr,
-    MEMPOOL_STRUCT_PTR mem_pool_ptr,
-    _mqx_uint_ptr error_ptr
+	_mem_size requested_size,
+	TD_STRUCT_PTR td_ptr,
+	MEMPOOL_STRUCT_PTR mem_pool_ptr,
+	_mqx_uint_ptr error_ptr
 );
 /*! \endcond */
 
@@ -1982,11 +1982,11 @@ extern void *_mem_alloc_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void *_mem_alloc_at_internal(
-    _mem_size          requested_size,
-    void              *requested_addr,
-    TD_STRUCT_PTR      td_ptr,
-    MEMPOOL_STRUCT_PTR mem_pool_ptr,
-    _mqx_uint_ptr      error_ptr
+	_mem_size          requested_size,
+	void              *requested_addr,
+	TD_STRUCT_PTR      td_ptr,
+	MEMPOOL_STRUCT_PTR mem_pool_ptr,
+	_mqx_uint_ptr      error_ptr
 );
 /*! \endcond */
 
@@ -1994,11 +1994,11 @@ extern void *_mem_alloc_at_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void *_mem_alloc_internal_align(
-    _mem_size requested_size,
-    _mem_size req_align,
-    TD_STRUCT_PTR td_ptr,
-    MEMPOOL_STRUCT_PTR mem_pool_ptr,
-    _mqx_uint_ptr error_ptr
+	_mem_size requested_size,
+	_mem_size req_align,
+	TD_STRUCT_PTR td_ptr,
+	MEMPOOL_STRUCT_PTR mem_pool_ptr,
+	_mqx_uint_ptr error_ptr
 );
 /*! \endcond */
 
@@ -2006,8 +2006,8 @@ extern void *_mem_alloc_internal_align(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _mem_alloc_extend_internal(
-    void *mem_ptr,
-    _mem_size size
+	void *mem_ptr,
+	_mem_size size
 );
 /*! \endcond */
 
@@ -2015,8 +2015,8 @@ extern _mqx_uint _mem_alloc_extend_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _mem_free_part_internal(
-    void *mem_ptr,
-    _mem_size requested_size
+	void *mem_ptr,
+	_mem_size requested_size
 );
 /*! \endcond */
 
@@ -2024,8 +2024,8 @@ extern _mqx_uint _mem_free_part_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void *_mem_get_next_block_internal(
-    TD_STRUCT_PTR td_ptr,
-    void *memory_ptr
+	TD_STRUCT_PTR td_ptr,
+	void *memory_ptr
 );
 /*! \endcond */
 
@@ -2039,9 +2039,9 @@ extern _mqx_uint _mem_init_internal(void);
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _mem_transfer_td_internal(
-    void *memory_ptr,
-    TD_STRUCT_PTR source_td,
-    TD_STRUCT_PTR target_td
+	void *memory_ptr,
+	TD_STRUCT_PTR source_td,
+	TD_STRUCT_PTR target_td
 );
 /*! \endcond */
 
@@ -2049,8 +2049,8 @@ extern _mqx_uint _mem_transfer_td_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _mem_transfer_internal(
-    void *memory_ptr,
-    TD_STRUCT_PTR target_td
+	void *memory_ptr,
+	TD_STRUCT_PTR target_td
 );
 /*! \endcond */
 
@@ -2078,9 +2078,9 @@ extern void _sched_run_internal(void);
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _sched_set_rr_interval_internal(
-    _task_id task_id,
-    MQX_TICK_STRUCT_PTR new_rr_tick_ptr,
-    MQX_TICK_STRUCT_PTR old_rr_tick_ptr
+	_task_id task_id,
+	MQX_TICK_STRUCT_PTR new_rr_tick_ptr,
+	MQX_TICK_STRUCT_PTR old_rr_tick_ptr
 );
 /*! \endcond */
 
@@ -2088,8 +2088,8 @@ extern _mqx_uint _sched_set_rr_interval_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _sched_get_rr_interval_internal(
-    _task_id task_id,
-    MQX_TICK_STRUCT_PTR tick_ptr
+	_task_id task_id,
+	MQX_TICK_STRUCT_PTR tick_ptr
 );
 /*! \endcond */
 
@@ -2109,7 +2109,7 @@ extern void _task_exit_function_internal(void);
  * \cond DOXYGEN_PRIVATE
  */
 extern uint32_t _task_get_parameter_internal(
-    TD_STRUCT_PTR td_ptr
+	TD_STRUCT_PTR td_ptr
 );
 /*! \endcond */
 
@@ -2117,8 +2117,8 @@ extern uint32_t _task_get_parameter_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern uint32_t _task_set_parameter_internal(
-    uint32_t new_value,
-    TD_STRUCT_PTR td_ptr
+	uint32_t new_value,
+	TD_STRUCT_PTR td_ptr
 );
 /*! \endcond */
 
@@ -2126,7 +2126,7 @@ extern uint32_t _task_set_parameter_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _task_sync_priority_internal(
-    TD_STRUCT_PTR td_ptr
+	TD_STRUCT_PTR td_ptr
  );
 /*! \endcond */
 
@@ -2143,7 +2143,7 @@ extern const int32_t  _timezone;
  * \cond DOXYGEN_PRIVATE
  */
 extern void _time_delay_internal(
-    register TD_STRUCT_PTR td_ptr
+	register TD_STRUCT_PTR td_ptr
 );
 /*! \endcond */
 
@@ -2151,12 +2151,12 @@ extern void _time_delay_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern bool _psp_build_stack_frame(
-      TD_STRUCT_PTR td_ptr,
-      void *stack_ptr,
-      _mem_size stack_size,
-      TASK_TEMPLATE_STRUCT_PTR template_ptr,
-      _mqx_uint status_register,
-      uint32_t create_parameter
+	  TD_STRUCT_PTR td_ptr,
+	  void *stack_ptr,
+	  _mem_size stack_size,
+	  TASK_TEMPLATE_STRUCT_PTR template_ptr,
+	  _mqx_uint status_register,
+	  uint32_t create_parameter
 );
 /*! \endcond */
 
@@ -2194,10 +2194,10 @@ extern void _psp_save_fp_context_internal(void);
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _lwsem_create_internal(
-    LWSEM_STRUCT_PTR sem_ptr,
-    _mqx_int initial_number,
-    bool hidden,
-    bool user
+	LWSEM_STRUCT_PTR sem_ptr,
+	_mqx_int initial_number,
+	bool hidden,
+	bool user
 );
 /*! \endcond */
 
@@ -2205,8 +2205,8 @@ extern _mqx_uint _lwsem_create_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _lwsem_destroy_internal(
-    LWSEM_STRUCT_PTR sem_ptr,
-    bool user
+	LWSEM_STRUCT_PTR sem_ptr,
+	bool user
 );
 /*! \endcond */
 

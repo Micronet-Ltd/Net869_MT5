@@ -38,8 +38,8 @@ extern const NIO_DEV_FN_STRUCT nio_tty_dev_fn;
 
 typedef struct
 {
-    char        *DEV_NAME;   /* Name for device used by ntty driver */
-    uint32_t     OPEN_FLAGS; /* Flag to open device used by ntty driver*/
+	char        *DEV_NAME;   /* Name for device used by ntty driver */
+	uint32_t     OPEN_FLAGS; /* Flag to open device used by ntty driver*/
 } NIO_TTY_INIT_DATA_STRUCT;
 
 #endif //__ntty_h__

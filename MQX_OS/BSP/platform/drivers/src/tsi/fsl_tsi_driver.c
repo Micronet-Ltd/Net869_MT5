@@ -57,74 +57,74 @@ extern const tsi_parameter_limits_t * g_tsiParamLimits[tsi_OpModeCnt];
 *END**************************************************************************/
 tsi_status_t TSI_DRV_Init(uint32_t instance, tsi_state_t * tsiState, const tsi_user_config_t * tsiUserConfig)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
 
-    TSI_Type * base = g_tsiBase[instance];
-    tsi_state_t * tsiSt = g_tsiStatePtr[instance];
+	TSI_Type * base = g_tsiBase[instance];
+	tsi_state_t * tsiSt = g_tsiStatePtr[instance];
 
-    /* Critical section. */
-    OSA_EnterCritical(kCriticalDisableInt);
+	/* Critical section. */
+	OSA_EnterCritical(kCriticalDisableInt);
 
-    /* Exit if current instance is already initialized. */
-    if(tsiSt)
-    {
-        /* End of critical section. */
-        OSA_ExitCritical(kCriticalDisableInt);
-        return kStatus_TSI_Initialized;
-    }
-    /* Save runtime structure pointer.*/
-    tsiSt = g_tsiStatePtr[instance] = tsiState;
+	/* Exit if current instance is already initialized. */
+	if(tsiSt)
+	{
+		/* End of critical section. */
+		OSA_ExitCritical(kCriticalDisableInt);
+		return kStatus_TSI_Initialized;
+	}
+	/* Save runtime structure pointer.*/
+	tsiSt = g_tsiStatePtr[instance] = tsiState;
 
-    /* Clear the state structure for this instance. */
-    memset(tsiSt, 0, sizeof(tsi_state_t));
+	/* Clear the state structure for this instance. */
+	memset(tsiSt, 0, sizeof(tsi_state_t));
 
-    /* Create the mutex used by whole driver. */
-    OSA_MutexCreate(&tsiSt->lock);
-    /* Create the mutex used by change mode function. */
-    OSA_MutexCreate(&tsiSt->lockChangeMode);
-    
-    /* Critical section. Access to global variable */
-    if (kStatus_OSA_Success != OSA_MutexLock(&tsiSt->lock, OSA_WAIT_FOREVER))
-    {
-        /* End of critical section. */
-        OSA_ExitCritical(kCriticalDisableInt);  
-        return kStatus_TSI_Error;
-    }
+	/* Create the mutex used by whole driver. */
+	OSA_MutexCreate(&tsiSt->lock);
+	/* Create the mutex used by change mode function. */
+	OSA_MutexCreate(&tsiSt->lockChangeMode);
 
-    /* End of critical section. */
-    OSA_ExitCritical(kCriticalDisableInt);
+	/* Critical section. Access to global variable */
+	if (kStatus_OSA_Success != OSA_MutexLock(&tsiSt->lock, OSA_WAIT_FOREVER))
+	{
+		/* End of critical section. */
+		OSA_ExitCritical(kCriticalDisableInt);
+		return kStatus_TSI_Error;
+	}
 
-    tsiSt->opMode = tsi_OpModeNormal;
+	/* End of critical section. */
+	OSA_ExitCritical(kCriticalDisableInt);
 
-    tsiSt->opModesData[tsiSt->opMode].config = *tsiUserConfig->config; /* Store the hardware configuration. */
+	tsiSt->opMode = tsi_OpModeNormal;
 
-    tsiSt->pCallBackFunc = tsiUserConfig->pCallBackFunc;
-    tsiSt->usrData = tsiUserConfig->usrData;
-    tsiSt->isBlockingMeasure = false;
-    /* Un-gate TSI module clock */
-    CLOCK_SYS_EnableTsiClock(instance);
+	tsiSt->opModesData[tsiSt->opMode].config = *tsiUserConfig->config; /* Store the hardware configuration. */
 
-    /* Initialize the interrupt sync object. */
-    OSA_SemaCreate(&tsiSt->irqSync, 0);
+	tsiSt->pCallBackFunc = tsiUserConfig->pCallBackFunc;
+	tsiSt->usrData = tsiUserConfig->usrData;
+	tsiSt->isBlockingMeasure = false;
+	/* Un-gate TSI module clock */
+	CLOCK_SYS_EnableTsiClock(instance);
 
-    TSI_HAL_Init(base);
-    TSI_HAL_SetConfiguration(base, &tsiSt->opModesData[tsiSt->opMode].config);
-    TSI_HAL_EnableInterrupt(base);
-    TSI_HAL_EnableEndOfScanInterrupt(base);
-    TSI_HAL_EnableSoftwareTriggerScan(base);
+	/* Initialize the interrupt sync object. */
+	OSA_SemaCreate(&tsiSt->irqSync, 0);
 
-    /* Disable all electrodes */
-    tsiState->opModesData[tsiState->opMode].enabledElectrodes = 0;
+	TSI_HAL_Init(base);
+	TSI_HAL_SetConfiguration(base, &tsiSt->opModesData[tsiSt->opMode].config);
+	TSI_HAL_EnableInterrupt(base);
+	TSI_HAL_EnableEndOfScanInterrupt(base);
+	TSI_HAL_EnableSoftwareTriggerScan(base);
 
-    /* Enable TSI interrupt on NVIC level. */
-    INT_SYS_EnableIRQ(g_tsiIrqId[instance]);
+	/* Disable all electrodes */
+	tsiState->opModesData[tsiState->opMode].enabledElectrodes = 0;
 
-    tsiSt->status = kStatus_TSI_Initialized;
+	/* Enable TSI interrupt on NVIC level. */
+	INT_SYS_EnableIRQ(g_tsiIrqId[instance]);
 
-    /* End of critical section. */
-    OSA_MutexUnlock(&tsiSt->lock);
+	tsiSt->status = kStatus_TSI_Initialized;
 
-    return kStatus_TSI_Success;
+	/* End of critical section. */
+	OSA_MutexUnlock(&tsiSt->lock);
+
+	return kStatus_TSI_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -136,35 +136,35 @@ tsi_status_t TSI_DRV_Init(uint32_t instance, tsi_state_t * tsiState, const tsi_u
 *END**************************************************************************/
 tsi_status_t TSI_DRV_DeInit(uint32_t instance)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
 
-    TSI_Type * base = g_tsiBase[instance];
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	TSI_Type * base = g_tsiBase[instance];
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    if (tsiState == NULL)
-    {
-        return kStatus_TSI_Error;
-    }
+	if (tsiState == NULL)
+	{
+		return kStatus_TSI_Error;
+	}
 
-    TSI_HAL_DisableInterrupt(base);
-    tsiState->opModesData[tsiState->opMode].enabledElectrodes = 0;
-    TSI_HAL_ClearOutOfRangeFlag(base);
-    TSI_HAL_ClearEndOfScanFlag(base);
-    TSI_HAL_DisableModule(base);
+	TSI_HAL_DisableInterrupt(base);
+	tsiState->opModesData[tsiState->opMode].enabledElectrodes = 0;
+	TSI_HAL_ClearOutOfRangeFlag(base);
+	TSI_HAL_ClearEndOfScanFlag(base);
+	TSI_HAL_DisableModule(base);
 
-    /* Disable the interrupt */
-    INT_SYS_DisableIRQ(g_tsiIrqId[instance]);
+	/* Disable the interrupt */
+	INT_SYS_DisableIRQ(g_tsiIrqId[instance]);
 
-    /* Destroy the interrupt synch object*/
-    OSA_SemaDestroy(&tsiState->irqSync);
+	/* Destroy the interrupt synch object*/
+	OSA_SemaDestroy(&tsiState->irqSync);
 
-    /* Clear runtime structure pointer.*/
-    tsiState = NULL;
+	/* Clear runtime structure pointer.*/
+	tsiState = NULL;
 
-    /* Gate TSI module clock */
-    CLOCK_SYS_DisableTsiClock(instance);
+	/* Gate TSI module clock */
+	CLOCK_SYS_DisableTsiClock(instance);
 
-    return kStatus_TSI_Success;
+	return kStatus_TSI_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -176,30 +176,30 @@ tsi_status_t TSI_DRV_DeInit(uint32_t instance)
 *END**************************************************************************/
 tsi_status_t TSI_DRV_SetCallBackFunc(uint32_t instance, const tsi_callback_t pFuncCallBack, void * usrData)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	assert(instance < TSI_INSTANCE_COUNT);
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    /* Critical section. Access to global variable */
-    if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
-    {
-        return kStatus_TSI_Error;
-    }
+	/* Critical section. Access to global variable */
+	if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
+	{
+		return kStatus_TSI_Error;
+	}
 
-    if (g_tsiStatePtr[instance]->status != kStatus_TSI_Initialized)
-    {
-        /* End of critical section. */
-        OSA_MutexUnlock(&tsiState->lock);
+	if (g_tsiStatePtr[instance]->status != kStatus_TSI_Initialized)
+	{
+		/* End of critical section. */
+		OSA_MutexUnlock(&tsiState->lock);
 
-        return g_tsiStatePtr[instance]->status;
-    }
+		return g_tsiStatePtr[instance]->status;
+	}
 
-    g_tsiStatePtr[instance]->pCallBackFunc = pFuncCallBack;
-    g_tsiStatePtr[instance]->usrData = usrData;
+	g_tsiStatePtr[instance]->pCallBackFunc = pFuncCallBack;
+	g_tsiStatePtr[instance]->usrData = usrData;
 
-    /* End of critical section. */
-    OSA_MutexUnlock(&tsiState->lock);
+	/* End of critical section. */
+	OSA_MutexUnlock(&tsiState->lock);
 
-    return kStatus_TSI_Success;
+	return kStatus_TSI_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -210,11 +210,11 @@ tsi_status_t TSI_DRV_SetCallBackFunc(uint32_t instance, const tsi_callback_t pFu
 *END**************************************************************************/
 uint32_t TSI_DRV_GetEnabledElectrodes(uint32_t instance)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
 
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    return tsiState->opModesData[tsiState->opMode].enabledElectrodes;
+	return tsiState->opModesData[tsiState->opMode].enabledElectrodes;
 }
 
 /*FUNCTION**********************************************************************
@@ -226,32 +226,32 @@ uint32_t TSI_DRV_GetEnabledElectrodes(uint32_t instance)
 *END**************************************************************************/
 tsi_status_t TSI_DRV_MeasureBlocking(uint32_t instance)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
-    osa_status_t syncStatus;
-    tsi_status_t status;
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	assert(instance < TSI_INSTANCE_COUNT);
+	osa_status_t syncStatus;
+	tsi_status_t status;
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    /* Start the measurement process */
-    if ((status = TSI_DRV_Measure(instance)) != kStatus_TSI_Success)
-    {
-        return status;
-    }
+	/* Start the measurement process */
+	if ((status = TSI_DRV_Measure(instance)) != kStatus_TSI_Success)
+	{
+		return status;
+	}
 
-    tsiState->isBlockingMeasure = true;
+	tsiState->isBlockingMeasure = true;
 
-    do
-    {
-        syncStatus = OSA_SemaWait(&tsiState->irqSync, 1000); /* 1 second timeout. */
-    }while(syncStatus == kStatus_OSA_Idle);
+	do
+	{
+		syncStatus = OSA_SemaWait(&tsiState->irqSync, 1000); /* 1 second timeout. */
+	}while(syncStatus == kStatus_OSA_Idle);
 
-    if (syncStatus != kStatus_OSA_Success)
-    {
-        /* Abort the measurement so it doesn't continue unexpectedly.*/
-        TSI_DRV_AbortMeasure(instance);
-        return kStatus_TSI_Error;
-    }
+	if (syncStatus != kStatus_OSA_Success)
+	{
+		/* Abort the measurement so it doesn't continue unexpectedly.*/
+		TSI_DRV_AbortMeasure(instance);
+		return kStatus_TSI_Error;
+	}
 
-    return kStatus_TSI_Success;
+	return kStatus_TSI_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -262,43 +262,43 @@ tsi_status_t TSI_DRV_MeasureBlocking(uint32_t instance)
 *END**************************************************************************/
 tsi_status_t TSI_DRV_AbortMeasure(uint32_t instance)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
 
-    TSI_Type * base = g_tsiBase[instance];
-    tsi_status_t  status = kStatus_TSI_Success;
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	TSI_Type * base = g_tsiBase[instance];
+	tsi_status_t  status = kStatus_TSI_Success;
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    /* Critical section. Access to global variable */
-    if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
-    {
-        return kStatus_TSI_Error;
-    }
+	/* Critical section. Access to global variable */
+	if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
+	{
+		return kStatus_TSI_Error;
+	}
 
-    if(tsiState->status == kStatus_TSI_Recalibration)
-    {
-       status = kStatus_TSI_Recalibration;
-    }
-    else if(tsiState->status != kStatus_TSI_Initialized)
-    {
-        TSI_HAL_ClearOutOfRangeFlag(base);
-        TSI_HAL_ClearEndOfScanFlag(base);
-        TSI_HAL_DisableModule(base);
+	if(tsiState->status == kStatus_TSI_Recalibration)
+	{
+	   status = kStatus_TSI_Recalibration;
+	}
+	else if(tsiState->status != kStatus_TSI_Initialized)
+	{
+		TSI_HAL_ClearOutOfRangeFlag(base);
+		TSI_HAL_ClearEndOfScanFlag(base);
+		TSI_HAL_DisableModule(base);
 
-        if(tsiState->isBlockingMeasure)
-        {
-            /* Signal the synchronous completion object. */
-            OSA_SemaPost(&tsiState->irqSync);
-            tsiState->isBlockingMeasure = false;
-        }
+		if(tsiState->isBlockingMeasure)
+		{
+			/* Signal the synchronous completion object. */
+			OSA_SemaPost(&tsiState->irqSync);
+			tsiState->isBlockingMeasure = false;
+		}
 
-        /* Return status of the driver to initialized state */
-        tsiState->status = kStatus_TSI_Initialized;
-    }
+		/* Return status of the driver to initialized state */
+		tsiState->status = kStatus_TSI_Initialized;
+	}
 
-    /* End of critical section. */
-    OSA_MutexUnlock(&tsiState->lock);
+	/* End of critical section. */
+	OSA_MutexUnlock(&tsiState->lock);
 
-    return status;
+	return status;
 }
 
 /*FUNCTION**********************************************************************
@@ -309,9 +309,9 @@ tsi_status_t TSI_DRV_AbortMeasure(uint32_t instance)
 *END**************************************************************************/
 tsi_status_t TSI_DRV_GetStatus(uint32_t instance)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
 
-    return g_tsiStatePtr[instance]->status;
+	return g_tsiStatePtr[instance]->status;
 }
 
 /*FUNCTION**********************************************************************
@@ -322,43 +322,43 @@ tsi_status_t TSI_DRV_GetStatus(uint32_t instance)
 *END**************************************************************************/
 tsi_status_t TSI_DRV_Recalibrate(uint32_t instance, uint32_t * lowestSignal)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
 
-    TSI_Type * base = g_tsiBase[instance];
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
-    
-    /* Critical section. Access to global variable */
-    if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
-    {
-        return kStatus_TSI_Error;
-    }
+	TSI_Type * base = g_tsiBase[instance];
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    if (tsiState->status != kStatus_TSI_Initialized)
-    {
-        /* End of critical section. */
-        OSA_MutexUnlock(&tsiState->lock);
-        return tsiState->status;
-    }
+	/* Critical section. Access to global variable */
+	if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
+	{
+		return kStatus_TSI_Error;
+	}
 
-    tsiState->status = kStatus_TSI_Recalibration;
+	if (tsiState->status != kStatus_TSI_Initialized)
+	{
+		/* End of critical section. */
+		OSA_MutexUnlock(&tsiState->lock);
+		return tsiState->status;
+	}
 
-    *lowestSignal = TSI_HAL_Recalibrate(base, &(tsiState->opModesData[tsiState->opMode].config),
-                                       tsiState->opModesData[tsiState->opMode].enabledElectrodes,
-                                       g_tsiParamLimits[tsiState->opMode]);
+	tsiState->status = kStatus_TSI_Recalibration;
 
-    tsiState->status = kStatus_TSI_Initialized;
+	*lowestSignal = TSI_HAL_Recalibrate(base, &(tsiState->opModesData[tsiState->opMode].config),
+									   tsiState->opModesData[tsiState->opMode].enabledElectrodes,
+									   g_tsiParamLimits[tsiState->opMode]);
 
-    /* End of critical section. */
-    OSA_MutexUnlock(&tsiState->lock);
+	tsiState->status = kStatus_TSI_Initialized;
 
-    if(*lowestSignal == 0)
-    {
-      return kStatus_TSI_Error;
-    }
-    else
-    {
-      return kStatus_TSI_Success;
-    }
+	/* End of critical section. */
+	OSA_MutexUnlock(&tsiState->lock);
+
+	if(*lowestSignal == 0)
+	{
+	  return kStatus_TSI_Error;
+	}
+	else
+	{
+	  return kStatus_TSI_Success;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -369,39 +369,39 @@ tsi_status_t TSI_DRV_Recalibrate(uint32_t instance, uint32_t * lowestSignal)
 *END**************************************************************************/
 tsi_status_t TSI_DRV_DisableLowPower(uint32_t instance, const tsi_modes_t mode)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
 
-    TSI_Type * base = g_tsiBase[instance];
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
-    tsi_status_t status;
+	TSI_Type * base = g_tsiBase[instance];
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	tsi_status_t status;
 
-    /* Critical section. Access to global variable */
-    if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
-    {
-        return kStatus_TSI_Error;
-    }
+	/* Critical section. Access to global variable */
+	if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
+	{
+		return kStatus_TSI_Error;
+	}
 
-    if (tsiState->status != kStatus_TSI_LowPower)
-    {
-        /* End of critical section. */
-        OSA_MutexUnlock(&tsiState->lock);
+	if (tsiState->status != kStatus_TSI_LowPower)
+	{
+		/* End of critical section. */
+		OSA_MutexUnlock(&tsiState->lock);
 
-        return tsiState->status;
-    }
+		return tsiState->status;
+	}
 
-    TSI_HAL_DisableLowPower(base);
-    TSI_HAL_EnableInterrupt(base);
-    TSI_HAL_EnableEndOfScanInterrupt(base);
-    TSI_HAL_EnableSoftwareTriggerScan(base);
+	TSI_HAL_DisableLowPower(base);
+	TSI_HAL_EnableInterrupt(base);
+	TSI_HAL_EnableEndOfScanInterrupt(base);
+	TSI_HAL_EnableSoftwareTriggerScan(base);
 
-    tsiState->status = kStatus_TSI_Initialized;
+	tsiState->status = kStatus_TSI_Initialized;
 
-    /* End of critical section. */
-    OSA_MutexUnlock(&tsiState->lock);
+	/* End of critical section. */
+	OSA_MutexUnlock(&tsiState->lock);
 
-    status = TSI_DRV_ChangeMode(instance, mode);
+	status = TSI_DRV_ChangeMode(instance, mode);
 
-    return status;
+	return status;
 }
 
 /*FUNCTION**********************************************************************
@@ -412,9 +412,9 @@ tsi_status_t TSI_DRV_DisableLowPower(uint32_t instance, const tsi_modes_t mode)
 *END**************************************************************************/
 tsi_modes_t TSI_DRV_GetMode(uint32_t instance)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
 
-    return g_tsiStatePtr[instance]->opMode;
+	return g_tsiStatePtr[instance]->opMode;
 }
 
 /*FUNCTION**********************************************************************
@@ -425,31 +425,30 @@ tsi_modes_t TSI_DRV_GetMode(uint32_t instance)
 *END**************************************************************************/
 tsi_status_t TSI_DRV_SaveConfiguration(uint32_t instance, const tsi_modes_t mode, tsi_operation_mode_t * operationMode)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
-    assert(operationMode);
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
-    
-    if(mode >= tsi_OpModeCnt)
-    {
-        return kStatus_TSI_InvalidMode;
-    }
+	assert(instance < TSI_INSTANCE_COUNT);
+	assert(operationMode);
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    /* Critical section. Access to global variable */
-    if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
-    {
-        return kStatus_TSI_Error;
-    }
+	if(mode >= tsi_OpModeCnt)
+	{
+		return kStatus_TSI_InvalidMode;
+	}
 
-    *operationMode =  tsiState->opModesData[mode];
+	/* Critical section. Access to global variable */
+	if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
+	{
+		return kStatus_TSI_Error;
+	}
 
-    /* End of critical section. */
-    OSA_MutexUnlock(&tsiState->lock);
+	*operationMode =  tsiState->opModesData[mode];
 
-    return  kStatus_TSI_Success;
+	/* End of critical section. */
+	OSA_MutexUnlock(&tsiState->lock);
+
+	return  kStatus_TSI_Success;
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

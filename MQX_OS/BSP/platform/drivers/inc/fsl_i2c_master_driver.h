@@ -51,15 +51,15 @@ extern I2C_Type * const g_i2cBase[I2C_INSTANCE_COUNT];
  * Definitions
  ******************************************************************************/
 
-/*! 
+/*!
  * @brief Information necessary to communicate with an I2C slave device.
  * @internal gui name="Master configuration" id="i2cMasterCfg"
  */
-typedef struct I2CDevice 
+typedef struct I2CDevice
 {
-    uint16_t address;        /*!< Slave's 7-bit or 10-bit address. If 10-bit address,
-                                  the first 6 bits must be 011110 in binary. @internal gui name="Address" id="Address" */
-    uint32_t baudRate_kbps; /*!< The baud rate in kbps to use by current slave device. @internal gui name="Baudrate" id="BaudRate" */
+	uint16_t address;        /*!< Slave's 7-bit or 10-bit address. If 10-bit address,
+								  the first 6 bits must be 011110 in binary. @internal gui name="Address" id="Address" */
+	uint32_t baudRate_kbps; /*!< The baud rate in kbps to use by current slave device. @internal gui name="Baudrate" id="BaudRate" */
 } i2c_device_t;
 
 /*!
@@ -70,16 +70,16 @@ typedef struct I2CDevice
  *      future releases.
  */
 typedef struct I2CMasterState {
-    uint8_t * rxBuff;
-    volatile uint32_t rxSize;
-    const uint8_t * txBuff;
-    volatile uint32_t txSize;
-    volatile i2c_status_t status;
-    volatile bool i2cIdle;
-    bool isBlocking;
-    bool isRequesting;
-    uint32_t lastBaudRate_kbps;
-    semaphore_t irqSync;
+	uint8_t * rxBuff;
+	volatile uint32_t rxSize;
+	const uint8_t * txBuff;
+	volatile uint32_t txSize;
+	volatile i2c_status_t status;
+	volatile bool i2cIdle;
+	bool isBlocking;
+	bool isRequesting;
+	uint32_t lastBaudRate_kbps;
+	semaphore_t irqSync;
 } i2c_master_state_t;
 
 /*******************************************************************************
@@ -124,7 +124,7 @@ void I2C_DRV_MasterSetBaudRate(uint32_t instance, const i2c_device_t * device);
  * @brief Performs a blocking send transaction on the I2C bus.
  *
  * Both cmdBuff and txBuff are byte aligned, user needs to prepare these buffers
- * according to related protocol if slave devices data are not byte-aligned. 
+ * according to related protocol if slave devices data are not byte-aligned.
  *
  * @param instance    The I2C peripheral instance number.
  * @param device      The pointer to the I2C device information structure.
@@ -136,12 +136,12 @@ void I2C_DRV_MasterSetBaudRate(uint32_t instance, const i2c_device_t * device);
  * @return Error or success status returned by API.
  */
 i2c_status_t I2C_DRV_MasterSendDataBlocking(uint32_t instance,
-                                            const i2c_device_t * device,
-                                            const uint8_t * cmdBuff,
-                                            uint32_t cmdSize,
-                                            const uint8_t * txBuff,
-                                            uint32_t txSize,
-                                            uint32_t timeout_ms);
+											const i2c_device_t * device,
+											const uint8_t * cmdBuff,
+											uint32_t cmdSize,
+											const uint8_t * txBuff,
+											uint32_t txSize,
+											uint32_t timeout_ms);
 
 /*!
  * @brief Performs a non-blocking send transaction on the I2C bus.
@@ -150,7 +150,7 @@ i2c_status_t I2C_DRV_MasterSendDataBlocking(uint32_t instance,
  * transfer Size. The user must check the status of I2C to know the whether transmission
  * is finished or not.
  * Both cmdBuff and txBuff are byte aligned, user needs to prepare these buffers
- * according to related protocol if slave devices data are not byte-aligned. 
+ * according to related protocol if slave devices data are not byte-aligned.
  *
  * @param instance    The I2C peripheral instance number.
  * @param device      The pointer to the I2C device information structure.
@@ -161,11 +161,11 @@ i2c_status_t I2C_DRV_MasterSendDataBlocking(uint32_t instance,
  * @return Error or success status returned by API.
  */
 i2c_status_t I2C_DRV_MasterSendData(uint32_t instance,
-                                    const i2c_device_t * device,
-                                    const uint8_t * cmdBuff,
-                                    uint32_t cmdSize,
-                                    const uint8_t * txBuff,
-                                    uint32_t txSize);
+									const i2c_device_t * device,
+									const uint8_t * cmdBuff,
+									uint32_t cmdSize,
+									const uint8_t * txBuff,
+									uint32_t txSize);
 
 /*!
  * @brief Gets the current status of the I2C master transmit.
@@ -190,7 +190,7 @@ i2c_status_t I2C_DRV_MasterAbortSendData(uint32_t instance);
  * @brief Performs a blocking receive transaction on the I2C bus.
  *
  * Both cmdBuff and rxBuff are byte aligned, user needs to prepare these buffers
- * according to related protocol if slave devices data are not byte-aligned. 
+ * according to related protocol if slave devices data are not byte-aligned.
  *
  * @param instance    The I2C peripheral instance number.
  * @param device      The pointer to the I2C device information structure.
@@ -202,12 +202,12 @@ i2c_status_t I2C_DRV_MasterAbortSendData(uint32_t instance);
  * @return Error or success status returned by API.
  */
 i2c_status_t I2C_DRV_MasterReceiveDataBlocking(uint32_t instance,
-                                               const i2c_device_t * device,
-                                               const uint8_t * cmdBuff,
-                                               uint32_t cmdSize,
-                                               uint8_t * rxBuff,
-                                               uint32_t rxSize,
-                                               uint32_t timeout_ms);
+											   const i2c_device_t * device,
+											   const uint8_t * cmdBuff,
+											   uint32_t cmdSize,
+											   uint8_t * rxBuff,
+											   uint32_t rxSize,
+											   uint32_t timeout_ms);
 
 /*!
  * @brief Performs a non-blocking receive transaction on the I2C bus.
@@ -216,7 +216,7 @@ i2c_status_t I2C_DRV_MasterReceiveDataBlocking(uint32_t instance,
  * the receive size. The user must check the status of I2C to know the whether the receiving
  * is finished or not.
  * Both cmdBuff and rxBuff are byte aligned, user needs to prepare these buffers
- * according to related protocol if slave devices data are not byte-aligned. 
+ * according to related protocol if slave devices data are not byte-aligned.
  *
  * @param instance    The I2C peripheral instance number.
  * @param device      The pointer to the I2C device information structure.
@@ -227,11 +227,11 @@ i2c_status_t I2C_DRV_MasterReceiveDataBlocking(uint32_t instance,
  * @return Error or success status returned by API.
  */
 i2c_status_t I2C_DRV_MasterReceiveData(uint32_t  instance,
-                                       const i2c_device_t * device,
-                                       const uint8_t * cmdBuff,
-                                       uint32_t cmdSize,
-                                       uint8_t * rxBuff,
-                                       uint32_t rxSize);
+									   const i2c_device_t * device,
+									   const uint8_t * cmdBuff,
+									   uint32_t cmdSize,
+									   uint8_t * rxBuff,
+									   uint32_t rxSize);
 
 /*!
  * @brief Gets the current status of the I2C master receive.
@@ -243,13 +243,13 @@ i2c_status_t I2C_DRV_MasterReceiveData(uint32_t  instance,
  * @return Current status of I2C receive: in progress (busy) or complete (success).
  */
 i2c_status_t I2C_DRV_MasterGetReceiveStatus(uint32_t instance,
-                                            uint32_t *bytesRemaining);
+											uint32_t *bytesRemaining);
 
 /*!
  * @brief Performs a polling receive transaction on the I2C bus.
  *
  * Both cmdBuff and rxBuff are byte aligned. The user needs to prepare these buffers
- * according to the related protocol if the slave device data is not byte-aligned. 
+ * according to the related protocol if the slave device data is not byte-aligned.
  *
  * @param instance  Instance number of the I2C module.
  * @param slaveAddr The slave address to communicate.
@@ -260,22 +260,22 @@ i2c_status_t I2C_DRV_MasterGetReceiveStatus(uint32_t instance,
  * @return Error or success status returned by API.
  */
 static inline i2c_status_t I2C_DRV_MasterReceiveDataPolling(uint32_t instance,
-                                                            uint16_t slaveAddr,
-                                                            const uint8_t * cmdBuff,
-                                                            uint32_t cmdSize,
-                                                            uint8_t * rxBuff,
-                                                            uint32_t rxSize)
+															uint16_t slaveAddr,
+															const uint8_t * cmdBuff,
+															uint32_t cmdSize,
+															uint8_t * rxBuff,
+															uint32_t rxSize)
 {
 
-    return I2C_HAL_MasterReceiveDataPolling(g_i2cBase[instance], slaveAddr,
-                                            cmdBuff, cmdSize, rxBuff, rxSize);
+	return I2C_HAL_MasterReceiveDataPolling(g_i2cBase[instance], slaveAddr,
+											cmdBuff, cmdSize, rxBuff, rxSize);
 }
 
 /*!
  * @brief Performs a polling send transaction on the I2C bus.
  *
  * Both cmdBuff and txBuff are byte aligned. The user needs to prepare these buffers
- * according to the related protocol if the slave device data is not byte-aligned. 
+ * according to the related protocol if the slave device data is not byte-aligned.
  *
  * @param instance  Instance number of the I2C module.
  * @param slaveAddr The slave address to communicate.
@@ -286,14 +286,14 @@ static inline i2c_status_t I2C_DRV_MasterReceiveDataPolling(uint32_t instance,
  * @return Error or success status returned by API.
  */
 static inline i2c_status_t I2C_DRV_MasterSendDataPolling(uint32_t instance,
-                                                         uint16_t slaveAddr,
-                                                         const uint8_t * cmdBuff,
-                                                         uint32_t cmdSize,
-                                                         const uint8_t * txBuff,
-                                                         uint32_t txSize)
+														 uint16_t slaveAddr,
+														 const uint8_t * cmdBuff,
+														 uint32_t cmdSize,
+														 const uint8_t * txBuff,
+														 uint32_t txSize)
 {
-    return I2C_HAL_MasterSendDataPolling(g_i2cBase[instance], slaveAddr,
-                                         cmdBuff, cmdSize, txBuff, txSize);
+	return I2C_HAL_MasterSendDataPolling(g_i2cBase[instance], slaveAddr,
+										 cmdBuff, cmdSize, txBuff, txSize);
 
 }
 
@@ -316,4 +316,3 @@ void I2C_DRV_MasterIRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

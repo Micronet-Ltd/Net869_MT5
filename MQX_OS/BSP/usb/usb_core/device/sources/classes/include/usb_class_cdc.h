@@ -131,11 +131,11 @@ typedef uint8_t   enet_address_t[6];
  */
 typedef struct _cdc_config_struct
 {
-    usb_application_callback_struct_t        cdc_application_callback;        /*!< application callback function to handle the Device status related event*/
-    usb_vendor_req_callback_struct_t         vendor_req_callback;             /*!< application callback function to handle the vendor request related event, reserved for future use*/
-    usb_class_specific_callback_struct_t     class_specific_callback;         /*!< application callback function to handle all the class related event*/
-    usb_desc_request_notify_struct_t*        desc_callback_ptr;               /*!< descriptor related callback function data structure*/
-    usb_board_init_callback_struct_t         board_init_callback;             /*!< application callback function to handle board init*/
+	usb_application_callback_struct_t        cdc_application_callback;        /*!< application callback function to handle the Device status related event*/
+	usb_vendor_req_callback_struct_t         vendor_req_callback;             /*!< application callback function to handle the vendor request related event, reserved for future use*/
+	usb_class_specific_callback_struct_t     class_specific_callback;         /*!< application callback function to handle all the class related event*/
+	usb_desc_request_notify_struct_t*        desc_callback_ptr;               /*!< descriptor related callback function data structure*/
+	usb_board_init_callback_struct_t         board_init_callback;             /*!< application callback function to handle board init*/
 } cdc_config_struct_t;
 
 /*!
@@ -146,8 +146,8 @@ typedef struct _cdc_config_struct
  */
 typedef struct _cdc_app_data_struct
 {
-    uint8_t*                                  data_ptr;     /* pointer to buffer       */
-    uint32_t                                  data_size;    /* buffer size of endpoint */
+	uint8_t*                                  data_ptr;     /* pointer to buffer       */
+	uint32_t                                  data_size;    /* buffer size of endpoint */
 } cdc_app_data_struct_t;
 
 /*!
@@ -158,9 +158,9 @@ typedef struct _cdc_app_data_struct
  */
 typedef struct _usb_rndis_info_struct
 {
-    enet_address_t mac_address;
-    _ip_address   ip_address;
-    uint32_t      rndis_max_frame_size;
+	enet_address_t mac_address;
+	_ip_address   ip_address;
+	uint32_t      rndis_max_frame_size;
 } usb_rndis_info_struct_t;
 /******************************************************************************
  * Global Functions
@@ -182,9 +182,9 @@ extern "C" {
 */
 extern usb_status USB_Class_CDC_Init
 (
-    uint8_t controller_id,
-    cdc_config_struct_t * cdc_config_ptr,
-    cdc_handle_t *    cdc_handle_ptr
+	uint8_t controller_id,
+	cdc_config_struct_t * cdc_config_ptr,
+	cdc_handle_t *    cdc_handle_ptr
 );
 
 /*!
@@ -198,7 +198,7 @@ extern usb_status USB_Class_CDC_Init
  */
 extern usb_status USB_Class_CDC_Deinit
 (
-    cdc_handle_t cdc_handle
+	cdc_handle_t cdc_handle
 );
 
 #if USBCFG_DEV_ADVANCED_CANCEL_ENABLE
@@ -219,10 +219,10 @@ extern usb_status USB_Class_CDC_Deinit
 
 usb_status USB_Class_CDC_Cancel
 (
-    cdc_handle_t cdc_handle,/*[IN]*/
-    uint8_t ep_num,/*[IN]*/
-    uint8_t type,
-    uint8_t direction
+	cdc_handle_t cdc_handle,/*[IN]*/
+	uint8_t ep_num,/*[IN]*/
+	uint8_t type,
+	uint8_t direction
 );
 #endif
 
@@ -238,10 +238,10 @@ usb_status USB_Class_CDC_Cancel
 */
 extern usb_status USB_Class_CDC_Send_Data
 (
-    cdc_handle_t          handle,
-    uint8_t             ep_num,
-    uint8_t*            app_buff,      /* [IN] buffer to send */
-    uint32_t            size           /* [IN] length of the transfer */
+	cdc_handle_t          handle,
+	uint8_t             ep_num,
+	uint8_t*            app_buff,      /* [IN] buffer to send */
+	uint32_t            size           /* [IN] length of the transfer */
 );
 
 /*!
@@ -256,10 +256,10 @@ extern usb_status USB_Class_CDC_Send_Data
 */
 extern usb_status USB_Class_CDC_Recv_Data
 (
-    cdc_handle_t          cdc_handle,
-    uint8_t             ep_num,
-    uint8_t*            buff_ptr,      /* [IN] buffer to send */
-    uint32_t            size           /* [IN] length of the transfer */
+	cdc_handle_t          cdc_handle,
+	uint8_t             ep_num,
+	uint8_t*            buff_ptr,      /* [IN] buffer to send */
+	uint32_t            size           /* [IN] length of the transfer */
 );
 
 
@@ -278,8 +278,8 @@ extern usb_status USB_Class_CDC_Recv_Data
  *****************************************************************************/
 extern usb_status USB_Class_CDC_Get_Speed
 (
-    cdc_handle_t         cdc_handle,
-    uint16_t *           speed/* [OUT] the requested error */
+	cdc_handle_t         cdc_handle,
+	uint16_t *           speed/* [OUT] the requested error */
 );
 
 #if CDC_RNDIS_SUPPORT
@@ -297,7 +297,7 @@ extern usb_status USB_Class_CDC_Get_Speed
  *****************************************************************************/
 extern uint8_t USB_Class_CDC_RNDIS_Get_Device_Status
 (
-    cdc_handle_t handle
+	cdc_handle_t handle
 );
 #endif
 
@@ -305,4 +305,3 @@ extern uint8_t USB_Class_CDC_RNDIS_Get_Device_Status
 }
 #endif
 #endif
-

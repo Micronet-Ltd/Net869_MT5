@@ -20,12 +20,12 @@
 * Comments:
 *   This file contains the definitions for functions that provide
 *   mathematics for working on 64 bit, 96 bit and 128 bit numbers.
-*   (Needed by the time conversion functions) The operations on the numbers 
+*   (Needed by the time conversion functions) The operations on the numbers
 *   are performed uing the 16-bit array representation of the numbers.
 *
 *
 *END************************************************************************/
-   
+
 #ifndef __psp_math_h__
 #define __psp_math_h__
 

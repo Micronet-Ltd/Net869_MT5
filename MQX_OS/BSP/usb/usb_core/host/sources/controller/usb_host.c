@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2008, 2013 - 2015 Freescale Semiconductor;
  * All Rights Reserved
  *
  * Copyright (c) 1989-2008 ARC International;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
  *
  * $FileName: usb_host.c$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
@@ -67,7 +67,7 @@ extern usb_status usb_otg_host_soc_init(uint8_t controller_id);
 #endif
 usb_status USB_log_error(char* file, uint32_t line, usb_status error)
 {
-    return error;
+	return error;
 }
 
 /*FUNCTION*-------------------------------------------------------------
@@ -82,27 +82,27 @@ usb_status USB_log_error(char* file, uint32_t line, usb_status error)
  *END*-----------------------------------------------------------------*/
 static usb_host_state_struct_t* _usb_host_get_handle(void)
 {
-    uint8_t i = 0;
-    OS_Lock();
-    for (; i < USBCFG_HOST_NUM; i++)
-    {
-        if (g_usb_host[i].occupied != USB_HOST_HANDLE_OCCUPIED)
-        {
-            OS_Mem_zero(&g_usb_host[i], sizeof(usb_host_state_struct_t));
-            g_usb_host[i].occupied = USB_HOST_HANDLE_OCCUPIED;
-            OS_Unlock();
-            return &g_usb_host[i];
-        }
-    }
-    OS_Unlock();
-    return NULL;
+	uint8_t i = 0;
+	OS_Lock();
+	for (; i < USBCFG_HOST_NUM; i++)
+	{
+		if (g_usb_host[i].occupied != USB_HOST_HANDLE_OCCUPIED)
+		{
+			OS_Mem_zero(&g_usb_host[i], sizeof(usb_host_state_struct_t));
+			g_usb_host[i].occupied = USB_HOST_HANDLE_OCCUPIED;
+			OS_Unlock();
+			return &g_usb_host[i];
+		}
+	}
+	OS_Unlock();
+	return NULL;
 }
 
 /*FUNCTION*-------------------------------------------------------------
  *
  *  Function Name  : _usb_host_release_handle
  *  Returned Value :
- *    
+ *
  *
  *  Comments       :
  *     release a valid host state pointer
@@ -110,16 +110,16 @@ static usb_host_state_struct_t* _usb_host_get_handle(void)
  *END*-----------------------------------------------------------------*/
 static void _usb_host_release_handle(usb_host_state_struct_t *usb_host)
 {
-    OS_Lock();
-    usb_host->occupied = USB_HOST_HANDLE_FREE;
-    OS_Unlock();
+	OS_Lock();
+	usb_host->occupied = USB_HOST_HANDLE_FREE;
+	OS_Unlock();
 }
 
 /*FUNCTION*-------------------------------------------------------------
  *
  *  Function Name  : _usb_host_release_handle
  *  Returned Value :
- *    
+ *
  *
  *  Comments       :
  *     Get the API table for the target host controller
@@ -128,17 +128,17 @@ static void _usb_host_release_handle(usb_host_state_struct_t *usb_host)
 static void _usb_host_get_api(uint8_t controller_id, const usb_host_api_functions_struct_t** controller_api_ptr)
 {
 #if USBCFG_HOST_KHCI
-    if(controller_id == USB_CONTROLLER_KHCI_0)
-    {
-        *controller_api_ptr = (usb_host_api_functions_struct_t const *)&_usb_khci_host_api_table;
-    }
+	if(controller_id == USB_CONTROLLER_KHCI_0)
+	{
+		*controller_api_ptr = (usb_host_api_functions_struct_t const *)&_usb_khci_host_api_table;
+	}
 #endif
 
 #if USBCFG_HOST_EHCI
-    if ((controller_id == USB_CONTROLLER_EHCI_0) || (controller_id == USB_CONTROLLER_EHCI_1))
-    {
-    *controller_api_ptr = (usb_host_api_functions_struct_t const*)&_usb_ehci_host_api_table;
-    }
+	if ((controller_id == USB_CONTROLLER_EHCI_0) || (controller_id == USB_CONTROLLER_EHCI_1))
+	{
+	*controller_api_ptr = (usb_host_api_functions_struct_t const*)&_usb_ehci_host_api_table;
+	}
 #endif
 }
 
@@ -163,43 +163,43 @@ usb_pipe_handle pipe_handle,
 tr_struct_t* tr_ptr
 )
 {
-    pipe_struct_t* pipe_ptr;
-    tr_struct_t* tr_list;
+	pipe_struct_t* pipe_ptr;
+	tr_struct_t* tr_list;
 
-    pipe_ptr = (pipe_struct_t*)pipe_handle;
+	pipe_ptr = (pipe_struct_t*)pipe_handle;
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_link_tr");
+	DEBUG_LOG_TRACE("_usb_host_link_tr");
 #endif
 
-    /* Check if the pipe id is valid */
-    if (!pipe_ptr->open)
-    {
+	/* Check if the pipe id is valid */
+	if (!pipe_ptr->open)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_link_tr Invalid pipe handle");
+		DEBUG_LOG_TRACE("_usb_host_link_tr Invalid pipe handle");
 #endif
-        return USB_log_error(__FILE__,__LINE__,USBERR_INVALID_PIPE_HANDLE);
-    }
+		return USB_log_error(__FILE__,__LINE__,USBERR_INVALID_PIPE_HANDLE);
+	}
 
-    tr_list = pipe_ptr->tr_list_ptr;
-    if (tr_list == NULL)
-    {
-        /* No list exists, start one */
-        pipe_ptr->tr_list_ptr = tr_ptr;
-    }
-    else
-    {
-        /* scan for unused TR's, and for index already in list */
-        //temp = tr_list;
-        while (tr_list->next != NULL)
-        {
-            tr_list = tr_list->next;
-        }
+	tr_list = pipe_ptr->tr_list_ptr;
+	if (tr_list == NULL)
+	{
+		/* No list exists, start one */
+		pipe_ptr->tr_list_ptr = tr_ptr;
+	}
+	else
+	{
+		/* scan for unused TR's, and for index already in list */
+		//temp = tr_list;
+		while (tr_list->next != NULL)
+		{
+			tr_list = tr_list->next;
+		}
 
-        /* now tr_list is the last one in the list */
-        tr_list->next = tr_ptr;
-    }
+		/* now tr_list is the last one in the list */
+		tr_list->next = tr_ptr;
+	}
 
-    return USB_OK;
+	return USB_OK;
 } /* EndBody */
 
 /*FUNCTION*-------------------------------------------------------------
@@ -223,61 +223,61 @@ usb_pipe_handle pipe_handle,
 tr_struct_t* tr_ptr
 )
 {
-    pipe_struct_t* pipe_ptr;
-    tr_struct_t* tr_list;
-    tr_struct_t* pre;
-    usb_host_handle usb_host_ptr;
+	pipe_struct_t* pipe_ptr;
+	tr_struct_t* tr_list;
+	tr_struct_t* pre;
+	usb_host_handle usb_host_ptr;
 
-    pipe_ptr = (pipe_struct_t*)pipe_handle;
+	pipe_ptr = (pipe_struct_t*)pipe_handle;
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_unlink_tr");
+	DEBUG_LOG_TRACE("_usb_host_unlink_tr");
 #endif
 
-    /* Check if the pipe id is valid */
-    if (!pipe_ptr->open)
-    {
+	/* Check if the pipe id is valid */
+	if (!pipe_ptr->open)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_unlink_tr Invalid pipe handle");
+		DEBUG_LOG_TRACE("_usb_host_unlink_tr Invalid pipe handle");
 #endif
-        return USB_log_error(__FILE__,__LINE__,USBERR_INVALID_PIPE_HANDLE);
-    } /* Endif */
+		return USB_log_error(__FILE__,__LINE__,USBERR_INVALID_PIPE_HANDLE);
+	} /* Endif */
 
-    usb_host_ptr = usb_host_dev_mng_get_host(pipe_ptr->dev_instance);
-    USB_Host_lock();
+	usb_host_ptr = usb_host_dev_mng_get_host(pipe_ptr->dev_instance);
+	USB_Host_lock();
 
-    tr_list = pipe_ptr->tr_list_ptr;
-    if (tr_list == NULL)
-    {
-        USB_Host_unlock();
-        return USBERR_NOT_FOUND;
-    }
-    else
-    {
-        pre = tr_list;
-        while ((tr_list != tr_ptr) && tr_list)
-        {
-            pre = tr_list;
-            tr_list = tr_list->next;
-        }
-        if (!tr_list)
-        {
-            USB_Host_unlock();
-            return USBERR_NOT_FOUND;
-        }
+	tr_list = pipe_ptr->tr_list_ptr;
+	if (tr_list == NULL)
+	{
+		USB_Host_unlock();
+		return USBERR_NOT_FOUND;
+	}
+	else
+	{
+		pre = tr_list;
+		while ((tr_list != tr_ptr) && tr_list)
+		{
+			pre = tr_list;
+			tr_list = tr_list->next;
+		}
+		if (!tr_list)
+		{
+			USB_Host_unlock();
+			return USBERR_NOT_FOUND;
+		}
 
-        if (tr_list == pipe_ptr->tr_list_ptr)
-        {
-            /* it is the first one in the tr_list */
-            pipe_ptr->tr_list_ptr = tr_list->next;
-        }
-        else
-        {
-            /* now tr_list is the last one in the list */
-            pre->next = tr_list->next;
-        }
-    }
-    USB_Host_unlock();
-    return USB_OK;
+		if (tr_list == pipe_ptr->tr_list_ptr)
+		{
+			/* it is the first one in the tr_list */
+			pipe_ptr->tr_list_ptr = tr_list->next;
+		}
+		else
+		{
+			/* now tr_list is the last one in the list */
+			pre->next = tr_list->next;
+		}
+	}
+	USB_Host_unlock();
+	return USB_OK;
 } /* EndBody */
 
 /*FUNCTION*-------------------------------------------------------------
@@ -299,18 +299,18 @@ usb_host_handle handle,
 struct pipe_struct * pipe_ptr
 )
 {
-    usb_status error = USB_OK;
-    const usb_host_api_functions_struct_t* host_api;
-    usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
+	usb_status error = USB_OK;
+	const usb_host_api_functions_struct_t* host_api;
+	usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
 
-    host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
+	host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
 
-    if (host_api->host_update_max_packet_size != NULL)
-    {
-        error = host_api->host_update_max_packet_size(usb_host_ptr->controller_handle, pipe_ptr);
-    }
+	if (host_api->host_update_max_packet_size != NULL)
+	{
+		error = host_api->host_update_max_packet_size(usb_host_ptr->controller_handle, pipe_ptr);
+	}
 
-    return USB_log_error(__FILE__,__LINE__,error);
+	return USB_log_error(__FILE__,__LINE__,error);
 }
 
 /*FUNCTION*-------------------------------------------------------------
@@ -333,28 +333,28 @@ usb_host_handle handle,
 struct pipe_struct * pipe_ptr
 )
 {
-    usb_status error = USB_OK;
-    const usb_host_api_functions_struct_t* host_api;
-    usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
+	usb_status error = USB_OK;
+	const usb_host_api_functions_struct_t* host_api;
+	usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
 
-    host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
+	host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
 
-    if (host_api->host_update_device_address != NULL)
-    {
-        error = host_api->host_update_device_address(usb_host_ptr->controller_handle, pipe_ptr);
-    }
+	if (host_api->host_update_device_address != NULL)
+	{
+		error = host_api->host_update_device_address(usb_host_ptr->controller_handle, pipe_ptr);
+	}
 
-    return USB_log_error(__FILE__,__LINE__,error);
+	return USB_log_error(__FILE__,__LINE__,error);
 }
 
 /*FUNCTION*----------------------------------------------------------------
- * 
+ *
  * Function Name  : _usb_host_call_service
  * Returned Value : USB_OK or error code
  * Comments       :
  *     Calls the appropriate service for the specified type, if one is
  *     registered.
- * 
+ *
  *END*--------------------------------------------------------------------*/
 usb_status _usb_host_call_service
 (
@@ -368,30 +368,30 @@ uint8_t type,
 uint32_t length
 )
 {
-    usb_host_state_struct_t* usb_host_ptr;
-    usb_host_service_struct_t* service_ptr;
-    uint32_t i;
+	usb_host_state_struct_t* usb_host_ptr;
+	usb_host_service_struct_t* service_ptr;
+	uint32_t i;
 
-    usb_host_ptr = (usb_host_state_struct_t*)handle;
+	usb_host_ptr = (usb_host_state_struct_t*)handle;
 
-    USB_Host_lock();
+	USB_Host_lock();
 
-    for (i = 0; i < MAX_HOST_SERVICE_NUMBER; i++)
-    {
-        service_ptr = &usb_host_ptr->services[i];
-        if (service_ptr->type == type)
-        {
-            USB_Host_unlock();
-            if (service_ptr->service)
-            {
-                service_ptr->service(handle, length);
-            }
-            return USB_OK;
-        }
-    }
+	for (i = 0; i < MAX_HOST_SERVICE_NUMBER; i++)
+	{
+		service_ptr = &usb_host_ptr->services[i];
+		if (service_ptr->type == type)
+		{
+			USB_Host_unlock();
+			if (service_ptr->service)
+			{
+				service_ptr->service(handle, length);
+			}
+			return USB_OK;
+		}
+	}
 
-    USB_Host_unlock();
-    return USBERR_CLOSED_SERVICE;
+	USB_Host_unlock();
+	return USBERR_CLOSED_SERVICE;
 }
 
 /*FUNCTION*-------------------------------------------------------------
@@ -399,7 +399,7 @@ uint32_t length
  *  Function Name  : _usb_host_init
  *  Returned Value : error or USB_OK
  *  Comments       :
- *        Initializes the USB hardware and installs the USB 
+ *        Initializes the USB hardware and installs the USB
  *  interrupt handler
  *END*-----------------------------------------------------------------*/
 
@@ -413,147 +413,147 @@ host_board_init board_init_callback,
 usb_host_handle * handle
 )
 {
-    const usb_host_api_functions_struct_t* host_api = NULL;
-    usb_host_state_struct_t* usb_host_ptr = NULL;
-    usb_status error = USB_OK;
-    uint32_t i;
+	const usb_host_api_functions_struct_t* host_api = NULL;
+	usb_host_state_struct_t* usb_host_ptr = NULL;
+	usb_status error = USB_OK;
+	uint32_t i;
 #ifdef USBCFG_OTG
-    usb_otg_state_struct_t * usb_otg_struct_ptr = (usb_otg_state_struct_t *)g_usb_otg_handle;
-    usb_otg_status_t * otg_status_ptr = &usb_otg_struct_ptr->otg_status;
+	usb_otg_state_struct_t * usb_otg_struct_ptr = (usb_otg_state_struct_t *)g_usb_otg_handle;
+	usb_otg_status_t * otg_status_ptr = &usb_otg_struct_ptr->otg_status;
 #endif
-    usb_host_ptr = _usb_host_get_handle();
+	usb_host_ptr = _usb_host_get_handle();
 
-    if (usb_host_ptr == NULL)
-    {
-        return USBERR_HOST_BUSY;
-    }
+	if (usb_host_ptr == NULL)
+	{
+		return USBERR_HOST_BUSY;
+	}
 
-    _usb_host_get_api(controller_id, &host_api);
+	_usb_host_get_api(controller_id, &host_api);
 
-    if (host_api == NULL)
-    {
-        _usb_host_release_handle(usb_host_ptr);
-        return USBERR_ERROR;
-    }
+	if (host_api == NULL)
+	{
+		_usb_host_release_handle(usb_host_ptr);
+		return USBERR_ERROR;
+	}
 
-    usb_host_ptr->host_controller_api = host_api;
+	usb_host_ptr->host_controller_api = host_api;
 
-    /* Initialize the USB interface. */
-    if (host_api->host_preinit != NULL)
-    {
-        error = host_api->host_preinit(usb_host_ptr, (usb_host_handle *)(&(usb_host_ptr->controller_handle)));
-    }
+	/* Initialize the USB interface. */
+	if (host_api->host_preinit != NULL)
+	{
+		error = host_api->host_preinit(usb_host_ptr, (usb_host_handle *)(&(usb_host_ptr->controller_handle)));
+	}
 
-    if (usb_host_ptr->controller_handle == NULL)
-    {
-        _usb_host_release_handle(usb_host_ptr);
+	if (usb_host_ptr->controller_handle == NULL)
+	{
+		_usb_host_release_handle(usb_host_ptr);
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_init preinit failure");
+		DEBUG_LOG_TRACE("_usb_host_init preinit failure");
 #endif
-        return USB_log_error(__FILE__,__LINE__,USBERR_ALLOC);
-    }
+		return USB_log_error(__FILE__,__LINE__,USBERR_ALLOC);
+	}
 
-    for (i = 0; i < MAX_HOST_SERVICE_NUMBER; i++)
-    {
-        usb_host_ptr->services[i].type = (uint32_t)-1;
-    }
+	for (i = 0; i < MAX_HOST_SERVICE_NUMBER; i++)
+	{
+		usb_host_ptr->services[i].type = (uint32_t)-1;
+	}
 
-    usb_host_ptr->device_list_ptr = NULL;
-    usb_host_ptr->mutex = OS_Mutex_create();
-    if (usb_host_ptr->mutex == NULL)
-    {
-        if (host_api->host_shutdown != NULL)
-        {
-            error = host_api->host_shutdown(usb_host_ptr->controller_handle);
-        }
-        _usb_host_release_handle(usb_host_ptr);
-        USB_PRINTF("host create mutex failed\n");
-        return USBERR_ALLOC;
-    }
+	usb_host_ptr->device_list_ptr = NULL;
+	usb_host_ptr->mutex = OS_Mutex_create();
+	if (usb_host_ptr->mutex == NULL)
+	{
+		if (host_api->host_shutdown != NULL)
+		{
+			error = host_api->host_shutdown(usb_host_ptr->controller_handle);
+		}
+		_usb_host_release_handle(usb_host_ptr);
+		USB_PRINTF("host create mutex failed\n");
+		return USBERR_ALLOC;
+	}
 
-    usb_host_ptr->hub_mutex = OS_Mutex_create();
-    if (usb_host_ptr->hub_mutex == NULL)
-    {
-        if (host_api->host_shutdown != NULL)
-        {
-            error = host_api->host_shutdown(usb_host_ptr->controller_handle);
-        }
-        _usb_host_release_handle(usb_host_ptr);
-        USB_PRINTF("host create mutex failed\n");
-        return USBERR_ALLOC;
-    }
+	usb_host_ptr->hub_mutex = OS_Mutex_create();
+	if (usb_host_ptr->hub_mutex == NULL)
+	{
+		if (host_api->host_shutdown != NULL)
+		{
+			error = host_api->host_shutdown(usb_host_ptr->controller_handle);
+		}
+		_usb_host_release_handle(usb_host_ptr);
+		USB_PRINTF("host create mutex failed\n");
+		return USBERR_ALLOC;
+	}
 
-    usb_host_ptr->hub_sem = OS_Sem_create(0);
-    if (usb_host_ptr->hub_sem == NULL)
-    {
-        if (host_api->host_shutdown != NULL)
-        {
-            error = host_api->host_shutdown(usb_host_ptr->controller_handle);
-        }
-        _usb_host_release_handle(usb_host_ptr);
-        USB_PRINTF("host create mutex failed\n");
-        return USBERR_ALLOC;
-    }
+	usb_host_ptr->hub_sem = OS_Sem_create(0);
+	if (usb_host_ptr->hub_sem == NULL)
+	{
+		if (host_api->host_shutdown != NULL)
+		{
+			error = host_api->host_shutdown(usb_host_ptr->controller_handle);
+		}
+		_usb_host_release_handle(usb_host_ptr);
+		USB_PRINTF("host create mutex failed\n");
+		return USBERR_ALLOC;
+	}
 
-    usb_host_ptr->hub_link = NULL;
-    usb_host_ptr->hub_task = 0xFFFFFFFF;
+	usb_host_ptr->hub_link = NULL;
+	usb_host_ptr->hub_task = 0xFFFFFFFF;
 
 #ifndef USBCFG_OTG
-    if (board_init_callback != NULL)
-    {
-        error = (uint32_t)board_init_callback(controller_id);
-    }
-    else
-    {
-        error = USB_OK;
-    }
-    if(USB_OK == error)
-    {
-        error = usb_host_soc_init(controller_id);
-    }
+	if (board_init_callback != NULL)
+	{
+		error = (uint32_t)board_init_callback(controller_id);
+	}
+	else
+	{
+		error = USB_OK;
+	}
+	if(USB_OK == error)
+	{
+		error = usb_host_soc_init(controller_id);
+	}
 #else
-    error = usb_otg_host_soc_init(controller_id);
+	error = usb_otg_host_soc_init(controller_id);
 #endif
-    if (error != USB_OK)
-    {
-        if (host_api->host_shutdown != NULL)
-        {
-            error = host_api->host_shutdown(usb_host_ptr->controller_handle);
-        }
-        _usb_host_release_handle(usb_host_ptr);
+	if (error != USB_OK)
+	{
+		if (host_api->host_shutdown != NULL)
+		{
+			error = host_api->host_shutdown(usb_host_ptr->controller_handle);
+		}
+		_usb_host_release_handle(usb_host_ptr);
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_init: BSP-specific USB initialization failure");
+		DEBUG_LOG_TRACE("_usb_host_init: BSP-specific USB initialization failure");
 #endif
-        return USB_log_error(__FILE__,__LINE__,USBERR_UNKNOWN_ERROR);
-    }
+		return USB_log_error(__FILE__,__LINE__,USBERR_UNKNOWN_ERROR);
+	}
 
-    if (host_api->host_init != NULL)
-    {
-        error = host_api->host_init (controller_id, usb_host_ptr->controller_handle);
-    }
+	if (host_api->host_init != NULL)
+	{
+		error = host_api->host_init (controller_id, usb_host_ptr->controller_handle);
+	}
 
-    if (error != USB_OK)
-    {
-        if (host_api->host_shutdown != NULL)
-        {
-            host_api->host_shutdown(usb_host_ptr->controller_handle);
-        }
-        _usb_host_release_handle(usb_host_ptr);
+	if (error != USB_OK)
+	{
+		if (host_api->host_shutdown != NULL)
+		{
+			host_api->host_shutdown(usb_host_ptr->controller_handle);
+		}
+		_usb_host_release_handle(usb_host_ptr);
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_init returning error status");
+		DEBUG_LOG_TRACE("_usb_host_init returning error status");
 #endif
-        return USB_log_error(__FILE__,__LINE__,error);
-    }
+		return USB_log_error(__FILE__,__LINE__,error);
+	}
 #ifdef USBCFG_OTG
-    usb_host_ptr->otg_handle = g_usb_otg_handle;
-    otg_status_ptr->active_stack = USB_ACTIVE_STACK_HOST;
+	usb_host_ptr->otg_handle = g_usb_otg_handle;
+	otg_status_ptr->active_stack = USB_ACTIVE_STACK_HOST;
 #endif
-    *handle = (usb_host_handle)usb_host_ptr;
+	*handle = (usb_host_handle)usb_host_ptr;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_init SUCCESSFULL");
+	DEBUG_LOG_TRACE("_usb_host_init SUCCESSFULL");
 #endif
-    return USB_OK;
+	return USB_OK;
 }
 
 /*FUNCTION*-------------------------------------------------------------
@@ -561,7 +561,7 @@ usb_host_handle * handle
  *  Function Name  : usb_device_deinit
  *  Returned Value : USB_OK or error code
  *  Comments       :
- *  uninitializes the USB device specific data structures and calls 
+ *  uninitializes the USB device specific data structures and calls
  *  the low-level device controller chip initialization routine.
  *
  *END*-----------------------------------------------------------------*/
@@ -571,66 +571,66 @@ usb_status usb_host_deinit
 usb_host_handle handle
 )
 {
-    usb_status status;
-    usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
-    const usb_host_api_functions_struct_t* host_api;
+	usb_status status;
+	usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
+	const usb_host_api_functions_struct_t* host_api;
 #ifdef USBCFG_OTG
-    usb_otg_state_struct_t * usb_otg_struct_ptr = (usb_otg_state_struct_t *)g_usb_otg_handle;
-    usb_otg_status_t * otg_status_ptr = &usb_otg_struct_ptr->otg_status;
+	usb_otg_state_struct_t * usb_otg_struct_ptr = (usb_otg_state_struct_t *)g_usb_otg_handle;
+	usb_otg_status_t * otg_status_ptr = &usb_otg_struct_ptr->otg_status;
 #endif
-    if (usb_host_ptr == NULL)
-    {
+	if (usb_host_ptr == NULL)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_shutdown");
+		DEBUG_LOG_TRACE("_usb_host_shutdown");
 #endif
-        return USBERR_INVALID_PARAM;
-    }
+		return USBERR_INVALID_PARAM;
+	}
 
-    /* De-initialize and disconnect the host hardware from the bus */
-    host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
+	/* De-initialize and disconnect the host hardware from the bus */
+	host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
 
-    if (host_api->host_shutdown != NULL)
-    {
-        status = host_api->host_shutdown (usb_host_ptr->controller_handle);
-    }
+	if (host_api->host_shutdown != NULL)
+	{
+		status = host_api->host_shutdown (usb_host_ptr->controller_handle);
+	}
 
-    if (status != USB_OK)
-    {
+	if (status != USB_OK)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_shutdown FAILED");
+		DEBUG_LOG_TRACE("_usb_host_shutdown FAILED");
 #endif
-    }
+	}
 
-    if (usb_host_ptr->mutex != NULL)
-    {
-        OS_Mutex_destroy(usb_host_ptr->mutex);
-    }
+	if (usb_host_ptr->mutex != NULL)
+	{
+		OS_Mutex_destroy(usb_host_ptr->mutex);
+	}
 
-    if (usb_host_ptr->hub_mutex != NULL)
-    {
-        OS_Mutex_destroy(usb_host_ptr->hub_mutex);
-    }
+	if (usb_host_ptr->hub_mutex != NULL)
+	{
+		OS_Mutex_destroy(usb_host_ptr->hub_mutex);
+	}
 
-    if (usb_host_ptr->hub_sem != NULL)
-    {
-        OS_Sem_destroy(usb_host_ptr->hub_sem);
-    }
+	if (usb_host_ptr->hub_sem != NULL)
+	{
+		OS_Sem_destroy(usb_host_ptr->hub_sem);
+	}
 
-    if ( (0xFFFFFFFF != usb_host_ptr->hub_task) && ((uint32_t)OS_TASK_ERROR != usb_host_ptr->hub_task) )
-    {
-        OS_Task_delete(usb_host_ptr->hub_task);
-    }
+	if ( (0xFFFFFFFF != usb_host_ptr->hub_task) && ((uint32_t)OS_TASK_ERROR != usb_host_ptr->hub_task) )
+	{
+		OS_Task_delete(usb_host_ptr->hub_task);
+	}
 
-    /* Free the USB state structure */
-    _usb_host_release_handle(usb_host_ptr);
+	/* Free the USB state structure */
+	_usb_host_release_handle(usb_host_ptr);
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_shutdown SUCCESSFUL");
+	DEBUG_LOG_TRACE("_usb_host_shutdown SUCCESSFUL");
 #endif
 #ifdef USBCFG_OTG
-    otg_status_ptr->active_stack = USB_ACTIVE_STACK_NONE;
-    usb_otg_struct_ptr->dev_inst_ptr = NULL;
+	otg_status_ptr->active_stack = USB_ACTIVE_STACK_NONE;
+	usb_otg_struct_ptr->dev_inst_ptr = NULL;
 #endif
-    return USB_OK;
+	return USB_OK;
 } /* EndBody */
 
 /*FUNCTION*-------------------------------------------------------------
@@ -650,18 +650,18 @@ usb_pipe_handle * pipe_handle_ptr,
 pipe_init_struct_t* pipe_init_ptr
 )
 {
-    usb_status error = USB_OK;
-    const usb_host_api_functions_struct_t* host_api;
-    usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
+	usb_status error = USB_OK;
+	const usb_host_api_functions_struct_t* host_api;
+	usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
 
-    host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
+	host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
 
-    if (host_api->host_open_pipe != NULL)
-    {
-        error = host_api->host_open_pipe(usb_host_ptr->controller_handle, pipe_handle_ptr, pipe_init_ptr);
-    }
+	if (host_api->host_open_pipe != NULL)
+	{
+		error = host_api->host_open_pipe(usb_host_ptr->controller_handle, pipe_handle_ptr, pipe_init_ptr);
+	}
 
-    return USB_log_error(__FILE__,__LINE__,error);
+	return USB_log_error(__FILE__,__LINE__,error);
 }
 
 /*FUNCTION*-------------------------------------------------------------
@@ -681,18 +681,18 @@ usb_host_handle handle,
 usb_pipe_handle pipe_handle
 )
 {
-    usb_status error = USB_OK;
-    const usb_host_api_functions_struct_t* host_api;
-    usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
+	usb_status error = USB_OK;
+	const usb_host_api_functions_struct_t* host_api;
+	usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
 
-    host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
+	host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
 
-    if (host_api->host_close_pipe != NULL)
-    {
-        error = host_api->host_close_pipe(usb_host_ptr->controller_handle, pipe_handle);
-    }
+	if (host_api->host_close_pipe != NULL)
+	{
+		error = host_api->host_close_pipe(usb_host_ptr->controller_handle, pipe_handle);
+	}
 
-    return USB_log_error(__FILE__,__LINE__,error);
+	return USB_log_error(__FILE__,__LINE__,error);
 }
 
 /*FUNCTION*-------------------------------------------------------------
@@ -700,7 +700,7 @@ usb_pipe_handle pipe_handle
  *  Function Name  : _usb_host_send_data
  *  Returned Value : error or status of the transfer
  *  Comments       :
- * The Send Data routine is non-blocking routine that causes a block of data 
+ * The Send Data routine is non-blocking routine that causes a block of data
  * to be made available for transmission to the USB host.
  *
  *END*-----------------------------------------------------------------*/
@@ -714,78 +714,78 @@ usb_pipe_handle pipe_handle,
 tr_struct_t* tr_ptr
 )
 {
-    pipe_struct_t* pipe_ptr;
-    usb_host_state_struct_t* usb_host_ptr;
-    const usb_host_api_functions_struct_t* host_api;
-    usb_status status;
+	pipe_struct_t* pipe_ptr;
+	usb_host_state_struct_t* usb_host_ptr;
+	const usb_host_api_functions_struct_t* host_api;
+	usb_status status;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_send_data");
+	DEBUG_LOG_TRACE("_usb_host_send_data");
 #endif
 
-    usb_host_ptr = (usb_host_state_struct_t*)handle;
-    if (usb_host_ptr == NULL)
-    {
-        USB_PRINTF("invalid handle in usb_host_send_data\n");
-        return USBERR_INVALID_PARAM;
-    }
-    pipe_ptr = (pipe_struct_t*)pipe_handle;
-    if ((pipe_ptr == NULL) || (pipe_ptr->open != (uint8_t)TRUE))
-    {
-        return USBERR_PIPE_OPENED_FAILED;
-    }
-    
-    OS_Lock();
-    status = usb_hostdev_validate (pipe_ptr->dev_instance);
-    if (status != USB_OK)
-    {
-        OS_Unlock();
-        return status;
-    }
+	usb_host_ptr = (usb_host_state_struct_t*)handle;
+	if (usb_host_ptr == NULL)
+	{
+		USB_PRINTF("invalid handle in usb_host_send_data\n");
+		return USBERR_INVALID_PARAM;
+	}
+	pipe_ptr = (pipe_struct_t*)pipe_handle;
+	if ((pipe_ptr == NULL) || (pipe_ptr->open != (uint8_t)TRUE))
+	{
+		return USBERR_PIPE_OPENED_FAILED;
+	}
 
-    status = _usb_host_link_tr(pipe_handle, tr_ptr);
-    if (status != USB_OK)
-    {
+	OS_Lock();
+	status = usb_hostdev_validate (pipe_ptr->dev_instance);
+	if (status != USB_OK)
+	{
+		OS_Unlock();
+		return status;
+	}
+
+	status = _usb_host_link_tr(pipe_handle, tr_ptr);
+	if (status != USB_OK)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_send_data failed to queue transfer");
+		DEBUG_LOG_TRACE("_usb_host_send_data failed to queue transfer");
 #endif
-        OS_Unlock();
-        return USB_log_error(__FILE__,__LINE__,status);
-    } /* Endif */
+		OS_Unlock();
+		return USB_log_error(__FILE__,__LINE__,status);
+	} /* Endif */
 
-    /* We have obtained the current TR on the Pipe's TR list 
-     ** from _usb_host_set_up_tr
-     */
+	/* We have obtained the current TR on the Pipe's TR list
+	 ** from _usb_host_set_up_tr
+	 */
 
-    /* Call the low-level send routine */
-    host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
-    if (host_api->host_send != NULL)
-    {
-#if (USBCFG_HOST_BUFF_PROPERTY_CACHEABLE) 
-        if (tr_ptr->tx_length > 0)
-        {
-            /* We do flush the buffer first before used by DMA */
-            OS_dcache_flush_mlines((void *)tr_ptr->tx_buffer, tr_ptr->tx_length);
-        }
+	/* Call the low-level send routine */
+	host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
+	if (host_api->host_send != NULL)
+	{
+#if (USBCFG_HOST_BUFF_PROPERTY_CACHEABLE)
+		if (tr_ptr->tx_length > 0)
+		{
+			/* We do flush the buffer first before used by DMA */
+			OS_dcache_flush_mlines((void *)tr_ptr->tx_buffer, tr_ptr->tx_length);
+		}
 #endif
-        status = host_api->host_send(usb_host_ptr->controller_handle, pipe_ptr, tr_ptr);
-    }
-    OS_Unlock();
-    if (status != USB_OK)
-    {
-        /* mark the transaction as unused */
-        _usb_host_unlink_tr(pipe_handle, tr_ptr);
-    }
+		status = host_api->host_send(usb_host_ptr->controller_handle, pipe_ptr, tr_ptr);
+	}
+	OS_Unlock();
+	if (status != USB_OK)
+	{
+		/* mark the transaction as unused */
+		_usb_host_unlink_tr(pipe_handle, tr_ptr);
+	}
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_send_data SUCCESSFUL");
+	DEBUG_LOG_TRACE("_usb_host_send_data SUCCESSFUL");
 #endif
 
-    if(status != USB_OK)
-    {
-        return USB_log_error(__FILE__,__LINE__,status);
-    }
-    return status;
+	if(status != USB_OK)
+	{
+		return USB_log_error(__FILE__,__LINE__,status);
+	}
+	return status;
 } /* Endbody */
 
 /*FUNCTION*-------------------------------------------------------------
@@ -794,7 +794,7 @@ tr_struct_t* tr_ptr
  *  Returned Value : None
  *  Comments       :
  *  Sends a Setup packet. Internally, following the SendSetup call
- *  this takes care of the whole transaction (including receiving or sending 
+ *  this takes care of the whole transaction (including receiving or sending
  *  any data to or from the device.
  *
  *END*-----------------------------------------------------------------*/
@@ -810,89 +810,89 @@ usb_pipe_handle pipe_handle,
 tr_struct_t* tr_ptr
 )
 {
-    pipe_struct_t* pipe_ptr;
-    usb_host_state_struct_t* usb_host_ptr;
-    const usb_host_api_functions_struct_t* host_api;
-    usb_status status;
+	pipe_struct_t* pipe_ptr;
+	usb_host_state_struct_t* usb_host_ptr;
+	const usb_host_api_functions_struct_t* host_api;
+	usb_status status;
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_host_send_setup");
+	DEBUG_LOG_TRACE("usb_host_send_setup");
 #endif
 
-    usb_host_ptr = (usb_host_state_struct_t*)handle;
-    pipe_ptr = (pipe_struct_t*)pipe_handle;
+	usb_host_ptr = (usb_host_state_struct_t*)handle;
+	pipe_ptr = (pipe_struct_t*)pipe_handle;
 
-    if ((pipe_ptr == NULL) || (pipe_ptr->open != (uint8_t)TRUE))
-    {
-        return USBERR_PIPE_OPENED_FAILED;
-    }
+	if ((pipe_ptr == NULL) || (pipe_ptr->open != (uint8_t)TRUE))
+	{
+		return USBERR_PIPE_OPENED_FAILED;
+	}
 
-    OS_Lock();
-    status = usb_hostdev_validate (pipe_ptr->dev_instance);
-    if (status != USB_OK)
-    {
-        OS_Unlock();
-        return status;
-    }
+	OS_Lock();
+	status = usb_hostdev_validate (pipe_ptr->dev_instance);
+	if (status != USB_OK)
+	{
+		OS_Unlock();
+		return status;
+	}
 
-    /* Initialize a TR and link it into the pipe's TR list */
-    status = _usb_host_link_tr(pipe_handle, tr_ptr);
-    if (status != USB_OK)
-    {
+	/* Initialize a TR and link it into the pipe's TR list */
+	status = _usb_host_link_tr(pipe_handle, tr_ptr);
+	if (status != USB_OK)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("usb_host_send_setup error status");
+		DEBUG_LOG_TRACE("usb_host_send_setup error status");
 #endif
-        OS_Unlock();
-        return status;
-    }
+		OS_Unlock();
+		return status;
+	}
 
-    pipe_ptr->nextdata01 = 0; /* reset DATA0/1 */
+	pipe_ptr->nextdata01 = 0; /* reset DATA0/1 */
 
-    /* true if this setup packet will have a send data phase */
-    tr_ptr->send_phase = (bool)!(tr_ptr->setup_packet.bmrequesttype & USB_SETUP_DATA_XFER_DIRECTION);
+	/* true if this setup packet will have a send data phase */
+	tr_ptr->send_phase = (bool)!(tr_ptr->setup_packet.bmrequesttype & USB_SETUP_DATA_XFER_DIRECTION);
 
-    /* Call the low-level routine to send a setup packet */
-    host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
+	/* Call the low-level routine to send a setup packet */
+	host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
 
-    if (host_api->host_send_setup != NULL)
-    {
-#if (USBCFG_HOST_BUFF_PROPERTY_CACHEABLE)     
-        /***************************************************************
-         For data caching it is important that we update the memory
-         with the intended contents.
-         ***************************************************************/
-        OS_dcache_flush_mlines((void *)&tr_ptr->setup_packet, sizeof(usb_setup_t));
-        if (tr_ptr->tx_length > 0)
-        {
-            /* We do flush the buffer first before used by DMA */
-            OS_dcache_flush_mlines((void *)tr_ptr->tx_buffer, tr_ptr->tx_length);
-        }
-        else if (tr_ptr->rx_length > 0)
-        {
-            /* To ensure that the USB DMA transfer will work on a buffer that is not cached,
-             ** we invalidate buffer cache lines.
-             */
-            OS_dcache_invalidate_mlines((void *)tr_ptr->rx_buffer, tr_ptr->rx_length);
-        }
-#endif 
-        status = host_api->host_send_setup(usb_host_ptr->controller_handle, pipe_ptr, tr_ptr);
-    }
-    OS_Unlock();
-    if (status == USB_OK)
-    {
+	if (host_api->host_send_setup != NULL)
+	{
+#if (USBCFG_HOST_BUFF_PROPERTY_CACHEABLE)
+		/***************************************************************
+		 For data caching it is important that we update the memory
+		 with the intended contents.
+		 ***************************************************************/
+		OS_dcache_flush_mlines((void *)&tr_ptr->setup_packet, sizeof(usb_setup_t));
+		if (tr_ptr->tx_length > 0)
+		{
+			/* We do flush the buffer first before used by DMA */
+			OS_dcache_flush_mlines((void *)tr_ptr->tx_buffer, tr_ptr->tx_length);
+		}
+		else if (tr_ptr->rx_length > 0)
+		{
+			/* To ensure that the USB DMA transfer will work on a buffer that is not cached,
+			 ** we invalidate buffer cache lines.
+			 */
+			OS_dcache_invalidate_mlines((void *)tr_ptr->rx_buffer, tr_ptr->rx_length);
+		}
+#endif
+		status = host_api->host_send_setup(usb_host_ptr->controller_handle, pipe_ptr, tr_ptr);
+	}
+	OS_Unlock();
+	if (status == USB_OK)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("usb_host_send_setup SUCCESSFUL");
+		DEBUG_LOG_TRACE("usb_host_send_setup SUCCESSFUL");
 #endif
-        return USB_OK;
-    }
-    else
-    {
+		return USB_OK;
+	}
+	else
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("usb_host_send_setup FAILED");
+		DEBUG_LOG_TRACE("usb_host_send_setup FAILED");
 #endif
 
-        _usb_host_unlink_tr(pipe_handle, tr_ptr);
-        return USB_log_error(__FILE__,__LINE__,status);
-    }
+		_usb_host_unlink_tr(pipe_handle, tr_ptr);
+		return USB_log_error(__FILE__,__LINE__,status);
+	}
 }
 
 /*FUNCTION*-------------------------------------------------------------
@@ -900,10 +900,10 @@ tr_struct_t* tr_ptr
  *  Function Name  : _usb_host_recv_data
  *  Returned Value : error or status of the transfer
  *  Comments       :
- * The Receive Data routine is non-blocking routine that causes a buffer 
- * to be made available for data received from the 
+ * The Receive Data routine is non-blocking routine that causes a buffer
+ * to be made available for data received from the
  * USB host. It takes the buffer and passes it down to lower
- level hardware driver. 
+ level hardware driver.
  *END*-----------------------------------------------------------------*/
 usb_status usb_host_recv_data
 (
@@ -917,73 +917,73 @@ usb_pipe_handle pipe_handle,
 tr_struct_t* tr_ptr
 )
 { /* Body */
-    pipe_struct_t* pipe_ptr;
-    usb_host_state_struct_t* usb_host_ptr;
-    const usb_host_api_functions_struct_t* host_api;
-    usb_status status;
+	pipe_struct_t* pipe_ptr;
+	usb_host_state_struct_t* usb_host_ptr;
+	const usb_host_api_functions_struct_t* host_api;
+	usb_status status;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_recv_data");
+	DEBUG_LOG_TRACE("_usb_host_recv_data");
 #endif
 
-    usb_host_ptr = (usb_host_state_struct_t*)handle;
-    pipe_ptr = (pipe_struct_t*)pipe_handle;
-    if ((pipe_ptr == NULL) || (pipe_ptr->open != (uint8_t)TRUE))
-    {
-        return USBERR_PIPE_OPENED_FAILED;
-    }
+	usb_host_ptr = (usb_host_state_struct_t*)handle;
+	pipe_ptr = (pipe_struct_t*)pipe_handle;
+	if ((pipe_ptr == NULL) || (pipe_ptr->open != (uint8_t)TRUE))
+	{
+		return USBERR_PIPE_OPENED_FAILED;
+	}
 
-    OS_Lock();    
-    status = usb_hostdev_validate (pipe_ptr->dev_instance);
-    if (status != USB_OK)
-    {
-        OS_Unlock();
-        return status;
-    }
+	OS_Lock();
+	status = usb_hostdev_validate (pipe_ptr->dev_instance);
+	if (status != USB_OK)
+	{
+		OS_Unlock();
+		return status;
+	}
 
-    status = _usb_host_link_tr(pipe_handle, tr_ptr);
-    if (status != USB_OK)
-    {
+	status = _usb_host_link_tr(pipe_handle, tr_ptr);
+	if (status != USB_OK)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_recv_data transfer queue failed");
+		DEBUG_LOG_TRACE("_usb_host_recv_data transfer queue failed");
 #endif
-        OS_Unlock();
-        return USB_log_error(__FILE__,__LINE__,status);
-    }
+		OS_Unlock();
+		return USB_log_error(__FILE__,__LINE__,status);
+	}
 
-    /* We have obtained the current TR on the Pipe's TR list 
-     ** from _usb_host_set_up_tr
-     */
+	/* We have obtained the current TR on the Pipe's TR list
+	 ** from _usb_host_set_up_tr
+	 */
 
-    /* Call the low-level routine to receive data */
-    host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
+	/* Call the low-level routine to receive data */
+	host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
 
-    if (host_api->host_recv != NULL)
-    {
-#if (USBCFG_HOST_BUFF_PROPERTY_CACHEABLE) 
-        if (tr_ptr->rx_length > 0)
-        {
-            /* To ensure that the USB DMA transfer will work on a buffer that is not cached,
-             ** we invalidate buffer cache lines.
-             */
-            OS_dcache_invalidate_mlines((void *)tr_ptr->rx_buffer, tr_ptr->rx_length);
-        }
+	if (host_api->host_recv != NULL)
+	{
+#if (USBCFG_HOST_BUFF_PROPERTY_CACHEABLE)
+		if (tr_ptr->rx_length > 0)
+		{
+			/* To ensure that the USB DMA transfer will work on a buffer that is not cached,
+			 ** we invalidate buffer cache lines.
+			 */
+			OS_dcache_invalidate_mlines((void *)tr_ptr->rx_buffer, tr_ptr->rx_length);
+		}
 #endif
-        status = host_api->host_recv(usb_host_ptr->controller_handle, pipe_ptr, tr_ptr);
-    }
+		status = host_api->host_recv(usb_host_ptr->controller_handle, pipe_ptr, tr_ptr);
+	}
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_recv_data SUCCESSFUL");
+	DEBUG_LOG_TRACE("_usb_host_recv_data SUCCESSFUL");
 #endif
-    OS_Unlock();
-    if (status == USB_OK)
-    {
-        return USB_OK;
-    }
-    else
-    {
-        _usb_host_unlink_tr(pipe_handle, tr_ptr);
-        return USB_log_error(__FILE__,__LINE__,status);
-    }
+	OS_Unlock();
+	if (status == USB_OK)
+	{
+		return USB_OK;
+	}
+	else
+	{
+		_usb_host_unlink_tr(pipe_handle, tr_ptr);
+		return USB_log_error(__FILE__,__LINE__,status);
+	}
 } /* Endbody */
 
 /*FUNCTION*-------------------------------------------------------------
@@ -1008,18 +1008,18 @@ usb_pipe_handle pipe_handle,
 tr_struct_t* tr_ptr
 )
 {
-    usb_status error = USB_OK;
-    const usb_host_api_functions_struct_t* host_api;
-    usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
+	usb_status error = USB_OK;
+	const usb_host_api_functions_struct_t* host_api;
+	usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
 
-    host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
+	host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
 
-    if (host_api->host_cancel != NULL)
-    {
-        error = host_api->host_cancel(usb_host_ptr->controller_handle, (pipe_struct_t*)pipe_handle, tr_ptr);
-    }
+	if (host_api->host_cancel != NULL)
+	{
+		error = host_api->host_cancel(usb_host_ptr->controller_handle, (pipe_struct_t*)pipe_handle, tr_ptr);
+	}
 
-    return USB_log_error(__FILE__,__LINE__,error);
+	return USB_log_error(__FILE__,__LINE__,error);
 }
 
 /*FUNCTION*-------------------------------------------------------------
@@ -1038,40 +1038,40 @@ usb_host_handle handle,
 uint8_t bcontrol
 )
 {
-    usb_status status = USB_OK;
-    usb_host_state_struct_t* usb_host_ptr;
-    const usb_host_api_functions_struct_t* host_api;
+	usb_status status = USB_OK;
+	usb_host_state_struct_t* usb_host_ptr;
+	const usb_host_api_functions_struct_t* host_api;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_bus_control");
+	DEBUG_LOG_TRACE("_usb_host_bus_control");
 #endif
 
-    usb_host_ptr = (usb_host_state_struct_t*)handle;
-    if (usb_host_ptr == NULL)
-    {
+	usb_host_ptr = (usb_host_state_struct_t*)handle;
+	if (usb_host_ptr == NULL)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_shutdown");
+		DEBUG_LOG_TRACE("_usb_host_shutdown");
 #endif
-        return USBERR_ERROR;
-    }
-    host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
-    if (host_api->host_bus_control != NULL)
-    {
-        status = host_api->host_bus_control(usb_host_ptr->controller_handle, bcontrol);
-    }
+		return USBERR_ERROR;
+	}
+	host_api = (const usb_host_api_functions_struct_t*)usb_host_ptr->host_controller_api;
+	if (host_api->host_bus_control != NULL)
+	{
+		status = host_api->host_bus_control(usb_host_ptr->controller_handle, bcontrol);
+	}
 
-    if (status != USB_OK)
-    {
+	if (status != USB_OK)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_bus_control FAILED");
+		DEBUG_LOG_TRACE("_usb_host_bus_control FAILED");
 #endif
-        return USBERR_ERROR;
-    }
+		return USBERR_ERROR;
+	}
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_bus_control SUCCESSFUL");
+	DEBUG_LOG_TRACE("_usb_host_bus_control SUCCESSFUL");
 #endif
-    return USB_OK;
+	return USB_OK;
 } /* Endbody */
 
 /*FUNCTION*-------------------------------------------------------------
@@ -1090,96 +1090,96 @@ usb_host_handle handle,
 usb_device_instance_handle dev_handle
 )
 {
-    usb_status status = USB_OK;
-    usb_host_state_struct_t* usb_host_ptr;
-    dev_instance_t* dev_inst_ptr;
-    uint8_t level;
-    usb_interface_descriptor_handle intf_handle;
-    usb_class_handle class_handle;
-    uint8_t interface_index;
+	usb_status status = USB_OK;
+	usb_host_state_struct_t* usb_host_ptr;
+	dev_instance_t* dev_inst_ptr;
+	uint8_t level;
+	usb_interface_descriptor_handle intf_handle;
+	usb_class_handle class_handle;
+	uint8_t interface_index;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_host_dev_remove");
+	DEBUG_LOG_TRACE("usb_host_dev_remove");
 #endif
 
-    if ((NULL == dev_handle) || (NULL == handle))
-    {
-        return USBERR_INVALID_PARAM;
-    }
-    dev_inst_ptr = (dev_instance_t*)dev_handle;
-    if (handle != dev_inst_ptr->host)
-    {
-        return USBERR_INVALID_PARAM;
-    }
+	if ((NULL == dev_handle) || (NULL == handle))
+	{
+		return USBERR_INVALID_PARAM;
+	}
+	dev_inst_ptr = (dev_instance_t*)dev_handle;
+	if (handle != dev_inst_ptr->host)
+	{
+		return USBERR_INVALID_PARAM;
+	}
 
-    usb_host_ptr = (usb_host_state_struct_t*)dev_inst_ptr->host;
-    if (usb_host_ptr == NULL)
-    {
+	usb_host_ptr = (usb_host_state_struct_t*)dev_inst_ptr->host;
+	if (usb_host_ptr == NULL)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_shutdown");
+		DEBUG_LOG_TRACE("_usb_host_shutdown");
 #endif
-        return USBERR_INVALID_PARAM;
-    }
-    level = dev_inst_ptr->level;
-    if(level == 1)
-    {
-        //usb_host_dev_mng_detach(usb_host_ptr, dev_inst_ptr->hub_no, dev_inst_ptr->port_no);
-        //usb_host_bus_control(usb_host_ptr,2);
-        usb_host_bus_control(usb_host_ptr,1);
-    }
-    else
-    {
-#if USBCFG_HOST_HUB        
-        extern void usb_host_hub_Port_Reset(hub_device_struct_t* hub_instance,uint8_t port);
-        usb_host_hub_Port_Reset(dev_inst_ptr->hub_instance, dev_inst_ptr->port_no);
-        //usb_host_dev_mng_detach(dev_inst_ptr->host, dev_inst_ptr->hub_no, dev_inst_ptr->port_no);
+		return USBERR_INVALID_PARAM;
+	}
+	level = dev_inst_ptr->level;
+	if(level == 1)
+	{
+		//usb_host_dev_mng_detach(usb_host_ptr, dev_inst_ptr->hub_no, dev_inst_ptr->port_no);
+		//usb_host_bus_control(usb_host_ptr,2);
+		usb_host_bus_control(usb_host_ptr,1);
+	}
+	else
+	{
+#if USBCFG_HOST_HUB
+		extern void usb_host_hub_Port_Reset(hub_device_struct_t* hub_instance,uint8_t port);
+		usb_host_hub_Port_Reset(dev_inst_ptr->hub_instance, dev_inst_ptr->port_no);
+		//usb_host_dev_mng_detach(dev_inst_ptr->host, dev_inst_ptr->hub_no, dev_inst_ptr->port_no);
 #endif
-    }
-    //usb_host_dev_mng_detach(dev_inst_ptr->host, dev_inst_ptr->hub_no, dev_inst_ptr->port_no);
+	}
+	//usb_host_dev_mng_detach(dev_inst_ptr->host, dev_inst_ptr->hub_no, dev_inst_ptr->port_no);
 
-    usb_host_dev_mng_pre_detach(dev_inst_ptr->host,dev_inst_ptr->hub_no, dev_inst_ptr->port_no);
-    /* search device list for the one being detached */
-    USB_Host_lock();
-    dev_inst_ptr = (dev_instance_t*)_usb_host_dev_get_instance(dev_inst_ptr->host, dev_inst_ptr->hub_no, dev_inst_ptr->port_no, (uint8_t)1);
+	usb_host_dev_mng_pre_detach(dev_inst_ptr->host,dev_inst_ptr->hub_no, dev_inst_ptr->port_no);
+	/* search device list for the one being detached */
+	USB_Host_lock();
+	dev_inst_ptr = (dev_instance_t*)_usb_host_dev_get_instance(dev_inst_ptr->host, dev_inst_ptr->hub_no, dev_inst_ptr->port_no, (uint8_t)1);
 
-    if (dev_inst_ptr == NULL)
-    {
+	if (dev_inst_ptr == NULL)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("usb_host_dev_remove NULL device pointer");
+		DEBUG_LOG_TRACE("usb_host_dev_remove NULL device pointer");
 #endif
-        USB_Host_unlock();
-        return USBERR_ERROR; /* No match, abandon ship! */
-    }
+		USB_Host_unlock();
+		return USBERR_ERROR; /* No match, abandon ship! */
+	}
 
-    dev_inst_ptr->attached = (uint8_t)FALSE;
-    USB_Host_unlock();
+	dev_inst_ptr->attached = (uint8_t)FALSE;
+	USB_Host_unlock();
 
-    for (interface_index = 0; interface_index < dev_inst_ptr->configuration.interface_count; ++interface_index)
-    {
-        intf_handle = (usb_interface_descriptor_handle)dev_inst_ptr->interface_info[interface_index].lphostintf;
-        class_handle = (void*)dev_inst_ptr->interface_info[interface_index].lpClassHandle;
-        if (dev_inst_ptr->interface_info[interface_index].open == (uint8_t)TRUE)
-        {
-            status = usb_host_close_dev_interface(dev_inst_ptr->host, dev_handle, intf_handle, class_handle);
-            if (status != USB_OK)
-            {
-                USB_PRINTF("usb_host_dev_remove close interface FAILED\r\n");
-            }
-        }
-    }
+	for (interface_index = 0; interface_index < dev_inst_ptr->configuration.interface_count; ++interface_index)
+	{
+		intf_handle = (usb_interface_descriptor_handle)dev_inst_ptr->interface_info[interface_index].lphostintf;
+		class_handle = (void*)dev_inst_ptr->interface_info[interface_index].lpClassHandle;
+		if (dev_inst_ptr->interface_info[interface_index].open == (uint8_t)TRUE)
+		{
+			status = usb_host_close_dev_interface(dev_inst_ptr->host, dev_handle, intf_handle, class_handle);
+			if (status != USB_OK)
+			{
+				USB_PRINTF("usb_host_dev_remove close interface FAILED\r\n");
+			}
+		}
+	}
 
-    OS_Mem_free(dev_inst_ptr);
+	OS_Mem_free(dev_inst_ptr);
 
-    if(level == 1)
-    {
-        usb_host_bus_control(usb_host_ptr,2);
-        //usb_host_bus_control(usb_host_ptr,1);
-    }
+	if(level == 1)
+	{
+		usb_host_bus_control(usb_host_ptr,2);
+		//usb_host_bus_control(usb_host_ptr,1);
+	}
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_host_dev_remove SUCCESSFUL");
+	DEBUG_LOG_TRACE("usb_host_dev_remove SUCCESSFUL");
 #endif
-    return status;
+	return status;
 } /* Endbody */
 
 static usb_status error_handle_function
@@ -1188,28 +1188,28 @@ usb_device_interface_info_struct_t* lpinterface_info,
 usb_status error
 )
 {
-    class_map_t* class_map;
-    if (lpinterface_info != NULL)
-    {
-        if (lpinterface_info->open)
-        {
-            lpinterface_info->open = (uint8_t)FALSE;
-        }
+	class_map_t* class_map;
+	if (lpinterface_info != NULL)
+	{
+		if (lpinterface_info->open)
+		{
+			lpinterface_info->open = (uint8_t)FALSE;
+		}
 
-        class_map = lpinterface_info->lpClassDriverMap;
-        if ((class_map != NULL) && (lpinterface_info->lpClassHandle != NULL))
-        {
-            class_map->class_deinit(lpinterface_info->lpClassHandle);
-        }
+		class_map = lpinterface_info->lpClassDriverMap;
+		if ((class_map != NULL) && (lpinterface_info->lpClassHandle != NULL))
+		{
+			class_map->class_deinit(lpinterface_info->lpClassHandle);
+		}
 
-        lpinterface_info->lpClassDriverMap = NULL;
-        lpinterface_info->lpClassHandle = NULL;
+		lpinterface_info->lpClassDriverMap = NULL;
+		lpinterface_info->lpClassHandle = NULL;
 
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_hostdev_open_interface bad exit");
+		DEBUG_LOG_TRACE("_usb_hostdev_open_interface bad exit");
 #endif
-    }
-    return USB_log_error(__FILE__,__LINE__,error);
+	}
+	return USB_log_error(__FILE__,__LINE__,error);
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -1240,108 +1240,108 @@ usb_interface_descriptor_handle intf_handle,
 usb_class_handle * class_handle_ptr
 )
 {
-    dev_instance_t* dev;
-    usb_host_driver_info_t* info_ptr;
-    usb_host_state_struct_t* host_struct_ptr;
-    interface_descriptor_t* intf;
-    class_map_t* class_map;
-    usb_status error;
-    usb_device_interface_info_struct_t* lpinterface_info = NULL;
-    usb_class_handle class_handle = NULL;
+	dev_instance_t* dev;
+	usb_host_driver_info_t* info_ptr;
+	usb_host_state_struct_t* host_struct_ptr;
+	interface_descriptor_t* intf;
+	class_map_t* class_map;
+	usb_status error;
+	usb_device_interface_info_struct_t* lpinterface_info = NULL;
+	usb_class_handle class_handle = NULL;
 
-    error = usb_hostdev_validate (dev_handle);
-    if (error != USB_OK)
-    {
-        return error_handle_function(lpinterface_info, error);
-    }
+	error = usb_hostdev_validate (dev_handle);
+	if (error != USB_OK)
+	{
+		return error_handle_function(lpinterface_info, error);
+	}
 
-    dev = (dev_instance_t*)dev_handle;
-    if (handle != dev->host)
-    {
-        return error_handle_function(lpinterface_info, error);
-    }
-    intf = ((usb_device_interface_struct_t*)intf_handle)->lpinterfaceDesc;
+	dev = (dev_instance_t*)dev_handle;
+	if (handle != dev->host)
+	{
+		return error_handle_function(lpinterface_info, error);
+	}
+	intf = ((usb_device_interface_struct_t*)intf_handle)->lpinterfaceDesc;
 
-    /* Get the host handle on which this device is on */
-    host_struct_ptr = (usb_host_state_struct_t*)dev->host;
+	/* Get the host handle on which this device is on */
+	host_struct_ptr = (usb_host_state_struct_t*)dev->host;
 
-    /* Get the driver info for attach callback when a match occurs */
-    info_ptr = (usb_host_driver_info_t*)host_struct_ptr->device_info_table;
+	/* Get the driver info for attach callback when a match occurs */
+	info_ptr = (usb_host_driver_info_t*)host_struct_ptr->device_info_table;
 
-    if ((intf->bDescriptorType != USB_DESC_TYPE_IF) ||
-    (intf->bLength != USB_DESC_LEN_IF))
-    {
-        error = USBERR_NO_INTERFACE;
-        return error_handle_function(lpinterface_info, error);
-    }
+	if ((intf->bDescriptorType != USB_DESC_TYPE_IF) ||
+	(intf->bLength != USB_DESC_LEN_IF))
+	{
+		error = USBERR_NO_INTERFACE;
+		return error_handle_function(lpinterface_info, error);
+	}
 
-    lpinterface_info = usb_host_dev_mng_get_interface_info(dev_handle, intf);
-    if (lpinterface_info == NULL)
-    {
-        error = USBERR_NO_INTERFACE;
-        return error_handle_function(lpinterface_info, error);
-    }
-    lpinterface_info->open = (uint8_t)TRUE;
+	lpinterface_info = usb_host_dev_mng_get_interface_info(dev_handle, intf);
+	if (lpinterface_info == NULL)
+	{
+		error = USBERR_NO_INTERFACE;
+		return error_handle_function(lpinterface_info, error);
+	}
+	lpinterface_info->open = (uint8_t)TRUE;
 
-    if (usb_host_driver_info_nonzero(info_ptr))
-    {
-        /* Map interface to class driver, get & initialize driver struct */
-        error = USBERR_NO_DEVICE_CLASS; /* Assume the worst */
+	if (usb_host_driver_info_nonzero(info_ptr))
+	{
+		/* Map interface to class driver, get & initialize driver struct */
+		error = USBERR_NO_DEVICE_CLASS; /* Assume the worst */
 
-        class_map = usb_host_get_class_map(intf);
-        if (class_map == NULL)
-        {
-            return error_handle_function(lpinterface_info, error);
-        }
-        lpinterface_info->lpClassDriverMap = class_map;
-        error = class_map->class_init(dev_handle, intf_handle, &class_handle);
-        if (error != USB_OK)
-        {
-            lpinterface_info->lpClassHandle = class_handle;
-            return error_handle_function(lpinterface_info, error);
-        }
+		class_map = usb_host_get_class_map(intf);
+		if (class_map == NULL)
+		{
+			return error_handle_function(lpinterface_info, error);
+		}
+		lpinterface_info->lpClassDriverMap = class_map;
+		error = class_map->class_init(dev_handle, intf_handle, &class_handle);
+		if (error != USB_OK)
+		{
+			lpinterface_info->lpClassHandle = class_handle;
+			return error_handle_function(lpinterface_info, error);
+		}
 
-        lpinterface_info->lpClassHandle = class_handle;
+		lpinterface_info->lpClassHandle = class_handle;
 
-        *class_handle_ptr = class_handle;
-    }
-    else
-    {
-        return error_handle_function(lpinterface_info, error);
-    }
+		*class_handle_ptr = class_handle;
+	}
+	else
+	{
+		return error_handle_function(lpinterface_info, error);
+	}
 
-    if (intf->bAlternateSetting != 0)
-    {
-        /* Set interface on the device */
-        dev->state = DEVSTATE_SET_INTF;
-        lpinterface_info->requesting_set_interface = (uint8_t)TRUE;
-        error = _usb_host_ch9_set_interface((usb_device_instance_handle)dev,
-        intf->bAlternateSetting,
-        intf->bInterfaceNumber);
-        if (error != USB_OK)
-        {
-            dev->state = DEVSTATE_INITIAL;
+	if (intf->bAlternateSetting != 0)
+	{
+		/* Set interface on the device */
+		dev->state = DEVSTATE_SET_INTF;
+		lpinterface_info->requesting_set_interface = (uint8_t)TRUE;
+		error = _usb_host_ch9_set_interface((usb_device_instance_handle)dev,
+		intf->bAlternateSetting,
+		intf->bInterfaceNumber);
+		if (error != USB_OK)
+		{
+			dev->state = DEVSTATE_INITIAL;
 #ifdef _HOST_DEBUG_
-            DEBUG_LOG_TRACE("_usb_hostdev_open_interface FAILED");
+			DEBUG_LOG_TRACE("_usb_hostdev_open_interface FAILED");
 #endif
-            return error_handle_function(lpinterface_info, error);
-        }
-        else
-        {
+			return error_handle_function(lpinterface_info, error);
+		}
+		else
+		{
 #ifdef _HOST_DEBUG_
-            DEBUG_LOG_TRACE("_usb_hostdev_open_interface SUCCESSFUL");
+			DEBUG_LOG_TRACE("_usb_hostdev_open_interface SUCCESSFUL");
 #endif
-            return USB_OK;
-        }
-    }
-    else
-    {
-        /* Set interface on the device */
-        dev->state = DEVSTATE_ENUM_OK;
-        lpinterface_info->requesting_set_interface = (uint8_t)TRUE;
-        usb_host_dev_notify(dev, USB_INTF_OPENED_EVENT);
-        return USB_OK;
-    }
+			return USB_OK;
+		}
+	}
+	else
+	{
+		/* Set interface on the device */
+		dev->state = DEVSTATE_ENUM_OK;
+		lpinterface_info->requesting_set_interface = (uint8_t)TRUE;
+		usb_host_dev_notify(dev, USB_INTF_OPENED_EVENT);
+		return USB_OK;
+	}
 } /* EndBody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -1372,64 +1372,64 @@ usb_interface_descriptor_handle intf_handle,
 uint8_t alternate_setting
 )
 {
-    dev_instance_t* dev;
-    interface_descriptor_t* intf;
-    usb_status error;
-    usb_device_interface_info_struct_t* lpinterface_info = NULL;
+	dev_instance_t* dev;
+	interface_descriptor_t* intf;
+	usb_status error;
+	usb_device_interface_info_struct_t* lpinterface_info = NULL;
 
-    error = usb_hostdev_validate (dev_handle);
-    if (error != USB_OK)
-    {
-        return USB_log_error(__FILE__,__LINE__,error);
-    }
+	error = usb_hostdev_validate (dev_handle);
+	if (error != USB_OK)
+	{
+		return USB_log_error(__FILE__,__LINE__,error);
+	}
 
-    dev = (dev_instance_t*)dev_handle;
-    if (handle != dev->host)
-    {
-        return USB_log_error(__FILE__,__LINE__,error);
-    }
-    intf = ((usb_device_interface_struct_t*)intf_handle)->lpinterfaceDesc;
+	dev = (dev_instance_t*)dev_handle;
+	if (handle != dev->host)
+	{
+		return USB_log_error(__FILE__,__LINE__,error);
+	}
+	intf = ((usb_device_interface_struct_t*)intf_handle)->lpinterfaceDesc;
 
-    if ((intf->bDescriptorType != USB_DESC_TYPE_IF) ||
-    (intf->bLength != USB_DESC_LEN_IF))
-    {
-        error = USBERR_NO_INTERFACE;
-        return USB_log_error(__FILE__,__LINE__,error);
-    }
+	if ((intf->bDescriptorType != USB_DESC_TYPE_IF) ||
+	(intf->bLength != USB_DESC_LEN_IF))
+	{
+		error = USBERR_NO_INTERFACE;
+		return USB_log_error(__FILE__,__LINE__,error);
+	}
 
-    lpinterface_info = usb_host_dev_mng_get_interface_info(dev_handle, intf);
-    if (lpinterface_info == NULL)
-    {
-        error = USBERR_NO_INTERFACE;
-        return USB_log_error(__FILE__,__LINE__,error);
-    }
-    if(lpinterface_info->open !=(uint8_t)TRUE)
-    {
-        error = USBERR_INTERFACE_NOT_OPENED;
-        return USB_log_error(__FILE__,__LINE__,error);
-    }
+	lpinterface_info = usb_host_dev_mng_get_interface_info(dev_handle, intf);
+	if (lpinterface_info == NULL)
+	{
+		error = USBERR_NO_INTERFACE;
+		return USB_log_error(__FILE__,__LINE__,error);
+	}
+	if(lpinterface_info->open !=(uint8_t)TRUE)
+	{
+		error = USBERR_INTERFACE_NOT_OPENED;
+		return USB_log_error(__FILE__,__LINE__,error);
+	}
 
-    /* Set interface on the device */
-    dev->state = DEVSTATE_SET_INTF;
-    lpinterface_info->requesting_set_interface = (uint8_t)TRUE;
-    error = _usb_host_ch9_set_interface((usb_device_instance_handle)dev,
-    alternate_setting,
-    intf->bInterfaceNumber);
-    if (error != USB_OK)
-    {
-        dev->state = DEVSTATE_INITIAL;
+	/* Set interface on the device */
+	dev->state = DEVSTATE_SET_INTF;
+	lpinterface_info->requesting_set_interface = (uint8_t)TRUE;
+	error = _usb_host_ch9_set_interface((usb_device_instance_handle)dev,
+	alternate_setting,
+	intf->bInterfaceNumber);
+	if (error != USB_OK)
+	{
+		dev->state = DEVSTATE_INITIAL;
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_hostdev_open_interface FAILED");
+		DEBUG_LOG_TRACE("_usb_hostdev_open_interface FAILED");
 #endif
-        return USB_log_error(__FILE__,__LINE__,error);
-    }
-    else
-    {
+		return USB_log_error(__FILE__,__LINE__,error);
+	}
+	else
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_hostdev_open_interface SUCCESSFUL");
+		DEBUG_LOG_TRACE("_usb_hostdev_open_interface SUCCESSFUL");
 #endif
-        return USB_OK;
-    }
+		return USB_OK;
+	}
 
 } /* EndBody */
 
@@ -1461,87 +1461,87 @@ usb_interface_descriptor_handle intf_handle,
 usb_class_handle class_handle
 )
 {
-    dev_instance_t* dev_instance_ptr;
-    //usb_host_state_struct_t*            host_struct_ptr;
-    interface_descriptor_t* intf;
-    class_map_t* class_map;
-    usb_device_interface_info_struct_t* lpinterface_info = NULL;
-    uint8_t interface_index;
-    uint8_t interface_open = (uint8_t)FALSE;
+	dev_instance_t* dev_instance_ptr;
+	//usb_host_state_struct_t*            host_struct_ptr;
+	interface_descriptor_t* intf;
+	class_map_t* class_map;
+	usb_device_interface_info_struct_t* lpinterface_info = NULL;
+	uint8_t interface_index;
+	uint8_t interface_open = (uint8_t)FALSE;
 
-    if ((NULL == dev_handle) || (NULL == intf_handle) || (NULL == handle))
-    {
-        return USBERR_INVALID_PARAM;
-    }
-    dev_instance_ptr = (dev_instance_t*)dev_handle;
-    if (handle != dev_instance_ptr->host)
-    {
-        return USBERR_INVALID_PARAM;
-    }
-    //host_struct_ptr = (usb_host_state_struct_t*)dev_instance_ptr->host;
-    intf = ((usb_device_interface_struct_t*)intf_handle)->lpinterfaceDesc;
+	if ((NULL == dev_handle) || (NULL == intf_handle) || (NULL == handle))
+	{
+		return USBERR_INVALID_PARAM;
+	}
+	dev_instance_ptr = (dev_instance_t*)dev_handle;
+	if (handle != dev_instance_ptr->host)
+	{
+		return USBERR_INVALID_PARAM;
+	}
+	//host_struct_ptr = (usb_host_state_struct_t*)dev_instance_ptr->host;
+	intf = ((usb_device_interface_struct_t*)intf_handle)->lpinterfaceDesc;
 
-    lpinterface_info = usb_host_dev_mng_get_interface_info(dev_handle, intf);
-    if ((lpinterface_info == NULL) || (lpinterface_info->lpClassHandle != class_handle))
-    {
-        return USBERR_NO_INTERFACE;
-    }
+	lpinterface_info = usb_host_dev_mng_get_interface_info(dev_handle, intf);
+	if ((lpinterface_info == NULL) || (lpinterface_info->lpClassHandle != class_handle))
+	{
+		return USBERR_NO_INTERFACE;
+	}
 
-    class_map = lpinterface_info->lpClassDriverMap;
-    if ((class_map != NULL) && (lpinterface_info->lpClassHandle != NULL))
-    {
+	class_map = lpinterface_info->lpClassDriverMap;
+	if ((class_map != NULL) && (lpinterface_info->lpClassHandle != NULL))
+	{
 
-        if ((class_map->class_pre_deinit != NULL) && (dev_instance_ptr->pre_detached == (uint8_t)FALSE))
-        {
-            class_map->class_pre_deinit(lpinterface_info->lpClassHandle);
-        }
+		if ((class_map->class_pre_deinit != NULL) && (dev_instance_ptr->pre_detached == (uint8_t)FALSE))
+		{
+			class_map->class_pre_deinit(lpinterface_info->lpClassHandle);
+		}
 
-        if (class_map->class_deinit != NULL)
-        {
-            class_map->class_deinit(lpinterface_info->lpClassHandle);
-        }
-    }
+		if (class_map->class_deinit != NULL)
+		{
+			class_map->class_deinit(lpinterface_info->lpClassHandle);
+		}
+	}
 
-    lpinterface_info->lpClassDriverMap = NULL;
-    lpinterface_info->lpClassHandle = NULL;
-    lpinterface_info->open = (uint8_t)FALSE;
+	lpinterface_info->lpClassDriverMap = NULL;
+	lpinterface_info->lpClassHandle = NULL;
+	lpinterface_info->open = (uint8_t)FALSE;
 
-    if (dev_instance_ptr->attached == (uint8_t)TRUE)
-    {
-        return USB_OK;
-    }
+	if (dev_instance_ptr->attached == (uint8_t)TRUE)
+	{
+		return USB_OK;
+	}
 
-    for (interface_index = 0; interface_index < dev_instance_ptr->configuration.interface_count; interface_index++)
-    {
-        intf = dev_instance_ptr->configuration.interface[interface_index].lpinterfaceDesc;
-        lpinterface_info = usb_host_dev_mng_get_interface_info(dev_instance_ptr, intf);
-        if ((lpinterface_info != NULL) && (lpinterface_info->open == (uint8_t)TRUE))
-        {
-            interface_open = (uint8_t)TRUE;
-            break;
-        }
-        else
-        {
-            //USB_PRINTF("ERROR in _usb_hostdev_close_interface, no valid lpinterface_info\n");
-            continue;
-        }
-    }
+	for (interface_index = 0; interface_index < dev_instance_ptr->configuration.interface_count; interface_index++)
+	{
+		intf = dev_instance_ptr->configuration.interface[interface_index].lpinterfaceDesc;
+		lpinterface_info = usb_host_dev_mng_get_interface_info(dev_instance_ptr, intf);
+		if ((lpinterface_info != NULL) && (lpinterface_info->open == (uint8_t)TRUE))
+		{
+			interface_open = (uint8_t)TRUE;
+			break;
+		}
+		else
+		{
+			//USB_PRINTF("ERROR in _usb_hostdev_close_interface, no valid lpinterface_info\n");
+			continue;
+		}
+	}
 
-    if (interface_open == (uint8_t)FALSE)
-    {
-        if(dev_instance_ptr->control_pipe != NULL)
-        {
-            usb_host_close_pipe(dev_instance_ptr->host, dev_instance_ptr->control_pipe);
-            dev_instance_ptr->control_callback = NULL; /* no surprises */
+	if (interface_open == (uint8_t)FALSE)
+	{
+		if(dev_instance_ptr->control_pipe != NULL)
+		{
+			usb_host_close_pipe(dev_instance_ptr->host, dev_instance_ptr->control_pipe);
+			dev_instance_ptr->control_callback = NULL; /* no surprises */
 
-            if (dev_instance_ptr->lpConfiguration != NULL)
-            {
-                OS_Mem_free(dev_instance_ptr->lpConfiguration);
-            }
-        }
-        OS_Mem_free(dev_instance_ptr);
-    }
-    return USB_OK;
+			if (dev_instance_ptr->lpConfiguration != NULL)
+			{
+				OS_Mem_free(dev_instance_ptr->lpConfiguration);
+			}
+		}
+		OS_Mem_free(dev_instance_ptr);
+	}
+	return USB_OK;
 } /* EndBody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -1575,143 +1575,143 @@ uint32_t* param2,
 void** descriptor
 )
 {
-    interface_descriptor_t* intf;
-    usb_status error = USB_OK;
-    usb_device_interface_struct_t* pDeviceIntf = NULL;
-    descriptor_union_t ptr1;
-    descriptor_union_t ptr2;
-    uint8_t interface_num = 0;
-    uint8_t alternate_setting = 0;
-    uint8_t start_label;
+	interface_descriptor_t* intf;
+	usb_status error = USB_OK;
+	usb_device_interface_struct_t* pDeviceIntf = NULL;
+	descriptor_union_t ptr1;
+	descriptor_union_t ptr2;
+	uint8_t interface_num = 0;
+	uint8_t alternate_setting = 0;
+	uint8_t start_label;
 
-    if ((NULL == param1) && (NULL == descriptor))
-    {
-        error = USBERR_INVALID_PARAM;
-        return USB_log_error(__FILE__,__LINE__,error);
-    }
+	if ((NULL == param1) && (NULL == descriptor))
+	{
+		error = USBERR_INVALID_PARAM;
+		return USB_log_error(__FILE__,__LINE__,error);
+	}
 
-    *descriptor = NULL;
+	*descriptor = NULL;
 
-    if (USB_DESC_TYPE_EP == descriptor_type)
-    {
-        intf = (interface_descriptor_t*)intf_handle;
-        if ((intf->bDescriptorType != USB_DESC_TYPE_IF) ||
-        (intf->bLength != USB_DESC_LEN_IF))
-        {
-            error = USBERR_NO_INTERFACE;
-            return USB_log_error(__FILE__,__LINE__,error);
-        }
-        ptr1.pntr = (void*)intf_handle;
-        ptr1.word = ptr1.word + intf->bLength;
-        ptr2.word = ptr1.word + *param1;
+	if (USB_DESC_TYPE_EP == descriptor_type)
+	{
+		intf = (interface_descriptor_t*)intf_handle;
+		if ((intf->bDescriptorType != USB_DESC_TYPE_IF) ||
+		(intf->bLength != USB_DESC_LEN_IF))
+		{
+			error = USBERR_NO_INTERFACE;
+			return USB_log_error(__FILE__,__LINE__,error);
+		}
+		ptr1.pntr = (void*)intf_handle;
+		ptr1.word = ptr1.word + intf->bLength;
+		ptr2.word = ptr1.word + *param1;
 
-        while(ptr1.word < ptr2.word)
-        {
-            /* the first interface descriptor found */
-            if ((ptr1.common->bDescriptorType == descriptor_type) || (ptr1.common->bDescriptorType == USB_DESC_TYPE_IF))
-            {
-                if (ptr1.common->bDescriptorType == descriptor_type)
-                {
-                    *descriptor = ptr1.pntr;
-                }
-                break;
-            }
-            else
-            {
-                ptr1.word += ptr1.common->bLength;
-            }
-        }
-        if(*descriptor == NULL)
-        {
-            error = USBERR_NO_DESCRIPTOR;
-            return USB_log_error(__FILE__,__LINE__,error);
-        }
-    }
-    else if (USB_DESC_TYPE_IF == descriptor_type)
-    {
-        interface_num = (uint8_t)((*param1>>8) & 0x000000FF);
-        alternate_setting = (uint8_t)((*param1) & 0x000000FF);
+		while(ptr1.word < ptr2.word)
+		{
+			/* the first interface descriptor found */
+			if ((ptr1.common->bDescriptorType == descriptor_type) || (ptr1.common->bDescriptorType == USB_DESC_TYPE_IF))
+			{
+				if (ptr1.common->bDescriptorType == descriptor_type)
+				{
+					*descriptor = ptr1.pntr;
+				}
+				break;
+			}
+			else
+			{
+				ptr1.word += ptr1.common->bLength;
+			}
+		}
+		if(*descriptor == NULL)
+		{
+			error = USBERR_NO_DESCRIPTOR;
+			return USB_log_error(__FILE__,__LINE__,error);
+		}
+	}
+	else if (USB_DESC_TYPE_IF == descriptor_type)
+	{
+		interface_num = (uint8_t)((*param1>>8) & 0x000000FF);
+		alternate_setting = (uint8_t)((*param1) & 0x000000FF);
 
-        pDeviceIntf = (usb_device_interface_struct_t*)intf_handle;
-        intf = pDeviceIntf->lpinterfaceDesc;
+		pDeviceIntf = (usb_device_interface_struct_t*)intf_handle;
+		intf = pDeviceIntf->lpinterfaceDesc;
 
-        if ((intf->bDescriptorType != USB_DESC_TYPE_IF) ||
-        (intf->bLength != USB_DESC_LEN_IF))
-        {
-            error = USBERR_NO_INTERFACE;
-            return USB_log_error(__FILE__,__LINE__,error);
-        }
-        if (NULL == param2)
-        {
-            error = USBERR_INVALID_PARAM;
-            return USB_log_error(__FILE__,__LINE__,error);
-        }
+		if ((intf->bDescriptorType != USB_DESC_TYPE_IF) ||
+		(intf->bLength != USB_DESC_LEN_IF))
+		{
+			error = USBERR_NO_INTERFACE;
+			return USB_log_error(__FILE__,__LINE__,error);
+		}
+		if (NULL == param2)
+		{
+			error = USBERR_INVALID_PARAM;
+			return USB_log_error(__FILE__,__LINE__,error);
+		}
 
-        *param2 = 0;
-        start_label = 0;
+		*param2 = 0;
+		start_label = 0;
 
-        ptr1.pntr = pDeviceIntf->interfaceEx;
-        ptr2.word = ptr1.word + pDeviceIntf->interfaceExlength;
+		ptr1.pntr = pDeviceIntf->interfaceEx;
+		ptr2.word = ptr1.word + pDeviceIntf->interfaceExlength;
 
-        if(0 == alternate_setting)
-        {
-            ptr1.pntr = (void*)intf;
-        }
-        while (ptr1.word < ptr2.word)
-        {
-            /* the first interface descriptor found */
-            if (ptr1.common->bDescriptorType == USB_DESC_TYPE_IF)
-            {
-                if (start_label > 0)
-                {
-                    break;
-                }
+		if(0 == alternate_setting)
+		{
+			ptr1.pntr = (void*)intf;
+		}
+		while (ptr1.word < ptr2.word)
+		{
+			/* the first interface descriptor found */
+			if (ptr1.common->bDescriptorType == USB_DESC_TYPE_IF)
+			{
+				if (start_label > 0)
+				{
+					break;
+				}
 
-                if ((ptr1.intf->bInterfaceNumber == interface_num) && (ptr1.intf->bAlternateSetting == alternate_setting))
-                {
-                    *descriptor = ptr1.pntr;
-                    start_label = 1;
+				if ((ptr1.intf->bInterfaceNumber == interface_num) && (ptr1.intf->bAlternateSetting == alternate_setting))
+				{
+					*descriptor = ptr1.pntr;
+					start_label = 1;
 
-                    *param2 += ptr1.common->bLength;
-                    ptr1.word += ptr1.common->bLength;
-                }
-                else
-                {
-                    ptr1.word += ptr1.common->bLength;
-                }
-            }
-            else
-            {
-                if (start_label > 0)
-                {
-                    *param2 += ptr1.common->bLength;
-                }
-                ptr1.word += ptr1.common->bLength;
-            }
-        }
+					*param2 += ptr1.common->bLength;
+					ptr1.word += ptr1.common->bLength;
+				}
+				else
+				{
+					ptr1.word += ptr1.common->bLength;
+				}
+			}
+			else
+			{
+				if (start_label > 0)
+				{
+					*param2 += ptr1.common->bLength;
+				}
+				ptr1.word += ptr1.common->bLength;
+			}
+		}
 
-        if(*descriptor == NULL)
-        {
-            error = USBERR_NO_INTERFACE;
-            return USB_log_error(__FILE__,__LINE__,error);
-        }
-    }
-    else
-    {
-        error = USBERR_BAD_ALIGNMENT;
-        return USB_log_error(__FILE__,__LINE__,error);
-    }
+		if(*descriptor == NULL)
+		{
+			error = USBERR_NO_INTERFACE;
+			return USB_log_error(__FILE__,__LINE__,error);
+		}
+	}
+	else
+	{
+		error = USBERR_BAD_ALIGNMENT;
+		return USB_log_error(__FILE__,__LINE__,error);
+	}
 
-    return USB_OK;
+	return USB_OK;
 } /* EndBody */
 
 /*FUNCTION*----------------------------------------------------------------
- * 
+ *
  * Function Name  : _usb_host_register_service
  * Returned Value : USB_OK or error code
  * Comments       :
  *     Registers a callback routine for a specified event.
- * 
+ *
  *END*--------------------------------------------------------------------*/
 usb_status usb_host_register_service
 (
@@ -1725,51 +1725,51 @@ uint8_t type,
 void(_CODE_PTR_ service)(void* host_handle, uint32_t length)
 )
 {
-    usb_host_state_struct_t* usb_host_ptr;
-    usb_host_service_struct_t* service_ptr;
-    uint32_t i;
+	usb_host_state_struct_t* usb_host_ptr;
+	usb_host_service_struct_t* service_ptr;
+	uint32_t i;
 
-    if (handle == NULL)
-    {
-        return USBERR_ERROR;
-    }
-    usb_host_ptr = (usb_host_state_struct_t*)handle;
+	if (handle == NULL)
+	{
+		return USBERR_ERROR;
+	}
+	usb_host_ptr = (usb_host_state_struct_t*)handle;
 
-    USB_Host_lock();
+	USB_Host_lock();
 
-    for (i = 0; i < MAX_HOST_SERVICE_NUMBER; i++)
-    {
-        service_ptr = &usb_host_ptr->services[i];
-        if (service_ptr->type == type)
-        {
-            USB_Host_unlock();
-            return USBERR_OPEN_SERVICE;
-        }
-    }
+	for (i = 0; i < MAX_HOST_SERVICE_NUMBER; i++)
+	{
+		service_ptr = &usb_host_ptr->services[i];
+		if (service_ptr->type == type)
+		{
+			USB_Host_unlock();
+			return USBERR_OPEN_SERVICE;
+		}
+	}
 
-    for (i = 0; i < MAX_HOST_SERVICE_NUMBER; i++)
-    {
-        service_ptr = &usb_host_ptr->services[i];
-        if (service_ptr->type == (uint32_t)-1)
-        {
-            service_ptr->type = type;
-            service_ptr->service = service;
-            USB_Host_unlock();
-            return USB_OK;
-        }
-    }
+	for (i = 0; i < MAX_HOST_SERVICE_NUMBER; i++)
+	{
+		service_ptr = &usb_host_ptr->services[i];
+		if (service_ptr->type == (uint32_t)-1)
+		{
+			service_ptr->type = type;
+			service_ptr->service = service;
+			USB_Host_unlock();
+			return USB_OK;
+		}
+	}
 
-    USB_Host_unlock();
-    return USBERR_ALLOC;
+	USB_Host_unlock();
+	return USBERR_ALLOC;
 } /* EndBody */
 
 /*FUNCTION*----------------------------------------------------------------
- * 
+ *
  * Function Name  : _usb_host_unregister_service
  * Returned Value : USB_OK or error code
  * Comments       :
  *     Unregisters a callback routine for a specified event or endpoint.
- * 
+ *
  *END*--------------------------------------------------------------------*/
 usb_status usb_host_unregister_service
 (
@@ -1780,44 +1780,44 @@ usb_host_handle handle,
 uint8_t type
 )
 {
-    usb_host_state_struct_t* usb_host_ptr;
-    usb_host_service_struct_t* service_ptr;
-    uint32_t i;
+	usb_host_state_struct_t* usb_host_ptr;
+	usb_host_service_struct_t* service_ptr;
+	uint32_t i;
 
-    if (handle == NULL)
-    {
-        return USBERR_ERROR;
-    }
+	if (handle == NULL)
+	{
+		return USBERR_ERROR;
+	}
 
-    usb_host_ptr = (usb_host_state_struct_t*)handle;
+	usb_host_ptr = (usb_host_state_struct_t*)handle;
 
-    USB_Host_lock();
+	USB_Host_lock();
 
-    for (i = 0; i < MAX_HOST_SERVICE_NUMBER; i++)
-    {
-        service_ptr = &usb_host_ptr->services[i];
-        if (service_ptr->type == type)
-        {
-            service_ptr->type = (uint32_t)-1;
-            service_ptr->service = NULL;
-            USB_Host_unlock();
-            return USB_OK;
-        }
-    }
+	for (i = 0; i < MAX_HOST_SERVICE_NUMBER; i++)
+	{
+		service_ptr = &usb_host_ptr->services[i];
+		if (service_ptr->type == type)
+		{
+			service_ptr->type = (uint32_t)-1;
+			service_ptr->service = NULL;
+			USB_Host_unlock();
+			return USB_OK;
+		}
+	}
 
-    USB_Host_unlock();
-    return USBERR_CLOSED_SERVICE;
+	USB_Host_unlock();
+	return USBERR_CLOSED_SERVICE;
 } /* EndBody */
 
 /*FUNCTION*----------------------------------------------------------------
- * 
+ *
  * Function Name  : _usb_host_register_ch9_callback
  * Returned Value : USB_OK, or error status
  * Comments       :
- *     This function registers a callback function that will be called 
- *  to notify the user of a ch9 command completion. This should be used 
+ *     This function registers a callback function that will be called
+ *  to notify the user of a ch9 command completion. This should be used
  *  only after enumeration is completed
- * 
+ *
  *END*--------------------------------------------------------------------*/
 usb_status usb_host_register_ch9_callback
 (
@@ -1834,51 +1834,51 @@ tr_callback callback,
 void* callback_param
 )
 {
-    dev_instance_t* dev_inst_ptr;
-    usb_status error;
-    usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
+	dev_instance_t* dev_inst_ptr;
+	usb_status error;
+	usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_register_ch9_callback");
+	DEBUG_LOG_TRACE("_usb_host_register_ch9_callback");
 #endif
-    if (usb_host_ptr == NULL)
-    {
-        return USBERR_ERROR;
-    }
-    /* Verify that device handle is valid */
+	if (usb_host_ptr == NULL)
+	{
+		return USBERR_ERROR;
+	}
+	/* Verify that device handle is valid */
 
-    error = usb_hostdev_validate(dev_handle);
-    if (error != USB_OK)
-    {
+	error = usb_hostdev_validate(dev_handle);
+	if (error != USB_OK)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_register_ch9_callback, device not found");
+		DEBUG_LOG_TRACE("_usb_host_register_ch9_callback, device not found");
 #endif
-        return USB_log_error(__FILE__,__LINE__,USBERR_DEVICE_NOT_FOUND);
-    }
+		return USB_log_error(__FILE__,__LINE__,USBERR_DEVICE_NOT_FOUND);
+	}
 
-    USB_Host_lock();
-    dev_inst_ptr = (dev_instance_t*)dev_handle;
+	USB_Host_lock();
+	dev_inst_ptr = (dev_instance_t*)dev_handle;
 
-    /* This will be called if the device is already enumerated */
-    dev_inst_ptr->control_callback = callback;
-    dev_inst_ptr->control_callback_param = callback_param;
+	/* This will be called if the device is already enumerated */
+	dev_inst_ptr->control_callback = callback;
+	dev_inst_ptr->control_callback_param = callback_param;
 
-    USB_Host_unlock();
+	USB_Host_unlock();
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_register_ch9_callback, SUCCESSFUL");
+	DEBUG_LOG_TRACE("_usb_host_register_ch9_callback, SUCCESSFUL");
 #endif
-    return USB_OK;
+	return USB_OK;
 } /* EndBody */
 
 /*FUNCTION*----------------------------------------------------------------
- * 
+ *
  * Function Name  : usb_host_unregister_ch9_callback
  * Returned Value : USB_OK, or error status
  * Comments       :
- *     This function registers a callback function that will be called 
- *  to notify the user of a ch9 command completion. This should be used 
+ *     This function registers a callback function that will be called
+ *  to notify the user of a ch9 command completion. This should be used
  *  only after enumeration is completed
- * 
+ *
  *END*--------------------------------------------------------------------*/
 usb_status usb_host_unregister_ch9_callback
 (
@@ -1888,42 +1888,42 @@ usb_host_handle handle,
 usb_device_instance_handle dev_handle
 )
 {
-    dev_instance_t* dev_inst_ptr;
-    usb_status error;
-    usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
+	dev_instance_t* dev_inst_ptr;
+	usb_status error;
+	usb_host_state_struct_t* usb_host_ptr = (usb_host_state_struct_t*)handle;
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_register_ch9_callback");
+	DEBUG_LOG_TRACE("_usb_host_register_ch9_callback");
 #endif
-    if (usb_host_ptr == NULL)
-    {
-        return USBERR_ERROR;
-    }
-    /* Verify that device handle is valid */
-    USB_Host_lock();
+	if (usb_host_ptr == NULL)
+	{
+		return USBERR_ERROR;
+	}
+	/* Verify that device handle is valid */
+	USB_Host_lock();
 
-    error = usb_hostdev_validate(dev_handle);
+	error = usb_hostdev_validate(dev_handle);
 
-    if (error != USB_OK)
-    {
-        USB_Host_unlock();
+	if (error != USB_OK)
+	{
+		USB_Host_unlock();
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_register_ch9_callback, device not found");
+		DEBUG_LOG_TRACE("_usb_host_register_ch9_callback, device not found");
 #endif
-        return USB_log_error(__FILE__,__LINE__,USBERR_DEVICE_NOT_FOUND);
-    } /* Endif */
+		return USB_log_error(__FILE__,__LINE__,USBERR_DEVICE_NOT_FOUND);
+	} /* Endif */
 
-    dev_inst_ptr = (dev_instance_t*)dev_handle;
+	dev_inst_ptr = (dev_instance_t*)dev_handle;
 
-    /* This will be called if the device is already enumerated */
-    dev_inst_ptr->control_callback = NULL;
-    dev_inst_ptr->control_callback_param = NULL;
+	/* This will be called if the device is already enumerated */
+	dev_inst_ptr->control_callback = NULL;
+	dev_inst_ptr->control_callback_param = NULL;
 
-    USB_Host_unlock();
+	USB_Host_unlock();
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_register_ch9_callback, SUCCESSFUL");
+	DEBUG_LOG_TRACE("_usb_host_register_ch9_callback, SUCCESSFUL");
 #endif
-    return USB_OK;
+	return USB_OK;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -1943,28 +1943,28 @@ usb_host_handle host_handle,
 event_callback unsupported_device_notify
 )
 {
-    usb_host_state_struct_t* usb_host_ptr;
+	usb_host_state_struct_t* usb_host_ptr;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_driver_info_register");
+	DEBUG_LOG_TRACE("_usb_host_driver_info_register");
 #endif
 
-    if (host_handle == NULL)
-    {
+	if (host_handle == NULL)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_driver_info_register, NULL pointers");
+		DEBUG_LOG_TRACE("_usb_host_driver_info_register, NULL pointers");
 #endif
-        return USB_log_error(__FILE__,__LINE__,USBERR_UNKNOWN_ERROR);
-    } /* Endif */
+		return USB_log_error(__FILE__,__LINE__,USBERR_UNKNOWN_ERROR);
+	} /* Endif */
 
-    usb_host_ptr = (usb_host_state_struct_t*)host_handle;
-    USB_Host_lock();
-    usb_host_ptr->unsupport_device_callback = unsupported_device_notify;
-    USB_Host_unlock();
+	usb_host_ptr = (usb_host_state_struct_t*)host_handle;
+	USB_Host_lock();
+	usb_host_ptr->unsupport_device_callback = unsupported_device_notify;
+	USB_Host_unlock();
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_driver_info_register SUCCESSFUL");
+	DEBUG_LOG_TRACE("_usb_host_driver_info_register SUCCESSFUL");
 #endif
-    return USB_OK;
+	return USB_OK;
 } /* EndBody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -1983,28 +1983,28 @@ usb_host_handle host_handle,
 void* info_table_ptr
 )
 {
-    usb_host_state_struct_t* usb_host_ptr;
+	usb_host_state_struct_t* usb_host_ptr;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_driver_info_register");
+	DEBUG_LOG_TRACE("_usb_host_driver_info_register");
 #endif
 
-    if (host_handle == NULL)
-    {
+	if (host_handle == NULL)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_host_driver_info_register, NULL pointers");
+		DEBUG_LOG_TRACE("_usb_host_driver_info_register, NULL pointers");
 #endif
-        return USB_log_error(__FILE__,__LINE__,USBERR_UNKNOWN_ERROR);
-    } /* Endif */
+		return USB_log_error(__FILE__,__LINE__,USBERR_UNKNOWN_ERROR);
+	} /* Endif */
 
-    usb_host_ptr = (usb_host_state_struct_t*)host_handle;
-    USB_Host_lock();
-    usb_host_ptr->device_info_table = (struct driver_info *)info_table_ptr;
-    USB_Host_unlock();
+	usb_host_ptr = (usb_host_state_struct_t*)host_handle;
+	USB_Host_lock();
+	usb_host_ptr->device_info_table = (struct driver_info *)info_table_ptr;
+	USB_Host_unlock();
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_driver_info_register SUCCESSFUL");
+	DEBUG_LOG_TRACE("_usb_host_driver_info_register SUCCESSFUL");
 #endif
-    return USB_OK;
+	return USB_OK;
 } /* EndBody */
 
 /*FUNCTION*-------------------------------------------------------------
@@ -2012,7 +2012,7 @@ void* info_table_ptr
  *  Function Name  : usb_host_get_tr
  *  Returned Value : Status
  *  Comments       :
- * usb_host_get_tr is used to get a valid tr. 
+ * usb_host_get_tr is used to get a valid tr.
  *
  *END*-----------------------------------------------------------------*/
 usb_status usb_host_get_tr
@@ -2027,48 +2027,48 @@ void* callback_param,
 tr_struct_t* * tr_ptr_ptr
 )
 { /* Body */
-    usb_host_state_struct_t* usb_host_ptr;
-    uint8_t tr_index;
-    //static uint32_t                     usage_number = 0;
+	usb_host_state_struct_t* usb_host_ptr;
+	uint8_t tr_index;
+	//static uint32_t                     usage_number = 0;
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_host_unregister_service");
+	DEBUG_LOG_TRACE("_usb_host_unregister_service");
 #endif
 
-    usb_host_ptr = (usb_host_state_struct_t*)handle;
+	usb_host_ptr = (usb_host_state_struct_t*)handle;
 
-    USB_Host_lock();
+	USB_Host_lock();
 
-    usb_host_ptr->tr_index++;
-    if (usb_host_ptr->tr_index == 0)
-    {
-        usb_host_ptr->tr_index++;
-    }
+	usb_host_ptr->tr_index++;
+	if (usb_host_ptr->tr_index == 0)
+	{
+		usb_host_ptr->tr_index++;
+	}
 
-    for (tr_index = 0; tr_index < MAX_TR_NUMBER; tr_index++)
-    {
-        if (!usb_host_ptr->tr_list[tr_index].occupied)
-        {
-            usb_host_ptr->tr_list[tr_index].occupied = 1;
-            usb_host_ptr->tr_list[tr_index].next = NULL;
-            usb_host_ptr->tr_list[tr_index].status = USB_STATUS_TRANSFER_QUEUED;
-            usb_host_ptr->tr_list[tr_index].tr_index = usb_host_ptr->tr_index;
-            usb_host_ptr->tr_list[tr_index].tx_buffer = NULL;
-            usb_host_ptr->tr_list[tr_index].rx_buffer = NULL;
-            usb_host_ptr->tr_list[tr_index].tx_length = 0;
-            usb_host_ptr->tr_list[tr_index].rx_length = 0;
-            usb_host_ptr->tr_list[tr_index].callback = callback;
-            usb_host_ptr->tr_list[tr_index].callback_param = callback_param;
-            usb_host_ptr->tr_list[tr_index].send_phase = FALSE;
-            *tr_ptr_ptr = &usb_host_ptr->tr_list[tr_index];
-            usb_host_ptr->tr_user++;
-            //USB_PRINTF("get tr %d\n", usb_host_ptr->tr_user);
-            USB_Host_unlock();
-            return USB_OK;
-        }
-    }
-    *tr_ptr_ptr = NULL;
-    USB_Host_unlock();
-    return USBERR_NOT_FOUND;
+	for (tr_index = 0; tr_index < MAX_TR_NUMBER; tr_index++)
+	{
+		if (!usb_host_ptr->tr_list[tr_index].occupied)
+		{
+			usb_host_ptr->tr_list[tr_index].occupied = 1;
+			usb_host_ptr->tr_list[tr_index].next = NULL;
+			usb_host_ptr->tr_list[tr_index].status = USB_STATUS_TRANSFER_QUEUED;
+			usb_host_ptr->tr_list[tr_index].tr_index = usb_host_ptr->tr_index;
+			usb_host_ptr->tr_list[tr_index].tx_buffer = NULL;
+			usb_host_ptr->tr_list[tr_index].rx_buffer = NULL;
+			usb_host_ptr->tr_list[tr_index].tx_length = 0;
+			usb_host_ptr->tr_list[tr_index].rx_length = 0;
+			usb_host_ptr->tr_list[tr_index].callback = callback;
+			usb_host_ptr->tr_list[tr_index].callback_param = callback_param;
+			usb_host_ptr->tr_list[tr_index].send_phase = FALSE;
+			*tr_ptr_ptr = &usb_host_ptr->tr_list[tr_index];
+			usb_host_ptr->tr_user++;
+			//USB_PRINTF("get tr %d\n", usb_host_ptr->tr_user);
+			USB_Host_unlock();
+			return USB_OK;
+		}
+	}
+	*tr_ptr_ptr = NULL;
+	USB_Host_unlock();
+	return USBERR_NOT_FOUND;
 } /* Endbody */
 
 /*FUNCTION*-------------------------------------------------------------
@@ -2076,7 +2076,7 @@ tr_struct_t* * tr_ptr_ptr
  *  Function Name  : usb_host_release_tr
  *  Returned Value : Status
  *  Comments       :
- * usb_host_release_tr is used to release a tr. 
+ * usb_host_release_tr is used to release a tr.
  *
  *END*-----------------------------------------------------------------*/
 usb_status usb_host_release_tr
@@ -2088,43 +2088,43 @@ usb_host_handle handle,
 tr_struct_t* tr_ptr
 )
 {
-    usb_host_state_struct_t* usb_host_ptr;
-    uint8_t tr_index;
+	usb_host_state_struct_t* usb_host_ptr;
+	uint8_t tr_index;
 
-    usb_host_ptr = (usb_host_state_struct_t*)handle;
+	usb_host_ptr = (usb_host_state_struct_t*)handle;
 
-    USB_Host_lock();
+	USB_Host_lock();
 
-    if ((tr_ptr == NULL) || (tr_ptr->occupied == 0))
-    {
-        USB_Host_unlock();
-        return USBERR_NOT_FOUND;
-    }
+	if ((tr_ptr == NULL) || (tr_ptr->occupied == 0))
+	{
+		USB_Host_unlock();
+		return USBERR_NOT_FOUND;
+	}
 
-    for (tr_index = 0; tr_index < MAX_TR_NUMBER; tr_index++)
-    {
-        if (&usb_host_ptr->tr_list[tr_index] == tr_ptr)
-        {
-            usb_host_ptr->tr_list[tr_index].occupied = 0;
-            usb_host_ptr->tr_list[tr_index].next = NULL;
-            usb_host_ptr->tr_list[tr_index].status = USB_STATUS_IDLE;
-            usb_host_ptr->tr_list[tr_index].tr_index = 0;
-            usb_host_ptr->tr_list[tr_index].tx_buffer = NULL;
-            usb_host_ptr->tr_list[tr_index].rx_buffer = NULL;
-            usb_host_ptr->tr_list[tr_index].tx_length = 0;
-            usb_host_ptr->tr_list[tr_index].rx_length = 0;
-            usb_host_ptr->tr_list[tr_index].callback = NULL;
-            usb_host_ptr->tr_list[tr_index].callback_param = NULL;
-            usb_host_ptr->tr_list[tr_index].send_phase = FALSE;
-            usb_host_ptr->tr_user--;
-            //USB_PRINTF("release tr %d\n", usb_host_ptr->tr_user);
-            //USB_PRINTF("release tr %d\n", release_number++);
-            USB_Host_unlock();
-            return USB_OK;
-        }
-    }
-    USB_Host_unlock();
-    return USBERR_NOT_FOUND;
+	for (tr_index = 0; tr_index < MAX_TR_NUMBER; tr_index++)
+	{
+		if (&usb_host_ptr->tr_list[tr_index] == tr_ptr)
+		{
+			usb_host_ptr->tr_list[tr_index].occupied = 0;
+			usb_host_ptr->tr_list[tr_index].next = NULL;
+			usb_host_ptr->tr_list[tr_index].status = USB_STATUS_IDLE;
+			usb_host_ptr->tr_list[tr_index].tr_index = 0;
+			usb_host_ptr->tr_list[tr_index].tx_buffer = NULL;
+			usb_host_ptr->tr_list[tr_index].rx_buffer = NULL;
+			usb_host_ptr->tr_list[tr_index].tx_length = 0;
+			usb_host_ptr->tr_list[tr_index].rx_length = 0;
+			usb_host_ptr->tr_list[tr_index].callback = NULL;
+			usb_host_ptr->tr_list[tr_index].callback_param = NULL;
+			usb_host_ptr->tr_list[tr_index].send_phase = FALSE;
+			usb_host_ptr->tr_user--;
+			//USB_PRINTF("release tr %d\n", usb_host_ptr->tr_user);
+			//USB_PRINTF("release tr %d\n", release_number++);
+			USB_Host_unlock();
+			return USB_OK;
+		}
+	}
+	USB_Host_unlock();
+	return USBERR_NOT_FOUND;
 }
 
 /*FUNCTION*-------------------------------------------------------------
@@ -2132,7 +2132,7 @@ tr_struct_t* tr_ptr
  *  Function Name  : usb_host_get_host_handle
  *  Returned Value : Status
  *  Comments       :
- * usb_host_get_host is used to get the host handle of the device. 
+ * usb_host_get_host is used to get the host handle of the device.
  *
  *END*-----------------------------------------------------------------*/
 usb_status usb_host_get_host_handle
@@ -2144,26 +2144,26 @@ usb_device_instance_handle dev_handle,
 usb_host_handle * handle
 )
 {
-    dev_instance_t* dev_inst_ptr;
-    usb_status error;
+	dev_instance_t* dev_inst_ptr;
+	usb_status error;
 
-    dev_inst_ptr = (dev_instance_t*)dev_handle;
+	dev_inst_ptr = (dev_instance_t*)dev_handle;
 
-    if (dev_inst_ptr == NULL)
-    {
-        return USBERR_INVALID_PARAM;
-    }
+	if (dev_inst_ptr == NULL)
+	{
+		return USBERR_INVALID_PARAM;
+	}
 
-    error = usb_hostdev_validate(dev_handle);
+	error = usb_hostdev_validate(dev_handle);
 
-    if (error != USB_OK)
-    {
-        return USB_log_error(__FILE__,__LINE__,USBERR_DEVICE_NOT_FOUND);
-    } /* Endif */
+	if (error != USB_OK)
+	{
+		return USB_log_error(__FILE__,__LINE__,USBERR_DEVICE_NOT_FOUND);
+	} /* Endif */
 
-    *handle = dev_inst_ptr->host;
+	*handle = dev_inst_ptr->host;
 
-    return USB_OK;
+	return USB_OK;
 }
 
 #if USBCFG_HOST_COMPLIANCE_TEST
@@ -2178,45 +2178,44 @@ usb_host_handle * handle
 *END*--------------------------------------------------------------------*/
 usb_status usb_test_mode_init (usb_device_instance_handle dev_handle)
 { /* Body */
-    uint16_t   dev_Vendor, dev_Product;
-    dev_instance_t*     dev_ptr = (dev_instance_t*)dev_handle;
-    usb_host_state_struct_t*            usb_host_ptr;
-    usb_host_driver_info_t*             info_ptr;
+	uint16_t   dev_Vendor, dev_Product;
+	dev_instance_t*     dev_ptr = (dev_instance_t*)dev_handle;
+	usb_host_state_struct_t*            usb_host_ptr;
+	usb_host_driver_info_t*             info_ptr;
 
-    /* Get the host handle on which this device is on */
-    usb_host_ptr = (usb_host_state_struct_t*)dev_ptr->host;
-    info_ptr = usb_host_ptr->device_info_table;
+	/* Get the host handle on which this device is on */
+	usb_host_ptr = (usb_host_state_struct_t*)dev_ptr->host;
+	info_ptr = usb_host_ptr->device_info_table;
 
-    USB_PRINTF(" usb_test_mode_init\r\n");
-    dev_Vendor = USB_SHORT_UNALIGNED_LE_TO_HOST(dev_ptr->dev_descriptor.idVendor);
-    dev_Product = USB_SHORT_UNALIGNED_LE_TO_HOST(dev_ptr->dev_descriptor.idProduct);
-    USB_PRINTF(" dev_Vendor :0x%x dev_Product:0x%x \r\n",dev_Vendor, dev_Product);
+	USB_PRINTF(" usb_test_mode_init\r\n");
+	dev_Vendor = USB_SHORT_UNALIGNED_LE_TO_HOST(dev_ptr->dev_descriptor.idVendor);
+	dev_Product = USB_SHORT_UNALIGNED_LE_TO_HOST(dev_ptr->dev_descriptor.idProduct);
+	USB_PRINTF(" dev_Vendor :0x%x dev_Product:0x%x \r\n",dev_Vendor, dev_Product);
 
-    switch (dev_Product){
-        case 0x0200:
-            USB_PRINTF("----- PET Test device Attach Event -----\r\n");
-            break;
-            
-    
-        default:
+	switch (dev_Product){
+		case 0x0200:
+			USB_PRINTF("----- PET Test device Attach Event -----\r\n");
+			break;
+
+
+		default:
 #if USBCFG_HOST_EHCI
-            if (((uint32_t )(*(uint32_t *)usb_host_ptr->controller_handle) == USB_CONTROLLER_EHCI_0)
-                || ((uint32_t )*(uint32_t *)usb_host_ptr->controller_handle == USB_CONTROLLER_EHCI_1))
-            {
-                if(USB_OK == usb_ehci_test_mode_init(dev_handle))
-                {
-                    return USB_OK;
-                }
-            }
+			if (((uint32_t )(*(uint32_t *)usb_host_ptr->controller_handle) == USB_CONTROLLER_EHCI_0)
+				|| ((uint32_t )*(uint32_t *)usb_host_ptr->controller_handle == USB_CONTROLLER_EHCI_1))
+			{
+				if(USB_OK == usb_ehci_test_mode_init(dev_handle))
+				{
+					return USB_OK;
+				}
+			}
 #endif
-            USB_PRINTF("unsupported device attached\r\n");
-            return USBERR_ERROR;
-            break;
-    }
+			USB_PRINTF("unsupported device attached\r\n");
+			return USBERR_ERROR;
+			break;
+	}
 
-    return USB_OK;
+	return USB_OK;
 } /* Endbody */
 #endif
 
 #endif
-

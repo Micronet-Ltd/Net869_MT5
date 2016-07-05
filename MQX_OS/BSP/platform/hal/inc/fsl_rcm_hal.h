@@ -47,54 +47,54 @@
 
 /*! @brief System Reset Source Name definitions */
 typedef enum _rcm_source_names {
-    kRcmSrcAll         = 0U,                           /*!< Parameter could get all reset flags */
-    kRcmWakeup         = RCM_SRS0_WAKEUP_MASK,         /*!< Low-leakage wakeup reset */
-    kRcmLowVoltDetect  = RCM_SRS0_LVD_MASK,            /*!< low voltage detect reset */
+	kRcmSrcAll         = 0U,                           /*!< Parameter could get all reset flags */
+	kRcmWakeup         = RCM_SRS0_WAKEUP_MASK,         /*!< Low-leakage wakeup reset */
+	kRcmLowVoltDetect  = RCM_SRS0_LVD_MASK,            /*!< low voltage detect reset */
 #if FSL_FEATURE_RCM_HAS_LOC
-    kRcmLossOfClk      = RCM_SRS0_LOC_MASK,            /*!< Loss of clock reset */
+	kRcmLossOfClk      = RCM_SRS0_LOC_MASK,            /*!< Loss of clock reset */
 #endif
 #if FSL_FEATURE_RCM_HAS_LOL
-    kRcmLossOfLock     = RCM_SRS0_LOL_MASK,            /*!< Loss of lock reset */
+	kRcmLossOfLock     = RCM_SRS0_LOL_MASK,            /*!< Loss of lock reset */
 #endif
-    kRcmWatchDog       = RCM_SRS0_WDOG_MASK,           /*!< Watchdog reset */
-    kRcmExternalPin    = RCM_SRS0_PIN_MASK,            /*!< External pin reset */
-    kRcmPowerOn        = RCM_SRS0_POR_MASK,            /*!< Power on reset */
+	kRcmWatchDog       = RCM_SRS0_WDOG_MASK,           /*!< Watchdog reset */
+	kRcmExternalPin    = RCM_SRS0_PIN_MASK,            /*!< External pin reset */
+	kRcmPowerOn        = RCM_SRS0_POR_MASK,            /*!< Power on reset */
 #if FSL_FEATURE_RCM_HAS_JTAG
-    kRcmJtag           = RCM_SRS1_JTAG_MASK    << 8U,  /*!< JTAG generated reset */
+	kRcmJtag           = RCM_SRS1_JTAG_MASK    << 8U,  /*!< JTAG generated reset */
 #endif
-    kRcmCoreLockup     = RCM_SRS1_LOCKUP_MASK  << 8U,  /*!< Core lockup reset */
-    kRcmSoftware       = RCM_SRS1_SW_MASK      << 8U,  /*!< Software reset */
-    kRcmMdmAp          = RCM_SRS1_MDM_AP_MASK  << 8U,  /*!< MDM-AP system reset */
+	kRcmCoreLockup     = RCM_SRS1_LOCKUP_MASK  << 8U,  /*!< Core lockup reset */
+	kRcmSoftware       = RCM_SRS1_SW_MASK      << 8U,  /*!< Software reset */
+	kRcmMdmAp          = RCM_SRS1_MDM_AP_MASK  << 8U,  /*!< MDM-AP system reset */
 #if FSL_FEATURE_RCM_HAS_EZPORT
-    kRcmEzport         = RCM_SRS1_EZPT_MASK    << 8U,  /*!< EzPort reset */
+	kRcmEzport         = RCM_SRS1_EZPT_MASK    << 8U,  /*!< EzPort reset */
 #endif
-    kRcmStopModeAckErr = RCM_SRS1_SACKERR_MASK << 8U,  /*!< Stop mode ACK error reset */
+	kRcmStopModeAckErr = RCM_SRS1_SACKERR_MASK << 8U,  /*!< Stop mode ACK error reset */
 } rcm_source_names_t;
 
 /*! @brief Reset pin filter select in Run and Wait modes */
 typedef enum _rcm_filter_run_wait_modes {
-    kRcmFilterDisabled,          /*!< All filtering disabled */
-    kRcmFilterBusClk,            /*!< Bus clock filter enabled */
-    kRcmFilterLpoClk,            /*!< LPO clock filter enabled */
-    kRcmFilterReserverd          /*!< Reserved setting */
+	kRcmFilterDisabled,          /*!< All filtering disabled */
+	kRcmFilterBusClk,            /*!< Bus clock filter enabled */
+	kRcmFilterLpoClk,            /*!< LPO clock filter enabled */
+	kRcmFilterReserverd          /*!< Reserved setting */
 } rcm_filter_run_wait_modes_t;
 
 #if FSL_FEATURE_RCM_HAS_BOOTROM
 /*! @brief Boot from ROM configuration. */
 typedef enum _rcm_boot_rom_config {
-    kRcmBootFlash,       /*!< Boot from flash */
-    kRcmBootRomCfg0,     /*!< Boot from boot ROM due to BOOTCFG0 */
-    kRcmBootRomFopt,     /*!< Boot from boot ROM due to FOPT[7] */
-    kRcmBootRomBoth      /*!< Boot from boot ROM due to both BOOTCFG0 and FOPT[7] */
+	kRcmBootFlash,       /*!< Boot from flash */
+	kRcmBootRomCfg0,     /*!< Boot from boot ROM due to BOOTCFG0 */
+	kRcmBootRomFopt,     /*!< Boot from boot ROM due to FOPT[7] */
+	kRcmBootRomBoth      /*!< Boot from boot ROM due to both BOOTCFG0 and FOPT[7] */
 } rcm_boot_rom_config_t;
 #endif
 
 /*! @brief Reset pin filter configuration. */
 typedef struct _rcm_reset_pin_filter_config
 {
-    bool filterInStop;                        /*!< Reset pin filter select in stop mode. */
-    rcm_filter_run_wait_modes_t filterInRunWait; /*!< Reset pin filter in run/wait mode. */
-    uint8_t busClockFilterCount;                 /*!< Reset pin bus clock filter width.  */
+	bool filterInStop;                        /*!< Reset pin filter select in stop mode. */
+	rcm_filter_run_wait_modes_t filterInRunWait; /*!< Reset pin filter in run/wait mode. */
+	uint8_t busClockFilterCount;                 /*!< Reset pin bus clock filter width.  */
 } rcm_reset_pin_filter_config_t;
 
 /*******************************************************************************
@@ -177,7 +177,7 @@ void RCM_HAL_SetResetPinFilterConfig(RCM_Type * base, rcm_reset_pin_filter_confi
  */
 static inline bool RCM_HAL_GetEasyPortModeStatus(RCM_Type * base)
 {
-    return (bool)RCM_BRD_MR_EZP_MS(base);
+	return (bool)RCM_BRD_MR_EZP_MS(base);
 }
 #endif
 
@@ -191,9 +191,9 @@ static inline bool RCM_HAL_GetEasyPortModeStatus(RCM_Type * base)
  * @param config       Boot configuration.
  */
 static inline void RCM_HAL_SetForceBootRomSrc(RCM_Type * base,
-                                              rcm_boot_rom_config_t config)
+											  rcm_boot_rom_config_t config)
 {
-    RCM_BWR_FM_FORCEROM(base, config);
+	RCM_BWR_FM_FORCEROM(base, config);
 }
 
 /*!
@@ -206,7 +206,7 @@ static inline void RCM_HAL_SetForceBootRomSrc(RCM_Type * base,
  */
 static inline rcm_boot_rom_config_t RCM_HAL_GetBootRomSrc(RCM_Type * base)
 {
-    return (rcm_boot_rom_config_t)RCM_BRD_MR_BOOTROM(base);
+	return (rcm_boot_rom_config_t)RCM_BRD_MR_BOOTROM(base);
 }
 
 /*!
@@ -218,7 +218,7 @@ static inline rcm_boot_rom_config_t RCM_HAL_GetBootRomSrc(RCM_Type * base)
  */
 static inline void RCM_HAL_ClearBootRomSrc(RCM_Type * base)
 {
-    RCM_BWR_MR_BOOTROM(base, kRcmBootRomBoth);
+	RCM_BWR_MR_BOOTROM(base, kRcmBootRomBoth);
 }
 #endif
 
@@ -235,4 +235,3 @@ static inline void RCM_HAL_ClearBootRomSrc(RCM_Type * base)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

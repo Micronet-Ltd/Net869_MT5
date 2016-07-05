@@ -42,11 +42,11 @@
 typedef struct mutex_component_struct
 {
 
-    /*! \brief A queue of all created mutexes. */
-    QUEUE_STRUCT MUTEXES;
+	/*! \brief A queue of all created mutexes. */
+	QUEUE_STRUCT MUTEXES;
 
-    /*! \brief A validation field for mutexes. */
-    _mqx_uint     VALID;
+	/*! \brief A validation field for mutexes. */
+	_mqx_uint     VALID;
 
 } MUTEX_COMPONENT_STRUCT, * MUTEX_COMPONENT_STRUCT_PTR;
 /*! \endcond */
@@ -61,7 +61,7 @@ extern "C" {
  * \cond DOXYGEN_PRIVATE
  */
 extern void _mutex_cleanup(
-    TD_STRUCT_PTR td_ptr
+	TD_STRUCT_PTR td_ptr
 );
 /*! \endcond */
 

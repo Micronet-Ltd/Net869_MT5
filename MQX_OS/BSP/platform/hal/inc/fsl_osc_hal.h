@@ -47,10 +47,10 @@
 
 /*! @brief Oscillator capacitor load configurations.*/
 typedef enum _osc_capacitor_config {
-    kOscCapacitor2p = OSC_CR_SC2P_MASK,     /*!< 2 pF capacitor load */
-    kOscCapacitor4p = OSC_CR_SC4P_MASK,     /*!< 4 pF capacitor load */
-    kOscCapacitor8p = OSC_CR_SC8P_MASK,     /*!< 8 pF capacitor load */
-    kOscCapacitor16p = OSC_CR_SC16P_MASK    /*!< 16 pF capacitor load */
+	kOscCapacitor2p = OSC_CR_SC2P_MASK,     /*!< 2 pF capacitor load */
+	kOscCapacitor4p = OSC_CR_SC4P_MASK,     /*!< 4 pF capacitor load */
+	kOscCapacitor8p = OSC_CR_SC8P_MASK,     /*!< 8 pF capacitor load */
+	kOscCapacitor16p = OSC_CR_SC16P_MASK    /*!< 16 pF capacitor load */
 } osc_capacitor_config_t;
 
 /*******************************************************************************
@@ -67,7 +67,7 @@ extern "C" {
 /*!
  * @brief Enables the external reference clock for the oscillator.
  *
- * This function  enables the external reference clock output 
+ * This function  enables the external reference clock output
  * for the oscillator, OSCERCLK. This clock is used
  * by many peripherals. It should be enabled at an early system initialization
  * stage to ensure the peripherals can select and use it.
@@ -77,7 +77,7 @@ extern "C" {
  */
 static inline void OSC_HAL_SetExternalRefClkCmd(OSC_Type * base, bool enable)
 {
-    OSC_BWR_CR_ERCLKEN(base, enable);
+	OSC_BWR_CR_ERCLKEN(base, enable);
 }
 
 /*!
@@ -87,33 +87,33 @@ static inline void OSC_HAL_SetExternalRefClkCmd(OSC_Type * base, bool enable)
  * for the oscillator , OSCERCLK. This clock  is used
  * by many peripherals. It should be enabled at an early system initialization
  * stage to ensure the peripherals could select and use it.
- * 
+ *
  * @param base Oscillator register base address
  * @return Clock enable/disable setting
  */
 static inline bool OSC_HAL_GetExternalRefClkCmd(OSC_Type * base)
 {
-    return (bool)OSC_BRD_CR_ERCLKEN(base);
+	return (bool)OSC_BRD_CR_ERCLKEN(base);
 }
 
 /*!
  * @brief Enables/disables the external reference clock in stop mode.
  *
  * This function  enables/disables the external reference clock (OSCERCLK) when an
- * MCU enters the stop mode. 
+ * MCU enters the stop mode.
  *
  * @param base Oscillator register base address
  * @param enable   enable/disable setting
  */
 static inline void OSC_HAL_SetExternalRefClkInStopModeCmd(OSC_Type * base, bool enable)
 {
-    OSC_BWR_CR_EREFSTEN(base, enable);
+	OSC_BWR_CR_EREFSTEN(base, enable);
 }
 
 /*!
  * @brief Sets the capacitor configuration for the oscillator.
  *
- * This function sets the specified capacitors configuration for the 
+ * This function sets the specified capacitors configuration for the
  * oscillator. This should be done in the early system level initialization function call
  * based on the system configuration.
  *
@@ -139,7 +139,7 @@ void OSC_HAL_SetCapacitor(OSC_Type * base, uint32_t bitMask);
  */
 static inline void OSC_HAL_SetExternalRefClkDiv(OSC_Type * base, uint32_t divider)
 {
-    OSC_BWR_DIV_ERPS(base, divider);
+	OSC_BWR_DIV_ERPS(base, divider);
 }
 
 /*!
@@ -152,7 +152,7 @@ static inline void OSC_HAL_SetExternalRefClkDiv(OSC_Type * base, uint32_t divide
  */
 static inline uint32_t OSC_HAL_GetExternalRefClkDiv(OSC_Type * base)
 {
-    return OSC_BRD_DIV_ERPS(base);
+	return OSC_BRD_DIV_ERPS(base);
 }
 #endif
 
@@ -169,4 +169,3 @@ static inline uint32_t OSC_HAL_GetExternalRefClkDiv(OSC_Type * base)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

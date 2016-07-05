@@ -22,7 +22,7 @@
 * Comments:
 *
 *   This file contains the definitions of the generic
-*   PCB (Packet Control Block) structure.  
+*   PCB (Packet Control Block) structure.
 *   Since this structure is common to
 *   various protocols, this file is distributed with
 *   several products.
@@ -47,10 +47,10 @@
 
 /*
  * The PCB (Packet Control Block)
- * 
+ *
  * One PCB contains exactly one packet, possibly split over several areas of
  * memory.
- * 
+ *
  * The PCB structure consists of two pointers (FREE and PRIVATE) followed by a
  * variable-length array of PCB_FRAGMENT structures.  The array is terminated
  * by an entry with LENGTH=0 and FRAGMENT=NULL.
@@ -67,9 +67,9 @@ typedef void (_CODE_PTR_  PCB_FREE_FPTR)(struct pcb *);
 /*! \endcond */
 
 /*!
- * \brief Structure that contains fragment of PCB. 
- */ 
-typedef struct pcb_fragment 
+ * \brief Structure that contains fragment of PCB.
+ */
+typedef struct pcb_fragment
 {
    /*! \brief Length of PCB fragment. */
    uint32_t           LENGTH;
@@ -78,11 +78,11 @@ typedef struct pcb_fragment
 } PCB_FRAGMENT, * PCB_FRAGMENT_PTR;
 
 /*!
- * \brief PCB structure. 
- * 
+ * \brief PCB structure.
+ *
  * The array is terminated by an entry with LENGTH=0 and FRAGMENT=NULL.
- */ 
-typedef struct pcb 
+ */
+typedef struct pcb
 {
    /*! \brief Function that frees PCB. */
    PCB_FREE_FPTR     FREE;
@@ -96,8 +96,8 @@ typedef struct pcb
 // the smallest PCB
 /*!
  * \brief PCB structure contains two fragments.
- * 
- * The array is terminated by an entry with LENGTH=0 and FRAGMENT=NULL. 
+ *
+ * The array is terminated by an entry with LENGTH=0 and FRAGMENT=NULL.
  */
 typedef struct pcb2
 {

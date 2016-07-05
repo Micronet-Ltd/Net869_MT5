@@ -54,55 +54,55 @@
  ******************************************************************************/
 /*! @brief Internal resistor pull feature selection*/
 typedef enum _port_pull {
-    kPortPullDown = 0U,  /*!< Internal pull-down resistor is enabled. @internal gui name="Down"*/
-    kPortPullUp   = 1U   /*!< Internal pull-up resistor is enabled. @internal gui name="Up"*/
+	kPortPullDown = 0U,  /*!< Internal pull-down resistor is enabled. @internal gui name="Down"*/
+	kPortPullUp   = 1U   /*!< Internal pull-up resistor is enabled. @internal gui name="Up"*/
 } port_pull_t;
 
 /*! @brief Slew rate selection*/
 typedef enum _port_slew_rate {
-    kPortFastSlewRate = 0U,  /*!< Fast slew rate is configured. @internal gui name="Fast"*/
-    kPortSlowSlewRate = 1U   /*!< Slow slew rate is configured. @internal gui name="Slow" */
+	kPortFastSlewRate = 0U,  /*!< Fast slew rate is configured. @internal gui name="Fast"*/
+	kPortSlowSlewRate = 1U   /*!< Slow slew rate is configured. @internal gui name="Slow" */
 } port_slew_rate_t;
 
 /*! @brief Configures the drive strength.*/
 typedef enum _port_drive_strength {
-    kPortLowDriveStrength  = 0U, /*!< Low drive strength is configured. @internal gui name="Low"*/
-    kPortHighDriveStrength = 1U  /*!< High drive strength is configured. @internal gui name="High"*/
+	kPortLowDriveStrength  = 0U, /*!< Low drive strength is configured. @internal gui name="Low"*/
+	kPortHighDriveStrength = 1U  /*!< High drive strength is configured. @internal gui name="High"*/
 } port_drive_strength_t;
 
 /*! @brief Pin mux selection*/
 typedef enum _port_mux {
-    kPortPinDisabled = 0U,   /*!< Corresponding pin is disabled, but is used as an analog pin.*/
-    kPortMuxAsGpio   = 1U,   /*!< Corresponding pin is configured as GPIO.*/
-    kPortMuxAlt2     = 2U,   /*!< Chip-specific*/
-    kPortMuxAlt3     = 3U,   /*!< Chip-specific*/
-    kPortMuxAlt4     = 4U,   /*!< Chip-specific*/
-    kPortMuxAlt5     = 5U,   /*!< Chip-specific*/
-    kPortMuxAlt6     = 6U,   /*!< Chip-specific*/
-    kPortMuxAlt7     = 7U    /*!< Chip-specific*/
+	kPortPinDisabled = 0U,   /*!< Corresponding pin is disabled, but is used as an analog pin.*/
+	kPortMuxAsGpio   = 1U,   /*!< Corresponding pin is configured as GPIO.*/
+	kPortMuxAlt2     = 2U,   /*!< Chip-specific*/
+	kPortMuxAlt3     = 3U,   /*!< Chip-specific*/
+	kPortMuxAlt4     = 4U,   /*!< Chip-specific*/
+	kPortMuxAlt5     = 5U,   /*!< Chip-specific*/
+	kPortMuxAlt6     = 6U,   /*!< Chip-specific*/
+	kPortMuxAlt7     = 7U    /*!< Chip-specific*/
 } port_mux_t;
 
 /*! @brief Digital filter clock source selection*/
 #if FSL_FEATURE_PORT_HAS_DIGITAL_FILTER
 typedef enum _port_digital_filter_clock_source {
-    kPortBusClock = 0U,  /*!< Digital filters are clocked by the bus clock.*/
-    kPortLPOClock = 1U   /*!< Digital filters are clocked by the 1 kHz LPO clock.*/
+	kPortBusClock = 0U,  /*!< Digital filters are clocked by the bus clock.*/
+	kPortLPOClock = 1U   /*!< Digital filters are clocked by the 1 kHz LPO clock.*/
 } port_digital_filter_clock_source_t;
 #endif
 
 /*! @brief Configures the interrupt generation condition.*/
 typedef enum _port_interrupt_config {
-    kPortIntDisabled    = 0x0U,  /*!< Interrupt/DMA request is disabled.*/
-    #if FSL_FEATURE_PORT_HAS_DMA_REQUEST
-    kPortDmaRisingEdge  = 0x1U,  /*!< DMA request on rising edge.*/
-    kPortDmaFallingEdge = 0x2U,  /*!< DMA request on falling edge.*/
-    kPortDmaEitherEdge  = 0x3U,  /*!< DMA request on either edge.*/
-    #endif
-    kPortIntLogicZero   = 0x8U,  /*!< Interrupt when logic zero. */
-    kPortIntRisingEdge  = 0x9U,  /*!< Interrupt on rising edge. */
-    kPortIntFallingEdge = 0xAU,  /*!< Interrupt on falling edge. */
-    kPortIntEitherEdge  = 0xBU,  /*!< Interrupt on either edge. */
-    kPortIntLogicOne    = 0xCU   /*!< Interrupt when logic one. */
+	kPortIntDisabled    = 0x0U,  /*!< Interrupt/DMA request is disabled.*/
+	#if FSL_FEATURE_PORT_HAS_DMA_REQUEST
+	kPortDmaRisingEdge  = 0x1U,  /*!< DMA request on rising edge.*/
+	kPortDmaFallingEdge = 0x2U,  /*!< DMA request on falling edge.*/
+	kPortDmaEitherEdge  = 0x3U,  /*!< DMA request on either edge.*/
+	#endif
+	kPortIntLogicZero   = 0x8U,  /*!< Interrupt when logic zero. */
+	kPortIntRisingEdge  = 0x9U,  /*!< Interrupt on rising edge. */
+	kPortIntFallingEdge = 0xAU,  /*!< Interrupt on falling edge. */
+	kPortIntEitherEdge  = 0xBU,  /*!< Interrupt on either edge. */
+	kPortIntLogicOne    = 0xCU   /*!< Interrupt when logic one. */
 } port_interrupt_config_t;
 
 /*******************************************************************************
@@ -131,11 +131,11 @@ extern "C" {
  *        - kPortPullUp  : internal pull-up resistor is enabled.
  */
 static inline void PORT_HAL_SetPullMode(PORT_Type * base,
-                                        uint32_t pin,
-                                        port_pull_t pullSelect)
+										uint32_t pin,
+										port_pull_t pullSelect)
 {
-    assert(pin < 32U);
-    PORT_BWR_PCR_PS(base, pin, pullSelect);
+	assert(pin < 32U);
+	PORT_BWR_PCR_PS(base, pin, pullSelect);
 }
 #endif
 
@@ -150,11 +150,11 @@ static inline void PORT_HAL_SetPullMode(PORT_Type * base,
  *        - false: internal pull resistor is disabled.
  */
 static inline void PORT_HAL_SetPullCmd(PORT_Type * base,
-                                       uint32_t pin,
-                                       bool isPullEnabled)
+									   uint32_t pin,
+									   bool isPullEnabled)
 {
-    assert(pin < 32U);
-    PORT_BWR_PCR_PE(base, pin, isPullEnabled);
+	assert(pin < 32U);
+	PORT_BWR_PCR_PE(base, pin, isPullEnabled);
 }
 #endif
 
@@ -169,11 +169,11 @@ static inline void PORT_HAL_SetPullCmd(PORT_Type * base,
  *        - kPortSlowSlewRate: slow slew rate is configured.
  */
 static inline void PORT_HAL_SetSlewRateMode(PORT_Type * base,
-                                            uint32_t pin,
-                                            port_slew_rate_t rateSelect)
+											uint32_t pin,
+											port_slew_rate_t rateSelect)
 {
-    assert(pin < 32U);
-    PORT_BWR_PCR_SRE(base, pin, rateSelect);
+	assert(pin < 32U);
+	PORT_BWR_PCR_SRE(base, pin, rateSelect);
 }
 #endif
 
@@ -192,11 +192,11 @@ static inline void PORT_HAL_SetSlewRateMode(PORT_Type * base,
  *        - true : passive filter is enabled.
  */
 static inline void PORT_HAL_SetPassiveFilterCmd(PORT_Type * base,
-                                                uint32_t pin,
-                                                bool isPassiveFilterEnabled)
+												uint32_t pin,
+												bool isPassiveFilterEnabled)
 {
-    assert(pin < 32U);
-    PORT_BWR_PCR_PFE(base, pin, isPassiveFilterEnabled);
+	assert(pin < 32U);
+	PORT_BWR_PCR_PFE(base, pin, isPassiveFilterEnabled);
 }
 #endif
 
@@ -211,11 +211,11 @@ static inline void PORT_HAL_SetPassiveFilterCmd(PORT_Type * base,
  *        - true : Open Drain output is disabled on the corresponding pin.
  */
 static inline void PORT_HAL_SetOpenDrainCmd(PORT_Type * base,
-                                                 uint32_t pin,
-                                                 bool isOpenDrainEnabled)
+												 uint32_t pin,
+												 bool isOpenDrainEnabled)
 {
-    assert(pin < 32U);
-    PORT_BWR_PCR_ODE(base, pin, isOpenDrainEnabled);
+	assert(pin < 32U);
+	PORT_BWR_PCR_ODE(base, pin, isOpenDrainEnabled);
 }
 #endif
 
@@ -230,11 +230,11 @@ static inline void PORT_HAL_SetOpenDrainCmd(PORT_Type * base,
  *        - kHighDriveStrength: high drive strength is configured.
  */
 static inline void PORT_HAL_SetDriveStrengthMode(PORT_Type * base,
-                                                 uint32_t pin,
-                                                 port_drive_strength_t driveSelect)
+												 uint32_t pin,
+												 port_drive_strength_t driveSelect)
 {
-    assert(pin < 32U);
-    PORT_BWR_PCR_DSE(base, pin, driveSelect);
+	assert(pin < 32U);
+	PORT_BWR_PCR_DSE(base, pin, driveSelect);
 }
 #endif
 
@@ -249,11 +249,11 @@ static inline void PORT_HAL_SetDriveStrengthMode(PORT_Type * base,
  *        - others          : chip-specific.
  */
 static inline void PORT_HAL_SetMuxMode(PORT_Type * base,
-                                       uint32_t pin,
-                                       port_mux_t mux)
+									   uint32_t pin,
+									   port_mux_t mux)
 {
-    assert(pin < 32U);
-    PORT_BWR_PCR_MUX(base, pin, mux);
+	assert(pin < 32U);
+	PORT_BWR_PCR_MUX(base, pin, mux);
 }
 
 #if FSL_FEATURE_PORT_HAS_PIN_CONTROL_LOCK
@@ -267,11 +267,11 @@ static inline void PORT_HAL_SetMuxMode(PORT_Type * base,
  *        - true : pin control register bit[15:0] are locked, cannot be updated till system reset.
  */
 static inline void PORT_HAL_SetPinCtrlLockCmd(PORT_Type * base,
-                                                       uint32_t pin,
-                                                       bool isPinLockEnabled)
+													   uint32_t pin,
+													   bool isPinLockEnabled)
 {
-    assert(pin < 32U);
-    PORT_BWR_PCR_LK(base, pin, isPinLockEnabled);
+	assert(pin < 32U);
+	PORT_BWR_PCR_LK(base, pin, isPinLockEnabled);
 }
 #endif
 
@@ -287,11 +287,11 @@ static inline void PORT_HAL_SetPinCtrlLockCmd(PORT_Type * base,
  *        - true : digital filter is enabled on the corresponding pin.
  */
 static inline void PORT_HAL_SetDigitalFilterCmd(PORT_Type * base,
-                                                     uint32_t pin,
-                                                     bool isDigitalFilterEnabled)
+													 uint32_t pin,
+													 bool isDigitalFilterEnabled)
 {
-    assert(pin < 32U);
-    PORT_SET_DFER(base, (uint32_t)isDigitalFilterEnabled << pin);
+	assert(pin < 32U);
+	PORT_SET_DFER(base, (uint32_t)isDigitalFilterEnabled << pin);
 }
 
 /*!
@@ -305,9 +305,9 @@ static inline void PORT_HAL_SetDigitalFilterCmd(PORT_Type * base,
  *        - kLPOClock: digital filters are clocked by the 1 kHz LPO clock.
  */
 static inline void PORT_HAL_SetDigitalFilterClock(PORT_Type * base,
-                                                    port_digital_filter_clock_source_t clockSource)
+													port_digital_filter_clock_source_t clockSource)
 {
-    PORT_WR_DFCR(base, clockSource);
+	PORT_WR_DFCR(base, clockSource);
 }
 
 /*!
@@ -322,7 +322,7 @@ static inline void PORT_HAL_SetDigitalFilterClock(PORT_Type * base,
  */
 static inline void PORT_HAL_SetDigitalFilterWidth(PORT_Type * base, uint8_t width)
 {
-    PORT_WR_DFWR(base, width);
+	PORT_WR_DFWR(base, width);
 }
 #endif /* FSL_FEATURE_PORT_HAS_DIGITAL_FILTER*/
 
@@ -374,11 +374,11 @@ void PORT_HAL_SetHighGlobalPinCtrl(PORT_Type * base, uint16_t highPinSelect, uin
  *        - kPortIntLogicOne   : Interrupt when logic one.
  */
 static inline void PORT_HAL_SetPinIntMode(PORT_Type * base,
-                                          uint32_t pin,
-                                          port_interrupt_config_t intConfig)
+										  uint32_t pin,
+										  port_interrupt_config_t intConfig)
 {
-    assert(pin < 32U);
-    PORT_BWR_PCR_IRQC(base, pin, intConfig);
+	assert(pin < 32U);
+	PORT_BWR_PCR_IRQC(base, pin, intConfig);
 }
 
 /*!
@@ -399,8 +399,8 @@ static inline void PORT_HAL_SetPinIntMode(PORT_Type * base,
  */
 static inline port_interrupt_config_t PORT_HAL_GetPinIntMode(PORT_Type * base, uint32_t pin)
 {
-    assert(pin < 32U);
-    return (port_interrupt_config_t)PORT_BRD_PCR_IRQC(base, pin);
+	assert(pin < 32U);
+	return (port_interrupt_config_t)PORT_BRD_PCR_IRQC(base, pin);
 }
 
 /*!
@@ -420,8 +420,8 @@ static inline port_interrupt_config_t PORT_HAL_GetPinIntMode(PORT_Type * base, u
  */
 static inline bool PORT_HAL_IsPinIntPending(PORT_Type * base, uint32_t pin)
 {
-    assert(pin < 32U);
-    return PORT_BRD_PCR_ISF(base, pin);
+	assert(pin < 32U);
+	return PORT_BRD_PCR_ISF(base, pin);
 }
 
 /*!
@@ -432,8 +432,8 @@ static inline bool PORT_HAL_IsPinIntPending(PORT_Type * base, uint32_t pin)
  */
 static inline void PORT_HAL_ClearPinIntFlag(PORT_Type * base, uint32_t pin)
 {
-    assert(pin < 32U);
-    PORT_BWR_PCR_ISF(base, pin, 1U);
+	assert(pin < 32U);
+	PORT_BWR_PCR_ISF(base, pin, 1U);
 }
 
 /*!
@@ -446,7 +446,7 @@ static inline void PORT_HAL_ClearPinIntFlag(PORT_Type * base, uint32_t pin)
  */
 static inline uint32_t PORT_HAL_GetPortIntFlag(PORT_Type * base)
 {
-    return PORT_RD_ISFR(base);
+	return PORT_RD_ISFR(base);
 }
 
 /*!
@@ -456,7 +456,7 @@ static inline uint32_t PORT_HAL_GetPortIntFlag(PORT_Type * base)
  */
 static inline void PORT_HAL_ClearPortIntFlag(PORT_Type * base)
 {
-    PORT_WR_ISFR(base, ~0U);
+	PORT_WR_ISFR(base, ~0U);
 }
 
 /*@}*/
@@ -471,4 +471,3 @@ static inline void PORT_HAL_ClearPortIntFlag(PORT_Type * base)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

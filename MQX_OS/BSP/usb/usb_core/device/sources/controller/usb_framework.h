@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
 * All Rights Reserved
 *
 * Copyright (c) 1989-2008 ARC International;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
 *
 * $FileName: usb_framework.h$
-* $Version : 
-* $Date    : 
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -53,7 +53,7 @@
 #define CONFIG_SIZE                     (1)
 #define FRAME_SIZE                      (2)
 #define ENDP_STATUS_SIZE                (2)
-#define USB_SET_REQUEST_MASK            (0x02) 
+#define USB_SET_REQUEST_MASK            (0x02)
 /* wIndex values for GET_Status */
 #define USB_WINDEX_OTG_STATUS_SEL       (0xF000)
 #define GET_STATUS_OTG_MASK             (0x0001)
@@ -62,7 +62,7 @@
  * Types
  *****************************************************************************/
 typedef uint32_t usb_class_fw_handle;
- 
+
 /* Strucutre holding USB state information and handles.*/
 typedef struct _usb_class_fw_object
 {
@@ -83,9 +83,9 @@ typedef struct _usb_class_fw_object
 
  /* callback function pointer structure to handle USB framework request */
 typedef uint8_t (_CODE_PTR_ USB_FW_REQ_FUNC)(usb_class_fw_object_struct_t* usb_fw_ptr,
-                                            usb_setup_struct_t * setup_packet, 
-                                            uint8_t * *data, 
-                                            uint32_t *size); 
+											usb_setup_struct_t * setup_packet,
+											uint8_t * *data,
+											uint32_t *size);
 
 /******************************************************************************
  * Global Functions
@@ -98,7 +98,7 @@ typedef uint8_t (_CODE_PTR_ USB_FW_REQ_FUNC)(usb_class_fw_object_struct_t* usb_f
  *
  * @param None
  *
- * @return None       
+ * @return None
  *
  *****************************************************************************/
 #ifdef DELAYED_PROCESSING
@@ -112,14 +112,14 @@ extern void USB_Framework_Periodic_Task(void);
  *
  * @param handle: handle to Identify the controller
  *
- * @return status       
+ * @return status
  *         USB_OK           : When Successfully
  *         Others           : Errors
  *
  *****************************************************************************/
 extern uint8_t USB_Framework_Reset
 (
-    usb_device_handle handle /*[IN] the USB device controller to initialize*/ 
+	usb_device_handle handle /*[IN] the USB device controller to initialize*/
 );
 
 /**************************************************************************//*!
@@ -129,11 +129,11 @@ extern uint8_t USB_Framework_Reset
  * @brief  This function is called in to get the descriptor as specified in cmd.
  *
  * @param handle:           USB framework handle. Received from
- *                          USB_Framework_Init      
+ *                          USB_Framework_Init
  * @param cmd:              command for USB descriptor to get.
  * @param in_data:          input to the Application functions.
  * @param in_buff           buffer which will contain the descriptors.
- * @return status:       
+ * @return status:
  *                        USB_OK : When Successfully
  *                        Others : When Error
  *
@@ -151,11 +151,11 @@ uint8_t * * in_buff/*[OUT]*/
  * @brief  This function is called in to get the descriptor as specified in cmd.
  *
  * @param handle:           USB framework handle. Received from
- *                          USB_Framework_Init      
+ *                          USB_Framework_Init
  * @param cmd:              command for USB descriptor to get.
  * @param in_data:          input to the Application functions.
  * @param outBuf           buffer which will contain the descriptors.
- * @return status:       
+ * @return status:
  *                        USB_OK : When Successfully
  *                        Others : When Error
  *
@@ -172,11 +172,11 @@ uint8_t * * outBuf/*[IN]*/
  * @brief  This function is called in to get the descriptor as specified in cmd.
  *
  * @param handle:           USB framework handle. Received from
- *                          USB_Framework_Init      
+ *                          USB_Framework_Init
  * @param cmd:              command for USB descriptor to get.
  * @param in_data:          input to the Application functions.
  * @param in_buff           buffer which will contain the descriptors.
- * @return status:       
+ * @return status:
  *                        USB_OK : When Successfully
  *                        Others : When Error
  *

@@ -45,9 +45,9 @@
  *END**************************************************************************/
 void PORT_HAL_SetLowGlobalPinCtrl(PORT_Type * base, uint16_t lowPinSelect, uint16_t config)
 {
-    uint32_t combine = lowPinSelect;
-    combine = (combine << 16) + config;
-    PORT_WR_GPCLR(base, combine);
+	uint32_t combine = lowPinSelect;
+	combine = (combine << 16) + config;
+	PORT_WR_GPCLR(base, combine);
 }
 
 /*FUNCTION**********************************************************************
@@ -59,13 +59,12 @@ void PORT_HAL_SetLowGlobalPinCtrl(PORT_Type * base, uint16_t lowPinSelect, uint1
  *END**************************************************************************/
 void PORT_HAL_SetHighGlobalPinCtrl(PORT_Type * base, uint16_t highPinSelect, uint16_t config)
 {
-    uint32_t combine = highPinSelect;
-    combine = (combine << 16) + config;
-    PORT_WR_GPCHR(base, combine);
+	uint32_t combine = highPinSelect;
+	combine = (combine << 16) + config;
+	PORT_WR_GPCHR(base, combine);
 }
 
 #endif /* FSL_FEATURE_SOC_PORT_COUNT */
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

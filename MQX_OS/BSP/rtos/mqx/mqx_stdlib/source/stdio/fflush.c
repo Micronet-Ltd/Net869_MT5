@@ -36,28 +36,28 @@
  */
 int fflush(FILE  *stream)
 {
-    int i;
-    if (NULL != stream)
-    {
-        if (0 > _buf_flush(stream))
-        {
-            return EOF;
-        }
-    }
-    else
-    {
-        /* If inpunt stream point to NULL perform fflush for all opened streams. */
-        for (i = 0; i < FOPEN_MAX; i++)
-        {
-            if (NULL != _files[i])
-            {
-                /* recurse call on all opened streams */
-                if (EOF == fflush(_files[i]))
-                {
-                    return EOF;
-                }
-            }
-        }
-    }
-    return 0;
+	int i;
+	if (NULL != stream)
+	{
+		if (0 > _buf_flush(stream))
+		{
+			return EOF;
+		}
+	}
+	else
+	{
+		/* If inpunt stream point to NULL perform fflush for all opened streams. */
+		for (i = 0; i < FOPEN_MAX; i++)
+		{
+			if (NULL != _files[i])
+			{
+				/* recurse call on all opened streams */
+				if (EOF == fflush(_files[i]))
+				{
+					return EOF;
+				}
+			}
+		}
+	}
+	return 0;
 }

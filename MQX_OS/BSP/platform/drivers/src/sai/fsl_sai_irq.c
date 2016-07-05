@@ -42,36 +42,36 @@ extern sai_state_t * volatile sai_state_ids[I2S_INSTANCE_COUNT][2];
 
 void I2S0_IRQHandler(void)
 {
-    if (sai_state_ids[0][1] != NULL)
-    {
-        SAI_DRV_RxIRQHandler(0U);
-    }
-    if (sai_state_ids[0][0] != NULL)
-    {
-        SAI_DRV_TxIRQHandler(0U);
-    }
+	if (sai_state_ids[0][1] != NULL)
+	{
+		SAI_DRV_RxIRQHandler(0U);
+	}
+	if (sai_state_ids[0][0] != NULL)
+	{
+		SAI_DRV_TxIRQHandler(0U);
+	}
 }
 
 #else
 void I2S0_Tx_IRQHandler(void)
 {
-    SAI_DRV_TxIRQHandler(0U);
+	SAI_DRV_TxIRQHandler(0U);
 }
 
 void I2S0_Rx_IRQHandler(void)
 {
-    SAI_DRV_RxIRQHandler(0U);
+	SAI_DRV_RxIRQHandler(0U);
 }
 
 #if defined (K70F12_SERIES)
 void I2S1_Tx_IRQHandler(void)
 {
-    SAI_DRV_TxIRQHandler(1U);
+	SAI_DRV_TxIRQHandler(1U);
 }
 
 void I2S1_Rx_IRQHandler(void)
 {
-    SAI_DRV_RxIRQHandler(1U);
+	SAI_DRV_RxIRQHandler(1U);
 }
 #endif /*defined K70F12_SERIES */
 #endif /* FSL_FEATURE_SAI_INT_SPURCE_NUM */
@@ -80,4 +80,3 @@ void I2S1_Rx_IRQHandler(void)
 /*************************************************************************
  * EOF
  ************************************************************************/
-

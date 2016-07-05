@@ -759,7 +759,7 @@ static inline int64_t MMAU_HAL_d_sdiv_dl (register int64_t dnum, register int32_
  * @param   lden    @ref int32_t integer value.
  * @return  @ref int64_t integer value.
  * @note    Saturated quotient is  stored in A10 register of the MMAU for
- *          next computation. 
+ *          next computation.
  ******************************************************************************/
 static inline int64_t MMAU_HAL_d_sdivs_dl (register int64_t dnum, register int32_t lden)
 {
@@ -794,7 +794,7 @@ static inline int64_t MMAU_HAL_d_sdiv_dd (register int64_t dnum, register int64_
  * @param   dden    @ref int64_t integer value.
  * @return  @ref int64_t integer value.
  * @note    Saturated quotient is  stored in A10 register of the MMAU for
- *          next computation. 
+ *          next computation.
  ******************************************************************************/
 static inline int64_t MMAU_HAL_d_sdivs_dd (register int64_t dnum, register int64_t dden)
 {
@@ -828,7 +828,7 @@ static inline int64_t MMAU_HAL_d_sdiva_l (register int32_t lden1)
  * @param   lden1   @ref int32_t integer value.
  * @return  @ref int64_t integer value.
  * @note    Saturated quotient is  stored in A10 register of the MMAU for
- *          next computation. 
+ *          next computation.
  ******************************************************************************/
 static inline int64_t MMAU_HAL_d_sdivas_l (register int32_t lden1)
 {
@@ -861,7 +861,7 @@ static inline int64_t MMAU_HAL_d_sdiva_d (register int64_t dden1)
  * @param   dden1   @ref int64_t integer value.
  * @return  @ref int64_t integer value.
  * @note    Saturated quotient is  stored in A10 register of the MMAU for
- *          next computation. 
+ *          next computation.
  ******************************************************************************/
 static inline int64_t MMAU_HAL_d_sdivas_d (register int64_t dden1)
 {
@@ -1546,4 +1546,3 @@ static inline frac32_t MMAU_HAL_l_sqra (void)
 /******************************************************************************
  * EOF
  *****************************************************************************/
-

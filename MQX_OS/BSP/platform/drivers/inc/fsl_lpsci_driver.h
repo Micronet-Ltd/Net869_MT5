@@ -79,32 +79,32 @@ typedef void (* lpsci_tx_callback_t)(uint32_t instance, void * lpsciState);
  * LPSCI driver populates the members.
  */
 typedef struct LpsciState {
-    const uint8_t * txBuff;        /*!< The buffer of data being sent.*/
-    uint8_t * rxBuff;              /*!< The buffer of received data. */
-    volatile size_t txSize;        /*!< The remaining number of bytes to be transmitted. */
-    volatile size_t rxSize;        /*!< The remaining number of bytes to be received. */
-    volatile bool isTxBusy;        /*!< True if there is an active transmit. */
-    volatile bool isRxBusy;        /*!< True if there is an active receive. */
-    volatile bool isTxBlocking;    /*!< True if transmit is blocking transaction. */
-    volatile bool isRxBlocking;    /*!< True if receive is blocking transaction. */
-    semaphore_t txIrqSync;         /*!< Used to wait for ISR to complete its TX business. */
-    semaphore_t rxIrqSync;         /*!< Used to wait for ISR to complete its RX business. */
-    lpsci_rx_callback_t rxCallback; /*!< Callback to invoke after receiving byte.*/
-    void * rxCallbackParam;         /*!< Receive callback parameter pointer.*/
-    lpsci_tx_callback_t txCallback; /*!< Callback to invoke after transmitting byte.*/
-    void * txCallbackParam;         /*!< Transmit callback parameter pointer.*/
+	const uint8_t * txBuff;        /*!< The buffer of data being sent.*/
+	uint8_t * rxBuff;              /*!< The buffer of received data. */
+	volatile size_t txSize;        /*!< The remaining number of bytes to be transmitted. */
+	volatile size_t rxSize;        /*!< The remaining number of bytes to be received. */
+	volatile bool isTxBusy;        /*!< True if there is an active transmit. */
+	volatile bool isRxBusy;        /*!< True if there is an active receive. */
+	volatile bool isTxBlocking;    /*!< True if transmit is blocking transaction. */
+	volatile bool isRxBlocking;    /*!< True if receive is blocking transaction. */
+	semaphore_t txIrqSync;         /*!< Used to wait for ISR to complete its TX business. */
+	semaphore_t rxIrqSync;         /*!< Used to wait for ISR to complete its RX business. */
+	lpsci_rx_callback_t rxCallback; /*!< Callback to invoke after receiving byte.*/
+	void * rxCallbackParam;         /*!< Receive callback parameter pointer.*/
+	lpsci_tx_callback_t txCallback; /*!< Callback to invoke after transmitting byte.*/
+	void * txCallbackParam;         /*!< Transmit callback parameter pointer.*/
 } lpsci_state_t;
 
-/*! @brief User configuration structure for the LPSCI driver 
- * @internal gui name="Configuration" id="Configuration" 
+/*! @brief User configuration structure for the LPSCI driver
+ * @internal gui name="Configuration" id="Configuration"
  */
 typedef struct LpsciUserConfig {
-    clock_lpsci_src_t clockSource;      /*!< LPSCI clock source in fsl_sim_hal_'device'.h @internal gui name="Clock source" id="ClockSource" */
-    uint32_t baudRate;                  /*!< LPSCI baud rate @internal gui name="Baud rate" id="BaudRate" */
-    lpsci_parity_mode_t parityMode;     /*!< parity mode, disabled (default), even, odd @internal gui name="Parity mode" id="Parity" */
-    lpsci_stop_bit_count_t stopBitCount; /*!< number of stop bits, 1 stop bit (default) or 2 stop bits @internal gui name="Stop bits" id="StopBits" */
-    lpsci_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in
-                                                    a word (up to 10-bits in some LPSCI instances) @internal gui name="Bits per char" id="DataBits" */
+	clock_lpsci_src_t clockSource;      /*!< LPSCI clock source in fsl_sim_hal_'device'.h @internal gui name="Clock source" id="ClockSource" */
+	uint32_t baudRate;                  /*!< LPSCI baud rate @internal gui name="Baud rate" id="BaudRate" */
+	lpsci_parity_mode_t parityMode;     /*!< parity mode, disabled (default), even, odd @internal gui name="Parity mode" id="Parity" */
+	lpsci_stop_bit_count_t stopBitCount; /*!< number of stop bits, 1 stop bit (default) or 2 stop bits @internal gui name="Stop bits" id="StopBits" */
+	lpsci_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in
+													a word (up to 10-bits in some LPSCI instances) @internal gui name="Bits per char" id="DataBits" */
 } lpsci_user_config_t;
 
 /*******************************************************************************
@@ -131,15 +131,15 @@ extern "C" {
  * lpsci_user_config_t parameters and how to call the LPSCI_DRV_Init function by passing
  * in these parameters:
    @code
-    lpsci_user_config_t lpsciConfig;
-    lpsciConfig.clockSource = kClockLpsciSrcPllFllSel;
-    lpsciConfig.baudRate = 9600;
-    lpsciConfig.bitCountPerChar = kLpsci8BitsPerChar;
-    lpsciConfig.parityMode = kLpsciParityDisabled;
-    lpsciConfig.stopBitCount = kLpsciOneStopBit;
-    lpsci_state_t lpsciState;
-    LPSCI_DRV_Init(instance, &lpsciState, &lpsciConfig);
-    @endcode
+	lpsci_user_config_t lpsciConfig;
+	lpsciConfig.clockSource = kClockLpsciSrcPllFllSel;
+	lpsciConfig.baudRate = 9600;
+	lpsciConfig.bitCountPerChar = kLpsci8BitsPerChar;
+	lpsciConfig.parityMode = kLpsciParityDisabled;
+	lpsciConfig.stopBitCount = kLpsciOneStopBit;
+	lpsci_state_t lpsciState;
+	LPSCI_DRV_Init(instance, &lpsciState, &lpsciConfig);
+	@endcode
  *
  * @param instance The LPSCI instance number.
  * @param lpsciStatePtr A pointer to the LPSCI driver state structure memory. The user
@@ -152,8 +152,8 @@ extern "C" {
  * @return An error code or kStatus_LPSCI_Success.
  */
 lpsci_status_t LPSCI_DRV_Init(uint32_t instance,
-                              lpsci_state_t * lpsciStatePtr,
-                              const lpsci_user_config_t * lpsciUserConfig);
+							  lpsci_state_t * lpsciStatePtr,
+							  const lpsci_user_config_t * lpsciUserConfig);
 
 /*!
  * @brief Shuts down the LPSCI by disabling interrupts and the transmitter/receiver.
@@ -177,10 +177,10 @@ lpsci_status_t LPSCI_DRV_Deinit(uint32_t instance);
  * @return Former LPSCI receive callback function pointer.
  */
 lpsci_rx_callback_t LPSCI_DRV_InstallRxCallback(uint32_t instance,
-                                                lpsci_rx_callback_t function,
-                                                uint8_t * rxBuff,
-                                                void * callbackParam,
-                                                bool alwaysEnableRxIrq);
+												lpsci_rx_callback_t function,
+												uint8_t * rxBuff,
+												void * callbackParam,
+												bool alwaysEnableRxIrq);
 /*!
  * @brief Installs callback function for the LPSCI transmit.
  *
@@ -193,10 +193,10 @@ lpsci_rx_callback_t LPSCI_DRV_InstallRxCallback(uint32_t instance,
  * @param callbackParam The LPSCI transmit callback parameter pointer.
  * @return Former LPSCI transmit callback function pointer.
  */
-lpsci_tx_callback_t LPSCI_DRV_InstallTxCallback(uint32_t instance, 
-                                                lpsci_tx_callback_t function, 
-                                                uint8_t * txBuff, 
-                                                void * callbackParam);
+lpsci_tx_callback_t LPSCI_DRV_InstallTxCallback(uint32_t instance,
+												lpsci_tx_callback_t function,
+												uint8_t * txBuff,
+												void * callbackParam);
 
 /*!
  * @brief Sends (transmits) data out through the LPSCI module using a blocking method.
@@ -211,9 +211,9 @@ lpsci_tx_callback_t LPSCI_DRV_InstallTxCallback(uint32_t instance,
  * @return An error code or kStatus_LPSCI_Success.
  */
 lpsci_status_t LPSCI_DRV_SendDataBlocking(uint32_t instance,
-                                          const uint8_t * txBuff,
-                                          uint32_t txSize,
-                                          uint32_t timeout);
+										  const uint8_t * txBuff,
+										  uint32_t txSize,
+										  uint32_t timeout);
 
 /*!
  * @brief Sends (transmits) data through the LPSCI module using a non-blocking method.
@@ -258,7 +258,7 @@ lpsci_status_t LPSCI_DRV_GetTransmitStatus(uint32_t instance, uint32_t * bytesRe
  * if the transmission is still in progress.
  *
  * @param instance The LPSCI module base address.
- * @return Whether the aborting was successful or not. 
+ * @return Whether the aborting was successful or not.
  * @retval kStatus_LPSCI_Success The transmit was successful.
  * @retval kStatus_LPSCI_NoTransmitInProgress No transmission is currently in progress.
  */
@@ -277,9 +277,9 @@ lpsci_status_t LPSCI_DRV_AbortSendingData(uint32_t instance);
  * @return An error code or kStatus_LPSCI_Success.
  */
 lpsci_status_t LPSCI_DRV_ReceiveDataBlocking(uint32_t instance,
-                                           uint8_t * rxBuff,
-                                           uint32_t rxSize,
-                                           uint32_t timeout);
+										   uint8_t * rxBuff,
+										   uint32_t rxSize,
+										   uint32_t timeout);
 
 /*!
  * @brief Gets (receives) data from the LPSCI module using a non-blocking method.
@@ -340,4 +340,3 @@ lpsci_status_t LPSCI_DRV_AbortReceivingData(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

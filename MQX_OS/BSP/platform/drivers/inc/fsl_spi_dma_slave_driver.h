@@ -57,14 +57,14 @@ extern const IRQn_Type g_spiIrqId[SPI_INSTANCE_COUNT];
  *  @brief User configuration structure for the SPI slave driver.
  */
 typedef struct SPIDmaSlaveUserConfig {
-    spi_clock_phase_t phase;                    /*!< Clock phase setting. */
-    spi_clock_polarity_t polarity;              /*!< Clock polarity setting.*/
-    spi_shift_direction_t direction;            /*!< Either LSB or MSB first.*/
+	spi_clock_phase_t phase;                    /*!< Clock phase setting. */
+	spi_clock_polarity_t polarity;              /*!< Clock polarity setting.*/
+	spi_shift_direction_t direction;            /*!< Either LSB or MSB first.*/
 /* 16-bit support related members */
 #if FSL_FEATURE_SPI_16BIT_TRANSFERS
-    spi_data_bitcount_mode_t bitCount;          /*!< Number of bits (8 or 16) in a transfer */
+	spi_data_bitcount_mode_t bitCount;          /*!< Number of bits (8 or 16) in a transfer */
 #endif
-    uint16_t dummyPattern;                      /*!< Dummy data value */
+	uint16_t dummyPattern;                      /*!< Dummy data value */
 } spi_dma_slave_user_config_t;
 
 /*!
@@ -76,20 +76,20 @@ typedef struct SPIDmaSlaveUserConfig {
  * the members.
  */
 typedef struct SPIDmaSlaveState {
-    spi_status_t status;                        /*!< Current state of slave */
-    event_t event;                              /*!< Event to notify waiting task */
-    uint16_t errorCount;                        /*!< Driver error count */
-    uint32_t dummyPattern;                      /*!< Dummy data is sent when there is no data in the transmit buffer */
-    volatile bool isTransferInProgress;         /*!< True if there is an active transfer.*/
-    const uint8_t * sendBuffer;        /*!< Pointer to transmit buffer */
-    uint8_t * receiveBuffer;           /*!< Pointer to receive buffer */
-    volatile int32_t remainingSendByteCount;    /*!< Number of bytes remaining to send.*/
-    volatile int32_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
-    volatile int32_t transferredByteCount;      /*!< Number of bytes transferred so far.*/
-    bool isSync;                                /*!< Indicates the function call is sync or a-sync */
-    bool hasExtraByte;                          /*!< Indicates the reception has extra byte */
-    dma_channel_t dmaReceive;                   /*!< The DMA channel used for receive */
-    dma_channel_t dmaTransmit;                  /*!< The DMA channel used for transmit */
+	spi_status_t status;                        /*!< Current state of slave */
+	event_t event;                              /*!< Event to notify waiting task */
+	uint16_t errorCount;                        /*!< Driver error count */
+	uint32_t dummyPattern;                      /*!< Dummy data is sent when there is no data in the transmit buffer */
+	volatile bool isTransferInProgress;         /*!< True if there is an active transfer.*/
+	const uint8_t * sendBuffer;        /*!< Pointer to transmit buffer */
+	uint8_t * receiveBuffer;           /*!< Pointer to receive buffer */
+	volatile int32_t remainingSendByteCount;    /*!< Number of bytes remaining to send.*/
+	volatile int32_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
+	volatile int32_t transferredByteCount;      /*!< Number of bytes transferred so far.*/
+	bool isSync;                                /*!< Indicates the function call is sync or a-sync */
+	bool hasExtraByte;                          /*!< Indicates the reception has extra byte */
+	dma_channel_t dmaReceive;                   /*!< The DMA channel used for receive */
+	dma_channel_t dmaTransmit;                  /*!< The DMA channel used for transmit */
 } spi_dma_slave_state_t;
 
 /*******************************************************************************
@@ -122,8 +122,8 @@ extern "C" {
  */
 
 spi_status_t SPI_DRV_DmaSlaveInit(uint32_t instance,
-                                  spi_dma_slave_state_t * spiState,
-                                  const spi_dma_slave_user_config_t * slaveConfig);
+								  spi_dma_slave_state_t * spiState,
+								  const spi_dma_slave_user_config_t * slaveConfig);
 
 /*!
  * @brief Shuts down a SPI instance - interrupt mechanism.
@@ -167,10 +167,10 @@ spi_status_t SPI_DRV_DmaSlaveDeinit(uint32_t instance);
  *          kStatus_SPI_Timeout if time out reached while transferring is in progress.
  */
 spi_status_t SPI_DRV_DmaSlaveTransferBlocking(uint32_t instance,
-                                              const uint8_t *sendBuffer,
-                                              uint8_t *receiveBuffer,
-                                              uint32_t transferByteCount,
-                                              uint32_t timeout);
+											  const uint8_t *sendBuffer,
+											  uint8_t *receiveBuffer,
+											  uint32_t transferByteCount,
+											  uint32_t timeout);
 
 /*@}*/
 
@@ -200,9 +200,9 @@ spi_status_t SPI_DRV_DmaSlaveTransferBlocking(uint32_t instance,
  *                  available.
  */
 spi_status_t SPI_DRV_DmaSlaveTransfer(uint32_t instance,
-                                      const uint8_t *sendBuffer,
-                                      uint8_t *receiveBuffer,
-                                      uint32_t transferByteCount);
+									  const uint8_t *sendBuffer,
+									  uint8_t *receiveBuffer,
+									  uint32_t transferByteCount);
 
 /*!
  * @brief Aborts the transfer that started by a non-blocking call transfer function.
@@ -235,7 +235,7 @@ spi_status_t SPI_DRV_DmaSlaveAbortTransfer(uint32_t instance);
  *         is filled with the number of words that have been transferred so far.
  */
 spi_status_t SPI_DRV_DmaSlaveGetTransferStatus(uint32_t instance,
-                                            uint32_t * framesTransferred);
+											uint32_t * framesTransferred);
 
 /*!
  * @brief Interrupt handler for SPI slave mode.
@@ -258,4 +258,3 @@ void SPI_DRV_DmaSlaveIRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

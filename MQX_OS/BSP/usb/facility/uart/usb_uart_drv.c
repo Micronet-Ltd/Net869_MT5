@@ -1,23 +1,23 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
  * All Rights Reserved
  *
  * Copyright (c) 1989-2008 ARC International;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
@@ -54,52 +54,52 @@ extern void UART_DRV_IRQHandler(uint32_t instance);
  */
 usb_uart_status_t _USB_UART_DRV_Convert_RetVal(uint32_t retval)
 {
-    switch(retval)
-    {
-    case kStatus_UART_Success:
-        return kStatus_USB_UART_Success;
+	switch(retval)
+	{
+	case kStatus_UART_Success:
+		return kStatus_USB_UART_Success;
 
-    case kStatus_UART_BaudRateCalculationError:
-        return kStatus_USB_UART_BaudRateCalculationError;
+	case kStatus_UART_BaudRateCalculationError:
+		return kStatus_USB_UART_BaudRateCalculationError;
 
-    case kStatus_UART_RxStandbyModeError:
-        return kStatus_USB_UART_RxStandbyModeError;
+	case kStatus_UART_RxStandbyModeError:
+		return kStatus_USB_UART_RxStandbyModeError;
 
-    case kStatus_UART_ClearStatusFlagError:
-        return kStatus_USB_UART_ClearStatusFlagError;
+	case kStatus_UART_ClearStatusFlagError:
+		return kStatus_USB_UART_ClearStatusFlagError;
 
-    case kStatus_UART_TxNotDisabled:
-        return kStatus_USB_UART_TxNotDisabled;
+	case kStatus_UART_TxNotDisabled:
+		return kStatus_USB_UART_TxNotDisabled;
 
-    case kStatus_UART_RxNotDisabled:
-        return kStatus_USB_UART_RxNotDisabled;
+	case kStatus_UART_RxNotDisabled:
+		return kStatus_USB_UART_RxNotDisabled;
 
-    case kStatus_UART_TxOrRxNotDisabled:
-        return kStatus_USB_UART_TxOrRxNotDisabled;
+	case kStatus_UART_TxOrRxNotDisabled:
+		return kStatus_USB_UART_TxOrRxNotDisabled;
 
-    case kStatus_UART_TxBusy:
-        return kStatus_USB_UART_TxBusy;
+	case kStatus_UART_TxBusy:
+		return kStatus_USB_UART_TxBusy;
 
-    case kStatus_UART_RxBusy:
-        return kStatus_USB_UART_RxBusy;
+	case kStatus_UART_RxBusy:
+		return kStatus_USB_UART_RxBusy;
 
-    case kStatus_UART_NoTransmitInProgress:
-        return kStatus_USB_UART_NoTransmitInProgress;
+	case kStatus_UART_NoTransmitInProgress:
+		return kStatus_USB_UART_NoTransmitInProgress;
 
-    case kStatus_UART_NoReceiveInProgress:
-        return kStatus_USB_UART_NoReceiveInProgress;
+	case kStatus_UART_NoReceiveInProgress:
+		return kStatus_USB_UART_NoReceiveInProgress;
 
-    case kStatus_UART_Timeout:
-        return kStatus_USB_UART_Timeout;
+	case kStatus_UART_Timeout:
+		return kStatus_USB_UART_Timeout;
 
-    case kStatus_UART_Initialized:
-        return kStatus_USB_UART_Initialized;
+	case kStatus_UART_Initialized:
+		return kStatus_USB_UART_Initialized;
 
-    case kStatus_UART_NoDataToDeal:
-        return kStatus_USB_UART_NoDataToDeal;
-    default:
-        return kStatus_USB_UART_Success;
-    }
+	case kStatus_UART_NoDataToDeal:
+		return kStatus_USB_UART_NoDataToDeal;
+	default:
+		return kStatus_USB_UART_Success;
+	}
 }
 
 /*!
@@ -110,7 +110,7 @@ usb_uart_status_t _USB_UART_DRV_Convert_RetVal(uint32_t retval)
  */
 IRQn_Type USB_UART_Get_USB_iRQ_Num(uint32_t instance)
 {
-    return g_uartRxTxIrqId[instance];
+	return g_uartRxTxIrqId[instance];
 }
 
 /*!
@@ -139,7 +139,7 @@ IRQn_Type USB_UART_Get_USB_iRQ_Num(uint32_t instance)
  @endcode
  *
  * @param instance The UART instance number.
- * @param uartStatePtr A pointer to the UART driver state structure memory. The user 
+ * @param uartStatePtr A pointer to the UART driver state structure memory. The user
  * passes in the memory for this run-time state structure. The UART driver
  *  populates the members. The run-time state structure keeps track of the
  *  current transfer in progress.
@@ -149,16 +149,16 @@ IRQn_Type USB_UART_Get_USB_iRQ_Num(uint32_t instance)
  * @return An error code or kStatus_UART_Success.
  */
 usb_uart_status_t USB_UART_DRV_Init(uint32_t instance, usb_uart_state_t * uartStatePtr,
-    const usb_uart_user_config_t * uartUserConfig)
+	const usb_uart_user_config_t * uartUserConfig)
 {
-    uart_status_t uart_sts;
-    uart_user_config_t uartUserCfg;
-    uartUserCfg.baudRate = uartUserConfig->baudRate;
-    uartUserCfg.parityMode = (uart_parity_mode_t) uartUserConfig->parityMode;
-    uartUserCfg.stopBitCount = (uart_stop_bit_count_t) uartUserConfig->stopBitCount;
-    uartUserCfg.bitCountPerChar = (uart_bit_count_per_char_t) uartUserConfig->bitCountPerChar;
-    uart_sts = UART_DRV_Init(instance, (uart_state_t *) uartStatePtr, &uartUserCfg);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	uart_status_t uart_sts;
+	uart_user_config_t uartUserCfg;
+	uartUserCfg.baudRate = uartUserConfig->baudRate;
+	uartUserCfg.parityMode = (uart_parity_mode_t) uartUserConfig->parityMode;
+	uartUserCfg.stopBitCount = (uart_stop_bit_count_t) uartUserConfig->stopBitCount;
+	uartUserCfg.bitCountPerChar = (uart_bit_count_per_char_t) uartUserConfig->bitCountPerChar;
+	uart_sts = UART_DRV_Init(instance, (uart_state_t *) uartStatePtr, &uartUserCfg);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -171,7 +171,7 @@ usb_uart_status_t USB_UART_DRV_Init(uint32_t instance, usb_uart_state_t * uartSt
  */
 void USB_UART_DRV_Deinit(uint32_t instance)
 {
-    UART_DRV_Deinit(instance);
+	UART_DRV_Deinit(instance);
 }
 
 /*FUNCTION**********************************************************************
@@ -184,7 +184,7 @@ void USB_UART_DRV_Deinit(uint32_t instance)
  *END**************************************************************************/
 void USB_UART_DRV_IRQHandler(uint32_t instance)
 {
-    UART_DRV_IRQHandler(instance);
+	UART_DRV_IRQHandler(instance);
 }
 
 /*!
@@ -201,12 +201,12 @@ void USB_UART_DRV_IRQHandler(uint32_t instance)
  * @return Former UART receive callback function pointer.
  */
 usb_uart_rx_callback_t USB_UART_DRV_InstallRxCallback(uint32_t instance,
-    usb_uart_rx_callback_t function,
-    uint8_t * rxBuff,
-    void * callbackParam,
-    bool alwaysEnableRxIrq)
+	usb_uart_rx_callback_t function,
+	uint8_t * rxBuff,
+	void * callbackParam,
+	bool alwaysEnableRxIrq)
 {
-    return (usb_uart_rx_callback_t) UART_DRV_InstallRxCallback(instance, (uart_rx_callback_t) function, rxBuff, callbackParam, alwaysEnableRxIrq);
+	return (usb_uart_rx_callback_t) UART_DRV_InstallRxCallback(instance, (uart_rx_callback_t) function, rxBuff, callbackParam, alwaysEnableRxIrq);
 }
 
 /*!
@@ -222,13 +222,13 @@ usb_uart_rx_callback_t USB_UART_DRV_InstallRxCallback(uint32_t instance,
  * @return An error code or kStatus_UART_Success.
  */
 usb_uart_status_t USB_UART_DRV_SendDataBlocking(uint32_t instance,
-    const uint8_t * txBuff,
-    uint32_t txSize,
-    uint32_t timeout)
+	const uint8_t * txBuff,
+	uint32_t txSize,
+	uint32_t timeout)
 {
-    uart_status_t uart_sts;
-    uart_sts = UART_DRV_SendDataBlocking(instance, txBuff, txSize, timeout);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	uart_status_t uart_sts;
+	uart_sts = UART_DRV_SendDataBlocking(instance, txBuff, txSize, timeout);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -249,9 +249,9 @@ usb_uart_status_t USB_UART_DRV_SendDataBlocking(uint32_t instance,
  */
 usb_uart_status_t USB_UART_DRV_SendData(uint32_t instance, const uint8_t * txBuff, uint32_t txSize)
 {
-    uart_status_t uart_sts;
-    uart_sts = UART_DRV_SendData(instance, txBuff, txSize);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	uart_status_t uart_sts;
+	uart_sts = UART_DRV_SendData(instance, txBuff, txSize);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -272,9 +272,9 @@ usb_uart_status_t USB_UART_DRV_SendData(uint32_t instance, const uint8_t * txBuf
  */
 usb_uart_status_t USB_UART_DRV_GetTransmitStatus(uint32_t instance, uint32_t * bytesRemaining)
 {
-    uart_status_t uart_sts;
-    uart_sts = UART_DRV_GetTransmitStatus(instance, bytesRemaining);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	uart_status_t uart_sts;
+	uart_sts = UART_DRV_GetTransmitStatus(instance, bytesRemaining);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -290,9 +290,9 @@ usb_uart_status_t USB_UART_DRV_GetTransmitStatus(uint32_t instance, uint32_t * b
  */
 usb_uart_status_t USB_UART_DRV_AbortSendingData(uint32_t instance)
 {
-    uart_status_t uart_sts;
-    uart_sts = UART_DRV_AbortSendingData(instance);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	uart_status_t uart_sts;
+	uart_sts = UART_DRV_AbortSendingData(instance);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -308,13 +308,13 @@ usb_uart_status_t USB_UART_DRV_AbortSendingData(uint32_t instance)
  * @return An error code or kStatus_UART_Success.
  */
 usb_uart_status_t USB_UART_DRV_ReceiveDataBlocking(uint32_t instance,
-    uint8_t * rxBuff,
-    uint32_t rxSize,
-    uint32_t timeout)
+	uint8_t * rxBuff,
+	uint32_t rxSize,
+	uint32_t timeout)
 {
-    uart_status_t uart_sts;
-    uart_sts = UART_DRV_ReceiveDataBlocking(instance, rxBuff, rxSize, timeout);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	uart_status_t uart_sts;
+	uart_sts = UART_DRV_ReceiveDataBlocking(instance, rxBuff, rxSize, timeout);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 /*!
  * @brief Gets (receives) data from the UART module using a non-blocking method.
@@ -334,9 +334,9 @@ usb_uart_status_t USB_UART_DRV_ReceiveDataBlocking(uint32_t instance,
  */
 usb_uart_status_t USB_UART_DRV_ReceiveData(uint32_t instance, uint8_t * rxBuff, uint32_t rxSize)
 {
-    uart_status_t uart_sts;
-    uart_sts = UART_DRV_ReceiveData(instance, rxBuff, rxSize);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	uart_status_t uart_sts;
+	uart_sts = UART_DRV_ReceiveData(instance, rxBuff, rxSize);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -357,9 +357,9 @@ usb_uart_status_t USB_UART_DRV_ReceiveData(uint32_t instance, uint8_t * rxBuff, 
  */
 usb_uart_status_t USB_UART_DRV_GetReceiveStatus(uint32_t instance, uint32_t * bytesRemaining)
 {
-    uart_status_t uart_sts;
-    uart_sts = UART_DRV_GetReceiveStatus(instance, bytesRemaining);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	uart_status_t uart_sts;
+	uart_sts = UART_DRV_GetReceiveStatus(instance, bytesRemaining);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*!
@@ -375,9 +375,9 @@ usb_uart_status_t USB_UART_DRV_GetReceiveStatus(uint32_t instance, uint32_t * by
  */
 usb_uart_status_t USB_UART_DRV_AbortReceivingData(uint32_t instance)
 {
-    uart_status_t uart_sts;
-    uart_sts = UART_DRV_AbortReceivingData(instance);
-    return _USB_UART_DRV_Convert_RetVal(uart_sts);
+	uart_status_t uart_sts;
+	uart_sts = UART_DRV_AbortReceivingData(instance);
+	return _USB_UART_DRV_Convert_RetVal(uart_sts);
 }
 
 /*@}*/

@@ -62,9 +62,9 @@
 /*! @brief VREF status return codes */
 typedef enum _vref_status
 {
-    kStatus_VREF_Success         = 0x0U, /*!< Success. */
-    kStatus_VREF_InvalidArgument = 0x1U, /*!< Invalid argument existed. */
-    kStatus_VREF_Failed          = 0x2U  /*!< Execution failed. */
+	kStatus_VREF_Success         = 0x0U, /*!< Success. */
+	kStatus_VREF_InvalidArgument = 0x1U, /*!< Invalid argument existed. */
+	kStatus_VREF_Failed          = 0x2U  /*!< Execution failed. */
 } vref_status_t;
 
 /*!
@@ -75,17 +75,17 @@ typedef enum _vref_status
 
 typedef enum _vref_buffer_mode
 {
-    kVrefModeBandgapOnly     = 0x0U, /*!< Bandgap on only, for stabilization and startup */
-    kVrefModeHighPowerBuffer = 0x1U, /*!< High power buffer mode enabled */
-    kVrefModeLowPowerBuffer  = 0x2U  /*!< Low power buffer mode enabled */
+	kVrefModeBandgapOnly     = 0x0U, /*!< Bandgap on only, for stabilization and startup */
+	kVrefModeHighPowerBuffer = 0x1U, /*!< High power buffer mode enabled */
+	kVrefModeLowPowerBuffer  = 0x2U  /*!< Low power buffer mode enabled */
 } vref_buffer_mode_t;
 
 #else
 
 typedef enum _vref_buffer_mode
 {
-    kVrefModeBandgapOnly           = 0x0U, /*!< Bandgap on only. For stabilization and startup */
-    kVrefModeTightRegulationBuffer = 0x2U  /*!< Tight regulation buffer enabled */
+	kVrefModeBandgapOnly           = 0x0U, /*!< Bandgap on only. For stabilization and startup */
+	kVrefModeTightRegulationBuffer = 0x2U  /*!< Tight regulation buffer enabled */
 } vref_buffer_mode_t;
 
 #endif /* FSL_FEATURE_VREF_MODE_LV_TYPE */
@@ -94,8 +94,8 @@ typedef enum _vref_buffer_mode
 
 typedef enum _vref_voltage_reference
 {
-    kVrefReferenceInternal = 0x0U, /*!< Internal voltage reference */
-    kVrefReferenceExternal = 0x1U  /*!< External voltage reference */
+	kVrefReferenceInternal = 0x0U, /*!< Internal voltage reference */
+	kVrefReferenceExternal = 0x1U  /*!< External voltage reference */
 } vref_voltage_reference_t;
 
 #endif /* FSL_FEATURE_VREF_HAS_LOW_REFERENCE */
@@ -106,14 +106,14 @@ typedef enum _vref_voltage_reference
 typedef struct VrefUserConfig
 {
 #if FSL_FEATURE_VREF_HAS_CHOP_OSC
-    bool        chopOscEnable;      /*!< Chop oscillator enable @internal gui name="Chop oscillator" id="chopOscEnable" */
+	bool        chopOscEnable;      /*!< Chop oscillator enable @internal gui name="Chop oscillator" id="chopOscEnable" */
 #endif
-    uint8_t     trimValue;          /*!< Trim bits @internal gui name="Trim value" id="trimValue" range="0..63" */
-    bool        regulatorEnable;    /*!< Enable regulator @internal gui name="Regulator" id="regulatorEnable" */
+	uint8_t     trimValue;          /*!< Trim bits @internal gui name="Trim value" id="trimValue" range="0..63" */
+	bool        regulatorEnable;    /*!< Enable regulator @internal gui name="Regulator" id="regulatorEnable" */
 #if FSL_FEATURE_VREF_HAS_COMPENSATION
-    bool        soccEnable;         /*!< Enable Second order curvature compensation @internal gui name="Second order curvature compensation" id="soccEnable" */
+	bool        soccEnable;         /*!< Enable Second order curvature compensation @internal gui name="Second order curvature compensation" id="soccEnable" */
 #endif
-    vref_buffer_mode_t bufferMode;  /*!< Buffer mode selection @internal gui name="Buffer mode selection" id="bufferMode" */
+	vref_buffer_mode_t bufferMode;  /*!< Buffer mode selection @internal gui name="Buffer mode selection" id="bufferMode" */
 } vref_user_config_t;
 
 /*!*****************************************************************************
@@ -148,7 +148,7 @@ void VREF_HAL_Configure(VREF_Type * base, const vref_user_config_t *userConfigPt
  */
 static inline void VREF_HAL_Enable(VREF_Type * base)
 {
-    VREF_BWR_SC_VREFEN(base, true);
+	VREF_BWR_SC_VREFEN(base, true);
 }
 
 /*!
@@ -158,7 +158,7 @@ static inline void VREF_HAL_Enable(VREF_Type * base)
  */
 static inline void VREF_HAL_Disable(VREF_Type * base)
 {
-    VREF_BWR_SC_VREFEN(base, false);
+	VREF_BWR_SC_VREFEN(base, false);
 }
 
 /*!
@@ -172,7 +172,7 @@ static inline void VREF_HAL_Disable(VREF_Type * base)
  */
 static inline void VREF_HAL_SetInternalRegulatorCmd(VREF_Type * base, bool enable)
 {
-    VREF_BWR_SC_REGEN(base, enable);
+	VREF_BWR_SC_REGEN(base, enable);
 }
 
 /*!
@@ -183,8 +183,8 @@ static inline void VREF_HAL_SetInternalRegulatorCmd(VREF_Type * base, bool enabl
  */
 static inline void VREF_HAL_SetTrimVal(VREF_Type * base, uint8_t trimValue)
 {
-    assert(trimValue <= 0x3F);
-    VREF_BWR_TRM_TRIM(base, trimValue);
+	assert(trimValue <= 0x3F);
+	VREF_BWR_TRM_TRIM(base, trimValue);
 }
 
 /*!
@@ -196,7 +196,7 @@ static inline void VREF_HAL_SetTrimVal(VREF_Type * base, uint8_t trimValue)
  */
 static inline uint8_t VREF_HAL_GetTrimVal(VREF_Type * base)
 {
-    return VREF_BRD_TRM_TRIM(base);
+	return VREF_BRD_TRM_TRIM(base);
 }
 
 /*!
@@ -207,7 +207,7 @@ static inline uint8_t VREF_HAL_GetTrimVal(VREF_Type * base)
 
 static inline void VREF_HAL_WaitVoltageStable(VREF_Type * base)
 {
-    while ((bool)VREF_BRD_SC_VREFST(base) != true) {}
+	while ((bool)VREF_BRD_SC_VREFST(base) != true) {}
 }
 
 /*!
@@ -223,11 +223,11 @@ static inline void VREF_HAL_WaitVoltageStable(VREF_Type * base)
 static inline void VREF_HAL_SetBufferMode(VREF_Type * base, vref_buffer_mode_t mode)
 {
 #if FSL_FEATURE_VREF_MODE_LV_TYPE
-    assert(mode <= kVrefModeLowPowerBuffer);
+	assert(mode <= kVrefModeLowPowerBuffer);
 #else
-    assert(mode <= kVrefModeTightRegulationBuffer);
+	assert(mode <= kVrefModeTightRegulationBuffer);
 #endif
-    VREF_BWR_SC_MODE_LV(base, mode);
+	VREF_BWR_SC_MODE_LV(base, mode);
 }
 
 #if FSL_FEATURE_VREF_HAS_COMPENSATION
@@ -241,7 +241,7 @@ static inline void VREF_HAL_SetBufferMode(VREF_Type * base, vref_buffer_mode_t m
  */
 static inline void VREF_HAL_SetSecondOrderCurvatureCompensationCmd(VREF_Type * base, bool enable)
 {
-    VREF_BWR_SC_ICOMPEN(base, enable);
+	VREF_BWR_SC_ICOMPEN(base, enable);
 }
 #endif /* FSL_FEATURE_VREF_HAS_COMPENSATION */
 
@@ -256,7 +256,7 @@ static inline void VREF_HAL_SetSecondOrderCurvatureCompensationCmd(VREF_Type * b
  */
 static inline void VREF_HAL_SetChopOscillatorCmd(VREF_Type * base, bool enable)
 {
-    VREF_BWR_TRM_CHOPEN(base, enable);
+	VREF_BWR_TRM_CHOPEN(base, enable);
 }
 #endif /* FSL_FEATURE_VREF_HAS_CHOP_OSC */
 
@@ -272,7 +272,7 @@ static inline void VREF_HAL_SetChopOscillatorCmd(VREF_Type * base, bool enable)
 
 static inline void VREF_HAL_SetVoltageReference(VREF_Type * base, vref_voltage_reference_t ref)
 {
-    VREF_BWR_VREFL_TRM_VREFL_SEL(base, ref);
+	VREF_BWR_VREFL_TRM_VREFL_SEL(base, ref);
 }
 
 /*!
@@ -285,7 +285,7 @@ static inline void VREF_HAL_SetVoltageReference(VREF_Type * base, vref_voltage_r
  */
 static inline void VREF_HAL_SetLowReference(VREF_Type * base, bool enable)
 {
-    VREF_BWR_VREFL_TRM_VREFL_EN(base, enable);
+	VREF_BWR_VREFL_TRM_VREFL_EN(base, enable);
 }
 
 /*!
@@ -296,8 +296,8 @@ static inline void VREF_HAL_SetLowReference(VREF_Type * base, bool enable)
  */
 static inline void VREF_HAL_SetLowReferenceTrimVal(VREF_Type * base, uint8_t trimValue)
 {
-    assert(trimValue <= 0x07);
-    VREF_BWR_VREFL_TRM_VREFL_TRIM(base, trimValue);
+	assert(trimValue <= 0x07);
+	VREF_BWR_VREFL_TRM_VREFL_TRIM(base, trimValue);
 }
 
 /*!
@@ -309,7 +309,7 @@ static inline void VREF_HAL_SetLowReferenceTrimVal(VREF_Type * base, uint8_t tri
  */
 static inline uint8_t VREF_HAL_GetLowReferenceTrimVal(VREF_Type * base)
 {
-    return VREF_BRD_VREFL_TRM_VREFL_TRIM(base);
+	return VREF_BRD_VREFL_TRM_VREFL_TRIM(base);
 }
 #endif /* FSL_FEATURE_VREF_HAS_LOW_REFERENCE */
 
@@ -326,4 +326,3 @@ static inline uint8_t VREF_HAL_GetLowReferenceTrimVal(VREF_Type * base)
 /*******************************************************************************
 * EOF
 *******************************************************************************/
-

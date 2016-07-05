@@ -47,7 +47,7 @@ extern void HWTIMER_SYS_SystickIsrAction(void);
  */
 void SysTick_Handler(void)
 {
-    HWTIMER_SYS_SystickIsrAction();
+	HWTIMER_SYS_SystickIsrAction();
 }
 
 /*! @} */
@@ -55,4 +55,3 @@ void SysTick_Handler(void)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

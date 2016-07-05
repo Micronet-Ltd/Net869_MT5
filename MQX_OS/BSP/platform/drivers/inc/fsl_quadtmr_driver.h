@@ -53,14 +53,14 @@ extern const IRQn_Type g_quadtmrIrqId[TMR_INSTANCE_COUNT];
 /*! @brief Quad timer IP bus clock options to run the counter */
 typedef enum _quadtmr_ip_bus_clock_source
 {
-    kQuadTmrIpBusClkDiv1 = 0, /*!< IP Bus clock Div 1 */
-    kQuadTmrIpBusClkDiv2,     /*!< IP Bus clock Div 2 */
-    kQuadTmrIpBusClkDiv4,     /*!< IP Bus clock Div 4 */
-    kQuadTmrIpBusClkDiv8,     /*!< IP Bus clock Div 8 */
-    kQuadTmrIpBusClkDiv16,    /*!< IP Bus clock Div 16 */
-    kQuadTmrIpBusClkDiv32,    /*!< IP Bus clock Div 32 */
-    kQuadTmrIpBusClkDiv64,    /*!< IP Bus clock Div 64 */
-    kQuadTmrIpBusClkDiv128    /*!< IP Bus clock Div 128 */
+	kQuadTmrIpBusClkDiv1 = 0, /*!< IP Bus clock Div 1 */
+	kQuadTmrIpBusClkDiv2,     /*!< IP Bus clock Div 2 */
+	kQuadTmrIpBusClkDiv4,     /*!< IP Bus clock Div 4 */
+	kQuadTmrIpBusClkDiv8,     /*!< IP Bus clock Div 8 */
+	kQuadTmrIpBusClkDiv16,    /*!< IP Bus clock Div 16 */
+	kQuadTmrIpBusClkDiv32,    /*!< IP Bus clock Div 32 */
+	kQuadTmrIpBusClkDiv64,    /*!< IP Bus clock Div 64 */
+	kQuadTmrIpBusClkDiv128    /*!< IP Bus clock Div 128 */
 }quadtmr_ip_bus_clock_source_t;
 
 /*******************************************************************************
@@ -127,7 +127,7 @@ uint64_t QUADTMR_DRV_Get64BitCountVal(void);
  * @param pulseWidthPeriod PWM pulse width specified in microseconds
  */
 void QUADTMR_DRV_SetupFlexPwm(uint32_t instance, quadtmr_ip_bus_clock_source_t clockSrc,
-                                          uint32_t pwmPulsePeriod, uint32_t pulseWidthPeriod);
+										  uint32_t pwmPulsePeriod, uint32_t pulseWidthPeriod);
 
 /*!
  * @brief Provides a way to update the current PWM signal.
@@ -164,4 +164,3 @@ void QUADTMR_DRV_IRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

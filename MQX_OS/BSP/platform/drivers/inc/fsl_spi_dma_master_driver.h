@@ -51,22 +51,22 @@ extern const IRQn_Type g_spiIrqId[SPI_INSTANCE_COUNT];
 
 enum _spi_dma_timeouts
 {
-    /*! Waits forever for a transfer to complete.*/
-    kSpiDmaWaitForever = 0x7fffffff
+	/*! Waits forever for a transfer to complete.*/
+	kSpiDmaWaitForever = 0x7fffffff
 };
 
 /*!
  * @brief Information about a device on the SPI bus with DMA.
  */
 typedef struct SpiDmaUserConfig {
-    uint32_t bitsPerSec;    /*!< SPI baud rate in bits per sec */
-    spi_clock_polarity_t polarity;
-    spi_clock_phase_t phase;
-    spi_shift_direction_t direction;
+	uint32_t bitsPerSec;    /*!< SPI baud rate in bits per sec */
+	spi_clock_polarity_t polarity;
+	spi_clock_phase_t phase;
+	spi_shift_direction_t direction;
 
-    /* 16-bit support related members */
+	/* 16-bit support related members */
 #if FSL_FEATURE_SPI_16BIT_TRANSFERS
-    spi_data_bitcount_mode_t bitCount;  /*!< Number of bits (8 or 16) in a transfer */
+	spi_data_bitcount_mode_t bitCount;  /*!< Number of bits (8 or 16) in a transfer */
 #endif
 } spi_dma_master_user_config_t;
 
@@ -78,19 +78,19 @@ typedef struct SpiDmaUserConfig {
  * interrupt handler also uses this information to keep track of its progress.
  */
 typedef struct SpiDmaMasterState {
-    uint32_t spiSourceClock;              /*!< Module source clock*/
-    volatile bool isTransferInProgress;     /*!< True if there is an active transfer.*/
-    const uint8_t * sendBuffer;    /*!< The buffer being sent.*/
-    uint8_t * receiveBuffer;       /*!< The buffer into which received bytes are placed.*/
-    volatile size_t remainingSendByteCount; /*!< Number of bytes remaining to send.*/
-    volatile size_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
-    volatile size_t transferredByteCount;   /*!< Number of bytes transferred so far.*/
-    volatile bool isTransferBlocking;    /*!< True if transfer is a blocking transaction. */
-    semaphore_t irqSync;                    /*!< Used to wait for ISR to complete its business.*/
-    bool extraByte;    /*!< Flag used for 16-bit transfers with odd byte count */
-    dma_channel_t dmaReceive;    /*!< The DMA channel used for receive */
-    dma_channel_t dmaTransmit;   /*!< The DMA channel used for transmit */
-    uint32_t transferByteCnt;  /*!< Number of bytes to transfer.*/
+	uint32_t spiSourceClock;              /*!< Module source clock*/
+	volatile bool isTransferInProgress;     /*!< True if there is an active transfer.*/
+	const uint8_t * sendBuffer;    /*!< The buffer being sent.*/
+	uint8_t * receiveBuffer;       /*!< The buffer into which received bytes are placed.*/
+	volatile size_t remainingSendByteCount; /*!< Number of bytes remaining to send.*/
+	volatile size_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
+	volatile size_t transferredByteCount;   /*!< Number of bytes transferred so far.*/
+	volatile bool isTransferBlocking;    /*!< True if transfer is a blocking transaction. */
+	semaphore_t irqSync;                    /*!< Used to wait for ISR to complete its business.*/
+	bool extraByte;    /*!< Flag used for 16-bit transfers with odd byte count */
+	dma_channel_t dmaReceive;    /*!< The DMA channel used for receive */
+	dma_channel_t dmaTransmit;   /*!< The DMA channel used for transmit */
+	uint32_t transferByteCnt;  /*!< Number of bytes to transfer.*/
 } spi_dma_master_state_t;
 
 /*******************************************************************************
@@ -164,8 +164,8 @@ spi_status_t SPI_DRV_DmaMasterDeinit(uint32_t instance);
  *  which case the minimum baud rate will be returned.
  */
 void SPI_DRV_DmaMasterConfigureBus(uint32_t instance,
-                                   const spi_dma_master_user_config_t * device,
-                                   uint32_t * calculatedBaudRate);
+								   const spi_dma_master_user_config_t * device,
+								   uint32_t * calculatedBaudRate);
 
 /*@}*/
 
@@ -196,11 +196,11 @@ void SPI_DRV_DmaMasterConfigureBus(uint32_t instance,
  *         #kStatus_SPI_Timeout The transfer timed out and was aborted.
  */
 spi_status_t SPI_DRV_DmaMasterTransferBlocking(uint32_t instance,
-                                               const spi_dma_master_user_config_t * device,
-                                               const uint8_t * sendBuffer,
-                                               uint8_t * receiveBuffer,
-                                               size_t transferByteCount,
-                                               uint32_t timeout);
+											   const spi_dma_master_user_config_t * device,
+											   const uint8_t * sendBuffer,
+											   uint8_t * receiveBuffer,
+											   size_t transferByteCount,
+											   uint32_t timeout);
 
 /*@}*/
 
@@ -230,10 +230,10 @@ spi_status_t SPI_DRV_DmaMasterTransferBlocking(uint32_t instance,
  *         #kStatus_SPI_Timeout The transfer timed out and was aborted.
  */
 spi_status_t SPI_DRV_DmaMasterTransfer(uint32_t instance,
-                                       const spi_dma_master_user_config_t * device,
-                                       const uint8_t * sendBuffer,
-                                       uint8_t * receiveBuffer,
-                                       size_t transferByteCount);
+									   const spi_dma_master_user_config_t * device,
+									   const uint8_t * sendBuffer,
+									   uint8_t * receiveBuffer,
+									   size_t transferByteCount);
 
 /*!
  * @brief Returns whether the previous transfer finished with DMA support.
@@ -252,7 +252,7 @@ spi_status_t SPI_DRV_DmaMasterTransfer(uint32_t instance,
  *         with the number of bytes that have been transferred so far.
  */
 spi_status_t SPI_DRV_DmaMasterGetTransferStatus(uint32_t instance,
-                                                uint32_t * bytesTransferred);
+												uint32_t * bytesTransferred);
 
 /*!
  * @brief Terminates an asynchronous transfer early with DMA support.
@@ -287,4 +287,3 @@ void SPI_DRV_DmaMasterIRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

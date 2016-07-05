@@ -50,8 +50,8 @@
  */
 typedef enum _cadc_conv_id
 {
-    kCAdcConvA = 0U,/*!< ID for ADC converter A. */
-    kCAdcConvB = 1U /*!< ID for ADC converter B. */
+	kCAdcConvA = 0U,/*!< ID for ADC converter A. */
+	kCAdcConvB = 1U /*!< ID for ADC converter B. */
 } cadc_conv_id_t;
 
 /*!
@@ -59,21 +59,21 @@ typedef enum _cadc_conv_id
  */
 typedef enum _cadc_flag
 {
-    /* Converter events. */
-    kCAdcConvInProgress = 0U,   /*!< Conversion in progress for each converter. */
-    kCAdcConvEndOfScanInt = 1U, /*!< End of scan interrupt. */
-    kCAdcConvPowerDown = 2U,      /*!< The converter is powered Down. */
+	/* Converter events. */
+	kCAdcConvInProgress = 0U,   /*!< Conversion in progress for each converter. */
+	kCAdcConvEndOfScanInt = 1U, /*!< End of scan interrupt. */
+	kCAdcConvPowerDown = 2U,      /*!< The converter is powered Down. */
 
-    /* Global events. */
-    kCAdcZeroCrossingInt = 3U,  /*!< Zero crossing interrupt. */
-    kCAdcLowLimitInt = 4U,      /*!< Low limit interrupt. */
-    kCAdcHighLimitInt = 5U,     /*!< High limit interrupt. */
+	/* Global events. */
+	kCAdcZeroCrossingInt = 3U,  /*!< Zero crossing interrupt. */
+	kCAdcLowLimitInt = 4U,      /*!< Low limit interrupt. */
+	kCAdcHighLimitInt = 5U,     /*!< High limit interrupt. */
 
-    /* Slot events. */
-    kCAdcSlotReady = 6U,            /*!< Sample is ready to be read. */
-    kCAdcSlotLowLimitEvent = 7U,    /*!< Low limit event for each slot. */
-    kCAdcSlotHighLimitEvent = 8U,   /*!< High limit event for each slot. */
-    kCAdcSlotCrossingEvent = 9U     /*!< Zero crossing event for each slot. */
+	/* Slot events. */
+	kCAdcSlotReady = 6U,            /*!< Sample is ready to be read. */
+	kCAdcSlotLowLimitEvent = 7U,    /*!< Low limit event for each slot. */
+	kCAdcSlotHighLimitEvent = 8U,   /*!< High limit event for each slot. */
+	kCAdcSlotCrossingEvent = 9U     /*!< Zero crossing event for each slot. */
 } cadc_flag_t;
 
 /*! @brief Table of base addresses for ADC instances. */
@@ -177,7 +177,7 @@ cadc_status_t CADC_DRV_StructInitConvConfigDefault(cadc_converter_config_t *conf
  * @return Execution status.
  */
 cadc_status_t CADC_DRV_ConfigConverter(
-    uint32_t instance, cadc_conv_id_t convId, const cadc_converter_config_t *configPtr);
+	uint32_t instance, cadc_conv_id_t convId, const cadc_converter_config_t *configPtr);
 
 /*!
  * @brief Configures the input channel for ADC conversion.
@@ -206,7 +206,7 @@ cadc_status_t CADC_DRV_ConfigSampleChn(uint32_t instance, const cadc_chn_config_
  * @return Execution status.
  */
 cadc_status_t CADC_DRV_ConfigSeqSlot(
-    uint32_t instance, uint32_t slotIdx, const cadc_slot_config_t *configPtr);
+	uint32_t instance, uint32_t slotIdx, const cadc_slot_config_t *configPtr);
 
 /*!
  * @brief Triggers the ADC conversion sequence by software.
@@ -313,4 +313,3 @@ void CADC_DRV_ClearSlotFlag(uint32_t instance, uint16_t slotIdxMask, cadc_flag_t
 /******************************************************************************
  * EOF
  *****************************************************************************/
-

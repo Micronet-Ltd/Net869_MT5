@@ -48,75 +48,75 @@
 /*! @brief DMA status */
 typedef enum _dma_status
 {
-    kStatus_DMA_Success = 0U,
-    kStatus_DMA_InvalidArgument = 1U, /*!< Parameter is not available for the current
-                                                     configuration. */
-    kStatus_DMA_Fail = 2U             /*!< Function operation  failed. */
+	kStatus_DMA_Success = 0U,
+	kStatus_DMA_InvalidArgument = 1U, /*!< Parameter is not available for the current
+													 configuration. */
+	kStatus_DMA_Fail = 2U             /*!< Function operation  failed. */
 } dma_status_t;
 
 /*! @brief DMA transfer size type*/
 typedef enum _dma_transfer_size {
-    kDmaTransfersize32bits = 0x0U,    /*!< 32 bits are transferred for every read/write */
-    kDmaTransfersize8bits = 0x1U,     /*!< 8 bits are transferred for every read/write */
-    kDmaTransfersize16bits = 0x2U     /*!< 16b its are transferred for every read/write */
+	kDmaTransfersize32bits = 0x0U,    /*!< 32 bits are transferred for every read/write */
+	kDmaTransfersize8bits = 0x1U,     /*!< 8 bits are transferred for every read/write */
+	kDmaTransfersize16bits = 0x2U     /*!< 16b its are transferred for every read/write */
 } dma_transfer_size_t;
 
 /*! @brief Configuration type for the DMA modulo */
 typedef enum _dma_modulo {
-    kDmaModuloDisable = 0x0U,
-    kDmaModulo16Bytes = 0x1U,
-    kDmaModulo32Bytes = 0x2U,
-    kDmaModulo64Bytes = 0x3U,
-    kDmaModulo128Bytes = 0x4U,
-    kDmaModulo256Bytes = 0x5U,
-    kDmaModulo512Bytes = 0x6U,
-    kDmaModulo1KBytes = 0x7U,
-    kDmaModulo2KBytes = 0x8U,
-    kDmaModulo4KBytes = 0x9U,
-    kDmaModulo8KBytes = 0xaU,
-    kDmaModulo16KBytes = 0xbU,
-    kDmaModulo32KBytes = 0xcU,
-    kDmaModulo64KBytes = 0xdU,
-    kDmaModulo128KBytes = 0xeU,
-    kDmaModulo256KBytes = 0xfU,
+	kDmaModuloDisable = 0x0U,
+	kDmaModulo16Bytes = 0x1U,
+	kDmaModulo32Bytes = 0x2U,
+	kDmaModulo64Bytes = 0x3U,
+	kDmaModulo128Bytes = 0x4U,
+	kDmaModulo256Bytes = 0x5U,
+	kDmaModulo512Bytes = 0x6U,
+	kDmaModulo1KBytes = 0x7U,
+	kDmaModulo2KBytes = 0x8U,
+	kDmaModulo4KBytes = 0x9U,
+	kDmaModulo8KBytes = 0xaU,
+	kDmaModulo16KBytes = 0xbU,
+	kDmaModulo32KBytes = 0xcU,
+	kDmaModulo64KBytes = 0xdU,
+	kDmaModulo128KBytes = 0xeU,
+	kDmaModulo256KBytes = 0xfU,
 } dma_modulo_t;
 
 /*! @brief DMA channel link type */
 typedef enum _dma_channel_link_type {
-    kDmaChannelLinkDisable = 0x0U,          /*!< No channel link */
-    kDmaChannelLinkChan1AndChan2 = 0x1U,    /*!< Perform a link to channel 1 after each cycle-steal
-                                                 transfer followed by a link and to channel 2 after the
-                                                 BCR decrements to zeros. */
-    kDmaChannelLinkChan1 = 0x2U,            /*!< Perform a link to channel 1 after each cycle-steal
-                                                 transfer. */
-    kDmaChannelLinkChan1AfterBCR0 = 0x3U     /*!< Perform a link to channel1 after the BCR decrements
-                                                 to zero.  */
+	kDmaChannelLinkDisable = 0x0U,          /*!< No channel link */
+	kDmaChannelLinkChan1AndChan2 = 0x1U,    /*!< Perform a link to channel 1 after each cycle-steal
+												 transfer followed by a link and to channel 2 after the
+												 BCR decrements to zeros. */
+	kDmaChannelLinkChan1 = 0x2U,            /*!< Perform a link to channel 1 after each cycle-steal
+												 transfer. */
+	kDmaChannelLinkChan1AfterBCR0 = 0x3U     /*!< Perform a link to channel1 after the BCR decrements
+												 to zero.  */
 } dma_channel_link_type_t;
 
 /*! @brief Data structure for data structure configuration */
 typedef struct DmaChannelLinkConfig {
-    dma_channel_link_type_t linkType;   /*!< Channel link type */
-    uint32_t channel1;                  /*!< Channel 1 configuration  */
-    uint32_t channel2;                  /*!< Channel 2 configuration  */
+	dma_channel_link_type_t linkType;   /*!< Channel link type */
+	uint32_t channel1;                  /*!< Channel 1 configuration  */
+	uint32_t channel2;                  /*!< Channel 2 configuration  */
 } dma_channel_link_config_t;
 
 /*! @brief Data structure to get status of the DMA channel status */
 typedef struct DmaErrorStatus {
-    uint32_t dmaBytesToBeTransffered;  /*!< Bytes to be transferred */
-    bool dmaTransDone;              /*!< DMA channel transfer is done. */
-    bool dmaBusy;                   /*!< DMA is running. */
-    bool dmaPendingRequest;         /*!< A transfer  remains. */
-    bool dmaDestBusError;           /*!< Bus error on destination address */
-    bool dmaSourceBusError;         /*!< Bus error on source address */
-    bool dmaConfigError;            /*!< Configuration error */
+	uint32_t dmaBytesToBeTransffered;  /*!< Bytes to be transferred */
+	bool dmaTransDone;              /*!< DMA channel transfer is done. */
+	bool dmaBusy;                   /*!< DMA is running. */
+	bool dmaPendingRequest;         /*!< A transfer  remains. */
+	bool dmaDestBusError;           /*!< Bus error on destination address */
+	bool dmaSourceBusError;         /*!< Bus error on source address */
+	bool dmaConfigError;            /*!< Configuration error */
 } dma_error_status_t;
 
 /*! @brief Type for DMA transfer. */
 typedef enum _dma_transfer_type {
-    kDmaPeripheralToMemory,     /*!< Transfer from the peripheral to memory */
-    kDmaMemoryToPeripheral,     /*!< Transfer from the memory to peripheral */
-    kDmaMemoryToMemory,         /*!< Transfer from the memory to memory */
-    kDmaPeripheralToPeripheral  /*!< Transfer from the peripheral to peripheral */
+	kDmaPeripheralToMemory,     /*!< Transfer from the peripheral to memory */
+	kDmaMemoryToPeripheral,     /*!< Transfer from the memory to peripheral */
+	kDmaMemoryToMemory,         /*!< Transfer from the memory to memory */
+	kDmaPeripheralToPeripheral  /*!< Transfer from the peripheral to peripheral */
 } dma_transfer_type_t;
 
 /*******************************************************************************
@@ -153,8 +153,8 @@ void DMA_HAL_Init(DMA_Type * base, uint32_t channel);
  * @param length Bytes to be transferred.
  */
 void DMA_HAL_ConfigTransfer(
-    DMA_Type * base, uint32_t channel, dma_transfer_size_t size, dma_transfer_type_t type,
-    uint32_t sourceAddr, uint32_t destAddr, uint32_t length);
+	DMA_Type * base, uint32_t channel, dma_transfer_size_t size, dma_transfer_type_t type,
+	uint32_t sourceAddr, uint32_t destAddr, uint32_t length);
 
 /*!
  * @brief Configures the source address.
@@ -178,10 +178,10 @@ void DMA_HAL_ConfigTransfer(
  * @param address memory address pointing to the source address.
  */
 static inline void DMA_HAL_SetSourceAddr(
-        DMA_Type * base, uint32_t channel, uint32_t address)
+		DMA_Type * base, uint32_t channel, uint32_t address)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_WR_SAR(base, channel, address);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_WR_SAR(base, channel, address);
 }
 
 /*!
@@ -206,10 +206,10 @@ static inline void DMA_HAL_SetSourceAddr(
  * @param address Destination address.
  */
 static inline void DMA_HAL_SetDestAddr(
-        DMA_Type * base, uint32_t channel, uint32_t address)
+		DMA_Type * base, uint32_t channel, uint32_t address)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_WR_DAR(base, channel, address);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_WR_DAR(base, channel, address);
 }
 
 /*!
@@ -225,10 +225,10 @@ static inline void DMA_HAL_SetDestAddr(
  * @param count bytes to be transferred.
  */
 static inline void DMA_HAL_SetTransferCount(
-                    DMA_Type * base, uint32_t channel, uint32_t count)
+					DMA_Type * base, uint32_t channel, uint32_t count)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DSR_BCR_BCR(base, channel, count);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DSR_BCR_BCR(base, channel, count);
 }
 
 /*!
@@ -240,8 +240,8 @@ static inline void DMA_HAL_SetTransferCount(
  */
 static inline uint32_t DMA_HAL_GetUnfinishedByte(DMA_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    return DMA_RD_DSR_BCR(base, channel) & DMA_DSR_BCR_BCR_MASK;
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	return DMA_RD_DSR_BCR(base, channel) & DMA_DSR_BCR_BCR_MASK;
 }
 
 /*!
@@ -255,8 +255,8 @@ static inline uint32_t DMA_HAL_GetUnfinishedByte(DMA_Type * base, uint32_t chann
  */
 static inline void DMA_HAL_SetIntCmd(DMA_Type * base, uint8_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_EINT(base, channel, enable);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_EINT(base, channel, enable);
 }
 
 /*!
@@ -270,10 +270,10 @@ static inline void DMA_HAL_SetIntCmd(DMA_Type * base, uint8_t channel, bool enab
  * @param enable 1 means cycle-steal mode, 0 means continuous mode.
  */
 static inline void DMA_HAL_SetCycleStealCmd(
-        DMA_Type * base, uint8_t channel, bool enable)
+		DMA_Type * base, uint8_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_CS(base, channel, enable);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_CS(base, channel, enable);
 }
 
 /*!
@@ -287,10 +287,10 @@ static inline void DMA_HAL_SetCycleStealCmd(
  * @param enable 0 means disable auto-align. 1 means enable auto-align.
  */
 static inline void DMA_HAL_SetAutoAlignCmd(
-        DMA_Type * base, uint8_t channel, bool enable)
+		DMA_Type * base, uint8_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_AA(base, channel, enable);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_AA(base, channel, enable);
 }
 
 /*!
@@ -303,10 +303,10 @@ static inline void DMA_HAL_SetAutoAlignCmd(
  * @param enable 0 means disable DMA request a-sync. 1 means enable DMA request -.
  */
 static inline void DMA_HAL_SetAsyncDmaRequestCmd(
-        DMA_Type * base, uint8_t channel, bool enable)
+		DMA_Type * base, uint8_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_EADREQ(base, channel, enable);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_EADREQ(base, channel, enable);
 }
 
 /*!
@@ -320,10 +320,10 @@ static inline void DMA_HAL_SetAsyncDmaRequestCmd(
  * @param enable Enabled/Disable increment.
  */
 static inline void DMA_HAL_SetSourceIncrementCmd(
-        DMA_Type * base, uint32_t channel, bool enable)
+		DMA_Type * base, uint32_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_SINC(base, channel, enable);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_SINC(base, channel, enable);
 }
 
 /*!
@@ -337,10 +337,10 @@ static inline void DMA_HAL_SetSourceIncrementCmd(
  * @param enable Enabled/Disable increment.
  */
 static inline void DMA_HAL_SetDestIncrementCmd(
-        DMA_Type * base, uint32_t channel, bool enable)
+		DMA_Type * base, uint32_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_DINC(base, channel, enable);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_DINC(base, channel, enable);
 }
 
 /*!
@@ -351,10 +351,10 @@ static inline void DMA_HAL_SetDestIncrementCmd(
  * @param transfersize enum type for transfer size.
  */
 static inline void DMA_HAL_SetSourceTransferSize(
-        DMA_Type * base, uint32_t channel, dma_transfer_size_t transfersize)
+		DMA_Type * base, uint32_t channel, dma_transfer_size_t transfersize)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_SSIZE(base, channel, transfersize);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_SSIZE(base, channel, transfersize);
 }
 
 /*!
@@ -365,10 +365,10 @@ static inline void DMA_HAL_SetSourceTransferSize(
  * @param transfersize enum type for transfer size.
  */
 static inline void DMA_HAL_SetDestTransferSize(
-        DMA_Type * base, uint32_t channel, dma_transfer_size_t transfersize)
+		DMA_Type * base, uint32_t channel, dma_transfer_size_t transfersize)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_DSIZE(base, channel, transfersize);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_DSIZE(base, channel, transfersize);
 }
 
 /*!
@@ -383,8 +383,8 @@ static inline void DMA_HAL_SetDestTransferSize(
  */
 static inline void DMA_HAL_SetTriggerStartCmd(DMA_Type * base, uint32_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_START(base, channel, enable);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_START(base, channel, enable);
 }
 
 /*!
@@ -395,10 +395,10 @@ static inline void DMA_HAL_SetTriggerStartCmd(DMA_Type * base, uint32_t channel,
  * @param modulo enum data type for source modulo.
  */
 static inline void DMA_HAL_SetSourceModulo(
-        DMA_Type * base, uint32_t channel, dma_modulo_t modulo)
+		DMA_Type * base, uint32_t channel, dma_modulo_t modulo)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_SMOD(base, channel, modulo);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_SMOD(base, channel, modulo);
 }
 
 /*!
@@ -409,10 +409,10 @@ static inline void DMA_HAL_SetSourceModulo(
  * @param modulo enum data type for dest modulo.
  */
 static inline void DMA_HAL_SetDestModulo(
-        DMA_Type * base, uint32_t channel, dma_modulo_t modulo)
+		DMA_Type * base, uint32_t channel, dma_modulo_t modulo)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_DMOD(base, channel, modulo);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_DMOD(base, channel, modulo);
 }
 
 /*!
@@ -423,10 +423,10 @@ static inline void DMA_HAL_SetDestModulo(
  * @param enable Enable/disable dma request.
  */
 static inline void DMA_HAL_SetDmaRequestCmd(
-        DMA_Type * base, uint32_t channel, bool enable)
+		DMA_Type * base, uint32_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_ERQ(base, channel, enable);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_ERQ(base, channel, enable);
 }
 
 /*!
@@ -439,10 +439,10 @@ static inline void DMA_HAL_SetDmaRequestCmd(
  * @param enable 0 means DMA request would not be disabled after work done. 1 means disable.
  */
 static inline void DMA_HAL_SetDisableRequestAfterDoneCmd(
-        DMA_Type * base, uint32_t channel, bool enable)
+		DMA_Type * base, uint32_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DCR_D_REQ(base, channel, enable);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DCR_D_REQ(base, channel, enable);
 
 }
 
@@ -454,7 +454,7 @@ static inline void DMA_HAL_SetDisableRequestAfterDoneCmd(
  * @param mode Mode of channel link in DMA.
  */
 void DMA_HAL_SetChanLink(
-        DMA_Type * base, uint8_t channel, dma_channel_link_config_t *mode);
+		DMA_Type * base, uint8_t channel, dma_channel_link_config_t *mode);
 
 /*!
  * @brief Clears the status of the DMA channel.
@@ -466,8 +466,8 @@ void DMA_HAL_SetChanLink(
  */
 static inline void DMA_HAL_ClearStatus(DMA_Type * base, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
-    DMA_BWR_DSR_BCR_DONE(base, channel, 1U);
+	assert(channel < FSL_FEATURE_DMA_DMAMUX_CHANNELS);
+	DMA_BWR_DSR_BCR_DONE(base, channel, 1U);
 }
 
 /*!
@@ -493,4 +493,3 @@ dma_error_status_t DMA_HAL_GetStatus(DMA_Type * base, uint8_t channel);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

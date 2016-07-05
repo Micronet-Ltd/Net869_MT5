@@ -53,93 +53,93 @@
 /*! @brief Error codes for the IRTC driver.*/
 typedef enum _irtc_status
 {
-    kStatus_IRTC_Success = 0x00U,
-    kStatus_IRTC_Fail    = 0x01U
+	kStatus_IRTC_Success = 0x00U,
+	kStatus_IRTC_Fail    = 0x01U
 } irtc_status_t;
 
 /*! @brief IRTC filter clock source options. */
 typedef enum _irtc_filter_clock_source {
-    kIRTC32K = 0x0,  /*!< Use 32 kHz clock source for the tamper filter.*/
-    kIRTC512 = 0x1,  /*!< Use 512 Hz clock source for the tamper filter.*/
-    kIRTC128 = 0x2,  /*!< Use 128 Hz clock source for the tamper filter.*/
-    kIRTC64  = 0x3,  /*!< Use 64 Hz clock source for the tamper filter.*/
-    kIRTC16  = 0x4,  /*!< Use 16 Hz clock source for the tamper filter.*/
-    kIRTC8   = 0x5,  /*!< Use 8 Hz clock source for the tamper filter.*/
-    kIRTC4   = 0x6,  /*!< Use 4 Hz clock source for the tamper filter.*/
-    kIRTC2   = 0x7   /*!< Use 2 Hz clock source for the tamper filter.*/
+	kIRTC32K = 0x0,  /*!< Use 32 kHz clock source for the tamper filter.*/
+	kIRTC512 = 0x1,  /*!< Use 512 Hz clock source for the tamper filter.*/
+	kIRTC128 = 0x2,  /*!< Use 128 Hz clock source for the tamper filter.*/
+	kIRTC64  = 0x3,  /*!< Use 64 Hz clock source for the tamper filter.*/
+	kIRTC16  = 0x4,  /*!< Use 16 Hz clock source for the tamper filter.*/
+	kIRTC8   = 0x5,  /*!< Use 8 Hz clock source for the tamper filter.*/
+	kIRTC4   = 0x6,  /*!< Use 4 Hz clock source for the tamper filter.*/
+	kIRTC2   = 0x7   /*!< Use 2 Hz clock source for the tamper filter.*/
 } irtc_filter_clock_source_t;
 
 /*! @brief IRTC Tamper pins. */
 typedef enum _irtc_tamper_pins {
-    kIRTCTamper0   = 0x0, /*!< External Tamper 0 */
-    kIRTCTamper1   = 0x1, /*!< External Tamper 1 */
-    kIRTCTamper2   = 0x2, /*!< External Tamper 2 */
-    kIRTCTamper3   = 0x3  /*!< Internal tamper, does not have filter configuration */
+	kIRTCTamper0   = 0x0, /*!< External Tamper 0 */
+	kIRTCTamper1   = 0x1, /*!< External Tamper 1 */
+	kIRTCTamper2   = 0x2, /*!< External Tamper 2 */
+	kIRTCTamper3   = 0x3  /*!< Internal tamper, does not have filter configuration */
 } irtc_tamper_pins_t;
 
 /*! @brief IRTC clock output selection. */
 typedef enum _irtc_clock_output {
-    kIRTCNoOutputClk   = 0x0, /*!< No output clock */
-    kIRTCFine1hzClk    = 0x1, /*!< Fine 1 Hz clock */
-    kIRTC32khzClk      = 0x2, /*!< 32.768 kHz clock */
-    kIRTCCoarse1hzClck = 0x3  /*!< Coarse 1Hz clock */
+	kIRTCNoOutputClk   = 0x0, /*!< No output clock */
+	kIRTCFine1hzClk    = 0x1, /*!< Fine 1 Hz clock */
+	kIRTC32khzClk      = 0x2, /*!< 32.768 kHz clock */
+	kIRTCCoarse1hzClck = 0x3  /*!< Coarse 1Hz clock */
 } irtc_clock_output_t;
 
 /*! @brief IRTC alarm match selection. */
 typedef enum _irtc_alarm_match {
-    kIRTCSecMinHour           = 0x0, /*!< Generate alarm when sec/min/hour are matched. @internal gui name="Generate alarm when sec/min/hour are matched" */
-    kIRTCSecMinHourDay        = 0x1, /*!< Generate alarm when sec/min/hour/day are matched. @internal gui name="Generate alarm when sec/min/hour/day are matched" */
-    kIRTCSecMinHourDayMon     = 0x2, /*!< Generate alarm when sec/min/hour/day/month are matched. @internal gui name="Generate alarm when sec/min/hour/day/month are matched" */
-    kIRTCSecMinHourDayMonYear = 0x3  /*!< Generate alarm when sec/min/hour/day/month/year are matched. @internal gui name="Generate alarm when sec/min/hour/day/month/year are matched" */
+	kIRTCSecMinHour           = 0x0, /*!< Generate alarm when sec/min/hour are matched. @internal gui name="Generate alarm when sec/min/hour are matched" */
+	kIRTCSecMinHourDay        = 0x1, /*!< Generate alarm when sec/min/hour/day are matched. @internal gui name="Generate alarm when sec/min/hour/day are matched" */
+	kIRTCSecMinHourDayMon     = 0x2, /*!< Generate alarm when sec/min/hour/day/month are matched. @internal gui name="Generate alarm when sec/min/hour/day/month are matched" */
+	kIRTCSecMinHourDayMonYear = 0x3  /*!< Generate alarm when sec/min/hour/day/month/year are matched. @internal gui name="Generate alarm when sec/min/hour/day/month/year are matched" */
 } irtc_alarm_match_t;
 
 /*! @brief IRTC status flags. */
 typedef enum _irtc_status_flag {
-    kIRTCInvalidate  = RTC_STATUS_INVAL_BIT_SHIFT,
-    kIRTCReadOnly    = RTC_STATUS_WRITE_PROT_EN_SHIFT,
-    kIRTCLowVoltage  = RTC_STATUS_CPU_LOW_VOLT_SHIFT,
-    kIRTCResetSrc    = RTC_STATUS_RST_SRC_SHIFT,
-    kIRTCCmpInterval = RTC_STATUS_CMP_INT_SHIFT,
-    kIRTCBusErr      = RTC_STATUS_BUS_ERR_SHIFT,
-    kIRTCCmpDone     = RTC_STATUS_CMP_DONE_SHIFT
+	kIRTCInvalidate  = RTC_STATUS_INVAL_BIT_SHIFT,
+	kIRTCReadOnly    = RTC_STATUS_WRITE_PROT_EN_SHIFT,
+	kIRTCLowVoltage  = RTC_STATUS_CPU_LOW_VOLT_SHIFT,
+	kIRTCResetSrc    = RTC_STATUS_RST_SRC_SHIFT,
+	kIRTCCmpInterval = RTC_STATUS_CMP_INT_SHIFT,
+	kIRTCBusErr      = RTC_STATUS_BUS_ERR_SHIFT,
+	kIRTCCmpDone     = RTC_STATUS_CMP_DONE_SHIFT
 } irtc_status_flag_t;
 
 /*! @brief IRTC interrupt status flags. */
 typedef enum _irtc_int_status_flag {
-    kIRTCTamperIntFlag = RTC_ISR_TAMPER_IS_SHIFT,
-    kIRTCAlarmIntFlag  = RTC_ISR_ALM_IS_SHIFT,
-    kIRTCDayIntFlag    = RTC_ISR_DAY_IS_SHIFT,
-    kIRTCHourIntFlag   = RTC_ISR_HOUR_IS_SHIFT,
-    kIRTCMinIntFlag    = RTC_ISR_MIN_IS_SHIFT,
-    kIRTC1hzIntFlag    = RTC_ISR_IS_1HZ_SHIFT,
-    kIRTC2hzIntFlag    = RTC_ISR_IS_2HZ_SHIFT,
-    kIRTC4hzIntFlag    = RTC_ISR_IS_4HZ_SHIFT,
-    kIRTC8hzIntFlag    = RTC_ISR_IS_8HZ_SHIFT,
-    kIRTC16hzIntFlag   = RTC_ISR_IS_16HZ_SHIFT,
-    kIRTC32hzIntFlag   = RTC_ISR_IS_32HZ_SHIFT,
-    kIRTC64hzIntFlag   = RTC_ISR_IS_64HZ_SHIFT,
-    kIRTC128hzIntFlag  = RTC_ISR_IS_128HZ_SHIFT,
-    kIRTC256hzIntFlag  = RTC_ISR_IS_256HZ_SHIFT,
-    kIRTC512hzIntFlag  = RTC_ISR_IS_512HZ_SHIFT
+	kIRTCTamperIntFlag = RTC_ISR_TAMPER_IS_SHIFT,
+	kIRTCAlarmIntFlag  = RTC_ISR_ALM_IS_SHIFT,
+	kIRTCDayIntFlag    = RTC_ISR_DAY_IS_SHIFT,
+	kIRTCHourIntFlag   = RTC_ISR_HOUR_IS_SHIFT,
+	kIRTCMinIntFlag    = RTC_ISR_MIN_IS_SHIFT,
+	kIRTC1hzIntFlag    = RTC_ISR_IS_1HZ_SHIFT,
+	kIRTC2hzIntFlag    = RTC_ISR_IS_2HZ_SHIFT,
+	kIRTC4hzIntFlag    = RTC_ISR_IS_4HZ_SHIFT,
+	kIRTC8hzIntFlag    = RTC_ISR_IS_8HZ_SHIFT,
+	kIRTC16hzIntFlag   = RTC_ISR_IS_16HZ_SHIFT,
+	kIRTC32hzIntFlag   = RTC_ISR_IS_32HZ_SHIFT,
+	kIRTC64hzIntFlag   = RTC_ISR_IS_64HZ_SHIFT,
+	kIRTC128hzIntFlag  = RTC_ISR_IS_128HZ_SHIFT,
+	kIRTC256hzIntFlag  = RTC_ISR_IS_256HZ_SHIFT,
+	kIRTC512hzIntFlag  = RTC_ISR_IS_512HZ_SHIFT
 } irtc_int_status_flag_t;
 
 /*! @brief IRTC interrupts. */
 typedef enum _irtc_int {
-    kIRTCTamperInt = RTC_IER_TAMPER_IE_SHIFT,
-    kIRTCAlarmInt  = RTC_IER_ALM_IE_SHIFT,
-    kIRTCDayInt    = RTC_IER_DAY_IE_SHIFT,
-    kIRTCHourInt   = RTC_IER_HOUR_IE_SHIFT,
-    kIRTCMinInt    = RTC_IER_MIN_IE_SHIFT,
-    kIRTC1hzInt    = RTC_IER_IE_1HZ_SHIFT,
-    kIRTC2hzInt    = RTC_IER_IE_2HZ_SHIFT,
-    kIRTC4hzInt    = RTC_IER_IE_4HZ_SHIFT,
-    kIRTC8hzInt    = RTC_IER_IE_8HZ_SHIFT,
-    kIRTC16hzInt   = RTC_IER_IE_16HZ_SHIFT,
-    kIRTC32hzInt   = RTC_IER_IE_32HZ_SHIFT,
-    kIRTC64hzInt   = RTC_IER_IE_64HZ_SHIFT,
-    kIRTC128hzInt  = RTC_IER_IE_128HZ_SHIFT,
-    kIRTC256hzInt  = RTC_IER_IE_256HZ_SHIFT,
-    kIRTC512hzInt  = RTC_IER_IE_512HZ_SHIFT
+	kIRTCTamperInt = RTC_IER_TAMPER_IE_SHIFT,
+	kIRTCAlarmInt  = RTC_IER_ALM_IE_SHIFT,
+	kIRTCDayInt    = RTC_IER_DAY_IE_SHIFT,
+	kIRTCHourInt   = RTC_IER_HOUR_IE_SHIFT,
+	kIRTCMinInt    = RTC_IER_MIN_IE_SHIFT,
+	kIRTC1hzInt    = RTC_IER_IE_1HZ_SHIFT,
+	kIRTC2hzInt    = RTC_IER_IE_2HZ_SHIFT,
+	kIRTC4hzInt    = RTC_IER_IE_4HZ_SHIFT,
+	kIRTC8hzInt    = RTC_IER_IE_8HZ_SHIFT,
+	kIRTC16hzInt   = RTC_IER_IE_16HZ_SHIFT,
+	kIRTC32hzInt   = RTC_IER_IE_32HZ_SHIFT,
+	kIRTC64hzInt   = RTC_IER_IE_64HZ_SHIFT,
+	kIRTC128hzInt  = RTC_IER_IE_128HZ_SHIFT,
+	kIRTC256hzInt  = RTC_IER_IE_256HZ_SHIFT,
+	kIRTC512hzInt  = RTC_IER_IE_512HZ_SHIFT
 } irtc_int_t;
 
 /*!
@@ -175,13 +175,13 @@ typedef struct IrtcDaylightTime
 typedef struct IrtcTamperConfig
 {
 #if FSL_FEATURE_RTC_HAS_TAMPER_DIRECTION
-    bool activePassive; /*!< true: configure tamper as active; false: passive tamper */
-    bool direction;     /*!< true: configure tamper direction as output; false: configure as input;
-                             this is only used if a tamper pin is defined as active */
+	bool activePassive; /*!< true: configure tamper as active; false: passive tamper */
+	bool direction;     /*!< true: configure tamper direction as output; false: configure as input;
+							 this is only used if a tamper pin is defined as active */
 #endif
-    bool pinPolarity;   /*!< true: tamper has active low polarity; false: active high polarity */
-    irtc_filter_clock_source_t filterClk;  /*!< Clock source for the tamper filter */
-    uint8_t filterDuration;  /*!< Tamper filter duration.*/
+	bool pinPolarity;   /*!< true: tamper has active low polarity; false: active high polarity */
+	irtc_filter_clock_source_t filterClk;  /*!< Clock source for the tamper filter */
+	uint8_t filterDuration;  /*!< Tamper filter duration.*/
 } irtc_tamper_config_t;
 
 /*******************************************************************************
@@ -262,7 +262,7 @@ void IRTC_HAL_GetYearMonth(RTC_Type * base, uint16_t * year, uint16_t * month);
  */
 static inline void IRTC_HAL_SetDayWeek(RTC_Type * base, uint16_t day, uint16_t weekDay)
 {
-    RTC_WR_DAYS(base, RTC_DAYS_DOW(weekDay) | RTC_DAYS_DAY_CNT(day));
+	RTC_WR_DAYS(base, RTC_DAYS_DOW(weekDay) | RTC_DAYS_DAY_CNT(day));
 }
 
 /*!
@@ -283,7 +283,7 @@ void IRTC_HAL_GetDayWeek(RTC_Type * base, uint16_t * day, uint16_t * weekDay);
  */
 static inline void IRTC_HAL_SetHourMin(RTC_Type * base, uint16_t hour, uint16_t min)
 {
-    RTC_WR_HOURMIN(base, RTC_HOURMIN_HOUR_CNT(hour) | RTC_HOURMIN_MIN_CNT(min));
+	RTC_WR_HOURMIN(base, RTC_HOURMIN_HOUR_CNT(hour) | RTC_HOURMIN_MIN_CNT(min));
 }
 
 /*!
@@ -303,7 +303,7 @@ void IRTC_HAL_GetHourMin(RTC_Type * base, uint16_t * hour, uint16_t * min);
  */
 static inline void IRTC_HAL_SetSec(RTC_Type * base, uint16_t sec)
 {
-    RTC_WR_SECONDS(base, sec);
+	RTC_WR_SECONDS(base, sec);
 }
 
 /*!
@@ -314,7 +314,7 @@ static inline void IRTC_HAL_SetSec(RTC_Type * base, uint16_t sec)
  */
 static inline void IRTC_HAL_GetSec(RTC_Type * base, uint16_t * sec)
 {
-    *sec = RTC_RD_SECONDS(base);
+	*sec = RTC_RD_SECONDS(base);
 }
 
 /*!
@@ -349,7 +349,7 @@ void IRTC_HAL_GetDatetime(RTC_Type *base, irtc_datetime_t * datetime);
  */
 static inline void IRTC_HAL_SetAlarmMatchMode(RTC_Type * base, irtc_alarm_match_t alarmType)
 {
-    RTC_BWR_CTRL_ALM_MATCH(base, alarmType);
+	RTC_BWR_CTRL_ALM_MATCH(base, alarmType);
 }
 
 /*!
@@ -389,8 +389,8 @@ void IRTC_HAL_GetAlarm(RTC_Type *base, irtc_datetime_t * datetime);
  */
 static inline void IRTC_HAL_SetDaylightMonth(RTC_Type * base, uint16_t startMonth, uint16_t endMonth)
 {
-    RTC_WR_DST_MONTH(base, RTC_DST_MONTH_DST_START_MONTH(startMonth) |
-                           RTC_DST_MONTH_DST_END_MONTH(endMonth));
+	RTC_WR_DST_MONTH(base, RTC_DST_MONTH_DST_START_MONTH(startMonth) |
+						   RTC_DST_MONTH_DST_END_MONTH(endMonth));
 }
 
 /*!
@@ -411,8 +411,8 @@ void IRTC_HAL_GetDaylightMonth(RTC_Type * base, uint16_t * startMonth, uint16_t 
  */
 static inline void IRTC_HAL_SetDaylightDay(RTC_Type * base, uint16_t startDay, uint16_t endDay)
 {
-    RTC_WR_DST_DAY(base, RTC_DST_DAY_DST_START_DAY(startDay) |
-                         RTC_DST_DAY_DST_END_DAY(endDay));
+	RTC_WR_DST_DAY(base, RTC_DST_DAY_DST_START_DAY(startDay) |
+						 RTC_DST_DAY_DST_END_DAY(endDay));
 }
 
 /*!
@@ -433,8 +433,8 @@ void IRTC_HAL_GetDaylightDay(RTC_Type * base, uint16_t * startDay, uint16_t * en
  */
 static inline void IRTC_HAL_SetDaylightHour(RTC_Type * base, uint16_t startHour, uint16_t endHour)
 {
-    RTC_WR_DST_HOUR(base, RTC_DST_HOUR_DST_START_HOUR(startHour) |
-                         RTC_DST_HOUR_DST_END_HOUR(endHour));
+	RTC_WR_DST_HOUR(base, RTC_DST_HOUR_DST_START_HOUR(startHour) |
+						 RTC_DST_HOUR_DST_END_HOUR(endHour));
 }
 
 /*!
@@ -481,7 +481,7 @@ void IRTC_HAL_GetDaylightTime(RTC_Type *base, irtc_daylight_time_t * datetime);
  */
 static inline bool IRTC_HAL_GetStatusFlag(RTC_Type *base, irtc_status_flag_t statusFlag)
 {
-    return (bool)((RTC_RD_STATUS(base) >> statusFlag) & 0x1U);
+	return (bool)((RTC_RD_STATUS(base) >> statusFlag) & 0x1U);
 }
 
 /*@}*/
@@ -500,8 +500,8 @@ static inline bool IRTC_HAL_GetStatusFlag(RTC_Type *base, irtc_status_flag_t sta
  */
 static inline void IRTC_HAL_SetIntCmd(RTC_Type * base, irtc_int_t interrupt, bool enable)
 {
-    uint16_t temp = 1U << (uint16_t)interrupt;
-    enable ? RTC_SET_IER(base, temp) : RTC_CLR_IER(base, temp);
+	uint16_t temp = 1U << (uint16_t)interrupt;
+	enable ? RTC_SET_IER(base, temp) : RTC_CLR_IER(base, temp);
 }
 
 /*!
@@ -515,7 +515,7 @@ static inline void IRTC_HAL_SetIntCmd(RTC_Type * base, irtc_int_t interrupt, boo
  */
 static inline bool IRTC_HAL_GetIntCmd(RTC_Type * base, irtc_int_t interrupt)
 {
-    return (bool)((RTC_RD_IER(base) >> interrupt) & 0x1U);
+	return (bool)((RTC_RD_IER(base) >> interrupt) & 0x1U);
 }
 
 /*!
@@ -529,7 +529,7 @@ static inline bool IRTC_HAL_GetIntCmd(RTC_Type * base, irtc_int_t interrupt)
  */
 static inline bool IRTC_HAL_GetIntStatusFlag(RTC_Type * base, irtc_int_status_flag_t statusFlag)
 {
-    return (bool)((RTC_RD_ISR(base) >> statusFlag) & 0x1U);
+	return (bool)((RTC_RD_ISR(base) >> statusFlag) & 0x1U);
 }
 
 /*!
@@ -542,9 +542,9 @@ static inline bool IRTC_HAL_GetIntStatusFlag(RTC_Type * base, irtc_int_status_fl
  */
 static inline void IRTC_HAL_ClearIntStatusFlag(RTC_Type * base, irtc_int_status_flag_t statusFlag)
 {
-    IRTC_HAL_SetLockRegisterCmd(base, false);
-    RTC_WR_ISR(base, 1U << (uint16_t)statusFlag);
-    IRTC_HAL_SetLockRegisterCmd(base, true);
+	IRTC_HAL_SetLockRegisterCmd(base, false);
+	RTC_WR_ISR(base, 1U << (uint16_t)statusFlag);
+	IRTC_HAL_SetLockRegisterCmd(base, true);
 }
 
 /*@}*/
@@ -574,7 +574,7 @@ void IRTC_HAL_SetCoarseCompensation(RTC_Type *base, uint8_t compVal, uint8_t com
  *         true: accumulate fractional part, false: start afresh and overwrite current value
  */
 void IRTC_HAL_SetFineCompensation(RTC_Type *base, uint8_t integralVal, uint8_t fracVal,
-                                           bool accumulateFrac);
+										   bool accumulateFrac);
 
 /*@}*/
 
@@ -591,7 +591,7 @@ void IRTC_HAL_SetFineCompensation(RTC_Type *base, uint8_t integralVal, uint8_t f
  */
 static inline void IRTC_HAL_SetClockOutMode(RTC_Type *base, irtc_clock_output_t clock)
 {
-    RTC_BWR_CTRL_CLKOUT(base, clock);
+	RTC_BWR_CTRL_CLKOUT(base, clock);
 }
 
 /*!
@@ -605,7 +605,7 @@ static inline void IRTC_HAL_SetClockOutMode(RTC_Type *base, irtc_clock_output_t 
  */
 static inline void IRTC_HAL_SoftwareReset(RTC_Type *base)
 {
-    RTC_BWR_CTRL_SWR(base, 0x1U);
+	RTC_BWR_CTRL_SWR(base, 0x1U);
 }
 
 /*@}*/
@@ -630,7 +630,7 @@ static inline void IRTC_HAL_SoftwareReset(RTC_Type *base)
  * @param  tamperConfig The IRTC tamper properties
  */
 void IRTC_HAL_ConfigTamperParams(RTC_Type *base, irtc_tamper_pins_t tamperNum,
-                                           irtc_tamper_config_t * tamperConfig);
+										   irtc_tamper_config_t * tamperConfig);
 
 /*!
  * @brief Enables the tamper feature.
@@ -642,7 +642,7 @@ void IRTC_HAL_ConfigTamperParams(RTC_Type *base, irtc_tamper_pins_t tamperNum,
  */
 static inline void IRTC_HAL_EnableTamper(RTC_Type *base)
 {
-    RTC_BWR_CTRL2_TAMP_CFG_OVER(base, 0x1U);
+	RTC_BWR_CTRL2_TAMP_CFG_OVER(base, 0x1U);
 }
 
 /*!
@@ -652,7 +652,7 @@ static inline void IRTC_HAL_EnableTamper(RTC_Type *base)
  */
 static inline void IRTC_HAL_DisableTamper(RTC_Type *base)
 {
-    RTC_BWR_CTRL2_TAMP_CFG_OVER(base, 0x0U);
+	RTC_BWR_CTRL2_TAMP_CFG_OVER(base, 0x0U);
 }
 
 #if FSL_FEATURE_RTC_HAS_TAMPER_QUEUE
@@ -689,4 +689,3 @@ uint8_t IRTC_HAL_ReadTamperQueue(RTC_Type *base, irtc_datetime_t * tamperTimesta
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

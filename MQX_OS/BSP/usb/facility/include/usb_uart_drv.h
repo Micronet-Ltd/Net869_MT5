@@ -114,11 +114,11 @@ typedef    void (* usb_uart_rx_callback_t)(uint32_t instance, void * uartState);
 typedef union UsbUartState
 {
 #if defined(BOARD_USE_UART)
-    uart_state_t uart_state;
+	uart_state_t uart_state;
 #elif defined(BOARD_USE_LPUART)
-    lpuart_state_t lpuart_state;
+	lpuart_state_t lpuart_state;
 #elif defined(BOARD_USE_LPSCI)
-    lpsci_state_t lpsci_state;
+	lpsci_state_t lpsci_state;
 #endif
 } usb_uart_state_t;
 
@@ -132,31 +132,31 @@ typedef union UsbUartState
  */
 typedef struct UsbUartUserConfig
 {
-    uint32_t clockSource;            /*!< UART clockSource*/
-    uint32_t baudRate;            /*!< UART baud rate*/
-    uint32_t parityMode;      /*!< parity mode, disabled (default), even, odd */
-    uint32_t stopBitCount; /*!< number of stop bits, 1 stop bit (default) or 2 stop bits */
-    uint32_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in
-                                                    a word (up to 10-bits in some UART instances) */
+	uint32_t clockSource;            /*!< UART clockSource*/
+	uint32_t baudRate;            /*!< UART baud rate*/
+	uint32_t parityMode;      /*!< parity mode, disabled (default), even, odd */
+	uint32_t stopBitCount; /*!< number of stop bits, 1 stop bit (default) or 2 stop bits */
+	uint32_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in
+													a word (up to 10-bits in some UART instances) */
 } usb_uart_user_config_t;
 
 /*! @brief Error codes for the UART driver. */
 typedef enum _usb_uart_status
 {
-    kStatus_USB_UART_Success                  = 0x0U,
-    kStatus_USB_UART_BaudRateCalculationError = 0x1U,
-    kStatus_USB_UART_RxStandbyModeError       = 0x2U,
-    kStatus_USB_UART_ClearStatusFlagError     = 0x3U,
-    kStatus_USB_UART_TxNotDisabled            = 0x4U,
-    kStatus_USB_UART_RxNotDisabled            = 0x5U,
-    kStatus_USB_UART_TxOrRxNotDisabled        = 0x6U,
-    kStatus_USB_UART_TxBusy                   = 0x7U,
-    kStatus_USB_UART_RxBusy                   = 0x8U,
-    kStatus_USB_UART_NoTransmitInProgress     = 0x9U,
-    kStatus_USB_UART_NoReceiveInProgress      = 0xAU,
-    kStatus_USB_UART_Timeout                  = 0xBU,
-    kStatus_USB_UART_Initialized              = 0xCU,
-    kStatus_USB_UART_NoDataToDeal             = 0xDU
+	kStatus_USB_UART_Success                  = 0x0U,
+	kStatus_USB_UART_BaudRateCalculationError = 0x1U,
+	kStatus_USB_UART_RxStandbyModeError       = 0x2U,
+	kStatus_USB_UART_ClearStatusFlagError     = 0x3U,
+	kStatus_USB_UART_TxNotDisabled            = 0x4U,
+	kStatus_USB_UART_RxNotDisabled            = 0x5U,
+	kStatus_USB_UART_TxOrRxNotDisabled        = 0x6U,
+	kStatus_USB_UART_TxBusy                   = 0x7U,
+	kStatus_USB_UART_RxBusy                   = 0x8U,
+	kStatus_USB_UART_NoTransmitInProgress     = 0x9U,
+	kStatus_USB_UART_NoReceiveInProgress      = 0xAU,
+	kStatus_USB_UART_Timeout                  = 0xBU,
+	kStatus_USB_UART_Initialized              = 0xCU,
+	kStatus_USB_UART_NoDataToDeal             = 0xDU
 } usb_uart_status_t;
 
 /*******************************************************************************
@@ -191,14 +191,14 @@ IRQn_Type USB_UART_Get_USB_iRQ_Num(uint32_t instance);
  * usb_uart_user_config_t parameters and how to call the USB_UART_DRV_Init function by passing
  * in these parameters:
    @code
-    usb_uart_user_config_t uartConfig;
-    uartConfig.baudRate = 9600;
-    uartConfig.bitCountPerChar = kUart8BitsPerChar;
-    uartConfig.parityMode = kUartParityDisabled;
-    uartConfig.stopBitCount = kUartOneStopBit;
-    usb_uart_state_t uartState;
-    USB_UART_DRV_Init(instance, &uartState, &uartConfig);
-    @endcode
+	usb_uart_user_config_t uartConfig;
+	uartConfig.baudRate = 9600;
+	uartConfig.bitCountPerChar = kUart8BitsPerChar;
+	uartConfig.parityMode = kUartParityDisabled;
+	uartConfig.stopBitCount = kUartOneStopBit;
+	usb_uart_state_t uartState;
+	USB_UART_DRV_Init(instance, &uartState, &uartConfig);
+	@endcode
  *
  * @param instance The UART instance number.
  * @param uartStatePtr A pointer to the UART driver state structure memory. The user
@@ -211,7 +211,7 @@ IRQn_Type USB_UART_Get_USB_iRQ_Num(uint32_t instance);
  * @return An error code or kStatus_UART_Success.
  */
 usb_uart_status_t USB_UART_DRV_Init(uint32_t instance, usb_uart_state_t * uartStatePtr,
-                                    const usb_uart_user_config_t * uartUserConfig);
+									const usb_uart_user_config_t * uartUserConfig);
 
 /*!
  * @brief Shuts down the UART by disabling interrupts and the transmitter/receiver.
@@ -237,10 +237,10 @@ void USB_UART_DRV_Deinit(uint32_t instance);
  * @return Former UART receive callback function pointer.
  */
 usb_uart_rx_callback_t USB_UART_DRV_InstallRxCallback(uint32_t instance,
-        usb_uart_rx_callback_t function,
-        uint8_t * rxBuff,
-        void * callbackParam,
-        bool alwaysEnableRxIrq);
+		usb_uart_rx_callback_t function,
+		uint8_t * rxBuff,
+		void * callbackParam,
+		bool alwaysEnableRxIrq);
 
 /*!
  * @brief Sends (transmits) data out through the UART module using a blocking method.
@@ -255,9 +255,9 @@ usb_uart_rx_callback_t USB_UART_DRV_InstallRxCallback(uint32_t instance,
  * @return An error code or kStatus_UART_Success.
  */
 usb_uart_status_t USB_UART_DRV_SendDataBlocking(uint32_t instance,
-        const uint8_t * txBuff,
-        uint32_t txSize,
-        uint32_t timeout);
+		const uint8_t * txBuff,
+		uint32_t txSize,
+		uint32_t timeout);
 
 /*!
  * @brief Sends (transmits) data through the UART module using a non-blocking method.
@@ -321,9 +321,9 @@ usb_uart_status_t USB_UART_DRV_AbortSendingData(uint32_t instance);
  * @return An error code or kStatus_UART_Success.
  */
 usb_uart_status_t USB_UART_DRV_ReceiveDataBlocking(uint32_t instance,
-        uint8_t * rxBuff,
-        uint32_t rxSize,
-        uint32_t timeout);
+		uint8_t * rxBuff,
+		uint32_t rxSize,
+		uint32_t timeout);
 
 /*!
  * @brief Gets (receives) data from the UART module using a non-blocking method.

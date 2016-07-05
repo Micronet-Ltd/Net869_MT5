@@ -43,16 +43,16 @@
  *END**************************************************************************/
 void GPIO_HAL_SetPinDir(GPIO_Type * base, uint32_t pin, gpio_pin_direction_t direction)
 {
-    assert(pin < 32);
+	assert(pin < 32);
 
-    if (direction == kGpioDigitalOutput)
-    {
-        GPIO_SET_PDDR(base, 1U << pin);
-    }
-    else
-    {
-        GPIO_CLR_PDDR(base, 1U << pin);
-    }
+	if (direction == kGpioDigitalOutput)
+	{
+		GPIO_SET_PDDR(base, 1U << pin);
+	}
+	else
+	{
+		GPIO_CLR_PDDR(base, 1U << pin);
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -63,16 +63,16 @@ void GPIO_HAL_SetPinDir(GPIO_Type * base, uint32_t pin, gpio_pin_direction_t dir
  *END**************************************************************************/
 void GPIO_HAL_WritePinOutput(GPIO_Type * base, uint32_t pin, uint32_t output)
 {
-    assert(pin < 32);
+	assert(pin < 32);
 
-    if (output != 0U)
-    {
-        GPIO_WR_PSOR(base, 1U << pin); /* Set pin output to high level.*/
-    }
-    else
-    {
-        GPIO_WR_PCOR(base, 1U << pin); /* Set pin output to low level.*/
-    }
+	if (output != 0U)
+	{
+		GPIO_WR_PSOR(base, 1U << pin); /* Set pin output to high level.*/
+	}
+	else
+	{
+		GPIO_WR_PCOR(base, 1U << pin); /* Set pin output to low level.*/
+	}
 }
 
 #if FSL_FEATURE_GPIO_HAS_FAST_GPIO
@@ -85,14 +85,14 @@ void GPIO_HAL_WritePinOutput(GPIO_Type * base, uint32_t pin, uint32_t output)
  *END**************************************************************************/
 void FGPIO_HAL_SetPinDir(FGPIO_Type * base, uint32_t pin, gpio_pin_direction_t direction)
 {
-    if (direction == kGpioDigitalOutput)
-    {
-        FGPIO_SET_PDDR(base, 1U << pin);
-    }
-    else
-    {
-        FGPIO_CLR_PDDR(base, 1U << pin);
-    }
+	if (direction == kGpioDigitalOutput)
+	{
+		FGPIO_SET_PDDR(base, 1U << pin);
+	}
+	else
+	{
+		FGPIO_CLR_PDDR(base, 1U << pin);
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -103,14 +103,14 @@ void FGPIO_HAL_SetPinDir(FGPIO_Type * base, uint32_t pin, gpio_pin_direction_t d
  *END**************************************************************************/
 void FGPIO_HAL_WritePinOutput(FGPIO_Type * base, uint32_t pin, uint32_t output)
 {
-    if (output != 0U)
-    {
-        FGPIO_WR_PSOR(base, 1U << pin); /* Set pin output to high level.*/
-    }
-    else
-    {
-        FGPIO_WR_PCOR(base, 1U << pin); /* Set pin output to low level.*/
-    }
+	if (output != 0U)
+	{
+		FGPIO_WR_PSOR(base, 1U << pin); /* Set pin output to high level.*/
+	}
+	else
+	{
+		FGPIO_WR_PCOR(base, 1U << pin); /* Set pin output to low level.*/
+	}
 }
 
 #endif

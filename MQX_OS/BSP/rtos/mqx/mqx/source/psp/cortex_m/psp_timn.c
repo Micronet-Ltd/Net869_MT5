@@ -29,7 +29,7 @@
 
 /*!
  * \brief This function converts ticks into minutes
- * 
+ *
  * \param[in] tick_ptr Ticks to be converted
  * \param[out] overflow_ptr pointer to where the overflow bool is to be written
  *
@@ -37,11 +37,11 @@
  */
 uint32_t _psp_ticks_to_minutes
    (
-      /* [IN] Ticks to be converted */
-      PSP_TICK_STRUCT_PTR tick_ptr,
+	  /* [IN] Ticks to be converted */
+	  PSP_TICK_STRUCT_PTR tick_ptr,
 
-      /* [OUT] pointer to where the overflow bool is to be written */
-      bool        *overflow_ptr
+	  /* [OUT] pointer to where the overflow bool is to be written */
+	  bool        *overflow_ptr
    )
 { /* Body */
    uint64_t                tmp;
@@ -52,13 +52,13 @@ uint32_t _psp_ticks_to_minutes
    tmp = tick_ptr->TICKS[0];
 
    if ((tmp != MAX_UINT_64) &&
-      (tick_ptr->HW_TICKS[0] > (kernel_data->HW_TICKS_PER_TICK/2)))
+	  (tick_ptr->HW_TICKS[0] > (kernel_data->HW_TICKS_PER_TICK/2)))
    {
-      tmp++;
+	  tmp++;
    } /* Endif */
 
    tmp = (tmp / kernel_data->TICKS_PER_SECOND) / SECS_IN_MINUTE;
-  
+
    *overflow_ptr = (bool)(tmp > MAX_UINT_32);
 
    return (uint32_t)tmp;

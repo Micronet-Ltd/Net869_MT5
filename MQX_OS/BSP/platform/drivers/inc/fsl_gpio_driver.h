@@ -58,10 +58,10 @@
    // and gpio_input_pin_user_config_t. Usually defined in a header file.
    enum _gpio_pins
    {
-       kGpioLED1  = GPIO_MAKE_PIN(GPIOA_IDX, 5), // Orange LED.
-       kGpioLED2  = GPIO_MAKE_PIN(GPIOA_IDX, 6), // Yellow LED.
-       kGpioLED3  = GPIO_MAKE_PIN(GPIOA_IDX, 7), // Green LED.
-       kGpioLED4  = GPIO_MAKE_PIN(GPIOB_IDX, 8), // Red LED.
+	   kGpioLED1  = GPIO_MAKE_PIN(GPIOA_IDX, 5), // Orange LED.
+	   kGpioLED2  = GPIO_MAKE_PIN(GPIOA_IDX, 6), // Yellow LED.
+	   kGpioLED3  = GPIO_MAKE_PIN(GPIOA_IDX, 7), // Green LED.
+	   kGpioLED4  = GPIO_MAKE_PIN(GPIOB_IDX, 8), // Red LED.
    };
    @endcode
  *
@@ -119,22 +119,22 @@ extern const IRQn_Type g_portIrqId[PORT_INSTANCE_COUNT];
  * unavailable features is harmless, but takes no effect.
  */
 typedef struct GpioInputPin {
-    #if FSL_FEATURE_PORT_HAS_PULL_ENABLE
-    bool isPullEnable;                  /*!< Enable or disable pull. */
-    #endif
-    #if FSL_FEATURE_PORT_HAS_PULL_SELECTION
-    port_pull_t pullSelect;             /*!< Select internal pull(up/down) resistor.*/
-    #endif
-    #if FSL_FEATURE_PORT_HAS_PASSIVE_FILTER
-    bool isPassiveFilterEnabled;        /*!< Enable or disable passive filter.*/
-    #endif
-    #if FSL_FEATURE_PORT_HAS_DIGITAL_FILTER
-    /* Digital filter clock source and width should be pre-configured using the port HAL.*/
-    bool isDigitalFilterEnabled;        /*!< Enable or disable digital filter.*/
-    #endif
-    #if FSL_FEATURE_GPIO_HAS_INTERRUPT_VECTOR
-    port_interrupt_config_t interrupt;  /*!< Select interrupt/DMA request.*/
-    #endif
+	#if FSL_FEATURE_PORT_HAS_PULL_ENABLE
+	bool isPullEnable;                  /*!< Enable or disable pull. */
+	#endif
+	#if FSL_FEATURE_PORT_HAS_PULL_SELECTION
+	port_pull_t pullSelect;             /*!< Select internal pull(up/down) resistor.*/
+	#endif
+	#if FSL_FEATURE_PORT_HAS_PASSIVE_FILTER
+	bool isPassiveFilterEnabled;        /*!< Enable or disable passive filter.*/
+	#endif
+	#if FSL_FEATURE_PORT_HAS_DIGITAL_FILTER
+	/* Digital filter clock source and width should be pre-configured using the port HAL.*/
+	bool isDigitalFilterEnabled;        /*!< Enable or disable digital filter.*/
+	#endif
+	#if FSL_FEATURE_GPIO_HAS_INTERRUPT_VECTOR
+	port_interrupt_config_t interrupt;  /*!< Select interrupt/DMA request.*/
+	#endif
 } gpio_input_pin_t;
 
 /*!
@@ -146,16 +146,16 @@ typedef struct GpioInputPin {
  * unavailable features is harmless, but takes no effect.
  */
 typedef struct GpioOutputPin {
-    uint32_t outputLogic;               /*!< Set default output logic.*/
-    #if FSL_FEATURE_PORT_HAS_SLEW_RATE
-    port_slew_rate_t slewRate;          /*! Select fast/slow slew rate.*/
-    #endif
-    #if FSL_FEATURE_PORT_HAS_DRIVE_STRENGTH
-    port_drive_strength_t driveStrength;/*!< Select low/high drive strength.*/
-    #endif
-    #if FSL_FEATURE_PORT_HAS_OPEN_DRAIN
-    bool isOpenDrainEnabled;            /*!< Enable or disable open drain.*/
-    #endif
+	uint32_t outputLogic;               /*!< Set default output logic.*/
+	#if FSL_FEATURE_PORT_HAS_SLEW_RATE
+	port_slew_rate_t slewRate;          /*! Select fast/slow slew rate.*/
+	#endif
+	#if FSL_FEATURE_PORT_HAS_DRIVE_STRENGTH
+	port_drive_strength_t driveStrength;/*!< Select low/high drive strength.*/
+	#endif
+	#if FSL_FEATURE_PORT_HAS_OPEN_DRAIN
+	bool isOpenDrainEnabled;            /*!< Enable or disable open drain.*/
+	#endif
 } gpio_output_pin_t;
 
 /*!
@@ -165,8 +165,8 @@ typedef struct GpioOutputPin {
  * should be the enumeration names defined in the enum _gpio_pins.
  */
 typedef struct GpioInputPinUserConfig {
-    uint32_t pinName;        /*!< Virtual pin name from enumeration defined by the user.*/
-    gpio_input_pin_t config; /*!< Input pin configuration structure.*/
+	uint32_t pinName;        /*!< Virtual pin name from enumeration defined by the user.*/
+	gpio_input_pin_t config; /*!< Input pin configuration structure.*/
 } gpio_input_pin_user_config_t;
 
 /*!
@@ -176,8 +176,8 @@ typedef struct GpioInputPinUserConfig {
  * should be the enumeration names defined in the enum _gpio_pins.
  */
 typedef struct GpioOutputPinUserConfig {
-    uint32_t pinName;        /*!< Virtual pin name from enumeration defined by the user.*/
-    gpio_output_pin_t config;/*!< Input pin configuration structure.*/
+	uint32_t pinName;        /*!< Virtual pin name from enumeration defined by the user.*/
+	gpio_output_pin_t config;/*!< Input pin configuration structure.*/
 } gpio_output_pin_user_config_t;
 
 /*******************************************************************************
@@ -205,17 +205,17 @@ extern "C" {
    @code
    // Configure the kGpioPTA2 as digital input.
    gpio_input_pin_user_config_t inputPin[] = {
-     {
-         .pinName = kGpioPTA2,
-         .config.isPullEnable = false,
-         .config.pullSelect = kPortPullDown,
-         .config.isPassiveFilterEnabled = false,
-         .config.interrupt = kPortIntDisabled,
-     },
-     {
-        // Note: This pinName must be defined here to indicate the end of the array.
-        .pinName = GPIO_PINS_OUT_OF_RANGE,
-     }
+	 {
+		 .pinName = kGpioPTA2,
+		 .config.isPullEnable = false,
+		 .config.pullSelect = kPortPullDown,
+		 .config.isPassiveFilterEnabled = false,
+		 .config.interrupt = kPortIntDisabled,
+	 },
+	 {
+		// Note: This pinName must be defined here to indicate the end of the array.
+		.pinName = GPIO_PINS_OUT_OF_RANGE,
+	 }
    };
    @endcode
  *
@@ -223,7 +223,7 @@ extern "C" {
  * @param outputPins output GPIO pins pointer.
  */
 void GPIO_DRV_Init(const gpio_input_pin_user_config_t * inputPins,
-                   const gpio_output_pin_user_config_t * outputPins);
+				   const gpio_output_pin_user_config_t * outputPins);
 
 /*!
  * @brief Initializes one GPIO input pin used by the board.
@@ -377,4 +377,3 @@ void GPIO_DRV_ClearPinIntFlag(uint32_t pinName);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

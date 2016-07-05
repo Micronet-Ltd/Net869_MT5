@@ -37,7 +37,7 @@
 #include <stdint.h>
 #include <assert.h>
 
-/*! 
+/*!
  * @addtogroup cop_driver
  * @{
  */
@@ -57,7 +57,7 @@ extern SIM_Type * const g_copBase[];
 extern "C" {
 #endif
 
-/*! 
+/*!
  * @name COP Driver
  * @{
  */
@@ -66,7 +66,7 @@ extern "C" {
 /*!
  * @brief Initializes the COP.
  *
- * This function initializes the COP. After it is called, the COP 
+ * This function initializes the COP. After it is called, the COP
  * starts running according to the configuration.
  * Because all COP control registers are write-once only, the cop_init function
  * and the cop_shutdown function can be called only once. A second call has no effect.
@@ -103,7 +103,7 @@ void COP_DRV_Refresh(uint32_t instance);
  * @brief Gets the COP running status.
  *
  * This function gets the COP running status.
- * 
+ *
  * @param instance The COP peripheral instance number.
  * @return COP running status; 0 means not running; 1 means running
  */
@@ -129,4 +129,3 @@ void COP_DRV_ResetSystem(uint32_t instance);
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

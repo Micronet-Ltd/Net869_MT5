@@ -40,8 +40,8 @@
 
 /* The smallest amount of memory that is allocated */
 #define MQX_MIN_MEMORY_STORAGE_SIZE \
-    ((_mem_size)(sizeof(STOREBLOCK_STRUCT) + PSP_MEMORY_ALIGNMENT) & \
-    PSP_MEMORY_ALIGNMENT_MASK)
+	((_mem_size)(sizeof(STOREBLOCK_STRUCT) + PSP_MEMORY_ALIGNMENT) & \
+	PSP_MEMORY_ALIGNMENT_MASK)
 
 
 /*--------------------------------------------------------------------------*/
@@ -56,23 +56,23 @@
  * to the application by _mem_alloc.
  */
 #define GET_MEMBLOCK_PTR(addr) \
-    (STOREBLOCK_STRUCT_PTR)((void *)(((unsigned char *)(addr) - \
-    FIELD_OFFSET(STOREBLOCK_STRUCT,USER_AREA))))
+	(STOREBLOCK_STRUCT_PTR)((void *)(((unsigned char *)(addr) - \
+	FIELD_OFFSET(STOREBLOCK_STRUCT,USER_AREA))))
 
 /*
  * Calculate the next physical block (in higher memory)
  * The next physical block is adjacent to the provided block
  */
 #define NEXT_PHYS(block) \
-    ((STOREBLOCK_STRUCT_PTR)((char *)block + \
-    ((STOREBLOCK_STRUCT_PTR)(block))->BLOCKSIZE))
+	((STOREBLOCK_STRUCT_PTR)((char *)block + \
+	((STOREBLOCK_STRUCT_PTR)(block))->BLOCKSIZE))
 
 /*
  * Calculate the previous physical block (in lower memory)
  * The previous physical block is adjacent to the provided block
  */
 #define PREV_PHYS(block) \
-    ((STOREBLOCK_STRUCT_PTR)(block))->PREVBLOCK
+	((STOREBLOCK_STRUCT_PTR)(block))->PREVBLOCK
 
 
 /*
@@ -80,24 +80,24 @@
  * (assuming the current block is on the free list)
  */
 #define NEXT_FREE(block) \
-    ((STOREBLOCK_STRUCT_PTR)(block))->NEXTBLOCK
+	((STOREBLOCK_STRUCT_PTR)(block))->NEXTBLOCK
 
 /*
  * Calculate the previous free block on the free list.
  * (assuming the current block is on the free list)
  */
 #define PREV_FREE(block) \
-    ((STOREBLOCK_STRUCT_PTR)(block))->USER_AREA
+	((STOREBLOCK_STRUCT_PTR)(block))->USER_AREA
 
 
 /* Calculate the checksum for the current block */
 #if MQX_CHECK_VALIDITY
 #define CALC_CHECKSUM(block) \
-    ((STOREBLOCK_STRUCT_PTR)(block))->CHECKSUM = \
-    (_mqx_uint) ( ((STOREBLOCK_STRUCT_PTR)(block))->BLOCKSIZE) + \
-    (_mqx_uint) ( ((STOREBLOCK_STRUCT_PTR)(block))->PREVBLOCK) + \
-    (_mqx_uint) ( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER) + \
-    (_mqx_uint) ( ((STOREBLOCK_STRUCT_PTR)(block))->MEM_TYPE);
+	((STOREBLOCK_STRUCT_PTR)(block))->CHECKSUM = \
+	(_mqx_uint) ( ((STOREBLOCK_STRUCT_PTR)(block))->BLOCKSIZE) + \
+	(_mqx_uint) ( ((STOREBLOCK_STRUCT_PTR)(block))->PREVBLOCK) + \
+	(_mqx_uint) ( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER) + \
+	(_mqx_uint) ( ((STOREBLOCK_STRUCT_PTR)(block))->MEM_TYPE);
 #else
 #define CALC_CHECKSUM(block)
 #endif
@@ -105,31 +105,31 @@
 /* Validate the checksum of the current block */
 #if MQX_CHECK_VALIDITY
 #define VALID_CHECKSUM(block) \
-    ( ((STOREBLOCK_STRUCT_PTR)(block))->CHECKSUM == \
-    ((_mqx_uint)(((STOREBLOCK_STRUCT_PTR)(block))->BLOCKSIZE) + \
-    (_mqx_uint)(((STOREBLOCK_STRUCT_PTR)(block))->PREVBLOCK) + \
-    (_mqx_uint)(((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER) + \
-    (_mqx_uint)(((STOREBLOCK_STRUCT_PTR)(block))->MEM_TYPE)) )
+	( ((STOREBLOCK_STRUCT_PTR)(block))->CHECKSUM == \
+	((_mqx_uint)(((STOREBLOCK_STRUCT_PTR)(block))->BLOCKSIZE) + \
+	(_mqx_uint)(((STOREBLOCK_STRUCT_PTR)(block))->PREVBLOCK) + \
+	(_mqx_uint)(((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER) + \
+	(_mqx_uint)(((STOREBLOCK_STRUCT_PTR)(block))->MEM_TYPE)) )
 #else
 #define VALID_CHECKSUM(block) (TRUE)
 #endif
 
 #define MARK_BLOCK_AS_USED(block, tid) \
-    ( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER = TASK_NUMBER_FROM_TASKID(tid) )
+	( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER = TASK_NUMBER_FROM_TASKID(tid) )
 
 #define MARK_BLOCK_AS_FREE(block) \
-    ( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER = (_task_number)0)
+	( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER = (_task_number)0)
 
 #define BLOCK_IS_FREE(block) \
-    ( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER == (_task_number)0 \
-    ? TRUE : FALSE )
+	( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER == (_task_number)0 \
+	? TRUE : FALSE )
 
 #define BLOCK_IS_USED(block) \
-    ( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER == (_task_number)0 \
-    ? FALSE : TRUE )
+	( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER == (_task_number)0 \
+	? FALSE : TRUE )
 
 #define BLOCK_IS_OWNED(block) \
-    ( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER == (_task_number)SYSTEM_TASK_NUMBER  ? FALSE : TRUE )
+	( ((STOREBLOCK_STRUCT_PTR)(block))->TASK_NUMBER == (_task_number)SYSTEM_TASK_NUMBER  ? FALSE : TRUE )
 
 
 /*--------------------------------------------------------------------------*/
@@ -167,47 +167,47 @@
  */
 typedef struct storeblock_struct
 {
-    /*! \brief Task number. */
-    _task_number                TASK_NUMBER;
-    /*! \brief Memory type. */
-    _mem_type                   MEM_TYPE;
+	/*! \brief Task number. */
+	_task_number                TASK_NUMBER;
+	/*! \brief Memory type. */
+	_mem_type                   MEM_TYPE;
 
-    /*! \brief The size of the block. */
-    _mem_size                   BLOCKSIZE;
+	/*! \brief The size of the block. */
+	_mem_size                   BLOCKSIZE;
 
-    /*! \brief The memory pool the block was allocated from. */
-    void                        *MEM_POOL_PTR;
+	/*! \brief The memory pool the block was allocated from. */
+	void                        *MEM_POOL_PTR;
 
    /*!
-    * \brief Pointer to the next block.
-    *
-    * For an allocated block, this points to the next block on the allocation
-    * list. It points to the USER_AREA in the next block.
-    * \n When on the free list, this points to the next block on the free list
-    * (start of the block).
-    */
-    void                        *NEXTBLOCK;
+	* \brief Pointer to the next block.
+	*
+	* For an allocated block, this points to the next block on the allocation
+	* list. It points to the USER_AREA in the next block.
+	* \n When on the free list, this points to the next block on the free list
+	* (start of the block).
+	*/
+	void                        *NEXTBLOCK;
 
-    /*! \brief The address of the physical block previous to this block. */
-    struct storeblock_struct    *PREVBLOCK;
+	/*! \brief The address of the physical block previous to this block. */
+	struct storeblock_struct    *PREVBLOCK;
 
-    /*!
-     * \brief A checksum of the header: a simple sum of the BLOCKSIZE, PREVBLOCK
-     * and TASK_ID.
-     */
-    _mqx_uint                   CHECKSUM;
+	/*!
+	 * \brief A checksum of the header: a simple sum of the BLOCKSIZE, PREVBLOCK
+	 * and TASK_ID.
+	 */
+	_mqx_uint                   CHECKSUM;
 
 #ifdef PSP_MEM_STOREBLOCK_ALIGNMENT
-    /*! \brief Makes sure that the USER_AREA field is properly aligned. */
-    _mqx_uint                   RESERVED[PSP_MEM_STOREBLOCK_ALIGNMENT];
+	/*! \brief Makes sure that the USER_AREA field is properly aligned. */
+	_mqx_uint                   RESERVED[PSP_MEM_STOREBLOCK_ALIGNMENT];
 #endif
 
-    /*!
-     * \brief The field whose address is provided to the user when the block is
-     * allocated to him.  It is also used by the memory manager to maintain a
-     * reverse link for a block that is on the free list.
-     */
-    void                        *USER_AREA;
+	/*!
+	 * \brief The field whose address is provided to the user when the block is
+	 * allocated to him.  It is also used by the memory manager to maintain a
+	 * reverse link for a block that is on the free list.
+	 */
+	void                        *USER_AREA;
 
 } STOREBLOCK_STRUCT, * STOREBLOCK_STRUCT_PTR;
 /*! \endcond */
@@ -221,14 +221,14 @@ typedef struct storeblock_struct
  */
 typedef struct memory_component_struct
 {
-    /*! \brief A queue of all created memory pools. */
-    QUEUE_STRUCT    POOLS;
+	/*! \brief A queue of all created memory pools. */
+	QUEUE_STRUCT    POOLS;
 
-    /*! \brief A semaphore to protect the creatation of pools. */
-    LWSEM_STRUCT    SEM;
+	/*! \brief A semaphore to protect the creatation of pools. */
+	LWSEM_STRUCT    SEM;
 
-    /*! \brief A validation field for memory pools. */
-    _mqx_uint       VALID;
+	/*! \brief A validation field for memory pools. */
+	_mqx_uint       VALID;
 
 } MEMORY_COMPONENT_STRUCT, * MEMORY_COMPONENT_STRUCT_PTR;
 /*! \endcond */
@@ -242,17 +242,17 @@ typedef struct memory_component_struct
  */
 typedef struct mempool_extension_struct
 {
-    /*! \brief Used to link extensions together in a memory pool. */
-    QUEUE_ELEMENT_STRUCT    LINK;
+	/*! \brief Used to link extensions together in a memory pool. */
+	QUEUE_ELEMENT_STRUCT    LINK;
 
-    /*! \brief The start address of the extension supplied. */
-    void                    *REAL_START;
+	/*! \brief The start address of the extension supplied. */
+	void                    *REAL_START;
 
-    /*! \brief The start of the memory blocks contained in this particular extension. */
-    void                    *START;
+	/*! \brief The start of the memory blocks contained in this particular extension. */
+	void                    *START;
 
-    /*! \brief The size of this particular extension. */
-    _mem_size               SIZE;
+	/*! \brief The size of this particular extension. */
+	_mem_size               SIZE;
 
 } MEMPOOL_EXTENSION_STRUCT, * MEMPOOL_EXTENSION_STRUCT_PTR;
 /*! \endcond */
@@ -264,64 +264,64 @@ typedef struct mempool_extension_struct
  */
 typedef struct mempool_struct
 {
-    /*! \brief Used to link memory pools together. */
-    QUEUE_ELEMENT_STRUCT    LINK;
+	/*! \brief Used to link memory pools together. */
+	QUEUE_ELEMENT_STRUCT    LINK;
 
-    /*! \brief Used to verify if handle is valid. */
-    _mqx_uint               VALID;
+	/*! \brief Used to verify if handle is valid. */
+	_mqx_uint               VALID;
 
-    /*! \brief The size of the memory pool in bytes. */
-    _mem_size               POOL_SIZE;
+	/*! \brief The size of the memory pool in bytes. */
+	_mem_size               POOL_SIZE;
 
-    /*! \brief Used for pool size error check. */
-    _mem_size               POOL_CHECK_POOL_SIZE;
-    /*! \brief Used for pool start pointer error check. */
-    char                    *POOL_CHECK_POOL_PTR;
-    /*! \brief Used for pool end pointer error check. */
-    STOREBLOCK_STRUCT_PTR   POOL_CHECK_POOL_END_PTR;
+	/*! \brief Used for pool size error check. */
+	_mem_size               POOL_CHECK_POOL_SIZE;
+	/*! \brief Used for pool start pointer error check. */
+	char                    *POOL_CHECK_POOL_PTR;
+	/*! \brief Used for pool end pointer error check. */
+	STOREBLOCK_STRUCT_PTR   POOL_CHECK_POOL_END_PTR;
 
-    /*! \brief Address of the start of the Memory Pool. */
-    void                    *POOL_PTR;
+	/*! \brief Address of the start of the Memory Pool. */
+	void                    *POOL_PTR;
 
-    /*! \brief The address of the start of Memory Pool blocks. */
-    STOREBLOCK_STRUCT_PTR   POOL_ALLOC_START_PTR;
+	/*! \brief The address of the start of Memory Pool blocks. */
+	STOREBLOCK_STRUCT_PTR   POOL_ALLOC_START_PTR;
 
-    /*! \brief The physical end of the memory pool. */
-    void                    *POOL_LIMIT;
+	/*! \brief The physical end of the memory pool. */
+	void                    *POOL_LIMIT;
 
-    /*! \brief The highest memory location allocated from kernel memory. */
-    void                    *POOL_HIGHEST_MEMORY_USED;
+	/*! \brief The highest memory location allocated from kernel memory. */
+	void                    *POOL_HIGHEST_MEMORY_USED;
 
-    /*!
-     * \brief Used in mem_alloc_x when marching down the free list.
-     *
-     * This allows for higher priority tasks to bump a lower one.
-     */
-    volatile STOREBLOCK_STRUCT_PTR  POOL_ALLOC_CURRENT_BLOCK;
+	/*!
+	 * \brief Used in mem_alloc_x when marching down the free list.
+	 *
+	 * This allows for higher priority tasks to bump a lower one.
+	 */
+	volatile STOREBLOCK_STRUCT_PTR  POOL_ALLOC_CURRENT_BLOCK;
 
-    /*! \brief Used by _mem_test_at when checking the physical blocks in the pool. */
-    volatile STOREBLOCK_STRUCT      *POOL_PHYSICAL_CHECK_BLOCK;
+	/*! \brief Used by _mem_test_at when checking the physical blocks in the pool. */
+	volatile STOREBLOCK_STRUCT      *POOL_PHYSICAL_CHECK_BLOCK;
 
-    /*! \brief Used by _mem_test_at when checking the free list in the pool. */
-    volatile STOREBLOCK_STRUCT_PTR  POOL_FREE_CHECK_BLOCK;
+	/*! \brief Used by _mem_test_at when checking the free list in the pool. */
+	volatile STOREBLOCK_STRUCT_PTR  POOL_FREE_CHECK_BLOCK;
 
-    /*!
-     * \brief Variable used by _mem_free_at when traversing the free list so as
-     * to allow higher priority tasks to run.
-     */
-    volatile STOREBLOCK_STRUCT_PTR  POOL_FREE_CURRENT_BLOCK;
+	/*!
+	 * \brief Variable used by _mem_free_at when traversing the free list so as
+	 * to allow higher priority tasks to run.
+	 */
+	volatile STOREBLOCK_STRUCT_PTR  POOL_FREE_CURRENT_BLOCK;
 
-    /*! \brief The memory block that caused the error. */
-    volatile STOREBLOCK_STRUCT_PTR  POOL_BLOCK_IN_ERROR;
+	/*! \brief The memory block that caused the error. */
+	volatile STOREBLOCK_STRUCT_PTR  POOL_BLOCK_IN_ERROR;
 
-    /*! \brief The address of the head of the memory pool free list. */
-    volatile STOREBLOCK_STRUCT_PTR  POOL_FREE_LIST_PTR;
+	/*! \brief The address of the head of the memory pool free list. */
+	volatile STOREBLOCK_STRUCT_PTR  POOL_FREE_LIST_PTR;
 
-    /*! \brief The address of the last memory pool entry. */
-    STOREBLOCK_STRUCT_PTR   POOL_END_PTR;
+	/*! \brief The address of the last memory pool entry. */
+	STOREBLOCK_STRUCT_PTR   POOL_END_PTR;
 
-    /*! \brief A queue of all extensions to memory pool. */
-    QUEUE_STRUCT            EXT_LIST;
+	/*! \brief A queue of all extensions to memory pool. */
+	QUEUE_STRUCT            EXT_LIST;
 
 } MEMPOOL_STRUCT, * MEMPOOL_STRUCT_PTR;
 /*! \endcond */
@@ -338,7 +338,7 @@ extern "C" {
  * \cond DOXYGEN_PRIVATE
  */
 extern bool _mem_check_coalesce_internal(
-    STOREBLOCK_STRUCT_PTR passed_block_ptr
+	STOREBLOCK_STRUCT_PTR passed_block_ptr
 );
 /*! \endcond */
 
@@ -346,9 +346,9 @@ extern bool _mem_check_coalesce_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _mem_create_pool_internal(
-    void *start,
-    void *end,
-    MEMPOOL_STRUCT_PTR mem_pool_ptr
+	void *start,
+	void *end,
+	MEMPOOL_STRUCT_PTR mem_pool_ptr
 );
 /*! \endcond */
 
@@ -356,9 +356,9 @@ extern _mqx_uint _mem_create_pool_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _mem_extend_pool_internal(
-    void *start_of_pool,
-    _mem_size size,
-    MEMPOOL_STRUCT_PTR mem_pool_ptr
+	void *start_of_pool,
+	_mem_size size,
+	MEMPOOL_STRUCT_PTR mem_pool_ptr
 );
 /*! \endcond */
 

@@ -43,21 +43,21 @@
  */
 INT_KERNEL_ISR_FPTR _int_get_kernel_isr
 (
-    /* [IN] the vector number whose kernel ISR is wanted */
-    _mqx_int vector
+	/* [IN] the vector number whose kernel ISR is wanted */
+	_mqx_int vector
 
 )
 {   /* Body */
-    uint32_t * vector_table = (uint32_t  *) SCB->VTOR; //value of Vector Table Offset Register
+	uint32_t * vector_table = (uint32_t  *) SCB->VTOR; //value of Vector Table Offset Register
 
-    vector -= _PSP_VECTOR_BASE;
+	vector -= _PSP_VECTOR_BASE;
 #if MQX_CHECK_ERRORS
-    if (vector < BSP_FIRST_INTERRUPT_VECTOR_USED ||
-        vector > PSP_MAXIMUM_INTERRUPT_VECTORS)
-    {
-        _task_set_error(MQX_INVALID_VECTORED_INTERRUPT);
-        return NULL;
-    }    /* Endif */
+	if (vector < BSP_FIRST_INTERRUPT_VECTOR_USED ||
+		vector > PSP_MAXIMUM_INTERRUPT_VECTORS)
+	{
+		_task_set_error(MQX_INVALID_VECTORED_INTERRUPT);
+		return NULL;
+	}    /* Endif */
 #endif
    /* Note that VTOR bit indicating SRAM / ROM location is just a SRAM / ROM
    ** base address within Cortex memory map

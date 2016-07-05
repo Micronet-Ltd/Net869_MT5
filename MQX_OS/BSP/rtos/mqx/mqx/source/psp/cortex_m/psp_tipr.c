@@ -33,7 +33,7 @@
  */
 void _psp_print_ticks
    (
-      PSP_TICK_STRUCT_PTR tick_ptr
+	  PSP_TICK_STRUCT_PTR tick_ptr
    )
 { /* Body */
    PSP_64_BIT_UNION  tmp;
@@ -43,14 +43,13 @@ void _psp_print_ticks
    tmp.LLW = tick_ptr->TICKS[0];
 #if PSP_ENDIAN == MQX_LITTLE_ENDIAN
    for (i = 7; i >= 0; i--) {
-      printf("%X", tmp.B[i]);
+	  printf("%X", tmp.B[i]);
    } /* Endfor */
 #else
    for (i = 0; i <= 7; i++) {
-      printf("%X", tmp.B[i]);
+	  printf("%X", tmp.B[i]);
    } /* Endfor */
 #endif
    printf(":%04lX", tick_ptr->HW_TICKS[0]);
 
 } /* Endbody */
-

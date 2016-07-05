@@ -43,7 +43,7 @@
  * These macros enables features of SDHC driver:
  *
  * BSP_FSL_SDHC_USING_IRQ
- *  - Enables IRQ on Initialization 
+ *  - Enables IRQ on Initialization
  *
  * BSP_FSL_SDHC_ENABLE_ADMA1
  *  - Enables the ADMA1 feature. As a result of the alignment limitation of the ADMA1,
@@ -67,74 +67,74 @@ extern const IRQn_Type g_sdhcIrqId[SDHC_INSTANCE_COUNT];
  * Definitions
  ******************************************************************************/
 typedef enum _sdhc_status {
-    kStatus_SDHC_NoError = 0,               /*!< No error */
-    kStatus_SDHC_InitFailed,                /*!< Driver initialization failed */
-    kStatus_SDHC_SetClockFailed,            /*!< Failed to set clock of host controller */
-    kStatus_SDHC_SetCardToIdle,             /*!< Failed to set card to idle */
-    kStatus_SDHC_SetCardBlockSizeFailed,    /*!< Failed to set card block size */
-    kStatus_SDHC_SendAppOpCondFailed,       /*!< Failed to send app_op_cond command */
-    kStatus_SDHC_AllSendCidFailed,          /*!< Failed to send all_send_cid command */
-    kStatus_SDHC_SendRcaFailed,             /*!< Failed to send send_rca command */
-    kStatus_SDHC_SendCsdFailed,             /*!< Failed to send send_csd command */
-    kStatus_SDHC_SendScrFailed,             /*!< Failed to send send_scr command */
-    kStatus_SDHC_SelectCardFailed,          /*!< Failed to send select_card command */
-    kStatus_SDHC_SwitchHighSpeedFailed,     /*!< Failed to switch to high speed mode */
-    kStatus_SDHC_SetCardWideBusFailed,      /*!< Failed to set card's bus mode */
-    kStatus_SDHC_SetBusWidthFailed,         /*!< Failed to set host's bus mode */
-    kStatus_SDHC_SendCardStatusFailed,      /*!< Failed to send card status */
-    kStatus_SDHC_StopTransmissionFailed,    /*!< Failed to stop transmission */
-    kStatus_SDHC_CardEraseBlocksFailed,     /*!< Failed to erase blocks */
-    kStatus_SDHC_InvalidIORange,            /*!< Invalid read/write/erase address range */
-    kStatus_SDHC_BlockSizeNotSupportError,  /*!< Unsupported block size */
-    kStatus_SDHC_HostIsAlreadyInited,       /*!< Host controller is already initialized */
-    kStatus_SDHC_HostNotSupport,            /*!< Host not error */
-    kStatus_SDHC_HostIsBusyError,           /*!< Bus busy error */
-    kStatus_SDHC_DataPrepareError,          /*!< Data preparation error */
-    kStatus_SDHC_WaitTimeoutError,          /*!< Wait timeout error */
-    kStatus_SDHC_OutOfMemory,               /*!< Out of memory error */
-    kStatus_SDHC_IoError,                   /*!< General IO error */
-    kStatus_SDHC_CmdIoError,                /*!< CMD I/O error */
-    kStatus_SDHC_DataIoError,               /*!< Data I/O error */
-    kStatus_SDHC_InvalidParameter,          /*!< Invalid parameter error */
-    kStatus_SDHC_RequestFailed,             /*!< Request failed */
-    kStatus_SDHC_RequestCardStatusError,    /*!< Status error */
-    kStatus_SDHC_SwitchFailed,              /*!< Switch failed */
-    kStatus_SDHC_NotSupportYet,             /*!< Not support */
-    kStatus_SDHC_TimeoutError,              /*!< Timeout error*/
-    kStatus_SDHC_CardNotSupport,            /*!< Card does not support */
-    kStatus_SDHC_CmdError,                  /*!< CMD error */
-    kStatus_SDHC_DataError,                 /*!< Data error */
-    kStatus_SDHC_DmaAddressError,           /*!< DMA address error */
-    kStatus_SDHC_Failed,                    /*!< General failed */
-    kStatus_SDHC_NoMedium,                  /*!< No medium error */
-    kStatus_SDHC_UnknownStatus              /*!< Unknown if card is present */
+	kStatus_SDHC_NoError = 0,               /*!< No error */
+	kStatus_SDHC_InitFailed,                /*!< Driver initialization failed */
+	kStatus_SDHC_SetClockFailed,            /*!< Failed to set clock of host controller */
+	kStatus_SDHC_SetCardToIdle,             /*!< Failed to set card to idle */
+	kStatus_SDHC_SetCardBlockSizeFailed,    /*!< Failed to set card block size */
+	kStatus_SDHC_SendAppOpCondFailed,       /*!< Failed to send app_op_cond command */
+	kStatus_SDHC_AllSendCidFailed,          /*!< Failed to send all_send_cid command */
+	kStatus_SDHC_SendRcaFailed,             /*!< Failed to send send_rca command */
+	kStatus_SDHC_SendCsdFailed,             /*!< Failed to send send_csd command */
+	kStatus_SDHC_SendScrFailed,             /*!< Failed to send send_scr command */
+	kStatus_SDHC_SelectCardFailed,          /*!< Failed to send select_card command */
+	kStatus_SDHC_SwitchHighSpeedFailed,     /*!< Failed to switch to high speed mode */
+	kStatus_SDHC_SetCardWideBusFailed,      /*!< Failed to set card's bus mode */
+	kStatus_SDHC_SetBusWidthFailed,         /*!< Failed to set host's bus mode */
+	kStatus_SDHC_SendCardStatusFailed,      /*!< Failed to send card status */
+	kStatus_SDHC_StopTransmissionFailed,    /*!< Failed to stop transmission */
+	kStatus_SDHC_CardEraseBlocksFailed,     /*!< Failed to erase blocks */
+	kStatus_SDHC_InvalidIORange,            /*!< Invalid read/write/erase address range */
+	kStatus_SDHC_BlockSizeNotSupportError,  /*!< Unsupported block size */
+	kStatus_SDHC_HostIsAlreadyInited,       /*!< Host controller is already initialized */
+	kStatus_SDHC_HostNotSupport,            /*!< Host not error */
+	kStatus_SDHC_HostIsBusyError,           /*!< Bus busy error */
+	kStatus_SDHC_DataPrepareError,          /*!< Data preparation error */
+	kStatus_SDHC_WaitTimeoutError,          /*!< Wait timeout error */
+	kStatus_SDHC_OutOfMemory,               /*!< Out of memory error */
+	kStatus_SDHC_IoError,                   /*!< General IO error */
+	kStatus_SDHC_CmdIoError,                /*!< CMD I/O error */
+	kStatus_SDHC_DataIoError,               /*!< Data I/O error */
+	kStatus_SDHC_InvalidParameter,          /*!< Invalid parameter error */
+	kStatus_SDHC_RequestFailed,             /*!< Request failed */
+	kStatus_SDHC_RequestCardStatusError,    /*!< Status error */
+	kStatus_SDHC_SwitchFailed,              /*!< Switch failed */
+	kStatus_SDHC_NotSupportYet,             /*!< Not support */
+	kStatus_SDHC_TimeoutError,              /*!< Timeout error*/
+	kStatus_SDHC_CardNotSupport,            /*!< Card does not support */
+	kStatus_SDHC_CmdError,                  /*!< CMD error */
+	kStatus_SDHC_DataError,                 /*!< Data error */
+	kStatus_SDHC_DmaAddressError,           /*!< DMA address error */
+	kStatus_SDHC_Failed,                    /*!< General failed */
+	kStatus_SDHC_NoMedium,                  /*!< No medium error */
+	kStatus_SDHC_UnknownStatus              /*!< Unknown if card is present */
 } sdhc_status_t;
 
 typedef enum _sdhc_card_detect_type {
-    kSdhcCardDetectGpio = 1,        /*!< Use GPIO for card detection. @internal gui name="GPIO" */
-    kSdhcCardDetectDat3,            /*!< Use DAT3 for card detection. @internal gui name="DAT3" */
-    kSdhcCardDetectCdPin,           /*!< Use host controller dedicate CD pin for card detection. @internal gui name="HOST" */
-    kSdhcCardDetectPollDat3,        /*!< Poll DAT3 for card detection. @internal gui name="Poll-DAT3" */
-    kSdhcCardDetectPollCd,          /*!< Poll host controller dedicate CD pin for card detection. @internal gui name="Poll-HOST" */
+	kSdhcCardDetectGpio = 1,        /*!< Use GPIO for card detection. @internal gui name="GPIO" */
+	kSdhcCardDetectDat3,            /*!< Use DAT3 for card detection. @internal gui name="DAT3" */
+	kSdhcCardDetectCdPin,           /*!< Use host controller dedicate CD pin for card detection. @internal gui name="HOST" */
+	kSdhcCardDetectPollDat3,        /*!< Poll DAT3 for card detection. @internal gui name="Poll-DAT3" */
+	kSdhcCardDetectPollCd,          /*!< Poll host controller dedicate CD pin for card detection. @internal gui name="Poll-HOST" */
 } sdhc_cd_type_t;
 
 typedef enum _sdhc_power_mode {
-    kSdhcPowerModeRunning = 0,      /*!< SDHC is running */
-    kSdhcPowerModeSuspended,        /*!< SDHC is suspended */
-    kSdhcPowerModeStopped,          /*!< SDHC is stopped */
+	kSdhcPowerModeRunning = 0,      /*!< SDHC is running */
+	kSdhcPowerModeSuspended,        /*!< SDHC is suspended */
+	kSdhcPowerModeStopped,          /*!< SDHC is stopped */
 } sdhc_power_mode_t;
 
 typedef enum _sdhc_buswidth {
-    kSdhcBusWidth1Bit = 1,          /*!< 1-bit bus width. @internal gui name="1-bit bus width" */
-    kSdhcBusWidth4Bit,              /*!< 4-bit bus width. @internal gui name="4-bit bus width" */
-    kSdhcBusWidth8Bit,              /*!< 8-bit bus width. @internal gui name="8-bit bus width" */
+	kSdhcBusWidth1Bit = 1,          /*!< 1-bit bus width. @internal gui name="1-bit bus width" */
+	kSdhcBusWidth4Bit,              /*!< 4-bit bus width. @internal gui name="4-bit bus width" */
+	kSdhcBusWidth8Bit,              /*!< 8-bit bus width. @internal gui name="8-bit bus width" */
 } sdhc_buswidth_t;
 
 typedef enum _sdhc_transfer_mode {
-    kSdhcTransModePio = 1,          /*!< Transfer mode: PIO. @internal gui name="PIO" */
-    kSdhcTransModeSdma,             /*!< Transfer mode: SDMA. @internal gui name="SDMA" */
-    kSdhcTransModeAdma1,            /*!< Transfer mode: ADMA1. @internal gui name="ADMA1" */
-    kSdhcTransModeAdma2,            /*!< Transfer mode: ADMA2. @internal gui name="ADMA2" */
+	kSdhcTransModePio = 1,          /*!< Transfer mode: PIO. @internal gui name="PIO" */
+	kSdhcTransModeSdma,             /*!< Transfer mode: SDMA. @internal gui name="SDMA" */
+	kSdhcTransModeAdma1,            /*!< Transfer mode: ADMA1. @internal gui name="ADMA1" */
+	kSdhcTransModeAdma2,            /*!< Transfer mode: ADMA2. @internal gui name="ADMA2" */
 } sdhc_transfer_mode_t;
 
 #define FSL_SDHC_REQ_RSPTYPE_PRESENT       (1 << 1)                         /* response presented */
@@ -145,55 +145,55 @@ typedef enum _sdhc_transfer_mode {
 
 #define FSL_SDHC_REQ_RSPTYPE_NONE    (0U)
 #define FSL_SDHC_REQ_RSPTYPE_R1      (FSL_SDHC_REQ_RSPTYPE_PRESENT | \
-                                      FSL_SDHC_REQ_RSPTYPE_CRC | \
-                                      FSL_SDHC_REQ_RSPTYPE_CHK_IDX)         /* Response 1 */
+									  FSL_SDHC_REQ_RSPTYPE_CRC | \
+									  FSL_SDHC_REQ_RSPTYPE_CHK_IDX)         /* Response 1 */
 #define FSL_SDHC_REQ_RSPTYPE_R1B     (FSL_SDHC_REQ_RSPTYPE_PRESENT | \
-                                      FSL_SDHC_REQ_RSPTYPE_CRC | \
-                                      FSL_SDHC_REQ_RSPTYPE_CHK_IDX | \
-                                      FSL_SDHC_REQ_RSPTYPE_BUSY)            /* Response 1 with busy */
+									  FSL_SDHC_REQ_RSPTYPE_CRC | \
+									  FSL_SDHC_REQ_RSPTYPE_CHK_IDX | \
+									  FSL_SDHC_REQ_RSPTYPE_BUSY)            /* Response 1 with busy */
 #define FSL_SDHC_REQ_RSPTYPE_R2      (FSL_SDHC_REQ_RSPTYPE_PRESENT | \
-                                      FSL_SDHC_REQ_RSPTYPE_136BITS | \
-                                      FSL_SDHC_REQ_RSPTYPE_CRC)             /* Response 2 */
+									  FSL_SDHC_REQ_RSPTYPE_136BITS | \
+									  FSL_SDHC_REQ_RSPTYPE_CRC)             /* Response 2 */
 #define FSL_SDHC_REQ_RSPTYPE_R3      (FSL_SDHC_REQ_RSPTYPE_PRESENT)         /* Response 3 */
 #define FSL_SDHC_REQ_RSPTYPE_R4      (FSL_SDHC_REQ_RSPTYPE_PRESENT)         /* Response 4 */
 #define FSL_SDHC_REQ_RSPTYPE_R5      (FSL_SDHC_REQ_RSPTYPE_PRESENT | \
-                                      FSL_SDHC_REQ_RSPTYPE_CRC | \
-                                      FSL_SDHC_REQ_RSPTYPE_CHK_IDX)         /* Response 5 */
+									  FSL_SDHC_REQ_RSPTYPE_CRC | \
+									  FSL_SDHC_REQ_RSPTYPE_CHK_IDX)         /* Response 5 */
 #define FSL_SDHC_REQ_RSPTYPE_R5B     (FSL_SDHC_REQ_RSPTYPE_PRESENT | \
-                                      FSL_SDHC_REQ_RSPTYPE_CRC | \
-                                      FSL_SDHC_REQ_RSPTYPE_CHK_IDX | \
-                                      FSL_SDHC_REQ_RSPTYPE_BUSY)            /* Response 5 with busy */
+									  FSL_SDHC_REQ_RSPTYPE_CRC | \
+									  FSL_SDHC_REQ_RSPTYPE_CHK_IDX | \
+									  FSL_SDHC_REQ_RSPTYPE_BUSY)            /* Response 5 with busy */
 #define FSL_SDHC_REQ_RSPTYPE_R6      (FSL_SDHC_REQ_RSPTYPE_PRESENT | \
-                                      FSL_SDHC_REQ_RSPTYPE_CRC | \
-                                      FSL_SDHC_REQ_RSPTYPE_CHK_IDX)         /* Response 6 */
+									  FSL_SDHC_REQ_RSPTYPE_CRC | \
+									  FSL_SDHC_REQ_RSPTYPE_CHK_IDX)         /* Response 6 */
 #define FSL_SDHC_REQ_RSPTYPE_R7      (FSL_SDHC_REQ_RSPTYPE_PRESENT | \
-                                      FSL_SDHC_REQ_RSPTYPE_CRC | \
-                                      FSL_SDHC_REQ_RSPTYPE_CHK_IDX)         /* Response 7 */
+									  FSL_SDHC_REQ_RSPTYPE_CRC | \
+									  FSL_SDHC_REQ_RSPTYPE_CHK_IDX)         /* Response 7 */
 
 static const uint32_t g_req_resp_flags[] = {
-        FSL_SDHC_REQ_RSPTYPE_NONE,              /*!< R0 flags */
-        FSL_SDHC_REQ_RSPTYPE_R1,                /*!< R1 flags */
-        FSL_SDHC_REQ_RSPTYPE_R1B,               /*!< R1b flags */
-        FSL_SDHC_REQ_RSPTYPE_R2,                /*!< R2 flags */
-        FSL_SDHC_REQ_RSPTYPE_R3,                /*!< R3 flags */
-        FSL_SDHC_REQ_RSPTYPE_R4,                /*!< R4 flags */
-        FSL_SDHC_REQ_RSPTYPE_R5,                /*!< R5 flags */
-        FSL_SDHC_REQ_RSPTYPE_R5B,               /*!< R5b flags */
-        FSL_SDHC_REQ_RSPTYPE_R6,                /*!< R6 flags */
-        FSL_SDHC_REQ_RSPTYPE_R7,                /*!< R7 flags */
+		FSL_SDHC_REQ_RSPTYPE_NONE,              /*!< R0 flags */
+		FSL_SDHC_REQ_RSPTYPE_R1,                /*!< R1 flags */
+		FSL_SDHC_REQ_RSPTYPE_R1B,               /*!< R1b flags */
+		FSL_SDHC_REQ_RSPTYPE_R2,                /*!< R2 flags */
+		FSL_SDHC_REQ_RSPTYPE_R3,                /*!< R3 flags */
+		FSL_SDHC_REQ_RSPTYPE_R4,                /*!< R4 flags */
+		FSL_SDHC_REQ_RSPTYPE_R5,                /*!< R5 flags */
+		FSL_SDHC_REQ_RSPTYPE_R5B,               /*!< R5b flags */
+		FSL_SDHC_REQ_RSPTYPE_R6,                /*!< R6 flags */
+		FSL_SDHC_REQ_RSPTYPE_R7,                /*!< R7 flags */
 };
 
 typedef enum _sdhc_resp_type {
-    kSdhcRespTypeNone = 0,          /*!< Response type: none */
-    kSdhcRespTypeR1,                /*!< Response type: R1 */
-    kSdhcRespTypeR1b,               /*!< Response type: R1b */
-    kSdhcRespTypeR2,                /*!< Response type: R2 */
-    kSdhcRespTypeR3,                /*!< Response type: R3 */
-    kSdhcRespTypeR4,                /*!< Response type: R4 */
-    kSdhcRespTypeR5,                /*!< Response type: R5 */
-    kSdhcRespTypeR5b,               /*!< Response type: R5b */
-    kSdhcRespTypeR6,                /*!< Response type: R6 */
-    kSdhcRespTypeR7,                /*!< Response type: R7 */
+	kSdhcRespTypeNone = 0,          /*!< Response type: none */
+	kSdhcRespTypeR1,                /*!< Response type: R1 */
+	kSdhcRespTypeR1b,               /*!< Response type: R1b */
+	kSdhcRespTypeR2,                /*!< Response type: R2 */
+	kSdhcRespTypeR3,                /*!< Response type: R3 */
+	kSdhcRespTypeR4,                /*!< Response type: R4 */
+	kSdhcRespTypeR5,                /*!< Response type: R5 */
+	kSdhcRespTypeR5b,               /*!< Response type: R5b */
+	kSdhcRespTypeR6,                /*!< Response type: R6 */
+	kSdhcRespTypeR7,                /*!< Response type: R7 */
 } sdhc_resp_type_t;
 
 
@@ -205,12 +205,12 @@ typedef enum _sdhc_resp_type {
  */
 typedef struct SdhcUserConfig
 {
-    uint32_t clock;                                 /*!< Clock rate @internal gui name="Bus clock" id="BusClock" */
-    sdhc_transfer_mode_t transMode;                 /*!< SDHC transfer mode @internal gui name="Transfer mode" id="transferMode" */
-    sdhc_cd_type_t cdType;                          /*!< Card detection type @internal gui name="Card detection type" id="cardDetection" */
-    void (*cardDetectCallback)(bool inserted);      /*!< Callback function for card detect occurs @internal gui name="Card detect callback function" id="CardDetectCallback" type="callback" */
-    void (*cardIntCallback)(void);                  /*!< Callback function for card interrupt occurs @internal gui name="Card interrupt callback function" id="CardInterruptCallback" type="callback" */
-    void (*blockGapCallback)(void);                 /*!< Callback function for block gap occurs @internal gui name="Card block gap callback function" id="CardBlockGapCallback" type="callback" */
+	uint32_t clock;                                 /*!< Clock rate @internal gui name="Bus clock" id="BusClock" */
+	sdhc_transfer_mode_t transMode;                 /*!< SDHC transfer mode @internal gui name="Transfer mode" id="transferMode" */
+	sdhc_cd_type_t cdType;                          /*!< Card detection type @internal gui name="Card detection type" id="cardDetection" */
+	void (*cardDetectCallback)(bool inserted);      /*!< Callback function for card detect occurs @internal gui name="Card detect callback function" id="CardDetectCallback" type="callback" */
+	void (*cardIntCallback)(void);                  /*!< Callback function for card interrupt occurs @internal gui name="Card interrupt callback function" id="CardInterruptCallback" type="callback" */
+	void (*blockGapCallback)(void);                 /*!< Callback function for block gap occurs @internal gui name="Card block gap callback function" id="CardBlockGapCallback" type="callback" */
 } sdhc_user_config_t;
 
 /*!
@@ -220,16 +220,16 @@ typedef struct SdhcUserConfig
  */
 typedef struct SdhcHostDevice
 {
-    uint32_t instance;                              /*!< Host instance index */
-    sdhc_cd_type_t cdType;                          /*!< Host controller card detection type */
-    sdhc_hal_endian_t endian;                       /*!< Endian mode the host's working at */
-    uint32_t swFeature;                             /*!< Host controller driver features */
+	uint32_t instance;                              /*!< Host instance index */
+	sdhc_cd_type_t cdType;                          /*!< Host controller card detection type */
+	sdhc_hal_endian_t endian;                       /*!< Endian mode the host's working at */
+	uint32_t swFeature;                             /*!< Host controller driver features */
 #define FSL_SDHC_HOST_SW_FEATURE_NODMA        (1 << 0)      /*!< No DMA supported in driver */
-    uint32_t flags;                                 /*!< Host flags */
+	uint32_t flags;                                 /*!< Host flags */
 #define FSL_SDHC_HOST_FLAGS_CARD_PRESENTED    (1 << 0)      /*!< Card presented */
-    sdhc_transfer_mode_t mode;
-    uint32_t busWidth;                              /*!< Current busWidth */
-    uint32_t caps;                                  /*!< Host capability */
+	sdhc_transfer_mode_t mode;
+	uint32_t busWidth;                              /*!< Current busWidth */
+	uint32_t caps;                                  /*!< Host capability */
 #define FSL_SDHC_HOST_CAPS_SUPPORT_V180      (1 << 0)    /*!< Host support 1.8v */
 #define FSL_SDHC_HOST_CAPS_SUPPORT_HIGHSPEED (1 << 1)    /*!< Host support highspeed mode */
 #define FSL_SDHC_HOST_CAPS_SUPPORT_4BITS     (1 << 2)    /*!< Host support 4-bit bus width */
@@ -237,20 +237,20 @@ typedef struct SdhcHostDevice
 #define FSL_SDHC_HOST_CAPS_SUPPORT_ADMA      (1 << 4)    /*!< Host support ADMA mode */
 #define FSL_SDHC_HOST_CAPS_SUPPORT_EXDMA     (1 << 5)    /*!< Host support ExDMA mode */
 #define FSL_SDHC_HOST_CAPS_SUPPORT_SRS       (1 << 6)    /*!< Host support suspend resume mode*/
-    uint32_t ocrSupported;                          /*!< Supported OCR */
-    uint32_t clock;                                 /*!< Current clock frequency */
-    sdhc_power_mode_t powerMode;                    /*!< Current power mode */
-    uint32_t maxClock;                              /*!< Maximum clock supported */
-    uint32_t maxBlockSize;                          /*!< Maximum block size supported */
-    uint32_t maxBlockCount;                         /*!< Maximum block count supported */
-    uint32_t *admaTableAddress;                     /*!< ADMA table address */
+	uint32_t ocrSupported;                          /*!< Supported OCR */
+	uint32_t clock;                                 /*!< Current clock frequency */
+	sdhc_power_mode_t powerMode;                    /*!< Current power mode */
+	uint32_t maxClock;                              /*!< Maximum clock supported */
+	uint32_t maxBlockSize;                          /*!< Maximum block size supported */
+	uint32_t maxBlockCount;                         /*!< Maximum block count supported */
+	uint32_t *admaTableAddress;                     /*!< ADMA table address */
 #if defined BSP_FSL_SDHC_USING_DYNALLOC
-    uint32_t admaTableMaxEntries;                   /*!< Maximum entries can be held in table */
+	uint32_t admaTableMaxEntries;                   /*!< Maximum entries can be held in table */
 #endif
-    struct SdhcRequest * currentReq;                /*!< Associated request */
-    void (*cardIntCallback)(void);                  /*!< Callback function for card interrupt occurs */
-    void (*cardDetectCallback)(bool inserted);      /*!< Callback function for card detect occurs */
-    void (*blockGapCallback)(void);                 /*!< Callback function for block gap occurs */
+	struct SdhcRequest * currentReq;                /*!< Associated request */
+	void (*cardIntCallback)(void);                  /*!< Callback function for card interrupt occurs */
+	void (*cardDetectCallback)(bool inserted);      /*!< Callback function for card detect occurs */
+	void (*blockGapCallback)(void);                 /*!< Callback function for block gap occurs */
 } sdhc_host_t;
 
 #define DOES_HOST_SUPPORT_HIGHSPEED(x)       (x->caps & FSL_SDHC_HOST_CAPS_SUPPORT_HIGHSPEED)
@@ -263,11 +263,11 @@ typedef struct SdhcHostDevice
  */
 typedef struct SdhcData
 {
-    struct SdhcRequest *req;                        /*!< Associated request */
-    uint32_t blockSize;                             /*!< Block size */
-    uint32_t blockCount;                            /*!< Block count */
-    uint32_t bytesTransferred;                      /*!< Transferred buffer */
-    uint32_t *buffer;                               /*!< Data buffer */
+	struct SdhcRequest *req;                        /*!< Associated request */
+	uint32_t blockSize;                             /*!< Block size */
+	uint32_t blockCount;                            /*!< Block count */
+	uint32_t bytesTransferred;                      /*!< Transferred buffer */
+	uint32_t *buffer;                               /*!< Data buffer */
 } sdhc_data_t;
 
 /*!
@@ -277,14 +277,14 @@ typedef struct SdhcData
  */
 typedef struct SdhcRequest
 {
-    uint32_t cmdIndex;                              /*!< Command index */
-    uint32_t argument;                              /*!< Command argument */
-    uint32_t flags;                                 /*!< Flags */
+	uint32_t cmdIndex;                              /*!< Command index */
+	uint32_t argument;                              /*!< Command argument */
+	uint32_t flags;                                 /*!< Flags */
 #define FSL_SDHC_REQ_FLAGS_DATA_READ      (1 << 0)  /*!< Request will read data */
 #define FSL_SDHC_REQ_FLAGS_USE_DMA        (1 << 1)  /*!< Request will use DMA for data transferring */
-#define FSL_SDHC_REQ_FLAGS_STOP_TRANS     (1 << 2)  /*!< Request to stop transmition */ 
-    sdhc_resp_type_t respType;                      /*!< Response type */
-    volatile uint32_t error;                                 /*!< Command error code */
+#define FSL_SDHC_REQ_FLAGS_STOP_TRANS     (1 << 2)  /*!< Request to stop transmition */
+	sdhc_resp_type_t respType;                      /*!< Response type */
+	volatile uint32_t error;                                 /*!< Command error code */
 #define FSL_SDHC_REQ_ERR_HOST_BUSY        (1 << 0)  /*!< Host is busy */
 #define FSL_SDHC_REQ_ERR_SEND_CMD         (1 << 1)  /*!< Send command error */
 #define FSL_SDHC_REQ_ERR_CMD_CRC          (1 << 2)  /*!< Command CRC error */
@@ -300,10 +300,10 @@ typedef struct SdhcRequest
 #define FSL_SDHC_REQ_ERR_DMA              (1 << 12) /*!< DMA error */
 #define FSL_SDHC_REQ_ERR_TIMEOUT          (1 << 13) /*!< Request timeout error */
 #define FSL_SDHC_REQ_ERR_DATA_PREPARE     (1 << 14) /*!< Data preparation error */
-    uint32_t cardErrStatus;                         /*!< Card error status from response 1 */
-    uint32_t response[4];                           /*!< Response for this command */
-    semaphore_t *complete;                        /*!< Request completion sync object */
-    struct SdhcData *data;                          /*!< Data associated with request */
+	uint32_t cardErrStatus;                         /*!< Card error status from response 1 */
+	uint32_t response[4];                           /*!< Response for this command */
+	semaphore_t *complete;                        /*!< Request completion sync object */
+	struct SdhcData *data;                          /*!< Data associated with request */
 } sdhc_request_t;
 
 /*! @} */
@@ -409,4 +409,3 @@ void SDHC_DRV_DoIrq(uint32_t instance);
 /*************************************************************************************************
  * EOF
  ************************************************************************************************/
-

@@ -60,81 +60,81 @@ int32_t  Shell_cd(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc !=  2) {
-         fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage=TRUE;
-      } else  {
-         if (MFS_alloc_path(&abs_path) != MFS_NO_ERROR) {
-            fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
-            return_code = SHELL_EXIT_ERROR;
-         }
-         else
-         {
-            devlen = _io_get_dev_for_path(abs_path,
-                        &dev_in_path,
-                        PATHNAME_SIZE,
-                        (char *)argv[1],
-                        Shell_get_current_filesystem_name(shell_ptr));
-            fd = _io_get_fs_by_name(abs_path);
-            if (0 > fd)
-            {
-               fprintf(shell_ptr->STDOUT, "Device \"%s\" not available\n", abs_path);
-               return_code = SHELL_EXIT_ERROR;
-            }
-            else
-            {
+	  if (argc !=  2) {
+		 fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage=TRUE;
+	  } else  {
+		 if (MFS_alloc_path(&abs_path) != MFS_NO_ERROR) {
+			fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
+			return_code = SHELL_EXIT_ERROR;
+		 }
+		 else
+		 {
+			devlen = _io_get_dev_for_path(abs_path,
+						&dev_in_path,
+						PATHNAME_SIZE,
+						(char *)argv[1],
+						Shell_get_current_filesystem_name(shell_ptr));
+			fd = _io_get_fs_by_name(abs_path);
+			if (0 > fd)
+			{
+			   fprintf(shell_ptr->STDOUT, "Device \"%s\" not available\n", abs_path);
+			   return_code = SHELL_EXIT_ERROR;
+			}
+			else
+			{
 
-               error = _io_rel2abs(abs_path,
-                                     shell_ptr->CURRENT_DIR,
-                                     (char *)argv[1],
-                                     PATHNAME_SIZE,
-                                     shell_ptr->CURRENT_DEVICE_NAME);
+			   error = _io_rel2abs(abs_path,
+									 shell_ptr->CURRENT_DIR,
+									 (char *)argv[1],
+									 PATHNAME_SIZE,
+									 shell_ptr->CURRENT_DEVICE_NAME);
 
-               if(!error)
-               {
-                  // check if path exist
-                 error = ioctl(fd, IO_IOCTL_CHECK_DIR_EXIST, (void*)abs_path );
-               }
-               if (error)
-               {
-                  fprintf(shell_ptr->STDOUT, "Error changing directory %s\n", argv[1]);
-               }
-               else
-               {
+			   if(!error)
+			   {
+				  // check if path exist
+				 error = ioctl(fd, IO_IOCTL_CHECK_DIR_EXIST, (void*)abs_path );
+			   }
+			   if (error)
+			   {
+				  fprintf(shell_ptr->STDOUT, "Error changing directory %s\n", argv[1]);
+			   }
+			   else
+			   {
 
-                  if(dev_in_path == TRUE)
-                  {
-                     // there is device name in input path
+				  if(dev_in_path == TRUE)
+				  {
+					 // there is device name in input path
 
-                     //separate device name
-                     abs_path[devlen] = '\0';
+					 //separate device name
+					 abs_path[devlen] = '\0';
 
-                     Shell_set_current_filesystem_by_name(argv,abs_path);
+					 Shell_set_current_filesystem_by_name(argv,abs_path);
 
-                     // add "\" back to the string
-                     abs_path[devlen] = '\\';
-                  }
+					 // add "\" back to the string
+					 abs_path[devlen] = '\\';
+				  }
 
-                  // change shell current dir
-                  strcpy(shell_ptr->CURRENT_DIR,abs_path+devlen);
-               }
-            }
-            MFS_free_path(abs_path);
-         }
-      }
+				  // change shell current dir
+				  strcpy(shell_ptr->CURRENT_DIR,abs_path+devlen);
+			   }
+			}
+			MFS_free_path(abs_path);
+		 }
+	  }
    }
 
 
 
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <directory> \n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <directory>\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <directory> = name of directory to change to\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <directory> \n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <directory>\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <directory> = name of directory to change to\n");
+	  }
    }
    return return_code;
 }

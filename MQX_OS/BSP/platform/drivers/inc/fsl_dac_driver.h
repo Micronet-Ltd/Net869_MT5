@@ -52,10 +52,10 @@
 typedef enum _dac_flag_t
 {
 #if FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION
-    kDacBuffIndexWatermarkFlag = 0U, /*!< Event for the buffer index reaching the watermark. */
+	kDacBuffIndexWatermarkFlag = 0U, /*!< Event for the buffer index reaching the watermark. */
 #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION */
-    kDacBuffIndexStartFlag = 1U, /*!< Event for the buffer index reaching  start (0). */
-    kDacBuffIndexUpperFlag = 2U /*!< Event for the buffer index reaching the upper section. */
+	kDacBuffIndexStartFlag = 1U, /*!< Event for the buffer index reaching  start (0). */
+	kDacBuffIndexUpperFlag = 2U /*!< Event for the buffer index reaching the upper section. */
 } dac_flag_t;
 
 /*! @brief Table of base addresses for DAC instances. */
@@ -69,9 +69,9 @@ extern "C" {
 #endif
 
 /*!
- * @brief Populates the initial user configuration for the DAC module without interrupt and buffer features. 
+ * @brief Populates the initial user configuration for the DAC module without interrupt and buffer features.
  *
- * This function  populates the initial user configuration 
+ * This function  populates the initial user configuration
  * without interrupt and buffer features. Calling the initialization
  * function with the populated parameter configures the DAC module to operate as
  * a simple converter. The settings are:\n
@@ -85,9 +85,9 @@ extern "C" {
 dac_status_t DAC_DRV_StructInitUserConfigNormal(dac_converter_config_t *userConfigPtr);
 
 /*!
- * @brief Initializes the converter. 
+ * @brief Initializes the converter.
  *
- * This function initializes the converter. 
+ * This function initializes the converter.
  *
  * @param instance DAC instance ID.
  * @param userConfigPtr Pointer to the initialization structure. See the "dac_user_config_t".
@@ -99,7 +99,7 @@ dac_status_t DAC_DRV_Init(uint32_t instance, const dac_converter_config_t *userC
  * @brief De-initializes the DAC module converter.
  *
  * This function de-initializes the converter. It disables the
- * DAC module and shuts down the clock to reduce the power consumption. 
+ * DAC module and shuts down the clock to reduce the power consumption.
  *
  * @param instance DAC instance ID.
  * @return Execution status.
@@ -110,9 +110,9 @@ dac_status_t DAC_DRV_Deinit(uint32_t instance);
  * @brief Drives the converter to output the DAC value.
  *
  * This function drives the converter to output the DAC value. It forces
- * the buffer index to be the first one and load the setting value to this item. 
+ * the buffer index to be the first one and load the setting value to this item.
  * Then, the converter outputs the voltage indicated by the indicated value
- * immediately. 
+ * immediately.
  *
  * @param instance DAC instance ID.
  * @param value Setting value for DAC.

@@ -96,7 +96,7 @@ static uint32_t print_bpb(void *bpb, FILE *fout) {
 
    fprintf(fout, "OEMNAME            = ");
    for (i = 0; i < 8; i++)
-       fprintf(fout, "%c", bpb_ptr->OEMNAME[i]);
+	   fprintf(fout, "%c", bpb_ptr->OEMNAME[i]);
    fprintf(fout, "\n");
    fprintf(fout, "SECTOR_SIZE        = %02x%02x\n",bpb_ptr->BPB_SECTOR_SIZE[1] ,bpb_ptr->BPB_SECTOR_SIZE[0] );
    fprintf(fout, "SECTORS_PER_CLUSTER= %02x%\n",(uint32_t) bpb_ptr->SECTORS_PER_CLUSTER[0]  );
@@ -112,32 +112,32 @@ static uint32_t print_bpb(void *bpb, FILE *fout) {
    fprintf(fout, "MEGA_SECTORS       = %02x%02x%02x%02x\n",bpb_ptr->MEGA_SECTORS[3] ,bpb_ptr->MEGA_SECTORS[2],bpb_ptr->MEGA_SECTORS[1] ,bpb_ptr->MEGA_SECTORS[0] );
 
    if ( bpb_ptr->SECTORS_PER_FAT[1]|| bpb_ptr->SECTORS_PER_FAT[0] ) {
-      // FAT 12/16
+	  // FAT 12/16
 
    } else {
 
-      // FAT 32
-      fprintf(fout, "FAT_SIZE           = %02x%02x%02x%02x\n",bpb_ptr->FAT_SIZE[3] ,bpb_ptr->FAT_SIZE[2],bpb_ptr->FAT_SIZE[1] ,bpb_ptr->FAT_SIZE[0] );
-      fprintf(fout, "EXT_FLAGS          = %02x%02x\n",bpb_ptr->EXT_FLAGS[1] ,bpb_ptr->EXT_FLAGS[0] );
-      fprintf(fout, "FS_VER             = %02x%02x\n",bpb_ptr->FS_VER[1] ,bpb_ptr->FS_VER[0] );
+	  // FAT 32
+	  fprintf(fout, "FAT_SIZE           = %02x%02x%02x%02x\n",bpb_ptr->FAT_SIZE[3] ,bpb_ptr->FAT_SIZE[2],bpb_ptr->FAT_SIZE[1] ,bpb_ptr->FAT_SIZE[0] );
+	  fprintf(fout, "EXT_FLAGS          = %02x%02x\n",bpb_ptr->EXT_FLAGS[1] ,bpb_ptr->EXT_FLAGS[0] );
+	  fprintf(fout, "FS_VER             = %02x%02x\n",bpb_ptr->FS_VER[1] ,bpb_ptr->FS_VER[0] );
 
-      fprintf(fout, "ROOT_CLUSTER       = %02x%02x%02x%02x\n",bpb_ptr->ROOT_CLUSTER[3] ,bpb_ptr->ROOT_CLUSTER[2],bpb_ptr->ROOT_CLUSTER[1] ,bpb_ptr->ROOT_CLUSTER[0] );
-      fprintf(fout, "FS_INFO            = %02x%02x\n",bpb_ptr->FS_INFO[1] ,bpb_ptr->FS_INFO[0] );
-      fprintf(fout, "BK_BOOT_SEC        = %02x%02x\n",bpb_ptr->BK_BOOT_SEC[1] ,bpb_ptr->BK_BOOT_SEC[0] );
+	  fprintf(fout, "ROOT_CLUSTER       = %02x%02x%02x%02x\n",bpb_ptr->ROOT_CLUSTER[3] ,bpb_ptr->ROOT_CLUSTER[2],bpb_ptr->ROOT_CLUSTER[1] ,bpb_ptr->ROOT_CLUSTER[0] );
+	  fprintf(fout, "FS_INFO            = %02x%02x\n",bpb_ptr->FS_INFO[1] ,bpb_ptr->FS_INFO[0] );
+	  fprintf(fout, "BK_BOOT_SEC        = %02x%02x\n",bpb_ptr->BK_BOOT_SEC[1] ,bpb_ptr->BK_BOOT_SEC[0] );
 
-      backup = (bpb_ptr->BK_BOOT_SEC[1] << 8) | bpb_ptr->BK_BOOT_SEC[0];
-      fprintf(fout, "DRVNUM             = %02x\n",(uint32_t) bpb_ptr->DRVNUM[0] );
-      fprintf(fout, "BOOTSIG            = %02x\n",(uint32_t) bpb_ptr->BOOTSIG[0] );
-      fprintf(fout, "VOLID              = %02x%02x%02x%02x\n",bpb_ptr->VOLID[3] ,bpb_ptr->VOLID[2],bpb_ptr->VOLID[1] ,bpb_ptr->VOLID[0] );
-      fprintf(fout, "VOLLAB             = ");
-      for (i = 0; i < 11; i++)
-          fprintf(fout, "%c", bpb_ptr->VOLLAB[i]);
-      fprintf(fout, "\n");
-      fprintf(fout, "FILSYSTYPE         = ");
-      for (i = 0; i < 8; i++)
-          fprintf(fout, "%c", bpb_ptr->FILSYSTYPE[i]);
+	  backup = (bpb_ptr->BK_BOOT_SEC[1] << 8) | bpb_ptr->BK_BOOT_SEC[0];
+	  fprintf(fout, "DRVNUM             = %02x\n",(uint32_t) bpb_ptr->DRVNUM[0] );
+	  fprintf(fout, "BOOTSIG            = %02x\n",(uint32_t) bpb_ptr->BOOTSIG[0] );
+	  fprintf(fout, "VOLID              = %02x%02x%02x%02x\n",bpb_ptr->VOLID[3] ,bpb_ptr->VOLID[2],bpb_ptr->VOLID[1] ,bpb_ptr->VOLID[0] );
+	  fprintf(fout, "VOLLAB             = ");
+	  for (i = 0; i < 11; i++)
+		  fprintf(fout, "%c", bpb_ptr->VOLLAB[i]);
+	  fprintf(fout, "\n");
+	  fprintf(fout, "FILSYSTYPE         = ");
+	  for (i = 0; i < 8; i++)
+		  fprintf(fout, "%c", bpb_ptr->FILSYSTYPE[i]);
 
-      fprintf(fout, "\n");
+	  fprintf(fout, "\n");
 
    }
    return backup;
@@ -177,82 +177,82 @@ int32_t  Shell_di(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if ((argc < 2 ) || (argc > 3)) {
-         fprintf(shell_ptr->STDOUT, "Invalid number of parameters\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage=TRUE;
-      } else if ( !Shell_parse_uint_32(argv[1], (uint32_t *) &offset ))  {
-         fprintf(shell_ptr->STDOUT, "Error, invalid length\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage=TRUE;
-      } else {
-         buffer = _mem_alloc(SECTOR_SIZE);
-         if (buffer==NULL) {
-            fprintf(shell_ptr->STDOUT, "Error, unable to allocate sector buffer\n");
-            return  SHELL_EXIT_ERROR;
-         }
+	  if ((argc < 2 ) || (argc > 3)) {
+		 fprintf(shell_ptr->STDOUT, "Invalid number of parameters\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage=TRUE;
+	  } else if ( !Shell_parse_uint_32(argv[1], (uint32_t *) &offset ))  {
+		 fprintf(shell_ptr->STDOUT, "Error, invalid length\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage=TRUE;
+	  } else {
+		 buffer = _mem_alloc(SECTOR_SIZE);
+		 if (buffer==NULL) {
+			fprintf(shell_ptr->STDOUT, "Error, unable to allocate sector buffer\n");
+			return  SHELL_EXIT_ERROR;
+		 }
 
-         if (argc==3) {
-            fd = open(argv[2], O_RDONLY);
-         } else {
-            fd = Shell_get_current_filesystem(argv);
-         }
+		 if (argc==3) {
+			fd = open(argv[2], O_RDONLY);
+		 } else {
+			fd = Shell_get_current_filesystem(argv);
+		 }
 
 
-         if (0 <= fd)  {
-            if (0 > lseek(fd, offset, SEEK_SET))  {
-               fprintf(shell_ptr->STDOUT, "Error, unable to seek to sector %s.\n", argv[1] );
-               return_code = SHELL_EXIT_ERROR;
-            } else if (read(fd, (char*)buffer, 1) != 1) {
-               fprintf(shell_ptr->STDOUT, "Error, unable to read sector %s.\n", argv[1] );
-               return_code = SHELL_EXIT_ERROR;
-            }
+		 if (0 <= fd)  {
+			if (0 > lseek(fd, offset, SEEK_SET))  {
+			   fprintf(shell_ptr->STDOUT, "Error, unable to seek to sector %s.\n", argv[1] );
+			   return_code = SHELL_EXIT_ERROR;
+			} else if (read(fd, (char*)buffer, 1) != 1) {
+			   fprintf(shell_ptr->STDOUT, "Error, unable to read sector %s.\n", argv[1] );
+			   return_code = SHELL_EXIT_ERROR;
+			}
 
-            if (return_code == SHELL_EXIT_SUCCESS) {
-               fprintf(shell_ptr->STDOUT, "\n");
-               backup = print_bpb(buffer, shell_ptr->STDOUT);
-               if (backup) {
-                  if (0 > lseek(fd, backup, SEEK_SET))  {
-                     fprintf(shell_ptr->STDOUT, "Error, unable to seek to sector %s.\n", argv[1] );
-                     return_code = SHELL_EXIT_ERROR;
-                  } else if (read(fd, (char*)buffer, 1) != 1) {
-                     fprintf(shell_ptr->STDOUT, "Error, unable to read sector %s.\n", argv[1] );
-                     return_code = SHELL_EXIT_ERROR;
-                  }
-                  if (return_code == SHELL_EXIT_SUCCESS) {
-                     fprintf(shell_ptr->STDOUT, "\n");
-                     print_bpb(buffer, shell_ptr->STDOUT);
-                  }
-               }
-            }
-            if (0 > lseek(fd, 1, SEEK_SET))  {
-               fprintf(shell_ptr->STDOUT, "Error, unable to seek to sector %s.\n", argv[1] );
-               return_code = SHELL_EXIT_ERROR;
-            } else if (read(fd, (char*)buffer, 1) != 1) {
-               fprintf(shell_ptr->STDOUT, "Error, unable to read sector %s.\n", argv[1] );
-               return_code = SHELL_EXIT_ERROR;
-            }
-            if (return_code == SHELL_EXIT_SUCCESS) {
-               fprintf(shell_ptr->STDOUT, "\n");
-               print_fsi(buffer, shell_ptr->STDOUT);
-            }
-            if (argc==3) {
-               close(fd);
-            }
-         }
-         _mem_free(buffer);
-      }
+			if (return_code == SHELL_EXIT_SUCCESS) {
+			   fprintf(shell_ptr->STDOUT, "\n");
+			   backup = print_bpb(buffer, shell_ptr->STDOUT);
+			   if (backup) {
+				  if (0 > lseek(fd, backup, SEEK_SET))  {
+					 fprintf(shell_ptr->STDOUT, "Error, unable to seek to sector %s.\n", argv[1] );
+					 return_code = SHELL_EXIT_ERROR;
+				  } else if (read(fd, (char*)buffer, 1) != 1) {
+					 fprintf(shell_ptr->STDOUT, "Error, unable to read sector %s.\n", argv[1] );
+					 return_code = SHELL_EXIT_ERROR;
+				  }
+				  if (return_code == SHELL_EXIT_SUCCESS) {
+					 fprintf(shell_ptr->STDOUT, "\n");
+					 print_bpb(buffer, shell_ptr->STDOUT);
+				  }
+			   }
+			}
+			if (0 > lseek(fd, 1, SEEK_SET))  {
+			   fprintf(shell_ptr->STDOUT, "Error, unable to seek to sector %s.\n", argv[1] );
+			   return_code = SHELL_EXIT_ERROR;
+			} else if (read(fd, (char*)buffer, 1) != 1) {
+			   fprintf(shell_ptr->STDOUT, "Error, unable to read sector %s.\n", argv[1] );
+			   return_code = SHELL_EXIT_ERROR;
+			}
+			if (return_code == SHELL_EXIT_SUCCESS) {
+			   fprintf(shell_ptr->STDOUT, "\n");
+			   print_fsi(buffer, shell_ptr->STDOUT);
+			}
+			if (argc==3) {
+			   close(fd);
+			}
+		 }
+		 _mem_free(buffer);
+	  }
    }
 
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <sector> [<device>]\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <sector> [<device>]\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <sector>     = sector number\n");
-         fprintf(shell_ptr->STDOUT, "   <device>     = low level device\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <sector> [<device>]\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <sector> [<device>]\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <sector>     = sector number\n");
+		 fprintf(shell_ptr->STDOUT, "   <device>     = low level device\n");
+	  }
    }
    return return_code;
 } /* Endbody */

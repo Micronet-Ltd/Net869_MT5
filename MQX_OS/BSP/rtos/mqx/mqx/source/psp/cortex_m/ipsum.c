@@ -20,7 +20,7 @@
 * Comments:
 *
 *   This file contains the implementation for a one's complement checksum.
-*   The function can handle any alignment of the memory area 
+*   The function can handle any alignment of the memory area
 *   being checksum'd.
 *
 *
@@ -29,21 +29,21 @@
 #include "mqx_inc.h"
 
 /*!
- * \brief Returns a one's complement checksum over a block of memory, as used for 
- *  packets in Internet protocols (see RFC791 for definition). Note This function 
+ * \brief Returns a one's complement checksum over a block of memory, as used for
+ *  packets in Internet protocols (see RFC791 for definition). Note This function
  *  returns 0 iff all summands are 0.
- * 
- * \param sum 
- * \param length 
- * \param loc 
+ *
+ * \param sum
+ * \param length
+ * \param loc
  *
  * \return one's complement checksum
  */
 uint32_t _mem_sum_ip
    (
-      register uint32_t   sum,
-      register uint32_t   length,
-      register void   *loc
+	  register uint32_t   sum,
+	  register uint32_t   length,
+	  register void   *loc
    )
 { /* Body */
    register uint32_t   total = sum;
@@ -51,24 +51,24 @@ uint32_t _mem_sum_ip
    register unsigned char *buf = (unsigned char *)loc;
 
    if (length & 1) {
-      length--;
-      total += buf[length] << 8;
+	  length--;
+	  total += buf[length] << 8;
    } /* Endif */
 
    length >>= 1;
    while (length--) {
-      temp   = (uint16_t)(*buf);
-      total += temp<<8 | buf[1];
-      buf   += 2;
+	  temp   = (uint16_t)(*buf);
+	  total += temp<<8 | buf[1];
+	  buf   += 2;
    } /* Endwhile */
 
    sum = ((total >> 16) & 0xFFFF);
    if (sum) {
-      total = (total & 0xFFFF) + sum;
-      sum = ((total >> 16) & 0xFFFF);
-      if (sum) {
-         total = (total & 0xFFFF) + sum;
-      } /* Endif */
+	  total = (total & 0xFFFF) + sum;
+	  sum = ((total >> 16) & 0xFFFF);
+	  if (sum) {
+		 total = (total & 0xFFFF) + sum;
+	  } /* Endif */
    } /* Endif */
 
    return total;

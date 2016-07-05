@@ -49,15 +49,14 @@ const uint32_t g_scgBase[] = SCG_BASE_PTRS;
 #endif
 
 #if ((!(defined(FSL_FEATURE_SOC_SCG_COUNT) && FSL_FEATURE_SOC_SCG_COUNT)) \
-       && FSL_FEATURE_SOC_OSC_COUNT)
-OSC_Type * const g_oscBase[] = OSC_BASE_PTRS; 
+	   && FSL_FEATURE_SOC_OSC_COUNT)
+OSC_Type * const g_oscBase[] = OSC_BASE_PTRS;
 #endif
 
 #if (defined(FSL_FEATURE_SOC_PCC_COUNT) && FSL_FEATURE_SOC_PCC_COUNT)
-PCC_Type * const g_pccBase[] = PCC_BASE_PTRS; 
+PCC_Type * const g_pccBase[] = PCC_BASE_PTRS;
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

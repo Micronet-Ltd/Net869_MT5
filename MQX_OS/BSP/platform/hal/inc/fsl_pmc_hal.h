@@ -47,35 +47,35 @@
 
 /*! @brief Low-Voltage Warning Voltage Select*/
 typedef enum _pmc_low_volt_warn_volt_select {
-    kPmcLowVoltWarnVoltLowTrip,             /*!< Low trip point selected (VLVW = VLVW1)*/
-    kPmcLowVoltWarnVoltMid1Trip,            /*!< Mid 1 trip point selected (VLVW = VLVW2)*/
-    kPmcLowVoltWarnVoltMid2Trip,            /*!< Mid 2 trip point selected (VLVW = VLVW3)*/
-    kPmcLowVoltWarnVoltHighTrip             /*!< High trip point selected (VLVW = VLVW4)*/
+	kPmcLowVoltWarnVoltLowTrip,             /*!< Low trip point selected (VLVW = VLVW1)*/
+	kPmcLowVoltWarnVoltMid1Trip,            /*!< Mid 1 trip point selected (VLVW = VLVW2)*/
+	kPmcLowVoltWarnVoltMid2Trip,            /*!< Mid 2 trip point selected (VLVW = VLVW3)*/
+	kPmcLowVoltWarnVoltHighTrip             /*!< High trip point selected (VLVW = VLVW4)*/
 } pmc_low_volt_warn_volt_select_t;
 
 /*! @brief Low-Voltage Detect Voltage Select*/
 typedef enum _pmc_low_volt_detect_volt_select {
-    kPmcLowVoltDetectVoltLowTrip,           /*!< Low trip point selected (V LVD = V LVDL )*/
-    kPmcLowVoltDetectVoltHighTrip           /*!< High trip point selected (V LVD = V LVDH )*/
+	kPmcLowVoltDetectVoltLowTrip,           /*!< Low trip point selected (V LVD = V LVDL )*/
+	kPmcLowVoltDetectVoltHighTrip           /*!< High trip point selected (V LVD = V LVDH )*/
 } pmc_low_volt_detect_volt_select_t;
 
 #if FSL_FEATURE_PMC_HAS_BGBDS
 /*! @brief Bandgap Buffer Drive Select. */
 typedef enum _pmc_bandgap_buffer_drive_select {
-    kPmcBandgapBufferDriveLow,              /*!< Low drive.  */
-    kPmcBandgapBufferDriveHigh              /*!< High drive. */
+	kPmcBandgapBufferDriveLow,              /*!< Low drive.  */
+	kPmcBandgapBufferDriveHigh              /*!< High drive. */
 } pmc_bandgap_buffer_drive_select_t;
 #endif
 
 /*! @brief Bandgap Buffer configuration. */
 typedef struct _pmc_bandgap_buffer_config
 {
-    bool enable;                             /*!< Enable bandgap buffer.                   */
+	bool enable;                             /*!< Enable bandgap buffer.                   */
 #if FSL_FEATURE_PMC_HAS_BGEN
-    bool enableInLowPower;                   /*!< Enable bandgap buffer in low power mode. */
+	bool enableInLowPower;                   /*!< Enable bandgap buffer in low power mode. */
 #endif
 #if FSL_FEATURE_PMC_HAS_BGBDS
-    pmc_bandgap_buffer_drive_select_t drive; /*!< Bandgap buffer drive select.             */
+	pmc_bandgap_buffer_drive_select_t drive; /*!< Bandgap buffer drive select.             */
 #endif
 } pmc_bandgap_buffer_config_t;
 
@@ -102,13 +102,13 @@ extern "C" {
  * @param voltSelect   Low voltage detect trip point voltage.
  */
 static inline void PMC_HAL_LowVoltDetectConfig(PMC_Type * base,
-                                               bool enableInt,
-                                               bool enableReset,
-                                               pmc_low_volt_detect_volt_select_t voltSelect)
+											   bool enableInt,
+											   bool enableReset,
+											   pmc_low_volt_detect_volt_select_t voltSelect)
 {
-    PMC_WR_LVDSC1(base, PMC_LVDSC1_LVDV(voltSelect) |
-                        PMC_LVDSC1_LVDIE(enableInt) |
-                        PMC_LVDSC1_LVDRE(enableReset));
+	PMC_WR_LVDSC1(base, PMC_LVDSC1_LVDV(voltSelect) |
+						PMC_LVDSC1_LVDIE(enableInt) |
+						PMC_LVDSC1_LVDRE(enableReset));
 }
 
 /*!
@@ -121,7 +121,7 @@ static inline void PMC_HAL_LowVoltDetectConfig(PMC_Type * base,
  */
 static inline void PMC_HAL_SetLowVoltDetectAck(PMC_Type * base)
 {
-    PMC_BWR_LVDSC1_LVDACK(base, 1U);
+	PMC_BWR_LVDSC1_LVDACK(base, 1U);
 }
 
 /*!
@@ -137,7 +137,7 @@ static inline void PMC_HAL_SetLowVoltDetectAck(PMC_Type * base)
  */
 static inline bool PMC_HAL_GetLowVoltDetectFlag(PMC_Type * base)
 {
-    return PMC_BRD_LVDSC1_LVDF(base);
+	return PMC_BRD_LVDSC1_LVDF(base);
 }
 
 /*!
@@ -151,16 +151,16 @@ static inline bool PMC_HAL_GetLowVoltDetectFlag(PMC_Type * base)
  * @param voltSelect   Low voltage detect trip point voltage.
  */
 static inline void PMC_HAL_LowVoltWarnConfig(PMC_Type * base,
-                                             bool enableInt,
-                                             pmc_low_volt_warn_volt_select_t voltSelect)
+											 bool enableInt,
+											 pmc_low_volt_warn_volt_select_t voltSelect)
 {
-    PMC_WR_LVDSC2(base, PMC_LVDSC2_LVWV(voltSelect) |
-                        PMC_LVDSC2_LVWIE(enableInt));
+	PMC_WR_LVDSC2(base, PMC_LVDSC2_LVWV(voltSelect) |
+						PMC_LVDSC2_LVWIE(enableInt));
 }
 
 /*!
  * @brief Low-Voltage Warning Acknowledge
- * 
+ *
  * This function acknowledges the low voltage warning errors (write 1 to
  * clear LVWF).
  *
@@ -168,13 +168,13 @@ static inline void PMC_HAL_LowVoltWarnConfig(PMC_Type * base,
  */
 static inline void PMC_HAL_SetLowVoltWarnAck(PMC_Type * base)
 {
-    PMC_BWR_LVDSC2_LVWACK(base, 1U);
+	PMC_BWR_LVDSC2_LVWACK(base, 1U);
 }
 
 /*!
  * @brief Low-Voltage Warning Flag Read
  *
- * This function polls the current LVWF status. When 1 is returned, it 
+ * This function polls the current LVWF status. When 1 is returned, it
  * indicates a low-voltage warning event. LVWF is set when V Supply transitions
  * below the trip point or after reset and V Supply is already below the V LVW.
  *
@@ -185,7 +185,7 @@ static inline void PMC_HAL_SetLowVoltWarnAck(PMC_Type * base)
  */
 static inline bool PMC_HAL_GetLowVoltWarnFlag(PMC_Type * base)
 {
-    return PMC_BRD_LVDSC2_LVWF(base);
+	return PMC_BRD_LVDSC2_LVWF(base);
 }
 
 /*!
@@ -198,24 +198,24 @@ static inline bool PMC_HAL_GetLowVoltWarnFlag(PMC_Type * base)
  * @param config Pointer to the configuration.
  */
 static inline void PMC_HAL_BandgapBufferConfig(PMC_Type * base,
-                                               pmc_bandgap_buffer_config_t *config)
+											   pmc_bandgap_buffer_config_t *config)
 {
-    PMC_WR_REGSC(base, PMC_REGSC_BGBE(config->enable)
+	PMC_WR_REGSC(base, PMC_REGSC_BGBE(config->enable)
 #if FSL_FEATURE_PMC_HAS_BGEN
-                     | PMC_REGSC_BGEN(config->enableInLowPower)
+					 | PMC_REGSC_BGEN(config->enableInLowPower)
 #endif
 #if FSL_FEATURE_PMC_HAS_BGBDS
-                     | PMC_REGSC_BGBDS(config->drive)
+					 | PMC_REGSC_BGBDS(config->drive)
 #endif
-                     );
+					 );
 }
 
 /*!
  * @brief Gets the acknowledge isolation value.
  *
- * This function  reads the Acknowledge Isolation setting that indicates 
- * whether certain peripherals and the I/O pads are in a latched state as 
- * a result of having been in the VLLS mode. 
+ * This function  reads the Acknowledge Isolation setting that indicates
+ * whether certain peripherals and the I/O pads are in a latched state as
+ * a result of having been in the VLLS mode.
  *
  * @param base  Base address for current PMC instance.
  * @return ACK isolation
@@ -225,7 +225,7 @@ static inline void PMC_HAL_BandgapBufferConfig(PMC_Type * base,
  */
 static inline uint8_t PMC_HAL_GetAckIsolation(PMC_Type * base)
 {
-    return PMC_BRD_REGSC_ACKISO(base);
+	return PMC_BRD_REGSC_ACKISO(base);
 }
 
 /*!
@@ -239,7 +239,7 @@ static inline uint8_t PMC_HAL_GetAckIsolation(PMC_Type * base)
  */
 static inline void PMC_HAL_ClearAckIsolation(PMC_Type * base)
 {
-    PMC_BWR_REGSC_ACKISO(base, 1U);
+	PMC_BWR_REGSC_ACKISO(base, 1U);
 }
 
 /*!
@@ -256,7 +256,7 @@ static inline void PMC_HAL_ClearAckIsolation(PMC_Type * base)
  */
 static inline uint8_t PMC_HAL_GetRegulatorStatus(PMC_Type * base)
 {
-    return PMC_BRD_REGSC_REGONS(base);
+	return PMC_BRD_REGSC_REGONS(base);
 }
 
 /*@}*/
@@ -272,4 +272,3 @@ static inline uint8_t PMC_HAL_GetRegulatorStatus(PMC_Type * base)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

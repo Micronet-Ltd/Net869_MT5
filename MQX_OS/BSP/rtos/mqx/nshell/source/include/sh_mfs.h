@@ -30,7 +30,7 @@
 #define __sh_mfs_h__
 
 /*
-** Function prototypes 
+** Function prototypes
 */
 #ifdef __cplusplus
 extern "C" {
@@ -54,7 +54,7 @@ extern int32_t Shell_pwd(int32_t argc, char *argv[] );
 extern int32_t Shell_read(int32_t argc, char *argv[] );
 extern int32_t Shell_rename(int32_t argc, char *argv[] );
 extern int32_t Shell_rmdir(int32_t argc, char *argv[] );
-extern int32_t Shell_type(int32_t argc, char *argv[] ); 
+extern int32_t Shell_type(int32_t argc, char *argv[] );
 extern int32_t Shell_use(int32_t argc, char *argv[] );
 extern int32_t Shell_write(int32_t argc, char *argv[] );
 extern int32_t Shell_write_test(int32_t argc, char *argv[] );

@@ -45,7 +45,7 @@
 #define ASM_EQUATE(label, value) label   EQU  value
 
 #define ASM_CODE        THUMB
-#define ASM_DATA 
+#define ASM_DATA
 
 #define ASM_COMP_SPECIFIC_DIRECTIVES
 #define ASM_PUBLIC_BEGIN(name)

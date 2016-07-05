@@ -42,76 +42,76 @@ extern PORT_Type * const g_portBase[PORT_INSTANCE_COUNT];
 
 void PTx_IRQHandler(void)
 {
-    for(uint32_t i=0; i < PORT_INSTANCE_COUNT; i++)
-    {
-        if (CLOCK_SYS_GetPortGateCmd(i))
-        {
-            /* Add user-defined ISR for PORT. */
+	for(uint32_t i=0; i < PORT_INSTANCE_COUNT; i++)
+	{
+		if (CLOCK_SYS_GetPortGateCmd(i))
+		{
+			/* Add user-defined ISR for PORT. */
 
-            /* Clear interrupt flag.*/
-            PORT_HAL_ClearPortIntFlag(g_portBase[i]);
-        }
-    }
+			/* Clear interrupt flag.*/
+			PORT_HAL_ClearPortIntFlag(g_portBase[i]);
+		}
+	}
 }
 #else
 /* gpio IRQ handler with the same name in startup code. */
 void PORTA_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTA_BASE_PTR);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTA_BASE_PTR);
 }
 
 #if defined (KL16Z4_SERIES) || defined (KL26Z4_SERIES) || defined (KL46Z4_SERIES) || defined (KW01Z4_SERIES)
 /* gpio IRQ handler with the same name in startup code. */
 void PORTC_PORTD_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTC_BASE_PTR);
-    PORT_HAL_ClearPortIntFlag(PORTD_BASE_PTR);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTC_BASE_PTR);
+	PORT_HAL_ClearPortIntFlag(PORTD_BASE_PTR);
 }
 #endif
 
 #if defined (KL25Z4_SERIES) || defined (K70F12_SERIES) || defined(K60D10_SERIES) || \
-    defined (K22F12810_SERIES) || defined (K22F25612_SERIES) || defined (K22F51212_SERIES) || \
-    defined (KV31F12810_SERIES) || defined (KV31F25612_SERIES) || defined (KV31F51212_SERIES) || \
-    defined (K64F12_SERIES) || defined (K24F12_SERIES) || defined (K63F12_SERIES) || \
-    defined (K24F25612_SERIES) || defined (KV30F12810_SERIES) || defined (K02F12810_SERIES) || \
-    defined (K26F18_SERIES) || defined (K65F18_SERIES) || defined (K66F18_SERIES) || \
-    defined (K80F25615_SERIES) || defined (K81F25615_SERIES) || defined (K82F25615_SERIES)
+	defined (K22F12810_SERIES) || defined (K22F25612_SERIES) || defined (K22F51212_SERIES) || \
+	defined (KV31F12810_SERIES) || defined (KV31F25612_SERIES) || defined (KV31F51212_SERIES) || \
+	defined (K64F12_SERIES) || defined (K24F12_SERIES) || defined (K63F12_SERIES) || \
+	defined (K24F25612_SERIES) || defined (KV30F12810_SERIES) || defined (K02F12810_SERIES) || \
+	defined (K26F18_SERIES) || defined (K65F18_SERIES) || defined (K66F18_SERIES) || \
+	defined (K80F25615_SERIES) || defined (K81F25615_SERIES) || defined (K82F25615_SERIES)
 /* gpio IRQ handler with the same name in startup code. */
 void PORTD_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTD_BASE_PTR);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTD_BASE_PTR);
 }
 #endif
 
 #if defined (K70F12_SERIES) || defined(K60D10_SERIES) || \
-    defined (K64F12_SERIES) || defined (K24F12_SERIES) || defined (K63F12_SERIES) || \
-    defined (K22F12810_SERIES) || defined (K22F25612_SERIES) || defined (K22F51212_SERIES) || \
-    defined (KV31F12810_SERIES) || defined (KV31F25612_SERIES) || defined (KV31F51212_SERIES) || \
-    defined (K24F25612_SERIES) || \
-    defined (K26F18_SERIES) || defined (K65F18_SERIES) || defined (K66F18_SERIES) || \
-    defined (K80F25615_SERIES) || defined (K81F25615_SERIES)
+	defined (K64F12_SERIES) || defined (K24F12_SERIES) || defined (K63F12_SERIES) || \
+	defined (K22F12810_SERIES) || defined (K22F25612_SERIES) || defined (K22F51212_SERIES) || \
+	defined (KV31F12810_SERIES) || defined (KV31F25612_SERIES) || defined (KV31F51212_SERIES) || \
+	defined (K24F25612_SERIES) || \
+	defined (K26F18_SERIES) || defined (K65F18_SERIES) || defined (K66F18_SERIES) || \
+	defined (K80F25615_SERIES) || defined (K81F25615_SERIES)
 /* gpio IRQ handler with the same name in startup code. */
 void PORTB_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTB_BASE_PTR);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTB_BASE_PTR);
 }
 
 /* gpio IRQ handler with the same name in startup code. */
 void PORTC_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTC_BASE_PTR);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTC_BASE_PTR);
 }
 
 /* gpio IRQ handler with the same name in startup code. */
 void PORTE_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTE_BASE_PTR);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTE_BASE_PTR);
 }
 #endif
 
@@ -119,8 +119,8 @@ void PORTE_IRQHandler(void)
 /* gpio IRQ handler with the same name in startup code. */
 void PORTF_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTF_BASE_PTR);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTF_BASE_PTR);
 }
 #endif
 
@@ -128,8 +128,8 @@ void PORTF_IRQHandler(void)
 /* gpio IRQ handler with the same name in startup code. */
 void PORTB_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTB_BASE_PTR);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTB_BASE_PTR);
 }
 #endif
 
@@ -137,12 +137,11 @@ void PORTB_IRQHandler(void)
 /* gpio IRQ handler with the same name in startup code. */
 void PORTBC_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    if(PORT_HAL_GetPortIntFlag(PORTB_BASE))  PORT_HAL_ClearPortIntFlag(PORTB_BASE);
-    if(PORT_HAL_GetPortIntFlag(PORTC_BASE))  PORT_HAL_ClearPortIntFlag(PORTC_BASE);
+	/* Clear interrupt flag.*/
+	if(PORT_HAL_GetPortIntFlag(PORTB_BASE))  PORT_HAL_ClearPortIntFlag(PORTB_BASE);
+	if(PORT_HAL_GetPortIntFlag(PORTC_BASE))  PORT_HAL_ClearPortIntFlag(PORTC_BASE);
 }
 #endif
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

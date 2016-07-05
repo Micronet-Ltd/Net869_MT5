@@ -50,91 +50,91 @@ extern const uint32_t g_tpmChannelCount[TPM_INSTANCE_COUNT];
 /*! @brief TPM clock source selection for TPM_SC[CMOD].*/
 typedef enum _tpm_clock_mode
 {
-     kTpmClockSourceNoneClk = 0,    /*TPM clock mode, None CLK*/
-     kTpmClockSourceModuleClk,      /*TPM clock mode, Module CLK*/
-     kTpmClockSourceExternalClk,    /*TPM clock mode, External input clock*/
-     kTpmClockSourceReservedClk     /*TPM clock mode, Reserved*/
+	 kTpmClockSourceNoneClk = 0,    /*TPM clock mode, None CLK*/
+	 kTpmClockSourceModuleClk,      /*TPM clock mode, Module CLK*/
+	 kTpmClockSourceExternalClk,    /*TPM clock mode, External input clock*/
+	 kTpmClockSourceReservedClk     /*TPM clock mode, Reserved*/
 }tpm_clock_mode_t;
 
 /*! @brief TPM counting mode, up or down*/
 typedef enum _tpm_counting_mode
 {
-     kTpmCountingUp = 0,           /*TPM counter mode, Up counting only*/
-     kTpmCountingUpDown            /*TPM counter mode, Up/Down counting mode*/
+	 kTpmCountingUp = 0,           /*TPM counter mode, Up counting only*/
+	 kTpmCountingUpDown            /*TPM counter mode, Up/Down counting mode*/
 }tpm_counting_mode_t;
 
 /*! @brief TPM prescaler factor selection for clock source*/
 typedef enum _tpm_clock_ps
 {
-     kTpmDividedBy1 = 0,          /*TPM module clock prescaler, by 1*/
-     kTpmDividedBy2 ,             /*TPM module clock prescaler, by 2*/
-     kTpmDividedBy4 ,             /*TPM module clock prescaler, by 4*/
-     kTpmDividedBy8,              /*TPM module clock prescaler, by 8*/
-     kTpmDividedBy16,             /*TPM module clock prescaler, by 16*/
-     kTpmDividedBy32,             /*TPM module clock prescaler, by 32*/
-     kTpmDividedBy64,             /*TPM module clock prescaler, by 64*/
-     kTpmDividedBy128             /*TPM module clock prescaler, by 128*/
+	 kTpmDividedBy1 = 0,          /*TPM module clock prescaler, by 1*/
+	 kTpmDividedBy2 ,             /*TPM module clock prescaler, by 2*/
+	 kTpmDividedBy4 ,             /*TPM module clock prescaler, by 4*/
+	 kTpmDividedBy8,              /*TPM module clock prescaler, by 8*/
+	 kTpmDividedBy16,             /*TPM module clock prescaler, by 16*/
+	 kTpmDividedBy32,             /*TPM module clock prescaler, by 32*/
+	 kTpmDividedBy64,             /*TPM module clock prescaler, by 64*/
+	 kTpmDividedBy128             /*TPM module clock prescaler, by 128*/
 }tpm_clock_ps_t;
 
 /*! @brief TPM trigger sources, please refer to the chip reference manual for available options */
 typedef enum _tpm_trigger_source_t
 {
-    kTpmTrigSel0 = 0,       /*!< TPM trigger source 0 */
-    kTpmTrigSel1,           /*!< TPM trigger source 1 */
-    kTpmTrigSel2,           /*!< TPM trigger source 2 */
-    kTpmTrigSel3,           /*!< TPM trigger source 3 */
-    kTpmTrigSel4,           /*!< TPM trigger source 4 */
-    kTpmTrigSel5,           /*!< TPM trigger source 5 */
-    kTpmTrigSel6,           /*!< TPM trigger source 6 */
-    kTpmTrigSel7,           /*!< TPM trigger source 7 */
-    kTpmTrigSel8,           /*!< TPM trigger source 8 */
-    kTpmTrigSel9,           /*!< TPM trigger source 8 */
-    kTpmTrigSel10,          /*!< TPM trigger source 10 */
-    kTpmTrigSel11,          /*!< TPM trigger source 11 */
-    kTpmTrigSel12,          /*!< TPM trigger source 12 */
-    kTpmTrigSel13,          /*!< TPM trigger source 13 */
-    kTpmTrigSel14,          /*!< TPM trigger source 14 */
-    kTpmTrigSel15           /*!< TPM trigger source 15 */
+	kTpmTrigSel0 = 0,       /*!< TPM trigger source 0 */
+	kTpmTrigSel1,           /*!< TPM trigger source 1 */
+	kTpmTrigSel2,           /*!< TPM trigger source 2 */
+	kTpmTrigSel3,           /*!< TPM trigger source 3 */
+	kTpmTrigSel4,           /*!< TPM trigger source 4 */
+	kTpmTrigSel5,           /*!< TPM trigger source 5 */
+	kTpmTrigSel6,           /*!< TPM trigger source 6 */
+	kTpmTrigSel7,           /*!< TPM trigger source 7 */
+	kTpmTrigSel8,           /*!< TPM trigger source 8 */
+	kTpmTrigSel9,           /*!< TPM trigger source 8 */
+	kTpmTrigSel10,          /*!< TPM trigger source 10 */
+	kTpmTrigSel11,          /*!< TPM trigger source 11 */
+	kTpmTrigSel12,          /*!< TPM trigger source 12 */
+	kTpmTrigSel13,          /*!< TPM trigger source 13 */
+	kTpmTrigSel14,          /*!< TPM trigger source 14 */
+	kTpmTrigSel15           /*!< TPM trigger source 15 */
 }tpm_trigger_source_t;
 
 /*! @brief TPM operation mode */
 typedef enum _tpm_pwm_mode_t
 {
-    kTpmEdgeAlignedPWM = 0, /*!< Edge aligned mode @internal gui name="Edge aligned" */
-    kTpmCenterAlignedPWM /*!< Center aligned mode @internal gui name="Center aligned" */
+	kTpmEdgeAlignedPWM = 0, /*!< Edge aligned mode @internal gui name="Edge aligned" */
+	kTpmCenterAlignedPWM /*!< Center aligned mode @internal gui name="Center aligned" */
 }tpm_pwm_mode_t;
 
 /*! @brief TPM PWM output pulse mode, high-true or low-true on match up */
 typedef enum _tpm_pwm_edge_mode_t
 {
-    kTpmHighTrue = 0, /*!< Clear output on match, set output on reload @internal gui name="High true" */
-    kTpmLowTrue /*!< Set output on match, clear output on reload @internal gui name="Low true" */
+	kTpmHighTrue = 0, /*!< Clear output on match, set output on reload @internal gui name="High true" */
+	kTpmLowTrue /*!< Set output on match, clear output on reload @internal gui name="Low true" */
 }tpm_pwm_edge_mode_t;
 
 /*! @brief TPM input capture modes */
 typedef enum _tpm_input_capture_mode_t
 {
-    kTpmRisingEdge = 1,
-    kTpmFallingEdge,
-    kTpmRiseOrFallEdge
+	kTpmRisingEdge = 1,
+	kTpmFallingEdge,
+	kTpmRiseOrFallEdge
 }tpm_input_capture_mode_t;
 
 /*! @brief TPM output compare modes */
 typedef enum _tpm_output_compare_mode_t
 {
-    kTpmOutputNone = 0,
-    kTpmToggleOutput,
-    kTpmClearOutput,
-    kTpmSetOutput,
-    kTpmHighPulseOutput,
-    kTpmLowPulseOutput
+	kTpmOutputNone = 0,
+	kTpmToggleOutput,
+	kTpmClearOutput,
+	kTpmSetOutput,
+	kTpmHighPulseOutput,
+	kTpmLowPulseOutput
 }tpm_output_compare_mode_t;
 
 /*! @brief Error codes for TPM driver. */
 typedef enum _tpm_status
 {
-    kStatusTpmSuccess = 0x00U,        /*!< TPM success status.*/
-    kStatusTpmFail    = 0x01U         /*!< TPM error status.*/
+	kStatusTpmSuccess = 0x00U,        /*!< TPM success status.*/
+	kStatusTpmFail    = 0x01U         /*!< TPM error status.*/
 } tpm_status_t;
 
 /*!
@@ -143,12 +143,12 @@ typedef enum _tpm_status
  */
 typedef struct TpmPwmParam
 {
-    tpm_pwm_mode_t mode;          /*!< TPM PWM operation mode  @internal gui name="Mode" id="PWMmode" */
-    tpm_pwm_edge_mode_t edgeMode;    /*!< PWM output mode  @internal gui name="Edge mode" id="ChannelEdgeMode" */
-    uint32_t uFrequencyHZ;           /*!< PWM period in Hz  @internal gui name="Frequency" id="Frequency" */
-    uint32_t uDutyCyclePercent;      /*!< PWM pulse width, value should be between 0 to 100
-                                          0=inactive signal(0% duty cycle)...
-                                          100=active signal (100% duty cycle).  @internal gui name="Duty cycle" id="ChannelDuty" */
+	tpm_pwm_mode_t mode;          /*!< TPM PWM operation mode  @internal gui name="Mode" id="PWMmode" */
+	tpm_pwm_edge_mode_t edgeMode;    /*!< PWM output mode  @internal gui name="Edge mode" id="ChannelEdgeMode" */
+	uint32_t uFrequencyHZ;           /*!< PWM period in Hz  @internal gui name="Frequency" id="Frequency" */
+	uint32_t uDutyCyclePercent;      /*!< PWM pulse width, value should be between 0 to 100
+										  0=inactive signal(0% duty cycle)...
+										  100=active signal (100% duty cycle).  @internal gui name="Duty cycle" id="ChannelDuty" */
 }tpm_pwm_param_t;
 
 /*******************************************************************************
@@ -202,7 +202,7 @@ void TPM_HAL_SetClockMode(TPM_Type *base, tpm_clock_mode_t mode);
  */
 static inline tpm_clock_mode_t TPM_HAL_GetClockMode(TPM_Type *base)
 {
-    return (tpm_clock_mode_t) TPM_BRD_SC_CMOD(base);
+	return (tpm_clock_mode_t) TPM_BRD_SC_CMOD(base);
 }
 
 /*!
@@ -212,7 +212,7 @@ static inline tpm_clock_mode_t TPM_HAL_GetClockMode(TPM_Type *base)
  */
 static inline void TPM_HAL_SetClockDiv(TPM_Type *base, tpm_clock_ps_t ps)
 {
-    TPM_BWR_SC_PS(base, ps);
+	TPM_BWR_SC_PS(base, ps);
 }
 
 /*!
@@ -222,7 +222,7 @@ static inline void TPM_HAL_SetClockDiv(TPM_Type *base, tpm_clock_ps_t ps)
  */
 static inline tpm_clock_ps_t TPM_HAL_GetClockDiv(TPM_Type *base)
 {
-    return (tpm_clock_ps_t)TPM_BRD_SC_PS(base);
+	return (tpm_clock_ps_t)TPM_BRD_SC_PS(base);
 }
 
 /*!
@@ -232,7 +232,7 @@ static inline tpm_clock_ps_t TPM_HAL_GetClockDiv(TPM_Type *base)
  */
 static inline void TPM_HAL_EnableTimerOverflowInt(TPM_Type *base)
 {
-    TPM_BWR_SC_TOIE(base, 1);
+	TPM_BWR_SC_TOIE(base, 1);
 }
 
 /*!
@@ -242,7 +242,7 @@ static inline void TPM_HAL_EnableTimerOverflowInt(TPM_Type *base)
  */
 static inline void TPM_HAL_DisableTimerOverflowInt(TPM_Type *base)
 {
-    TPM_BWR_SC_TOIE(base, 0);
+	TPM_BWR_SC_TOIE(base, 0);
 }
 
 /*!
@@ -253,7 +253,7 @@ static inline void TPM_HAL_DisableTimerOverflowInt(TPM_Type *base)
  */
 static inline bool TPM_HAL_IsOverflowIntEnabled(TPM_Type *base)
 {
-    return (bool)(TPM_BRD_SC_TOIE(base));
+	return (bool)(TPM_BRD_SC_TOIE(base));
 }
 
 /*!
@@ -263,7 +263,7 @@ static inline bool TPM_HAL_IsOverflowIntEnabled(TPM_Type *base)
  */
 static inline bool TPM_HAL_GetTimerOverflowStatus(TPM_Type *base)
 {
-    return (bool)(TPM_BRD_SC_TOF(base));
+	return (bool)(TPM_BRD_SC_TOF(base));
 }
 
 /*!
@@ -272,7 +272,7 @@ static inline bool TPM_HAL_GetTimerOverflowStatus(TPM_Type *base)
  */
 static inline void TPM_HAL_ClearTimerOverflowFlag(TPM_Type *base)
 {
-    TPM_BWR_SC_TOF(base, 1);
+	TPM_BWR_SC_TOF(base, 1);
 }
 
 /*!
@@ -282,8 +282,8 @@ static inline void TPM_HAL_ClearTimerOverflowFlag(TPM_Type *base)
  */
 static inline void TPM_HAL_SetCpwms(TPM_Type *base, uint8_t mode)
 {
-    assert(mode < 2);
-    TPM_BWR_SC_CPWMS(base, mode);
+	assert(mode < 2);
+	TPM_BWR_SC_CPWMS(base, mode);
 }
 
 /*!
@@ -293,7 +293,7 @@ static inline void TPM_HAL_SetCpwms(TPM_Type *base, uint8_t mode)
  */
 static inline bool TPM_HAL_GetCpwms(TPM_Type *base)
 {
-    return (bool)TPM_BRD_SC_CPWMS(base);
+	return (bool)TPM_BRD_SC_CPWMS(base);
 }
 
 /*!
@@ -302,7 +302,7 @@ static inline bool TPM_HAL_GetCpwms(TPM_Type *base)
  */
 static inline void  TPM_HAL_ClearCounter(TPM_Type *base)
 {
-    TPM_BWR_CNT_COUNT(base, 0);
+	TPM_BWR_CNT_COUNT(base, 0);
 }
 
 /*!
@@ -312,7 +312,7 @@ static inline void  TPM_HAL_ClearCounter(TPM_Type *base)
  */
 static inline uint16_t  TPM_HAL_GetCounterVal(TPM_Type *base)
 {
-    return TPM_BRD_CNT_COUNT(base);
+	return TPM_BRD_CNT_COUNT(base);
 }
 
 /*!
@@ -322,9 +322,9 @@ static inline uint16_t  TPM_HAL_GetCounterVal(TPM_Type *base)
  */
 static inline void TPM_HAL_SetMod(TPM_Type *base, uint16_t val)
 {
-    /*As RM mentioned, first clear TPM_CNT then write value to TPM_MOD*/
-    TPM_BWR_CNT_COUNT(base, 0);
-    TPM_BWR_MOD_MOD(base, val);
+	/*As RM mentioned, first clear TPM_CNT then write value to TPM_MOD*/
+	TPM_BWR_CNT_COUNT(base, 0);
+	TPM_BWR_MOD_MOD(base, val);
 }
 
 /*!
@@ -334,7 +334,7 @@ static inline void TPM_HAL_SetMod(TPM_Type *base, uint16_t val)
  */
 static inline uint16_t  TPM_HAL_GetMod(TPM_Type *base)
 {
-    return TPM_BRD_MOD_MOD(base);
+	return TPM_BRD_MOD_MOD(base);
 }
 
 /*TPM channel operating mode (mode, edge, and level selection) for capture, output, and PWM*/
@@ -350,12 +350,12 @@ static inline uint16_t  TPM_HAL_GetMod(TPM_Type *base)
  */
 static inline void TPM_HAL_SetChnMsnbaElsnbaVal(TPM_Type *base, uint8_t channel, uint8_t value)
 {
-    assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
+	assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
 
-    /* Keep CHIE bit value not changed by this function, so read it first and or with value*/
-    value |= TPM_RD_CnSC(base, channel) & TPM_CnSC_CHIE_MASK;
+	/* Keep CHIE bit value not changed by this function, so read it first and or with value*/
+	value |= TPM_RD_CnSC(base, channel) & TPM_CnSC_CHIE_MASK;
 
-    TPM_WR_CnSC(base, channel, value);
+	TPM_WR_CnSC(base, channel, value);
 }
 
 /*!
@@ -366,8 +366,8 @@ static inline void TPM_HAL_SetChnMsnbaElsnbaVal(TPM_Type *base, uint8_t channel,
  */
 static inline uint8_t TPM_HAL_GetChnMsnbaVal(TPM_Type *base, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
-    return (TPM_RD_CnSC(base, channel) & (TPM_CnSC_MSA_MASK | TPM_CnSC_MSB_MASK)) >> TPM_CnSC_MSA_SHIFT;
+	assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
+	return (TPM_RD_CnSC(base, channel) & (TPM_CnSC_MSA_MASK | TPM_CnSC_MSB_MASK)) >> TPM_CnSC_MSA_SHIFT;
 }
 
 /*!
@@ -378,8 +378,8 @@ static inline uint8_t TPM_HAL_GetChnMsnbaVal(TPM_Type *base, uint8_t channel)
  */
 static inline uint8_t TPM_HAL_GetChnElsnbaVal(TPM_Type *base, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
-    return (TPM_RD_CnSC(base, channel) & (TPM_CnSC_ELSA_MASK | TPM_CnSC_ELSB_MASK)) >> TPM_CnSC_ELSA_SHIFT;
+	assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
+	return (TPM_RD_CnSC(base, channel) & (TPM_CnSC_ELSA_MASK | TPM_CnSC_ELSB_MASK)) >> TPM_CnSC_ELSA_SHIFT;
 }
 
 /*!
@@ -389,8 +389,8 @@ static inline uint8_t TPM_HAL_GetChnElsnbaVal(TPM_Type *base, uint8_t channel)
  */
 static inline void TPM_HAL_EnableChnInt(TPM_Type *base, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
-    TPM_BWR_CnSC_CHIE(base, channel, 1);
+	assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
+	TPM_BWR_CnSC_CHIE(base, channel, 1);
 }
 
 /*!
@@ -400,8 +400,8 @@ static inline void TPM_HAL_EnableChnInt(TPM_Type *base, uint8_t channel)
  */
 static inline void TPM_HAL_DisableChnInt(TPM_Type *base, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
-    TPM_BWR_CnSC_CHIE(base, channel, 0);
+	assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
+	TPM_BWR_CnSC_CHIE(base, channel, 0);
 }
 
 /*!
@@ -412,8 +412,8 @@ static inline void TPM_HAL_DisableChnInt(TPM_Type *base, uint8_t channel)
  */
 static inline bool TPM_HAL_IsChnIntEnabled(TPM_Type *base, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
-    return (bool)(TPM_BRD_CnSC_CHIE(base, channel));
+	assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
+	return (bool)(TPM_BRD_CnSC_CHIE(base, channel));
 }
 
 /*!
@@ -424,8 +424,8 @@ static inline bool TPM_HAL_IsChnIntEnabled(TPM_Type *base, uint8_t channel)
  */
 static inline bool TPM_HAL_GetChnStatus(TPM_Type *base, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
-    return (bool)(TPM_BRD_CnSC_CHF(base, channel));
+	assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
+	return (bool)(TPM_BRD_CnSC_CHF(base, channel));
 }
 
 /*!
@@ -435,8 +435,8 @@ static inline bool TPM_HAL_GetChnStatus(TPM_Type *base, uint8_t channel)
  */
 static inline void TPM_HAL_ClearChnInt(TPM_Type *base, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
-    TPM_BWR_CnSC_CHF(base, channel, 0x1);
+	assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
+	TPM_BWR_CnSC_CHF(base, channel, 0x1);
 }
 
 /*TPM Channel control*/
@@ -448,8 +448,8 @@ static inline void TPM_HAL_ClearChnInt(TPM_Type *base, uint8_t channel)
  */
 static inline void TPM_HAL_SetChnCountVal(TPM_Type *base, uint8_t channel, uint16_t val)
 {
-    assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
-    TPM_BWR_CnV_VAL(base, channel, val);
+	assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
+	TPM_BWR_CnV_VAL(base, channel, val);
 }
 
 /*!
@@ -460,8 +460,8 @@ static inline void TPM_HAL_SetChnCountVal(TPM_Type *base, uint8_t channel, uint1
  */
 static inline uint16_t TPM_HAL_GetChnCountVal(TPM_Type *base, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
-    return TPM_BRD_CnV_VAL(base, channel);
+	assert(channel < FSL_FEATURE_TPM_CHANNEL_COUNT);
+	return TPM_BRD_CnV_VAL(base, channel);
 }
 
 /*!
@@ -471,7 +471,7 @@ static inline uint16_t TPM_HAL_GetChnCountVal(TPM_Type *base, uint8_t channel)
  */
 static inline uint32_t TPM_HAL_GetStatusRegVal(TPM_Type *base)
 {
-    return TPM_RD_STATUS(base);
+	return TPM_RD_STATUS(base);
 }
 
 /*!
@@ -481,7 +481,7 @@ static inline uint32_t TPM_HAL_GetStatusRegVal(TPM_Type *base)
  */
 static inline void TPM_HAL_ClearStatusReg(TPM_Type *base, uint16_t tpm_status)
 {
-    TPM_WR_STATUS(base, tpm_status);
+	TPM_WR_STATUS(base, tpm_status);
 }
 
 /*!
@@ -491,7 +491,7 @@ static inline void TPM_HAL_ClearStatusReg(TPM_Type *base, uint16_t tpm_status)
  */
 static inline void TPM_HAL_SetTriggerSrc(TPM_Type *base, tpm_trigger_source_t trigger_num)
 {
-    TPM_BWR_CONF_TRGSEL(base, trigger_num);
+	TPM_BWR_CONF_TRGSEL(base, trigger_num);
 }
 
 /*!
@@ -501,7 +501,7 @@ static inline void TPM_HAL_SetTriggerSrc(TPM_Type *base, tpm_trigger_source_t tr
  */
 static inline void TPM_HAL_SetTriggerMode(TPM_Type *base, bool enable)
 {
-    TPM_BWR_CONF_CSOT (base, enable);
+	TPM_BWR_CONF_CSOT (base, enable);
 }
 
 /*!
@@ -511,7 +511,7 @@ static inline void TPM_HAL_SetTriggerMode(TPM_Type *base, bool enable)
  */
 static inline void TPM_HAL_SetReloadOnTriggerMode(TPM_Type *base, bool enable)
 {
-    TPM_BWR_CONF_CROT(base, enable);
+	TPM_BWR_CONF_CROT(base, enable);
 }
 
 /*!
@@ -521,7 +521,7 @@ static inline void TPM_HAL_SetReloadOnTriggerMode(TPM_Type *base, bool enable)
  */
 static inline void TPM_HAL_SetStopOnOverflowMode(TPM_Type *base, bool enable)
 {
-    TPM_BWR_CONF_CSOO(base, enable);
+	TPM_BWR_CONF_CSOO(base, enable);
 }
 
 /*!
@@ -531,7 +531,7 @@ static inline void TPM_HAL_SetStopOnOverflowMode(TPM_Type *base, bool enable)
  */
 static inline void TPM_HAL_EnableGlobalTimeBase(TPM_Type *base, bool enable)
 {
-    TPM_BWR_CONF_GTBEEN(base, enable);
+	TPM_BWR_CONF_GTBEEN(base, enable);
 }
 
 /*!
@@ -541,7 +541,7 @@ static inline void TPM_HAL_EnableGlobalTimeBase(TPM_Type *base, bool enable)
  */
 static inline void TPM_HAL_SetDbgMode(TPM_Type *base, bool enable)
 {
-    TPM_BWR_CONF_DBGMODE(base, enable ? 3 : 0);
+	TPM_BWR_CONF_DBGMODE(base, enable ? 3 : 0);
 }
 
 /*!
@@ -551,7 +551,7 @@ static inline void TPM_HAL_SetDbgMode(TPM_Type *base, bool enable)
  */
 static inline void TPM_HAL_SetWaitMode(TPM_Type *base, bool enable)
 {
-    TPM_BWR_CONF_DOZEEN(base, enable ? 0 : 1);
+	TPM_BWR_CONF_DOZEEN(base, enable ? 0 : 1);
 }
 
 #if defined(__cplusplus)
@@ -566,4 +566,3 @@ static inline void TPM_HAL_SetWaitMode(TPM_Type *base, bool enable)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

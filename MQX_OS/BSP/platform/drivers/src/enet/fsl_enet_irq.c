@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 #include "fsl_enet_driver.h"
 #include "fsl_clock_manager.h"
 #if FSL_FEATURE_SOC_ENET_COUNT
@@ -42,22 +42,21 @@
  ******************************************************************************/
 void ENET_Transmit_IRQHandler(void)
 {
-     ENET_DRV_TxIRQHandler(ENET_INSTANCE);
+	 ENET_DRV_TxIRQHandler(ENET_INSTANCE);
 }
 
 void ENET_Receive_IRQHandler(void)
 {
-     ENET_DRV_RxIRQHandler(ENET_INSTANCE);
+	 ENET_DRV_RxIRQHandler(ENET_INSTANCE);
 }
 
 #if FSL_FEATURE_ENET_SUPPORT_PTP
 void ENET_1588_Timer_IRQHandler(void)
 {
-     ENET_DRV_TsIRQHandler(ENET_INSTANCE);
+	 ENET_DRV_TsIRQHandler(ENET_INSTANCE);
 }
 #endif
 #endif
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

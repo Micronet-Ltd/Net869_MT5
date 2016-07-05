@@ -42,7 +42,7 @@
  */
 _psp_code_addr _int_set_vector_table
 (
-    _psp_code_addr addr
+	_psp_code_addr addr
 )
 { /* Body */
    _psp_code_addr         old;
@@ -71,10 +71,10 @@ _psp_code_addr _int_set_vector_table
  */
 _psp_code_addr _int_get_vector_table
 (
-    void
+	void
 )
 {
-    return SCB->VTOR;
+	return SCB->VTOR;
 }
 
 #endif

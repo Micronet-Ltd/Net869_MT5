@@ -27,21 +27,21 @@
 
 static FILE _stdin =
 {
-    _MODE_ORDONLY,
-    0,
-    &_stdin._CBUF,
+	_MODE_ORDONLY,
+	0,
+	&_stdin._CBUF,
 };
 static FILE _stdout =
 {
-    _MODE_OWRONLY,
-    1,
-    &_stdout._CBUF,
+	_MODE_OWRONLY,
+	1,
+	&_stdout._CBUF,
 };
 static FILE _stderr =
 {
-    _MODE_OWRONLY,
-    2,
-    &_stderr._CBUF,
+	_MODE_OWRONLY,
+	2,
+	&_stderr._CBUF,
 };
 
 FILE *_files[FOPEN_MAX] = {&_stdin, &_stdout, &_stderr};

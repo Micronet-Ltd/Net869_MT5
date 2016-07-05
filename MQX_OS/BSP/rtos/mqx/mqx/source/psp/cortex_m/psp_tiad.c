@@ -29,19 +29,19 @@
 
 /*!
  * \brief Adds two PSP tick structure together, including hardware ticks
- * 
+ *
  * \param[in] a_ptr The two structures to add - both must be normalized
- * \param[in] b_ptr 
+ * \param[in] b_ptr
  * \param[out] r_ptr The result of the addition
  */
 void _psp_add_ticks
    (
-       /* [IN] The two structures to add - both must be normalized */
-       PSP_TICK_STRUCT_PTR a_ptr,
-       PSP_TICK_STRUCT_PTR b_ptr,
+	   /* [IN] The two structures to add - both must be normalized */
+	   PSP_TICK_STRUCT_PTR a_ptr,
+	   PSP_TICK_STRUCT_PTR b_ptr,
 
-       /* [OUT] The result of the addition */
-       PSP_TICK_STRUCT_PTR r_ptr
+	   /* [OUT] The result of the addition */
+	   PSP_TICK_STRUCT_PTR r_ptr
    )
 { /* Body */
    register uint32_t       a_hw_ticks;
@@ -56,10 +56,10 @@ void _psp_add_ticks
    hwtpt = _mqx_kernel_data->HW_TICKS_PER_TICK;
 
    if ( a_hw_ticks >= (hwtpt - b_hw_ticks)) {
-      r_ptr->TICKS[0]++;
-      r_ptr->HW_TICKS[0] = a_hw_ticks + (b_hw_ticks - hwtpt);
+	  r_ptr->TICKS[0]++;
+	  r_ptr->HW_TICKS[0] = a_hw_ticks + (b_hw_ticks - hwtpt);
    } else {
-      r_ptr->HW_TICKS[0] = a_hw_ticks + b_hw_ticks;
+	  r_ptr->HW_TICKS[0] = a_hw_ticks + b_hw_ticks;
    } /* Endif */
 
 } /* Endbody */
@@ -67,4 +67,3 @@ void _psp_add_ticks
 #endif
 
 /* EOF */
-

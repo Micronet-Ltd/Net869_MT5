@@ -190,8 +190,8 @@ const char *RTCS_mem_type_str[] =
  */
 static char *mem_type_str
    (
-      char      type_str[MEM_TYPE_MAX_STRING_LENGTH],
-      _mem_type mem_type
+	  char      type_str[MEM_TYPE_MAX_STRING_LENGTH],
+	  _mem_type mem_type
    )
 {
    char  *str = NULL;
@@ -200,52 +200,52 @@ static char *mem_type_str
 
    switch (component)
    {
-      case 0:
-         if (index < 1000)
-         {
-            if (index < sizeof (MQX_mem_type_str) / sizeof (char *))
-            {
-               str = (char *)MQX_mem_type_str[index];
-            }
-         }
-         else
-         {
-            index -= 1000;
-            if (index < sizeof (MQX_IO_mem_type_str) / sizeof (char *))
-            {
-               str = (char *)MQX_IO_mem_type_str[index];
-            }
-         }
-         break;
+	  case 0:
+		 if (index < 1000)
+		 {
+			if (index < sizeof (MQX_mem_type_str) / sizeof (char *))
+			{
+			   str = (char *)MQX_mem_type_str[index];
+			}
+		 }
+		 else
+		 {
+			index -= 1000;
+			if (index < sizeof (MQX_IO_mem_type_str) / sizeof (char *))
+			{
+			   str = (char *)MQX_IO_mem_type_str[index];
+			}
+		 }
+		 break;
 
-      case IO_RTCS_COMPONENT:
-         if (index < sizeof (RTCS_mem_type_str) / sizeof (char *))
-         {
-            str = (char *)RTCS_mem_type_str[index];
-         }
-         break;
+	  case IO_RTCS_COMPONENT:
+		 if (index < sizeof (RTCS_mem_type_str) / sizeof (char *))
+		 {
+			str = (char *)RTCS_mem_type_str[index];
+		 }
+		 break;
 
-      case IO_MFS_COMPONENT:
-         str = "MFS";
-         break;
+	  case IO_MFS_COMPONENT:
+		 str = "MFS";
+		 break;
 
-      case IO_USB_COMPONENT:
-         str = "USB";
-         break;
+	  case IO_USB_COMPONENT:
+		 str = "USB";
+		 break;
 
-      case IO_SHELL_COMPONENT:
-         str = "SHELL";
-         break;
-      default:
-         break;
+	  case IO_SHELL_COMPONENT:
+		 str = "SHELL";
+		 break;
+	  default:
+		 break;
    }
    if (NULL != str)
    {
-      strncpy (type_str, str, MEM_TYPE_MAX_STRING_LENGTH);
+	  strncpy (type_str, str, MEM_TYPE_MAX_STRING_LENGTH);
    }
    else
    {
-      sprintf (type_str, "Unknown mem type 0x%x", mem_type);
+	  sprintf (type_str, "Unknown mem type 0x%x", mem_type);
    }
    return type_str;
 }
@@ -255,7 +255,7 @@ static char *mem_type_str
  */
 void _tad_lightweight_memory_blocks
    (
-       void
+	   void
    )
 {
    uint32_t                size, next_free;
@@ -270,33 +270,33 @@ void _tad_lightweight_memory_blocks
 
    while ((uint32_t) mem_ptr < end_ptr)
    {
-      size = mem_ptr->BLOCKSIZE;
-      next_free = (uint32_t)mem_ptr->U.NEXTBLOCK;
+	  size = mem_ptr->BLOCKSIZE;
+	  next_free = (uint32_t)mem_ptr->U.NEXTBLOCK;
 
-      if (((next_free >= start_ptr) && (next_free <= end_ptr)) || (next_free == 0))
-      {
-         sprintf (owner, "Free");
-         mem_type[0] = 0;
-      }
-      else
-      {
-         mem_type_str (mem_type, mem_ptr->U.S.MEM_TYPE);
-         if (mem_ptr->U.S.TASK_NUMBER == TASK_NUMBER_FROM_TASKID(MQX_DEFAULT_TASK_ID))
-         {
-            sprintf (owner,"System");
-         }
-         else
-         {
-            sprintf (owner,"0x1%04x", mem_ptr->U.S.TASK_NUMBER);
-         }
-      }
-      printf ("0x%lx   0x%x   %d   %s   %s\n", (uint32_t)mem_ptr, size, size, owner, mem_type);
-      mem_ptr = (LWMEM_BLOCK_STRUCT_PTR)(((uint32_t)mem_ptr) + size);
-      if (((uint32_t)mem_ptr < start_ptr) || ((uint32_t)mem_ptr > end_ptr))
-      {
-         printf ("Block out of range!\n");
-         break;
-      }
+	  if (((next_free >= start_ptr) && (next_free <= end_ptr)) || (next_free == 0))
+	  {
+		 sprintf (owner, "Free");
+		 mem_type[0] = 0;
+	  }
+	  else
+	  {
+		 mem_type_str (mem_type, mem_ptr->U.S.MEM_TYPE);
+		 if (mem_ptr->U.S.TASK_NUMBER == TASK_NUMBER_FROM_TASKID(MQX_DEFAULT_TASK_ID))
+		 {
+			sprintf (owner,"System");
+		 }
+		 else
+		 {
+			sprintf (owner,"0x1%04x", mem_ptr->U.S.TASK_NUMBER);
+		 }
+	  }
+	  printf ("0x%lx   0x%x   %d   %s   %s\n", (uint32_t)mem_ptr, size, size, owner, mem_type);
+	  mem_ptr = (LWMEM_BLOCK_STRUCT_PTR)(((uint32_t)mem_ptr) + size);
+	  if (((uint32_t)mem_ptr < start_ptr) || ((uint32_t)mem_ptr > end_ptr))
+	  {
+		 printf ("Block out of range!\n");
+		 break;
+	  }
    }
 }
 
@@ -305,7 +305,7 @@ void _tad_lightweight_memory_blocks
  */
 void _tad_stack_usage
    (
-       void
+	   void
    )
 {
 #if MQX_MONITOR_STACK && MQX_TD_HAS_STACK_LIMIT
@@ -325,47 +325,47 @@ void _tad_stack_usage
    while ((0 != size) && (NULL != td_ptr))
    {
 #if MQX_TD_HAS_TASK_TEMPLATE_PTR
-      template_ptr = td_ptr->TASK_TEMPLATE_PTR;
-      task_name = template_ptr->TASK_NAME;
+	  template_ptr = td_ptr->TASK_TEMPLATE_PTR;
+	  task_name = template_ptr->TASK_NAME;
 #else
-      char  name[12];
-      sprintf(name, "0x%x", td_ptr->TASK_ID);
-      task_name = name;
+	  char  name[12];
+	  sprintf(name, "0x%x", td_ptr->TASK_ID);
+	  task_name = name;
 #endif
-      stack_used = td_ptr->STACK_LIMIT;
-      stack_used++;
-      while (*stack_used == 0x7374616B)
-      {
-         stack_used++;
-      }
-      if ((stack_used == td_ptr->STACK_LIMIT) || (stack_used == (_mqx_uint_ptr)td_ptr->STACK_LIMIT + 1))
-      {
-         percent=100;
-      }
-      else
-      {
-         percent = ((_mqx_uint_ptr)td_ptr->STACK_BASE - stack_used) * 100 / ((_mqx_uint_ptr)td_ptr->STACK_BASE - (_mqx_uint_ptr)td_ptr->STACK_LIMIT);
-      }
-      printf ("%s   0x%lx   0x%lx   0x%lx   %ld %%   %s\n", task_name, td_ptr->STACK_BASE, td_ptr->STACK_LIMIT, stack_used, percent,percent>=100?"Yes":"No");
+	  stack_used = td_ptr->STACK_LIMIT;
+	  stack_used++;
+	  while (*stack_used == 0x7374616B)
+	  {
+		 stack_used++;
+	  }
+	  if ((stack_used == td_ptr->STACK_LIMIT) || (stack_used == (_mqx_uint_ptr)td_ptr->STACK_LIMIT + 1))
+	  {
+		 percent=100;
+	  }
+	  else
+	  {
+		 percent = ((_mqx_uint_ptr)td_ptr->STACK_BASE - stack_used) * 100 / ((_mqx_uint_ptr)td_ptr->STACK_BASE - (_mqx_uint_ptr)td_ptr->STACK_LIMIT);
+	  }
+	  printf ("%s   0x%lx   0x%lx   0x%lx   %ld %%   %s\n", task_name, td_ptr->STACK_BASE, td_ptr->STACK_LIMIT, stack_used, percent,percent>=100?"Yes":"No");
 
-      size--;
-      td_ptr = (TD_STRUCT_PTR)((unsigned char *)(td_ptr->TD_LIST_INFO.NEXT) - FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
+	  size--;
+	  td_ptr = (TD_STRUCT_PTR)((unsigned char *)(td_ptr->TD_LIST_INFO.NEXT) - FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
    }
 
    stack_used = stack_limit = (_mqx_uint_ptr)(((_mqx_uint)(kernel_data_ptr->INTERRUPT_STACK_PTR)) - kernel_data_ptr->INIT.INTERRUPT_STACK_SIZE);
    stack_used++;
    while (*stack_used == 0x7374616B)
    {
-      stack_used++;
+	  stack_used++;
    }
    if ((stack_used == td_ptr->STACK_LIMIT) || (stack_used == (_mqx_uint_ptr)td_ptr->STACK_LIMIT + 1))
    {
-      printf ("Interrupt   0x%lx   0x%lx   0x%lx   100 %%   Yes", kernel_data_ptr->INTERRUPT_STACK_PTR, stack_limit, stack_used);
+	  printf ("Interrupt   0x%lx   0x%lx   0x%lx   100 %%   Yes", kernel_data_ptr->INTERRUPT_STACK_PTR, stack_limit, stack_used);
    }
    else
    {
-      percent = ((_mqx_uint_ptr)kernel_data_ptr->INTERRUPT_STACK_PTR - stack_used) * 100 / ((_mqx_uint_ptr)kernel_data_ptr->INTERRUPT_STACK_PTR - stack_limit);
-      printf ("Interrupt   0x%lx   0x%lx   0x%lx   %ld %%   No", kernel_data_ptr->INTERRUPT_STACK_PTR, stack_limit, stack_used, percent);
+	  percent = ((_mqx_uint_ptr)kernel_data_ptr->INTERRUPT_STACK_PTR - stack_used) * 100 / ((_mqx_uint_ptr)kernel_data_ptr->INTERRUPT_STACK_PTR - stack_limit);
+	  printf ("Interrupt   0x%lx   0x%lx   0x%lx   %ld %%   No", kernel_data_ptr->INTERRUPT_STACK_PTR, stack_limit, stack_used, percent);
    }
    printf ("\n");
 #endif

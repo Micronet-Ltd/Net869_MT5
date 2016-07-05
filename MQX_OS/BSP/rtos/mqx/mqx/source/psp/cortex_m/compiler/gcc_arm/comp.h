@@ -23,7 +23,7 @@
 *
 *
 *END************************************************************************/
- 
+
 #ifndef __comp_h__
 #define __comp_h__   1
 
@@ -89,9 +89,9 @@ extern "C" {
  */
 __attribute__((always_inline)) inline unsigned long __get_PC(void)
 {
-    unsigned long pcval;
-    __asm("mov %0, pc" : "=r" (pcval));
-    return pcval;
+	unsigned long pcval;
+	__asm("mov %0, pc" : "=r" (pcval));
+	return pcval;
 }
 
 /*!
@@ -101,9 +101,9 @@ __attribute__((always_inline)) inline unsigned long __get_PC(void)
  */
 __attribute__((always_inline)) inline unsigned long __get_LR(void)
 {
-    unsigned long lrval;
-    __asm("mov %0, lr" : "=r" (lrval));
-    return lrval;
+	unsigned long lrval;
+	__asm("mov %0, lr" : "=r" (lrval));
+	return lrval;
 }
 
 /*

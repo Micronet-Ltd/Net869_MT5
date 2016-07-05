@@ -45,8 +45,8 @@
 /*  WATCHDOG ALARM TABLE STRUCTURE */
 /*!
  * \cond DOXYGEN_PRIVATE
- * 
- * \brief Watchdog alarm table structure. 
+ *
+ * \brief Watchdog alarm table structure.
  */
 typedef struct watchdog_alarm_table_struct
 {
@@ -63,8 +63,8 @@ typedef struct watchdog_alarm_table_struct
 /* WATCHDOG COMPONENT STRUCTURE */
 /*!
  * \cond DOXYGEN_PRIVATE
- * 
- * \brief Watchdog component structure. 
+ *
+ * \brief Watchdog component structure.
  */
 typedef struct watchdog_component_struct
 {
@@ -73,10 +73,10 @@ typedef struct watchdog_component_struct
 
    /*! \brief Watchdog validation stamp. */
    _mqx_uint                    VALID;
-   
+
    /*! \brief The function to call when the watchdog expires. */
    WATCHDOG_ERROR_FPTR          ERROR_FUNCTION;
-   
+
    /*! \brief The old timer interrupt handler. */
    INT_ISR_FPTR                 TIMER_INTERRUPT_HANDLER;
 
@@ -121,4 +121,3 @@ extern bool  _watchdog_start_internal(MQX_TICK_STRUCT_PTR);
 
 #endif /* __watchdog_prv_h__ */
 /* EOF */
-

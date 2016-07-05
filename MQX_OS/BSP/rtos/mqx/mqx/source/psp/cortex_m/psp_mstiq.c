@@ -28,17 +28,17 @@
 
 /*!
  * \brief This function converts milliseconds into ticks without HW ticks
- * 
+ *
  * \param[in] msecs The number of milliseconds to convert
  * \param[out] tick_ptr Pointer to tick structure where the result will be stored
  */
 void _psp_msecs_to_ticks_quick
    (
-       /* [IN] The number of milliseconds to convert */
-       _mqx_uint           msecs,
+	   /* [IN] The number of milliseconds to convert */
+	   _mqx_uint           msecs,
 
-       /* [OUT] Pointer to tick structure where the result will be stored */
-       PSP_TICK_STRUCT_PTR tick_ptr
+	   /* [OUT] Pointer to tick structure where the result will be stored */
+	   PSP_TICK_STRUCT_PTR tick_ptr
    )
 { /* Body */
    static uint32_t         ms_per_tick, heuristic = 0;
@@ -47,23 +47,23 @@ void _psp_msecs_to_ticks_quick
    tick_ptr->HW_TICKS[0] = 0;
 
    if (heuristic == 1) {
-      /* Perform fast calculation */
+	  /* Perform fast calculation */
 fast: tick_ptr->TICKS[0] = (uint64_t)(msecs / ms_per_tick);
-      return;
+	  return;
    }/* Endif */
 
    _GET_KERNEL_DATA(kernel_data);
 
    if (heuristic == 2) {
 slow: tick_ptr->TICKS[0] =
-         ((uint64_t)msecs * kernel_data->TICKS_PER_SECOND) / 1000;
-      return;
+		 ((uint64_t)msecs * kernel_data->TICKS_PER_SECOND) / 1000;
+	  return;
    }/* Endif */
 
    ms_per_tick = 1000 / kernel_data->TICKS_PER_SECOND;
    if ((ms_per_tick * kernel_data->TICKS_PER_SECOND) == 1000) {
-      heuristic = 1;
-      goto fast;
+	  heuristic = 1;
+	  goto fast;
    }/* Endif */
 
    heuristic = 2;

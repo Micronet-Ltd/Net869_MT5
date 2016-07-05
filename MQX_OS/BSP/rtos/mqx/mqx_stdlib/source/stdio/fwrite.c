@@ -38,27 +38,27 @@
  */
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE  *stream)
 {
-    int result;
-    size_t count = 0;
+	int result;
+	size_t count = 0;
 
-    if ((NULL == ptr) || (NULL == stream) || (0 == size) || (0 == nmemb))
-    {
-        return 0; //error: bad input parameter
-    }
+	if ((NULL == ptr) || (NULL == stream) || (0 == size) || (0 == nmemb))
+	{
+		return 0; //error: bad input parameter
+	}
 
-    for (; 0 < nmemb; nmemb--)
-    {
-        result = _buf_write((const unsigned char*)ptr, size, stream);
-        ptr = (unsigned char*)ptr + size;
-        if (result != size)
-        {
-            /* Mark error */
-            stream->_MODE |= _MODE_ERR;
-            break;
-        }
-        count++;
-    }
+	for (; 0 < nmemb; nmemb--)
+	{
+		result = _buf_write((const unsigned char*)ptr, size, stream);
+		ptr = (unsigned char*)ptr + size;
+		if (result != size)
+		{
+			/* Mark error */
+			stream->_MODE |= _MODE_ERR;
+			break;
+		}
+		count++;
+	}
 
-    return count;
+	return count;
 
 }

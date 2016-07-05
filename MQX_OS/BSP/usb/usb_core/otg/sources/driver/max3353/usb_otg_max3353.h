@@ -1,39 +1,39 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2010, 2015 Freescale Semiconductor;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
  *
  * $FileName: usb_otg_max3353.h$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments : This is the header file for the MAX3353 access functions
  *
- *         
+ *
  *****************************************************************************/
 #ifndef __usb_otg_max3353_h__
 #define __usb_otg_max3353_h__
 
 enum
 {
-    MAX3353_OK,
-    MAX3353_NOT_PRESENT
+	MAX3353_OK,
+	MAX3353_NOT_PRESENT
 };
 
 #define MAX3353_MID             0x6A0B5333
@@ -101,9 +101,9 @@ enum
 
 typedef struct usb_otg_max3353_call_struct
 {
-    usb_otg_state_struct_t * otg_handle_ptr;
-    usb_otg_max3353_init_struct_t * init_param_ptr;
-    uint8_t channel;
+	usb_otg_state_struct_t * otg_handle_ptr;
+	usb_otg_max3353_init_struct_t * init_param_ptr;
+	uint8_t channel;
 } usb_otg_max3353_call_struct_t;
 
 #ifdef __cplusplus
@@ -111,17 +111,16 @@ extern "C"
 {
 #endif
 
-    /* Public functions */
-    usb_status usb_otg_max3353_preinit(void* uplayer_handle, void** handle);
-    usb_status usb_otg_max3353_init(void* handle);
-    usb_status usb_otg_max3353_shut_down(void* handle);
-    usb_status usb_otg_max3353_get_status(void* handle);
-    usb_status usb_otg_max3353_set_vbus(void* handle, bool enable);
-    usb_status usb_otg_max3353_set_pull_downs(void* handle, uint8_t bitfield);
+	/* Public functions */
+	usb_status usb_otg_max3353_preinit(void* uplayer_handle, void** handle);
+	usb_status usb_otg_max3353_init(void* handle);
+	usb_status usb_otg_max3353_shut_down(void* handle);
+	usb_status usb_otg_max3353_get_status(void* handle);
+	usb_status usb_otg_max3353_set_vbus(void* handle, bool enable);
+	usb_status usb_otg_max3353_set_pull_downs(void* handle, uint8_t bitfield);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif  /* _USB_OTG_MAX3353_H_ */
-

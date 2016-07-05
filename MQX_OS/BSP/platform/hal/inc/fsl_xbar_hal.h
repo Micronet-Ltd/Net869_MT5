@@ -44,15 +44,15 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-/*! 
+/*!
  * @brief XBAR active edge for detection
  */
 typedef enum _xbar_active_edge_detect
 {
-    kXbarEdgeNone             = 0U, /*!< Edge detection status bit never asserts. */
-    kXbarEdgeRising           = 1U, /*!< Edge detection status bit asserts on rising edges. */
-    kXbarEdgeFalling          = 2U, /*!< Edge detection status bit asserts on falling edges. */
-    kXbarEdgeRisingAndFalling = 3U  /*!< Edge detection status bit asserts on rising and falling edges. */
+	kXbarEdgeNone             = 0U, /*!< Edge detection status bit never asserts. */
+	kXbarEdgeRising           = 1U, /*!< Edge detection status bit asserts on rising edges. */
+	kXbarEdgeFalling          = 2U, /*!< Edge detection status bit asserts on falling edges. */
+	kXbarEdgeRisingAndFalling = 3U  /*!< Edge detection status bit asserts on rising and falling edges. */
 }xbar_active_edge_t;
 
 /*!
@@ -60,25 +60,25 @@ typedef enum _xbar_active_edge_detect
  */
 typedef enum _xbar_status
 {
-    kStatus_XBAR_Success         = 0U, /*!< Success */
-    kStatus_XBAR_InvalidArgument = 1U, /*!< Invalid argument existed */
-    kStatus_XBAR_Initialized     = 2U, /*!< XBAR has been already initialized */
-    kStatus_XBAR_Failed          = 3U  /*!< Execution failed */
+	kStatus_XBAR_Success         = 0U, /*!< Success */
+	kStatus_XBAR_InvalidArgument = 1U, /*!< Invalid argument existed */
+	kStatus_XBAR_Initialized     = 2U, /*!< XBAR has been already initialized */
+	kStatus_XBAR_Failed          = 3U  /*!< Execution failed */
 } xbar_status_t;
 
 #if defined FSL_FEATURE_XBAR_HAS_SINGLE_MODULE
-#define XBARA_Type                           XBAR_Type 
-#define XBARA_SELx_ADDR(x, n)                 XBAR_SELx_ADDR(x, n)    
-#define XBARA_CTRLx_ADDR(x, n)                XBAR_CTRLx_ADDR(x, n)     
-#define XBARA_WR_SELx_SELx(x, n, v)              XBAR_WR_SELx_SELx(x, n, v) 
-#define XBARA_RD_SELx_SELx(x, n)                 XBAR_RD_SELx_SELx(x, n)     
+#define XBARA_Type                           XBAR_Type
+#define XBARA_SELx_ADDR(x, n)                 XBAR_SELx_ADDR(x, n)
+#define XBARA_CTRLx_ADDR(x, n)                XBAR_CTRLx_ADDR(x, n)
+#define XBARA_WR_SELx_SELx(x, n, v)              XBAR_WR_SELx_SELx(x, n, v)
+#define XBARA_RD_SELx_SELx(x, n)                 XBAR_RD_SELx_SELx(x, n)
 #define XBARA_WR_CTRLx_DENx(x, n, v)             XBAR_WR_CTRLx_DENx(x, n, v)
-#define XBARA_RD_CTRLx_DENx(x, n)                XBAR_RD_CTRLx_DENx(x, n) 
+#define XBARA_RD_CTRLx_DENx(x, n)                XBAR_RD_CTRLx_DENx(x, n)
 #define XBARA_WR_CTRLx_IENx(x, n, v)             XBAR_WR_CTRLx_IENx(x, n, v)
-#define XBARA_RD_CTRLx_IENx(x, n)                XBAR_RD_CTRLx_IENx(x, n)        
-#define XBARA_WR_CTRLx_EDGEx(x, n, v)            XBAR_WR_CTRLx_EDGEx(x, n, v)    
-#define XBARA_RD_CTRLx_EDGEx(x, n)               XBAR_RD_CTRLx_EDGEx(x, n)  
-#define XBARA_CLR_CTRLx_STSx(x, n)               XBAR_WR_CTRLx_STSx(x, n, 0)  
+#define XBARA_RD_CTRLx_IENx(x, n)                XBAR_RD_CTRLx_IENx(x, n)
+#define XBARA_WR_CTRLx_EDGEx(x, n, v)            XBAR_WR_CTRLx_EDGEx(x, n, v)
+#define XBARA_RD_CTRLx_EDGEx(x, n)               XBAR_RD_CTRLx_EDGEx(x, n)
+#define XBARA_CLR_CTRLx_STSx(x, n)               XBAR_WR_CTRLx_STSx(x, n, 0)
 #define XBARA_RD_CTRLx_STSx(x, n)                XBAR_RD_CTRLx_STSx(x, n)
 #define FSL_FEATURE_XBARA_INTERRUPT_COUNT        FSL_FEATURE_XBAR_INTERRUPT_COUNT
 #define FSL_FEATURE_XBARA_MODULE_OUTPUTS         FSL_FEATURE_XBAR_MODULE_OUTPUTS
@@ -94,12 +94,12 @@ extern "C" {
 #endif
 
 /*!
- * @brief Initializes the XBARA module to the reset state.  
+ * @brief Initializes the XBARA module to the reset state.
  *
  * @param baseAddr Register base address for XBAR module.
  */
 void XBARA_HAL_Init(XBARA_Type * baseAddr);
-  
+
 /*!
  * @brief Selects which of the shared inputs XBARA_IN[*] is muxed to selected output XBARA_OUT[*].
  *
@@ -111,8 +111,8 @@ void XBARA_HAL_Init(XBARA_Type * baseAddr);
  */
 static inline void XBARA_HAL_SetOutSel(XBARA_Type * baseAddr, uint32_t outIndex, uint32_t input)
 {
-    assert((outIndex & 0xFFU) <= FSL_FEATURE_XBARA_MODULE_OUTPUTS);
-    XBARA_WR_SELx_SELx(baseAddr, (outIndex & 0xFFU), (input & 0xFFU));
+	assert((outIndex & 0xFFU) <= FSL_FEATURE_XBARA_MODULE_OUTPUTS);
+	XBARA_WR_SELx_SELx(baseAddr, (outIndex & 0xFFU), (input & 0xFFU));
 }
 
 /*!
@@ -126,8 +126,8 @@ static inline void XBARA_HAL_SetOutSel(XBARA_Type * baseAddr, uint32_t outIndex,
  */
 static inline uint32_t XBARA_HAL_GetOutSel(XBARA_Type * baseAddr, uint32_t outIndex)
 {
-    assert((outIndex & 0xFFU) <= FSL_FEATURE_XBARA_MODULE_OUTPUTS);
-    return (uint32_t)XBARA_RD_SELx_SELx(baseAddr, (outIndex & 0xFFU));
+	assert((outIndex & 0xFFU) <= FSL_FEATURE_XBARA_MODULE_OUTPUTS);
+	return (uint32_t)XBARA_RD_SELx_SELx(baseAddr, (outIndex & 0xFFU));
 }
 
 /*!
@@ -143,8 +143,8 @@ static inline uint32_t XBARA_HAL_GetOutSel(XBARA_Type * baseAddr, uint32_t outIn
  */
 static inline void XBARA_HAL_SetDMAOutCmd(XBARA_Type * baseAddr, uint32_t outIndex, bool enable)
 {
-    assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
-    XBARA_WR_CTRLx_DENx(baseAddr, (outIndex & 0xFFU), enable);
+	assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
+	XBARA_WR_CTRLx_DENx(baseAddr, (outIndex & 0xFFU), enable);
 }
 
 /*!
@@ -159,8 +159,8 @@ static inline void XBARA_HAL_SetDMAOutCmd(XBARA_Type * baseAddr, uint32_t outInd
  */
 static inline void XBARA_HAL_SetIntOutCmd(XBARA_Type * baseAddr, uint32_t outIndex, bool enable)
 {
-    assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
-    XBARA_WR_CTRLx_IENx(baseAddr, (outIndex & 0xFFU), enable);
+	assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
+	XBARA_WR_CTRLx_IENx(baseAddr, (outIndex & 0xFFU), enable);
 }
 
 /*!
@@ -172,8 +172,8 @@ static inline void XBARA_HAL_SetIntOutCmd(XBARA_Type * baseAddr, uint32_t outInd
  */
 static inline bool XBARA_HAL_GetDMAOutCmd(XBARA_Type * baseAddr, uint32_t outIndex)
 {
-    assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
-    return XBARA_RD_CTRLx_DENx(baseAddr, (outIndex & 0xFFU));
+	assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
+	return XBARA_RD_CTRLx_DENx(baseAddr, (outIndex & 0xFFU));
 }
 
 /*!
@@ -185,8 +185,8 @@ static inline bool XBARA_HAL_GetDMAOutCmd(XBARA_Type * baseAddr, uint32_t outInd
  */
 static inline bool XBARA_HAL_GetIntOutCmd(XBARA_Type * baseAddr, uint32_t outIndex)
 {
-    assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
-    return XBARA_RD_CTRLx_IENx(baseAddr, (outIndex & 0xFFU));
+	assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
+	return XBARA_RD_CTRLx_IENx(baseAddr, (outIndex & 0xFFU));
 }
 
 /*!
@@ -200,8 +200,8 @@ static inline bool XBARA_HAL_GetIntOutCmd(XBARA_Type * baseAddr, uint32_t outInd
  */
 static inline void XBARA_HAL_SetOutActiveEdge(XBARA_Type * baseAddr, uint32_t outIndex, xbar_active_edge_t edge)
 {
-    assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
-    XBARA_WR_CTRLx_EDGEx(baseAddr, (outIndex & 0xFFU), edge);
+	assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
+	XBARA_WR_CTRLx_EDGEx(baseAddr, (outIndex & 0xFFU), edge);
 }
 
 /*!
@@ -215,8 +215,8 @@ static inline void XBARA_HAL_SetOutActiveEdge(XBARA_Type * baseAddr, uint32_t ou
  */
 static inline xbar_active_edge_t XBARA_HAL_GetOutActiveEdge(XBARA_Type * baseAddr, uint32_t outIndex)
 {
-    assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
-    return (xbar_active_edge_t) XBARA_RD_CTRLx_EDGEx(baseAddr, (outIndex & 0xFFU));
+	assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
+	return (xbar_active_edge_t) XBARA_RD_CTRLx_EDGEx(baseAddr, (outIndex & 0xFFU));
 }
 
 /*!
@@ -227,8 +227,8 @@ static inline xbar_active_edge_t XBARA_HAL_GetOutActiveEdge(XBARA_Type * baseAdd
  */
 static inline void XBARA_HAL_ClearEdgeDetectionStatus(XBARA_Type * baseAddr, uint32_t outIndex)
 {
-    assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
-    XBARA_CLR_CTRLx_STSx(baseAddr, (outIndex & 0xFFU));  
+	assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
+	XBARA_CLR_CTRLx_STSx(baseAddr, (outIndex & 0xFFU));
 }
 
 /*!
@@ -240,14 +240,14 @@ static inline void XBARA_HAL_ClearEdgeDetectionStatus(XBARA_Type * baseAddr, uin
  */
 static inline bool XBARA_HAL_GetEdgeDetectionStatus(XBARA_Type * baseAddr, uint32_t outIndex)
 {
-    assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
-    return XBARA_RD_CTRLx_STSx(baseAddr, (outIndex & 0xFFU));  
+	assert((outIndex & 0xFFU) < FSL_FEATURE_XBARA_INTERRUPT_COUNT);
+	return XBARA_RD_CTRLx_STSx(baseAddr, (outIndex & 0xFFU));
 }
 
 #if !defined FSL_FEATURE_XBAR_HAS_SINGLE_MODULE
 
 /*!
- * @brief Initializes the XBARB module to the reset state.  
+ * @brief Initializes the XBARB module to the reset state.
  *
  * @param baseAddr Register base address for XBARB module.
  */
@@ -256,7 +256,7 @@ void XBARB_HAL_Init(XBARB_Type * baseAddr);
 /*!
  * @brief Selects which of the shared inputs XBARB_IN[*] is muxed to selected output XBARB_OUT[*]   .
  *
- * This function selects which of the shared inputs XBARB_IN[*] is muxed 
+ * This function selects which of the shared inputs XBARB_IN[*] is muxed
  * to selected output XBARB_OUT[*]
  *
  * @param baseAddr Register base address for XBARB module.
@@ -265,8 +265,8 @@ void XBARB_HAL_Init(XBARB_Type * baseAddr);
  */
 static inline void XBARB_HAL_SetOutSel(XBARB_Type * baseAddr, uint32_t outIndex, uint32_t input)
 {
-    assert((outIndex & 0xFFU) < FSL_FEATURE_XBARB_MODULE_OUTPUTS);
-    XBARB_WR_SELx_SELx(baseAddr, (outIndex & 0xFFU), (input & 0xFFU));
+	assert((outIndex & 0xFFU) < FSL_FEATURE_XBARB_MODULE_OUTPUTS);
+	XBARB_WR_SELx_SELx(baseAddr, (outIndex & 0xFFU), (input & 0xFFU));
 }
 
 /*!
@@ -280,20 +280,20 @@ static inline void XBARB_HAL_SetOutSel(XBARB_Type * baseAddr, uint32_t outIndex,
  */
 static inline uint32_t XBARB_HAL_GetOutSel(XBARB_Type * baseAddr, uint32_t outIndex)
 {
-    assert((outIndex & 0xFFU) < FSL_FEATURE_XBARB_MODULE_OUTPUTS);
-    return (uint32_t)XBARB_RD_SELx_SELx(baseAddr, (outIndex & 0xFFU));
+	assert((outIndex & 0xFFU) < FSL_FEATURE_XBARB_MODULE_OUTPUTS);
+	return (uint32_t)XBARB_RD_SELx_SELx(baseAddr, (outIndex & 0xFFU));
 }
 #else
 /*!
- * @brief Initializes the XBAR module to the reset state.  
+ * @brief Initializes the XBAR module to the reset state.
  *
  * @param baseAddr Register base address for XBAR module.
  */
 static inline void XBAR_HAL_Init(XBAR_Type * baseAddr)
 {
-    XBARA_HAL_Init(baseAddr);
+	XBARA_HAL_Init(baseAddr);
 }
-  
+
 /*!
  * @brief Selects which of the shared inputs XBAR_IN[*] is muxed to selected output XBAR_OUT[*].
  *
@@ -305,7 +305,7 @@ static inline void XBAR_HAL_Init(XBAR_Type * baseAddr)
  */
 static inline void XBAR_HAL_SetOutSel(XBAR_Type * baseAddr, uint32_t outIndex, uint32_t input)
 {
-    XBARA_HAL_SetOutSel(baseAddr, outIndex, input);
+	XBARA_HAL_SetOutSel(baseAddr, outIndex, input);
 }
 
 /*!
@@ -319,7 +319,7 @@ static inline void XBAR_HAL_SetOutSel(XBAR_Type * baseAddr, uint32_t outIndex, u
  */
 static inline uint32_t XBAR_HAL_GetOutSel(XBAR_Type * baseAddr, uint32_t outIndex)
 {
-    return XBARA_HAL_GetOutSel(baseAddr, outIndex);
+	return XBARA_HAL_GetOutSel(baseAddr, outIndex);
 }
 
 /*!
@@ -335,7 +335,7 @@ static inline uint32_t XBAR_HAL_GetOutSel(XBAR_Type * baseAddr, uint32_t outInde
  */
 static inline void XBAR_HAL_SetDMAOutCmd(XBAR_Type * baseAddr, uint32_t outIndex, bool enable)
 {
-    XBARA_HAL_SetDMAOutCmd(baseAddr, outIndex, enable);
+	XBARA_HAL_SetDMAOutCmd(baseAddr, outIndex, enable);
 }
 
 /*!
@@ -350,7 +350,7 @@ static inline void XBAR_HAL_SetDMAOutCmd(XBAR_Type * baseAddr, uint32_t outIndex
  */
 static inline void XBAR_HAL_SetIntOutCmd(XBAR_Type * baseAddr, uint32_t outIndex, bool enable)
 {
-    XBARA_HAL_SetIntOutCmd(baseAddr, outIndex, enable);
+	XBARA_HAL_SetIntOutCmd(baseAddr, outIndex, enable);
 }
 
 /*!
@@ -362,7 +362,7 @@ static inline void XBAR_HAL_SetIntOutCmd(XBAR_Type * baseAddr, uint32_t outIndex
  */
 static inline bool XBAR_HAL_GetDMAOutCmd(XBAR_Type * baseAddr, uint32_t outIndex)
 {
-    return XBARA_HAL_GetDMAOutCmd(baseAddr, outIndex);
+	return XBARA_HAL_GetDMAOutCmd(baseAddr, outIndex);
 }
 
 /*!
@@ -374,7 +374,7 @@ static inline bool XBAR_HAL_GetDMAOutCmd(XBAR_Type * baseAddr, uint32_t outIndex
  */
 static inline bool XBAR_HAL_GetIntOutCmd(XBAR_Type * baseAddr, uint32_t outIndex)
 {
-    return XBARA_HAL_GetIntOutCmd(baseAddr, outIndex);
+	return XBARA_HAL_GetIntOutCmd(baseAddr, outIndex);
 }
 
 /*!
@@ -388,7 +388,7 @@ static inline bool XBAR_HAL_GetIntOutCmd(XBAR_Type * baseAddr, uint32_t outIndex
  */
 static inline void XBAR_HAL_SetOutActiveEdge(XBAR_Type * baseAddr, uint32_t outIndex, xbar_active_edge_t edge)
 {
-    XBARA_HAL_SetOutActiveEdge(baseAddr, outIndex, edge);
+	XBARA_HAL_SetOutActiveEdge(baseAddr, outIndex, edge);
 }
 
 /*!
@@ -402,7 +402,7 @@ static inline void XBAR_HAL_SetOutActiveEdge(XBAR_Type * baseAddr, uint32_t outI
  */
 static inline xbar_active_edge_t XBAR_HAL_GetOutActiveEdge(XBAR_Type * baseAddr, uint32_t outIndex)
 {
-    return XBARA_HAL_GetOutActiveEdge(baseAddr, outIndex);
+	return XBARA_HAL_GetOutActiveEdge(baseAddr, outIndex);
 }
 
 /*!
@@ -413,7 +413,7 @@ static inline xbar_active_edge_t XBAR_HAL_GetOutActiveEdge(XBAR_Type * baseAddr,
  */
 static inline void XBAR_HAL_ClearEdgeDetectionStatus(XBAR_Type * baseAddr, uint32_t outIndex)
 {
-    XBARA_HAL_ClearEdgeDetectionStatus(baseAddr, outIndex);
+	XBARA_HAL_ClearEdgeDetectionStatus(baseAddr, outIndex);
 }
 
 /*!
@@ -425,7 +425,7 @@ static inline void XBAR_HAL_ClearEdgeDetectionStatus(XBAR_Type * baseAddr, uint3
  */
 static inline bool XBAR_HAL_GetEdgeDetectionStatus(XBAR_Type * baseAddr, uint32_t outIndex)
 {
-    return XBARA_HAL_GetEdgeDetectionStatus(baseAddr, outIndex);
+	return XBARA_HAL_GetEdgeDetectionStatus(baseAddr, outIndex);
 }
 
 #endif/* FSL_FEATURE_XBAR_HAS_SINGLE_MODULE */

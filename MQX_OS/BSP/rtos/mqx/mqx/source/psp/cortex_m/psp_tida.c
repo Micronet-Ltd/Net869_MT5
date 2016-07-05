@@ -30,16 +30,16 @@
 
 /*!
  * \brief This function converts ticks into days
- * 
- * \param tick_ptr 
- * \param overflow_ptr 
+ *
+ * \param tick_ptr
+ * \param overflow_ptr
  *
  * \return uint32_t - number of days
  */
 uint32_t _psp_ticks_to_days
    (
-      PSP_TICK_STRUCT_PTR tick_ptr,
-      bool        *overflow_ptr
+	  PSP_TICK_STRUCT_PTR tick_ptr,
+	  bool        *overflow_ptr
    )
 { /* Body */
    uint64_t                tmp;
@@ -49,14 +49,14 @@ uint32_t _psp_ticks_to_days
 
    tmp = tick_ptr->TICKS[0];
 
-   if ((tmp != MAX_UINT_64) && 
-      (tick_ptr->HW_TICKS[0] > (kernel_data->HW_TICKS_PER_TICK/2)))
+   if ((tmp != MAX_UINT_64) &&
+	  (tick_ptr->HW_TICKS[0] > (kernel_data->HW_TICKS_PER_TICK/2)))
    {
-      tmp++;
+	  tmp++;
    } /* Endif */
 
    tmp = (tmp / kernel_data->TICKS_PER_SECOND) /
-      (SECS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY);
+	  (SECS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY);
 
    *overflow_ptr = (bool)(tmp > MAX_UINT_32);
 

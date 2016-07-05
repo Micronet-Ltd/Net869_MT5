@@ -36,7 +36,7 @@
 #include "fsl_mpu_hal.h"
 #if FSL_FEATURE_SOC_MPU_COUNT
 
-/*! 
+/*!
  * @addtogroup mpu_driver
  * @{
  */
@@ -51,15 +51,15 @@ extern MPU_Type * const g_mpuBase[];
  /*! @brief Table to save MPU IRQ enumeration numbers defined in the CMSIS header file. */
 extern const IRQn_Type g_mpuIrqId[MPU_INSTANCE_COUNT];
 
-/*! 
+/*!
  * @brief Data The section describes the programming interface of the for MPU region initialization.
  *
  * This structure is used when calling the MPU_DRV_Init function.
- * 
+ *
  */
 typedef struct MpuUserConfig{
-    mpu_region_config_t  regionConfig;  /*!< region access permission      */
-    struct MpuUserConfig *next;         /*!< pointer to the next structure */
+	mpu_region_config_t  regionConfig;  /*!< region access permission      */
+	struct MpuUserConfig *next;         /*!< pointer to the next structure */
 }mpu_user_config_t;
 
 /*!
@@ -76,12 +76,12 @@ typedef struct MpuUserConfig{
 extern "C" {
 #endif
 
-/*! 
+/*!
  * @name MPU Driver
  * @{
  */
 
-  
+
 /*!
  * @brief Initializes the MPU driver.
  *
@@ -95,7 +95,7 @@ extern "C" {
 /*!
  * @brief Deinitializes the MPU region.
  *
- * @param instance The MPU peripheral instance number.  
+ * @param instance The MPU peripheral instance number.
  */
 void MPU_DRV_Deinit(uint32_t instance);
 
@@ -171,4 +171,3 @@ mpu_status_t MPU_DRV_GetDetailErrorAccessInfo(uint32_t instance,  mpu_access_err
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

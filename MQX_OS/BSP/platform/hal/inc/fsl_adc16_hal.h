@@ -52,9 +52,9 @@
  */
 typedef enum _adc16_status
 {
-    kStatus_ADC16_Success         = 0U, /*!< Success. */
-    kStatus_ADC16_InvalidArgument = 1U, /*!< Invalid argument. */
-    kStatus_ADC16_Failed          = 2U  /*!< Execution failed. */
+	kStatus_ADC16_Success         = 0U, /*!< Success. */
+	kStatus_ADC16_InvalidArgument = 1U, /*!< Invalid argument. */
+	kStatus_ADC16_Failed          = 2U  /*!< Execution failed. */
 } adc16_status_t;
 
 #if FSL_FEATURE_ADC16_HAS_MUX_SELECT
@@ -68,9 +68,9 @@ typedef enum _adc16_status
  */
 typedef enum _adc16_chn_mux_mode
 {
-    kAdc16ChnMuxOfA = 0U, /*!< For channel with channel mux a. @internal gui name="MUX A" */
-    kAdc16ChnMuxOfB = 1U, /*!< For channel with channel mux b. @internal gui name="MUX B" */
-    kAdc16ChnMuxOfDefault = kAdc16ChnMuxOfA /*!< For channel without any channel mux identifier. @internal gui name="" */
+	kAdc16ChnMuxOfA = 0U, /*!< For channel with channel mux a. @internal gui name="MUX A" */
+	kAdc16ChnMuxOfB = 1U, /*!< For channel with channel mux b. @internal gui name="MUX B" */
+	kAdc16ChnMuxOfDefault = kAdc16ChnMuxOfA /*!< For channel without any channel mux identifier. @internal gui name="" */
 } adc16_chn_mux_mode_t;
 #endif /* FSL_FEATURE_ADC16_HAS_MUX_SELECT */
 
@@ -79,10 +79,10 @@ typedef enum _adc16_chn_mux_mode
  */
 typedef enum _adc16_clk_divider
 {
-    kAdc16ClkDividerOf1 = 0U, /*!< For divider 1 from the input clock to ADC16. @internal gui name="1" */
-    kAdc16ClkDividerOf2 = 1U, /*!< For divider 2 from the input clock to ADC16. @internal gui name="2" */
-    kAdc16ClkDividerOf4 = 2U, /*!< For divider 4 from the input clock to ADC16. @internal gui name="4" */
-    kAdc16ClkDividerOf8 = 3U  /*!< For divider 8 from the input clock to ADC16. @internal gui name="8" */
+	kAdc16ClkDividerOf1 = 0U, /*!< For divider 1 from the input clock to ADC16. @internal gui name="1" */
+	kAdc16ClkDividerOf2 = 1U, /*!< For divider 2 from the input clock to ADC16. @internal gui name="2" */
+	kAdc16ClkDividerOf4 = 2U, /*!< For divider 4 from the input clock to ADC16. @internal gui name="4" */
+	kAdc16ClkDividerOf8 = 3U  /*!< For divider 8 from the input clock to ADC16. @internal gui name="8" */
 } adc16_clk_divider_t;
 
 /*!
@@ -90,25 +90,25 @@ typedef enum _adc16_clk_divider
  */
 typedef enum _adc16_resolution
 {
-    kAdc16ResolutionBitOf8or9 = 0U,
-        /*!< 8-bit for single end sample, or 9-bit for differential sample. @internal gui name="" */
-    kAdc16ResolutionBitOfSingleEndAs8 = kAdc16ResolutionBitOf8or9, /*!< 8-bit for single end sample. @internal gui name="8 bit in single mode" */
-    kAdc16ResolutionBitOfDiffModeAs9 = kAdc16ResolutionBitOf8or9, /*!< 9-bit for differential sample. @internal gui name="9 bit in differential mode" */
+	kAdc16ResolutionBitOf8or9 = 0U,
+		/*!< 8-bit for single end sample, or 9-bit for differential sample. @internal gui name="" */
+	kAdc16ResolutionBitOfSingleEndAs8 = kAdc16ResolutionBitOf8or9, /*!< 8-bit for single end sample. @internal gui name="8 bit in single mode" */
+	kAdc16ResolutionBitOfDiffModeAs9 = kAdc16ResolutionBitOf8or9, /*!< 9-bit for differential sample. @internal gui name="9 bit in differential mode" */
 
-    kAdc16ResolutionBitOf12or13 = 1U,
-        /*!< 12-bit for single end sample, or 13-bit for differential sample. @internal gui name="" */
-    kAdc16ResolutionBitOfSingleEndAs12 = kAdc16ResolutionBitOf12or13, /*!< 12-bit for single end sample. @internal gui name="12 bit in single mode" */
-    kAdc16ResolutionBitOfDiffModeAs13 = kAdc16ResolutionBitOf12or13, /*!< 13-bit for differential sample. @internal gui name="13 bit in differential mode" */
+	kAdc16ResolutionBitOf12or13 = 1U,
+		/*!< 12-bit for single end sample, or 13-bit for differential sample. @internal gui name="" */
+	kAdc16ResolutionBitOfSingleEndAs12 = kAdc16ResolutionBitOf12or13, /*!< 12-bit for single end sample. @internal gui name="12 bit in single mode" */
+	kAdc16ResolutionBitOfDiffModeAs13 = kAdc16ResolutionBitOf12or13, /*!< 13-bit for differential sample. @internal gui name="13 bit in differential mode" */
 
-    kAdc16ResolutionBitOf10or11 = 2U,
-        /*!< 10-bit for single end sample, or 11-bit for differential sample. @internal gui name="" */
-    kAdc16ResolutionBitOfSingleEndAs10 = kAdc16ResolutionBitOf10or11, /*!< 10-bit for single end sample. @internal gui name="10 bit in single mode" */
-    kAdc16ResolutionBitOfDiffModeAs11 = kAdc16ResolutionBitOf10or11 /*!< 11-bit for differential sample. @internal gui name="11 bit in differential mode" */
+	kAdc16ResolutionBitOf10or11 = 2U,
+		/*!< 10-bit for single end sample, or 11-bit for differential sample. @internal gui name="" */
+	kAdc16ResolutionBitOfSingleEndAs10 = kAdc16ResolutionBitOf10or11, /*!< 10-bit for single end sample. @internal gui name="10 bit in single mode" */
+	kAdc16ResolutionBitOfDiffModeAs11 = kAdc16ResolutionBitOf10or11 /*!< 11-bit for differential sample. @internal gui name="11 bit in differential mode" */
 #if (FSL_FEATURE_ADC16_MAX_RESOLUTION >= 16U)
-    , kAdc16ResolutionBitOf16 = 3U,
-        /*!< 16-bit for both single end sample and differential sample. @internal gui name="16-bit" */
-    kAdc16ResolutionBitOfSingleEndAs16 = kAdc16ResolutionBitOf16, /*!< 16-bit for single end sample. @internal gui name="" */
-    kAdc16ResolutionBitOfDiffModeAs16 = kAdc16ResolutionBitOf16 /*!< 16-bit for differential sample. @internal gui name="" */
+	, kAdc16ResolutionBitOf16 = 3U,
+		/*!< 16-bit for both single end sample and differential sample. @internal gui name="16-bit" */
+	kAdc16ResolutionBitOfSingleEndAs16 = kAdc16ResolutionBitOf16, /*!< 16-bit for single end sample. @internal gui name="" */
+	kAdc16ResolutionBitOfDiffModeAs16 = kAdc16ResolutionBitOf16 /*!< 16-bit for differential sample. @internal gui name="" */
 
 #endif /* FSL_FEATURE_ADC16_MAX_RESOLUTION */
 } adc16_resolution_t;
@@ -118,10 +118,10 @@ typedef enum _adc16_resolution
  */
 typedef enum _adc16_clk_src_mode
 {
-    kAdc16ClkSrcOfBusClk  = 0U, /*!< For input as bus clock. @internal gui name="Bus clock" */
-    kAdc16ClkSrcOfAltClk2 = 1U, /*!< For input as alternate clock 2 (AltClk2). @internal gui name="Alternate clock 2" */
-    kAdc16ClkSrcOfAltClk  = 2U, /*!< For input as alternate clock (ALTCLK). @internal gui name="Alternate clock 1" */
-    kAdc16ClkSrcOfAsynClk = 3U  /*!< For input as asynchronous clock (ADACK). @internal gui name="Asynchronous clock" */
+	kAdc16ClkSrcOfBusClk  = 0U, /*!< For input as bus clock. @internal gui name="Bus clock" */
+	kAdc16ClkSrcOfAltClk2 = 1U, /*!< For input as alternate clock 2 (AltClk2). @internal gui name="Alternate clock 2" */
+	kAdc16ClkSrcOfAltClk  = 2U, /*!< For input as alternate clock (ALTCLK). @internal gui name="Alternate clock 1" */
+	kAdc16ClkSrcOfAsynClk = 3U  /*!< For input as asynchronous clock (ADACK). @internal gui name="Asynchronous clock" */
 } adc16_clk_src_mode_t;
 
 /*!
@@ -129,10 +129,10 @@ typedef enum _adc16_clk_src_mode
  */
 typedef enum _adc16_long_sample_cycle
 {
-    kAdc16LongSampleCycleOf24 = 0U, /*!< 20 extra ADCK cycles, 24 ADCK cycles total. */
-    kAdc16LongSampleCycleOf16 = 1U, /*!< 12 extra ADCK cycles, 16 ADCK cycles total. */
-    kAdc16LongSampleCycleOf10 = 2U, /*!< 6 extra ADCK cycles, 10 ADCK cycles total. */
-    kAdc16LongSampleCycleOf6  = 3U  /*!< 2 extra ADCK cycles, 6 ADCK cycles total. */
+	kAdc16LongSampleCycleOf24 = 0U, /*!< 20 extra ADCK cycles, 24 ADCK cycles total. */
+	kAdc16LongSampleCycleOf16 = 1U, /*!< 12 extra ADCK cycles, 16 ADCK cycles total. */
+	kAdc16LongSampleCycleOf10 = 2U, /*!< 6 extra ADCK cycles, 10 ADCK cycles total. */
+	kAdc16LongSampleCycleOf6  = 3U  /*!< 2 extra ADCK cycles, 6 ADCK cycles total. */
 } adc16_long_sample_cycle_t;
 
 /*!
@@ -140,10 +140,10 @@ typedef enum _adc16_long_sample_cycle
  */
 typedef enum _adc16_ref_volt_src
 {
-    kAdc16RefVoltSrcOfVref = 0U, /*!< For external pins pair of VrefH and VrefL. @internal gui name="Vref pair" */
-    kAdc16RefVoltSrcOfValt = 1U /*!< For alternate reference pair of ValtH and ValtL. @internal gui name="Valt pair" */
+	kAdc16RefVoltSrcOfVref = 0U, /*!< For external pins pair of VrefH and VrefL. @internal gui name="Vref pair" */
+	kAdc16RefVoltSrcOfValt = 1U /*!< For alternate reference pair of ValtH and ValtL. @internal gui name="Valt pair" */
 #if defined(KM34Z7_SERIES)
-    ,kAdc16RefVoltSrcOfVbdg = 2U  /*!< For internal bandgap reference pair of VbdgH and VbdgL. @internal gui name="Vbdg pair" */
+	,kAdc16RefVoltSrcOfVbdg = 2U  /*!< For internal bandgap reference pair of VbdgH and VbdgL. @internal gui name="Vbdg pair" */
 #endif
 } adc16_ref_volt_src_t;
 
@@ -154,10 +154,10 @@ typedef enum _adc16_ref_volt_src
  */
 typedef enum _adc16_hw_average_count
 {
-    kAdc16HwAverageCountOf4  = 0U, /*!< For hardware average with 4 samples. */
-    kAdc16HwAverageCountOf8  = 1U, /*!< For hardware average with 8 samples. */
-    kAdc16HwAverageCountOf16 = 2U, /*!< For hardware average with 16 samples. */
-    kAdc16HwAverageCountOf32 = 3U  /*!< For hardware average with 32 samples. */
+	kAdc16HwAverageCountOf4  = 0U, /*!< For hardware average with 4 samples. */
+	kAdc16HwAverageCountOf8  = 1U, /*!< For hardware average with 8 samples. */
+	kAdc16HwAverageCountOf16 = 2U, /*!< For hardware average with 16 samples. */
+	kAdc16HwAverageCountOf32 = 3U  /*!< For hardware average with 32 samples. */
 } adc16_hw_average_count_t;
 
 #endif /* FSL_FEATURE_ADC16_HAS_HW_AVERAGE */
@@ -169,13 +169,13 @@ typedef enum _adc16_hw_average_count
  */
 typedef enum _adc16_pga_gain
 {
-    kAdc16PgaGainValueOf1  = 0U, /*!< For amplifier gain of 1. @internal gui name="1" */
-    kAdc16PgaGainValueOf2  = 1U, /*!< For amplifier gain of 2. @internal gui name="2" */
-    kAdc16PgaGainValueOf4  = 2U, /*!< For amplifier gain of 4. @internal gui name="4" */
-    kAdc16PgaGainValueOf8  = 3U, /*!< For amplifier gain of 8. @internal gui name="8" */
-    kAdc16PgaGainValueOf16 = 4U, /*!< For amplifier gain of 16. @internal gui name="16" */
-    kAdc16PgaGainValueOf32 = 5U, /*!< For amplifier gain of 32. @internal gui name="32" */
-    kAdc16PgaGainValueOf64 = 6U  /*!< For amplifier gain of 64. @internal gui name="64" */
+	kAdc16PgaGainValueOf1  = 0U, /*!< For amplifier gain of 1. @internal gui name="1" */
+	kAdc16PgaGainValueOf2  = 1U, /*!< For amplifier gain of 2. @internal gui name="2" */
+	kAdc16PgaGainValueOf4  = 2U, /*!< For amplifier gain of 4. @internal gui name="4" */
+	kAdc16PgaGainValueOf8  = 3U, /*!< For amplifier gain of 8. @internal gui name="8" */
+	kAdc16PgaGainValueOf16 = 4U, /*!< For amplifier gain of 16. @internal gui name="16" */
+	kAdc16PgaGainValueOf32 = 5U, /*!< For amplifier gain of 32. @internal gui name="32" */
+	kAdc16PgaGainValueOf64 = 6U  /*!< For amplifier gain of 64. @internal gui name="64" */
 } adc16_pga_gain_t;
 
 #endif /* FSL_FEATURE_ADC16_HAS_PGA */
@@ -185,51 +185,51 @@ typedef enum _adc16_pga_gain
  */
 typedef enum _adc16_chn
 {
-    kAdc16Chn0  = 0U,  /*!< AD0. */
-    kAdc16Chn1  = 1U,  /*!< AD1. */
-    kAdc16Chn2  = 2U,  /*!< AD2. */
-    kAdc16Chn3  = 3U,  /*!< AD3. */
-    kAdc16Chn4  = 4U,  /*!< AD4. */
-    kAdc16Chn5  = 5U,  /*!< AD5. */
-    kAdc16Chn6  = 6U,  /*!< AD6. */
-    kAdc16Chn7  = 7U,  /*!< AD6. */
-    kAdc16Chn8  = 8U,  /*!< AD8.  */
-    kAdc16Chn9  = 9U,  /*!< AD9.  */
-    kAdc16Chn10 = 10U, /*!< AD10. */
-    kAdc16Chn11 = 11U, /*!< AD11. */
-    kAdc16Chn12 = 12U, /*!< AD12. */
-    kAdc16Chn13 = 13U, /*!< AD13. */
-    kAdc16Chn14 = 14U, /*!< AD14. */
-    kAdc16Chn15 = 15U, /*!< AD15. */
-    kAdc16Chn16 = 16U, /*!< AD16. */
-    kAdc16Chn17 = 17U, /*!< AD17. */
-    kAdc16Chn18 = 18U, /*!< AD18. */
-    kAdc16Chn19 = 19U, /*!< AD19. */
-    kAdc16Chn20 = 20U, /*!< AD20. */
-    kAdc16Chn21 = 21U, /*!< AD21. */
-    kAdc16Chn22 = 22U, /*!< AD22. */
-    kAdc16Chn23 = 23U, /*!< AD23. */
-    kAdc16Chn24 = 24U, /*!< AD24. */
-    kAdc16Chn25 = 25U, /*!< AD25. */
-    kAdc16Chn26 = 26U, /*!< AD26. */
-    kAdc16Chn27 = 27U, /*!< AD27. */
-    kAdc16Chn28 = 28U, /*!< AD28. */
-    kAdc16Chn29 = 29U, /*!< AD29. */
-    kAdc16Chn30 = 30U, /*!< AD30. */
-    kAdc16Chn31 = 31U,  /*!< AD31. */
+	kAdc16Chn0  = 0U,  /*!< AD0. */
+	kAdc16Chn1  = 1U,  /*!< AD1. */
+	kAdc16Chn2  = 2U,  /*!< AD2. */
+	kAdc16Chn3  = 3U,  /*!< AD3. */
+	kAdc16Chn4  = 4U,  /*!< AD4. */
+	kAdc16Chn5  = 5U,  /*!< AD5. */
+	kAdc16Chn6  = 6U,  /*!< AD6. */
+	kAdc16Chn7  = 7U,  /*!< AD6. */
+	kAdc16Chn8  = 8U,  /*!< AD8.  */
+	kAdc16Chn9  = 9U,  /*!< AD9.  */
+	kAdc16Chn10 = 10U, /*!< AD10. */
+	kAdc16Chn11 = 11U, /*!< AD11. */
+	kAdc16Chn12 = 12U, /*!< AD12. */
+	kAdc16Chn13 = 13U, /*!< AD13. */
+	kAdc16Chn14 = 14U, /*!< AD14. */
+	kAdc16Chn15 = 15U, /*!< AD15. */
+	kAdc16Chn16 = 16U, /*!< AD16. */
+	kAdc16Chn17 = 17U, /*!< AD17. */
+	kAdc16Chn18 = 18U, /*!< AD18. */
+	kAdc16Chn19 = 19U, /*!< AD19. */
+	kAdc16Chn20 = 20U, /*!< AD20. */
+	kAdc16Chn21 = 21U, /*!< AD21. */
+	kAdc16Chn22 = 22U, /*!< AD22. */
+	kAdc16Chn23 = 23U, /*!< AD23. */
+	kAdc16Chn24 = 24U, /*!< AD24. */
+	kAdc16Chn25 = 25U, /*!< AD25. */
+	kAdc16Chn26 = 26U, /*!< AD26. */
+	kAdc16Chn27 = 27U, /*!< AD27. */
+	kAdc16Chn28 = 28U, /*!< AD28. */
+	kAdc16Chn29 = 29U, /*!< AD29. */
+	kAdc16Chn30 = 30U, /*!< AD30. */
+	kAdc16Chn31 = 31U,  /*!< AD31. */
 
-    kAdc16Chn0d = kAdc16Chn0,  /*!< DAD0. */
-    kAdc16Chn1d = kAdc16Chn1,  /*!< DAD1. */
-    kAdc16Chn2d = kAdc16Chn2,  /*!< DAD2. */
-    kAdc16Chn3d = kAdc16Chn3,  /*!< DAD3. */
-    kAdc16Chn4a = kAdc16Chn4,  /*!< AD4a. */
-    kAdc16Chn5a = kAdc16Chn5,  /*!< AD5a. */
-    kAdc16Chn6a = kAdc16Chn6,  /*!< AD6a. */
-    kAdc16Chn7a = kAdc16Chn7,  /*!< AD7a. */
-    kAdc16Chn4b = kAdc16Chn4,  /*!< AD4b. */
-    kAdc16Chn5b = kAdc16Chn5,  /*!< AD5b. */
-    kAdc16Chn6b = kAdc16Chn6,  /*!< AD6b. */
-    kAdc16Chn7b = kAdc16Chn7   /*!< AD7b. */
+	kAdc16Chn0d = kAdc16Chn0,  /*!< DAD0. */
+	kAdc16Chn1d = kAdc16Chn1,  /*!< DAD1. */
+	kAdc16Chn2d = kAdc16Chn2,  /*!< DAD2. */
+	kAdc16Chn3d = kAdc16Chn3,  /*!< DAD3. */
+	kAdc16Chn4a = kAdc16Chn4,  /*!< AD4a. */
+	kAdc16Chn5a = kAdc16Chn5,  /*!< AD5a. */
+	kAdc16Chn6a = kAdc16Chn6,  /*!< AD6a. */
+	kAdc16Chn7a = kAdc16Chn7,  /*!< AD7a. */
+	kAdc16Chn4b = kAdc16Chn4,  /*!< AD4b. */
+	kAdc16Chn5b = kAdc16Chn5,  /*!< AD5b. */
+	kAdc16Chn6b = kAdc16Chn6,  /*!< AD6b. */
+	kAdc16Chn7b = kAdc16Chn7   /*!< AD7b. */
 
 } adc16_chn_t;
 
@@ -244,10 +244,10 @@ typedef enum _adc16_chn
  */
 typedef struct Adc16ChnConfig
 {
-    adc16_chn_t chnIdx;          /*!< Select the sample channel index. */
-    bool convCompletedIntEnable; /*!< Enable the conversion complete interrupt. */
+	adc16_chn_t chnIdx;          /*!< Select the sample channel index. */
+	bool convCompletedIntEnable; /*!< Enable the conversion complete interrupt. */
 #if FSL_FEATURE_ADC16_HAS_DIFF_MODE
-    bool diffConvEnable;         /*!< Enable the differential conversion. */
+	bool diffConvEnable;         /*!< Enable the differential conversion. */
 #endif /* FSL_FEATURE_ADC16_HAS_DIFF_MODE */
 } adc16_chn_config_t;
 
@@ -262,19 +262,19 @@ typedef struct Adc16ChnConfig
  */
 typedef struct Adc16ConverterConfig
 {
-    bool                    lowPowerEnable; /*!< Enables low power. @internal gui name="Low power mode" id="LowPowerMode" */
-    adc16_clk_divider_t     clkDividerMode; /*!< Selects the divider of input clock source. @internal gui name="Clock divider" id="ClockDivider" */
-    bool                    longSampleTimeEnable; /*!< Enables the long sample time. @internal gui name="Long sample time" id="LongSampleTime" */
-    adc16_resolution_t      resolution; /*!< Selects the sample resolution mode. @internal gui name="Resolution" id="Resolution" */
-    adc16_clk_src_mode_t    clkSrc; /*!< Selects the input clock source to converter. @internal gui name="Clock source" id="ClockSource" */
-    bool                    asyncClkEnable; /*!< Enables the asynchronous clock inside the ADC. @internal gui name="Internal async. clock" id="InternalAsyncClock" */
-    bool                    highSpeedEnable; /*!< Enables the high-speed mode. @internal gui name="High speed mode" id="HighSpeed" */
-    adc16_long_sample_cycle_t longSampleCycleMode; /*!< Selects the long sample mode. @internal gui name="Long sample mode" id="LongSampleMode" */
-    bool                    hwTriggerEnable; /*!< Enables the hardware trigger function. @internal gui name="Hardware trigger" id="HwTrigger" */
-    adc16_ref_volt_src_t    refVoltSrc; /*!< Selects the reference voltage source. @internal gui name="Voltage reference" id="ReferenceVoltage" */
-    bool                    continuousConvEnable; /*!< Enables continuous conversion mode. @internal gui name="Continuous mode" id="ContinuousMode" */
+	bool                    lowPowerEnable; /*!< Enables low power. @internal gui name="Low power mode" id="LowPowerMode" */
+	adc16_clk_divider_t     clkDividerMode; /*!< Selects the divider of input clock source. @internal gui name="Clock divider" id="ClockDivider" */
+	bool                    longSampleTimeEnable; /*!< Enables the long sample time. @internal gui name="Long sample time" id="LongSampleTime" */
+	adc16_resolution_t      resolution; /*!< Selects the sample resolution mode. @internal gui name="Resolution" id="Resolution" */
+	adc16_clk_src_mode_t    clkSrc; /*!< Selects the input clock source to converter. @internal gui name="Clock source" id="ClockSource" */
+	bool                    asyncClkEnable; /*!< Enables the asynchronous clock inside the ADC. @internal gui name="Internal async. clock" id="InternalAsyncClock" */
+	bool                    highSpeedEnable; /*!< Enables the high-speed mode. @internal gui name="High speed mode" id="HighSpeed" */
+	adc16_long_sample_cycle_t longSampleCycleMode; /*!< Selects the long sample mode. @internal gui name="Long sample mode" id="LongSampleMode" */
+	bool                    hwTriggerEnable; /*!< Enables the hardware trigger function. @internal gui name="Hardware trigger" id="HwTrigger" */
+	adc16_ref_volt_src_t    refVoltSrc; /*!< Selects the reference voltage source. @internal gui name="Voltage reference" id="ReferenceVoltage" */
+	bool                    continuousConvEnable; /*!< Enables continuous conversion mode. @internal gui name="Continuous mode" id="ContinuousMode" */
 #if FSL_FEATURE_ADC16_HAS_DMA
-    bool                    dmaEnable; /*!< Enables the DMA for ADC converter. @internal gui name="DMA mode" id="DMASupport" */
+	bool                    dmaEnable; /*!< Enables the DMA for ADC converter. @internal gui name="DMA mode" id="DMASupport" */
 #endif /* FSL_FEATURE_ADC16_HAS_DMA */
 } adc16_converter_config_t;
 
@@ -284,27 +284,27 @@ typedef struct Adc16ConverterConfig
  */
 typedef struct Adc16HwCmpConfig
 {
-    bool hwCmpEnable; /*!< Enables the hardware compare function. @internal gui name="Hardware compare" */
-    bool hwCmpGreaterThanEnable; /*!< Configures the compare function. @internal gui name="Compare function greater than" */
-    /*
-     false - Configures less than the threshold. The outside and inside range are not inclusive.
-             The functionality is based on the values
-             placed in CV1 and CV2.
-     true  - Configures greater than or equal to the threshold. The outside and inside
-             ranges are inclusive. The functionality is based on the values placed in
-             CV1 and CV2.
-     */
-    bool hwCmpRangeEnable; /*!< Configures the comparator function. @internal gui name="Compare function range" */
-    /*
-     Configures the comparator function to check if the conversion result of the
-     input being monitored is either between or outside the range formed by
-     CV1 and CV2 and determined by the value of hwCmpGreaterThanEnable.
+	bool hwCmpEnable; /*!< Enables the hardware compare function. @internal gui name="Hardware compare" */
+	bool hwCmpGreaterThanEnable; /*!< Configures the compare function. @internal gui name="Compare function greater than" */
+	/*
+	 false - Configures less than the threshold. The outside and inside range are not inclusive.
+			 The functionality is based on the values
+			 placed in CV1 and CV2.
+	 true  - Configures greater than or equal to the threshold. The outside and inside
+			 ranges are inclusive. The functionality is based on the values placed in
+			 CV1 and CV2.
+	 */
+	bool hwCmpRangeEnable; /*!< Configures the comparator function. @internal gui name="Compare function range" */
+	/*
+	 Configures the comparator function to check if the conversion result of the
+	 input being monitored is either between or outside the range formed by
+	 CV1 and CV2 and determined by the value of hwCmpGreaterThanEnable.
 
-     false - Range function disabled. Only CV1 is compared.
-     true  - Range function enabled. Both CV1 and CV2 are compared.
-    */
-    uint16_t cmpValue1; /*!< Setting value for CV1. @internal gui name="Compare value 1" */
-    uint16_t cmpValue2; /*!< Setting value for CV2. @internal gui name="Compare value 2" */
+	 false - Range function disabled. Only CV1 is compared.
+	 true  - Range function enabled. Both CV1 and CV2 are compared.
+	*/
+	uint16_t cmpValue1; /*!< Setting value for CV1. @internal gui name="Compare value 1" */
+	uint16_t cmpValue2; /*!< Setting value for CV2. @internal gui name="Compare value 2" */
 } adc16_hw_cmp_config_t;
 
 #if FSL_FEATURE_ADC16_HAS_HW_AVERAGE
@@ -313,8 +313,8 @@ typedef struct Adc16HwCmpConfig
  */
 typedef struct Adc16HwAverageConfig
 {
-    bool hwAverageEnable; /*!< Enable the hardware average function. */
-    adc16_hw_average_count_t hwAverageCountMode; /*!< Select the count of conversion result for accumulator. */
+	bool hwAverageEnable; /*!< Enable the hardware average function. */
+	adc16_hw_average_count_t hwAverageCountMode; /*!< Select the count of conversion result for accumulator. */
 } adc16_hw_average_config_t;
 
 #endif /* FSL_FEATURE_ADC16_HAS_HW_AVERAGE */
@@ -327,26 +327,26 @@ typedef struct Adc16HwAverageConfig
  */
 typedef struct Adc16PgaConfig
 {
-    bool pgaEnable; /*!< Enables the PGA's function. @internal gui name="PGA module" */
-    bool runInNormalModeEnable; /*!< Enables PGA working in normal mode or low power mode by default. @internal gui name="Low power mode run" */
-    adc16_pga_gain_t pgaGainMode; /*!< Selects the PGA Gain factor. @internal gui name="Gain" */
+	bool pgaEnable; /*!< Enables the PGA's function. @internal gui name="PGA module" */
+	bool runInNormalModeEnable; /*!< Enables PGA working in normal mode or low power mode by default. @internal gui name="Low power mode run" */
+	adc16_pga_gain_t pgaGainMode; /*!< Selects the PGA Gain factor. @internal gui name="Gain" */
 
 #if FSL_FEATURE_ADC16_HAS_PGA_CHOPPING
-    bool pgaChoppingDisable; /*!< Disables the PGA chopping function. @internal gui name="Chopping control" */
-    /*
-     The PGA employs chopping to remove/reduce offset and 1/f noise and offers an
-     offset measurement configuration that aids the offset calibration.
-    */
+	bool pgaChoppingDisable; /*!< Disables the PGA chopping function. @internal gui name="Chopping control" */
+	/*
+	 The PGA employs chopping to remove/reduce offset and 1/f noise and offers an
+	 offset measurement configuration that aids the offset calibration.
+	*/
 #endif /* FSL_FEATURE_ADC16_HAS_PGA_CHOPPING */
 #if FSL_FEATURE_ADC16_HAS_PGA_OFFSET_MEASUREMENT
-    bool runInOffsetMeasurementEnable; /*!< Enables the PGA working in offset measurement mode. @internal gui name="Offset measurement mode" */
-    /*
-     When this feature is enabled, the PGA disconnects itself from the external
-     inputs and auto-configures into offset measurement mode. With this bit set,
-     run the ADC in the recommended settings and enable the maximum hardware
-     averaging to get the PGA offset number. The output is the
-     (PGA offset * (64+1)) for the given PGA setting.
-    */
+	bool runInOffsetMeasurementEnable; /*!< Enables the PGA working in offset measurement mode. @internal gui name="Offset measurement mode" */
+	/*
+	 When this feature is enabled, the PGA disconnects itself from the external
+	 inputs and auto-configures into offset measurement mode. With this bit set,
+	 run the ADC in the recommended settings and enable the maximum hardware
+	 averaging to get the PGA offset number. The output is the
+	 (PGA offset * (64+1)) for the given PGA setting.
+	*/
 #endif /* FSL_FEATURE_ADC16_HAS_PGA_OFFSET_MEASUREMENT */
 } adc16_pga_config_t;
 
@@ -359,12 +359,12 @@ extern "C" {
 /*******************************************************************************
  * API
  ******************************************************************************/
-/*! 
+/*!
  * @name ADC16 HAL.
  * @{
  */
- 
- 
+
+
 /*!
  * @brief Resets all registers into a known state for the ADC16 module.
  *
@@ -404,8 +404,8 @@ void ADC16_HAL_ConfigChn(ADC_Type * base, uint32_t chnGroup, const adc16_chn_con
  */
 static inline bool ADC16_HAL_GetChnConvCompletedFlag(ADC_Type * base, uint32_t chnGroup)
 {
-    assert(chnGroup < FSL_FEATURE_ADC16_CONVERSION_CONTROL_COUNT);
-    return (1U == ADC_BRD_SC1_COCO(base, chnGroup) );
+	assert(chnGroup < FSL_FEATURE_ADC16_CONVERSION_CONTROL_COUNT);
+	return (1U == ADC_BRD_SC1_COCO(base, chnGroup) );
 }
 
 /*!
@@ -457,8 +457,8 @@ void ADC16_HAL_ConfigHwAverage(ADC_Type * base, const adc16_hw_average_config_t 
  */
 static inline uint16_t ADC16_HAL_GetChnConvValue(ADC_Type * base, uint32_t chnGroup )
 {
-    assert(chnGroup < FSL_FEATURE_ADC16_CONVERSION_CONTROL_COUNT);
-    return (uint16_t)(ADC_BRD_R_D(base, chnGroup) );
+	assert(chnGroup < FSL_FEATURE_ADC16_CONVERSION_CONTROL_COUNT);
+	return (uint16_t)(ADC_BRD_R_D(base, chnGroup) );
 }
 
 /*!
@@ -472,7 +472,7 @@ static inline uint16_t ADC16_HAL_GetChnConvValue(ADC_Type * base, uint32_t chnGr
  */
 static inline bool ADC16_HAL_GetConvActiveFlag(ADC_Type * base)
 {
-    return (1U == ADC_BRD_SC2_ADACT(base) );
+	return (1U == ADC_BRD_SC2_ADACT(base) );
 }
 
 #if FSL_FEATURE_ADC16_HAS_MUX_SELECT
@@ -486,7 +486,7 @@ static inline bool ADC16_HAL_GetConvActiveFlag(ADC_Type * base)
  */
 static inline void ADC16_HAL_SetChnMuxMode(ADC_Type * base, adc16_chn_mux_mode_t mode)
 {
-    ADC_BWR_CFG2_MUXSEL(base, ((kAdc16ChnMuxOfA == mode) ? 0U : 1U) );
+	ADC_BWR_CFG2_MUXSEL(base, ((kAdc16ChnMuxOfA == mode) ? 0U : 1U) );
 }
 #endif /* FSL_FEATURE_ADC16_HAS_MUX_SELECT */
 
@@ -501,7 +501,7 @@ static inline void ADC16_HAL_SetChnMuxMode(ADC_Type * base, adc16_chn_mux_mode_t
  */
 static inline void ADC16_HAL_SetAutoCalibrationCmd(ADC_Type * base, bool enable)
 {
-    ADC_BWR_SC3_CAL(base, (enable ? 1U : 0U) );
+	ADC_BWR_SC3_CAL(base, (enable ? 1U : 0U) );
 }
 
 /*!
@@ -517,7 +517,7 @@ static inline void ADC16_HAL_SetAutoCalibrationCmd(ADC_Type * base, bool enable)
  */
 static inline bool ADC16_HAL_GetAutoCalibrationActiveFlag(ADC_Type * base)
 {
-    return (1U == ADC_BRD_SC3_CAL(base) );
+	return (1U == ADC_BRD_SC3_CAL(base) );
 }
 
 /*!
@@ -532,7 +532,7 @@ static inline bool ADC16_HAL_GetAutoCalibrationActiveFlag(ADC_Type * base)
  */
 static inline bool ADC16_HAL_GetAutoCalibrationFailedFlag(ADC_Type * base)
 {
-    return (1U == ADC_BRD_SC3_CALF(base) );
+	return (1U == ADC_BRD_SC3_CALF(base) );
 }
 
 /*!
@@ -558,7 +558,7 @@ uint16_t ADC16_HAL_GetAutoPlusSideGainValue(ADC_Type * base);
  */
 static inline void ADC16_HAL_SetPlusSideGainValue(ADC_Type * base, uint16_t value)
 {
-    ADC_BWR_PG_PG(base, value);
+	ADC_BWR_PG_PG(base, value);
 }
 
 #if FSL_FEATURE_ADC16_HAS_DIFF_MODE
@@ -586,7 +586,7 @@ uint16_t ADC16_HAL_GetAutoMinusSideGainValue(ADC_Type * base);
  */
 static inline void ADC16_HAL_SetMinusSideGainValue(ADC_Type * base, uint16_t value)
 {
-    ADC_BWR_MG_MG(base, value);
+	ADC_BWR_MG_MG(base, value);
 }
 
 #endif /* FSL_FEATURE_ADC16_HAS_DIFF_MODE */
@@ -608,7 +608,7 @@ static inline void ADC16_HAL_SetMinusSideGainValue(ADC_Type * base, uint16_t val
  */
 static inline uint16_t ADC16_HAL_GetOffsetValue(ADC_Type * base)
 {
-    return (uint16_t)(ADC_BRD_OFS_OFS(base) );
+	return (uint16_t)(ADC_BRD_OFS_OFS(base) );
 }
 
 /*!
@@ -627,7 +627,7 @@ static inline uint16_t ADC16_HAL_GetOffsetValue(ADC_Type * base)
  */
 static inline void ADC16_HAL_SetOffsetValue(ADC_Type * base, uint16_t value)
 {
-    ADC_BWR_OFS_OFS(base, value);
+	ADC_BWR_OFS_OFS(base, value);
 }
 
 #endif /* FSL_FEATURE_ADC16_HAS_OFFSET_CORRECTION */
@@ -662,4 +662,3 @@ void ADC16_HAL_ConfigPga(ADC_Type * base, const adc16_pga_config_t *configPtr);
 /******************************************************************************
  * EOF
  *****************************************************************************/
-

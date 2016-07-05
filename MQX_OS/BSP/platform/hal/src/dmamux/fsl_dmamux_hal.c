@@ -42,17 +42,16 @@
  *END**************************************************************************/
 void DMAMUX_HAL_Init(DMAMUX_Type * base)
 {
-    int i;
+	int i;
 
-    for (i = 0; i < FSL_FEATURE_DMAMUX_MODULE_CHANNEL; i++)
-    {
-        DMAMUX_BWR_CHCFG_ENBL(base, i, 0U);
-        DMAMUX_BWR_CHCFG_SOURCE(base, i, 0U);
-    }
+	for (i = 0; i < FSL_FEATURE_DMAMUX_MODULE_CHANNEL; i++)
+	{
+		DMAMUX_BWR_CHCFG_ENBL(base, i, 0U);
+		DMAMUX_BWR_CHCFG_SOURCE(base, i, 0U);
+	}
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

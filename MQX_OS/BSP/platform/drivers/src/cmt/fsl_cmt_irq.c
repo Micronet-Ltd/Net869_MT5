@@ -40,7 +40,7 @@
 /* CMT_IRQHandler IRQ handler that would cover the same name's APIs in startup code */
 void CMT_IRQHandler(void)
 {
-    
+
 }
 
 #endif
@@ -48,4 +48,3 @@ void CMT_IRQHandler(void)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

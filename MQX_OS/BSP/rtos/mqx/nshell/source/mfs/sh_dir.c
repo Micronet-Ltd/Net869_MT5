@@ -66,79 +66,79 @@ int32_t  Shell_dir(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc > 3)  {
-         fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage=TRUE;
-      } else {
-        if (MFS_alloc_path(&path_ptr) != MFS_NO_ERROR) {
-           fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
-           return_code = SHELL_EXIT_ERROR;
-        } else {
+	  if (argc > 3)  {
+		 fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage=TRUE;
+	  } else {
+		if (MFS_alloc_path(&path_ptr) != MFS_NO_ERROR) {
+		   fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
+		   return_code = SHELL_EXIT_ERROR;
+		} else {
 
-          if (argc >= 2)  {
-             strcpy(path_ptr, argv[1]);
-             len = strlen(path_ptr);
-             if (path_ptr[len - 1] == '\\' || path_ptr[len - 1] == ':')
-                strcat(path_ptr, "*.*");
-          } else
-            strcpy(path_ptr, "*.*");
+		  if (argc >= 2)  {
+			 strcpy(path_ptr, argv[1]);
+			 len = strlen(path_ptr);
+			 if (path_ptr[len - 1] == '\\' || path_ptr[len - 1] == ':')
+				strcat(path_ptr, "*.*");
+		  } else
+			strcpy(path_ptr, "*.*");
 
-          if (strlen(path_ptr) >= PATHNAME_SIZE) {
-             fprintf(shell_ptr->STDOUT, "Error, path too long.\n" );
-             return_code = SHELL_EXIT_ERROR;
-          } else {
+		  if (strlen(path_ptr) >= PATHNAME_SIZE) {
+			 fprintf(shell_ptr->STDOUT, "Error, path too long.\n" );
+			 return_code = SHELL_EXIT_ERROR;
+		  } else {
 
-            if (argc == 3)
-               mode_ptr = argv[2];
-            else
-               mode_ptr = "m";
+			if (argc == 3)
+			   mode_ptr = argv[2];
+			else
+			   mode_ptr = "m";
 
-            fs = Shell_get_current_filesystem(argv);
-            /* check if filesystem is mounted */
-            if (0 > fs)  {
-               fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n");
-               return_code = SHELL_EXIT_ERROR;
-            } else  {
-              buffer = _mem_alloc(BUFFER_SIZE);
-              error = ioctl(fs, IO_IOCTL_CHANGE_CURRENT_DIR, shell_ptr->CURRENT_DIR);
-              if (buffer && !error) {
+			fs = Shell_get_current_filesystem(argv);
+			/* check if filesystem is mounted */
+			if (0 > fs)  {
+			   fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n");
+			   return_code = SHELL_EXIT_ERROR;
+			} else  {
+			  buffer = _mem_alloc(BUFFER_SIZE);
+			  error = ioctl(fs, IO_IOCTL_CHANGE_CURRENT_DIR, shell_ptr->CURRENT_DIR);
+			  if (buffer && !error) {
 
-                 dir_ptr = _io_mfs_dir_open(fs, path_ptr, mode_ptr );
+				 dir_ptr = _io_mfs_dir_open(fs, path_ptr, mode_ptr );
 
-                 if (dir_ptr == NULL)  {
-                    fprintf(shell_ptr->STDOUT, "File not found.\n");
-                    return_code = SHELL_EXIT_ERROR;
-                 } else {
-                   while ((_io_is_fs_valid(fs)) && (len = _io_mfs_dir_read(dir_ptr, buffer, BUFFER_SIZE)) > 0) {
-                     fprintf(shell_ptr->STDOUT, buffer);
-                   }
-                   _io_mfs_dir_close(dir_ptr);
-                 }
-                 _mem_free(buffer);
-              } else {
-                if(buffer == NULL){
-                  fprintf(shell_ptr->STDOUT, "Error, unable to allocate space.\n" );
-                } else {
-                  fprintf(shell_ptr->STDOUT, "Error, directory does not exist.\n" );
-                }
-                return_code = SHELL_EXIT_ERROR;
-              }
-            }
-          }
-          MFS_free_path(path_ptr);
-        }
-      }
+				 if (dir_ptr == NULL)  {
+					fprintf(shell_ptr->STDOUT, "File not found.\n");
+					return_code = SHELL_EXIT_ERROR;
+				 } else {
+				   while ((_io_is_fs_valid(fs)) && (len = _io_mfs_dir_read(dir_ptr, buffer, BUFFER_SIZE)) > 0) {
+					 fprintf(shell_ptr->STDOUT, buffer);
+				   }
+				   _io_mfs_dir_close(dir_ptr);
+				 }
+				 _mem_free(buffer);
+			  } else {
+				if(buffer == NULL){
+				  fprintf(shell_ptr->STDOUT, "Error, unable to allocate space.\n" );
+				} else {
+				  fprintf(shell_ptr->STDOUT, "Error, directory does not exist.\n" );
+				}
+				return_code = SHELL_EXIT_ERROR;
+			  }
+			}
+		  }
+		  MFS_free_path(path_ptr);
+		}
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s [<filespec>] [<attr>]]\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s [<filespec> [<attr>]]\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <filespec>   = files to list\n");
-         fprintf(shell_ptr->STDOUT, "   <attr>       = attributes of files: adhrsv*\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s [<filespec>] [<attr>]]\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s [<filespec> [<attr>]]\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <filespec>   = files to list\n");
+		 fprintf(shell_ptr->STDOUT, "   <attr>       = attributes of files: adhrsv*\n");
+	  }
    }
    return return_code;
 } /* Endbody */

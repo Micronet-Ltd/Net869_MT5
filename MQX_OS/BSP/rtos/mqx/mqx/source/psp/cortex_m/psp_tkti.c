@@ -29,7 +29,7 @@
 
 /*!
  * \brief This function converts ticks into the time struct format
- * 
+ *
  * \param[in] tick_ptr Pointer to the tick struct to store the results in
  * \param[out] time_ptr Pointer to the time struct to convert
  *
@@ -37,11 +37,11 @@
  */
 bool _psp_ticks_to_time
    (
-      /* [IN] Pointer to the tick struct to store the results in */
-      PSP_TICK_STRUCT_PTR tick_ptr,
+	  /* [IN] Pointer to the tick struct to store the results in */
+	  PSP_TICK_STRUCT_PTR tick_ptr,
 
-      /* [OUT] Pointer to the time struct to convert */
-      TIME_STRUCT_PTR     time_ptr
+	  /* [OUT] Pointer to the time struct to convert */
+	  TIME_STRUCT_PTR     time_ptr
    )
 {
    uint64_t                tmp;
@@ -54,15 +54,15 @@ bool _psp_ticks_to_time
 
    /* Saturate if ticks go out of range of time struct */
    if ( (tick_ptr->TICKS[0] / tps) > MAX_UINT_32) {
-      time_ptr->SECONDS      = MAX_UINT_32;
-      time_ptr->MILLISECONDS = 999;
-      return FALSE;
+	  time_ptr->SECONDS      = MAX_UINT_32;
+	  time_ptr->MILLISECONDS = 999;
+	  return FALSE;
    } /* Endif */
 
    /* Recompute TICKS to milliseconds, together with HW_TICKS */
    tmp = (tick_ptr->TICKS[0] * 1000) + (tick_ptr->HW_TICKS[0] * 1000 / kernel_data->HW_TICKS_PER_TICK);
    tmp = tmp / tps;
- 
+
    /* Compute seconds and remainder from milliseconds value */
    time_ptr->SECONDS      = tmp / 1000;
    time_ptr->MILLISECONDS = tmp - time_ptr->SECONDS * 1000;

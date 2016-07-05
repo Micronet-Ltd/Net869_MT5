@@ -36,7 +36,7 @@
 #include "fsl_trng_hal.h"
 #include "fsl_os_abstraction.h"
 #if FSL_FEATURE_SOC_TRNG_COUNT
-/*! 
+/*!
  * @addtogroup trng_driver
  * @{
  */
@@ -50,7 +50,7 @@
 #define TRNG_DRV_RTOS_MULTI_THREAD  (USE_RTOS)
 #endif
 
-/*! @brief Enables/disables putting the calling task to "sleep" during the TRNG blocking entropy generation. If enabled, it requires using of TRNG IRQ handler. 
+/*! @brief Enables/disables putting the calling task to "sleep" during the TRNG blocking entropy generation. If enabled, it requires using of TRNG IRQ handler.
  *   and is enabled by default for RTOS. It is optional and may be disabled. */
 #ifndef TRNG_DRV_RTOS_SLEEP
 #define TRNG_DRV_RTOS_SLEEP         (USE_RTOS)
@@ -62,7 +62,7 @@ extern TRNG_Type * const g_trngBase[];
 /*! @brief Table to save TRNG IRQ enumeration numbers defined in the CMSIS header file. */
 extern const IRQn_Type g_trngIrqId[];
 
-/*! 
+/*!
  * @brief Data structure for the TRNG initialization
  *
  * This structure initializes the TRNG by calling the the TRNG_DRV_Init() function.
@@ -71,33 +71,33 @@ extern const IRQn_Type g_trngIrqId[];
  */
 typedef struct _trng_user_config
 {
-    bool                            lock;                   /*!< @brief Disable programmability of TRNG registers. Default is 0. */
-    trng_clock_mode_t               clockMode;              /*!< @brief Clock mode used to operate TRNG. Default is kTRNGClockModeRingOscillator.*/
-    trng_ring_osc_div_t             ringOscDiv;             /*!< @brief Ring oscillator divide used by TRNG. Default is kTRNGRingOscDiv0.*/
-    trng_sample_mode_t              sampleMode;             /*!< @brief Sample mode of the TRNG ring oscillator. Default is kTRNGSampleModeRaw.*/
-    /* Seed Control*/
-    uint16_t                        entropyDelay;           /*!< @brief Entropy Delay. Defines the length (in system clocks) of each Entropy sample taken. Default is 3200.*/
-    uint16_t                        sampleSize;             /*!< @brief Sample Size. Defines the total number of Entropy samples that will be taken during Entropy generation. Default is 2500.*/
-    uint16_t                        sparseBitLimit;         /*!< @brief Sparse Bit Limit which defines the maximum number of
-                                                            * consecutive samples that may be discarded before an error is generated.
-                                                            * This limit is used only for During Von Neumann sampling (enabled by TRNG_HAL_SetSampleMode()).
-                                                            * Samples are discarded if two consecutive raw samples are both 0 or both 1. If
-                                                            * this discarding occurs for a long period of time, it indicates that there is
-                                                            * insufficient Entropy. Default is 63.*/
-    /* Statistical Check Parameters.*/
-    uint8_t                         retryCount;             /*!< @brief Retry count. It defines the number of times a statistical check may fails 
-                                                            * during the TRNG Entropy Generation before generating an error. Default is 1.*/
-    uint8_t                         longRunMaxLimit;        /*!< @brief Largest allowable number of consecutive samples of all 1, or all 0,
-                                                            * that is allowed during the Entropy generation. Default is 34.*/
-    trng_statistical_check_limit_t  monobitLimit;           /*!< @brief Maximum and minimum limits for statistical check of number of ones/zero detected during entropy generation. */
-    trng_statistical_check_limit_t  runBit1Limit;           /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 1 detected during entropy generation. */
-    trng_statistical_check_limit_t  runBit2Limit;           /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 2 detected during entropy generation. */
-    trng_statistical_check_limit_t  runBit3Limit;           /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 3 detected during entropy generation. */
-    trng_statistical_check_limit_t  runBit4Limit;           /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 4 detected during entropy generation. */
-    trng_statistical_check_limit_t  runBit5Limit;           /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 5 detected during entropy generation. */
-    trng_statistical_check_limit_t  runBit6PlusLimit;       /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 6 or more detected during entropy generation. */
-    trng_statistical_check_limit_t  pokerLimit;             /*!< @brief Maximum and minimum limits for statistical check of "Poker Test". */
-    trng_statistical_check_limit_t  frequencyCountLimit;    /*!< @brief Maximum and minimum limits for statistical check of entropy sample frequency count. */
+	bool                            lock;                   /*!< @brief Disable programmability of TRNG registers. Default is 0. */
+	trng_clock_mode_t               clockMode;              /*!< @brief Clock mode used to operate TRNG. Default is kTRNGClockModeRingOscillator.*/
+	trng_ring_osc_div_t             ringOscDiv;             /*!< @brief Ring oscillator divide used by TRNG. Default is kTRNGRingOscDiv0.*/
+	trng_sample_mode_t              sampleMode;             /*!< @brief Sample mode of the TRNG ring oscillator. Default is kTRNGSampleModeRaw.*/
+	/* Seed Control*/
+	uint16_t                        entropyDelay;           /*!< @brief Entropy Delay. Defines the length (in system clocks) of each Entropy sample taken. Default is 3200.*/
+	uint16_t                        sampleSize;             /*!< @brief Sample Size. Defines the total number of Entropy samples that will be taken during Entropy generation. Default is 2500.*/
+	uint16_t                        sparseBitLimit;         /*!< @brief Sparse Bit Limit which defines the maximum number of
+															* consecutive samples that may be discarded before an error is generated.
+															* This limit is used only for During Von Neumann sampling (enabled by TRNG_HAL_SetSampleMode()).
+															* Samples are discarded if two consecutive raw samples are both 0 or both 1. If
+															* this discarding occurs for a long period of time, it indicates that there is
+															* insufficient Entropy. Default is 63.*/
+	/* Statistical Check Parameters.*/
+	uint8_t                         retryCount;             /*!< @brief Retry count. It defines the number of times a statistical check may fails
+															* during the TRNG Entropy Generation before generating an error. Default is 1.*/
+	uint8_t                         longRunMaxLimit;        /*!< @brief Largest allowable number of consecutive samples of all 1, or all 0,
+															* that is allowed during the Entropy generation. Default is 34.*/
+	trng_statistical_check_limit_t  monobitLimit;           /*!< @brief Maximum and minimum limits for statistical check of number of ones/zero detected during entropy generation. */
+	trng_statistical_check_limit_t  runBit1Limit;           /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 1 detected during entropy generation. */
+	trng_statistical_check_limit_t  runBit2Limit;           /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 2 detected during entropy generation. */
+	trng_statistical_check_limit_t  runBit3Limit;           /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 3 detected during entropy generation. */
+	trng_statistical_check_limit_t  runBit4Limit;           /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 4 detected during entropy generation. */
+	trng_statistical_check_limit_t  runBit5Limit;           /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 5 detected during entropy generation. */
+	trng_statistical_check_limit_t  runBit6PlusLimit;       /*!< @brief Maximum and minimum limits for statistical check of number of runs of length 6 or more detected during entropy generation. */
+	trng_statistical_check_limit_t  pokerLimit;             /*!< @brief Maximum and minimum limits for statistical check of "Poker Test". */
+	trng_statistical_check_limit_t  frequencyCountLimit;    /*!< @brief Maximum and minimum limits for statistical check of entropy sample frequency count. */
 } trng_user_config_t;
 
 /*******************************************************************************
@@ -115,7 +115,7 @@ extern "C" {
  * runs immediately according to the specifications in the configuration.
  *
  * @param instance  TRNG instance ID.
- * @param user_config    Pointer to initialize configuration structure. 
+ * @param user_config    Pointer to initialize configuration structure.
  * @return If successful, returns the kStatus_TRNG_Success. Otherwise, it returns an error.
  */
 trng_status_t TRNG_DRV_Init(uint32_t instance, const trng_user_config_t *user_config);
@@ -133,7 +133,7 @@ trng_status_t TRNG_DRV_Deinit(uint32_t instance);
 /*!
  * @brief Initializes the user configuration structure to default values.
  *
- * This function fills the user configuration structure with default TRNG settings. 
+ * This function fills the user configuration structure with default TRNG settings.
  *
  * @param user_config   User configuration  structure.
  * @return If successful, returns the kStatus_TRNG_Success. Otherwise, it returns an error.
@@ -174,4 +174,3 @@ void TRNG_DRV_IRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

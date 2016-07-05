@@ -260,18 +260,18 @@
 */
 typedef enum _NDIS_PHYSICAL_MEDIUM
 {
-    NdisPhysicalMediumUnspecified,
-    NdisPhysicalMediumWirelessLan,
-    NdisPhysicalMediumCableModem,
-    NdisPhysicalMediumPhoneLine,
-    NdisPhysicalMediumPowerLine,
-    NdisPhysicalMediumDSL,      /* includes ADSL and UADSL (G.Lite) */
-    NdisPhysicalMediumFibreChannel,
-    NdisPhysicalMedium1394,
-    NdisPhysicalMediumWirelessWan,
-    NdisPhysicalMediumNative802_11,
-    NdisPhysicalMediumBluetooth,
-    NdisPhysicalMediumMax       /* Not a real physical type, defined as an upper-bound */
+	NdisPhysicalMediumUnspecified,
+	NdisPhysicalMediumWirelessLan,
+	NdisPhysicalMediumCableModem,
+	NdisPhysicalMediumPhoneLine,
+	NdisPhysicalMediumPowerLine,
+	NdisPhysicalMediumDSL,      /* includes ADSL and UADSL (G.Lite) */
+	NdisPhysicalMediumFibreChannel,
+	NdisPhysicalMedium1394,
+	NdisPhysicalMediumWirelessWan,
+	NdisPhysicalMediumNative802_11,
+	NdisPhysicalMediumBluetooth,
+	NdisPhysicalMediumMax       /* Not a real physical type, defined as an upper-bound */
 } NDIS_PHYSICAL_MEDIUM;
 
 /***************************************************************
@@ -376,7 +376,7 @@ typedef enum _NDIS_PHYSICAL_MEDIUM
  dynamically allocating it when command is received, to avoid memory
  fragmentation */
 #define MAX_EXPECTED_RESPONSE_SIZE              (RESPONSE_RNDIS_QUERY_MSG_SIZE + \
-                                                (NUM_OIDS_SUPPORTED << 2))
+												(NUM_OIDS_SUPPORTED << 2))
 
 /******************************************************************************
  * Types
@@ -387,34 +387,34 @@ typedef enum _NDIS_PHYSICAL_MEDIUM
 typedef struct _cdc_pstn_struct
 {
 #if CDC_RNDIS_SUPPORT
-    uint8_t rndis_command_ptr[MAX_EXPECTED_COMMAND_SIZE];
-    uint8_t response_data_ptr[MAX_EXPECTED_RESPONSE_SIZE];
+	uint8_t rndis_command_ptr[MAX_EXPECTED_COMMAND_SIZE];
+	uint8_t response_data_ptr[MAX_EXPECTED_RESPONSE_SIZE];
 #endif
-    uint8_t serial_state_buf[NOTIF_PACKET_SIZE + UART_BITMAP_SIZE];
-    usb_application_callback_struct_t pstn_callback;
-    bool dte_present;
-    uint16_t break_duration;
-    /* Status of DATA TERMINAL EQUIPMENT */
-    uint8_t dte_status;
-    /* Length of time in milliseconds of the break signal */
-    uint8_t current_interface;
-    uint16_t uart_state;
+	uint8_t serial_state_buf[NOTIF_PACKET_SIZE + UART_BITMAP_SIZE];
+	usb_application_callback_struct_t pstn_callback;
+	bool dte_present;
+	uint16_t break_duration;
+	/* Status of DATA TERMINAL EQUIPMENT */
+	uint8_t dte_status;
+	/* Length of time in milliseconds of the break signal */
+	uint8_t current_interface;
+	uint16_t uart_state;
 #if CDC_RNDIS_SUPPORT
-    uint32_t rndis_host_max_tx_size;
-    uint32_t rndis_dev_max_tx_size;
-    uint32_t rndis_hw_state;
-    uint32_t rndis_packet_filter;
-    uint32_t rndis_media_connect_status;
-    uint32_t num_frames_tx_ok;
-    uint32_t num_frames_rx_ok;
-    uint32_t num_frames_tx_error;
-    uint32_t num_frames_rx_error;
-    uint32_t num_recv_frames_missed;
-    uint32_t num_recv_frames_alignment_error;
-    uint32_t num_frames_tx_one_collision;
-    uint32_t num_frames_tx_many_collision;
-    uint8_t rndis_device_state;
-    os_mutex_handle status_mutex;
+	uint32_t rndis_host_max_tx_size;
+	uint32_t rndis_dev_max_tx_size;
+	uint32_t rndis_hw_state;
+	uint32_t rndis_packet_filter;
+	uint32_t rndis_media_connect_status;
+	uint32_t num_frames_tx_ok;
+	uint32_t num_frames_rx_ok;
+	uint32_t num_frames_tx_error;
+	uint32_t num_frames_rx_error;
+	uint32_t num_recv_frames_missed;
+	uint32_t num_recv_frames_alignment_error;
+	uint32_t num_frames_tx_one_collision;
+	uint32_t num_frames_tx_many_collision;
+	uint8_t rndis_device_state;
+	os_mutex_handle status_mutex;
 #endif
 } cdc_pstn_struct_t;
 #endif

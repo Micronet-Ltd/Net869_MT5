@@ -48,24 +48,24 @@
 /* SEM COMPONENT STRUCTURE */
 /*!
  * \cond DOXYGEN_PRIVATE
- *  
+ *
  * \brief This is the base semaphore structure pointed to by the kernel data
  * structure COMPONENT field for semaphores
  */
 typedef struct sem_component_struct
 {
 
-    /*! \brief The maximum number of semaphores allowed. */
-    _mqx_uint        MAXIMUM_NUMBER;
+	/*! \brief The maximum number of semaphores allowed. */
+	_mqx_uint        MAXIMUM_NUMBER;
 
-    /*! \brief The number of semaphores to grow by when table full. */
-    _mqx_uint        GROW_NUMBER;
+	/*! \brief The number of semaphores to grow by when table full. */
+	_mqx_uint        GROW_NUMBER;
 
-    /*! \brief A validation stamp allowing for checking of memory overwrite. */
-    _mqx_uint        VALID;
+	/*! \brief A validation stamp allowing for checking of memory overwrite. */
+	_mqx_uint        VALID;
 
-    /*! \brief The handle to the name table for semaphores. */
-    void            *NAME_TABLE_HANDLE;
+	/*! \brief The handle to the name table for semaphores. */
+	void            *NAME_TABLE_HANDLE;
 
 } SEM_COMPONENT_STRUCT, * SEM_COMPONENT_STRUCT_PTR;
 /*! \endcond */
@@ -73,101 +73,101 @@ typedef struct sem_component_struct
 /* SEM STRUCTURE */
 /*!
  * \cond DOXYGEN_PRIVATE
- *  
- * \brief This is the structure of an instance of a semaphore. 
- * 
+ *
+ * \brief This is the structure of an instance of a semaphore.
+ *
  * The address is kept in the semaphore name table, associated with the name.
  */
 typedef struct sem_struct
 {
-    /*! 
-    * \brief This semaphore will be destroyed when all waiting tasks relinquish
-    * their semaphore. Other tasks may not wait any more.
-    */
-    bool         DELAYED_DESTROY;
+	/*!
+	* \brief This semaphore will be destroyed when all waiting tasks relinquish
+	* their semaphore. Other tasks may not wait any more.
+	*/
+	bool         DELAYED_DESTROY;
 
-    /*! 
-    * \brief Policy settings. Specifies whether this semaphore has 
-    * PRIORITY_QUEUEING, and/or PRIORITY_INHERITANCE.
-    */
-    _mqx_uint       POLICY;
+	/*!
+	* \brief Policy settings. Specifies whether this semaphore has
+	* PRIORITY_QUEUEING, and/or PRIORITY_INHERITANCE.
+	*/
+	_mqx_uint       POLICY;
 
-    /*! 
-    * \brief This is the queue of waiting tasks.  
-    * 
-    * This queue may be sorted in order of task priority it INHERITANCE is 
-    * enabled. What is queued is the address of the handle provided to the user 
-    * (SEM_COMPONENT_STRUCT).
-    */
-    QUEUE_STRUCT    WAITING_TASKS;
+	/*!
+	* \brief This is the queue of waiting tasks.
+	*
+	* This queue may be sorted in order of task priority it INHERITANCE is
+	* enabled. What is queued is the address of the handle provided to the user
+	* (SEM_COMPONENT_STRUCT).
+	*/
+	QUEUE_STRUCT    WAITING_TASKS;
 
-    /*! \brief The queue of tasks; each of which owns a semaphore. */
-    QUEUE_STRUCT    OWNING_TASKS;
+	/*! \brief The queue of tasks; each of which owns a semaphore. */
+	QUEUE_STRUCT    OWNING_TASKS;
 
-    /*! \brief The current count of the semaphore. */
-    _mqx_uint       COUNT;
+	/*! \brief The current count of the semaphore. */
+	_mqx_uint       COUNT;
 
-    /*! 
-    * \brief The maximum count allowed for this semaphore.
-    *     
-    * Only used when SEM_STRICT is TRUE.
-    */
-    _mqx_uint       MAX_COUNT;
+	/*!
+	* \brief The maximum count allowed for this semaphore.
+	*
+	* Only used when SEM_STRICT is TRUE.
+	*/
+	_mqx_uint       MAX_COUNT;
 
-    /*! \brief A validation stamp for the semaphore. */
-    _mqx_uint       VALID;
+	/*! \brief A validation stamp for the semaphore. */
+	_mqx_uint       VALID;
 
-    /*! \brief The string name of the semaphore, includes NULL. */
-    char            NAME[NAME_MAX_NAME_SIZE];
+	/*! \brief The string name of the semaphore, includes NULL. */
+	char            NAME[NAME_MAX_NAME_SIZE];
 
 } SEM_STRUCT, * SEM_STRUCT_PTR;
 /*! \endcond */
 
 /* SEM CONNECTION STRUCTURE */
 /*!
- * \cond DOXYGEN_PRIVATE   
- * 
- * \brief This is the struture whose address is returned to the user as a 
+ * \cond DOXYGEN_PRIVATE
+ *
+ * \brief This is the struture whose address is returned to the user as a
  * semaphore handle.
  */
 typedef struct sem_connection_struct
 {
-    /*! \brief Pointer to the next item in WAITING TASK queue of the semaphore. */ 
-    void           *NEXT;
-    /*! \brief Pointer to the previous item in WAITING TASK queue of the semaphore. */
-    void           *PREV;
+	/*! \brief Pointer to the next item in WAITING TASK queue of the semaphore. */
+	void           *NEXT;
+	/*! \brief Pointer to the previous item in WAITING TASK queue of the semaphore. */
+	void           *PREV;
 
-    /*! \brief A validation stamp for the data structure. */
-    _mqx_uint       VALID;
+	/*! \brief A validation stamp for the data structure. */
+	_mqx_uint       VALID;
 
-    /*! \brief The number of times this task has been priority boosted. */
-    _mqx_uint       BOOSTED;
+	/*! \brief The number of times this task has been priority boosted. */
+	_mqx_uint       BOOSTED;
 
-    /* A reserved field */
-    /* Start SPR P171-0009-01     */
-    /* _mqx_uint        RESERVED; */
-    /* End SPR P171-0009-01       */
+	/* A reserved field */
+	/* Start SPR P171-0009-01     */
+	/* _mqx_uint        RESERVED; */
+	/* End SPR P171-0009-01       */
 
-    /*! 
-    * \brief This field is only used for STRICT semaphores.
-    *     
-    * A count of the number of semaphores owned by this task.
-    * \n This is incremented by _sem_wait, and decremented by _sem_post.
-    * \n A semaphore may be posted only if a wait has previously succeeded.
-    */
-    /* Start SPR P171-0010-01 */
-    /* int        POST_STATE; */
-    _mqx_int        POST_STATE;
-    /* End SPR P171-0010-01   */
+	/*!
+	* \brief This field is only used for STRICT semaphores.
+	*
+	* A count of the number of semaphores owned by this task.
+	* \n This is incremented by _sem_wait, and decremented by _sem_post.
+	* \n A semaphore may be posted only if a wait has previously succeeded.
+	*/
+	/* Start SPR P171-0010-01 */
+	/* int        POST_STATE; */
+	_mqx_int        POST_STATE;
+	/* End SPR P171-0010-01   */
 
-    /*! \brief The address of the task descriptor that owns this connection. */
-    TD_STRUCT_PTR   TD_PTR;
+	/*! \brief The address of the task descriptor that owns this connection. */
+	TD_STRUCT_PTR   TD_PTR;
 
-    /*! 
-    * \brief The address of the semaphore structure associated with this
-    * connection. 
-    */
-    SEM_STRUCT_PTR  SEM_PTR;
+	/*!
+	* \brief The address of the semaphore structure associated with this
+	* connection.
+	*/
+	SEM_STRUCT_PTR  SEM_PTR;
 
 } SEM_CONNECTION_STRUCT, * SEM_CONNECTION_STRUCT_PTR;
 /*! \endcond */
@@ -184,8 +184,8 @@ extern "C" {
  * \cond DOXYGEN_PRIVATE
  */
 extern void _sem_insert_priority_internal(
-    QUEUE_STRUCT_PTR queue_ptr,
-    SEM_CONNECTION_STRUCT_PTR sem_connection_ptr
+	QUEUE_STRUCT_PTR queue_ptr,
+	SEM_CONNECTION_STRUCT_PTR sem_connection_ptr
 );
 /*! \endcond */
 
@@ -193,7 +193,7 @@ extern void _sem_insert_priority_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _sem_cleanup(
-    TD_STRUCT_PTR td_ptr
+	TD_STRUCT_PTR td_ptr
 );
 /*! \endcond */
 
@@ -201,9 +201,9 @@ extern void _sem_cleanup(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _sem_wait_internal(
-    void* users_sem_ptr,
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    bool ticks_are_absolute
+	void* users_sem_ptr,
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	bool ticks_are_absolute
 );
 /*! \endcond */
 

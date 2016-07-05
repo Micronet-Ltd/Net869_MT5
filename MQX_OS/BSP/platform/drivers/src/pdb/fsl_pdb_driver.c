@@ -38,7 +38,7 @@
  *
  * Function Name : PDB_DRV_Init
  * Description   : Initialize the PDB counter and trigger input for PDB module.
- * It resets PDB registers and enables the clock for PDB. So it should be 
+ * It resets PDB registers and enables the clock for PDB. So it should be
  * called before any operation to PDB module. After initialized, the PDB can
  * ack as a triggered timer, which lays the foundation for other features in
  * PDB module.
@@ -46,32 +46,32 @@
  *END*************************************************************************/
 pdb_status_t PDB_DRV_Init(uint32_t instance, const pdb_timer_config_t *userConfigPtr)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
 
-    if (!userConfigPtr)
-    {
-        return kStatus_PDB_InvalidArgument;
-    }
-    /* Enable the clock gate from clock manager. */
-    CLOCK_SYS_EnablePdbClock(instance);
+	if (!userConfigPtr)
+	{
+		return kStatus_PDB_InvalidArgument;
+	}
+	/* Enable the clock gate from clock manager. */
+	CLOCK_SYS_EnablePdbClock(instance);
 
-    /* Reset the registers for PDB module to reset state. */
-    PDB_HAL_Init(base);
-    PDB_HAL_Enable(base);
-    PDB_HAL_ConfigTimer(base, userConfigPtr);
+	/* Reset the registers for PDB module to reset state. */
+	PDB_HAL_Init(base);
+	PDB_HAL_Enable(base);
+	PDB_HAL_ConfigTimer(base, userConfigPtr);
 
-    /* Configure NVIC. */
-    if (userConfigPtr->intEnable)
-    {
-        INT_SYS_EnableIRQ(g_pdbIrqId[instance] );/* Enable PDB interrupt in NVIC level.*/
-    }
-    else
-    {
-        INT_SYS_DisableIRQ(g_pdbIrqId[instance] );/* Disable PDB interrupt in NVIC level.*/
-    }
+	/* Configure NVIC. */
+	if (userConfigPtr->intEnable)
+	{
+		INT_SYS_EnableIRQ(g_pdbIrqId[instance] );/* Enable PDB interrupt in NVIC level.*/
+	}
+	else
+	{
+		INT_SYS_DisableIRQ(g_pdbIrqId[instance] );/* Disable PDB interrupt in NVIC level.*/
+	}
 
-    return kStatus_PDB_Success;
+	return kStatus_PDB_Success;
 }
 
 
@@ -79,36 +79,36 @@ pdb_status_t PDB_DRV_Init(uint32_t instance, const pdb_timer_config_t *userConfi
  *
  * Function Name : PDB_DRV_Deinit
  * Description   : De-initialize the PDB module.
- * When the PDB module is not used. Calling this function would shutdown the 
+ * When the PDB module is not used. Calling this function would shutdown the
  * PDB module and reduce the power consumption.
  *
  *END*************************************************************************/
 pdb_status_t PDB_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
 
-    INT_SYS_DisableIRQ( g_pdbIrqId[instance] );
-    PDB_HAL_Disable(base);
-    CLOCK_SYS_DisablePdbClock(instance);
+	INT_SYS_DisableIRQ( g_pdbIrqId[instance] );
+	PDB_HAL_Disable(base);
+	CLOCK_SYS_DisablePdbClock(instance);
 
-    return kStatus_PDB_Success;
+	return kStatus_PDB_Success;
 }
 
 /*FUNCTION*********************************************************************
  *
  * Function Name : PDB_DRV_SoftTriggerCmd
- * Description   : Trigger PDB by software trigger. 
+ * Description   : Trigger PDB by software trigger.
  * When the PDB is set to use software trigger as input, Calling this function
  * would trigger the PDB.
  *
  *END*************************************************************************/
 void PDB_DRV_SoftTriggerCmd(uint32_t instance)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
 
-    PDB_HAL_SetSoftTriggerCmd(base);
+	PDB_HAL_SetSoftTriggerCmd(base);
 }
 
 /*FUNCTION*********************************************************************
@@ -119,10 +119,10 @@ void PDB_DRV_SoftTriggerCmd(uint32_t instance)
  *END*************************************************************************/
 uint32_t PDB_DRV_GetTimerValue(uint32_t instance)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
 
-    return PDB_HAL_GetTimerValue(base);
+	return PDB_HAL_GetTimerValue(base);
 }
 
 /*FUNCTION*********************************************************************
@@ -134,10 +134,10 @@ uint32_t PDB_DRV_GetTimerValue(uint32_t instance)
  *END*************************************************************************/
 bool PDB_DRV_GetTimerIntFlag(uint32_t instance)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
 
-    return PDB_HAL_GetTimerIntFlag(base);
+	return PDB_HAL_GetTimerIntFlag(base);
 }
 
 /*FUNCTION*********************************************************************
@@ -148,10 +148,10 @@ bool PDB_DRV_GetTimerIntFlag(uint32_t instance)
  *END*************************************************************************/
 void PDB_DRV_ClearTimerIntFlag(uint32_t instance)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
 
-    PDB_HAL_ClearTimerIntFlag(base);
+	PDB_HAL_ClearTimerIntFlag(base);
 }
 
 /*FUNCTION*********************************************************************
@@ -162,10 +162,10 @@ void PDB_DRV_ClearTimerIntFlag(uint32_t instance)
  *END*************************************************************************/
 void PDB_DRV_LoadValuesCmd(uint32_t instance)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
 
-    PDB_HAL_SetLoadValuesCmd(base);
+	PDB_HAL_SetLoadValuesCmd(base);
 }
 
 /*FUNCTION*********************************************************************
@@ -176,10 +176,10 @@ void PDB_DRV_LoadValuesCmd(uint32_t instance)
  *END*************************************************************************/
 void PDB_DRV_SetTimerModulusValue(uint32_t instance, uint32_t value)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    PDB_HAL_SetTimerModulusValue(base, value);
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	PDB_HAL_SetTimerModulusValue(base, value);
 }
 
 /*FUNCTION*********************************************************************
@@ -190,10 +190,10 @@ void PDB_DRV_SetTimerModulusValue(uint32_t instance, uint32_t value)
  *END*************************************************************************/
 void PDB_DRV_SetValueForTimerInterrupt(uint32_t instance, uint32_t value)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    PDB_HAL_SetValueForTimerInterrupt(base, value);
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	PDB_HAL_SetValueForTimerInterrupt(base, value);
 }
 
 /*FUNCTION*********************************************************************
@@ -204,19 +204,19 @@ void PDB_DRV_SetValueForTimerInterrupt(uint32_t instance, uint32_t value)
  *END*************************************************************************/
 pdb_status_t PDB_DRV_ConfigAdcPreTrigger(uint32_t instance, uint32_t chn, const pdb_adc_pretrigger_config_t *configPtr)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    if (!configPtr)
-    {
-        return kStatus_PDB_InvalidArgument; 
-    }
-    
-    PDB_HAL_SetAdcPreTriggerEnable(base, chn, 1U << (configPtr->adcPreTriggerIdx), configPtr->preTriggerEnable);
-    PDB_HAL_SetAdcPreTriggerOutputEnable(base, chn, 1U << (configPtr->adcPreTriggerIdx), configPtr->preTriggerOutputEnable);
-    PDB_HAL_SetAdcPreTriggerBackToBackEnable(base, chn, 1U << (configPtr->adcPreTriggerIdx), configPtr->preTriggerBackToBackEnable);
-    
-    return kStatus_PDB_Success;
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	if (!configPtr)
+	{
+		return kStatus_PDB_InvalidArgument;
+	}
+
+	PDB_HAL_SetAdcPreTriggerEnable(base, chn, 1U << (configPtr->adcPreTriggerIdx), configPtr->preTriggerEnable);
+	PDB_HAL_SetAdcPreTriggerOutputEnable(base, chn, 1U << (configPtr->adcPreTriggerIdx), configPtr->preTriggerOutputEnable);
+	PDB_HAL_SetAdcPreTriggerBackToBackEnable(base, chn, 1U << (configPtr->adcPreTriggerIdx), configPtr->preTriggerBackToBackEnable);
+
+	return kStatus_PDB_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -227,10 +227,10 @@ pdb_status_t PDB_DRV_ConfigAdcPreTrigger(uint32_t instance, uint32_t chn, const 
  *END*************************************************************************/
 uint32_t PDB_DRV_GetAdcPreTriggerFlags(uint32_t instance, uint32_t chn, uint32_t preChnMask)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    return PDB_HAL_GetAdcPreTriggerFlags(base, chn, preChnMask);
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	return PDB_HAL_GetAdcPreTriggerFlags(base, chn, preChnMask);
 }
 
 /*FUNCTION*********************************************************************
@@ -241,10 +241,10 @@ uint32_t PDB_DRV_GetAdcPreTriggerFlags(uint32_t instance, uint32_t chn, uint32_t
  *END*************************************************************************/
 void PDB_DRV_ClearAdcPreTriggerFlags(uint32_t instance, uint32_t chn, uint32_t preChnMask)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    PDB_HAL_ClearAdcPreTriggerFlags(base, chn, preChnMask);
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	PDB_HAL_ClearAdcPreTriggerFlags(base, chn, preChnMask);
 }
 
 /*FUNCTION*********************************************************************
@@ -255,10 +255,10 @@ void PDB_DRV_ClearAdcPreTriggerFlags(uint32_t instance, uint32_t chn, uint32_t p
  *END*************************************************************************/
 uint32_t PDB_DRV_GetAdcPreTriggerSeqErrFlags(uint32_t instance, uint32_t chn, uint32_t preChnMask)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    return PDB_HAL_GetAdcPreTriggerSeqErrFlags(base, chn, preChnMask);
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	return PDB_HAL_GetAdcPreTriggerSeqErrFlags(base, chn, preChnMask);
 }
 
 /*FUNCTION*********************************************************************
@@ -269,10 +269,10 @@ uint32_t PDB_DRV_GetAdcPreTriggerSeqErrFlags(uint32_t instance, uint32_t chn, ui
  *END*************************************************************************/
 void PDB_DRV_ClearAdcPreTriggerSeqErrFlags(uint32_t instance, uint32_t chn, uint32_t preChnMask)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
 
-    PDB_HAL_ClearAdcPreTriggerSeqErrFlags(base, chn, preChnMask);
+	PDB_HAL_ClearAdcPreTriggerSeqErrFlags(base, chn, preChnMask);
 }
 
 /*FUNCTION*********************************************************************
@@ -283,10 +283,10 @@ void PDB_DRV_ClearAdcPreTriggerSeqErrFlags(uint32_t instance, uint32_t chn, uint
  *END*************************************************************************/
 void PDB_DRV_SetAdcPreTriggerDelayValue(uint32_t instance, uint32_t chn, uint32_t preChn, uint32_t value)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    PDB_HAL_SetAdcPreTriggerDelayValue(base, chn, preChn, value);
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	PDB_HAL_SetAdcPreTriggerDelayValue(base, chn, preChn, value);
 }
 
 #if FSL_FEATURE_PDB_HAS_DAC
@@ -298,18 +298,18 @@ void PDB_DRV_SetAdcPreTriggerDelayValue(uint32_t instance, uint32_t chn, uint32_
  *END*************************************************************************/
 pdb_status_t PDB_DRV_ConfigDacInterval(uint32_t instance, uint32_t dacChn, const pdb_dac_interval_config_t *configPtr)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    if (!configPtr)
-    {
-        return kStatus_PDB_InvalidArgument; 
-    }
-    
-    PDB_HAL_SetDacIntervalTriggerEnable(base, dacChn, configPtr->intervalTriggerEnable);
-    PDB_HAL_SetDacExtTriggerInputEnable(base, dacChn, configPtr->extTriggerInputEnable);
-    
-    return kStatus_PDB_Success;
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	if (!configPtr)
+	{
+		return kStatus_PDB_InvalidArgument;
+	}
+
+	PDB_HAL_SetDacIntervalTriggerEnable(base, dacChn, configPtr->intervalTriggerEnable);
+	PDB_HAL_SetDacExtTriggerInputEnable(base, dacChn, configPtr->extTriggerInputEnable);
+
+	return kStatus_PDB_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -320,10 +320,10 @@ pdb_status_t PDB_DRV_ConfigDacInterval(uint32_t instance, uint32_t dacChn, const
  *END*************************************************************************/
 void PDB_DRV_SetDacIntervalValue(uint32_t instance, uint32_t dacChn, uint32_t value)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    PDB_HAL_SetDacIntervalValue(base, dacChn, value);
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	PDB_HAL_SetDacIntervalValue(base, dacChn, value);
 }
 
 #endif
@@ -336,10 +336,10 @@ void PDB_DRV_SetDacIntervalValue(uint32_t instance, uint32_t dacChn, uint32_t va
  *END*************************************************************************/
 void PDB_DRV_SetCmpPulseOutEnable(uint32_t instance, uint32_t pulseChnMask, bool enable)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    PDB_HAL_SetCmpPulseOutEnable(base, pulseChnMask, enable);
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	PDB_HAL_SetCmpPulseOutEnable(base, pulseChnMask, enable);
 }
 
 /*FUNCTION*********************************************************************
@@ -350,10 +350,10 @@ void PDB_DRV_SetCmpPulseOutEnable(uint32_t instance, uint32_t pulseChnMask, bool
  *END*************************************************************************/
 void PDB_DRV_SetCmpPulseOutDelayForHigh(uint32_t instance, uint32_t pulseChn, uint32_t value)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    PDB_HAL_SetCmpPulseOutDelayForHigh(base, pulseChn, value);
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	PDB_HAL_SetCmpPulseOutDelayForHigh(base, pulseChn, value);
 }
 
 /*FUNCTION*********************************************************************
@@ -364,10 +364,10 @@ void PDB_DRV_SetCmpPulseOutDelayForHigh(uint32_t instance, uint32_t pulseChn, ui
  *END*************************************************************************/
 void PDB_DRV_SetCmpPulseOutDelayForLow(uint32_t instance, uint32_t pulseChn, uint32_t value)
 {
-    assert(instance < PDB_INSTANCE_COUNT);
-    PDB_Type * base = g_pdbBase[instance];
-    
-    PDB_HAL_SetCmpPulseOutDelayForLow(base, pulseChn, value);
+	assert(instance < PDB_INSTANCE_COUNT);
+	PDB_Type * base = g_pdbBase[instance];
+
+	PDB_HAL_SetCmpPulseOutDelayForLow(base, pulseChn, value);
 }
 #endif
 

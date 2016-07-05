@@ -51,22 +51,22 @@
  *END**************************************************************************/
 void WDOG_HAL_SetConfig(WDOG_Type * base, const wdog_config_t *configPtr)
 {
-    assert(configPtr);
-    uint32_t value = 0;
-    value = WDOG_STCTRLH_WDOGEN(configPtr->wdogEnable) | WDOG_STCTRLH_CLKSRC(configPtr->clkSrc) | 
-            WDOG_STCTRLH_IRQRSTEN(configPtr->intEnable) | WDOG_STCTRLH_WINEN(configPtr->winEnable) | 
-            WDOG_STCTRLH_ALLOWUPDATE(configPtr->updateEnable) | WDOG_STCTRLH_DBGEN(configPtr->workMode.kWdogEnableInDebugMode) | 
-            WDOG_STCTRLH_STOPEN(configPtr->workMode.kWdogEnableInStopMode) |
+	assert(configPtr);
+	uint32_t value = 0;
+	value = WDOG_STCTRLH_WDOGEN(configPtr->wdogEnable) | WDOG_STCTRLH_CLKSRC(configPtr->clkSrc) |
+			WDOG_STCTRLH_IRQRSTEN(configPtr->intEnable) | WDOG_STCTRLH_WINEN(configPtr->winEnable) |
+			WDOG_STCTRLH_ALLOWUPDATE(configPtr->updateEnable) | WDOG_STCTRLH_DBGEN(configPtr->workMode.kWdogEnableInDebugMode) |
+			WDOG_STCTRLH_STOPEN(configPtr->workMode.kWdogEnableInStopMode) |
 #if FSL_FEATURE_WDOG_HAS_WAITEN
-            WDOG_STCTRLH_WAITEN(configPtr->workMode.kWdogEnableInWaitMode) |
+			WDOG_STCTRLH_WAITEN(configPtr->workMode.kWdogEnableInWaitMode) |
 #endif
-            WDOG_STCTRLH_DISTESTWDOG(1U);
-    WDOG_BWR_PRESC_PRESCVAL(base, configPtr->prescaler);
-    WDOG_WR_WINH(base, (uint16_t)((configPtr->windowValue>>16U) & 0xFFFFU));
-    WDOG_WR_WINL(base, (uint16_t)((configPtr->windowValue) & 0xFFFFU));
-    WDOG_WR_TOVALH(base, (uint16_t)((configPtr->timeoutValue >> 16U) & 0xFFFFU));
-    WDOG_WR_TOVALL(base, (uint16_t)((configPtr->timeoutValue) & 0xFFFFU));
-    WDOG_WR_STCTRLH(base, value);
+			WDOG_STCTRLH_DISTESTWDOG(1U);
+	WDOG_BWR_PRESC_PRESCVAL(base, configPtr->prescaler);
+	WDOG_WR_WINH(base, (uint16_t)((configPtr->windowValue>>16U) & 0xFFFFU));
+	WDOG_WR_WINL(base, (uint16_t)((configPtr->windowValue) & 0xFFFFU));
+	WDOG_WR_TOVALH(base, (uint16_t)((configPtr->timeoutValue >> 16U) & 0xFFFFU));
+	WDOG_WR_TOVALL(base, (uint16_t)((configPtr->timeoutValue) & 0xFFFFU));
+	WDOG_WR_STCTRLH(base, value);
 }
 
 /*FUNCTION**********************************************************************
@@ -77,28 +77,27 @@ void WDOG_HAL_SetConfig(WDOG_Type * base, const wdog_config_t *configPtr)
  *END**************************************************************************/
 void WDOG_HAL_Init(WDOG_Type * base)
 {
-    wdog_work_mode_t initWorkmode;
+	wdog_work_mode_t initWorkmode;
 #if FSL_FEATURE_WDOG_HAS_WAITEN
-    initWorkmode.kWdogEnableInWaitMode  = true;
+	initWorkmode.kWdogEnableInWaitMode  = true;
 #endif
-    initWorkmode.kWdogEnableInStopMode  = false;
-    initWorkmode.kWdogEnableInDebugMode = false;
-    wdog_config_t initConfig;
-    initConfig.wdogEnable   = true;
-    initConfig.clkSrc       = kWdogLpoClkSrc;
-    initConfig.prescaler    = kWdogClkPrescalerDivide1;
-    initConfig.workMode     = initWorkmode;
-    initConfig.updateEnable = true;
-    initConfig.intEnable    = false;
-    initConfig.winEnable    = false;
-    WDOG_HAL_Unlock(base);
-    WDOG_HAL_SetTimeoutValue(base, 0x004C4B4C);
-    WDOG_HAL_SetWindowValue(base, 0);
-    WDOG_HAL_SetConfig(base, &initConfig);
+	initWorkmode.kWdogEnableInStopMode  = false;
+	initWorkmode.kWdogEnableInDebugMode = false;
+	wdog_config_t initConfig;
+	initConfig.wdogEnable   = true;
+	initConfig.clkSrc       = kWdogLpoClkSrc;
+	initConfig.prescaler    = kWdogClkPrescalerDivide1;
+	initConfig.workMode     = initWorkmode;
+	initConfig.updateEnable = true;
+	initConfig.intEnable    = false;
+	initConfig.winEnable    = false;
+	WDOG_HAL_Unlock(base);
+	WDOG_HAL_SetTimeoutValue(base, 0x004C4B4C);
+	WDOG_HAL_SetWindowValue(base, 0);
+	WDOG_HAL_SetConfig(base, &initConfig);
 }
 #endif
 
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

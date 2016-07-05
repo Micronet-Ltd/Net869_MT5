@@ -55,23 +55,23 @@
 typedef struct
 {
 #if MQX_ALLOW_TYPED_MEMORY
-    union
-    {
-      uint32_t MQX_DATA;
-      struct
-      {
-         _mem_type TYPE;
-         uint16_t RSVD;
-      }S;
-    }U;
+	union
+	{
+	  uint32_t MQX_DATA;
+	  struct
+	  {
+		 _mem_type TYPE;
+		 uint16_t RSVD;
+	  }S;
+	}U;
 #endif
 
 #if MQX_ALLOCATOR_GARBAGE_COLLECTING
 /* Ownership used for garbage collection and error checking */
-    void* owner;
+	void* owner;
 /* When using garbage collection, prev and next pointers are used for faster implementation */
-    void* prev;
-    void* next;
+	void* prev;
+	void* next;
 #endif
   tlsf_t pool;
 }tlsf_adaptation_structure_t;
@@ -149,4 +149,3 @@ extern _mqx_uint _tlsf_pool_is_valid(void* pool_id);
 
 #endif /* __tlsf_h__ */
 /* EOF */
-

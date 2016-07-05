@@ -39,42 +39,42 @@
  */
 
 /*!
- * @brief Define structure of configuring the flexio spi device. 
+ * @brief Define structure of configuring the flexio spi device.
  */
 typedef struct
 {
-    FLEXIO_Type * flexioBase; /*!< FlexIO module base address. */
-    /* User-defined pin for SPI master. */
-    uint32_t txPinIdx;   /*!< Output pin index. */
-    uint32_t rxPinIdx;   /*!< Input pin index. */
-    uint32_t sclkPinIdx; /*!< Clock line, output for master, input for slave. */
-    uint32_t csnPinIdx;  /*!< Chip select line, output for master, input for slave. */
-    /* Internal hardware resource. */
-    uint32_t shifterIdx[2]; /*!< Shifter index. */
-    uint32_t timerIdx[2]; /*!< Timer index.
-                           * timer 0 is available for both master and slave. 
-                           * timer 1 would be only available for master 
-                           * and not used in slave mode. */
+	FLEXIO_Type * flexioBase; /*!< FlexIO module base address. */
+	/* User-defined pin for SPI master. */
+	uint32_t txPinIdx;   /*!< Output pin index. */
+	uint32_t rxPinIdx;   /*!< Input pin index. */
+	uint32_t sclkPinIdx; /*!< Clock line, output for master, input for slave. */
+	uint32_t csnPinIdx;  /*!< Chip select line, output for master, input for slave. */
+	/* Internal hardware resource. */
+	uint32_t shifterIdx[2]; /*!< Shifter index. */
+	uint32_t timerIdx[2]; /*!< Timer index.
+						   * timer 0 is available for both master and slave.
+						   * timer 1 would be only available for master
+						   * and not used in slave mode. */
 } flexio_spi_dev_t;
 
 /*!
- * @brief Define structure of configuring the flexio spi bus when master. 
+ * @brief Define structure of configuring the flexio spi bus when master.
  */
-typedef struct 
+typedef struct
 {
-    uint32_t flexioBusClk; /*!< Clock frequency of flexio bus. */
-    uint32_t baudrate;     /*!< Baudrate for spi bus. */
-    uint32_t bitCount;     /*!< Bit count for each word. */
-    bool cphaOneEnable;    /*!< The phase of spi. */
+	uint32_t flexioBusClk; /*!< Clock frequency of flexio bus. */
+	uint32_t baudrate;     /*!< Baudrate for spi bus. */
+	uint32_t bitCount;     /*!< Bit count for each word. */
+	bool cphaOneEnable;    /*!< The phase of spi. */
 } flexio_spi_master_config_t;
 
 /*!
- * @brief Define structure of configuring the flexio spi bus when slave. 
+ * @brief Define structure of configuring the flexio spi bus when slave.
  */
-typedef struct 
+typedef struct
 {
-    uint32_t bitCount;      /*!< Bit count for each word. */
-    bool cphaOneEnable;     /*!< The phase of spi. */
+	uint32_t bitCount;      /*!< Bit count for each word. */
+	bool cphaOneEnable;     /*!< The phase of spi. */
 } flexio_spi_slave_config_t;
 
 #if defined(__cplusplus)
@@ -258,7 +258,7 @@ void FLEXIO_SPI_HAL_ClearRxErrFlag(flexio_spi_dev_t *devPtr);
 void FLEXIO_SPI_HAL_SetRxErrIntCmd(flexio_spi_dev_t *devPtr, bool enable);
 
 /*!
- * @brief Get the data from rx MSB buffer. 
+ * @brief Get the data from rx MSB buffer.
  *
  * @param devPtr Pointer to the device.
  * @return Data from rx MSB buffer.
@@ -323,4 +323,3 @@ uint32_t FLEXIO_SPI_HAL_GetRxBufferLSBAddr(flexio_spi_dev_t *devPtr);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

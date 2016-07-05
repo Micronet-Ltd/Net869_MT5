@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
  * All Rights Reserved
  *
  * Copyright (c) 1989-2008 ARC International;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
  *
  * $FileName: usb_host_hid.c$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
@@ -61,66 +61,66 @@ usb_interface_descriptor_handle intf_handle,
 usb_class_handle* class_handle_ptr
 )
 { /* Body */
-    usb_hid_class_struct_t* hid_class = NULL;
-    usb_device_interface_struct_t* pDeviceIntf = NULL;
-    //interface_descriptor_t*      intf = NULL;
-    endpoint_descriptor_t* ep_desc = NULL;
-    uint8_t ep_num;
-    usb_status status = USB_OK;
-    pipe_init_struct_t pipe_init;
+	usb_hid_class_struct_t* hid_class = NULL;
+	usb_device_interface_struct_t* pDeviceIntf = NULL;
+	//interface_descriptor_t*      intf = NULL;
+	endpoint_descriptor_t* ep_desc = NULL;
+	uint8_t ep_num;
+	usb_status status = USB_OK;
+	pipe_init_struct_t pipe_init;
 
-    hid_class = (usb_hid_class_struct_t*)OS_Mem_alloc_zero(sizeof(usb_hid_class_struct_t));
-    if (hid_class == NULL)
-    {
+	hid_class = (usb_hid_class_struct_t*)OS_Mem_alloc_zero(sizeof(usb_hid_class_struct_t));
+	if (hid_class == NULL)
+	{
 #if _DEBUG
-        USB_PRINTF("usb_class_hid_init fail on memory allocation\n");
+		USB_PRINTF("usb_class_hid_init fail on memory allocation\n");
 #endif
-        return USBERR_ERROR;
-    }
+		return USBERR_ERROR;
+	}
 
-    hid_class->dev_handle = dev_handle;
-    hid_class->intf_handle = intf_handle;
-    hid_class->host_handle = usb_host_dev_mng_get_host(hid_class->dev_handle);
+	hid_class->dev_handle = dev_handle;
+	hid_class->intf_handle = intf_handle;
+	hid_class->host_handle = usb_host_dev_mng_get_host(hid_class->dev_handle);
 
-    pDeviceIntf = (usb_device_interface_struct_t*)intf_handle;
-    //intf = pDeviceIntf->lpinterfaceDesc;
+	pDeviceIntf = (usb_device_interface_struct_t*)intf_handle;
+	//intf = pDeviceIntf->lpinterfaceDesc;
 
-    for (ep_num = 0; ep_num < pDeviceIntf->ep_count; ep_num++)
-    {
-        ep_desc = pDeviceIntf->ep[ep_num].lpEndpointDesc;
-        if ((ep_desc->bEndpointAddress & IN_ENDPOINT) && ((ep_desc->bmAttributes & EP_TYPE_MASK) == IRRPT_ENDPOINT))
-        {
-            pipe_init.endpoint_number = (ep_desc->bEndpointAddress & ENDPOINT_MASK);
-            pipe_init.direction = USB_RECV;
-            pipe_init.pipetype = USB_INTERRUPT_PIPE;
-            pipe_init.max_packet_size = (uint16_t)(USB_SHORT_UNALIGNED_LE_TO_HOST(ep_desc->wMaxPacketSize) & PACKET_SIZE_MASK);
-            pipe_init.interval = ep_desc->iInterval;
-            pipe_init.flags = 0;
-            pipe_init.dev_instance = hid_class->dev_handle;
-            pipe_init.nak_count = USBCFG_HOST_DEFAULT_MAX_NAK_COUNT;
-            status = usb_host_open_pipe(hid_class->host_handle, &hid_class->in_pipe, &pipe_init);
-            if (status != USB_OK)
-            {
+	for (ep_num = 0; ep_num < pDeviceIntf->ep_count; ep_num++)
+	{
+		ep_desc = pDeviceIntf->ep[ep_num].lpEndpointDesc;
+		if ((ep_desc->bEndpointAddress & IN_ENDPOINT) && ((ep_desc->bmAttributes & EP_TYPE_MASK) == IRRPT_ENDPOINT))
+		{
+			pipe_init.endpoint_number = (ep_desc->bEndpointAddress & ENDPOINT_MASK);
+			pipe_init.direction = USB_RECV;
+			pipe_init.pipetype = USB_INTERRUPT_PIPE;
+			pipe_init.max_packet_size = (uint16_t)(USB_SHORT_UNALIGNED_LE_TO_HOST(ep_desc->wMaxPacketSize) & PACKET_SIZE_MASK);
+			pipe_init.interval = ep_desc->iInterval;
+			pipe_init.flags = 0;
+			pipe_init.dev_instance = hid_class->dev_handle;
+			pipe_init.nak_count = USBCFG_HOST_DEFAULT_MAX_NAK_COUNT;
+			status = usb_host_open_pipe(hid_class->host_handle, &hid_class->in_pipe, &pipe_init);
+			if (status != USB_OK)
+			{
 #if _DEBUG
-                USB_PRINTF("usb_class_hid_init fail to open in pipe\n");
+				USB_PRINTF("usb_class_hid_init fail to open in pipe\n");
 #endif
-                *class_handle_ptr = (usb_class_handle)hid_class;
-                return USBERR_ERROR;
-            }
-        }
-    }
+				*class_handle_ptr = (usb_class_handle)hid_class;
+				return USBERR_ERROR;
+			}
+		}
+	}
 
-    hid_class->in_setup = FALSE;
-    hid_class->ctrl_callback = NULL;
-    hid_class->ctrl_param = NULL;
-    hid_class->recv_callback = NULL;
-    hid_class->recv_param = NULL;
+	hid_class->in_setup = FALSE;
+	hid_class->ctrl_callback = NULL;
+	hid_class->ctrl_param = NULL;
+	hid_class->recv_callback = NULL;
+	hid_class->recv_param = NULL;
 
-    *class_handle_ptr = (usb_class_handle)hid_class;
+	*class_handle_ptr = (usb_class_handle)hid_class;
 
-    //USB_PRINTF("HID class driver initialized\n");
+	//USB_PRINTF("HID class driver initialized\n");
 
-    return USB_OK;
+	return USB_OK;
 
 } /* Endbody */
 
@@ -139,30 +139,30 @@ usb_status usb_class_hid_deinit
 usb_class_handle handle
 )
 {
-    usb_hid_class_struct_t* hid_class = (usb_hid_class_struct_t*)handle;
-    usb_status status = USB_OK;
-    if (hid_class == NULL)
-    {
+	usb_hid_class_struct_t* hid_class = (usb_hid_class_struct_t*)handle;
+	usb_status status = USB_OK;
+	if (hid_class == NULL)
+	{
 #if _DEBUG
-        USB_PRINTF("usb_class_hid_deinit fail\n");
+		USB_PRINTF("usb_class_hid_deinit fail\n");
 #endif
-        return USBERR_ERROR;
-    }
+		return USBERR_ERROR;
+	}
 
-    if (hid_class->in_pipe != NULL)
-    {
-        status = usb_host_close_pipe(hid_class->host_handle, hid_class->in_pipe);
-        if (status != USB_OK)
-        {
+	if (hid_class->in_pipe != NULL)
+	{
+		status = usb_host_close_pipe(hid_class->host_handle, hid_class->in_pipe);
+		if (status != USB_OK)
+		{
 #if _DEBUG
-            USB_PRINTF("error in usb_class_hid_deinit to close pipe\n");
+			USB_PRINTF("error in usb_class_hid_deinit to close pipe\n");
 #endif
-        }
-    }
+		}
+	}
 
-    OS_Mem_free(handle);
-    //USB_PRINTF("HID class driver de-initialized\n");
-    return USB_OK;
+	OS_Mem_free(handle);
+	//USB_PRINTF("HID class driver de-initialized\n");
+	return USB_OK;
 } /* Endbody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -180,30 +180,30 @@ usb_status usb_class_hid_pre_deinit
 usb_class_handle handle
 )
 {
-    usb_hid_class_struct_t* hid_class = (usb_hid_class_struct_t*)handle;
-    usb_status status = USB_OK;
+	usb_hid_class_struct_t* hid_class = (usb_hid_class_struct_t*)handle;
+	usb_status status = USB_OK;
 
-    if (hid_class == NULL)
-    {
-#if _DEBUG    
-        USB_PRINTF("_usb_host_cancel_call_interface fail\n");
-#endif
-        return USBERR_ERROR;
-    }
-
-    if (hid_class->in_pipe != NULL)
-    {
-        status = usb_host_cancel(hid_class->host_handle, hid_class->in_pipe, NULL);
-        if (status != USB_OK)
-        {
+	if (hid_class == NULL)
+	{
 #if _DEBUG
-            USB_PRINTF("error in _usb_host_cancel_call_interface to close pipe\n");
+		USB_PRINTF("_usb_host_cancel_call_interface fail\n");
 #endif
-        }
-    }
+		return USBERR_ERROR;
+	}
 
-    //USB_PRINTF("HID class driver pre_deinit\n");
-    return USB_OK;
+	if (hid_class->in_pipe != NULL)
+	{
+		status = usb_host_cancel(hid_class->host_handle, hid_class->in_pipe, NULL);
+		if (status != USB_OK)
+		{
+#if _DEBUG
+			USB_PRINTF("error in _usb_host_cancel_call_interface to close pipe\n");
+#endif
+		}
+	}
+
+	//USB_PRINTF("HID class driver pre_deinit\n");
+	return USB_OK;
 } /* Endbody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -228,20 +228,20 @@ uint32_t len,
 usb_status status
 )
 { /* Body */
-    usb_hid_class_struct_t* hid_class = (usb_hid_class_struct_t*)param;
+	usb_hid_class_struct_t* hid_class = (usb_hid_class_struct_t*)param;
 
-    if (usb_host_release_tr(hid_class->host_handle, (tr_struct_t*)tr_ptr) != USB_OK)
-    {
+	if (usb_host_release_tr(hid_class->host_handle, (tr_struct_t*)tr_ptr) != USB_OK)
+	{
 #if _DEBUG
-        USB_PRINTF("_usb_host_release_tr failed\n");
+		USB_PRINTF("_usb_host_release_tr failed\n");
 #endif
-    }
+	}
 
-    hid_class->in_setup = FALSE;
-    if (hid_class->ctrl_callback)
-    {
-        hid_class->ctrl_callback(NULL, hid_class->ctrl_param, buffer, len, status);
-    }
+	hid_class->in_setup = FALSE;
+	if (hid_class->ctrl_callback)
+	{
+		hid_class->ctrl_callback(NULL, hid_class->ctrl_param, buffer, len, status);
+	}
 } /* Endbody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -249,7 +249,7 @@ usb_status status
  * Function Name  : usb_class_hid_recv_callback
  * Returned Value : USB_OK if command has been passed on USB.
  * Comments       :
- *    
+ *
  *
  *END*--------------------------------------------------------------------*/
 static void usb_class_hid_recv_callback
@@ -266,19 +266,19 @@ uint32_t len,
 usb_status status
 )
 { /* Body */
-    usb_hid_class_struct_t* hid_class = (usb_hid_class_struct_t*)param;
+	usb_hid_class_struct_t* hid_class = (usb_hid_class_struct_t*)param;
 
-    if (usb_host_release_tr(hid_class->host_handle, (tr_struct_t*)tr_ptr) != USB_OK)
-    {
+	if (usb_host_release_tr(hid_class->host_handle, (tr_struct_t*)tr_ptr) != USB_OK)
+	{
 #if _DEBUG
-        USB_PRINTF("_usb_host_release_tr failed\n");
+		USB_PRINTF("_usb_host_release_tr failed\n");
 #endif
-    }
+	}
 
-    if (hid_class->recv_callback)
-    {
-        hid_class->recv_callback(NULL, hid_class->recv_param, buffer, len, status);
-    }
+	if (hid_class->recv_callback)
+	{
+		hid_class->recv_callback(NULL, hid_class->recv_param, buffer, len, status);
+	}
 } /* Endbody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -305,81 +305,81 @@ uint16_t wlength,
 uint8_t* data
 )
 { /* Body */
-    usb_hid_class_struct_t* hid_class = NULL;
-    //usb_setup_t                        req;
-    usb_status status = USB_OK;
-    usb_pipe_handle pipe_handle;
-    tr_struct_t* tr_ptr;
-    usb_device_interface_struct_t* pDeviceIntf = NULL;
-    interface_descriptor_t* intf = NULL;
-    uint8_t interfaceIndex;
+	usb_hid_class_struct_t* hid_class = NULL;
+	//usb_setup_t                        req;
+	usb_status status = USB_OK;
+	usb_pipe_handle pipe_handle;
+	tr_struct_t* tr_ptr;
+	usb_device_interface_struct_t* pDeviceIntf = NULL;
+	interface_descriptor_t* intf = NULL;
+	uint8_t interfaceIndex;
 
-    if ((com_ptr == NULL) || (com_ptr->class_ptr == NULL))
-    {
-        return USBERR_ERROR;
-    }
+	if ((com_ptr == NULL) || (com_ptr->class_ptr == NULL))
+	{
+		return USBERR_ERROR;
+	}
 
-    hid_class = (usb_hid_class_struct_t*)com_ptr->class_ptr;
-    if (hid_class->in_setup)
-    {
-        return USBERR_TRANSFER_IN_PROGRESS;
-    }
+	hid_class = (usb_hid_class_struct_t*)com_ptr->class_ptr;
+	if (hid_class->in_setup)
+	{
+		return USBERR_TRANSFER_IN_PROGRESS;
+	}
 
-    if (hid_class->dev_handle == NULL)
-    {
+	if (hid_class->dev_handle == NULL)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("_usb_hostdev_cntrl_request, invalid device handle");
+		DEBUG_LOG_TRACE("_usb_hostdev_cntrl_request, invalid device handle");
 #endif
-        return USBERR_DEVICE_NOT_FOUND;
-    }
+		return USBERR_DEVICE_NOT_FOUND;
+	}
 
-    pDeviceIntf = (usb_device_interface_struct_t*)hid_class->intf_handle;
-    intf = pDeviceIntf->lpinterfaceDesc;
-    interfaceIndex = intf->bInterfaceNumber;
+	pDeviceIntf = (usb_device_interface_struct_t*)hid_class->intf_handle;
+	intf = pDeviceIntf->lpinterfaceDesc;
+	interfaceIndex = intf->bInterfaceNumber;
 
-    hid_class->ctrl_callback = com_ptr->callback_fn;
-    hid_class->ctrl_param = com_ptr->callback_param;
+	hid_class->ctrl_callback = com_ptr->callback_fn;
+	hid_class->ctrl_param = com_ptr->callback_param;
 
-    pipe_handle = usb_host_dev_mng_get_control_pipe(hid_class->dev_handle);
+	pipe_handle = usb_host_dev_mng_get_control_pipe(hid_class->dev_handle);
 
-    if (usb_host_get_tr(hid_class->host_handle, usb_class_hid_cntrl_callback, hid_class, &tr_ptr) != USB_OK)
-    {
+	if (usb_host_get_tr(hid_class->host_handle, usb_class_hid_cntrl_callback, hid_class, &tr_ptr) != USB_OK)
+	{
 #if _DEBUG
-        USB_PRINTF("error to get tr hid\n");
+		USB_PRINTF("error to get tr hid\n");
 #endif
-        return USBERR_ERROR;
-    }
+		return USBERR_ERROR;
+	}
 
-    /* Set TR buffer length as required */
-    if ((REQ_TYPE_IN & bmrequesttype) != 0)
-    {
-        tr_ptr->rx_buffer = data;
-        tr_ptr->rx_length = wlength;
-    }
-    else
-    {
-        tr_ptr->tx_buffer = data;
-        tr_ptr->tx_length = wlength;
-    }
+	/* Set TR buffer length as required */
+	if ((REQ_TYPE_IN & bmrequesttype) != 0)
+	{
+		tr_ptr->rx_buffer = data;
+		tr_ptr->rx_length = wlength;
+	}
+	else
+	{
+		tr_ptr->tx_buffer = data;
+		tr_ptr->tx_length = wlength;
+	}
 
-    tr_ptr->setup_packet.bmrequesttype = bmrequesttype;
-    tr_ptr->setup_packet.brequest = brequest;
-    *(uint16_t*)&tr_ptr->setup_packet.wvalue[0] = USB_HOST_TO_LE_SHORT(wvalue);
-    *(uint16_t*)&tr_ptr->setup_packet.windex[0] = USB_HOST_TO_LE_SHORT(interfaceIndex);
-    *(uint16_t*)&tr_ptr->setup_packet.wlength[0] = USB_HOST_TO_LE_SHORT(wlength);
+	tr_ptr->setup_packet.bmrequesttype = bmrequesttype;
+	tr_ptr->setup_packet.brequest = brequest;
+	*(uint16_t*)&tr_ptr->setup_packet.wvalue[0] = USB_HOST_TO_LE_SHORT(wvalue);
+	*(uint16_t*)&tr_ptr->setup_packet.windex[0] = USB_HOST_TO_LE_SHORT(interfaceIndex);
+	*(uint16_t*)&tr_ptr->setup_packet.wlength[0] = USB_HOST_TO_LE_SHORT(wlength);
 
-    hid_class->in_setup = TRUE;
-    status = usb_host_send_setup(hid_class->host_handle, pipe_handle, tr_ptr);
-    if (status != USB_OK)
-    {
+	hid_class->in_setup = TRUE;
+	status = usb_host_send_setup(hid_class->host_handle, pipe_handle, tr_ptr);
+	if (status != USB_OK)
+	{
 #if _DEBUG
-        USB_PRINTF("\nError in usb_class_hid_cntrl_common: %x", status);
+		USB_PRINTF("\nError in usb_class_hid_cntrl_common: %x", status);
 #endif
-        hid_class->in_setup = FALSE;
-        usb_host_release_tr(hid_class->host_handle, tr_ptr);
-        return USBERR_ERROR;
-    }
-    return status;
+		hid_class->in_setup = FALSE;
+		usb_host_release_tr(hid_class->host_handle, tr_ptr);
+		return USBERR_ERROR;
+	}
+	return status;
 } /* Endbody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -400,59 +400,59 @@ uint8_t * buffer,
 uint16_t length
 )
 {
-    usb_hid_class_struct_t* hid_class;
-    tr_struct_t* tr_ptr;
-    usb_status status;
+	usb_hid_class_struct_t* hid_class;
+	tr_struct_t* tr_ptr;
+	usb_status status;
 
-    if ((com_ptr == NULL) || (com_ptr->class_ptr == NULL))
-    {
-        return USBERR_ERROR;
-    }
+	if ((com_ptr == NULL) || (com_ptr->class_ptr == NULL))
+	{
+		return USBERR_ERROR;
+	}
 
-    hid_class = (usb_hid_class_struct_t*)com_ptr->class_ptr;
+	hid_class = (usb_hid_class_struct_t*)com_ptr->class_ptr;
 
-    if ((hid_class == NULL) || (buffer == NULL))
-    {
+	if ((hid_class == NULL) || (buffer == NULL))
+	{
 #if _DEBUG
-        USB_PRINTF("input parameter error\n");
+		USB_PRINTF("input parameter error\n");
 #endif
-        return USBERR_ERROR;
-    }
+		return USBERR_ERROR;
+	}
 
-    hid_class->recv_callback = com_ptr->callback_fn;
-    hid_class->recv_param = com_ptr->callback_param;
+	hid_class->recv_callback = com_ptr->callback_fn;
+	hid_class->recv_param = com_ptr->callback_param;
 
-    if (hid_class->dev_handle == NULL)
-    {
-        return USBERR_ERROR;
-    }
+	if (hid_class->dev_handle == NULL)
+	{
+		return USBERR_ERROR;
+	}
 #if 0
-    if (sleep_test)
-    {
-        USB_PRINTF("begin to sleep 3000ms \n");
-        OS_Time_delay(3000);
-    }
+	if (sleep_test)
+	{
+		USB_PRINTF("begin to sleep 3000ms \n");
+		OS_Time_delay(3000);
+	}
 #endif
-    if (usb_host_get_tr(hid_class->host_handle, usb_class_hid_recv_callback, hid_class, &tr_ptr) != USB_OK)
-    {
+	if (usb_host_get_tr(hid_class->host_handle, usb_class_hid_recv_callback, hid_class, &tr_ptr) != USB_OK)
+	{
 #if _DEBUG
-        USB_PRINTF("error to get tr\n");
+		USB_PRINTF("error to get tr\n");
 #endif
-        return USBERR_ERROR;
-    }
+		return USBERR_ERROR;
+	}
 
-    tr_ptr->rx_buffer = buffer;
-    tr_ptr->rx_length = length;
-    status = usb_host_recv_data(hid_class->host_handle, hid_class->in_pipe, tr_ptr);
-    if (status != USB_OK)
-    {
+	tr_ptr->rx_buffer = buffer;
+	tr_ptr->rx_length = length;
+	status = usb_host_recv_data(hid_class->host_handle, hid_class->in_pipe, tr_ptr);
+	if (status != USB_OK)
+	{
 #if _DEBUG
-        USB_PRINTF("\nError in usb_class_hid_recv_data: %x", status);
+		USB_PRINTF("\nError in usb_class_hid_recv_data: %x", status);
 #endif
-        usb_host_release_tr(hid_class->host_handle, tr_ptr);
-        return USBERR_ERROR;
-    }
-    return USB_OK;
+		usb_host_release_tr(hid_class->host_handle, tr_ptr);
+		return USBERR_ERROR;
+	}
+	return USB_OK;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -477,16 +477,16 @@ uint16_t len
 )
 {
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("_usb_class_hub_get_descriptor");
+	DEBUG_LOG_TRACE("_usb_class_hub_get_descriptor");
 #endif
 
-    return usb_class_hid_cntrl_common(
-    com_ptr,
-    REQ_TYPE_INTERFACE | REQ_TYPE_IN,
-    REQ_GET_DESCRIPTOR,
-    (uint16_t)((uint16_t)type << 8),
-    len,
-    buf);
+	return usb_class_hid_cntrl_common(
+	com_ptr,
+	REQ_TYPE_INTERFACE | REQ_TYPE_IN,
+	REQ_GET_DESCRIPTOR,
+	(uint16_t)((uint16_t)type << 8),
+	len,
+	buf);
 } /* EndBody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -512,9 +512,9 @@ void* buf,
 uint16_t blen
 )
 {
-    return usb_class_hid_cntrl_common(com_ptr,
-    REQ_TYPE_IN | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
-    GET_REPORT, (uint16_t)((uint16_t)((uint16_t)rtype << 8) | rid), blen, (uint8_t *)buf);
+	return usb_class_hid_cntrl_common(com_ptr,
+	REQ_TYPE_IN | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
+	GET_REPORT, (uint16_t)((uint16_t)((uint16_t)rtype << 8) | rid), blen, (uint8_t *)buf);
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -540,9 +540,9 @@ void* buf,
 uint16_t blen
 )
 {
-    return usb_class_hid_cntrl_common(com_ptr,
-    REQ_TYPE_OUT | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
-    SET_REPORT, (uint16_t)((uint16_t)((uint16_t)rtype << 8) | rid), blen, (uint8_t *)buf);
+	return usb_class_hid_cntrl_common(com_ptr,
+	REQ_TYPE_OUT | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
+	SET_REPORT, (uint16_t)((uint16_t)((uint16_t)rtype << 8) | rid), blen, (uint8_t *)buf);
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -566,9 +566,9 @@ uint8_t rid,
 uint8_t * idle_rate
 )
 {
-    return usb_class_hid_cntrl_common(com_ptr,
-    REQ_TYPE_IN | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
-    GET_IDLE, rid, 1, idle_rate);
+	return usb_class_hid_cntrl_common(com_ptr,
+	REQ_TYPE_IN | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
+	GET_IDLE, rid, 1, idle_rate);
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -591,9 +591,9 @@ uint8_t rid,
 uint8_t duration
 )
 {
-    return usb_class_hid_cntrl_common(com_ptr,
-    REQ_TYPE_OUT | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
-    SET_IDLE, (uint16_t)((uint16_t)((uint16_t)duration << 8) | rid), 0, NULL);
+	return usb_class_hid_cntrl_common(com_ptr,
+	REQ_TYPE_OUT | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
+	SET_IDLE, (uint16_t)((uint16_t)((uint16_t)duration << 8) | rid), 0, NULL);
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -612,9 +612,9 @@ hid_command_t* com_ptr,
 uint8_t * protocol
 )
 {
-    return usb_class_hid_cntrl_common(com_ptr,
-    REQ_TYPE_IN | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
-    GET_PROTOCOL, 0, 1, protocol);
+	return usb_class_hid_cntrl_common(com_ptr,
+	REQ_TYPE_IN | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
+	GET_PROTOCOL, 0, 1, protocol);
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -634,8 +634,8 @@ hid_command_t* com_ptr,
 uint8_t protocol
 )
 {
-    return usb_class_hid_cntrl_common(com_ptr,
-    REQ_TYPE_OUT | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
-    SET_PROTOCOL, protocol, 0, NULL);
+	return usb_class_hid_cntrl_common(com_ptr,
+	REQ_TYPE_OUT | REQ_TYPE_CLASS | REQ_TYPE_INTERFACE,
+	SET_PROTOCOL, protocol, 0, NULL);
 }
 #endif

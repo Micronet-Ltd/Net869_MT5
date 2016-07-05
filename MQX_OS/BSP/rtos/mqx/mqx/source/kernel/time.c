@@ -64,18 +64,18 @@ static bool normalize(int16_t* , int16_t, int16_t*);
  */
 MQX_TICK_STRUCT_PTR _time_add_day_to_ticks
 (
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    _mqx_uint           days
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	_mqx_uint           days
 )
 { /* Body */
-    MQX_TICK_STRUCT tmp;
+	MQX_TICK_STRUCT tmp;
 
-    if (days) {
-        PSP_DAYS_TO_TICKS(days, &tmp);
-        PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
-    } /* Endif */
+	if (days) {
+		PSP_DAYS_TO_TICKS(days, &tmp);
+		PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
+	} /* Endif */
 
-    return tick_ptr;
+	return tick_ptr;
 
 } /* Endbody */
 
@@ -101,18 +101,18 @@ MQX_TICK_STRUCT_PTR _time_add_day_to_ticks
  */
 MQX_TICK_STRUCT_PTR _time_add_hour_to_ticks
 (
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    _mqx_uint           hours
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	_mqx_uint           hours
 )
 { /* Body */
-    MQX_TICK_STRUCT tmp;
+	MQX_TICK_STRUCT tmp;
 
-    if (hours) {
-        PSP_HOURS_TO_TICKS(hours, &tmp);
-        PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
-    } /* Endif */
+	if (hours) {
+		PSP_HOURS_TO_TICKS(hours, &tmp);
+		PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
+	} /* Endif */
 
-    return tick_ptr;
+	return tick_ptr;
 
 } /* Endbody */
 
@@ -138,18 +138,18 @@ MQX_TICK_STRUCT_PTR _time_add_hour_to_ticks
  */
 MQX_TICK_STRUCT_PTR _time_add_min_to_ticks
 (
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    _mqx_uint           minutes
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	_mqx_uint           minutes
 )
 { /* Body */
-    MQX_TICK_STRUCT tmp;
+	MQX_TICK_STRUCT tmp;
 
-    if (minutes) {
-        PSP_MINUTES_TO_TICKS(minutes, &tmp);
-        PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
-    } /* Endif */
+	if (minutes) {
+		PSP_MINUTES_TO_TICKS(minutes, &tmp);
+		PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
+	} /* Endif */
 
-    return tick_ptr;
+	return tick_ptr;
 
 } /* Endbody */
 
@@ -175,18 +175,18 @@ MQX_TICK_STRUCT_PTR _time_add_min_to_ticks
  */
 MQX_TICK_STRUCT_PTR _time_add_msec_to_ticks
 (
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    _mqx_uint           msecs
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	_mqx_uint           msecs
 )
 { /* Body */
-    MQX_TICK_STRUCT tmp;
+	MQX_TICK_STRUCT tmp;
 
-    if (msecs) {
-        PSP_MILLISECONDS_TO_TICKS(msecs, &tmp);
-        PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
-    } /* Endif */
+	if (msecs) {
+		PSP_MILLISECONDS_TO_TICKS(msecs, &tmp);
+		PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
+	} /* Endif */
 
-    return tick_ptr;
+	return tick_ptr;
 
 } /* Endbody */
 
@@ -212,18 +212,18 @@ MQX_TICK_STRUCT_PTR _time_add_msec_to_ticks
  */
 MQX_TICK_STRUCT_PTR _time_add_nsec_to_ticks
 (
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    _mqx_uint           nsecs
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	_mqx_uint           nsecs
 )
 { /* Body */
-    MQX_TICK_STRUCT tmp;
+	MQX_TICK_STRUCT tmp;
 
-    if (nsecs) {
-        PSP_NANOSECONDS_TO_TICKS(nsecs, &tmp);
-        PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
-    } /* Endif */
+	if (nsecs) {
+		PSP_NANOSECONDS_TO_TICKS(nsecs, &tmp);
+		PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
+	} /* Endif */
 
-    return tick_ptr;
+	return tick_ptr;
 
 } /* Endbody */
 
@@ -249,18 +249,18 @@ MQX_TICK_STRUCT_PTR _time_add_nsec_to_ticks
  */
 MQX_TICK_STRUCT_PTR _time_add_psec_to_ticks
 (
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    _mqx_uint           psecs
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	_mqx_uint           psecs
 )
 { /* Body */
-    MQX_TICK_STRUCT tmp;
+	MQX_TICK_STRUCT tmp;
 
-    if (psecs) {
-        PSP_PICOSECONDS_TO_TICKS(psecs, &tmp);
-        PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
-    } /* Endif */
+	if (psecs) {
+		PSP_PICOSECONDS_TO_TICKS(psecs, &tmp);
+		PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
+	} /* Endif */
 
-    return tick_ptr;
+	return tick_ptr;
 
 } /* Endbody */
 
@@ -286,18 +286,18 @@ MQX_TICK_STRUCT_PTR _time_add_psec_to_ticks
  */
 MQX_TICK_STRUCT_PTR _time_add_sec_to_ticks
 (
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    _mqx_uint           secs
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	_mqx_uint           secs
 )
 { /* Body */
-    MQX_TICK_STRUCT tmp;
+	MQX_TICK_STRUCT tmp;
 
-    if (secs) {
-        PSP_SECONDS_TO_TICKS(secs, &tmp);
-        PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
-    } /* Endif */
+	if (secs) {
+		PSP_SECONDS_TO_TICKS(secs, &tmp);
+		PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
+	} /* Endif */
 
-    return tick_ptr;
+	return tick_ptr;
 
 } /* Endbody */
 
@@ -323,18 +323,18 @@ MQX_TICK_STRUCT_PTR _time_add_sec_to_ticks
  */
 MQX_TICK_STRUCT_PTR _time_add_usec_to_ticks
 (
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    _mqx_uint           usecs
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	_mqx_uint           usecs
 )
 { /* Body */
-    MQX_TICK_STRUCT tmp;
+	MQX_TICK_STRUCT tmp;
 
-    if (usecs) {
-        PSP_MICROSECONDS_TO_TICKS(usecs, &tmp);
-        PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
-    } /* Endif */
+	if (usecs) {
+		PSP_MICROSECONDS_TO_TICKS(usecs, &tmp);
+		PSP_ADD_TICKS(tick_ptr, &tmp, tick_ptr);
+	} /* Endif */
 
-    return tick_ptr;
+	return tick_ptr;
 
 } /* Endbody */
 
@@ -359,51 +359,51 @@ MQX_TICK_STRUCT_PTR _time_add_usec_to_ticks
  */
 void _time_delay
 (
-    register uint32_t milliseconds
+	register uint32_t milliseconds
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register TD_STRUCT_PTR td_ptr;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register TD_STRUCT_PTR td_ptr;
 
 #if MQX_ENABLE_USER_MODE && MQX_ENABLE_USER_STDAPI
-    if (MQX_RUN_IN_USER_MODE) {
-        _usr_time_delay(milliseconds);
-        return;
-    }
+	if (MQX_RUN_IN_USER_MODE) {
+		_usr_time_delay(milliseconds);
+		return;
+	}
 #endif
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_time_delay, milliseconds);
+	_KLOGE2(KLOG_time_delay, milliseconds);
 
-    /* If zero miliseconds specified, suspend the task till next reschedule */
-    if ( ! milliseconds ) {
-        _sched_yield();
-        _KLOGX1(KLOG_time_delay);
-        return;
-    } /* Endif */
+	/* If zero miliseconds specified, suspend the task till next reschedule */
+	if ( ! milliseconds ) {
+		_sched_yield();
+		_KLOGX1(KLOG_time_delay);
+		return;
+	} /* Endif */
 
-    td_ptr = kernel_data->ACTIVE_PTR;
+	td_ptr = kernel_data->ACTIVE_PTR;
 
-    /* Compute the number of tick events required to accomplish the least amount of time[ms]. */
-    /* tick_events = (required_time[ms] + (time_per_tick[ms] - 1)) / time_per_tick[ms]) + 1  -->
-     * tick_events = ((required_time[ms] - 1) / time_per_tick[ms]) + 2
-     */
-    milliseconds--;
-    /* Convert milliseconds to ticks, truncated */
-    PSP_MILLISECONDS_TO_TICKS_QUICK(milliseconds, &td_ptr->TIMEOUT);
-    /* Resolve truncation by adding one tick. Add another tick to accomplish the requested amount of time. */
-    PSP_ADD_TICKS_TO_TICK_STRUCT(&td_ptr->TIMEOUT, 2, &td_ptr->TIMEOUT);
+	/* Compute the number of tick events required to accomplish the least amount of time[ms]. */
+	/* tick_events = (required_time[ms] + (time_per_tick[ms] - 1)) / time_per_tick[ms]) + 1  -->
+	 * tick_events = ((required_time[ms] - 1) / time_per_tick[ms]) + 2
+	 */
+	milliseconds--;
+	/* Convert milliseconds to ticks, truncated */
+	PSP_MILLISECONDS_TO_TICKS_QUICK(milliseconds, &td_ptr->TIMEOUT);
+	/* Resolve truncation by adding one tick. Add another tick to accomplish the requested amount of time. */
+	PSP_ADD_TICKS_TO_TICK_STRUCT(&td_ptr->TIMEOUT, 2, &td_ptr->TIMEOUT);
 
-    _INT_DISABLE();
-    /* Calculate time to wake up the task */
-    PSP_ADD_TICKS(&td_ptr->TIMEOUT, &kernel_data->TIME, &td_ptr->TIMEOUT);
+	_INT_DISABLE();
+	/* Calculate time to wake up the task */
+	PSP_ADD_TICKS(&td_ptr->TIMEOUT, &kernel_data->TIME, &td_ptr->TIMEOUT);
 
-    _time_delay_internal(td_ptr);
+	_time_delay_internal(td_ptr);
 
-    _INT_ENABLE();
+	_INT_ENABLE();
 
-    _KLOGX1(KLOG_time_delay);
+	_KLOGX1(KLOG_time_delay);
 
 } /* Endbody */
 
@@ -424,11 +424,11 @@ void _time_delay
  */
 void _usr_time_delay
 (
-    register uint32_t milliseconds
+	register uint32_t milliseconds
 )
 {
-    MQX_API_CALL_PARAMS params = {milliseconds, 0, 0, 0, 0};
-    _mqx_api_call(MQX_API_TIME_DELAY, &params);
+	MQX_API_CALL_PARAMS params = {milliseconds, 0, 0, 0, 0};
+	_mqx_api_call(MQX_API_TIME_DELAY, &params);
 }
 
 #endif /* MQX_ENABLE_USER_MODE */
@@ -456,35 +456,35 @@ void _usr_time_delay
  */
 void _time_delay_for
 (
-    register MQX_TICK_STRUCT_PTR ticks)
+	register MQX_TICK_STRUCT_PTR ticks)
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register TD_STRUCT_PTR td_ptr;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register TD_STRUCT_PTR td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_time_delay_for, ticks);
+	_KLOGE2(KLOG_time_delay_for, ticks);
 
 #if MQX_CHECK_ERRORS
-    if (ticks == NULL) {
-        _task_set_error(MQX_INVALID_PARAMETER);
-        _KLOGX2(KLOG_time_delay_for, MQX_INVALID_PARAMETER);
-        return;
-    } /* Endif */
+	if (ticks == NULL) {
+		_task_set_error(MQX_INVALID_PARAMETER);
+		_KLOGX2(KLOG_time_delay_for, MQX_INVALID_PARAMETER);
+		return;
+	} /* Endif */
 #endif
 
-    td_ptr = kernel_data->ACTIVE_PTR;
+	td_ptr = kernel_data->ACTIVE_PTR;
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 
-    /* Calculate time to wake up the task */
-    PSP_ADD_TICKS(ticks, &kernel_data->TIME, &td_ptr->TIMEOUT);
+	/* Calculate time to wake up the task */
+	PSP_ADD_TICKS(ticks, &kernel_data->TIME, &td_ptr->TIMEOUT);
 
-    _time_delay_internal(td_ptr);
+	_time_delay_internal(td_ptr);
 
-    _INT_ENABLE();
+	_INT_ENABLE();
 
-    _KLOGX1( KLOG_time_delay_for);
+	_KLOGX1( KLOG_time_delay_for);
 
 } /* Endbody */
 
@@ -509,7 +509,7 @@ void _time_delay_for
  */
 void _time_delay_internal
 (
-    register TD_STRUCT_PTR td_ptr
+	register TD_STRUCT_PTR td_ptr
 )
 { /* Body */
    register KERNEL_DATA_STRUCT_PTR  kernel_data;
@@ -524,22 +524,22 @@ void _time_delay_internal
    tdprev_ptr = (TD_STRUCT_PTR)((void *)&kernel_data->TIMEOUT_QUEUE);
    if ( _QUEUE_GET_SIZE(&kernel_data->TIMEOUT_QUEUE) ) {
 
-      /* Perform insertion sort by time */
-      td2_ptr    = (TD_STRUCT_PTR)((void *)kernel_data->TIMEOUT_QUEUE.NEXT);
+	  /* Perform insertion sort by time */
+	  td2_ptr    = (TD_STRUCT_PTR)((void *)kernel_data->TIMEOUT_QUEUE.NEXT);
 
-      /* SPR P171-0023-01 use pre-decrement on while loop */
-      count      = _QUEUE_GET_SIZE(&kernel_data->TIMEOUT_QUEUE) + 1;
-      while ( --count ) {
-      /* END SPR */
-         result = PSP_CMP_TICKS(&td2_ptr->TIMEOUT, &td_ptr->TIMEOUT);
-         if (MQX_DELAY_ENQUEUE_POLICY(result)) {
-            /* Enqueue before td2_ptr */
-            break;
-         } /* Endif */
+	  /* SPR P171-0023-01 use pre-decrement on while loop */
+	  count      = _QUEUE_GET_SIZE(&kernel_data->TIMEOUT_QUEUE) + 1;
+	  while ( --count ) {
+	  /* END SPR */
+		 result = PSP_CMP_TICKS(&td2_ptr->TIMEOUT, &td_ptr->TIMEOUT);
+		 if (MQX_DELAY_ENQUEUE_POLICY(result)) {
+			/* Enqueue before td2_ptr */
+			break;
+		 } /* Endif */
 
-         tdprev_ptr = td2_ptr;
-         td2_ptr    = td2_ptr->TD_NEXT;
-      } /* Endwhile */
+		 tdprev_ptr = td2_ptr;
+		 td2_ptr    = td2_ptr->TD_NEXT;
+	  } /* Endwhile */
 
    } /* Endif */
 
@@ -577,39 +577,39 @@ void _time_delay_internal
  */
 void _time_delay_ticks
 (
-    register _mqx_uint time_in_ticks
+	register _mqx_uint time_in_ticks
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register TD_STRUCT_PTR td_ptr;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register TD_STRUCT_PTR td_ptr;
 
 #if MQX_ENABLE_USER_MODE && MQX_ENABLE_USER_STDAPI
-    if (MQX_RUN_IN_USER_MODE) {
-        _usr_time_delay_ticks(time_in_ticks);
-        return;
-    }
+	if (MQX_RUN_IN_USER_MODE) {
+		_usr_time_delay_ticks(time_in_ticks);
+		return;
+	}
 #endif
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_time_delay_ticks, time_in_ticks);
+	_KLOGE2(KLOG_time_delay_ticks, time_in_ticks);
 
-    /* If zero ticks specified, suspend the task till next reschedule */
-    if ( !time_in_ticks ) {
-        _sched_yield();
-        _KLOGX1(KLOG_time_delay_ticks);
-        return;
-    } /* Endif */
+	/* If zero ticks specified, suspend the task till next reschedule */
+	if ( !time_in_ticks ) {
+		_sched_yield();
+		_KLOGX1(KLOG_time_delay_ticks);
+		return;
+	} /* Endif */
 
-    td_ptr = kernel_data->ACTIVE_PTR;
+	td_ptr = kernel_data->ACTIVE_PTR;
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 
-    PSP_ADD_TICKS_TO_TICK_STRUCT(&kernel_data->TIME, time_in_ticks, &td_ptr->TIMEOUT);
-    _time_delay_internal(td_ptr);
+	PSP_ADD_TICKS_TO_TICK_STRUCT(&kernel_data->TIME, time_in_ticks, &td_ptr->TIMEOUT);
+	_time_delay_internal(td_ptr);
 
-    _INT_ENABLE();
-    _KLOGX1(KLOG_time_delay_ticks);
+	_INT_ENABLE();
+	_KLOGX1(KLOG_time_delay_ticks);
 
 }
 
@@ -629,11 +629,11 @@ void _time_delay_ticks
  */
 void _usr_time_delay_ticks
 (
-    register _mqx_uint time_in_ticks
+	register _mqx_uint time_in_ticks
 )
 {
-    MQX_API_CALL_PARAMS params = {(uint32_t)time_in_ticks, 0, 0, 0, 0};
-    _mqx_api_call(MQX_API_TIME_DELAY_TICKS, &params);
+	MQX_API_CALL_PARAMS params = {(uint32_t)time_in_ticks, 0, 0, 0, 0};
+	_mqx_api_call(MQX_API_TIME_DELAY_TICKS, &params);
 }
 
 #endif /* MQX_ENABLE_USER_MODE */
@@ -662,36 +662,36 @@ void _usr_time_delay_ticks
  */
 void _time_delay_until
 (
-    register MQX_TICK_STRUCT_PTR ticks
+	register MQX_TICK_STRUCT_PTR ticks
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register TD_STRUCT_PTR td_ptr;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register TD_STRUCT_PTR td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_time_delay_until, ticks);
+	_KLOGE2(KLOG_time_delay_until, ticks);
 
 #if MQX_CHECK_ERRORS
-    if (ticks == NULL) {
-        _task_set_error(MQX_INVALID_PARAMETER);
-        _KLOGX2(KLOG_time_delay_until, MQX_INVALID_PARAMETER);
-        return;
-    } /* Endif */
+	if (ticks == NULL) {
+		_task_set_error(MQX_INVALID_PARAMETER);
+		_KLOGX2(KLOG_time_delay_until, MQX_INVALID_PARAMETER);
+		return;
+	} /* Endif */
 #endif
 
-    td_ptr = kernel_data->ACTIVE_PTR;
+	td_ptr = kernel_data->ACTIVE_PTR;
 
-    /* Calculate time to wake up the task */
-    td_ptr->TIMEOUT = *ticks;
+	/* Calculate time to wake up the task */
+	td_ptr->TIMEOUT = *ticks;
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 
-    _time_delay_internal(td_ptr);
+	_time_delay_internal(td_ptr);
 
-    _INT_ENABLE();
+	_INT_ENABLE();
 
-    _KLOGX1(KLOG_time_delay_until);
+	_KLOGX1(KLOG_time_delay_until);
 
 } /* Endbody */
 
@@ -734,29 +734,29 @@ void _time_delay_until
  */
 int32_t _time_diff_days
 (
-    MQX_TICK_STRUCT_PTR end_tick_ptr,
-    MQX_TICK_STRUCT_PTR start_tick_ptr,
-    bool        *overflow_ptr
+	MQX_TICK_STRUCT_PTR end_tick_ptr,
+	MQX_TICK_STRUCT_PTR start_tick_ptr,
+	bool        *overflow_ptr
 )
 { /* Body */
-    MQX_TICK_STRUCT diff_tick;
-    _mqx_uint result;
+	MQX_TICK_STRUCT diff_tick;
+	_mqx_uint result;
 
 #if MQX_CHECK_ERRORS
-    if (overflow_ptr == NULL) {
-        return MAX_INT_32;
-    } /* Endif */
+	if (overflow_ptr == NULL) {
+		return MAX_INT_32;
+	} /* Endif */
 #endif
 
-    result = _time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
+	result = _time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
 
 #if MQX_CHECK_ERRORS
-    if (result != MQX_OK) {
-        return MAX_INT_32;
-    } /* Endif */
+	if (result != MQX_OK) {
+		return MAX_INT_32;
+	} /* Endif */
 #endif
 
-    return( PSP_TICKS_TO_DAYS(&diff_tick, overflow_ptr) );
+	return( PSP_TICKS_TO_DAYS(&diff_tick, overflow_ptr) );
 
 } /* Endbody */
 
@@ -789,32 +789,32 @@ int32_t _time_diff_days
  */
 void _time_diff
 (
-    TIME_STRUCT_PTR start_time_ptr,
-    TIME_STRUCT_PTR end_time_ptr,
-    TIME_STRUCT_PTR diff_time_ptr
+	TIME_STRUCT_PTR start_time_ptr,
+	TIME_STRUCT_PTR end_time_ptr,
+	TIME_STRUCT_PTR diff_time_ptr
 )
 { /* Body */
-    TIME_STRUCT temp;
+	TIME_STRUCT temp;
 
-    /*
-     * Use temporary variable in case diff_time_ptr is the
-     * same as either start or end pointers
-     */
-    temp.SECONDS = end_time_ptr->SECONDS;
-    temp.MILLISECONDS = end_time_ptr->MILLISECONDS;
-    if (temp.MILLISECONDS < start_time_ptr->MILLISECONDS) {
-        temp.MILLISECONDS += 1000;
-        temp.SECONDS--;
-    } /* Endif */
-    temp.SECONDS -= start_time_ptr->SECONDS;
-    temp.MILLISECONDS -= start_time_ptr->MILLISECONDS;
+	/*
+	 * Use temporary variable in case diff_time_ptr is the
+	 * same as either start or end pointers
+	 */
+	temp.SECONDS = end_time_ptr->SECONDS;
+	temp.MILLISECONDS = end_time_ptr->MILLISECONDS;
+	if (temp.MILLISECONDS < start_time_ptr->MILLISECONDS) {
+		temp.MILLISECONDS += 1000;
+		temp.SECONDS--;
+	} /* Endif */
+	temp.SECONDS -= start_time_ptr->SECONDS;
+	temp.MILLISECONDS -= start_time_ptr->MILLISECONDS;
 
-    if (temp.MILLISECONDS > 1000) {
-        temp.SECONDS += (temp.MILLISECONDS / 1000);
-        temp.MILLISECONDS = temp.MILLISECONDS % 1000;
-    } /* Endif */
+	if (temp.MILLISECONDS > 1000) {
+		temp.SECONDS += (temp.MILLISECONDS / 1000);
+		temp.MILLISECONDS = temp.MILLISECONDS % 1000;
+	} /* Endif */
 
-    *diff_time_ptr = temp;
+	*diff_time_ptr = temp;
 
 } /* Endbody */
 
@@ -849,23 +849,23 @@ void _time_diff
  */
 _mqx_uint _time_diff_ticks
 (
-    MQX_TICK_STRUCT_PTR end_tick_ptr,
-    MQX_TICK_STRUCT_PTR start_tick_ptr,
-    MQX_TICK_STRUCT_PTR diff_tick_ptr
+	MQX_TICK_STRUCT_PTR end_tick_ptr,
+	MQX_TICK_STRUCT_PTR start_tick_ptr,
+	MQX_TICK_STRUCT_PTR diff_tick_ptr
 )
 { /* Body */
 
 #if MQX_CHECK_ERRORS
-    if ((end_tick_ptr == NULL) || (start_tick_ptr == NULL) ||
-                    (diff_tick_ptr == NULL))
-    {
-        return MQX_INVALID_PARAMETER;
-    } /* Endif */
+	if ((end_tick_ptr == NULL) || (start_tick_ptr == NULL) ||
+					(diff_tick_ptr == NULL))
+	{
+		return MQX_INVALID_PARAMETER;
+	} /* Endif */
 #endif
 
-    PSP_SUB_TICKS(end_tick_ptr, start_tick_ptr, diff_tick_ptr);
+	PSP_SUB_TICKS(end_tick_ptr, start_tick_ptr, diff_tick_ptr);
 
-    return MQX_OK;
+	return MQX_OK;
 
 } /* Endbody */
 
@@ -900,21 +900,21 @@ _mqx_uint _time_diff_ticks
  */
 int32_t _time_diff_ticks_int32
 (
-    MQX_TICK_STRUCT_PTR end_tick_ptr,
-    MQX_TICK_STRUCT_PTR start_tick_ptr,
-    bool        *overflow_ptr
+	MQX_TICK_STRUCT_PTR end_tick_ptr,
+	MQX_TICK_STRUCT_PTR start_tick_ptr,
+	bool        *overflow_ptr
 )
 { /* Body */
 
 #if MQX_CHECK_ERRORS
-    if ((end_tick_ptr == NULL) || (start_tick_ptr == NULL))
-    {
-        if (overflow_ptr != NULL) *overflow_ptr = TRUE;
-        return MAX_INT_32;
-    } /* Endif */
+	if ((end_tick_ptr == NULL) || (start_tick_ptr == NULL))
+	{
+		if (overflow_ptr != NULL) *overflow_ptr = TRUE;
+		return MAX_INT_32;
+	} /* Endif */
 #endif
 
-    return (PSP_SUB_TICKS_INT32(end_tick_ptr, start_tick_ptr, overflow_ptr));
+	return (PSP_SUB_TICKS_INT32(end_tick_ptr, start_tick_ptr, overflow_ptr));
 } /* Endbody */
 
 /*!
@@ -953,16 +953,16 @@ int32_t _time_diff_ticks_int32
  */
 int32_t _time_diff_hours
 (
-    MQX_TICK_STRUCT_PTR end_tick_ptr,
-    MQX_TICK_STRUCT_PTR start_tick_ptr,
-    bool        *overflow_ptr
+	MQX_TICK_STRUCT_PTR end_tick_ptr,
+	MQX_TICK_STRUCT_PTR start_tick_ptr,
+	bool        *overflow_ptr
 )
 { /* Body */
-    MQX_TICK_STRUCT diff_tick;
+	MQX_TICK_STRUCT diff_tick;
 
-    _time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
+	_time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
 
-    return( PSP_TICKS_TO_HOURS(&diff_tick, overflow_ptr) );
+	return( PSP_TICKS_TO_HOURS(&diff_tick, overflow_ptr) );
 
 } /* Endbody */
 
@@ -1002,16 +1002,16 @@ int32_t _time_diff_hours
  */
 int32_t _time_diff_minutes
 (
-    MQX_TICK_STRUCT_PTR end_tick_ptr,
-    MQX_TICK_STRUCT_PTR start_tick_ptr,
-    bool               *overflow_ptr
+	MQX_TICK_STRUCT_PTR end_tick_ptr,
+	MQX_TICK_STRUCT_PTR start_tick_ptr,
+	bool               *overflow_ptr
 )
 { /* Body */
-    MQX_TICK_STRUCT diff_tick;
+	MQX_TICK_STRUCT diff_tick;
 
-    _time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
+	_time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
 
-    return( PSP_TICKS_TO_MINUTES(&diff_tick, overflow_ptr) );
+	return( PSP_TICKS_TO_MINUTES(&diff_tick, overflow_ptr) );
 
 } /* Endbody */
 
@@ -1051,16 +1051,16 @@ int32_t _time_diff_minutes
  */
 int32_t _time_diff_milliseconds
 (
-    MQX_TICK_STRUCT_PTR end_tick_ptr,
-    MQX_TICK_STRUCT_PTR start_tick_ptr,
-    bool               *overflow_ptr
+	MQX_TICK_STRUCT_PTR end_tick_ptr,
+	MQX_TICK_STRUCT_PTR start_tick_ptr,
+	bool               *overflow_ptr
 )
 { /* Body */
-    MQX_TICK_STRUCT diff_tick;
+	MQX_TICK_STRUCT diff_tick;
 
-    _time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
+	_time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
 
-    return( PSP_TICKS_TO_MILLISECONDS(&diff_tick, overflow_ptr) );
+	return( PSP_TICKS_TO_MILLISECONDS(&diff_tick, overflow_ptr) );
 
 } /* Endbody */
 
@@ -1100,16 +1100,16 @@ int32_t _time_diff_milliseconds
  */
 int32_t _time_diff_nanoseconds
 (
-    MQX_TICK_STRUCT_PTR end_tick_ptr,
-    MQX_TICK_STRUCT_PTR start_tick_ptr,
-    bool        *overflow_ptr
+	MQX_TICK_STRUCT_PTR end_tick_ptr,
+	MQX_TICK_STRUCT_PTR start_tick_ptr,
+	bool        *overflow_ptr
 )
 { /* Body */
-    MQX_TICK_STRUCT diff_tick;
+	MQX_TICK_STRUCT diff_tick;
 
-    _time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
+	_time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
 
-    return( PSP_TICKS_TO_NANOSECONDS(&diff_tick, overflow_ptr) );
+	return( PSP_TICKS_TO_NANOSECONDS(&diff_tick, overflow_ptr) );
 
 } /* Endbody */
 
@@ -1149,16 +1149,16 @@ int32_t _time_diff_nanoseconds
  */
 int32_t _time_diff_picoseconds
 (
-    MQX_TICK_STRUCT_PTR end_tick_ptr,
-    MQX_TICK_STRUCT_PTR start_tick_ptr,
-    bool        *overflow_ptr
+	MQX_TICK_STRUCT_PTR end_tick_ptr,
+	MQX_TICK_STRUCT_PTR start_tick_ptr,
+	bool        *overflow_ptr
 )
 { /* Body */
-    MQX_TICK_STRUCT diff_tick;
+	MQX_TICK_STRUCT diff_tick;
 
-    _time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
+	_time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
 
-    return( PSP_TICKS_TO_PICOSECONDS(&diff_tick, overflow_ptr) );
+	return( PSP_TICKS_TO_PICOSECONDS(&diff_tick, overflow_ptr) );
 
 } /* Endbody */
 
@@ -1198,16 +1198,16 @@ int32_t _time_diff_picoseconds
  */
 int32_t _time_diff_seconds
 (
-    MQX_TICK_STRUCT_PTR end_tick_ptr,
-    MQX_TICK_STRUCT_PTR start_tick_ptr,
-    bool        *overflow_ptr
+	MQX_TICK_STRUCT_PTR end_tick_ptr,
+	MQX_TICK_STRUCT_PTR start_tick_ptr,
+	bool        *overflow_ptr
 )
 { /* Body */
-    MQX_TICK_STRUCT diff_tick;
+	MQX_TICK_STRUCT diff_tick;
 
-    _time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
+	_time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
 
-    return( PSP_TICKS_TO_SECONDS(&diff_tick, overflow_ptr) );
+	return( PSP_TICKS_TO_SECONDS(&diff_tick, overflow_ptr) );
 
 } /* Endbody */
 
@@ -1247,16 +1247,16 @@ int32_t _time_diff_seconds
  */
 int32_t _time_diff_microseconds
 (
-    MQX_TICK_STRUCT_PTR end_tick_ptr,
-    MQX_TICK_STRUCT_PTR start_tick_ptr,
-    bool        *overflow_ptr
+	MQX_TICK_STRUCT_PTR end_tick_ptr,
+	MQX_TICK_STRUCT_PTR start_tick_ptr,
+	bool        *overflow_ptr
 )
 { /* Body */
-    MQX_TICK_STRUCT diff_tick;
+	MQX_TICK_STRUCT diff_tick;
 
-    _time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
+	_time_diff_ticks(end_tick_ptr, start_tick_ptr, &diff_tick);
 
-    return( PSP_TICKS_TO_MICROSECONDS(&diff_tick, overflow_ptr) );
+	return( PSP_TICKS_TO_MICROSECONDS(&diff_tick, overflow_ptr) );
 
 } /* Endbody */
 
@@ -1285,27 +1285,27 @@ int32_t _time_diff_microseconds
  */
 void _time_dequeue
 (
-    _task_id tid
+	_task_id tid
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR td_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_time_dequeue, tid);
+	_KLOGE2(KLOG_time_dequeue, tid);
 
-    td_ptr = (TD_STRUCT_PTR) _task_get_td(tid);
-    if (td_ptr == NULL) {
-        _KLOGX1( KLOG_time_dequeue);
-        return;
-    }/* Endif */
+	td_ptr = (TD_STRUCT_PTR) _task_get_td(tid);
+	if (td_ptr == NULL) {
+		_KLOGX1( KLOG_time_dequeue);
+		return;
+	}/* Endif */
 
-    _int_disable();
-    _TIME_DEQUEUE(td_ptr, kernel_data);
-    _int_enable();
+	_int_disable();
+	_TIME_DEQUEUE(td_ptr, kernel_data);
+	_int_enable();
 
-    _KLOGX1( KLOG_time_dequeue);
+	_KLOGX1( KLOG_time_dequeue);
 
 } /* Endbody */
 
@@ -1335,27 +1335,27 @@ void _time_dequeue
  */
 void _time_dequeue_td
 (
-    void   *td
+	void   *td
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR td_ptr = (TD_STRUCT_PTR) td;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR td_ptr = (TD_STRUCT_PTR) td;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
 #if MQX_CHECK_ERRORS
-    if (td_ptr == NULL) {
-        return;
-    }/* Endif */
+	if (td_ptr == NULL) {
+		return;
+	}/* Endif */
 #endif
 
-    _KLOGE2(KLOG_time_dequeue_td, td);
+	_KLOGE2(KLOG_time_dequeue_td, td);
 
-    _int_disable();
-    _TIME_DEQUEUE(td_ptr, kernel_data);
-    _int_enable();
+	_int_disable();
+	_TIME_DEQUEUE(td_ptr, kernel_data);
+	_int_enable();
 
-    _KLOGX1( KLOG_time_dequeue_td);
+	_KLOGX1( KLOG_time_dequeue_td);
 
 } /* Endbody */
 
@@ -1379,20 +1379,20 @@ void _time_dequeue_td
  */
 void _time_get_elapsed
 (
-    TIME_STRUCT_PTR ts_ptr
+	TIME_STRUCT_PTR ts_ptr
 )
 { /* Body */
-    MQX_TICK_STRUCT tick;
+	MQX_TICK_STRUCT tick;
 
 #if MQX_CHECK_ERRORS
-    if ( ts_ptr == NULL ) {
-        return;
-    } /* Endif */
+	if ( ts_ptr == NULL ) {
+		return;
+	} /* Endif */
 #endif
 
-    _time_get_elapsed_ticks(&tick);
+	_time_get_elapsed_ticks(&tick);
 
-    PSP_TICKS_TO_TIME(&tick, ts_ptr);
+	PSP_TICKS_TO_TIME(&tick, ts_ptr);
 
 } /* Endbody */
 
@@ -1416,47 +1416,47 @@ void _time_get_elapsed
  */
 void _time_get_elapsed_ticks
 (
-    MQX_TICK_STRUCT_PTR tick_ptr
+	MQX_TICK_STRUCT_PTR tick_ptr
 )
 {
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
 #if MQX_CHECK_ERRORS
-    if ( tick_ptr == NULL ) {
-        return;
-    }
+	if ( tick_ptr == NULL ) {
+		return;
+	}
 #endif
 
 #if MQX_ENABLE_USER_MODE && MQX_ENABLE_USER_STDAPI
-    if (MQX_RUN_IN_USER_MODE) {
-        _usr_time_get_elapsed_ticks(tick_ptr);
-        return;
-    }
+	if (MQX_RUN_IN_USER_MODE) {
+		_usr_time_get_elapsed_ticks(tick_ptr);
+		return;
+	}
 #endif
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 
-    *tick_ptr = kernel_data->TIME;
+	*tick_ptr = kernel_data->TIME;
 
-    if (kernel_data->GET_HWTICKS) {
-        /* The hardware clock may have counted passed it's reference
-         * and have an interrupt pending.  Thus, HW_TICKS may exceed
-         * kernel_data->HW_TICKS_PER_TICK and this tick_ptr may need
-         * normalizing.  This is done in a moment.
-         */
-        tick_ptr->HW_TICKS = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
-    } /* Endif */
+	if (kernel_data->GET_HWTICKS) {
+		/* The hardware clock may have counted passed it's reference
+		 * and have an interrupt pending.  Thus, HW_TICKS may exceed
+		 * kernel_data->HW_TICKS_PER_TICK and this tick_ptr may need
+		 * normalizing.  This is done in a moment.
+		 */
+		tick_ptr->HW_TICKS = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
+	} /* Endif */
 
-    /* The timer ISR may go off and increment kernel_data->TIME */
-    _INT_ENABLE();
+	/* The timer ISR may go off and increment kernel_data->TIME */
+	_INT_ENABLE();
 
-    /* The tick_ptr->HW_TICKS value might exceed the
-     * kernel_data->HW_TICKS_PER_TICK and need to be
-     * normalized for the PSP.
-     */
-    PSP_NORMALIZE_TICKS(tick_ptr);
+	/* The tick_ptr->HW_TICKS value might exceed the
+	 * kernel_data->HW_TICKS_PER_TICK and need to be
+	 * normalized for the PSP.
+	 */
+	PSP_NORMALIZE_TICKS(tick_ptr);
 
 }
 
@@ -1479,11 +1479,11 @@ void _time_get_elapsed_ticks
  */
 void _usr_time_get_elapsed_ticks
 (
-    MQX_TICK_STRUCT_PTR tick_ptr
+	MQX_TICK_STRUCT_PTR tick_ptr
 )
 {
-    MQX_API_CALL_PARAMS params = {(uint32_t)tick_ptr, 0, 0, 0, 0};
-    _mqx_api_call(MQX_API_TIME_GET_ELAPSED_TICKS, &params);
+	MQX_API_CALL_PARAMS params = {(uint32_t)tick_ptr, 0, 0, 0, 0};
+	_mqx_api_call(MQX_API_TIME_GET_ELAPSED_TICKS, &params);
 }
 
 #endif /* MQX_ENABLE_USER_MODE */
@@ -1512,35 +1512,35 @@ void _usr_time_get_elapsed_ticks
  */
 void _time_get_elapsed_ticks_fast
 (
-    MQX_TICK_STRUCT_PTR tick_ptr
+	MQX_TICK_STRUCT_PTR tick_ptr
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
 #if MQX_CHECK_ERRORS
-    if ( tick_ptr == NULL ) {
-        return;
-    } /* Endif */
+	if ( tick_ptr == NULL ) {
+		return;
+	} /* Endif */
 #endif
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    *tick_ptr = kernel_data->TIME;
+	*tick_ptr = kernel_data->TIME;
 
-    if (kernel_data->GET_HWTICKS) {
-        /* The hardware clock may have counted passed it's reference
-         * and have an interrupt pending.  Thus, HW_TICKS may exceed
-         * kernel_data->HW_TICKS_PER_TICK and this tick_ptr may need
-         * normalizing.  This is done in a moment.
-         */
-        tick_ptr->HW_TICKS = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
-    } /* Endif */
+	if (kernel_data->GET_HWTICKS) {
+		/* The hardware clock may have counted passed it's reference
+		 * and have an interrupt pending.  Thus, HW_TICKS may exceed
+		 * kernel_data->HW_TICKS_PER_TICK and this tick_ptr may need
+		 * normalizing.  This is done in a moment.
+		 */
+		tick_ptr->HW_TICKS = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
+	} /* Endif */
 
-    /* The tick_ptr->HW_TICKS value might exceed the
-     * kernel_data->HW_TICKS_PER_TICK and need to be
-     * normalized for the PSP.
-     */
-    PSP_NORMALIZE_TICKS(tick_ptr);
+	/* The tick_ptr->HW_TICKS value might exceed the
+	 * kernel_data->HW_TICKS_PER_TICK and need to be
+	 * normalized for the PSP.
+	 */
+	PSP_NORMALIZE_TICKS(tick_ptr);
 
 } /* Endbody */
 #endif /* MQX_HAS_TICK */
@@ -1551,41 +1551,41 @@ void _time_get_elapsed_ticks_fast
  */
 static bool normalize
 (
-    int16_t *norm_value,
-    int16_t  boundary,
-    int16_t *high_order
+	int16_t *norm_value,
+	int16_t  boundary,
+	int16_t *high_order
 )
 { /* Body*/
-    int16_t tmp;
+	int16_t tmp;
 
-    tmp = *norm_value / boundary;
-    *norm_value -= tmp * boundary;
+	tmp = *norm_value / boundary;
+	*norm_value -= tmp * boundary;
 
-    if (*norm_value < 0) {
-        *norm_value += boundary;
-         tmp --;
-    }
+	if (*norm_value < 0) {
+		*norm_value += boundary;
+		 tmp --;
+	}
 
 #if MQX_CHECK_ERRORS
-    /* Check overflow */
-    if (tmp < 0L)
-    {
-        if ((*high_order < 0L) && (tmp < ( (int16_t)0x1000 - *high_order))) /* 0x1000 is the smallest of int16_t */
-        {
-            return FALSE;
-        }
-    }
-    else /* if tmp >= 0 */
-    {
-        if ((*high_order > 0L) && (tmp > ( (int16_t)0x7FFF - *high_order))) /* 0x7FFFF is the largest of int16_t */
-        {
-            return FALSE;
-        }
-    } /* Endif */
+	/* Check overflow */
+	if (tmp < 0L)
+	{
+		if ((*high_order < 0L) && (tmp < ( (int16_t)0x1000 - *high_order))) /* 0x1000 is the smallest of int16_t */
+		{
+			return FALSE;
+		}
+	}
+	else /* if tmp >= 0 */
+	{
+		if ((*high_order > 0L) && (tmp > ( (int16_t)0x7FFF - *high_order))) /* 0x7FFFF is the largest of int16_t */
+		{
+			return FALSE;
+		}
+	} /* Endif */
 #endif
 
-    *high_order += tmp;
-    return TRUE;
+	*high_order += tmp;
+	return TRUE;
 } /* Endbody */
 
 /*!
@@ -1659,137 +1659,137 @@ static bool normalize
  */
 bool _time_from_date
 (
-    DATE_STRUCT_PTR date_ptr,
-    TIME_STRUCT_PTR ts_ptr
+	DATE_STRUCT_PTR date_ptr,
+	TIME_STRUCT_PTR ts_ptr
 )
 { /* Body */
-    uint32_t time, day, month, yday;
-    uint32_t leap;
+	uint32_t time, day, month, yday;
+	uint32_t leap;
 
-    /* Validate each of the parameters before doing time conversion. */
+	/* Validate each of the parameters before doing time conversion. */
 
 #if MQX_CHECK_ERRORS
-    if ((date_ptr == NULL) || (ts_ptr == NULL)) {
-        return (FALSE);
-    } /* Endif */
+	if ((date_ptr == NULL) || (ts_ptr == NULL)) {
+		return (FALSE);
+	} /* Endif */
 #endif
 
-    if (!normalize(&date_ptr->MILLISEC, 1000, &date_ptr->SECOND)) {
-        return FALSE;
-    } /* Endif */
+	if (!normalize(&date_ptr->MILLISEC, 1000, &date_ptr->SECOND)) {
+		return FALSE;
+	} /* Endif */
 
-    if (!normalize(&date_ptr->SECOND, 60, &date_ptr->MINUTE)) {
-        return FALSE;
-    } /* Endif */
+	if (!normalize(&date_ptr->SECOND, 60, &date_ptr->MINUTE)) {
+		return FALSE;
+	} /* Endif */
 
-    if (!normalize(&date_ptr->MINUTE, 60, &date_ptr->HOUR)) {
-        return FALSE;
-    } /* Endif */
+	if (!normalize(&date_ptr->MINUTE, 60, &date_ptr->HOUR)) {
+		return FALSE;
+	} /* Endif */
 
-    if (!normalize(&date_ptr->HOUR, 24, &date_ptr->DAY)) {
-        return FALSE;
-    } /* Endif */
+	if (!normalize(&date_ptr->HOUR, 24, &date_ptr->DAY)) {
+		return FALSE;
+	} /* Endif */
 
-    date_ptr->MONTH --; /* becase month starts from 1 */
-    if (!normalize(&date_ptr->MONTH, 12, &date_ptr->YEAR)) {
-        return FALSE;
-    } /* Endif */
-    date_ptr->MONTH ++; /* restore month */
+	date_ptr->MONTH --; /* becase month starts from 1 */
+	if (!normalize(&date_ptr->MONTH, 12, &date_ptr->YEAR)) {
+		return FALSE;
+	} /* Endif */
+	date_ptr->MONTH ++; /* restore month */
 
-    /*
-     * Normalize days of month
-     */
-    while (1) {
-        /* Find out if we are in a leap year. */
-        leap = (_mqx_uint) _time_check_if_leap(date_ptr->YEAR);
+	/*
+	 * Normalize days of month
+	 */
+	while (1) {
+		/* Find out if we are in a leap year. */
+		leap = (_mqx_uint) _time_check_if_leap(date_ptr->YEAR);
 
-        if (date_ptr->DAY > _time_days_in_month_internal[leap][date_ptr->MONTH]) {
-            date_ptr->DAY -= _time_days_in_month_internal[leap][date_ptr->MONTH];
-            date_ptr->MONTH++;
-        }
-        else if (date_ptr->DAY < 1U) { /* The day of month starts from 1 */
-            date_ptr->DAY += (uint16_t) _time_days_in_month_internal[leap][date_ptr->MONTH];
-            date_ptr->MONTH--;
-        }
-        else {
-            break;
-        }/* Endif */
+		if (date_ptr->DAY > _time_days_in_month_internal[leap][date_ptr->MONTH]) {
+			date_ptr->DAY -= _time_days_in_month_internal[leap][date_ptr->MONTH];
+			date_ptr->MONTH++;
+		}
+		else if (date_ptr->DAY < 1U) { /* The day of month starts from 1 */
+			date_ptr->DAY += (uint16_t) _time_days_in_month_internal[leap][date_ptr->MONTH];
+			date_ptr->MONTH--;
+		}
+		else {
+			break;
+		}/* Endif */
 
-        if (date_ptr->MONTH == 13U) {
-            date_ptr->MONTH = 1;
-            date_ptr->YEAR ++;
-        }
-        else if (date_ptr->MONTH == 0U) {
-            date_ptr->MONTH = 12;
-            date_ptr->YEAR --;
-        }
-    } /* Endwhile */
+		if (date_ptr->MONTH == 13U) {
+			date_ptr->MONTH = 1;
+			date_ptr->YEAR ++;
+		}
+		else if (date_ptr->MONTH == 0U) {
+			date_ptr->MONTH = 12;
+			date_ptr->YEAR --;
+		}
+	} /* Endwhile */
 
-    if (date_ptr->YEAR < (uint16_t) CLK_FIRST_YEAR) { /* Year must be larger than or equal to CLK_FIRST_YEAR (1970)*/
-        return FALSE;
-    } /* Endif */
+	if (date_ptr->YEAR < (uint16_t) CLK_FIRST_YEAR) { /* Year must be larger than or equal to CLK_FIRST_YEAR (1970)*/
+		return FALSE;
+	} /* Endif */
 
-    /*
-     * Determine the number of days since Jan 1, 1970 at 00:00:00
-     */
-    day = (date_ptr->YEAR - CLK_FIRST_YEAR) * 365;
-    /* Add the leap days from 1970 to YEAR */
-    day += date_ptr->YEAR / 4 - date_ptr->YEAR / 100 + date_ptr->YEAR / 400 - NUM_LEAP_YEAR_SINCE_FIRST_YEAR;
+	/*
+	 * Determine the number of days since Jan 1, 1970 at 00:00:00
+	 */
+	day = (date_ptr->YEAR - CLK_FIRST_YEAR) * 365;
+	/* Add the leap days from 1970 to YEAR */
+	day += date_ptr->YEAR / 4 - date_ptr->YEAR / 100 + date_ptr->YEAR / 400 - NUM_LEAP_YEAR_SINCE_FIRST_YEAR;
 
-    /* Find out if we are in a leap year. */
-    leap = (_mqx_uint) _time_check_if_leap(date_ptr->YEAR);
-    if (leap) day --;
+	/* Find out if we are in a leap year. */
+	leap = (_mqx_uint) _time_check_if_leap(date_ptr->YEAR);
+	if (leap) day --;
 
-    /*
-     * Add the number of day since Jan 1, to the first
-     * day of month.
-     */
-    month = date_ptr->MONTH;
-    yday = 0;
-    while (--month > 0) {
-        yday += _time_days_in_month_internal[leap][month];
-    } /* End while */
+	/*
+	 * Add the number of day since Jan 1, to the first
+	 * day of month.
+	 */
+	month = date_ptr->MONTH;
+	yday = 0;
+	while (--month > 0) {
+		yday += _time_days_in_month_internal[leap][month];
+	} /* End while */
 
-    /*
-     * Add the number of days since the beginning of the month
-     */
-    yday += (uint32_t)date_ptr->DAY - 1 ;
-    day  += yday;
-    /*
-     * Add the number of seconds in the hours since midnight
-     */
-    time = (uint32_t) date_ptr->HOUR * 3600;
+	/*
+	 * Add the number of days since the beginning of the month
+	 */
+	yday += (uint32_t)date_ptr->DAY - 1 ;
+	day  += yday;
+	/*
+	 * Add the number of seconds in the hours since midnight
+	 */
+	time = (uint32_t) date_ptr->HOUR * 3600;
 
-    /*
-     * Add the number of seconds in the minutes since the hour
-     */
-    time += (uint32_t) date_ptr->MINUTE * 60;
+	/*
+	 * Add the number of seconds in the minutes since the hour
+	 */
+	time += (uint32_t) date_ptr->MINUTE * 60;
 
-    /*
-     * add the number of seconds since the beginning of the minute
-     */
-    time += (uint32_t) date_ptr->SECOND;
+	/*
+	 * add the number of seconds since the beginning of the minute
+	 */
+	time += (uint32_t) date_ptr->SECOND;
 
 
-    /* Check if overflow */
-    if ( ((MAXIMUM_SECONDS_IN_TIME - time)/ 86400UL) < day )
-    {
-        return FALSE;
-    }
-    /*
-     * assign the times
-     */
-    time += day * 86400UL;
-    ts_ptr->SECONDS = time;
-    ts_ptr->MILLISECONDS = (uint32_t) date_ptr->MILLISEC;
+	/* Check if overflow */
+	if ( ((MAXIMUM_SECONDS_IN_TIME - time)/ 86400UL) < day )
+	{
+		return FALSE;
+	}
+	/*
+	 * assign the times
+	 */
+	time += day * 86400UL;
+	ts_ptr->SECONDS = time;
+	ts_ptr->MILLISECONDS = (uint32_t) date_ptr->MILLISEC;
 
-    /*
-     * Update WDAY & YDAY for date_ptr
-     */
-    date_ptr->WDAY = (day + 4) % 7;
-    date_ptr->YDAY = yday;
+	/*
+	 * Update WDAY & YDAY for date_ptr
+	 */
+	date_ptr->WDAY = (day + 4) % 7;
+	date_ptr->YDAY = yday;
 
-    return (TRUE);
+	return (TRUE);
 
 } /* Endbody */
 
@@ -1818,15 +1818,15 @@ bool _time_from_date
  */
 void _time_get
 (
-    register TIME_STRUCT_PTR ts_ptr
+	register TIME_STRUCT_PTR ts_ptr
 )
 { /* Body */
 
-    MQX_TICK_STRUCT ticks;
+	MQX_TICK_STRUCT ticks;
 
-    _time_get_ticks(&ticks);
+	_time_get_ticks(&ticks);
 
-    PSP_TICKS_TO_TIME(&ticks, ts_ptr);
+	PSP_TICKS_TO_TIME(&ticks, ts_ptr);
 
 } /* Endbody */
 
@@ -1842,18 +1842,18 @@ void _time_get
  */
 uint32_t _time_get_hwticks
 (
-    void
+	void
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    if (kernel_data->GET_HWTICKS) {
-        return (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
-    } /* Endif */
+	if (kernel_data->GET_HWTICKS) {
+		return (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
+	} /* Endif */
 
-    return 0;
+	return 0;
 
 } /* Endbody */
 #endif /* MQX_HAS_HW_TICKS */
@@ -1876,25 +1876,25 @@ uint32_t _time_get_hwticks
  */
 uint32_t _time_get_nanoseconds
 (
-    void
+	void
 )
 {
-    uint32_t hwticks;
-    uint32_t tickper;
+	uint32_t hwticks;
+	uint32_t tickper;
 
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    if (kernel_data->GET_HWTICKS == NULL) return 0; /* BSP does not support HW ticks */
+	if (kernel_data->GET_HWTICKS == NULL) return 0; /* BSP does not support HW ticks */
 
-    hwticks = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
+	hwticks = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
 
-    /* Tick period in time units (ns) */
-    tickper = 1000000000 / kernel_data->TICKS_PER_SECOND; /* 32 bit div */
+	/* Tick period in time units (ns) */
+	tickper = 1000000000 / kernel_data->TICKS_PER_SECOND; /* 32 bit div */
 
-    /* The result fits in 32 bits */
-    return (uint32_t)(((uint64_t) hwticks * tickper) / kernel_data->HW_TICKS_PER_TICK); /* 64 bit mul and div */
+	/* The result fits in 32 bits */
+	return (uint32_t)(((uint64_t) hwticks * tickper) / kernel_data->HW_TICKS_PER_TICK); /* 64 bit mul and div */
 }
 
 #if MQX_HAS_TICK
@@ -1911,13 +1911,13 @@ uint32_t _time_get_nanoseconds
  */
 _mqx_uint _time_get_ticks_per_sec
 (
-    void
+	void
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    return( kernel_data->TICKS_PER_SECOND );
+	_GET_KERNEL_DATA(kernel_data);
+	return( kernel_data->TICKS_PER_SECOND );
 
 } /* Endbody */
 #endif /* MQX_HAS_TICK */
@@ -1941,17 +1941,17 @@ _mqx_uint _time_get_ticks_per_sec
  */
 _mqx_uint _time_get_resolution
 (
-    void
+	void
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register _mqx_uint result;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register _mqx_uint result;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    result = kernel_data->TICKS_PER_SECOND;
+	result = kernel_data->TICKS_PER_SECOND;
 
-    return( 1000 / result );
+	return( 1000 / result );
 
 } /* Endbody */
 #endif /* MQX_HAS_TICK */
@@ -1981,44 +1981,44 @@ _mqx_uint _time_get_resolution
  */
 void _time_get_ticks
 (
-    register MQX_TICK_STRUCT_PTR tick_ptr
+	register MQX_TICK_STRUCT_PTR tick_ptr
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
 
 #if MQX_CHECK_ERRORS
-    if ( tick_ptr == NULL ) {
-        return;
-    } /* Endif */
+	if ( tick_ptr == NULL ) {
+		return;
+	} /* Endif */
 #endif
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 
-    *tick_ptr = kernel_data->TIME;
+	*tick_ptr = kernel_data->TIME;
 
-    /* The hardware clock keeps counting... */
+	/* The hardware clock keeps counting... */
 
-    if (kernel_data->GET_HWTICKS) {
-        /* The hardware clock may have counted passed it's reference
-         * and have an interrupt pending.  Thus, HW_TICKS may exceed
-         * kernel_data->HW_TICKS_PER_TICK and this tick_ptr may need
-         * normalizing.  This is done in a moment.
-         */
-        tick_ptr->HW_TICKS = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
-    } /* Endif */
+	if (kernel_data->GET_HWTICKS) {
+		/* The hardware clock may have counted passed it's reference
+		 * and have an interrupt pending.  Thus, HW_TICKS may exceed
+		 * kernel_data->HW_TICKS_PER_TICK and this tick_ptr may need
+		 * normalizing.  This is done in a moment.
+		 */
+		tick_ptr->HW_TICKS = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
+	} /* Endif */
 
-    PSP_ADD_TICKS(tick_ptr, &kernel_data->TIME_OFFSET, tick_ptr);
+	PSP_ADD_TICKS(tick_ptr, &kernel_data->TIME_OFFSET, tick_ptr);
 
-    /* The timer ISR may go off and increment kernel_data->TIME */
-    _INT_ENABLE();
+	/* The timer ISR may go off and increment kernel_data->TIME */
+	_INT_ENABLE();
 
-    /* The tick_ptr->HW_TICKS value might exceed the
-     * kernel_data->HW_TICKS_PER_TICK and need to be
-     * normalized for the PSP.
-     */
-    PSP_NORMALIZE_TICKS(tick_ptr);
+	/* The tick_ptr->HW_TICKS value might exceed the
+	 * kernel_data->HW_TICKS_PER_TICK and need to be
+	 * normalized for the PSP.
+	 */
+	PSP_NORMALIZE_TICKS(tick_ptr);
 
 } /* Endbody */
 #endif /* MQX_HAS_TICK */
@@ -2041,26 +2041,26 @@ void _time_get_ticks
  */
 uint16_t _time_get_microseconds
 (
-    void
+	void
 )
 {
-    uint32_t hwticks;
-    uint32_t tickper;
+	uint32_t hwticks;
+	uint32_t tickper;
 
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    /* BSP does not support HW ticks */
-    if (kernel_data->GET_HWTICKS == NULL) return 0;
+	/* BSP does not support HW ticks */
+	if (kernel_data->GET_HWTICKS == NULL) return 0;
 
-    hwticks = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
+	hwticks = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
 
-    /* Tick period in time units (us) */
-    tickper = 1000000 / kernel_data->TICKS_PER_SECOND; /* 32bit div */
+	/* Tick period in time units (us) */
+	tickper = 1000000 / kernel_data->TICKS_PER_SECOND; /* 32bit div */
 
-    /* The result shall fit into 16 bits */
-    return (uint16_t)((hwticks * tickper) / kernel_data->HW_TICKS_PER_TICK); /* 32bit mul and div */
+	/* The result shall fit into 16 bits */
+	return (uint16_t)((hwticks * tickper) / kernel_data->HW_TICKS_PER_TICK); /* 32bit mul and div */
 }
 
 #if MQX_HAS_HW_TICKS
@@ -2074,14 +2074,14 @@ uint16_t _time_get_microseconds
  */
 uint32_t _time_get_hwticks_per_tick
 (
-    void
+	void
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    return kernel_data->HW_TICKS_PER_TICK;
+	return kernel_data->HW_TICKS_PER_TICK;
 
 } /* Endbody */
 #endif /* MQX_HAS_HW_TICKS */
@@ -2101,26 +2101,26 @@ uint32_t _time_get_hwticks_per_tick
  */
 _mqx_uint _time_init_ticks
 (
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    _mqx_uint           ticks
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	_mqx_uint           ticks
 )
 { /* Body */
 
 #if MQX_CHECK_ERRORS
-    if (tick_ptr == NULL) {
-        return MQX_INVALID_PARAMETER;
-    } /* Endif */
+	if (tick_ptr == NULL) {
+		return MQX_INVALID_PARAMETER;
+	} /* Endif */
 #endif
 
-    if (ticks) {
-        tick_ptr->HW_TICKS = 0;
-        PSP_ADD_TICKS_TO_TICK_STRUCT(&_mqx_zero_tick_struct, ticks, tick_ptr);
-    }
-    else {
-        *tick_ptr = _mqx_zero_tick_struct;
-    } /* Endif */
+	if (ticks) {
+		tick_ptr->HW_TICKS = 0;
+		PSP_ADD_TICKS_TO_TICK_STRUCT(&_mqx_zero_tick_struct, ticks, tick_ptr);
+	}
+	else {
+		*tick_ptr = _mqx_zero_tick_struct;
+	} /* Endif */
 
-    return MQX_OK;
+	return MQX_OK;
 
 } /* Endbody */
 
@@ -2151,97 +2151,97 @@ _mqx_uint _time_init_ticks
  */
 void _time_notify_kernel
 (
-    void
+	void
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register TD_STRUCT_PTR td_ptr;
-    register TD_STRUCT_PTR next_td_ptr;
-    register _mqx_uint count;
-    register _mqx_int result;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register TD_STRUCT_PTR td_ptr;
+	register TD_STRUCT_PTR next_td_ptr;
+	register _mqx_uint count;
+	register _mqx_int result;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    /*
-     * Update the current time.
-     */
-    PSP_INC_TICKS(&kernel_data->TIME);
+	/*
+	 * Update the current time.
+	 */
+	PSP_INC_TICKS(&kernel_data->TIME);
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 
-    if (kernel_data->GET_HWTICKS) {
-        /* The hardware clock may have counted passed it's reference
-         * and have an interrupt pending.  Thus, HW_TICKS may exceed
-         * kernel_data->HW_TICKS_PER_TICK and this tick_ptr may need
-         * normalizing.  This is done in a moment.
-         */
-        kernel_data->TIME.HW_TICKS = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
-    } /* Endif */
+	if (kernel_data->GET_HWTICKS) {
+		/* The hardware clock may have counted passed it's reference
+		 * and have an interrupt pending.  Thus, HW_TICKS may exceed
+		 * kernel_data->HW_TICKS_PER_TICK and this tick_ptr may need
+		 * normalizing.  This is done in a moment.
+		 */
+		kernel_data->TIME.HW_TICKS = (*kernel_data->GET_HWTICKS)(kernel_data->GET_HWTICKS_PARAM);
+	} /* Endif */
 
-    /* The tick_ptr->HW_TICKS value might exceed the
-     * kernel_data->HW_TICKS_PER_TICK and need to be
-     * normalized for the PSP.
-     */
-    PSP_NORMALIZE_TICKS(&kernel_data->TIME);
+	/* The tick_ptr->HW_TICKS value might exceed the
+	 * kernel_data->HW_TICKS_PER_TICK and need to be
+	 * normalized for the PSP.
+	 */
+	PSP_NORMALIZE_TICKS(&kernel_data->TIME);
 
-    /*
-     * Check for tasks on the timeout queue, and wake the appropriate
-     * ones up.  The timeout queue is a time-priority queue.
-     */
-    count = _QUEUE_GET_SIZE(&kernel_data->TIMEOUT_QUEUE);
-    if (count) {
-        td_ptr = (TD_STRUCT_PTR)((void *) kernel_data->TIMEOUT_QUEUE.NEXT);
-        while (count--) {
-            next_td_ptr = td_ptr->TD_NEXT;
-            result = PSP_CMP_TICKS(&kernel_data->TIME, &td_ptr->TIMEOUT);
-            if (result >= 0) {
-                --kernel_data->TIMEOUT_QUEUE.SIZE;
-                _QUEUE_UNLINK(td_ptr);
-                /* td_ptr->STATE &= ~IS_ON_TIMEOUT_Q; //not necessary; we will set the STATE soon */
-                if (td_ptr->STATE & TD_IS_ON_AUX_QUEUE) {
-                    /* td_ptr->STATE &= ~TD_IS_ON_AUX_QUEUE; //not necessary; we will set the STATE soon */
-                    _QUEUE_REMOVE(td_ptr->INFO, &td_ptr->AUX_QUEUE);
-                } /* Endif */
-                _TASK_READY(td_ptr, kernel_data); /* this sets the STATE to READY */
-            }
-            else {
-                break; /* No more to do */
-            } /* Endif */
-            td_ptr = next_td_ptr;
-        } /* Endwhile */
-    } /* Endif */
+	/*
+	 * Check for tasks on the timeout queue, and wake the appropriate
+	 * ones up.  The timeout queue is a time-priority queue.
+	 */
+	count = _QUEUE_GET_SIZE(&kernel_data->TIMEOUT_QUEUE);
+	if (count) {
+		td_ptr = (TD_STRUCT_PTR)((void *) kernel_data->TIMEOUT_QUEUE.NEXT);
+		while (count--) {
+			next_td_ptr = td_ptr->TD_NEXT;
+			result = PSP_CMP_TICKS(&kernel_data->TIME, &td_ptr->TIMEOUT);
+			if (result >= 0) {
+				--kernel_data->TIMEOUT_QUEUE.SIZE;
+				_QUEUE_UNLINK(td_ptr);
+				/* td_ptr->STATE &= ~IS_ON_TIMEOUT_Q; //not necessary; we will set the STATE soon */
+				if (td_ptr->STATE & TD_IS_ON_AUX_QUEUE) {
+					/* td_ptr->STATE &= ~TD_IS_ON_AUX_QUEUE; //not necessary; we will set the STATE soon */
+					_QUEUE_REMOVE(td_ptr->INFO, &td_ptr->AUX_QUEUE);
+				} /* Endif */
+				_TASK_READY(td_ptr, kernel_data); /* this sets the STATE to READY */
+			}
+			else {
+				break; /* No more to do */
+			} /* Endif */
+			td_ptr = next_td_ptr;
+		} /* Endwhile */
+	} /* Endif */
 
 #if MQX_HAS_TIME_SLICE
-    /*
-     * Check if the currently running task is a time slice task
-     * and if its time has expired, put it at the end of its queue
-     */
-    td_ptr = kernel_data->ACTIVE_PTR;
-    if ( td_ptr->FLAGS & MQX_TIME_SLICE_TASK ) {
-        PSP_INC_TICKS(&td_ptr->CURRENT_TIME_SLICE);
-        if (! (td_ptr->FLAGS & TASK_PREEMPTION_DISABLED) ) {
-            result = PSP_CMP_TICKS(&td_ptr->CURRENT_TIME_SLICE, &td_ptr->TIME_SLICE);
-            if ( result >= 0 ) {
-                _QUEUE_UNLINK(td_ptr);
-                _TASK_READY(td_ptr,kernel_data);
-            } /* Endif */
-        } /* Endif */
-    } /* Endif */
+	/*
+	 * Check if the currently running task is a time slice task
+	 * and if its time has expired, put it at the end of its queue
+	 */
+	td_ptr = kernel_data->ACTIVE_PTR;
+	if ( td_ptr->FLAGS & MQX_TIME_SLICE_TASK ) {
+		PSP_INC_TICKS(&td_ptr->CURRENT_TIME_SLICE);
+		if (! (td_ptr->FLAGS & TASK_PREEMPTION_DISABLED) ) {
+			result = PSP_CMP_TICKS(&td_ptr->CURRENT_TIME_SLICE, &td_ptr->TIME_SLICE);
+			if ( result >= 0 ) {
+				_QUEUE_UNLINK(td_ptr);
+				_TASK_READY(td_ptr,kernel_data);
+			} /* Endif */
+		} /* Endif */
+	} /* Endif */
 #endif
 
-    _INT_ENABLE();
+	_INT_ENABLE();
 #if MQX_USE_TIMER
-    /* If the timer component needs servicing, call its ISR function */
-    if (kernel_data->TIMER_COMPONENT_ISR != NULL) {
-        (*kernel_data->TIMER_COMPONENT_ISR)();
-    }/* Endif */
+	/* If the timer component needs servicing, call its ISR function */
+	if (kernel_data->TIMER_COMPONENT_ISR != NULL) {
+		(*kernel_data->TIMER_COMPONENT_ISR)();
+	}/* Endif */
 #endif
 
 #if MQX_USE_LWTIMER
-    /* If the lwtimer needs servicing, call its ISR function */
-    if (kernel_data->LWTIMER_ISR != NULL) {
-        (*kernel_data->LWTIMER_ISR)();
-    }/* Endif */
+	/* If the lwtimer needs servicing, call its ISR function */
+	if (kernel_data->LWTIMER_ISR != NULL) {
+		(*kernel_data->LWTIMER_ISR)();
+	}/* Endif */
 #endif
 
 } /* Endbody */
@@ -2273,30 +2273,30 @@ void _time_notify_kernel
  */
 void _time_set
 (
-    register TIME_STRUCT_PTR ts_ptr
+	register TIME_STRUCT_PTR ts_ptr
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    MQX_TICK_STRUCT ticks;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	MQX_TICK_STRUCT ticks;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE4(KLOG_time_set, ts_ptr, ts_ptr->SECONDS, ts_ptr->MILLISECONDS);
+	_KLOGE4(KLOG_time_set, ts_ptr, ts_ptr->SECONDS, ts_ptr->MILLISECONDS);
 
-    /* Normalize time */
-    MQX_NORMALIZE_TIME_STRUCT(ts_ptr);
+	/* Normalize time */
+	MQX_NORMALIZE_TIME_STRUCT(ts_ptr);
 
-    /* First convert old time struct into the tick struct */
-    PSP_TIME_TO_TICKS(ts_ptr, &ticks);
+	/* First convert old time struct into the tick struct */
+	PSP_TIME_TO_TICKS(ts_ptr, &ticks);
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 
-    /* Calculate offset */
-    PSP_SUB_TICKS(&ticks, &kernel_data->TIME, &kernel_data->TIME_OFFSET);
+	/* Calculate offset */
+	PSP_SUB_TICKS(&ticks, &kernel_data->TIME, &kernel_data->TIME_OFFSET);
 
-    _INT_ENABLE();
+	_INT_ENABLE();
 
-    _KLOGX1(KLOG_time_set);
+	_KLOGX1(KLOG_time_set);
 
 } /* Endbody */
 #endif /* MQX_HAS_TICK */
@@ -2325,22 +2325,22 @@ void _time_set
  */
 void _time_set_ticks
 (
-    register MQX_TICK_STRUCT_PTR ticks
+	register MQX_TICK_STRUCT_PTR ticks
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_time_set_ticks, ticks);
+	_KLOGE2(KLOG_time_set_ticks, ticks);
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 
-    PSP_SUB_TICKS(ticks, &kernel_data->TIME, &kernel_data->TIME_OFFSET);
+	PSP_SUB_TICKS(ticks, &kernel_data->TIME, &kernel_data->TIME_OFFSET);
 
-    _INT_ENABLE();
+	_INT_ENABLE();
 
-    _KLOGX1(KLOG_time_set_ticks);
+	_KLOGX1(KLOG_time_set_ticks);
 
 } /* Endbody */
 #endif /* MQX_HAS_TICK */
@@ -2354,35 +2354,35 @@ void _time_set_ticks
  */
 bool _time_check_if_leap
 (
-    uint16_t year
+	uint16_t year
 )
 { /* Body */
-    bool leap;
+	bool leap;
 
-    /*
-     * If the year is a century year not divisible by 400
-     * then it is not a leap year, otherwise if year divisible by
-     * four then it is a leap year
-     */
-    if (year % (uint16_t) 100 == (uint16_t) 0) {
-        if (year % (uint16_t) 400 == (uint16_t) 0) {
-            leap = TRUE;
-        }
-        else {
-            leap = FALSE;
-        } /* Endif */
-    }
-    else {
-        if (year % (uint16_t) 4 == (uint16_t) 0) {
-            leap = TRUE;
-        }
-        else {
-            leap = FALSE;
-        } /* Endif */
+	/*
+	 * If the year is a century year not divisible by 400
+	 * then it is not a leap year, otherwise if year divisible by
+	 * four then it is a leap year
+	 */
+	if (year % (uint16_t) 100 == (uint16_t) 0) {
+		if (year % (uint16_t) 400 == (uint16_t) 0) {
+			leap = TRUE;
+		}
+		else {
+			leap = FALSE;
+		} /* Endif */
+	}
+	else {
+		if (year % (uint16_t) 4 == (uint16_t) 0) {
+			leap = TRUE;
+		}
+		else {
+			leap = FALSE;
+		} /* Endif */
 
-    } /* Endif */
+	} /* Endif */
 
-    return leap;
+	return leap;
 } /* Endbody */
 
 
@@ -2413,26 +2413,26 @@ bool _time_check_if_leap
  */
 _mqx_uint _time_set_resolution
 (
-    _mqx_uint resolution
+	_mqx_uint resolution
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    /* Verify value input resolution to prevent from dividing by zero */
-    if ((resolution == 0) || (resolution > 1000)) return MQX_INVALID_PARAMETER;
+	/* Verify value input resolution to prevent from dividing by zero */
+	if ((resolution == 0) || (resolution > 1000)) return MQX_INVALID_PARAMETER;
 
-    /*
-     * Convert resolution into ticks per second so new tick format will
-     * work
-     */
-    kernel_data->TICKS_PER_SECOND = 1000 / resolution;
+	/*
+	 * Convert resolution into ticks per second so new tick format will
+	 * work
+	 */
+	kernel_data->TICKS_PER_SECOND = 1000 / resolution;
 
-    /* Also set hw ticks per tick */
-    kernel_data->HW_TICKS_PER_TICK = resolution * 1000;
+	/* Also set hw ticks per tick */
+	kernel_data->HW_TICKS_PER_TICK = resolution * 1000;
 
-    return MQX_OK;
+	return MQX_OK;
 
 } /* Endbody */
 #endif /* MQX_HAS_TICK */
@@ -2451,14 +2451,14 @@ _mqx_uint _time_set_resolution
  */
 void _time_set_ticks_per_sec
 (
-    _mqx_uint ticks_per_sec
+	_mqx_uint ticks_per_sec
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    kernel_data->TICKS_PER_SECOND = ticks_per_sec;
+	kernel_data->TICKS_PER_SECOND = ticks_per_sec;
 
 } /* Endbody */
 
@@ -2479,13 +2479,13 @@ void _time_set_ticks_per_sec
  */
 void _time_set_timer_vector
 (
-    _mqx_uint vector
+	_mqx_uint vector
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    kernel_data->SYSTEM_CLOCK_INT_NUMBER = vector;
+	_GET_KERNEL_DATA(kernel_data);
+	kernel_data->SYSTEM_CLOCK_INT_NUMBER = vector;
 
 } /* Endbody */
 #endif /* MQX_HAS_TICK */
@@ -2500,16 +2500,16 @@ void _time_set_timer_vector
  */
 void _time_set_hwtick_function
 (
-    MQX_GET_HWTICKS_FPTR hwtick_function_ptr,
-    void                *parameter
+	MQX_GET_HWTICKS_FPTR hwtick_function_ptr,
+	void                *parameter
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    kernel_data->GET_HWTICKS = hwtick_function_ptr;
-    kernel_data->GET_HWTICKS_PARAM = parameter;
+	kernel_data->GET_HWTICKS = hwtick_function_ptr;
+	kernel_data->GET_HWTICKS_PARAM = parameter;
 
 } /* Endbody */
 #endif /* MQX_HAS_HW_TICKS */
@@ -2525,14 +2525,14 @@ void _time_set_hwtick_function
  */
 void _time_set_hwticks_per_tick
 (
-    uint32_t new_val
+	uint32_t new_val
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    kernel_data->HW_TICKS_PER_TICK = new_val;
+	kernel_data->HW_TICKS_PER_TICK = new_val;
 
 } /* Endbody */
 
@@ -2584,82 +2584,82 @@ void _time_set_hwticks_per_tick
  */
 bool _time_to_date
 (
-    TIME_STRUCT_PTR ts_ptr,
-    DATE_STRUCT_PTR date_ptr
+	TIME_STRUCT_PTR ts_ptr,
+	DATE_STRUCT_PTR date_ptr
 )
 { /* Body */
-    uint32_t   time;
-    uint32_t   day, year, tmp;
-    _mqx_uint  leap;
+	uint32_t   time;
+	uint32_t   day, year, tmp;
+	_mqx_uint  leap;
 
 #if MQX_CHECK_ERRORS
-    if ((ts_ptr == NULL) || (date_ptr == NULL)) {
-        return (FALSE);
-    } /* Endif */
+	if ((ts_ptr == NULL) || (date_ptr == NULL)) {
+		return (FALSE);
+	} /* Endif */
 
-    if ( (MAXIMUM_SECONDS_IN_TIME - ts_ptr->MILLISECONDS/1000) < ts_ptr->SECONDS) {
-        return (FALSE);
-    }
+	if ( (MAXIMUM_SECONDS_IN_TIME - ts_ptr->MILLISECONDS/1000) < ts_ptr->SECONDS) {
+		return (FALSE);
+	}
 #endif
 
-    /* Normalize MILLISECONDS field */
-    ts_ptr->SECONDS += ts_ptr->MILLISECONDS / 1000;
-    ts_ptr->MILLISECONDS %= 1000;
+	/* Normalize MILLISECONDS field */
+	ts_ptr->SECONDS += ts_ptr->MILLISECONDS / 1000;
+	ts_ptr->MILLISECONDS %= 1000;
 
-    time = ts_ptr->SECONDS;
+	time = ts_ptr->SECONDS;
 
-    /* Number of days */
-    day = time / 86400U;
+	/* Number of days */
+	day = time / 86400U;
 
-    /* Remain Seconds */
-    time -= day * 86400U;
+	/* Remain Seconds */
+	time -= day * 86400U;
 
-    /* Calculate the hour */
-    date_ptr->HOUR = (uint16_t)(time / 3600U);
-    time -= ((uint32_t) date_ptr->HOUR * 3600U);
+	/* Calculate the hour */
+	date_ptr->HOUR = (uint16_t)(time / 3600U);
+	time -= ((uint32_t) date_ptr->HOUR * 3600U);
 
-    /* Calculate the minute */
-    date_ptr->MINUTE = (uint16_t)(time / 60);
-    time -= ((uint32_t) date_ptr->MINUTE * 60);
+	/* Calculate the minute */
+	date_ptr->MINUTE = (uint16_t)(time / 60);
+	time -= ((uint32_t) date_ptr->MINUTE * 60);
 
-    /* The second */
-    date_ptr->SECOND = (uint16_t) time;
+	/* The second */
+	date_ptr->SECOND = (uint16_t) time;
 
-    /* The millisecond */
-    date_ptr->MILLISEC = (uint16_t) ts_ptr->MILLISECONDS;
+	/* The millisecond */
+	date_ptr->MILLISEC = (uint16_t) ts_ptr->MILLISECONDS;
 
-    /* Day of week -  1/1/1970 is Thursday */
-    date_ptr->WDAY = (uint16_t) ((day + 4) % 7);
+	/* Day of week -  1/1/1970 is Thursday */
+	date_ptr->WDAY = (uint16_t) ((day + 4) % 7);
 
-    /* Calculate the year */
-    day += 365;                    /* Add offset day, the year starts from 1969 */
-    year = 4 * (day / 1461);       /* The number days in each four years is 1461 (days) */
-    day -= year * 1461 / 4;        /* The remain days */
-    tmp = day / 365;               /* Remain years */
-    if (tmp == 4) tmp = 3;         /* The maximum of remain years is equal to 3 */
-    day -= tmp * 365;              /* remain days of this year */
-    date_ptr->YEAR = year + tmp + CLK_FIRST_YEAR - 1; /* CLK_FIRST_YEAR is 1970 */
+	/* Calculate the year */
+	day += 365;                    /* Add offset day, the year starts from 1969 */
+	year = 4 * (day / 1461);       /* The number days in each four years is 1461 (days) */
+	day -= year * 1461 / 4;        /* The remain days */
+	tmp = day / 365;               /* Remain years */
+	if (tmp == 4) tmp = 3;         /* The maximum of remain years is equal to 3 */
+	day -= tmp * 365;              /* remain days of this year */
+	date_ptr->YEAR = year + tmp + CLK_FIRST_YEAR - 1; /* CLK_FIRST_YEAR is 1970 */
 
-    /* Day of year */
-    date_ptr->YDAY = day;
+	/* Day of year */
+	date_ptr->YDAY = day;
 
-    /* calculate the month */
-    /* Find out if we are in a leap year. */
-    leap = (_mqx_uint) _time_check_if_leap(date_ptr->YEAR);
-    date_ptr->MONTH = 1;
+	/* calculate the month */
+	/* Find out if we are in a leap year. */
+	leap = (_mqx_uint) _time_check_if_leap(date_ptr->YEAR);
+	date_ptr->MONTH = 1;
 
-    while (day >= _time_days_in_month_internal[leap][date_ptr->MONTH])
-    {
-        day -= _time_days_in_month_internal[leap][date_ptr->MONTH];
-        date_ptr->MONTH ++;
-    }
+	while (day >= _time_days_in_month_internal[leap][date_ptr->MONTH])
+	{
+		day -= _time_days_in_month_internal[leap][date_ptr->MONTH];
+		date_ptr->MONTH ++;
+	}
 
-    /* calculate the day */
-    date_ptr->DAY = day ;
-    /* first day is 1*/
-    date_ptr->DAY++;
+	/* calculate the day */
+	date_ptr->DAY = day ;
+	/* first day is 1*/
+	date_ptr->DAY++;
 
-    return (TRUE);
+	return (TRUE);
 
 } /* Endbody */
 
@@ -2701,28 +2701,28 @@ bool _time_to_date
  */
 bool _time_to_ticks
 (
-    TIME_STRUCT_PTR     ts_ptr,
-    MQX_TICK_STRUCT_PTR tick_ptr
+	TIME_STRUCT_PTR     ts_ptr,
+	MQX_TICK_STRUCT_PTR tick_ptr
 )
 { /* Body */
 
 #if MQX_CHECK_ERRORS
-    if ((tick_ptr == NULL) || (ts_ptr == NULL)) {
-        return (FALSE);
-    } /* Endif */
+	if ((tick_ptr == NULL) || (ts_ptr == NULL)) {
+		return (FALSE);
+	} /* Endif */
 #endif
 
 #if MQX_CHECK_ERRORS
-    if ((ts_ptr->SECONDS > MAXIMUM_SECONDS_IN_TIME) ||
-                    (ts_ptr->MILLISECONDS > 999))
-    {
-        return( FALSE );
-    } /* Endif */
+	if ((ts_ptr->SECONDS > MAXIMUM_SECONDS_IN_TIME) ||
+					(ts_ptr->MILLISECONDS > 999))
+	{
+		return( FALSE );
+	} /* Endif */
 #endif
 
-    PSP_TIME_TO_TICKS(ts_ptr, tick_ptr);
+	PSP_TIME_TO_TICKS(ts_ptr, tick_ptr);
 
-    return (TRUE);
+	return (TRUE);
 
 } /* Endbody */
 
@@ -2762,17 +2762,17 @@ bool _time_to_ticks
  */
 bool _ticks_to_time
 (
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    TIME_STRUCT_PTR     ts_ptr
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	TIME_STRUCT_PTR     ts_ptr
 )
 { /* Body */
 
 #if MQX_CHECK_ERRORS
-    if ((tick_ptr == NULL) || (ts_ptr == NULL)) {
-        return (FALSE);
-    } /* Endif */
+	if ((tick_ptr == NULL) || (ts_ptr == NULL)) {
+		return (FALSE);
+	} /* Endif */
 #endif
-    return PSP_TICKS_TO_TIME(tick_ptr, ts_ptr);
+	return PSP_TICKS_TO_TIME(tick_ptr, ts_ptr);
 
 } /* Endbody */
 
@@ -2794,57 +2794,57 @@ bool _ticks_to_time
  */
 time_t mktime
 (
-    struct tm* tm_ptr
+	struct tm* tm_ptr
 )
 { /* Body */
-    TIME_STRUCT     ts;
-    DATE_STRUCT     date;
+	TIME_STRUCT     ts;
+	DATE_STRUCT     date;
 
 #if MQX_CHECK_ERRORS
-    if (tm_ptr == NULL) {
-        return (0);
-    } /* End if */
+	if (tm_ptr == NULL) {
+		return (0);
+	} /* End if */
 #endif
-    /*
-     * Convert tm struct to DATE_STRUCT
-     */
-    date.MILLISEC = 0; /* tm struct doesn't support millisecond*/
+	/*
+	 * Convert tm struct to DATE_STRUCT
+	 */
+	date.MILLISEC = 0; /* tm struct doesn't support millisecond*/
 
-    date.SECOND = (int32_t)tm_ptr->tm_sec;
+	date.SECOND = (int32_t)tm_ptr->tm_sec;
 
-    date.MINUTE = (int32_t)tm_ptr->tm_min;
+	date.MINUTE = (int32_t)tm_ptr->tm_min;
 
-    date.HOUR   = (int32_t)tm_ptr->tm_hour;
+	date.HOUR   = (int32_t)tm_ptr->tm_hour;
 
-    /* The first day of month in DATE_STRUCT is 1, while in tm struct is 0*/
-    date.DAY    = (int32_t)tm_ptr->tm_mday + 1;
+	/* The first day of month in DATE_STRUCT is 1, while in tm struct is 0*/
+	date.DAY    = (int32_t)tm_ptr->tm_mday + 1;
 
-    /* The first month of year in DATE_STRUCT is 1, while in tm struct is 0*/
-    date.MONTH  = (int32_t)tm_ptr->tm_mon  + 1;
+	/* The first month of year in DATE_STRUCT is 1, while in tm struct is 0*/
+	date.MONTH  = (int32_t)tm_ptr->tm_mon  + 1;
 
-    /* The first year in DATE_STRUCT is 0, while in tm struct is 1990*/
-    date.YEAR   = (int32_t)tm_ptr->tm_year + 1900;
+	/* The first year in DATE_STRUCT is 0, while in tm struct is 1990*/
+	date.YEAR   = (int32_t)tm_ptr->tm_year + 1900;
 
-    /*
-     * Convert DATE_STRUCT to TIME_STRUCT
-     */
-    if (_time_from_date(&date, &ts) == FALSE) {
-        return 0;
-    } /* End if */
+	/*
+	 * Convert DATE_STRUCT to TIME_STRUCT
+	 */
+	if (_time_from_date(&date, &ts) == FALSE) {
+		return 0;
+	} /* End if */
 
-    /* Verify that time is valid */
-    if ( (MAXIMUM_SECONDS_IN_TIME - _timezone) < ts.SECONDS) {
-        return 0;
-    } /* End if */
+	/* Verify that time is valid */
+	if ( (MAXIMUM_SECONDS_IN_TIME - _timezone) < ts.SECONDS) {
+		return 0;
+	} /* End if */
 
-    /* Update week of day */
-    tm_ptr->tm_wday = (int32_t) date.WDAY;
+	/* Update week of day */
+	tm_ptr->tm_wday = (int32_t) date.WDAY;
 
-    /* Update year of day */
-    tm_ptr->tm_yday = (int32_t) date.YDAY;
+	/* Update year of day */
+	tm_ptr->tm_yday = (int32_t) date.YDAY;
 
-    /* Convert TIME_STRUCT to time_t */
-    return (ts.SECONDS + _timezone);
+	/* Convert TIME_STRUCT to time_t */
+	return (ts.SECONDS + _timezone);
 
 } /* Endbody */
 
@@ -2868,56 +2868,56 @@ time_t mktime
  */
  struct tm *gmtime_r
 (
-    const  time_t *timep,
-    struct tm     *result
+	const  time_t *timep,
+	struct tm     *result
 )
 { /* Body */
-    TIME_STRUCT ts;
-    DATE_STRUCT date;
+	TIME_STRUCT ts;
+	DATE_STRUCT date;
 
 #if MQX_CHECK_ERRORS
-    if ( (timep == NULL) || (result == NULL) ) {
-        return (NULL);
-    }
+	if ( (timep == NULL) || (result == NULL) ) {
+		return (NULL);
+	}
 #endif
 
-    /*
-     * Convert time_t to TIME_STRUCT
-     */
-    ts.MILLISECONDS = 0; /* time_t doesn't support milisecond */
-    ts.SECONDS = *timep;
+	/*
+	 * Convert time_t to TIME_STRUCT
+	 */
+	ts.MILLISECONDS = 0; /* time_t doesn't support milisecond */
+	ts.SECONDS = *timep;
 
-    /*
-     * Convert TIME_STRUCT to DATE_STRUCT
-     */
-    if (_time_to_date(&ts, &date) == FALSE) {
-        return 0;
-    } /* End if */
+	/*
+	 * Convert TIME_STRUCT to DATE_STRUCT
+	 */
+	if (_time_to_date(&ts, &date) == FALSE) {
+		return 0;
+	} /* End if */
 
-    /*
-     * Convert DATE_STRUCT to tm struct
-     */
+	/*
+	 * Convert DATE_STRUCT to tm struct
+	 */
 
-    result->tm_sec = (int32_t)date.SECOND;
+	result->tm_sec = (int32_t)date.SECOND;
 
-    result->tm_min = (int32_t)date.MINUTE;
+	result->tm_min = (int32_t)date.MINUTE;
 
-    result->tm_hour = (int32_t)date.HOUR;
+	result->tm_hour = (int32_t)date.HOUR;
 
-    /* The first day of month in DATE_STRUCT is 1, while in tm struct is 0*/
-    result->tm_mday = (int32_t)date.DAY - 1;
+	/* The first day of month in DATE_STRUCT is 1, while in tm struct is 0*/
+	result->tm_mday = (int32_t)date.DAY - 1;
 
-    /* The first month of year in DATE_STRUCT is 1, while in tm struct is 0*/
-    result->tm_mon = (int32_t)date.MONTH -1;
+	/* The first month of year in DATE_STRUCT is 1, while in tm struct is 0*/
+	result->tm_mon = (int32_t)date.MONTH -1;
 
-    /* The first year in DATE_STRUCT is 0, while in tm struct is 1990*/
-    result->tm_year = (int32_t)date.YEAR - 1900;
+	/* The first year in DATE_STRUCT is 0, while in tm struct is 1990*/
+	result->tm_year = (int32_t)date.YEAR - 1900;
 
-    result->tm_wday = (int32_t)date.WDAY;
+	result->tm_wday = (int32_t)date.WDAY;
 
-    result->tm_yday = (int32_t)date.YDAY;
+	result->tm_yday = (int32_t)date.YDAY;
 
-    return result;
+	return result;
 
 } /* Endbody */
 
@@ -2938,47 +2938,47 @@ time_t mktime
  */
 time_t timegm
 (
-    struct tm *tm_ptr
+	struct tm *tm_ptr
 )
 { /* Body */
-    TIME_STRUCT     ts;
-    DATE_STRUCT     date;
+	TIME_STRUCT     ts;
+	DATE_STRUCT     date;
 
 #if MQX_CHECK_ERRORS
-    if (tm_ptr == NULL) {
-        return (0);
-    }
+	if (tm_ptr == NULL) {
+		return (0);
+	}
 #endif
-    /*
-     * Convert tm struct to DATE_STRUCT
-     */
+	/*
+	 * Convert tm struct to DATE_STRUCT
+	 */
 
-    date.MILLISEC = 0; /* tm struct doesn't support millisecond*/
+	date.MILLISEC = 0; /* tm struct doesn't support millisecond*/
 
-    date.SECOND = (int32_t)tm_ptr->tm_sec;
+	date.SECOND = (int32_t)tm_ptr->tm_sec;
 
-    date.MINUTE = (int32_t)tm_ptr->tm_min;
+	date.MINUTE = (int32_t)tm_ptr->tm_min;
 
-    date.HOUR   = (int32_t)tm_ptr->tm_hour;
+	date.HOUR   = (int32_t)tm_ptr->tm_hour;
 
-    /* The first day of month in DATE_STRUCT is 1, while in tm struct is 0*/
-    date.DAY    = (int32_t)tm_ptr->tm_mday + 1;
+	/* The first day of month in DATE_STRUCT is 1, while in tm struct is 0*/
+	date.DAY    = (int32_t)tm_ptr->tm_mday + 1;
 
-    /* The first month of year in DATE_STRUCT is 1, while in tm struct is 0*/
-    date.MONTH  = (int32_t)tm_ptr->tm_mon  + 1;
+	/* The first month of year in DATE_STRUCT is 1, while in tm struct is 0*/
+	date.MONTH  = (int32_t)tm_ptr->tm_mon  + 1;
 
-    /* The first year in DATE_STRUCT is 1900, while in tm struct is 0*/
-    date.YEAR   = (int32_t)tm_ptr->tm_year + 1900;
+	/* The first year in DATE_STRUCT is 1900, while in tm struct is 0*/
+	date.YEAR   = (int32_t)tm_ptr->tm_year + 1900;
 
-    /*
-     * Convert DATE_STRUCT to TIME_STRUCT
-     */
-    if (_time_from_date(&date, &ts) == FALSE) {
-        return 0;
-    } /* End if */
+	/*
+	 * Convert DATE_STRUCT to TIME_STRUCT
+	 */
+	if (_time_from_date(&date, &ts) == FALSE) {
+		return 0;
+	} /* End if */
 
-    /* Convert TIME_STRUCT to time_t */
-    return ts.SECONDS;
+	/* Convert TIME_STRUCT to time_t */
+	return ts.SECONDS;
 
 } /* Endbody */
 
@@ -3002,27 +3002,27 @@ time_t timegm
  */
 struct tm *localtime_r
 (
-    const time_t *timep,
-    struct tm    *result
+	const time_t *timep,
+	struct tm    *result
 )
 { /* Body */
-    time_t local;
+	time_t local;
 
 #if MQX_CHECK_ERRORS
-    if (timep == NULL) {
-        return (NULL);
-    } /* End if */
+	if (timep == NULL) {
+		return (NULL);
+	} /* End if */
 
-    if ( ((_timezone > 0) && (*timep < _timezone)) ||
-        ((_timezone < 0) && (*timep > MAXIMUM_SECONDS_IN_TIME + _timezone)) )
-    {
-        return NULL;
-    } /* End if */
+	if ( ((_timezone > 0) && (*timep < _timezone)) ||
+		((_timezone < 0) && (*timep > MAXIMUM_SECONDS_IN_TIME + _timezone)) )
+	{
+		return NULL;
+	} /* End if */
 #endif
 
-    local = *timep - _timezone;
+	local = *timep - _timezone;
 
-    return gmtime_r(&local, result);
+	return gmtime_r(&local, result);
 } /* Endbody */
 
 #endif /* MQX_STD_TIME_API */

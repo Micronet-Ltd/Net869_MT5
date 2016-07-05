@@ -60,44 +60,44 @@ typedef void (_CODE_PTR_  TIMER_NOTIFICATION_FPTR)(void);
 /*  TIMER ENTRY STRUCT */
 /*!
  * \cond DOXYGEN_PRIVATE
- *  
+ *
  * \brief This structure defines what an entry in the timer table looks like.
  */
 typedef struct timer_entry_struct
 {
 
-    /*! \brief Queue pointers. */
-    QUEUE_ELEMENT_STRUCT QUEUE_ELEMENT;
+	/*! \brief Queue pointers. */
+	QUEUE_ELEMENT_STRUCT QUEUE_ELEMENT;
 
-    /*! \brief The requested timer frequency. */
-    MQX_TICK_STRUCT      CYCLE;
+	/*! \brief The requested timer frequency. */
+	MQX_TICK_STRUCT      CYCLE;
 
-    /*! \brief Where the expiry time is kept to know when next to fire the timer. */
-    MQX_TICK_STRUCT      EXPIRATION_TIME;
+	/*! \brief Where the expiry time is kept to know when next to fire the timer. */
+	MQX_TICK_STRUCT      EXPIRATION_TIME;
 
-    /*! \brief The function to call when the timer expires. */
-    TIMER_NOTIFICATION_FPTR NOTIFICATION_FUNCTION;
+	/*! \brief The function to call when the timer expires. */
+	TIMER_NOTIFICATION_FPTR NOTIFICATION_FUNCTION;
 
-    /*! \brief The data to pass as parameter 2 when calling the expiration function. */
-    void                *NOTIFICATION_DATA_PTR;
+	/*! \brief The data to pass as parameter 2 when calling the expiration function. */
+	void                *NOTIFICATION_DATA_PTR;
 
-    /*! \brief Task requesting this service. */
-    TD_STRUCT_PTR        TD_PTR;
+	/*! \brief Task requesting this service. */
+	TD_STRUCT_PTR        TD_PTR;
 
-    /*! \brief Validity field for this structure. */
-    _mqx_uint            VALID;
+	/*! \brief Validity field for this structure. */
+	_mqx_uint            VALID;
 
-    /*! \brief Set to true if using tick interface functions. */
-    bool              USES_TICKS;
+	/*! \brief Set to true if using tick interface functions. */
+	bool              USES_TICKS;
 
-    /*! \brief What type of timer is this. */
-    uint16_t              TIMER_TYPE;
+	/*! \brief What type of timer is this. */
+	uint16_t              TIMER_TYPE;
 
-    /*! \brief Time mode used. */
-    uint16_t              MODE;
+	/*! \brief Time mode used. */
+	uint16_t              MODE;
 
-    /*! \brief Timer ID. */
-    _timer_id            ID;
+	/*! \brief Timer ID. */
+	_timer_id            ID;
 
 } TIMER_ENTRY_STRUCT, * TIMER_ENTRY_STRUCT_PTR;
 /*! \endcond */
@@ -105,40 +105,40 @@ typedef struct timer_entry_struct
 /* TIMER COMPONENT STRUCT */
 /*!
  * \cond DOXYGEN_PRIVATE
- *  
+ *
  * \brief This structure contains the definitions used by the timer component.
- *  
+ *
  * The address of this structure is stored in the kernel data COMPONENT array.
  */
 typedef struct timer_component_struct
 {
 
-    /*! \brief The queue of timers using the elapsed time. */
-    QUEUE_STRUCT           ELAPSED_TIMER_ENTRIES;
+	/*! \brief The queue of timers using the elapsed time. */
+	QUEUE_STRUCT           ELAPSED_TIMER_ENTRIES;
 
-    /*! \brief The queue of timers using the kernel time. */
-    QUEUE_STRUCT           KERNEL_TIMER_ENTRIES;
+	/*! \brief The queue of timers using the kernel time. */
+	QUEUE_STRUCT           KERNEL_TIMER_ENTRIES;
 
-    /*! \brief Mutual exclusion semaphore for the timer entries. */
-    LWSEM_STRUCT           TIMER_ENTRIES_LWSEM;
+	/*! \brief Mutual exclusion semaphore for the timer entries. */
+	LWSEM_STRUCT           TIMER_ENTRIES_LWSEM;
 
-    /*! \brief The timer validity field. */
-    _mqx_uint              VALID;
+	/*! \brief The timer validity field. */
+	_mqx_uint              VALID;
 
-    /*! \brief The task id of the timer task. */
-    _task_id               TIMER_TID;
+	/*! \brief The task id of the timer task. */
+	_task_id               TIMER_TID;
 
-    /*! \brief The task descriptor of the timer task. */
-    TD_STRUCT_PTR          TIMER_TD_PTR;
+	/*! \brief The task descriptor of the timer task. */
+	TD_STRUCT_PTR          TIMER_TD_PTR;
 
-    /*! \brief Mutual exclusion semaphore for the timer ISR. */
-    LWSEM_STRUCT           TIMER_ISR_LWSEM;
+	/*! \brief Mutual exclusion semaphore for the timer ISR. */
+	LWSEM_STRUCT           TIMER_ISR_LWSEM;
 
-    /*! \brief Timer ID counter. */
-    _mqx_uint              ID;
+	/*! \brief Timer ID counter. */
+	_mqx_uint              ID;
 
-    /*! \brief The current timer entry being serviced. */
-    TIMER_ENTRY_STRUCT_PTR ENTRY_PTR;
+	/*! \brief The current timer entry being serviced. */
+	TIMER_ENTRY_STRUCT_PTR ENTRY_PTR;
 
 } TIMER_COMPONENT_STRUCT, * TIMER_COMPONENT_STRUCT_PTR;
 /*! \endcond */
@@ -156,7 +156,7 @@ extern "C" {
  * \cond DOXYGEN_PRIVATE
  */
 extern _timer_id _timer_alloc_id_internal(
-    TIMER_COMPONENT_STRUCT_PTR timer_component_ptr
+	TIMER_COMPONENT_STRUCT_PTR timer_component_ptr
 );
 /*! \endcond */
 
@@ -164,7 +164,7 @@ extern _timer_id _timer_alloc_id_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _timer_cleanup(
-    TD_STRUCT_PTR td_ptr
+	TD_STRUCT_PTR td_ptr
 );
 /*! \endcond */
 
@@ -172,8 +172,8 @@ extern void _timer_cleanup(
  * \cond DOXYGEN_PRIVATE
  */
 extern TIMER_ENTRY_STRUCT_PTR _timer_find_entry_internal(
-    TIMER_COMPONENT_STRUCT_PTR timer_component_ptr,
-    _timer_id id
+	TIMER_COMPONENT_STRUCT_PTR timer_component_ptr,
+	_timer_id id
 );
 /*! \endcond */
 
@@ -181,8 +181,8 @@ extern TIMER_ENTRY_STRUCT_PTR _timer_find_entry_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _timer_insert_queue_internal(
-    register QUEUE_STRUCT_PTR queue_ptr,
-    register TIMER_ENTRY_STRUCT_PTR timer_entry_ptr
+	register QUEUE_STRUCT_PTR queue_ptr,
+	register TIMER_ENTRY_STRUCT_PTR timer_entry_ptr
 );
 /*! \endcond */
 
@@ -196,11 +196,11 @@ extern void _timer_isr(void);
  * \cond DOXYGEN_PRIVATE
  */
 extern _timer_id _timer_start_oneshot_after_internal(
-    TIMER_NOTIFICATION_FPTR notification_function_ptr,
-    void* notification_data_ptr,
-    _mqx_uint mode,
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    bool uses_ticks
+	TIMER_NOTIFICATION_FPTR notification_function_ptr,
+	void* notification_data_ptr,
+	_mqx_uint mode,
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	bool uses_ticks
 );
 /*! \endcond */
 
@@ -208,11 +208,11 @@ extern _timer_id _timer_start_oneshot_after_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _timer_id _timer_start_oneshot_at_internal(
-    TIMER_NOTIFICATION_FPTR notification_function_ptr,
-    void* notification_data_ptr,
-    _mqx_uint mode,
-    MQX_TICK_STRUCT_PTR tick_ptr,
-    bool uses_ticks
+	TIMER_NOTIFICATION_FPTR notification_function_ptr,
+	void* notification_data_ptr,
+	_mqx_uint mode,
+	MQX_TICK_STRUCT_PTR tick_ptr,
+	bool uses_ticks
 );
 /*! \endcond */
 
@@ -220,12 +220,12 @@ extern _timer_id _timer_start_oneshot_at_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _timer_id _timer_start_periodic_at_internal(
-    TIMER_NOTIFICATION_FPTR notification_function_ptr,
-    void *notification_data_ptr,
-    _mqx_uint mode,
-    MQX_TICK_STRUCT_PTR stick_ptr,
-    MQX_TICK_STRUCT_PTR wtick_ptr,
-    bool uses_ticks
+	TIMER_NOTIFICATION_FPTR notification_function_ptr,
+	void *notification_data_ptr,
+	_mqx_uint mode,
+	MQX_TICK_STRUCT_PTR stick_ptr,
+	MQX_TICK_STRUCT_PTR wtick_ptr,
+	bool uses_ticks
 );
 /*! \endcond */
 
@@ -233,11 +233,11 @@ extern _timer_id _timer_start_periodic_at_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _timer_id _timer_start_periodic_every_internal(
-    TIMER_NOTIFICATION_FPTR notification_function_ptr,
-    void* notification_data_ptr,
-    _mqx_uint mode,
-    MQX_TICK_STRUCT_PTR wtick_ptr,
-    bool uses_ticks
+	TIMER_NOTIFICATION_FPTR notification_function_ptr,
+	void* notification_data_ptr,
+	_mqx_uint mode,
+	MQX_TICK_STRUCT_PTR wtick_ptr,
+	bool uses_ticks
 );
 /*! \endcond */
 
@@ -245,7 +245,7 @@ extern _timer_id _timer_start_periodic_every_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _timer_task(
-    uint32_t fake_parameter
+	uint32_t fake_parameter
 );
 /*! \endcond */
 
@@ -257,4 +257,3 @@ extern void _timer_task(
 
 #endif /* __timer_prv_h__ */
 /* EOF */
-

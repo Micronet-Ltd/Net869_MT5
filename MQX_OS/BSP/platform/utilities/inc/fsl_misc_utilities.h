@@ -38,11 +38,11 @@
 
 /*! @brief Min/max macros */
 #if !defined(MIN)
-    #define MIN(a, b) ((a) < (b) ? (a) : (b))
+	#define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
 
 #if !defined(MAX)
-    #define MAX(a, b) ((a) > (b) ? (a) : (b))
+	#define MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif
 
 /*! @brief Computes the number of elements in an array.*/
@@ -51,7 +51,7 @@
 /*! @brief Byte swap macros */
 #define BSWAP_16(x)   (uint16_t)((((x) & 0xFF00) >> 0x8) | (((x) & 0xFF) << 0x8))
 #define BSWAP_32(val) (uint32_t)((BSWAP_16((uint32_t)(val) & (uint32_t)0xFFFF) << 0x10) |  \
-                                 (BSWAP_16((uint32_t)((val) >> 0x10))))
+								 (BSWAP_16((uint32_t)((val) >> 0x10))))
 
 
 #ifdef NDEBUG           /* required by ANSI standard */
@@ -77,4 +77,3 @@ void assert_func(const char *file, int line, const char *func, const char *faile
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

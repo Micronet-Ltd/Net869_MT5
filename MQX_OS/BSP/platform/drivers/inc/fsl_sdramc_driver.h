@@ -29,11 +29,11 @@
  */
 #ifndef __FSL_SDRAMC_DRIVER_H__
 #define __FSL_SDRAMC_DRIVER_H__
- 
+
 #include <stdint.h>
 #include <stdbool.h>
 #include "fsl_sdramc_hal.h"
- 
+
 /*!
  * @addtogroup sdramc_driver
  * @{
@@ -59,11 +59,11 @@ extern const IRQn_Type g_sdramIrqId[];
  * Defines a configure structure SDRAMConfig to refresh and uses the SDRAM_DRV_Init() function to make necessary
  * initializations.
  *
- * 
+ *
  */
 typedef struct SDRAMRefreshConfig {
-    sdram_refresh_time_t refreshTime;  /*!< Trc:The number of bus clocks inserted between a REF and next ACTIVE command*/
-    uint32_t sdramRefreshRow;       /*!< The SDRAM refresh time each row: ns/row. */
+	sdram_refresh_time_t refreshTime;  /*!< Trc:The number of bus clocks inserted between a REF and next ACTIVE command*/
+	uint32_t sdramRefreshRow;       /*!< The SDRAM refresh time each row: ns/row. */
 } sdram_refresh_config_t;
 
 /*******************************************************************************
@@ -76,11 +76,11 @@ extern "C" {
 
 /*!
  * @brief Initializes the SDRAM controller.
- * 
+ *
  * This function must be called before calling any other SDRAM controller driver functions.
  * This function ungates the SDRAM controller clock and sets the SDRAM controller clock.
  * Pass in its configuration structure.
- * 
+ *
  *
  * @param instance SDRAM module instance number.
  * @param config The SDRAM configuration structure.
@@ -88,7 +88,7 @@ extern "C" {
  * @param ctlConfig The block control configuration
  */
 void SDRAM_DRV_Init(uint32_t instance, sdram_refresh_config_t *configure, sdram_block_selection_t whichBlock,
-                    sdram_blockctl_configure_t *ctlConfig);
+					sdram_blockctl_configure_t *ctlConfig);
 
 /*!
  * @brief Disables the SDRAM module and gate control.
@@ -102,9 +102,9 @@ void SDRAM_DRV_Deinit(uint32_t instance);
 
 /*!
  * @brief Sends the SDRAM command.
- * 
+ *
  * This function sends either a precharge or MRS command to SDRAM.
- * 
+ *
  * @param instance SDRAM module instance number.
  * @param whichBlock The block selection.
  * @param command The command, see to "sdram_command_t".
@@ -113,11 +113,11 @@ void SDRAM_DRV_SendCommand(uint32_t instance, sdram_block_selection_t whichBlock
 
 /*!
  * @brief Gets the SDRAM command execute status.
- * 
+ *
  * This function stops and disables the SDRAM carrier generator and modulator.
  * When the SDRAM carrier generator and modulator is disabled the IRO signal
  * can be controlled directly by calling SDRAM_DRV_SetIroCtl function.
- * 
+ *
  * @param instance SDRAM module instance number.
  * @param whichBlock The block selection.
  * @param command The command, see to "sdram_command_t".
@@ -173,9 +173,8 @@ void SDRAM_DRV_SetOperateValidCmd(uint32_t instance, sdram_block_selection_t whi
 #endif
 
 /*! @}*/
- 
+
 #endif /* __FSL_SDRAMC_DRIVER_H__*/
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

@@ -30,17 +30,17 @@
 
 /*!
  * \brief This function converts hours into ticks
- * 
+ *
  * \param[in] hours The number of hours to convert
  * \param[out] tick_ptr Pointer to tick structure where the result will be stored
  */
 void _psp_hours_to_ticks
    (
-       /* [IN] The number of hours to convert */
-       _mqx_uint           hours,
+	   /* [IN] The number of hours to convert */
+	   _mqx_uint           hours,
 
-       /* [OUT] Pointer to tick structure where the result will be stored */
-       PSP_TICK_STRUCT_PTR tick_ptr
+	   /* [OUT] Pointer to tick structure where the result will be stored */
+	   PSP_TICK_STRUCT_PTR tick_ptr
    )
 { /* body */
    KERNEL_DATA_STRUCT_PTR kernel_data;
@@ -48,9 +48,9 @@ void _psp_hours_to_ticks
    _GET_KERNEL_DATA(kernel_data);
 
    tick_ptr->HW_TICKS[0] = 0;
-   tick_ptr->TICKS[0]    = (uint64_t)hours * kernel_data->TICKS_PER_SECOND * 
-      3600;
-      
+   tick_ptr->TICKS[0]    = (uint64_t)hours * kernel_data->TICKS_PER_SECOND *
+	  3600;
+
 } /* Endbody */
 
 #endif

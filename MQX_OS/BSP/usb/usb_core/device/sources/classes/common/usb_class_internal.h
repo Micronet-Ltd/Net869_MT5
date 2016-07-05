@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
 * All Rights Reserved
 *
 * Copyright (c) 1989-2008 ARC International;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
 *
 * $FileName: usb_class_internal.h$
-* $Version : 
-* $Date    : 
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -79,24 +79,24 @@ extern usb_class_handle_struct_t g_class_handle[USBCFG_DEV_MAX_CLASS_OBJECT];
  * @brief The function initializes the Class Module
  *
  * @param handle             :handle to Identify the controller
- * @param class_callback     :event callback      
- * @param other_req_callback :call back for class/vendor specific requests on 
+ * @param class_callback     :event callback
+ * @param other_req_callback :call back for class/vendor specific requests on
  *                            CONTROL ENDPOINT
  * @param user_arg           :up layer handle
  * @param desc_callback_ptr  :descriptor callback list
  *
- * @return status       
+ * @return status
  *         USB_OK           : When Successfully
  *         Others           : Errors
  *
  *****************************************************************************/
 class_handle_t USB_Class_Init
 (
-    usb_device_handle                 handle, /* [IN] the USB device controller to initialize */
-    usb_device_notify_t               class_callback,/*[IN]*/
-    usb_request_notify_t              other_req_callback,/*[IN]*/
-    void*                             user_arg,/*[IN]*/
-    usb_desc_request_notify_struct_t* desc_callback_ptr/*[IN]*/
+	usb_device_handle                 handle, /* [IN] the USB device controller to initialize */
+	usb_device_notify_t               class_callback,/*[IN]*/
+	usb_request_notify_t              other_req_callback,/*[IN]*/
+	void*                             user_arg,/*[IN]*/
+	usb_desc_request_notify_struct_t* desc_callback_ptr/*[IN]*/
 );
 
 /**************************************************************************//*!
@@ -106,17 +106,17 @@ class_handle_t USB_Class_Init
  * @brief The function initializes the Class Module
  *
  * @param handle             :handle to Identify the controller
- * @param class_handle       :class handle      
+ * @param class_handle       :class handle
  *
- * @return status       
+ * @return status
  *         USB_OK           : When Successfully
  *         Others           : Errors
  *
  *****************************************************************************/
 usb_status USB_Class_Deinit
 (
-    usb_device_handle              handle, /* [IN] the USB device controller to initialize */                  
-    class_handle_t                 class_handle
+	usb_device_handle              handle, /* [IN] the USB device controller to initialize */
+	class_handle_t                 class_handle
  );
  /**************************************************************************//*!
  *
@@ -125,43 +125,43 @@ usb_status USB_Class_Deinit
  * @brief The function calls the device to send data upon receiving an IN token
  *
  * @param handle:               handle to Identify the controller
- * @param ep_num:               The endpoint number     
+ * @param ep_num:               The endpoint number
  * @param buff_ptr:             buffer to send
  * @param size:                 length of transfer
- * 
- * @return status       
+ *
+ * @return status
  *         USB_OK           : When Successfully
  *         Others           : Errors
  *
  *****************************************************************************/
 usb_status USB_Class_Send_Data
 (
-    class_handle_t                  handle,   /*[IN]*/
-    uint8_t                         ep_num,   /* [IN] the Endpoint number */                  
-    uint8_t*                        buff_ptr, /* [IN] buffer to send */      
-    uint32_t                        size      /* [IN] length of the transfer */
-); 
+	class_handle_t                  handle,   /*[IN]*/
+	uint8_t                         ep_num,   /* [IN] the Endpoint number */
+	uint8_t*                        buff_ptr, /* [IN] buffer to send */
+	uint32_t                        size      /* [IN] length of the transfer */
+);
 
 /**************************************************************************//*!
  *
  * @name  USB_Class_Get_Status
  *
- * @brief The funtion calls the device to send data upon recieving an IN token 
+ * @brief The funtion calls the device to send data upon recieving an IN token
  *
  * @param handle:               handle to Identify the controller
- * @param component:            component code   
+ * @param component:            component code
  * @param error_code:           the requested error
- * 
- * @return status       
- *         USB_OK           : When Successfull 
+ *
+ * @return status
+ *         USB_OK           : When Successfull
  *         Others           : Errors
  *
  *****************************************************************************/
 usb_status USB_Class_Get_Status
 (
-    class_handle_t handle,     /* [IN] */
-    uint8_t        component,  /* [IN] component code */
-    uint16_t *     error_code /* [OUT] the requested error */
+	class_handle_t handle,     /* [IN] */
+	uint8_t        component,  /* [IN] component code */
+	uint16_t *     error_code /* [OUT] the requested error */
 );
 
 /**************************************************************************//*!
@@ -171,7 +171,7 @@ usb_status USB_Class_Get_Status
  * @brief  This function is called to return class handle.
  *
  * @param controller_id:               controller id
- * 
+ *
  * @return value:
  *                        class handle
  *

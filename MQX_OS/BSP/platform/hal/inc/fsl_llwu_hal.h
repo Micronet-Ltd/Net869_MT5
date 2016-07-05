@@ -47,118 +47,118 @@
 
 /*! @brief External input pin control modes */
 typedef enum _llwu_external_pin_modes {
-    kLlwuExternalPinDisabled,          /*!< Pin disabled as wakeup input */
-    kLlwuExternalPinRisingEdge,        /*!< Pin enabled with rising edge detection */
-    kLlwuExternalPinFallingEdge,       /*!< Pin enabled with falling edge detection */
-    kLlwuExternalPinChangeDetect       /*!< Pin enabled with any change detection */
+	kLlwuExternalPinDisabled,          /*!< Pin disabled as wakeup input */
+	kLlwuExternalPinRisingEdge,        /*!< Pin enabled with rising edge detection */
+	kLlwuExternalPinFallingEdge,       /*!< Pin enabled with falling edge detection */
+	kLlwuExternalPinChangeDetect       /*!< Pin enabled with any change detection */
 } llwu_external_pin_modes_t;
 
 /*! @brief Digital filter control modes */
 typedef enum _llwu_filter_modes {
-    kLlwuFilterDisabled,            /*!< Filter disabled  */
-    kLlwuFilterPosEdgeDetect,       /*!< Filter positive edge detection */
-    kLlwuFilterNegEdgeDetect,       /*!< Filter negative edge detection */
-    kLlwuFilterAnyEdgeDetect        /*!< Filter any edge detection */
+	kLlwuFilterDisabled,            /*!< Filter disabled  */
+	kLlwuFilterPosEdgeDetect,       /*!< Filter positive edge detection */
+	kLlwuFilterNegEdgeDetect,       /*!< Filter negative edge detection */
+	kLlwuFilterAnyEdgeDetect        /*!< Filter any edge detection */
 } llwu_filter_modes_t;
 
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN
 /*! @brief LLWU external wakeup pin. */
 typedef enum _llwu_wakeup_pin {
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN0
-    kLlwuWakeupPin0   = 0U,
+	kLlwuWakeupPin0   = 0U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN1
-    kLlwuWakeupPin1   = 1U,
+	kLlwuWakeupPin1   = 1U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN2
-    kLlwuWakeupPin2   = 2U,
+	kLlwuWakeupPin2   = 2U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN3
-    kLlwuWakeupPin3   = 3U,
+	kLlwuWakeupPin3   = 3U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN4
-    kLlwuWakeupPin4   = 4U,
+	kLlwuWakeupPin4   = 4U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN5
-    kLlwuWakeupPin5   = 5U,
+	kLlwuWakeupPin5   = 5U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN6
-    kLlwuWakeupPin6   = 6U,
+	kLlwuWakeupPin6   = 6U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN7
-    kLlwuWakeupPin7   = 7U,
+	kLlwuWakeupPin7   = 7U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN8
-    kLlwuWakeupPin8   = 8U,
+	kLlwuWakeupPin8   = 8U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN9
-    kLlwuWakeupPin9   = 9U,
+	kLlwuWakeupPin9   = 9U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN10
-    kLlwuWakeupPin10  = 10U,
+	kLlwuWakeupPin10  = 10U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN11
-    kLlwuWakeupPin11  = 11U,
+	kLlwuWakeupPin11  = 11U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN12
-    kLlwuWakeupPin12  = 12U,
+	kLlwuWakeupPin12  = 12U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN13
-    kLlwuWakeupPin13  = 13U,
+	kLlwuWakeupPin13  = 13U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN14
-    kLlwuWakeupPin14  = 14U,
+	kLlwuWakeupPin14  = 14U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN15
-    kLlwuWakeupPin15  = 15U,
+	kLlwuWakeupPin15  = 15U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN16
-    kLlwuWakeupPin16   = 16U,
+	kLlwuWakeupPin16   = 16U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN17
-    kLlwuWakeupPin17   = 17U,
+	kLlwuWakeupPin17   = 17U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN18
-    kLlwuWakeupPin18   = 18U,
+	kLlwuWakeupPin18   = 18U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN19
-    kLlwuWakeupPin19   = 19U,
+	kLlwuWakeupPin19   = 19U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN20
-    kLlwuWakeupPin20   = 20U,
+	kLlwuWakeupPin20   = 20U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN21
-    kLlwuWakeupPin21   = 21U,
+	kLlwuWakeupPin21   = 21U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN22
-    kLlwuWakeupPin22   = 22U,
+	kLlwuWakeupPin22   = 22U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN23
-    kLlwuWakeupPin23   = 23U,
+	kLlwuWakeupPin23   = 23U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN24
-    kLlwuWakeupPin24   = 24U,
+	kLlwuWakeupPin24   = 24U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN25
-    kLlwuWakeupPin25   = 25U,
+	kLlwuWakeupPin25   = 25U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN26
-    kLlwuWakeupPin26   = 26U,
+	kLlwuWakeupPin26   = 26U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN27
-    kLlwuWakeupPin27   = 27U,
+	kLlwuWakeupPin27   = 27U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN28
-    kLlwuWakeupPin28   = 28U,
+	kLlwuWakeupPin28   = 28U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN29
-    kLlwuWakeupPin29   = 29U,
+	kLlwuWakeupPin29   = 29U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN30
-    kLlwuWakeupPin30   = 30U,
+	kLlwuWakeupPin30   = 30U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN31
-    kLlwuWakeupPin31   = 31U
+	kLlwuWakeupPin31   = 31U
 #endif
 } llwu_wakeup_pin_t;
 #endif
@@ -167,42 +167,42 @@ typedef enum _llwu_wakeup_pin {
 /*! @brief LLWU wakeup module. */
 typedef enum _llwu_wakeup_module {
 #if FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE0
-    kLlwuWakeupModule0  = 0U,
+	kLlwuWakeupModule0  = 0U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE1
-    kLlwuWakeupModule1  = 1U,
+	kLlwuWakeupModule1  = 1U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE2
-    kLlwuWakeupModule2  = 2U,
+	kLlwuWakeupModule2  = 2U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE3
-    kLlwuWakeupModule3  = 3U,
+	kLlwuWakeupModule3  = 3U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE4
-    kLlwuWakeupModule4  = 4U,
+	kLlwuWakeupModule4  = 4U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE5
-    kLlwuWakeupModule5  = 5U,
+	kLlwuWakeupModule5  = 5U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE6
-    kLlwuWakeupModule6  = 6U,
+	kLlwuWakeupModule6  = 6U,
 #endif
 #if FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE7
-    kLlwuWakeupModule7  = 7U
+	kLlwuWakeupModule7  = 7U
 #endif
 } llwu_wakeup_module_t;
 #endif
 
 /*! @brief External input pin filter control structure */
 typedef struct _llwu_external_pin_filter_mode {
-    llwu_filter_modes_t         filterMode;         /*!< Filter mode */
-    llwu_wakeup_pin_t           pinNumber;          /*!< Pin number */
+	llwu_filter_modes_t         filterMode;         /*!< Filter mode */
+	llwu_wakeup_pin_t           pinNumber;          /*!< Pin number */
 } llwu_external_pin_filter_mode_t;
 
 /*! @brief Reset pin control structure */
 typedef struct _llwu_reset_pin_mode {
-    bool enable;  /*!< RESET pin is enabled as low-leakage mode exit source. */
-    bool filter;  /*!< Digital filter on RESET pin.                          */
+	bool enable;  /*!< RESET pin is enabled as low-leakage mode exit source. */
+	bool filter;  /*!< Digital filter on RESET pin.                          */
 } llwu_reset_pin_mode_t;
 
 /*******************************************************************************
@@ -223,15 +223,15 @@ extern "C" {
  * @brief Sets the external input pin source mode.
  *
  * This function sets the external input pin source mode that is used
- * as a wake up source. 
+ * as a wake up source.
  *
  * @param base      Register base address of LLWU
  * @param pinMode       pin configuration mode defined in llwu_external_pin_modes_t
  * @param pinNumber     pin number specified
  */
 void LLWU_HAL_SetExternalInputPinMode(LLWU_Type * base,
-                                      llwu_external_pin_modes_t pinMode,
-                                      llwu_wakeup_pin_t pinNumber);
+									  llwu_external_pin_modes_t pinMode,
+									  llwu_wakeup_pin_t pinNumber);
 
 #endif
 
@@ -240,7 +240,7 @@ void LLWU_HAL_SetExternalInputPinMode(LLWU_Type * base,
  * @brief Enables/disables the internal module source.
  *
  * This function enables/disables the internal module source mode that is used
- * as a wake up source. 
+ * as a wake up source.
  *
  * @param base      Register base address of LLWU
  * @param moduleNumber  module number specified
@@ -297,8 +297,8 @@ bool LLWU_HAL_GetInternalModuleWakeupFlag(LLWU_Type * base, llwu_wakeup_module_t
  * @param filterNumber  filter number specified
  * @param pinFilterMode filter mode configuration
  */
-void LLWU_HAL_SetPinFilterMode(LLWU_Type * base, uint32_t filterNumber, 
-                               llwu_external_pin_filter_mode_t pinFilterMode);
+void LLWU_HAL_SetPinFilterMode(LLWU_Type * base, uint32_t filterNumber,
+							   llwu_external_pin_filter_mode_t pinFilterMode);
 
 /*!
  * @brief Gets the filter detection flag.
@@ -349,4 +349,3 @@ void LLWU_HAL_SetResetPinMode(LLWU_Type * base, llwu_reset_pin_mode_t resetPinMo
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

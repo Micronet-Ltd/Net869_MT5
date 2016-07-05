@@ -71,9 +71,9 @@ typedef void (*tsi_callback_t)(uint32_t instance, void* usrData);
 *
 */
 typedef struct TsiUserConfig {
-    tsi_config_t                        *config;        /**< A pointer to hardware configuration. Can't be NULL. */
-    tsi_callback_t                      pCallBackFunc;  /**< A pointer to call back function of end of measurement. */
-    void                                * usrData;      /**< A user data of call back function. */
+	tsi_config_t                        *config;        /**< A pointer to hardware configuration. Can't be NULL. */
+	tsi_callback_t                      pCallBackFunc;  /**< A pointer to call back function of end of measurement. */
+	void                                * usrData;      /**< A user data of call back function. */
 } tsi_user_config_t;
 
 /*!
@@ -159,17 +159,17 @@ extern "C" {
 
    tsi_user_config_t myTsiDriveruserConfig =
    {
-    .config =
-       {
-          ...
-       },
-     .pCallBackFunc = APP_myTsiCallBackFunc,
-     .usrData = myData,
+	.config =
+	   {
+		  ...
+	   },
+	 .pCallBackFunc = APP_myTsiCallBackFunc,
+	 .usrData = myData,
    };
 
    if(TSI_DRV_Init(0, &myTsiDriverStateStructure, &myTsiDriveruserConfig) != kStatus_TSI_Success)
    {
-      // Error, the TSI is not initialized
+	  // Error, the TSI is not initialized
    }
   @endcode
 *
@@ -193,7 +193,7 @@ tsi_status_t TSI_DRV_Init(uint32_t instance, tsi_state_t * tsiState, const tsi_u
  @code
    if(TSI_DRV_DeInit(0) != kStatus_TSI_Success)
    {
-      // Error, the TSI is not de-initialized
+	  // Error, the TSI is not de-initialized
    }
   @endcode
 * @param instance The TSI module instance.
@@ -207,11 +207,11 @@ tsi_status_t TSI_DRV_DeInit(uint32_t instance);
 * Function must be called for each used electrodes after initialization of TSI driver.
 *
   @code
-        // On the TSI instance 0, enable electrode with index 5
-    if(TSI_DRV_EnableElectrode(0, 5, TRUE) != kStatus_TSI_Success)
-    {
-        // Error, the TSI 5'th electrode is not enabled
-    }
+		// On the TSI instance 0, enable electrode with index 5
+	if(TSI_DRV_EnableElectrode(0, 5, TRUE) != kStatus_TSI_Success)
+	{
+		// Error, the TSI 5'th electrode is not enabled
+	}
   @endcode
 * @param instance   The TSI module instance.
 * @param channel    Index of TSI channel.
@@ -226,8 +226,8 @@ tsi_status_t TSI_DRV_EnableElectrode(uint32_t instance, const uint32_t channel, 
 * The function returns the mask of the enabled electrodes of the current mode.
 *
   @code
-    uint32_t enabledElectrodeMask;
-    enabledElectrodeMask = TSI_DRV_GetEnabledElectrodes(0);
+	uint32_t enabledElectrodeMask;
+	enabledElectrodeMask = TSI_DRV_GetEnabledElectrodes(0);
   @endcode
 * @param instance The TSI module instance.
 * @return Mask of enabled electrodes for current mode.
@@ -242,16 +242,16 @@ uint32_t TSI_DRV_GetEnabledElectrodes(uint32_t instance);
 *         @ref TSI_DRV_SetCallBackFunc or @ref TSI_DRV_Init.
 *
   @code
-    // Example of the pooling style of use of TSI_DRV_Measure() function
-    if(TSI_DRV_Measure(0) != kStatus_TSI_Success)
-    {
-        // Error, the TSI 5'th electrode is not enabled
-    }
+	// Example of the pooling style of use of TSI_DRV_Measure() function
+	if(TSI_DRV_Measure(0) != kStatus_TSI_Success)
+	{
+		// Error, the TSI 5'th electrode is not enabled
+	}
 
-    while(TSI_DRV_GetStatus(0) != kStatus_TSI_Initialized)
-    {
-        // Do something useful - don't waste the CPU cycle time
-    }
+	while(TSI_DRV_GetStatus(0) != kStatus_TSI_Initialized)
+	{
+		// Do something useful - don't waste the CPU cycle time
+	}
 
   @endcode
 * @param instance The TSI module instance.
@@ -266,14 +266,14 @@ tsi_status_t TSI_DRV_Measure(uint32_t instance);
 *         is available and can be obtained by calling the @ref TSI_DRV_GetCounter function.
 *
   @code
-    // Example of the TSI_DRV_Measure() function pooling style
-    if(TSI_DRV_MeasureBlocking(0) != kStatus_TSI_Success)
-    {
-        // Error, the TSI 5'th electrode is not enabled
-    }else
-    {
-        // Get the result by TSI_DRV_GetCounter function
-    }
+	// Example of the TSI_DRV_Measure() function pooling style
+	if(TSI_DRV_MeasureBlocking(0) != kStatus_TSI_Success)
+	{
+		// Error, the TSI 5'th electrode is not enabled
+	}else
+	{
+		// Get the result by TSI_DRV_GetCounter function
+	}
   @endcode
 * @param instance The TSI module instance.
 * @return An error code or kStatus_TSI_Success.
@@ -287,16 +287,16 @@ tsi_status_t TSI_DRV_MeasureBlocking(uint32_t instance);
 *           unexpected situations and not targeted for standard use.
 *
   @code
-    // Start measure by @ref TSI_DRV_Measure() function
-    if(TSI_DRV_Measure(0) != kStatus_TSI_Success)
-    {
-        // Error, the TSI 5'th electrode is not enabled
-    }
+	// Start measure by @ref TSI_DRV_Measure() function
+	if(TSI_DRV_Measure(0) != kStatus_TSI_Success)
+	{
+		// Error, the TSI 5'th electrode is not enabled
+	}
 
-    if(isNeededAbort) // I need abort measure from any application reason
-    {
-        TSI_DRV_AbortMeasure(0);
-    }
+	if(isNeededAbort) // I need abort measure from any application reason
+	{
+		TSI_DRV_AbortMeasure(0);
+	}
 
   @endcode
 * @param instance The TSI module instance.
@@ -311,14 +311,14 @@ tsi_status_t TSI_DRV_AbortMeasure(uint32_t instance);
 *           The data is buffered inside the driver.
 *
   @code
-    // Get the counter value from TSI instance 0 and 5th channel
+	// Get the counter value from TSI instance 0 and 5th channel
 
-    uint32_t result;
+	uint32_t result;
 
-    if(TSI_DRV_GetCounter(0, 5, &result) != kStatus_TSI_Success)
-    {
-        // Error, the TSI 5'th electrode is not read
-    }
+	if(TSI_DRV_GetCounter(0, 5, &result) != kStatus_TSI_Success)
+	{
+		// Error, the TSI 5'th electrode is not read
+	}
 
   @endcode
 * @param instance The TSI module instance.
@@ -334,11 +334,11 @@ tsi_status_t TSI_DRV_GetCounter(uint32_t instance, const uint32_t channel, uint1
 * This function returns the current working status of the driver.
 *
   @code
-    // Get the current status of TSI driver
+	// Get the current status of TSI driver
 
-    tsi_status_t status;
+	tsi_status_t status;
 
-    status = TSI_DRV_GetStatus(0);
+	status = TSI_DRV_GetStatus(0);
 
 
   @endcode
@@ -356,21 +356,21 @@ tsi_status_t TSI_DRV_GetStatus(uint32_t instance);
 *           and recalibrate the low power mode to get the best performance for this mode.
 *
   @code
-    // Switch the driver to the low power mode
-    uint16_t signal;
+	// Switch the driver to the low power mode
+	uint16_t signal;
 
-    // The first time is needed to configure the low power mode configuration
+	// The first time is needed to configure the low power mode configuration
 
-    (void)TSI_DRV_ChangeMode(0, tsi_OpModeLowPower); // I don't check the result because I believe in.
-    // Enable the right one electrode for low power AKE up operation
-    (void)TSI_DRV_EnableElectrode(0, 5, true);
-    // Recalibrate the mode to get the best performance for this one electrode
-    (void)TSI_DRV_Recalibrate(0, &signal);
+	(void)TSI_DRV_ChangeMode(0, tsi_OpModeLowPower); // I don't check the result because I believe in.
+	// Enable the right one electrode for low power AKE up operation
+	(void)TSI_DRV_EnableElectrode(0, 5, true);
+	// Recalibrate the mode to get the best performance for this one electrode
+	(void)TSI_DRV_Recalibrate(0, &signal);
 
-    if(TSI_DRV_EnableLowPower(0) != kStatus_TSI_Success)
-    {
-        // Error, the TSI driver can't go to low power mode
-    }
+	if(TSI_DRV_EnableLowPower(0) != kStatus_TSI_Success)
+	{
+		// Error, the TSI driver can't go to low power mode
+	}
 
 
   @endcode
@@ -387,12 +387,12 @@ tsi_status_t TSI_DRV_EnableLowPower(uint32_t instance);
 *           configuration, to be able go back to low power state.
 *
   @code
-    // Switch the driver from the low power mode
+	// Switch the driver from the low power mode
 
-    if(TSI_DRV_DisableLowPower(0, tsi_OpModeNormal) != kStatus_TSI_Success)
-    {
-        // Error, the TSI driver can't go from low power mode
-    }
+	if(TSI_DRV_DisableLowPower(0, tsi_OpModeNormal) != kStatus_TSI_Success)
+	{
+		// Error, the TSI driver can't go from low power mode
+	}
 
 
   @endcode
@@ -415,15 +415,15 @@ tsi_status_t TSI_DRV_DisableLowPower(uint32_t instance, const tsi_modes_t mode);
 *          and is blocking.
 *
   @code
-    // Recalibrate current mode
-    uint16_t signal;
+	// Recalibrate current mode
+	uint16_t signal;
 
-    // Recalibrate the mode to get the best performance for this one electrode
+	// Recalibrate the mode to get the best performance for this one electrode
 
-    if(TSI_DRV_Recalibrate(0, &signal) != kStatus_TSI_Success)
-    {
-        // Error, the TSI driver can't recalibrate this mode
-    }
+	if(TSI_DRV_Recalibrate(0, &signal) != kStatus_TSI_Success)
+	{
+		// Error, the TSI driver can't recalibrate this mode
+	}
 
 
   @endcode
@@ -441,19 +441,19 @@ tsi_status_t TSI_DRV_Recalibrate(uint32_t instance, uint32_t * lowestSignal);
 *           that is handled by the parameter to a call back function. One function can be called by more sources.
 *
   @code
-    // Clear previous call back function
+	// Clear previous call back function
 
-    if(TSI_DRV_SetCallBackFunc(0, NULL, NULL) != kStatus_TSI_Success)
-    {
-        // Error, the TSI driver can't set up the call back function at the moment
-    }
+	if(TSI_DRV_SetCallBackFunc(0, NULL, NULL) != kStatus_TSI_Success)
+	{
+		// Error, the TSI driver can't set up the call back function at the moment
+	}
 
-    // Set new call back function
+	// Set new call back function
 
-    if(TSI_DRV_SetCallBackFunc(0, myFunction, (void*)0x12345678) != kStatus_TSI_Success)
-    {
-        // Error, the TSI driver can't set up the call back function at the moment
-    }
+	if(TSI_DRV_SetCallBackFunc(0, myFunction, (void*)0x12345678) != kStatus_TSI_Success)
+	{
+		// Error, the TSI driver can't set up the call back function at the moment
+	}
 
 
   @endcode
@@ -470,12 +470,12 @@ tsi_status_t TSI_DRV_SetCallBackFunc(uint32_t instance, const tsi_callback_t pFu
 * This function changes the working operation mode of the driver.
 *
   @code
-    // Change operation mode to low power
+	// Change operation mode to low power
 
-    if(TSI_DRV_ChangeMode(0, tsi_OpModeLowPower) != kStatus_TSI_Success)
-    {
-        // Error, the TSI driver can't change the operation mode into low power
-    }
+	if(TSI_DRV_ChangeMode(0, tsi_OpModeLowPower) != kStatus_TSI_Success)
+	{
+		// Error, the TSI driver can't change the operation mode into low power
+	}
 
   @endcode
 * @param instance       The TSI module instance.
@@ -490,10 +490,10 @@ tsi_status_t TSI_DRV_ChangeMode(uint32_t instance, const tsi_modes_t mode);
 * This function returns the current working operation mode of the driver.
 *
   @code
-    // Gets current operation mode of TSI driver
-    tsi_modes_t mode;
+	// Gets current operation mode of TSI driver
+	tsi_modes_t mode;
 
-    mode = TSI_DRV_GetMode(0);
+	mode = TSI_DRV_GetMode(0);
 
   @endcode
 * @param instance       The TSI module instance.
@@ -510,14 +510,14 @@ tsi_modes_t TSI_DRV_GetMode(uint32_t instance);
 *           more time.
 *
   @code
-    // Load operation mode configuration
+	// Load operation mode configuration
 
-    extern const tsi_operation_mode_t * myTsiNvmLowPowerConfiguration;
+	extern const tsi_operation_mode_t * myTsiNvmLowPowerConfiguration;
 
-    if(TSI_DRV_LoadConfiguration(0, tsi_OpModeLowPower, myTsiNvmLowPowerConfiguration) != kStatus_TSI_Success)
-    {
-        // Error, the TSI driver can't load the configuration
-    }
+	if(TSI_DRV_LoadConfiguration(0, tsi_OpModeLowPower, myTsiNvmLowPowerConfiguration) != kStatus_TSI_Success)
+	{
+		// Error, the TSI driver can't load the configuration
+	}
 
   @endcode
 * @param instance       The TSI module instance.
@@ -532,18 +532,18 @@ tsi_status_t TSI_DRV_LoadConfiguration(uint32_t instance, const tsi_modes_t mode
 *
 * This function saves the configuration of a specific mode.
 *           This can be used when the calibrated data should be stored in any backup memory
-*           to load after the start of the MCU to avoid running the recalibration that takes 
+*           to load after the start of the MCU to avoid running the recalibration that takes
 *           more time.
 *
   @code
-    // Save operation mode configuration
+	// Save operation mode configuration
 
-    extern tsi_operation_mode_t  myTsiNvmLowPowerConfiguration;
+	extern tsi_operation_mode_t  myTsiNvmLowPowerConfiguration;
 
-    if(TSI_DRV_SaveConfiguration(0, tsi_OpModeLowPower, &myTsiNvmLowPowerConfiguration) != kStatus_TSI_Success)
-    {
-        // Error, the TSI driver can't save the configuration
-    }
+	if(TSI_DRV_SaveConfiguration(0, tsi_OpModeLowPower, &myTsiNvmLowPowerConfiguration) != kStatus_TSI_Success)
+	{
+		// Error, the TSI driver can't save the configuration
+	}
 
   @endcode
 * @param instance       The TSI module instance.
@@ -573,4 +573,3 @@ tsi_status_t TSI_DRV_SaveConfiguration(uint32_t instance, const tsi_modes_t mode
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

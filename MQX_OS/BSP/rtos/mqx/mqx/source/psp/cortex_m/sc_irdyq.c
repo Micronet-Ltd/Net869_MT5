@@ -26,9 +26,9 @@
 #include "mqx_inc.h"
 
 #if MQXCFG_PREALLOCATED_READYQ
-    /* Task ready queue */
-    #define MQX_READY_QUEUE_ITEMS                    (MQXCFG_LOWEST_TASK_PRIORITY + 2 + 1) /* +2 is because of init and idle task, +1 is because of zero array element */
-    static READY_Q_STRUCT                         mqx_static_ready_queue[MQX_READY_QUEUE_ITEMS];
+	/* Task ready queue */
+	#define MQX_READY_QUEUE_ITEMS                    (MQXCFG_LOWEST_TASK_PRIORITY + 2 + 1) /* +2 is because of init and idle task, +1 is because of zero array element */
+	static READY_Q_STRUCT                         mqx_static_ready_queue[MQX_READY_QUEUE_ITEMS];
 #endif
 
 /*!
@@ -37,42 +37,42 @@
  */
 void _psp_set_kernel_disable_level
 (
-    void
+	void
 )
 {
-    KERNEL_DATA_STRUCT_PTR          kernel_data;
-    MQX_INITIALIZATION_STRUCT_PTR   init_ptr;
-    uint32_t temp;
-    _mqx_int i;
+	KERNEL_DATA_STRUCT_PTR          kernel_data;
+	MQX_INITIALIZATION_STRUCT_PTR   init_ptr;
+	uint32_t temp;
+	_mqx_int i;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    init_ptr = (MQX_INITIALIZATION_STRUCT_PTR)&kernel_data->INIT;
+	init_ptr = (MQX_INITIALIZATION_STRUCT_PTR)&kernel_data->INIT;
 
-    /* Calculate the enable and disable interrupt values for the kernel. */
-    temp = init_ptr->MQX_HARDWARE_INTERRUPT_LEVEL_MAX;
-    if (temp > 7) {
-        temp = 7;
-        init_ptr->MQX_HARDWARE_INTERRUPT_LEVEL_MAX = 7;
-    } else if (temp == 0) {
-        temp = 1;
-        init_ptr->MQX_HARDWARE_INTERRUPT_LEVEL_MAX = 1;
-    }
+	/* Calculate the enable and disable interrupt values for the kernel. */
+	temp = init_ptr->MQX_HARDWARE_INTERRUPT_LEVEL_MAX;
+	if (temp > 7) {
+		temp = 7;
+		init_ptr->MQX_HARDWARE_INTERRUPT_LEVEL_MAX = 7;
+	} else if (temp == 0) {
+		temp = 1;
+		init_ptr->MQX_HARDWARE_INTERRUPT_LEVEL_MAX = 1;
+	}
 
-    kernel_data->DISABLE_SR = CORTEX_PRIOR(temp);
+	kernel_data->DISABLE_SR = CORTEX_PRIOR(temp);
 
-    /* Set all (till now unused) interrupts level to the disable level */
-    for (i = 0; i < ELEMENTS_OF(NVIC->IP); i++)
-        NVIC->IP[i] = CORTEX_PRIOR((1 << CORTEX_PRIOR_IMPL) - 2);
-    /* Disable interrupts by default */
-    {
-        uint32_t * icer_ptr = (uint32_t *)&NVIC->ICER;
+	/* Set all (till now unused) interrupts level to the disable level */
+	for (i = 0; i < ELEMENTS_OF(NVIC->IP); i++)
+		NVIC->IP[i] = CORTEX_PRIOR((1 << CORTEX_PRIOR_IMPL) - 2);
+	/* Disable interrupts by default */
+	{
+		uint32_t * icer_ptr = (uint32_t *)&NVIC->ICER;
 
-        for (i = 0; i < sizeof(NVIC->ICER) / sizeof(uint32_t); i++)    {
-            /* Disable 32 interrupts in a row */
-            *(icer_ptr + i) = 0xFFFFFFFF;
-        }
-    }
+		for (i = 0; i < sizeof(NVIC->ICER) / sizeof(uint32_t); i++)    {
+			/* Disable 32 interrupts in a row */
+			*(icer_ptr + i) = 0xFFFFFFFF;
+		}
+	}
 }
 /*! \endcond */
 
@@ -83,7 +83,7 @@ void _psp_set_kernel_disable_level
  */
 uint32_t _psp_init_readyqs
 (
-    void
+	void
 )
 { /* Body */
    KERNEL_DATA_STRUCT_PTR kernel_data;
@@ -91,17 +91,17 @@ uint32_t _psp_init_readyqs
    uint32_t                priority_levels;
    uint32_t                n;
 
-    _GET_KERNEL_DATA(kernel_data);
-    kernel_data->READY_Q_LIST = (READY_Q_STRUCT_PTR) NULL;
+	_GET_KERNEL_DATA(kernel_data);
+	kernel_data->READY_Q_LIST = (READY_Q_STRUCT_PTR) NULL;
    priority_levels = kernel_data->LOWEST_TASK_PRIORITY + 3; // IDLE TASK, INIT TASK
 
 #if MQXCFG_PREALLOCATED_READYQ
-    q_ptr = &mqx_static_ready_queue[0];
+	q_ptr = &mqx_static_ready_queue[0];
 #else
    q_ptr = (READY_Q_STRUCT_PTR)_mem_alloc_zero(sizeof(READY_Q_STRUCT) * priority_levels);
 #if MQX_CHECK_MEMORY_ALLOCATION_ERRORS
    if ( q_ptr == NULL ) {
-      return (MQX_OUT_OF_MEMORY);
+	  return (MQX_OUT_OF_MEMORY);
    } /* Endif */
 #endif
    _mem_set_type(q_ptr, MEM_TYPE_READYQ);
@@ -109,28 +109,28 @@ uint32_t _psp_init_readyqs
 
    n = priority_levels;
    while (n--) {
-      q_ptr->HEAD_READY_Q  = (TD_STRUCT_PTR)q_ptr;
-      q_ptr->TAIL_READY_Q  = (TD_STRUCT_PTR)q_ptr;
-      q_ptr->PRIORITY      = (uint16_t)n;
+	  q_ptr->HEAD_READY_Q  = (TD_STRUCT_PTR)q_ptr;
+	  q_ptr->TAIL_READY_Q  = (TD_STRUCT_PTR)q_ptr;
+	  q_ptr->PRIORITY      = (uint16_t)n;
 
-      if (n + kernel_data->INIT.MQX_HARDWARE_INTERRUPT_LEVEL_MAX < (1 << CORTEX_PRIOR_IMPL))
-        q_ptr->ENABLE_SR   = CORTEX_PRIOR(n + kernel_data->INIT.MQX_HARDWARE_INTERRUPT_LEVEL_MAX);
-      else
-        q_ptr->ENABLE_SR   = 0;
+	  if (n + kernel_data->INIT.MQX_HARDWARE_INTERRUPT_LEVEL_MAX < (1 << CORTEX_PRIOR_IMPL))
+		q_ptr->ENABLE_SR   = CORTEX_PRIOR(n + kernel_data->INIT.MQX_HARDWARE_INTERRUPT_LEVEL_MAX);
+	  else
+		q_ptr->ENABLE_SR   = 0;
 
-        q_ptr->NEXT_Q        = kernel_data->READY_Q_LIST;
-        kernel_data->READY_Q_LIST = q_ptr++;
-    }
-
-
-    /*
-    ** Set the current ready q (where the ready queue searches start) to
-    ** the head of the list of ready queues.
-    */
-    kernel_data->CURRENT_READY_Q = kernel_data->READY_Q_LIST;
+		q_ptr->NEXT_Q        = kernel_data->READY_Q_LIST;
+		kernel_data->READY_Q_LIST = q_ptr++;
+	}
 
 
-    return MQX_OK;
+	/*
+	** Set the current ready q (where the ready queue searches start) to
+	** the head of the list of ready queues.
+	*/
+	kernel_data->CURRENT_READY_Q = kernel_data->READY_Q_LIST;
+
+
+	return MQX_OK;
 
 } /* Endbody */
 /*! \endcond */

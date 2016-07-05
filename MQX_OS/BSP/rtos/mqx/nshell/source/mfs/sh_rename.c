@@ -69,45 +69,45 @@ int32_t  Shell_rename(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc != 3)  {
-         fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage=TRUE;
-      } else  {
-         if (MFS_alloc_2paths(&abs_path_old,&abs_path_new) != MFS_NO_ERROR) {
-            fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
-            return_code = SHELL_EXIT_ERROR;
-         }
-         else
-         {
-            _io_get_dev_for_path(abs_path_old,&temp,PATHNAME_SIZE,(char *)argv[1],Shell_get_current_filesystem_name(shell_ptr));
-            _io_get_dev_for_path(abs_path_new,&temp,PATHNAME_SIZE,(char *)argv[2],Shell_get_current_filesystem_name(shell_ptr));
-            if (strcmp(abs_path_new,abs_path_old))
-            {
-               fprintf(shell_ptr->STDOUT, "Error, rename is possible only within one device\n" );
-               return_code = SHELL_EXIT_ERROR;
-            } else {
-            fd = _io_get_fs_by_name(abs_path_new);
-               if (0 > fd)  {
-                  fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n" );
-                  return_code = SHELL_EXIT_ERROR;
-               } else {
-                  error = _io_rel2abs(abs_path_old,shell_ptr->CURRENT_DIR,(char *) argv[1],PATHNAME_SIZE,Shell_get_current_filesystem_name(shell_ptr));
-                  if(!error)
-                  {
-                     error = _io_rel2abs(abs_path_new,shell_ptr->CURRENT_DIR,(char *) argv[2],PATHNAME_SIZE,Shell_get_current_filesystem_name(shell_ptr));
-                     if(!error)
-                     {
-                        error = Shell_mfs_rename(fd, abs_path_old, abs_path_new );
-                     }
-                  }
-                  if (error)  {
-                     fprintf(shell_ptr->STDOUT, "Error renaming file %s\n", argv[1]);
-                  }
-               }
-            }
-         }
-      }
+	  if (argc != 3)  {
+		 fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage=TRUE;
+	  } else  {
+		 if (MFS_alloc_2paths(&abs_path_old,&abs_path_new) != MFS_NO_ERROR) {
+			fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
+			return_code = SHELL_EXIT_ERROR;
+		 }
+		 else
+		 {
+			_io_get_dev_for_path(abs_path_old,&temp,PATHNAME_SIZE,(char *)argv[1],Shell_get_current_filesystem_name(shell_ptr));
+			_io_get_dev_for_path(abs_path_new,&temp,PATHNAME_SIZE,(char *)argv[2],Shell_get_current_filesystem_name(shell_ptr));
+			if (strcmp(abs_path_new,abs_path_old))
+			{
+			   fprintf(shell_ptr->STDOUT, "Error, rename is possible only within one device\n" );
+			   return_code = SHELL_EXIT_ERROR;
+			} else {
+			fd = _io_get_fs_by_name(abs_path_new);
+			   if (0 > fd)  {
+				  fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n" );
+				  return_code = SHELL_EXIT_ERROR;
+			   } else {
+				  error = _io_rel2abs(abs_path_old,shell_ptr->CURRENT_DIR,(char *) argv[1],PATHNAME_SIZE,Shell_get_current_filesystem_name(shell_ptr));
+				  if(!error)
+				  {
+					 error = _io_rel2abs(abs_path_new,shell_ptr->CURRENT_DIR,(char *) argv[2],PATHNAME_SIZE,Shell_get_current_filesystem_name(shell_ptr));
+					 if(!error)
+					 {
+						error = Shell_mfs_rename(fd, abs_path_old, abs_path_new );
+					 }
+				  }
+				  if (error)  {
+					 fprintf(shell_ptr->STDOUT, "Error renaming file %s\n", argv[1]);
+				  }
+			   }
+			}
+		 }
+	  }
    }
 
    MFS_free_path(abs_path_old);
@@ -115,13 +115,13 @@ int32_t  Shell_rename(int32_t argc, char *argv[] )
 
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <oldname> <newname> \n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <oldname> <newname>\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <oldname> = name of file to change\n");
-         fprintf(shell_ptr->STDOUT, "   <newname> = new name of file\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <oldname> <newname> \n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <oldname> <newname>\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <oldname> = name of file to change\n");
+		 fprintf(shell_ptr->STDOUT, "   <newname> = new name of file\n");
+	  }
    }
    return return_code;
 } /* Endbody */

@@ -53,10 +53,10 @@ extern const IRQn_Type g_ftmIrqId[FTM_INSTANCE_COUNT];
 /*! @brief Configuration structure that the user needs to set
  */
 typedef struct FtmUserConfig {
-    uint8_t tofFrequency; /*!< Select ratio between number of overflows to times TOF is set @internal gui name="Overflow frequency" id="OvFrequency" */
-    ftm_bdm_mode_t BDMMode; /*!< Select FTM behavior in BDM mode @internal gui name="BDM mode" id="BdmMode" */
-    bool isWriteProtection; /*!< true: enable write protection, false: write protection is disabled @internal gui name="Write protection" id="WriteProtection" */
-    uint32_t syncMethod; /*!< Register synch options available in the ftm_sync_method_t enumeration @internal gui name="Triggers" id="Triggers" */
+	uint8_t tofFrequency; /*!< Select ratio between number of overflows to times TOF is set @internal gui name="Overflow frequency" id="OvFrequency" */
+	ftm_bdm_mode_t BDMMode; /*!< Select FTM behavior in BDM mode @internal gui name="BDM mode" id="BdmMode" */
+	bool isWriteProtection; /*!< true: enable write protection, false: write protection is disabled @internal gui name="Write protection" id="WriteProtection" */
+	uint32_t syncMethod; /*!< Register synch options available in the ftm_sync_method_t enumeration @internal gui name="Triggers" id="Triggers" */
 } ftm_user_config_t;
 
 /*******************************************************************************
@@ -114,7 +114,7 @@ ftm_status_t FTM_DRV_PwmStart(uint32_t instance, ftm_pwm_param_t *param, uint8_t
  * @param quadMode     Selects encoding mode used in quadrature decoder mode
  */
 void FTM_DRV_QuadDecodeStart(uint32_t instance, ftm_phase_params_t *phaseAParams,
-                                      ftm_phase_params_t *phaseBParams, ftm_quad_decode_mode_t quadMode);
+									  ftm_phase_params_t *phaseBParams, ftm_quad_decode_mode_t quadMode);
 
 /*!
  * @brief Deactivates the quadrature decode mode.
@@ -138,7 +138,7 @@ void FTM_DRV_QuadDecodeStop(uint32_t instance);
  * @param enableOverflowInt true: enable timer overflow interrupt; false: disable
  */
 void FTM_DRV_CounterStart(uint32_t instance, ftm_counting_mode_t countMode, uint32_t countStartVal,
-                                 uint32_t countFinalVal, bool enableOverflowInt);
+								 uint32_t countFinalVal, bool enableOverflowInt);
 
 /*!
  * @brief Stops the FTM counter.
@@ -208,7 +208,7 @@ void FTM_DRV_SetFaultIntCmd(uint32_t instance, bool faultEnable);
  * @param filterVal   Filter value to be used, specify 0 to disable filter. Available only for channels 0-3
  */
 void FTM_DRV_SetupChnInputCapture(uint32_t instance, ftm_input_capture_edge_mode_t captureMode,
-                                            uint8_t channel, uint8_t filterVal);
+											uint8_t channel, uint8_t filterVal);
 
 /*!
  * @brief Configures the FTM to generate timed pulses.
@@ -222,7 +222,7 @@ void FTM_DRV_SetupChnInputCapture(uint32_t instance, ftm_input_capture_edge_mode
  * @param compareVal  Value to be programmed in the CnV register.
  */
 void FTM_DRV_SetupChnOutputCompare(uint32_t instance, ftm_output_compare_edge_mode_t compareMode,
-                                               uint8_t channel, uint32_t compareVal);
+											   uint8_t channel, uint32_t compareVal);
 
 /*!
  * @brief Configures the dual edge capture mode of the FTM.
@@ -239,7 +239,7 @@ void FTM_DRV_SetupChnOutputCompare(uint32_t instance, ftm_output_compare_edge_mo
  * @param filterVal   Filter value to be used, specify 0 to disable filter. Available only for channels 0, 2
  */
 void FTM_DRV_SetupChnDualEdgeCapture(uint32_t instance, ftm_dual_edge_capture_param_t *param,
-                                                 uint8_t channel, uint8_t filterVal);
+												 uint8_t channel, uint8_t filterVal);
 
 /*!
  * @brief Action to take when an FTM interrupt is triggered.
@@ -262,4 +262,3 @@ void FTM_DRV_IRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

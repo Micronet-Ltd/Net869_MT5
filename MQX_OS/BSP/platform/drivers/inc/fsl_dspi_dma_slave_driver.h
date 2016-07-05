@@ -57,8 +57,8 @@ extern const IRQn_Type g_dspiIrqId[SPI_INSTANCE_COUNT];
  *  @brief User configuration structure for the DSPI slave driver.
  */
 typedef struct DSPIDmaSlaveUserConfig {
-    dspi_data_format_config_t dataConfig;   /*!< Data format configuration structure */
-    uint16_t dummyPattern;                  /*!< Dummy data value */
+	dspi_data_format_config_t dataConfig;   /*!< Data format configuration structure */
+	uint16_t dummyPattern;                  /*!< Dummy data value */
 } dspi_dma_slave_user_config_t;
 
 /*!
@@ -70,20 +70,20 @@ typedef struct DSPIDmaSlaveUserConfig {
  * the members.
  */
 typedef struct DSPIDmaSlaveState {
-    uint32_t bitsPerFrame;                      /*!< Desired number of bits per frame */
-    dspi_status_t status;                       /*!< Current state of slave */
-    event_t event;                              /*!< Event to notify waiting task */
-    uint16_t errorCount;                        /*!< Driver error count */
-    uint32_t dummyPattern;                      /*!< Dummy data will be send when do not have data in transmit buffer */
-    volatile bool isTransferInProgress;         /*!< True if there is an active transfer.*/
-    const uint8_t * sendBuffer;                 /*!< Pointer to transmit buffer */
-    uint8_t * receiveBuffer;                    /*!< Pointer to receive buffer */
-    volatile int32_t remainingSendByteCount;    /*!< Number of bytes remaining to send.*/
-    volatile int32_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
-    uint8_t extraReceiveByte;                   /*!< Number of extra receive bytes */
-    bool isSync;                                /*!< Indicates the function call is sync or async */
-    dma_channel_t dmaTxChannel;                 /*!< Structure definition for the DMA channel */
-    dma_channel_t dmaRxChannel;                 /*!< Structure definition for the DMA channel */
+	uint32_t bitsPerFrame;                      /*!< Desired number of bits per frame */
+	dspi_status_t status;                       /*!< Current state of slave */
+	event_t event;                              /*!< Event to notify waiting task */
+	uint16_t errorCount;                        /*!< Driver error count */
+	uint32_t dummyPattern;                      /*!< Dummy data will be send when do not have data in transmit buffer */
+	volatile bool isTransferInProgress;         /*!< True if there is an active transfer.*/
+	const uint8_t * sendBuffer;                 /*!< Pointer to transmit buffer */
+	uint8_t * receiveBuffer;                    /*!< Pointer to receive buffer */
+	volatile int32_t remainingSendByteCount;    /*!< Number of bytes remaining to send.*/
+	volatile int32_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
+	uint8_t extraReceiveByte;                   /*!< Number of extra receive bytes */
+	bool isSync;                                /*!< Indicates the function call is sync or async */
+	dma_channel_t dmaTxChannel;                 /*!< Structure definition for the DMA channel */
+	dma_channel_t dmaRxChannel;                 /*!< Structure definition for the DMA channel */
 } dspi_dma_slave_state_t;
 
 /*******************************************************************************
@@ -115,8 +115,8 @@ extern "C" {
  * @return An error code or kStatus_DSPI_Success.
  */
 dspi_status_t DSPI_DRV_DmaSlaveInit(uint32_t instance,
-                                    dspi_dma_slave_state_t * dspiState,
-                                    const dspi_dma_slave_user_config_t * slaveConfig);
+									dspi_dma_slave_state_t * dspiState,
+									const dspi_dma_slave_user_config_t * slaveConfig);
 
 /*!
  * @brief Shuts down a DSPI instance - DMA mechanism.
@@ -159,10 +159,10 @@ dspi_status_t DSPI_DRV_DmaSlaveDeinit(uint32_t instance);
  *          kStatus_DSPI_Timeout if time out reached while transferring is in progress.
  */
 dspi_status_t DSPI_DRV_DmaSlaveTransferBlocking(uint32_t instance,
-                                                const uint8_t *sendBuffer,
-                                                uint8_t *receiveBuffer,
-                                                uint32_t transferByteCount,
-                                                uint32_t timeOut);
+												const uint8_t *sendBuffer,
+												uint8_t *receiveBuffer,
+												uint32_t transferByteCount,
+												uint32_t timeOut);
 
 /*@}*/
 
@@ -191,9 +191,9 @@ dspi_status_t DSPI_DRV_DmaSlaveTransferBlocking(uint32_t instance,
  *          kStatus_DSPI_Busy if driver is receiving/transmitting data and not available.
  */
 dspi_status_t DSPI_DRV_DmaSlaveTransfer(uint32_t instance,
-                                        const uint8_t *sendBuffer,
-                                        uint8_t *receiveBuffer,
-                                        uint32_t transferByteCount);
+										const uint8_t *sendBuffer,
+										uint8_t *receiveBuffer,
+										uint32_t transferByteCount);
 
 /*!
  * @brief Aborts the transfer that started by a non-blocking call to the DMA transfer function.
@@ -226,7 +226,7 @@ dspi_status_t DSPI_DRV_DmaSlaveAbortTransfer(uint32_t instance);
  *         is filled with the number of words that have been transferred so far.
  */
 dspi_status_t DSPI_DRV_DmaSlaveGetTransferStatus(uint32_t instance,
-                                                 uint32_t * framesTransferred);
+												 uint32_t * framesTransferred);
 /*! @} */
 
 #if defined(__cplusplus)

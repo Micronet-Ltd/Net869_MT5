@@ -44,29 +44,29 @@
  *END*************************************************************************/
 void CMT_HAL_Init(CMT_Type * base)
 {
-    uint8_t moduleCtl = 0;  /* For building warning*/
-    /*Clear all carrier generator counters*/
-    CMT_WR_CGH1(base, 0);
-    CMT_WR_CGL1(base, 0);
-    CMT_WR_CGH2(base, 0);
-    CMT_WR_CGL2(base, 0);
+	uint8_t moduleCtl = 0;  /* For building warning*/
+	/*Clear all carrier generator counters*/
+	CMT_WR_CGH1(base, 0);
+	CMT_WR_CGL1(base, 0);
+	CMT_WR_CGH2(base, 0);
+	CMT_WR_CGL2(base, 0);
 
-    /*clear End-of-cycle interrupt needs read*/
-    moduleCtl = CMT_RD_MSC(base);
-    moduleCtl = moduleCtl;	/* For building warning*/
-    /*Clear all carrier modulator counters*/
-    CMT_WR_CMD1(base, 0);
-    CMT_WR_CMD2(base, 0);
-    CMT_WR_CMD3(base, 0);
-    CMT_WR_CMD4(base, 0);
+	/*clear End-of-cycle interrupt needs read*/
+	moduleCtl = CMT_RD_MSC(base);
+	moduleCtl = moduleCtl;	/* For building warning*/
+	/*Clear all carrier modulator counters*/
+	CMT_WR_CMD1(base, 0);
+	CMT_WR_CMD2(base, 0);
+	CMT_WR_CMD3(base, 0);
+	CMT_WR_CMD4(base, 0);
 
-    /*Clear Modulator status and control */
-    CMT_WR_OC(base, 0);
-    CMT_WR_DMA(base, 0);
-    CMT_WR_MSC(base, 0);
+	/*Clear Modulator status and control */
+	CMT_WR_OC(base, 0);
+	CMT_WR_DMA(base, 0);
+	CMT_WR_MSC(base, 0);
 
    /*Clear primary prescaler*/
-    CMT_WR_PPS(base, 0);
+	CMT_WR_PPS(base, 0);
 }
 
 /*FUNCTION*********************************************************************
@@ -77,31 +77,30 @@ void CMT_HAL_Init(CMT_Type * base)
  *END*************************************************************************/
 cmt_mode_t CMT_HAL_GetMode(CMT_Type * base)
 {
-    uint8_t mode;
+	uint8_t mode;
 
-    mode = CMT_RD_MSC(base);
+	mode = CMT_RD_MSC(base);
 
-    if(! mode & CMT_MSC_MCGEN_MASK) 
-    { /* Carrier modulator disabled and the IRO signal is in direct software control. */
-        return  kCMTDirectIROCtl;  
-    }
-    else /* Carrier modulator is enabled */
-    {
-       if(mode & CMT_MSC_BASE_MASK)
-       {
-          return kCMTBasebandMode;         
-       }
-       else if(mode & CMT_MSC_FSK_MASK)
-       {
-          return kCMTFSKMode;
-       }
+	if(! mode & CMT_MSC_MCGEN_MASK)
+	{ /* Carrier modulator disabled and the IRO signal is in direct software control. */
+		return  kCMTDirectIROCtl;
+	}
+	else /* Carrier modulator is enabled */
+	{
+	   if(mode & CMT_MSC_BASE_MASK)
+	   {
+		  return kCMTBasebandMode;
+	   }
+	   else if(mode & CMT_MSC_FSK_MASK)
+	   {
+		  return kCMTFSKMode;
+	   }
 
-       return kCMTTimeMode;     
-    }
+	   return kCMTTimeMode;
+	}
 }
 
 #endif /* FSL_FEATURE_SOC_CMT_COUNT */
 /******************************************************************************
  * EOF
  ******************************************************************************/
-

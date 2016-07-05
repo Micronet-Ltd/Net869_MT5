@@ -50,9 +50,9 @@
  */
 typedef enum _aoi_status
 {
-    kStatus_AOI_Success         = 0U, /*!< Success. */
-    kStatus_AOI_InvalidArgument = 1U, /*!< Invalid argument existed. */
-    kStatus_AOI_Failed          = 2U /*!< Execution failed. */
+	kStatus_AOI_Success         = 0U, /*!< Success. */
+	kStatus_AOI_InvalidArgument = 1U, /*!< Invalid argument existed. */
+	kStatus_AOI_Failed          = 2U /*!< Execution failed. */
 } aoi_status_t;
 
 /*
@@ -62,10 +62,10 @@ typedef enum _aoi_status
 */
 typedef enum _aoi_input_config
 {
-    kAoiConfigLogicZero       = 0x0U, /*!< Forces the input to logical zero. */
-    kAoiConfigInputSignal     = 0x1U, /*!< Passes the input signal. */
-    kAoiConfigInvInputSignal  = 0x2U, /*!< Inverts the input signal. */
-    kAoiConfigLogicOne        = 0x3U  /*!< Forces the input to logical one. */
+	kAoiConfigLogicZero       = 0x0U, /*!< Forces the input to logical zero. */
+	kAoiConfigInputSignal     = 0x1U, /*!< Passes the input signal. */
+	kAoiConfigInvInputSignal  = 0x2U, /*!< Inverts the input signal. */
+	kAoiConfigLogicOne        = 0x3U  /*!< Forces the input to logical one. */
 } aoi_input_config_t;
 
 /*!
@@ -73,10 +73,10 @@ typedef enum _aoi_input_config
  */
 typedef enum _aoi_product_term
 {
-    kAoiTerm0 = 0x0U, /*!< Product term 0 */
-    kAoiTerm1 = 0x1U, /*!< Product term 1 */
-    kAoiTerm2 = 0x2U, /*!< Product term 2 */
-    kAoiTerm3 = 0x3U  /*!< Product term 3 */
+	kAoiTerm0 = 0x0U, /*!< Product term 0 */
+	kAoiTerm1 = 0x1U, /*!< Product term 1 */
+	kAoiTerm2 = 0x2U, /*!< Product term 2 */
+	kAoiTerm3 = 0x3U  /*!< Product term 3 */
 } aoi_product_term_t;
 
 /*!
@@ -84,10 +84,10 @@ typedef enum _aoi_product_term
  */
 typedef enum _aoi_input_signal_index
 {
-    kAoiInputA = 0x0U, /*!< Input configuration A */
-    kAoiInputB = 0x1U, /*!< Input configuration B */
-    kAoiInputC = 0x2U, /*!< Input configuration C */
-    kAoiInputD = 0x3U  /*!< Input configuration D */
+	kAoiInputA = 0x0U, /*!< Input configuration A */
+	kAoiInputB = 0x1U, /*!< Input configuration B */
+	kAoiInputC = 0x2U, /*!< Input configuration C */
+	kAoiInputD = 0x3U  /*!< Input configuration D */
 } aoi_input_signal_index_t;
 
 /*!
@@ -96,10 +96,10 @@ typedef enum _aoi_input_signal_index
  */
 typedef enum _aoi_event_index
 {
-    kAoiEvent0 = 0x0U, /*!< Event 0 index */
-    kAoiEvent1 = 0x1U, /*!< Event 1 index */
-    kAoiEvent2 = 0x2U, /*!< Event 2 index */
-    kAoiEvent3 = 0x3U  /*!< Event 3 index */
+	kAoiEvent0 = 0x0U, /*!< Event 0 index */
+	kAoiEvent1 = 0x1U, /*!< Event 1 index */
+	kAoiEvent2 = 0x2U, /*!< Event 2 index */
+	kAoiEvent3 = 0x3U  /*!< Event 3 index */
 } aoi_event_index_t;
 
 /*******************************************************************************
@@ -145,10 +145,10 @@ void AOI_HAL_Reset(AOI_Type* base, aoi_event_index_t event);
  * @param config Selected input configuration of type aoi_input_config_t.
  */
 void AOI_HAL_SetSignalLogicUnit(AOI_Type* base,
-                                aoi_event_index_t event,
-                                aoi_product_term_t productTerm,
-                                aoi_input_signal_index_t input,
-                                aoi_input_config_t config);
+								aoi_event_index_t event,
+								aoi_product_term_t productTerm,
+								aoi_input_signal_index_t input,
+								aoi_input_config_t config);
 
 /*!
  * @brief Gets the Boolean evaluation associated with the selected input in the selected product
@@ -164,9 +164,9 @@ void AOI_HAL_SetSignalLogicUnit(AOI_Type* base,
  * @return Selected input configuration of type aoi_input_config_t.
  */
 aoi_input_config_t AOI_HAL_GetSignalLogicUnit(AOI_Type* base,
-                                              aoi_event_index_t event,
-                                              aoi_product_term_t productTerm,
-                                              aoi_input_signal_index_t input);
+											  aoi_event_index_t event,
+											  aoi_product_term_t productTerm,
+											  aoi_input_signal_index_t input);
 
 #if defined(__cplusplus)
 }
@@ -181,4 +181,3 @@ aoi_input_config_t AOI_HAL_GetSignalLogicUnit(AOI_Type* base,
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

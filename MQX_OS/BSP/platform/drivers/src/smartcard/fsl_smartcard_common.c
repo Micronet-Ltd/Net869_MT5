@@ -48,7 +48,7 @@ EMVSIM_Type * const g_emvsimBase[EMVSIM_INSTANCE_COUNT] = EMVSIM_BASE_PTRS;
 /* Table to save UART IRQ numbers defined in CMSIS files. */
 IRQn_Type g_emvsimRxTxIrqId[EMVSIM_INSTANCE_COUNT] = EMVSIM_IRQS;
 #else
-    #error "No valid Smart Card Module defined!"
+	#error "No valid Smart Card Module defined!"
 #endif
 
 #if defined(HW_SMARTCARD_INSTANCE_COUNT)
@@ -61,4 +61,3 @@ void * g_smartcardInterfaceStatePtr[HW_SMARTCARD_INSTANCE_COUNT] = { NULL };
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

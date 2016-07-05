@@ -48,38 +48,38 @@ uint32_t g_interruptDisableCount = 0;
  *
  * Function Name : INT_SYS_InstallHandler
  * Description   : Install an interrupt handler routine for a given IRQ number
- * This function will let application to register/replace the interrupt 
+ * This function will let application to register/replace the interrupt
  * handler for specified IRQ number. IRQ number is different with Vector
  * number. IRQ 0 will start from Vector 16 address. Refer to reference
  * manual for details. Also refer to startup_MKxxxx.s file for each chip
  * family to find out the default interrut handler for each device. This
  * function will convert the IRQ number to vector number by adding 16 to
- * it. 
- * 
+ * it.
+ *
  *END**************************************************************************/
 void * INT_SYS_InstallHandler(IRQn_Type irqNumber, void (*handler)(void))
 {
 #if (defined(__CC_ARM))
-    extern uint32_t Image$$VECTOR_RAM$$Base[];
-    #define __VECTOR_RAM Image$$VECTOR_RAM$$Base
+	extern uint32_t Image$$VECTOR_RAM$$Base[];
+	#define __VECTOR_RAM Image$$VECTOR_RAM$$Base
 #else
-    extern uint32_t __VECTOR_RAM[];
+	extern uint32_t __VECTOR_RAM[];
 #endif
 
-    /* Check IRQ number */
-    assert(FSL_FEATURE_INTERRUPT_IRQ_MIN <= irqNumber);
-    assert(irqNumber <= FSL_FEATURE_INTERRUPT_IRQ_MAX);
+	/* Check IRQ number */
+	assert(FSL_FEATURE_INTERRUPT_IRQ_MIN <= irqNumber);
+	assert(irqNumber <= FSL_FEATURE_INTERRUPT_IRQ_MAX);
 
-    /* Check whether there is vector table in RAM */
-    assert(__VECTOR_RAM != 0U);
-    
-    /* Save the former handler pointer */
-    void * retVal = (void *)__VECTOR_RAM[irqNumber + 16];
+	/* Check whether there is vector table in RAM */
+	assert(__VECTOR_RAM != 0U);
 
-    /* Set handler into vector table */
-    __VECTOR_RAM[irqNumber + 16] = (uint32_t)handler;
+	/* Save the former handler pointer */
+	void * retVal = (void *)__VECTOR_RAM[irqNumber + 16];
 
-    return retVal;
+	/* Set handler into vector table */
+	__VECTOR_RAM[irqNumber + 16] = (uint32_t)handler;
+
+	return retVal;
 }
 
 /*FUNCTION**********************************************************************
@@ -87,23 +87,23 @@ void * INT_SYS_InstallHandler(IRQn_Type irqNumber, void (*handler)(void))
  * Function Name : INT_SYS_EnableIRQGlobal
  * Description   : Enable system interrupt
  * This function will enable the global interrupt by calling the core API
- * 
+ *
  *END**************************************************************************/
 void INT_SYS_EnableIRQGlobal(void)
 {
-    /* check and update */
-    if (g_interruptDisableCount > 0)
-    {
-        g_interruptDisableCount--;
+	/* check and update */
+	if (g_interruptDisableCount > 0)
+	{
+		g_interruptDisableCount--;
 
-        if (g_interruptDisableCount > 0)
-        {
-            return;
-        }
+		if (g_interruptDisableCount > 0)
+		{
+			return;
+		}
 
-        /* call core API to enable the global interrupt*/
-        __enable_irq();
-    }
+		/* call core API to enable the global interrupt*/
+		__enable_irq();
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -111,18 +111,17 @@ void INT_SYS_EnableIRQGlobal(void)
  * Function Name : INT_SYS_DisableIRQGlobal
  * Description   : Disnable system interrupt
  * This function will disable the global interrupt by calling the core API
- * 
+ *
  *END**************************************************************************/
 void INT_SYS_DisableIRQGlobal(void)
 {
-    /* call core API to disable the global interrupt*/
-    __disable_irq();
+	/* call core API to disable the global interrupt*/
+	__disable_irq();
 
-    /* update counter*/
-    g_interruptDisableCount++;
+	/* update counter*/
+	g_interruptDisableCount++;
 }
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

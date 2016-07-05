@@ -28,7 +28,7 @@
 
 /*!
  * \brief This function adds a single element to an array. r = a[] + val
- * 
+ *
  * \param[in] s1_ptr Pointer to the array to be added to
  * \param[in] val The value to add the array
  * \param[in] size The size of the array to add in long words
@@ -38,17 +38,17 @@
  */
 uint32_t _psp_add_element_to_array
    (
-      /* [IN] Pointer to the array to be added to */
-      uint32_t *s1_ptr,
+	  /* [IN] Pointer to the array to be added to */
+	  uint32_t *s1_ptr,
 
-      /* [IN] The value to add the array */
-      uint32_t     val,
+	  /* [IN] The value to add the array */
+	  uint32_t     val,
 
-      /* [IN] The size of the array to add in long words */
-      uint32_t     size,
+	  /* [IN] The size of the array to add in long words */
+	  uint32_t     size,
 
-      /* [OUT] Pointer to where the result is to be stored */
-      uint32_t *res_ptr
+	  /* [OUT] Pointer to where the result is to be stored */
+	  uint32_t *res_ptr
 
    )
 { /* Body */
@@ -61,10 +61,10 @@ uint32_t _psp_add_element_to_array
    cy = (y < val);
    res_ptr[0] = y;
    for ( j = 1; j < size; j++) {
-      z = s1_ptr[j];
-      x = z + cy;
-      res_ptr[j] = x;
-      cy = (x < z);
+	  z = s1_ptr[j];
+	  x = z + cy;
+	  res_ptr[j] = x;
+	  cy = (x < z);
    } /* Endfor */
 #else
    x  = s1_ptr[size-1];
@@ -72,10 +72,10 @@ uint32_t _psp_add_element_to_array
    cy = (y < val);
    res_ptr[size-1] = y;
    for ( j = (size-2); j >= 0; j--) {
-      z = s1_ptr[j];
-      x = z + cy;
-      res_ptr[j] = x;
-      cy = (x < z);
+	  z = s1_ptr[j];
+	  x = z + cy;
+	  res_ptr[j] = x;
+	  cy = (x < z);
    } /* Endfor */
 #endif
    return cy;

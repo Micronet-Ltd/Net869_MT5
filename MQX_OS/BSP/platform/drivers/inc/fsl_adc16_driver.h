@@ -53,17 +53,17 @@
  */
 typedef struct Adc16CalibrationParam
 {
-    /* PG. */
-    uint16_t plusSideGainValue; /*!< Plus-side gain value. */
+	/* PG. */
+	uint16_t plusSideGainValue; /*!< Plus-side gain value. */
 
-    /* MG. */
+	/* MG. */
 #if FSL_FEATURE_ADC16_HAS_DIFF_MODE
-    uint16_t minusSideGainValue; /*!< Minus-side gain value. */
+	uint16_t minusSideGainValue; /*!< Minus-side gain value. */
 #endif /* FSL_FEATURE_ADC16_HAS_DIFF_MODE */
 
-    /* Offset value. */
+	/* Offset value. */
 #if FSL_FEATURE_ADC16_HAS_OFFSET_CORRECTION
-    uint16_t offsetValue; /*!< Offset error from correction value. */
+	uint16_t offsetValue; /*!< Offset error from correction value. */
 #endif /* FSL_FEATURE_ADC16_HAS_OFFSET_CORRECTION */
 
 } adc16_calibration_param_t;
@@ -75,12 +75,12 @@ typedef struct Adc16CalibrationParam
  */
 typedef enum _adc16_flag_t
 {
-    kAdcConvActiveFlag = 0U, /*!< Indicates if a conversion or hardware averaging is in progress. */
+	kAdcConvActiveFlag = 0U, /*!< Indicates if a conversion or hardware averaging is in progress. */
 #if FSL_FEATURE_ADC16_HAS_CALIBRATION
-    kAdcCalibrationFailedFlag = 1U, /*!< Indicates if the calibration failed. */
-    kAdcCalibrationActiveFlag = 2U, /*!< Indicates if the calibration is activated.*/
+	kAdcCalibrationFailedFlag = 1U, /*!< Indicates if the calibration failed. */
+	kAdcCalibrationActiveFlag = 2U, /*!< Indicates if the calibration is activated.*/
 #endif /* FSL_FEATURE_ADC16_HAS_CALIBRATION */
-    kAdcChnConvCompleteFlag = 3U /*!< Indicates if the channel group A is ready.*/
+	kAdcChnConvCompleteFlag = 3U /*!< Indicates if the channel group A is ready.*/
 } adc16_flag_t;
 
 /*! @brief Table of base addresses for ADC16 instances. */
@@ -327,4 +327,3 @@ bool ADC16_DRV_GetChnFlag(uint32_t instance, uint32_t chnGroup, adc16_flag_t fla
 /******************************************************************************
  * EOF
  *****************************************************************************/
-

@@ -69,33 +69,33 @@ typedef void (* lpuart_tx_callback_t)(uint32_t instance, void * lpuartState);
  * initialization because the driver does not statically allocate memory.
  */
 typedef struct LpuartState {
-    uint8_t txFifoEntryCount;        /*!< Number of data word entries in transmit FIFO. */
-    const uint8_t * txBuff;          /*!< The buffer of data being sent.*/
-    uint8_t * rxBuff;                /*!< The buffer of received data.*/
-    volatile size_t txSize;          /*!< The remaining number of bytes to be transmitted. */
-    volatile size_t rxSize;          /*!< The remaining number of bytes to be received. */
-    volatile bool isTxBusy;          /*!< True if there is an active transmit.*/
-    volatile bool isRxBusy;          /*!< True if there is an active receive.*/
-    volatile bool isTxBlocking;      /*!< True if transmit is blocking transaction. */
-    volatile bool isRxBlocking;      /*!< True if receive is blocking transaction. */
-    semaphore_t txIrqSync;           /*!< Used to wait for ISR to complete transmit.*/
-    semaphore_t rxIrqSync;           /*!< Used to wait for ISR to complete receive.*/
-    lpuart_rx_callback_t rxCallback; /*!< Callback to invoke after receiving byte.*/
-    void * rxCallbackParam;          /*!< Receive callback parameter pointer.*/
-    lpuart_tx_callback_t txCallback; /*!< Callback to invoke after transmitting byte.*/
-    void * txCallbackParam;          /*!< Transmit callback parameter pointer.*/
+	uint8_t txFifoEntryCount;        /*!< Number of data word entries in transmit FIFO. */
+	const uint8_t * txBuff;          /*!< The buffer of data being sent.*/
+	uint8_t * rxBuff;                /*!< The buffer of received data.*/
+	volatile size_t txSize;          /*!< The remaining number of bytes to be transmitted. */
+	volatile size_t rxSize;          /*!< The remaining number of bytes to be received. */
+	volatile bool isTxBusy;          /*!< True if there is an active transmit.*/
+	volatile bool isRxBusy;          /*!< True if there is an active receive.*/
+	volatile bool isTxBlocking;      /*!< True if transmit is blocking transaction. */
+	volatile bool isRxBlocking;      /*!< True if receive is blocking transaction. */
+	semaphore_t txIrqSync;           /*!< Used to wait for ISR to complete transmit.*/
+	semaphore_t rxIrqSync;           /*!< Used to wait for ISR to complete receive.*/
+	lpuart_rx_callback_t rxCallback; /*!< Callback to invoke after receiving byte.*/
+	void * rxCallbackParam;          /*!< Receive callback parameter pointer.*/
+	lpuart_tx_callback_t txCallback; /*!< Callback to invoke after transmitting byte.*/
+	void * txCallbackParam;          /*!< Transmit callback parameter pointer.*/
 } lpuart_state_t;
 
-/*! @brief LPUART configuration structure 
- * @internal gui name="Configuration" id="Configuration" 
+/*! @brief LPUART configuration structure
+ * @internal gui name="Configuration" id="Configuration"
  */
 typedef struct LpuartUserConfig {
-    clock_lpuart_src_t clockSource;      /*!< LPUART clock source @internal gui name="Clock source" id="ClockSource" */
-    uint32_t baudRate;                   /*!< LPUART baud rate @internal gui name="Baud rate" id="BaudRate" */
-    lpuart_parity_mode_t parityMode;     /*!< parity mode, disabled (default), even, odd @internal gui name="Parity mode" id="Parity" */
-    lpuart_stop_bit_count_t stopBitCount;/*!< number of stop bits, 1 stop bit (default) or 2 stop bits @internal gui name="Stop bits" id="StopBits" */
-    lpuart_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in a
-                                                   char (up to 10-bits in some LPUART instances. @internal gui name="Bits per char" id="DataBits" */
+	clock_lpuart_src_t clockSource;      /*!< LPUART clock source @internal gui name="Clock source" id="ClockSource" */
+	uint32_t baudRate;                   /*!< LPUART baud rate @internal gui name="Baud rate" id="BaudRate" */
+	lpuart_parity_mode_t parityMode;     /*!< parity mode, disabled (default), even, odd @internal gui name="Parity mode" id="Parity" */
+	lpuart_stop_bit_count_t stopBitCount;/*!< number of stop bits, 1 stop bit (default) or 2 stop bits @internal gui name="Stop bits" id="StopBits" */
+	lpuart_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in a
+												   char (up to 10-bits in some LPUART instances. @internal gui name="Bits per char" id="DataBits" */
 } lpuart_user_config_t;
 
 /*******************************************************************************
@@ -123,14 +123,14 @@ extern "C" {
  * @return An error code or kStatus_LPUART_Success
  */
 lpuart_status_t LPUART_DRV_Init(uint32_t instance, lpuart_state_t * lpuartStatePtr,
-                                const lpuart_user_config_t * lpuartUserConfig);
+								const lpuart_user_config_t * lpuartUserConfig);
 
 /*!
  * @brief Shuts down the LPUART by disabling interrupts and transmitter/receiver.
  *
  * This function disables the LPUART interrupts, the transmitter and receiver, and
- * flushes the FIFOs (for modules that support FIFOs). 
- *  
+ * flushes the FIFOs (for modules that support FIFOs).
+ *
  * @param instance  LPUART instance number
  * @return An error code or kStatus_LPUART_Success
  */
@@ -150,10 +150,10 @@ lpuart_status_t LPUART_DRV_Deinit(uint32_t instance);
  * @return Former LPUART receive callback function pointer.
  */
 lpuart_rx_callback_t LPUART_DRV_InstallRxCallback(uint32_t instance,
-                                                lpuart_rx_callback_t function,
-                                                uint8_t * rxBuff,
-                                                void * callbackParam,
-                                                bool alwaysEnableRxIrq);
+												lpuart_rx_callback_t function,
+												uint8_t * rxBuff,
+												void * callbackParam,
+												bool alwaysEnableRxIrq);
 /*!
  * @brief Installs callback function for the LPUART transmit.
  *
@@ -166,10 +166,10 @@ lpuart_rx_callback_t LPUART_DRV_InstallRxCallback(uint32_t instance,
  * @param callbackParam The LPUART transmit callback parameter pointer.
  * @return Former LPUART transmit callback function pointer.
  */
-lpuart_tx_callback_t LPUART_DRV_InstallTxCallback(uint32_t instance, 
-                                                  lpuart_tx_callback_t function, 
-                                                  uint8_t * txBuff, 
-                                                  void * callbackParam);
+lpuart_tx_callback_t LPUART_DRV_InstallTxCallback(uint32_t instance,
+												  lpuart_tx_callback_t function,
+												  uint8_t * txBuff,
+												  void * callbackParam);
 
 /*!
  * @brief Sends data out through the LPUART module using a blocking method.
@@ -183,9 +183,9 @@ lpuart_tx_callback_t LPUART_DRV_InstallTxCallback(uint32_t instance,
  * @return An error code or kStatus_LPUART_Success
  */
 lpuart_status_t LPUART_DRV_SendDataBlocking(uint32_t instance,
-                                            const uint8_t * txBuff,
-                                            uint32_t txSize,
-                                            uint32_t timeout);
+											const uint8_t * txBuff,
+											uint32_t txSize,
+											uint32_t timeout);
 
 /*!
  * @brief Sends data out through the LPUART module using a non-blocking method.
@@ -200,8 +200,8 @@ lpuart_status_t LPUART_DRV_SendDataBlocking(uint32_t instance,
  * @return An error code or kStatus_LPUART_Success
  */
 lpuart_status_t LPUART_DRV_SendData(uint32_t instance,
-                                    const uint8_t * txBuff,
-                                    uint32_t txSize);
+									const uint8_t * txBuff,
+									uint32_t txSize);
 
 /*!
  * @brief Returns whether the previous transmit is complete.
@@ -236,9 +236,9 @@ lpuart_status_t LPUART_DRV_AbortSendingData(uint32_t instance);
  * @return An error code or kStatus_LPUART_Success
  */
 lpuart_status_t LPUART_DRV_ReceiveDataBlocking(uint32_t instance,
-                                               uint8_t * rxBuff,
-                                               uint32_t rxSize,
-                                               uint32_t timeout);
+											   uint8_t * rxBuff,
+											   uint32_t rxSize,
+											   uint32_t timeout);
 
 /*!
  * @brief Gets data from the LPUART module by using a non-blocking method.
@@ -253,8 +253,8 @@ lpuart_status_t LPUART_DRV_ReceiveDataBlocking(uint32_t instance,
  * @return An error code or kStatus_LPUART_Success
  */
 lpuart_status_t LPUART_DRV_ReceiveData(uint32_t instance,
-                                       uint8_t * rxBuff,
-                                       uint32_t rxSize);
+									   uint8_t * rxBuff,
+									   uint32_t rxSize);
 
 /*!
  * @brief Returns whether the previous receive is complete.
@@ -290,4 +290,3 @@ lpuart_status_t LPUART_DRV_AbortReceivingData(uint32_t instance);
 /******************************************************************************/
 /* EOF */
 /******************************************************************************/
-

@@ -101,60 +101,60 @@ typedef struct mutex_attr_struct
 {
 
    /*!
-    * \brief Scheduling protocol.
-    *
-    * A task using this mutex should follow when it owns the mutex.
-    * \n One of the following:
-    * \n - MUTEX_NO_PRIO_INHERIT
-    * \n - MUTEX_PRIO_INHERIT
-    * \n - MUTEX_PRIO_PROTECT
-    * \n - MUTEX_PRIO_INHERIT | MUTEX_PRIO_PROTECT
-    */
-    _mqx_uint SCHED_PROTOCOL;
+	* \brief Scheduling protocol.
+	*
+	* A task using this mutex should follow when it owns the mutex.
+	* \n One of the following:
+	* \n - MUTEX_NO_PRIO_INHERIT
+	* \n - MUTEX_PRIO_INHERIT
+	* \n - MUTEX_PRIO_PROTECT
+	* \n - MUTEX_PRIO_INHERIT | MUTEX_PRIO_PROTECT
+	*/
+	_mqx_uint SCHED_PROTOCOL;
 
    /*!
-    * \brief A validation field for mutexes.
-    *
-    * When a task calls _mutatr_init(), MQX sets the field to MUTEX_VALID and does
-    * not change it. If the field changes, MQX considers the attributes invalid.
-    * \n The function _mutatr_init() sets the field to TRUE; _mutatr_destroy()
-    * sets it to FALSE.
-    */
-    _mqx_uint VALID;
+	* \brief A validation field for mutexes.
+	*
+	* When a task calls _mutatr_init(), MQX sets the field to MUTEX_VALID and does
+	* not change it. If the field changes, MQX considers the attributes invalid.
+	* \n The function _mutatr_init() sets the field to TRUE; _mutatr_destroy()
+	* sets it to FALSE.
+	*/
+	_mqx_uint VALID;
 
    /*!
-    * \brief Priority of the mutex; applicable only if the scheduling protocol is
-    * priority protect.
-    */
-    _mqx_uint PRIORITY_CEILING;
+	* \brief Priority of the mutex; applicable only if the scheduling protocol is
+	* priority protect.
+	*/
+	_mqx_uint PRIORITY_CEILING;
 
    /*!
-    * \brief Number of spins to use if the waiting protocol is limited spin.
-    */
-    _mqx_uint COUNT;
+	* \brief Number of spins to use if the waiting protocol is limited spin.
+	*/
+	_mqx_uint COUNT;
 
    /*!
-    * \brief The waiting protocol a task using this mutex should follow when
-    * a mutex is not available
-    *
-    * One of the following:
-    * \n - MUTEX_SPIN_ONLY
-    * \n If the mutex is already locked, MQX timeslices the task until another
-    * task unlocks the mutex.
-    * \n - MUTEX_LIMITED_SPIN
-    * \n If the mutex is already locked, MQX timeslices the task for a number
-    * of times before the lock attempt fails.
-    * \n If this is set, the spin limit should be set.
-    * \n - MUTEX_QUEUEING
-    * \n If the mutex is already locked, MQX blocks the task until another task
-    * unlocks the mutex, at which time MQX gives the mutex to the first task that
-    * requested it.
-    * \n - MUTEX_PRIORITY_QUEUEING
-    * \n If the mutex is already locked, MQX blocks the task until another task
-    * unlocks the mutex, at which time MQX gives the mutex to the  highest-priority
-    * task that is waiting for it.
-    */
-    _mqx_uint WAIT_PROTOCOL;
+	* \brief The waiting protocol a task using this mutex should follow when
+	* a mutex is not available
+	*
+	* One of the following:
+	* \n - MUTEX_SPIN_ONLY
+	* \n If the mutex is already locked, MQX timeslices the task until another
+	* task unlocks the mutex.
+	* \n - MUTEX_LIMITED_SPIN
+	* \n If the mutex is already locked, MQX timeslices the task for a number
+	* of times before the lock attempt fails.
+	* \n If this is set, the spin limit should be set.
+	* \n - MUTEX_QUEUEING
+	* \n If the mutex is already locked, MQX blocks the task until another task
+	* unlocks the mutex, at which time MQX gives the mutex to the first task that
+	* requested it.
+	* \n - MUTEX_PRIORITY_QUEUEING
+	* \n If the mutex is already locked, MQX blocks the task until another task
+	* unlocks the mutex, at which time MQX gives the mutex to the  highest-priority
+	* task that is waiting for it.
+	*/
+	_mqx_uint WAIT_PROTOCOL;
 
 } MUTEX_ATTR_STRUCT, * MUTEX_ATTR_STRUCT_PTR;
 
@@ -176,62 +176,62 @@ typedef struct mutex_struct
 {
 
    /*! \brief Link pointers to maintain a list of mutexes in the kernel. */
-    QUEUE_ELEMENT_STRUCT  LINK;
+	QUEUE_ELEMENT_STRUCT  LINK;
 
    /*!
-    * \brief Waiting protocol (most significant word) and scheduling protocol
-    * (least significant word) for the mutex.
-    */
-    _mqx_uint             PROTOCOLS;
+	* \brief Waiting protocol (most significant word) and scheduling protocol
+	* (least significant word) for the mutex.
+	*/
+	_mqx_uint             PROTOCOLS;
 
    /*!
-    * \brief A validation field for mutexes.
-    *
-    * When a task calls _mutex_init(), MQX sets the field to MUTEX_VALID and does
-    * not change it. If the field changes, MQX considers the mutex invalid.
-    */
-    _mqx_uint             VALID;
+	* \brief A validation field for mutexes.
+	*
+	* When a task calls _mutex_init(), MQX sets the field to MUTEX_VALID and does
+	* not change it. If the field changes, MQX considers the mutex invalid.
+	*/
+	_mqx_uint             VALID;
 
    /*!
-    * \brief Priority of the mutex.
-    *
-    * If the scheduling protocol is priority protect, MQX grants the mutex only
-    * to tasks with at least this priority.
-    */
-    _mqx_uint             PRIORITY_CEILING;
+	* \brief Priority of the mutex.
+	*
+	* If the scheduling protocol is priority protect, MQX grants the mutex only
+	* to tasks with at least this priority.
+	*/
+	_mqx_uint             PRIORITY_CEILING;
 
    /*!
-    * \brief Maximum number of spins.
-    *
-    * The field is used only if the waiting protocol is limited spin.
-    */
-    _mqx_uint             COUNT;
+	* \brief Maximum number of spins.
+	*
+	* The field is used only if the waiting protocol is limited spin.
+	*/
+	_mqx_uint             COUNT;
 
    /*! \brief TRUE if the mutex is being destroyed. */
    uint16_t               DELAYED_DESTROY;
 
    /*! \brief Most significant bit is set when the mutex is locked. */
-    unsigned char                 LOCK;
+	unsigned char                 LOCK;
 
    /*! \brief An alignment filler. */
-    unsigned char                 FILLER;
+	unsigned char                 FILLER;
 
    /*!
-    * \brief A queue of tasks waiting for the mutex.
-    *
-    * If PRIORITY_INHERITANCE is set, the queue is in priority order; otherwise
-    * it is in FIFO order.
-    */
-    QUEUE_STRUCT          WAITING_TASKS;
+	* \brief A queue of tasks waiting for the mutex.
+	*
+	* If PRIORITY_INHERITANCE is set, the queue is in priority order; otherwise
+	* it is in FIFO order.
+	*/
+	QUEUE_STRUCT          WAITING_TASKS;
 
    /*! \brief Task descriptor of the task that has locked the mutex. */
-    void                 *OWNER_TD;
+	void                 *OWNER_TD;
 
    /*!
-    * \brief Number of times that MQX has boosted the priority of the task that
-    * has locked the mutex.
-    */
-    _mqx_uint             BOOSTED;
+	* \brief Number of times that MQX has boosted the priority of the task that
+	* has locked the mutex.
+	*/
+	_mqx_uint             BOOSTED;
 
 } MUTEX_STRUCT, * MUTEX_STRUCT_PTR;
 

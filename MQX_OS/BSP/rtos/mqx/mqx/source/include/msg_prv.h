@@ -80,20 +80,20 @@
 
 /* How to build a Queue ID from the processor number and queue number */
 #define BUILD_QID(processor_number,queue) \
-    (_queue_id)((((processor_number) & PROC_MASK) << PROC_SHIFT) | \
-    ((queue) & QUEUE_MASK))
+	(_queue_id)((((processor_number) & PROC_MASK) << PROC_SHIFT) | \
+	((queue) & QUEUE_MASK))
 
 /* Extract the processor number from a queue id */
 #define PROC_NUMBER_FROM_QID(qid) \
-    ((qid) >> PROC_SHIFT)
+	((qid) >> PROC_SHIFT)
 
 /* Extract the queue number from a queue id */
 #define QUEUE_FROM_QID(qid) \
-    ((qid) & QUEUE_MASK)
+	((qid) & QUEUE_MASK)
 
 /* Is this a valid queue number */
 #define  VALID_QUEUE(qnum) \
-    ((qnum) > 0)
+	((qnum) > 0)
 
 /*
  * QUEUE MACROS
@@ -103,12 +103,12 @@
  * the address of the internal message structure begins.
  */
 #define  GET_INTERNAL_MESSAGE_PTR(msg_ptr) \
-    (INTERNAL_MESSAGE_STRUCT_PTR)(((unsigned char *)(msg_ptr)) - \
-    FIELD_OFFSET(INTERNAL_MESSAGE_STRUCT,MESSAGE))
+	(INTERNAL_MESSAGE_STRUCT_PTR)(((unsigned char *)(msg_ptr)) - \
+	FIELD_OFFSET(INTERNAL_MESSAGE_STRUCT,MESSAGE))
 
 /* Return the address of the message component structure */
 #define  _GET_MSG_COMPONENT_STRUCT_PTR(kernel_data) \
-    ((MSG_COMPONENT_STRUCT_PTR)(kernel_data->KERNEL_COMPONENTS[KERNEL_MESSAGES]))
+	((MSG_COMPONENT_STRUCT_PTR)(kernel_data->KERNEL_COMPONENTS[KERNEL_MESSAGES]))
 
 /*--------------------------------------------------------------------------*/
 /*                        DATATYPE DEFINITIONS
@@ -119,32 +119,32 @@
 /* MSGPOOL BLOCK STRUCTURE */
 /*!
  * \cond DOXYGEN_PRIVATE
- * 
- * \brief This structure is prepended to the beginning of each block of messages 
+ *
+ * \brief This structure is prepended to the beginning of each block of messages
  * when they are allocated.
- *  
- * When the message pool grows, a new block of messages is created and is linked 
+ *
+ * When the message pool grows, a new block of messages is created and is linked
  * to the previous block of messages.
  */
 typedef struct msgpool_block_struct
 {
-    /*! \brief The address of the next block of messages in this pool. */
-    struct msgpool_block_struct      *NEXT_BLOCK_PTR;
+	/*! \brief The address of the next block of messages in this pool. */
+	struct msgpool_block_struct      *NEXT_BLOCK_PTR;
 
-    /*!
-     * \brief The 'RAW' size of the messages in this block.
-     *      
-     * The message may be larger than requested in order to allow for memory 
-     * alignment constraints.  Also this size includes the internal header for 
-     * the message.
-     */
-    _mqx_uint RAW_MESSAGE_SIZE;
+	/*!
+	 * \brief The 'RAW' size of the messages in this block.
+	 *
+	 * The message may be larger than requested in order to allow for memory
+	 * alignment constraints.  Also this size includes the internal header for
+	 * the message.
+	 */
+	_mqx_uint RAW_MESSAGE_SIZE;
 
-    /*! \brief The number of messages in this block. */
-    _mqx_uint NUM_MESSAGES;
+	/*! \brief The number of messages in this block. */
+	_mqx_uint NUM_MESSAGES;
 
-    /*! \brief The address of the first internal message in the pool. */
-    void   *FIRST_IMSG_PTR;
+	/*! \brief The address of the first internal message in the pool. */
+	void   *FIRST_IMSG_PTR;
 
 }MSGPOOL_BLOCK_STRUCT, * MSGPOOL_BLOCK_STRUCT_PTR;
 /*! \endcond */
@@ -153,48 +153,48 @@ typedef struct msgpool_block_struct
 /* MSGPOOL STRUCT */
 /*!
  * \cond DOXYGEN_PRIVATE
- * 
+ *
  * \brief This structure defines what a message pool looks like.
  *
- * The message pools are linked together via the NEXT_MSGPOOL_PTR field. The 
+ * The message pools are linked together via the NEXT_MSGPOOL_PTR field. The
  * pools are sorted in size, with the smaller pools first.
- * \n The actual messages are allocated in blocks, and linked to the msgpool 
+ * \n The actual messages are allocated in blocks, and linked to the msgpool
  * structure via the MSGPOOL_BLOCK_PTR.
  */
 typedef struct msgpool_struct
 {
-    /*! \brief Pointer to the list of blocks of messages. */
-    struct msgpool_block_struct      *MSGPOOL_BLOCK_PTR;
+	/*! \brief Pointer to the list of blocks of messages. */
+	struct msgpool_block_struct      *MSGPOOL_BLOCK_PTR;
 
-    /*! \brief Link to the next message pool, of larger size. */
-    struct msgpool_struct      *NEXT_MSGPOOL_PTR;
+	/*! \brief Link to the next message pool, of larger size. */
+	struct msgpool_struct      *NEXT_MSGPOOL_PTR;
 
-    /*! \brief Current number of messages on the free list. */
-    uint16_t SIZE;
+	/*! \brief Current number of messages on the free list. */
+	uint16_t SIZE;
 
-    /*! \brief Maximum number of messages on the free list. */
-    uint16_t MAX;
+	/*! \brief Maximum number of messages on the free list. */
+	uint16_t MAX;
 
-    /*! \brief Pointer to a list of FREE messages. */
-    struct internal_message_struct      *MSG_FREE_LIST_PTR;
+	/*! \brief Pointer to a list of FREE messages. */
+	struct internal_message_struct      *MSG_FREE_LIST_PTR;
 
-    /*!
-     * \brief Size of the user message in bytes, as requested when the pool was 
-     * allocated.
-     */
-    uint16_t MESSAGE_SIZE;
+	/*!
+	 * \brief Size of the user message in bytes, as requested when the pool was
+	 * allocated.
+	 */
+	uint16_t MESSAGE_SIZE;
 
-    /*! \brief Should the pool grow if empty. */
-    uint16_t GROW_NUMBER;
+	/*! \brief Should the pool grow if empty. */
+	uint16_t GROW_NUMBER;
 
-    /*! \brief Validation stamp for message pools. */
-    uint16_t VALID;
+	/*! \brief Validation stamp for message pools. */
+	uint16_t VALID;
 
-    /*! \brief The maximum number of messages allowed to be in the pool. */
-    uint16_t GROW_LIMIT;
+	/*! \brief The maximum number of messages allowed to be in the pool. */
+	uint16_t GROW_LIMIT;
 
-    /*! \brief The type of the message pool MSG_POOL or SYSTEM_MSG_POOL. */
-    _mqx_uint MSGPOOL_TYPE;
+	/*! \brief The type of the message pool MSG_POOL or SYSTEM_MSG_POOL. */
+	_mqx_uint MSGPOOL_TYPE;
 
 }MSGPOOL_STRUCT, * MSGPOOL_STRUCT_PTR;
 /*! \endcond */
@@ -203,41 +203,41 @@ typedef struct msgpool_struct
 /* INTERNAL MESSAGE STRUCTURE */
 /*!
  * \cond DOXYGEN_PRIVATE
- *  
+ *
  * \brief This structure is the internal representation of a message.
  *
- * When a message is provided to an application task from the message pool, the 
- * application is provided with the address of the MESSAGE_HEADER_STRUCT found 
+ * When a message is provided to an application task from the message pool, the
+ * application is provided with the address of the MESSAGE_HEADER_STRUCT found
  * at the end of this structure.
  */
 typedef struct internal_message_struct
 {
-    /*! 
-     * \brief Link to the next message in the list. NEXT is used to link the 
-     * message onto a free list.
-     */     
-    struct internal_message_struct      *NEXT;
-    
-    /*! \brief Link to previous message in the list. */ 
-    struct internal_message_struct      *PREV;
+	/*!
+	 * \brief Link to the next message in the list. NEXT is used to link the
+	 * message onto a free list.
+	 */
+	struct internal_message_struct      *NEXT;
 
-    /*! \brief Validation stamp. */
-    uint16_t VALID;
+	/*! \brief Link to previous message in the list. */
+	struct internal_message_struct      *PREV;
 
-    /*! \brief Is this a free message. */
-    bool FREE;
+	/*! \brief Validation stamp. */
+	uint16_t VALID;
 
-    /*! \brief Is this a queued message. */
-    bool QUEUED;
+	/*! \brief Is this a free message. */
+	bool FREE;
 
-    /*! \brief Address of the msgpool that this message is from. */
-    MSGPOOL_STRUCT_PTR MSGPOOL_PTR;
+	/*! \brief Is this a queued message. */
+	bool QUEUED;
 
-    /*! \brief What task owns this message. */
-    TD_STRUCT_PTR TD_PTR;
+	/*! \brief Address of the msgpool that this message is from. */
+	MSGPOOL_STRUCT_PTR MSGPOOL_PTR;
 
-    /*! \brief The actual message whose address is given to the application. */
-    MESSAGE_HEADER_STRUCT MESSAGE;
+	/*! \brief What task owns this message. */
+	TD_STRUCT_PTR TD_PTR;
+
+	/*! \brief The actual message whose address is given to the application. */
+	MESSAGE_HEADER_STRUCT MESSAGE;
 
 }INTERNAL_MESSAGE_STRUCT, * INTERNAL_MESSAGE_STRUCT_PTR;
 /*! \endcond */
@@ -246,42 +246,42 @@ typedef struct internal_message_struct
 /* MSGQ STRUCTURE */
 /*!
  * \cond DOXYGEN_PRIVATE
- *  
+ *
  * \brief This is the structure used to define a message queue.
  */
 typedef struct msgq_struct
 {
-    /*! \brief The first message on the message queue. */
-    INTERNAL_MESSAGE_STRUCT_PTR FIRST_MSG_PTR;
+	/*! \brief The first message on the message queue. */
+	INTERNAL_MESSAGE_STRUCT_PTR FIRST_MSG_PTR;
 
-    /*! \brief The last message on the message queue. */
-    INTERNAL_MESSAGE_STRUCT_PTR LAST_MSG_PTR;
+	/*! \brief The last message on the message queue. */
+	INTERNAL_MESSAGE_STRUCT_PTR LAST_MSG_PTR;
 
-    /*! \brief The current number of messages on the queue. */
-    uint16_t NO_OF_ENTRIES;
+	/*! \brief The current number of messages on the queue. */
+	uint16_t NO_OF_ENTRIES;
 
-    /*! \brief The maximum number of messages that can be placed on this queue. */
-    uint16_t MAX_ENTRIES;
+	/*! \brief The maximum number of messages that can be placed on this queue. */
+	uint16_t MAX_ENTRIES;
 
-    /*! \brief Owner task (task which OPENED) the queue. */
-    TD_STRUCT_PTR TD_PTR;
+	/*! \brief Owner task (task which OPENED) the queue. */
+	TD_STRUCT_PTR TD_PTR;
 
-    /*! \brief Link to next message queue owned by the task. */
-    struct msgq_struct      *NEXT_MSGQ_PTR;
+	/*! \brief Link to next message queue owned by the task. */
+	struct msgq_struct      *NEXT_MSGQ_PTR;
 
-    /*! \brief The queue number of this message queue. */
-    uint16_t QUEUE;
+	/*! \brief The queue number of this message queue. */
+	uint16_t QUEUE;
 
-    /*! \brief The type of this queue: MSG_QUEUE or SYSTEM_MSG_QUEUE. */
-    uint16_t TYPE;
+	/*! \brief The type of this queue: MSG_QUEUE or SYSTEM_MSG_QUEUE. */
+	uint16_t TYPE;
 
-    /*!
-     * \brief A function can be called asynchronously when a message is put onto
-     * the message queue. This is called the notification function.
-     */
-    MSGQ_NOTIFICATION_FPTR NOTIFICATION_FUNCTION;
-    /*! \brief Parameter passed to the notification function. */
-    void   *NOTIFICATION_FUNCTION_PARAMETER;
+	/*!
+	 * \brief A function can be called asynchronously when a message is put onto
+	 * the message queue. This is called the notification function.
+	 */
+	MSGQ_NOTIFICATION_FPTR NOTIFICATION_FUNCTION;
+	/*! \brief Parameter passed to the notification function. */
+	void   *NOTIFICATION_FUNCTION_PARAMETER;
 
 }MSGQ_STRUCT, * MSGQ_STRUCT_PTR;
 /*! \endcond */
@@ -290,47 +290,47 @@ typedef struct msgq_struct
 /* MSG COMPONENT STRUCTURE */
 /*!
  * \cond DOXYGEN_PRIVATE
- *  
+ *
  * \brief This is the base structure used by the message component to store all
  * component specific information.
- *  
+ *
  * It currently overlays the MSGQ_RESERVED fields of the kernel data structure.
  */
 typedef struct msg_component_struct
 {
-    /*! The maximum number of message pools allowed in the system. */
-    _mqx_uint MAX_MSGPOOLS;
+	/*! The maximum number of message pools allowed in the system. */
+	_mqx_uint MAX_MSGPOOLS;
 
-    /*!
-     * \brief The address of an array of msgpool structures allocated at 
-     * component creation time. There is MAX_MSGPOOLS number of these structures 
-     * in the array.
-     */
-    MSGPOOL_STRUCT_PTR MSGPOOLS_PTR;
+	/*!
+	 * \brief The address of an array of msgpool structures allocated at
+	 * component creation time. There is MAX_MSGPOOLS number of these structures
+	 * in the array.
+	 */
+	MSGPOOL_STRUCT_PTR MSGPOOLS_PTR;
 
-    /*! 
-     * \brief Pointer to smallest message pool. The message pools with smallest
-     * messages are found first. 
-     */ 
-    MSGPOOL_STRUCT_PTR SMALLEST_MSGPOOL_PTR;
-    /*! \brief Pointer to largest message pool. */
-    MSGPOOL_STRUCT_PTR LARGEST_MSGPOOL_PTR;
+	/*!
+	 * \brief Pointer to smallest message pool. The message pools with smallest
+	 * messages are found first.
+	 */
+	MSGPOOL_STRUCT_PTR SMALLEST_MSGPOOL_PTR;
+	/*! \brief Pointer to largest message pool. */
+	MSGPOOL_STRUCT_PTR LARGEST_MSGPOOL_PTR;
 
-    /*! \brief The maximum number of message pools created at any one time. */
-    _mqx_uint MAX_MSGPOOLS_EVER;
+	/*! \brief The maximum number of message pools created at any one time. */
+	_mqx_uint MAX_MSGPOOLS_EVER;
 
-    /*! \brief The maximum number of message queues allowed. */
-    _mqx_uint MAX_MSGQS;
+	/*! \brief The maximum number of message queues allowed. */
+	_mqx_uint MAX_MSGQS;
 
-    /*!
-     * \brief The address of an array of message queue structures allocated at 
-     * component creation time. There are MAX_MSGQS number of these structures
-     * in the array.
-     */
-    MSGQ_STRUCT_PTR MSGQS_PTR;
+	/*!
+	 * \brief The address of an array of message queue structures allocated at
+	 * component creation time. There are MAX_MSGQS number of these structures
+	 * in the array.
+	 */
+	MSGQ_STRUCT_PTR MSGQS_PTR;
 
-    /*! \brief A validation stamp for messages. */
-    _mqx_uint VALID;
+	/*! \brief A validation stamp for messages. */
+	_mqx_uint VALID;
 
 }MSG_COMPONENT_STRUCT, * MSG_COMPONENT_STRUCT_PTR;
 /*! \endcond */
@@ -349,7 +349,7 @@ extern "C" {
  */
 extern void _msg_cleanup
 (
-    TD_STRUCT_PTR td_ptr
+	TD_STRUCT_PTR td_ptr
 );
 /*! \endcond */
 
@@ -358,9 +358,9 @@ extern void _msg_cleanup
  */
 extern void _msgq_insert_message_internal
 (
-    register MSGQ_STRUCT_PTR msgq_ptr,
-    register INTERNAL_MESSAGE_STRUCT_PTR imsg_ptr,
-    register bool swapped_msg
+	register MSGQ_STRUCT_PTR msgq_ptr,
+	register INTERNAL_MESSAGE_STRUCT_PTR imsg_ptr,
+	register bool swapped_msg
 );
 /*! \endcond */
 
@@ -369,11 +369,11 @@ extern void _msgq_insert_message_internal
  */
 extern _queue_id _msgq_open_internal
 (
-    _queue_number queue,
-    uint16_t max_queue_size,
-    _mqx_uint queue_type,
-    MSGQ_NOTIFICATION_FPTR notification_function,
-    void *notification_data
+	_queue_number queue,
+	uint16_t max_queue_size,
+	_mqx_uint queue_type,
+	MSGQ_NOTIFICATION_FPTR notification_function,
+	void *notification_data
 );
 /*! \endcond */
 
@@ -382,10 +382,10 @@ extern _queue_id _msgq_open_internal
  */
 extern MESSAGE_HEADER_STRUCT_PTR _msgq_receive_internal
 (
-    _queue_id queue_id,
-    MQX_TICK_STRUCT_PTR timeout_tick_ptr,
-    _mqx_uint mode,
-    _mqx_uint_ptr error_ptr
+	_queue_id queue_id,
+	MQX_TICK_STRUCT_PTR timeout_tick_ptr,
+	_mqx_uint mode,
+	_mqx_uint_ptr error_ptr
 );
 /*! \endcond */
 
@@ -394,7 +394,7 @@ extern MESSAGE_HEADER_STRUCT_PTR _msgq_receive_internal
  */
 extern bool _msgq_send_blocked_internal
 (
-    void *input_msg_ptr
+	void *input_msg_ptr
 );
 /*! \endcond */
 
@@ -403,9 +403,9 @@ extern bool _msgq_send_blocked_internal
  */
 extern bool _msgq_send_internal
 (
-    MESSAGE_HEADER_STRUCT_PTR msg_ptr,
-    bool blocking,
-    _queue_id target_qid
+	MESSAGE_HEADER_STRUCT_PTR msg_ptr,
+	bool blocking,
+	_queue_id target_qid
 );
 /*! \endcond */
 
@@ -414,8 +414,8 @@ extern bool _msgq_send_internal
  */
 extern void _msgpool_add_internal
 (
-    MSGPOOL_STRUCT_PTR msgpool_ptr,
-    uint16_t num_messages
+	MSGPOOL_STRUCT_PTR msgpool_ptr,
+	uint16_t num_messages
 );
 /*! \endcond */
 
@@ -424,11 +424,11 @@ extern void _msgpool_add_internal
  */
 extern _pool_id _msgpool_create_internal
 (
-    uint16_t message_size,
-    uint16_t num_messages,
-    uint16_t grow_number,
-    uint16_t grow_limit,
-    _mqx_uint pool_type
+	uint16_t message_size,
+	uint16_t num_messages,
+	uint16_t grow_number,
+	uint16_t grow_limit,
+	_mqx_uint pool_type
 );
 /*! \endcond */
 

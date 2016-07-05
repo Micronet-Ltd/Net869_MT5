@@ -40,9 +40,9 @@
 /*! @brief Context storage. Data structure for the RNGA internal state.*/
 typedef struct _rnga_context
  {
-    uint32_t            index;
+	uint32_t            index;
 #if RNGA_DRV_RTOS_MULTI_THREAD
-    mutex_t             mutex;
+	mutex_t             mutex;
 #endif
 } rnga_context_t;
 
@@ -63,32 +63,32 @@ static rnga_context_t rnga_context[FSL_FEATURE_SOC_RNG_COUNT];
  *END*************************************************************************/
 rnga_status_t RNGA_DRV_Init(uint32_t instance, const rnga_user_config_t *config)
 {
-    assert(instance < RNG_INSTANCE_COUNT);
-    RNG_Type * base = g_rngaBase[instance];
-    bool mEnable;
- 
-    if (!config)
-    {
-        return kStatus_RNGA_InvalidArgument;
-    }
-    /* Enable the clock gate from clock manager. */
-    mEnable = CLOCK_SYS_GetRngaGateCmd(instance);
-    if (!mEnable)
-    {
-        CLOCK_SYS_EnableRngaClock(instance);
-    }
-    /* Reset the registers for RNGA module to reset state. */
-    RNGA_HAL_Init(base);
-    RNGA_HAL_SetIntMaskCmd(base, config->isIntMasked);
-    RNGA_HAL_SetHighAssuranceCmd(base, config->highAssuranceEnable);
-    RNGA_HAL_Enable(base);
-    #if RNGA_DRV_RTOS_MULTI_THREAD
-    if (OSA_MutexCreate(&rnga_context[instance].mutex) != kStatus_OSA_Success)
-    {
-        return(kStatus_RNGA_OSAError);
-    }
-    #endif
-    return kStatus_RNGA_Success;
+	assert(instance < RNG_INSTANCE_COUNT);
+	RNG_Type * base = g_rngaBase[instance];
+	bool mEnable;
+
+	if (!config)
+	{
+		return kStatus_RNGA_InvalidArgument;
+	}
+	/* Enable the clock gate from clock manager. */
+	mEnable = CLOCK_SYS_GetRngaGateCmd(instance);
+	if (!mEnable)
+	{
+		CLOCK_SYS_EnableRngaClock(instance);
+	}
+	/* Reset the registers for RNGA module to reset state. */
+	RNGA_HAL_Init(base);
+	RNGA_HAL_SetIntMaskCmd(base, config->isIntMasked);
+	RNGA_HAL_SetHighAssuranceCmd(base, config->highAssuranceEnable);
+	RNGA_HAL_Enable(base);
+	#if RNGA_DRV_RTOS_MULTI_THREAD
+	if (OSA_MutexCreate(&rnga_context[instance].mutex) != kStatus_OSA_Success)
+	{
+		return(kStatus_RNGA_OSAError);
+	}
+	#endif
+	return kStatus_RNGA_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -99,14 +99,14 @@ rnga_status_t RNGA_DRV_Init(uint32_t instance, const rnga_user_config_t *config)
  *END*************************************************************************/
 void RNGA_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < RNG_INSTANCE_COUNT);
-    RNG_Type * base = g_rngaBase[instance];
-    
-    RNGA_HAL_Disable(base);
-    CLOCK_SYS_DisableRngaClock(instance);
-    #if RNGA_DRV_RTOS_MULTI_THREAD
-    OSA_MutexDestroy(&rnga_context[instance].mutex);
-    #endif
+	assert(instance < RNG_INSTANCE_COUNT);
+	RNG_Type * base = g_rngaBase[instance];
+
+	RNGA_HAL_Disable(base);
+	CLOCK_SYS_DisableRngaClock(instance);
+	#if RNGA_DRV_RTOS_MULTI_THREAD
+	OSA_MutexDestroy(&rnga_context[instance].mutex);
+	#endif
 }
 
 /*FUNCTION*********************************************************************
@@ -117,12 +117,12 @@ void RNGA_DRV_Deinit(uint32_t instance)
  *END*************************************************************************/
 void RNGA_DRV_IRQHandler(uint32_t instance)
 {
-    assert(instance < RNG_INSTANCE_COUNT);
-    RNG_Type * base = g_rngaBase[instance];
+	assert(instance < RNG_INSTANCE_COUNT);
+	RNG_Type * base = g_rngaBase[instance];
 
-    RNGA_HAL_ClearIntFlag(base, true);
-    RNGA_HAL_GetOutputRegUnderflowCmd(base);
-    RNGA_HAL_GetLastReadStatusCmd(base);
+	RNGA_HAL_ClearIntFlag(base, true);
+	RNGA_HAL_GetOutputRegUnderflowCmd(base);
+	RNGA_HAL_GetLastReadStatusCmd(base);
 }
 
 /*FUNCTION*********************************************************************
@@ -133,51 +133,50 @@ void RNGA_DRV_IRQHandler(uint32_t instance)
  *END*************************************************************************/
 rnga_status_t RNGA_DRV_GetRandomData(uint32_t instance, void *data, uint32_t data_size)
 {
-    rnga_status_t status = kStatus_RNGA_Success;
-    uint8_t *dst = (uint8_t *) data;
-    int i;
-    assert(instance < RNG_INSTANCE_COUNT);
+	rnga_status_t status = kStatus_RNGA_Success;
+	uint8_t *dst = (uint8_t *) data;
+	int i;
+	assert(instance < RNG_INSTANCE_COUNT);
 
-    #if RNGA_DRV_RTOS_MULTI_THREAD
-    OSA_MutexLock(&rnga_context[instance].mutex, OSA_WAIT_FOREVER);
-    #endif
-    /* Fill user specified memory with random data */
-    for (i = 0; i < data_size; i++)
-    {
-        bool failed = false;
-        uint8_t tmp = 0;
-        int j;
+	#if RNGA_DRV_RTOS_MULTI_THREAD
+	OSA_MutexLock(&rnga_context[instance].mutex, OSA_WAIT_FOREVER);
+	#endif
+	/* Fill user specified memory with random data */
+	for (i = 0; i < data_size; i++)
+	{
+		bool failed = false;
+		uint8_t tmp = 0;
+		int j;
 
-        /* Get 8bit long random number from LSBs of 8 distinct random numbers */
-        for (j = 0; j < 8; j++)
-        {
-            uint32_t e;
-            RNG_Type *base = g_rngaBase[instance];
+		/* Get 8bit long random number from LSBs of 8 distinct random numbers */
+		for (j = 0; j < 8; j++)
+		{
+			uint32_t e;
+			RNG_Type *base = g_rngaBase[instance];
 
-            status = RNGA_HAL_GetRandomData(base, &e);
-            if (status != kStatus_RNGA_Success)
-            {
-                failed = true;
-                break;
-            }
-            /* Add one bit of entropy to number */
-            tmp |= (e & 1);
-            tmp <<= 1;
-        }
-        if (failed)
-        {
-            break;
-        }
-        dst[i] = tmp;
-    }
-    #if RNGA_DRV_RTOS_MULTI_THREAD
-    OSA_MutexUnlock(&rnga_context[instance].mutex);
-    #endif
-    return(status);
+			status = RNGA_HAL_GetRandomData(base, &e);
+			if (status != kStatus_RNGA_Success)
+			{
+				failed = true;
+				break;
+			}
+			/* Add one bit of entropy to number */
+			tmp |= (e & 1);
+			tmp <<= 1;
+		}
+		if (failed)
+		{
+			break;
+		}
+		dst[i] = tmp;
+	}
+	#if RNGA_DRV_RTOS_MULTI_THREAD
+	OSA_MutexUnlock(&rnga_context[instance].mutex);
+	#endif
+	return(status);
 }
 #endif
 
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

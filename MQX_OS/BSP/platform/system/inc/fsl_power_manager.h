@@ -76,34 +76,34 @@
  */
 typedef enum _power_manager_modes {
 #if FSL_FEATURE_SMC_HAS_HIGH_SPEED_RUN_MODE
-    kPowerManagerHsrun,            /*!< High-speed run mode. All Kinetis chips. @internal gui name="High speed run mode" */
+	kPowerManagerHsrun,            /*!< High-speed run mode. All Kinetis chips. @internal gui name="High speed run mode" */
 #endif
-    kPowerManagerRun,              /*!< Run mode. All Kinetis chips. @internal gui name="Run mode" */
-    kPowerManagerVlpr,             /*!< Very low power run mode. All Kinetis chips. @internal gui name="Very low power run mode" */
-    kPowerManagerWait,             /*!< Wait mode. All Kinetis chips. @internal gui name="Wait mode" */
-    kPowerManagerVlpw,             /*!< Very low power wait mode. All Kinetis chips. @internal gui name="Very low power wait mode" */
-    kPowerManagerStop,             /*!< Stop mode. All Kinetis chips. @internal gui name="Stop mode" */
-    kPowerManagerVlps,             /*!< Very low power stop mode. All Kinetis chips. @internal gui name="Very low power stop mode" */
+	kPowerManagerRun,              /*!< Run mode. All Kinetis chips. @internal gui name="Run mode" */
+	kPowerManagerVlpr,             /*!< Very low power run mode. All Kinetis chips. @internal gui name="Very low power run mode" */
+	kPowerManagerWait,             /*!< Wait mode. All Kinetis chips. @internal gui name="Wait mode" */
+	kPowerManagerVlpw,             /*!< Very low power wait mode. All Kinetis chips. @internal gui name="Very low power wait mode" */
+	kPowerManagerStop,             /*!< Stop mode. All Kinetis chips. @internal gui name="Stop mode" */
+	kPowerManagerVlps,             /*!< Very low power stop mode. All Kinetis chips. @internal gui name="Very low power stop mode" */
 #if FSL_FEATURE_SMC_HAS_PSTOPO
-    kPowerManagerPstop1,           /*!< Partial stop 1 mode. Chip-specific. @internal gui name="Partial stop 1 mode" */
-    kPowerManagerPstop2,           /*!< Partial stop 2 mode. Chip-specific. @internal gui name="Partial stop 2 mode" */
+	kPowerManagerPstop1,           /*!< Partial stop 1 mode. Chip-specific. @internal gui name="Partial stop 1 mode" */
+	kPowerManagerPstop2,           /*!< Partial stop 2 mode. Chip-specific. @internal gui name="Partial stop 2 mode" */
 #endif
-#if FSL_FEATURE_SMC_HAS_LOW_LEAKAGE_STOP_MODE    
-    kPowerManagerLls,              /*!< Low leakage stop mode. All Kinetis chips. @internal gui name="Low leakage stop mode" */
-#endif    
+#if FSL_FEATURE_SMC_HAS_LOW_LEAKAGE_STOP_MODE
+	kPowerManagerLls,              /*!< Low leakage stop mode. All Kinetis chips. @internal gui name="Low leakage stop mode" */
+#endif
 #if FSL_FEATURE_SMC_HAS_LLS_SUBMODE
-    kPowerManagerLls2,             /*!< Low leakage stop 2 mode. Chip-specific. @internal gui name="Low leakage stop 2 mode" */
-    kPowerManagerLls3,             /*!< Low leakage stop 3 mode. Chip-specific. @internal gui name="Low leakage stop 3 mode" */
+	kPowerManagerLls2,             /*!< Low leakage stop 2 mode. Chip-specific. @internal gui name="Low leakage stop 2 mode" */
+	kPowerManagerLls3,             /*!< Low leakage stop 3 mode. Chip-specific. @internal gui name="Low leakage stop 3 mode" */
 #endif
 #if FSL_FEATURE_SMC_HAS_STOP_SUBMODE0
-    kPowerManagerVlls0,            /*!< Very low leakage stop 0 mode. All Kinetis chips. @internal gui name="Very low leakage stop 0 mode" */
-#endif    
-    kPowerManagerVlls1,            /*!< Very low leakage stop 1 mode. All Kinetis chips. @internal gui name="Very low leakage stop 1 mode" */
-#if FSL_FEATURE_SMC_HAS_STOP_SUBMODE2
-    kPowerManagerVlls2,            /*!< Very low leakage stop 2 mode. All Kinetis chips. @internal gui name="Very low leakage stop 2 mode" */
+	kPowerManagerVlls0,            /*!< Very low leakage stop 0 mode. All Kinetis chips. @internal gui name="Very low leakage stop 0 mode" */
 #endif
-    kPowerManagerVlls3,            /*!< Very low leakage stop 3 mode. All Kinetis chips. @internal gui name="Very low leakage stop 3 mode" */
-    kPowerManagerMax
+	kPowerManagerVlls1,            /*!< Very low leakage stop 1 mode. All Kinetis chips. @internal gui name="Very low leakage stop 1 mode" */
+#if FSL_FEATURE_SMC_HAS_STOP_SUBMODE2
+	kPowerManagerVlls2,            /*!< Very low leakage stop 2 mode. All Kinetis chips. @internal gui name="Very low leakage stop 2 mode" */
+#endif
+	kPowerManagerVlls3,            /*!< Very low leakage stop 3 mode. All Kinetis chips. @internal gui name="Very low leakage stop 3 mode" */
+	kPowerManagerMax
 } power_manager_modes_t;
 
 /*!
@@ -112,13 +112,13 @@ typedef enum _power_manager_modes {
  * Used as return value of Power Manager functions.
  */
 typedef enum _power_manager_error_code {
-    kPowerManagerSuccess,                  /*!< Success */
-    kPowerManagerError,                    /*!< Some error occurs. */
-    kPowerManagerErrorOutOfRange,          /*!< Configuration index out of range. */
-    kPowerManagerErrorSwitch,              /*!< Error occurs during mode switch. */
-    kPowerManagerErrorNotificationBefore,  /*!< Error occurs during send "BEFORE" notification. */
-    kPowerManagerErrorNotificationAfter,   /*!< Error occurs during send "AFTER" notification.  */
-    kPowerManagerErrorClock                /*!< Error occurs due to wrong clock setup for power modes */
+	kPowerManagerSuccess,                  /*!< Success */
+	kPowerManagerError,                    /*!< Some error occurs. */
+	kPowerManagerErrorOutOfRange,          /*!< Configuration index out of range. */
+	kPowerManagerErrorSwitch,              /*!< Error occurs during mode switch. */
+	kPowerManagerErrorNotificationBefore,  /*!< Error occurs during send "BEFORE" notification. */
+	kPowerManagerErrorNotificationAfter,   /*!< Error occurs during send "AFTER" notification.  */
+	kPowerManagerErrorClock                /*!< Error occurs due to wrong clock setup for power modes */
 } power_manager_error_code_t;
 
 /*!
@@ -132,23 +132,23 @@ typedef enum _power_manager_error_code {
  * See also POWER_SYS_SetMode() description.
  */
 typedef enum _power_manager_policy {
-    kPowerManagerPolicyAgreement,      /*!< POWER_SYS_SetMode() method is exited when any of the callbacks returns error code. @internal gui name="Agreement policy" */ 
-    kPowerManagerPolicyForcible        /*!< Power mode is changed regardless of the results. @internal gui name="Forcible policy" */
+	kPowerManagerPolicyAgreement,      /*!< POWER_SYS_SetMode() method is exited when any of the callbacks returns error code. @internal gui name="Agreement policy" */
+	kPowerManagerPolicyForcible        /*!< Power mode is changed regardless of the results. @internal gui name="Forcible policy" */
 } power_manager_policy_t;
 
 /*! @brief The Power Manager notification type. Used to notify registered callbacks */
 typedef enum _power_manager_notify
 {
-    kPowerManagerNotifyRecover = 0x00U,  /*!< Notify IP to recover to previous work state.      */
-    kPowerManagerNotifyBefore  = 0x01U,  /*!< Notify IP that system  changes power setting.  */
-    kPowerManagerNotifyAfter   = 0x02U,  /*!< Notify IP that have changed to new power setting. */
+	kPowerManagerNotifyRecover = 0x00U,  /*!< Notify IP to recover to previous work state.      */
+	kPowerManagerNotifyBefore  = 0x01U,  /*!< Notify IP that system  changes power setting.  */
+	kPowerManagerNotifyAfter   = 0x02U,  /*!< Notify IP that have changed to new power setting. */
 } power_manager_notify_t;
 
 /*!
  * @brief The callback type, indicates what kinds of notification this callback handles.
  *
- * Used in the callback configuration structures (power_manager_callback_user_config_t) 
- * to specify when the registered callback is called during power mode change initiated by 
+ * Used in the callback configuration structures (power_manager_callback_user_config_t)
+ * to specify when the registered callback is called during power mode change initiated by
  * POWER_SYS_SetMode().
  * Callback can be invoked in following situations:
  *  - before the power mode change (Callback return value can affect POWER_SYS_SetMode()
@@ -158,16 +158,16 @@ typedef enum _power_manager_notify
  *  - after unsuccessful attempt to switch power mode
  */
 typedef enum _power_manager_callback_type {
-    kPowerManagerCallbackBefore      = 0x01U, /*!< Before callback. @internal gui name="Before" */
-    kPowerManagerCallbackAfter       = 0x02U, /*!< After callback. @internal gui name="After" */
-    kPowerManagerCallbackBeforeAfter = 0x03U, /*!< Before-After callback. @internal gui name="Before-After" */
+	kPowerManagerCallbackBefore      = 0x01U, /*!< Before callback. @internal gui name="Before" */
+	kPowerManagerCallbackAfter       = 0x02U, /*!< After callback. @internal gui name="After" */
+	kPowerManagerCallbackBeforeAfter = 0x03U, /*!< Before-After callback. @internal gui name="Before-After" */
 } power_manager_callback_type_t;
 
 /*!
  * @brief Callback-specific data.
  *
  * Reference to data of this type is passed during callback registration. The reference is
- * part of the power_manager_callback_user_config_t structure and is passed to the callback during 
+ * part of the power_manager_callback_user_config_t structure and is passed to the callback during
  * power mode change notifications.
  */
 typedef void power_manager_callback_data_t;
@@ -216,39 +216,39 @@ typedef void power_manager_callback_data_t;
  * @internal gui name="Power manager configuration" id="power_managerCfg"
  */
 typedef struct _power_manager_mode_user_config {
-    power_manager_modes_t mode;  /*!< Power mode. @internal gui name="Power mode" id="mode" */
-    bool sleepOnExitValue;       /*!< true - Sleep or deep sleep after interrupt service finished, false - core stays woken-up. @internal gui name="Sleep on Exit" id="sleepOnExitValue" */
+	power_manager_modes_t mode;  /*!< Power mode. @internal gui name="Power mode" id="mode" */
+	bool sleepOnExitValue;       /*!< true - Sleep or deep sleep after interrupt service finished, false - core stays woken-up. @internal gui name="Sleep on Exit" id="sleepOnExitValue" */
 #if FSL_FEATURE_SMC_HAS_LPWUI
-    smc_lpwui_option_t lowPowerWakeUpOnInterruptValue;  /*!< true - Wake-up on interrupt from Very low power run, Very low power wait or Very low power stop mode, false - Wake-up on interrupt disabled for these modes. @internal gui name="Low power Wake-Up on interrupt" id="lowPowerWakeUpOnInterruptValue" */
+	smc_lpwui_option_t lowPowerWakeUpOnInterruptValue;  /*!< true - Wake-up on interrupt from Very low power run, Very low power wait or Very low power stop mode, false - Wake-up on interrupt disabled for these modes. @internal gui name="Low power Wake-Up on interrupt" id="lowPowerWakeUpOnInterruptValue" */
 #endif
 #if FSL_FEATURE_SMC_HAS_PORPO
-    smc_por_option_t powerOnResetDetectionValue;  /*!< true - Power on reset detection circuit is enabled in Very low leakage stop 0 mode, false - Power on reset detection circuit is disabled. @internal gui name="Power on reset detection in VLLS0" id="powerOnResetDetectionValue" */
+	smc_por_option_t powerOnResetDetectionValue;  /*!< true - Power on reset detection circuit is enabled in Very low leakage stop 0 mode, false - Power on reset detection circuit is disabled. @internal gui name="Power on reset detection in VLLS0" id="powerOnResetDetectionValue" */
 #endif
 #if FSL_FEATURE_SMC_HAS_RAM2_POWER_OPTION
-    smc_ram2_option_t RAM2PartitionValue;  /*!< true - RAM2 partition content is retained through Very low leakage stop 2 mode, false - RAM2 partition power is disabled and memory content lost. @internal gui name="RAM2 partition" id="RAM2PartitionValue" */
+	smc_ram2_option_t RAM2PartitionValue;  /*!< true - RAM2 partition content is retained through Very low leakage stop 2 mode, false - RAM2 partition power is disabled and memory content lost. @internal gui name="RAM2 partition" id="RAM2PartitionValue" */
 #endif
 #if FSL_FEATURE_SMC_HAS_PSTOPO
-    smc_pstop_option_t  partialStopOptionValue;  /*!< Defines Normal stop mode, or Partial Stop with both system and bus clocks disabled, or Partial Stop with system clock disabled and bus clock enabled. @internal gui name="Partial stop option" id="partialStopOptionValue" */
+	smc_pstop_option_t  partialStopOptionValue;  /*!< Defines Normal stop mode, or Partial Stop with both system and bus clocks disabled, or Partial Stop with system clock disabled and bus clock enabled. @internal gui name="Partial stop option" id="partialStopOptionValue" */
 #endif
 #if FSL_FEATURE_SMC_HAS_LPOPO
-    smc_lpo_option_t lowPowerOscillatorValue;  /*!< true - The 1 kHz Low power oscillator is enabled in any Low leakage or Very low leakage stop mode - false, oscillator is disabled in these modes. @internal gui name="Low power oscillator" id="lowPowerOscillatorValue" */
+	smc_lpo_option_t lowPowerOscillatorValue;  /*!< true - The 1 kHz Low power oscillator is enabled in any Low leakage or Very low leakage stop mode - false, oscillator is disabled in these modes. @internal gui name="Low power oscillator" id="lowPowerOscillatorValue" */
 #endif
 } power_manager_user_config_t;
 
 /*! @brief Power notification structure passed to the registered callback function. */
 typedef struct _power_notify_struct
 {
-    uint8_t targetPowerConfigIndex;    /*!< Target power configuration index. */
-    power_manager_user_config_t const *targetPowerConfigPtr; /*!< Pointer to target power configuration */
-    power_manager_policy_t policy;     /*!< Clock transition policy.          */
-    power_manager_notify_t notifyType; /*!< Clock notification type.          */
+	uint8_t targetPowerConfigIndex;    /*!< Target power configuration index. */
+	power_manager_user_config_t const *targetPowerConfigPtr; /*!< Pointer to target power configuration */
+	power_manager_policy_t policy;     /*!< Clock transition policy.          */
+	power_manager_notify_t notifyType; /*!< Clock notification type.          */
 } power_manager_notify_struct_t;
 
 /*!
  * @brief Callback prototype.
  *
  * Declaration of callback. It is common for registered callbacks.
- * Reference to function of this type is part of power_manager_callback_user_config_t callback 
+ * Reference to function of this type is part of power_manager_callback_user_config_t callback
  * configuration structure.
  * Depending on callback type, function of this prototype is called during the power mode change
  * (see POWER_SYS_SetMode()) before the mode change, after it or in both cases to notify about
@@ -259,14 +259,14 @@ typedef struct _power_notify_struct
  * When notified before the mode change, depending on the power mode change policy (see
  * power_manager_policy_t) the callback may deny the mode change by returning any error code different
  * from kPowerManagerSuccess (see POWER_SYS_SetMode()).
- * @param notify Notification structure. 
+ * @param notify Notification structure.
  * @param dataPtr Callback data. Refers to the data passed during callback registration. Intended to
  *  pass any driver or application data such as internal state information.
  * @return An error code or kPowerManagerSuccess.
  */
 typedef power_manager_error_code_t (* power_manager_callback_t)(
-    power_manager_notify_struct_t * notify,
-    power_manager_callback_data_t * dataPtr
+	power_manager_notify_struct_t * notify,
+	power_manager_callback_data_t * dataPtr
 );
 
 /*!
@@ -282,9 +282,9 @@ typedef power_manager_error_code_t (* power_manager_callback_t)(
  *  callbackData - pointer to the data passed to the callback.
  */
 typedef struct _power_manager_callback_user_config {
-    power_manager_callback_t callback;
-    power_manager_callback_type_t callbackType;
-    power_manager_callback_data_t * callbackData;
+	power_manager_callback_t callback;
+	power_manager_callback_type_t callbackType;
+	power_manager_callback_data_t * callbackData;
 } power_manager_callback_user_config_t;
 
 /*!
@@ -296,12 +296,12 @@ typedef struct _power_manager_callback_user_config {
  * This structure is statically allocated and initialized after POWER_SYS_Init() call.
  */
 typedef struct _power_manager_state {
-    power_manager_user_config_t const ** configs;   /*!< Pointer to power configure table.*/
-    uint8_t configsNumber;                         /*!< Number of power configurations */
-    power_manager_callback_user_config_t ** staticCallbacks; /*!< Pointer to callback table. */
-    uint8_t staticCallbacksNumber;                 /*!< Maximum number of callback configurations */
-    uint8_t errorCallbackIndex;                    /*!< Index of callback returns error. */
-    uint8_t currentConfig;                         /*!< Index of current configuration.  */  
+	power_manager_user_config_t const ** configs;   /*!< Pointer to power configure table.*/
+	uint8_t configsNumber;                         /*!< Number of power configurations */
+	power_manager_callback_user_config_t ** staticCallbacks; /*!< Pointer to callback table. */
+	uint8_t staticCallbacksNumber;                 /*!< Maximum number of callback configurations */
+	uint8_t errorCallbackIndex;                    /*!< Index of callback returns error. */
+	uint8_t currentConfig;                         /*!< Index of current configuration.  */
 } power_manager_state_t;
 
 /*******************************************************************************
@@ -334,46 +334,46 @@ extern "C" {
  * doesn't support any optional power options described in the power_manager_user_config_t)
  * :
  * @code
-    const power_manager_user_config_t waitConfig = {
-        kPowerManagerVlpw,
-        true,
-        true,
-    };
+	const power_manager_user_config_t waitConfig = {
+		kPowerManagerVlpw,
+		true,
+		true,
+	};
 
-    const power_manager_callback_user_config_t callbackCfg0 = {
-        callback0,
-        kPowerManagerCallbackBefore,
-        &callback_data0
-    };
+	const power_manager_callback_user_config_t callbackCfg0 = {
+		callback0,
+		kPowerManagerCallbackBefore,
+		&callback_data0
+	};
 
-    const power_manager_callback_user_config_t callbackCfg1 = {
-        callback1,
-        kPowerManagerCallbackAfter,
-        &callback_data1
-    };
+	const power_manager_callback_user_config_t callbackCfg1 = {
+		callback1,
+		kPowerManagerCallbackAfter,
+		&callback_data1
+	};
 
-    const power_manager_callback_user_config_t callbackCfg2 = {
-        callback2,
-        kPowerManagerCallbackBeforeAfter,
-        &callback_data2
-    };
+	const power_manager_callback_user_config_t callbackCfg2 = {
+		callback2,
+		kPowerManagerCallbackBeforeAfter,
+		&callback_data2
+	};
 
-    const power_manager_callback_user_config_t * const callbacks[] = {&callbackCfg0, &callbackCfg1, &callbackCfg2};
+	const power_manager_callback_user_config_t * const callbacks[] = {&callbackCfg0, &callbackCfg1, &callbackCfg2};
 
-    void main(void)
-    {
-        power_manager_user_config_t idleConfig;
-        power_manager_user_config_t *powerConfigs[] = {&idleConfig, &waitConfig};
+	void main(void)
+	{
+		power_manager_user_config_t idleConfig;
+		power_manager_user_config_t *powerConfigs[] = {&idleConfig, &waitConfig};
 
-        idleConfig.mode = kPowerManagerVlps;
-        idleConfig.sleepOnExitOption = true;
-        idleConfig.sleepOnExitValue = false;
+		idleConfig.mode = kPowerManagerVlps;
+		idleConfig.sleepOnExitOption = true;
+		idleConfig.sleepOnExitValue = false;
 
-        POWER_SYS_Init(&powerConfigs, 2U, &callbacks, 3U);
+		POWER_SYS_Init(&powerConfigs, 2U, &callbacks, 3U);
 
-        POWER_SYS_SetMode(0U, kPowerManagerPolicyAgreement);
+		POWER_SYS_SetMode(0U, kPowerManagerPolicyAgreement);
 
-    }
+	}
  * @endcode
  *
  * @param powerConfigsPtr A pointer to an array with references to all power
@@ -387,9 +387,9 @@ extern "C" {
  * @return An error code or kPowerManagerSuccess.
  */
 power_manager_error_code_t POWER_SYS_Init(power_manager_user_config_t const ** powerConfigsPtr,
-                                          uint8_t configsNumber,
-                                          power_manager_callback_user_config_t ** callbacksPtr,
-                                          uint8_t callbacksNumber);
+										  uint8_t configsNumber,
+										  power_manager_callback_user_config_t ** callbacksPtr,
+										  uint8_t callbacksNumber);
 
 /*!
  * @brief This function deinitializes the Power Manager.
@@ -477,8 +477,8 @@ power_manager_modes_t POWER_SYS_GetCurrentMode(void);
  * @brief This function returns the last failed notification callback.
  *
  * This function returns index of the last callback that failed during the power mode switch while
- * the last POWER_SYS_SetMode() was called. If the last POWER_SYS_SetMode() call ended successfully 
- * value equal to callbacks number is returned. Returned value represents index in the array of 
+ * the last POWER_SYS_SetMode() was called. If the last POWER_SYS_SetMode() call ended successfully
+ * value equal to callbacks number is returned. Returned value represents index in the array of
  * static call-backs.
  *
  * @return Callback index of last failed callback or value equal to callbacks count.
@@ -488,9 +488,9 @@ uint8_t POWER_SYS_GetErrorCallbackIndex(void);
 /*!
  * @brief This function returns the last failed notification callback configuration structure.
  *
- * This function returns pointer to configuration structure of the last callback that failed during 
- * the power mode switch while the last POWER_SYS_SetMode() was called. 
- * If the last POWER_SYS_SetMode() call ended successfully value NULL is returned. 
+ * This function returns pointer to configuration structure of the last callback that failed during
+ * the power mode switch while the last POWER_SYS_SetMode() was called.
+ * If the last POWER_SYS_SetMode() call ended successfully value NULL is returned.
  *
  * @return Pointer to the callback configuration which returns error.
  */
@@ -519,12 +519,12 @@ bool POWER_SYS_GetLowLeakageWakeupResetStatus(void);
 /*!
  * @brief Gets the acknowledge isolation flag.
  *
- * This function is used to check certain peripherals and the I/O pads are in a latched state 
+ * This function is used to check certain peripherals and the I/O pads are in a latched state
  * as a result of having been in a VLLS mode.
  *
- * After recovery from VLLS, the LLWU continues to detect wake-up events until the user has 
+ * After recovery from VLLS, the LLWU continues to detect wake-up events until the user has
  * acknowledged the wake-up via POWER_SYS_ClearAckIsolation()
- * 
+ *
  * @return Returns true if ACK isolation is set.
  */
 bool POWER_SYS_GetAckIsolation(void);
@@ -532,12 +532,12 @@ bool POWER_SYS_GetAckIsolation(void);
 /*!
  * @brief Clears the acknowledge isolation flag.
  *
- * This function  clears the ACK Isolation flag. Clearing releases the I/O pads and certain 
+ * This function  clears the ACK Isolation flag. Clearing releases the I/O pads and certain
  * peripherals to their normal run mode state.
  *
- * After recovery from VLLS, the LLWU continues to detect wake-up events until the user has 
+ * After recovery from VLLS, the LLWU continues to detect wake-up events until the user has
  * acknowledged the wake-up via POWER_SYS_ClearAckIsolation()
- * 
+ *
  */
 void POWER_SYS_ClearAckIsolation(void);
 
@@ -549,15 +549,15 @@ void POWER_SYS_ClearAckIsolation(void);
  * recovery from LLS, the LLWU is immediately disabled. After recovery from VLLS, the
  * LLWU continues to detect wake-up events until the user has acknowledged the wake-up
  * via POWER_SYS_ClearAckIsolation().
- * 
+ *
  * LLS modes:
  * The wake-up events due to external wake-up inputs and internal module wake-up inputs
  * result in an interrupt flow when exiting LLS. A reset event due to RESET pin assertion
  * results in a reset flow when exiting LLS.
- * 
+ *
  * VLLS modes:
  * All wakeup and reset events result in VLLS exit via a reset flow.
- * 
+ *
  * The LLWU is not active in all non-low leakage modes where detection and control logic
  * are in a static state. The LLWU registers are accessible in non-low leakage modes and are
  * available for configuring and reading status when bus transactions are possible.
@@ -567,12 +567,12 @@ void POWER_SYS_ClearAckIsolation(void);
 /*!
  * @brief This function allows to set wake up module in low leakage wake up unit (LLWU).
  * Each of the available wake-up sources can be individually enabled or disabled.
- * 
+ *
  * The LLWU is not active in all non-low leakage modes where detection and control logic
  * are in a static state. The LLWU registers are accessible in non-low leakage modes and are
  * available for configuring and reading status when bus transactions are possible.
  *
- * After recovery from VLLS, the LLWU continues to detect wake-up events until the user has 
+ * After recovery from VLLS, the LLWU continues to detect wake-up events until the user has
  * acknowledged the wake-up via POWER_SYS_ClearAckIsolation()
  *
  * @param module Wake up module name which is set.
@@ -582,11 +582,11 @@ void POWER_SYS_SetWakeupModule(power_wakeup_module_t module,bool enable);
 
 /*!
  * @brief This function allows to get wake up module flag in LLWU.
- * 
+ *
  * For internal peripherals that are capable of running in a low-leakage power mode, such as
  * a real time clock module or CMP module, the flag from the associated peripheral is
  * accessible and returned by this function.
- * 
+ *
  * The flag  needs to be cleared in the peripheral instead of clearing in LLWU.
  *
  * @param module Wake up module name.
@@ -605,9 +605,9 @@ bool POWER_SYS_GetWakeupModuleFlag(power_wakeup_module_t module);
  * are in a static state. The LLWU registers are accessible in non-low leakage modes and are
  * available for configuring and reading status when bus transactions are possible.
  *
- * After recovery from VLLS, the LLWU continues to detect wake-up events until the user has 
+ * After recovery from VLLS, the LLWU continues to detect wake-up events until the user has
  * acknowledged the wake-up via POWER_SYS_ClearAckIsolation()
- * 
+ *
  * @param pin Wake up pin name which is set.
  * @param pinMode pin configuration mode defined in llwu_external_pin_modes_t.
  * @param config optional parameter. If passed GPIO pin configuration GPIO pin is configured.
@@ -616,7 +616,7 @@ void POWER_SYS_SetWakeupPin(power_wakeup_pin_t pin, llwu_external_pin_modes_t pi
 
 /*!
  * @brief This function allows to get wake up pin flag in low leakage wake up unit (LLWU).
- * 
+ *
  * @param pin Wake up pin name.
  * @return Returns pin wake up flag.
  */
@@ -624,7 +624,7 @@ bool POWER_SYS_GetWakeupPinFlag(power_wakeup_pin_t pin);
 
 /*!
  * @brief This function allows to clear wake up pin flag in low leakage wake up unit (LLWU).
- * 
+ *
  * @param pin Wake up pin name
  */
 void POWER_SYS_ClearWakeupPinFlag(power_wakeup_pin_t pin);
@@ -642,4 +642,3 @@ void POWER_SYS_ClearWakeupPinFlag(power_wakeup_pin_t pin);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

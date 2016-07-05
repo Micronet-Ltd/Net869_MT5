@@ -38,26 +38,26 @@
  */
 int fputc(int ch, FILE* stream)
 {
-    const unsigned char c = (unsigned char) ch;
-    int result;
+	const unsigned char c = (unsigned char) ch;
+	int result;
 
-    if (NULL == stream)
-    {
-        return EOF;
-    }
+	if (NULL == stream)
+	{
+		return EOF;
+	}
 
-    result = _buf_write(&c, 1, stream);
+	result = _buf_write(&c, 1, stream);
 
-    if (0 > result)
-    {
-        /* Mark error */
-        stream->_MODE |= _MODE_ERR;
-        return EOF;
-    }
-    else
-    {
-        return ch;
-    }
+	if (0 > result)
+	{
+		/* Mark error */
+		stream->_MODE |= _MODE_ERR;
+		return EOF;
+	}
+	else
+	{
+		return ch;
+	}
 }
 /*!
  * \brief This function shall write the byte specified by ch (converted to an unsigned char)to the
@@ -71,7 +71,7 @@ int fputc(int ch, FILE* stream)
  */
 int putc(int ch, FILE* stream)
 {
-    return fputc(ch, stream);
+	return fputc(ch, stream);
 }
 /*!
  * \brief This function shall be equivalent to putc(c,stdout).
@@ -83,7 +83,7 @@ int putc(int ch, FILE* stream)
  */
 int putchar(int ch)
 {
-    return fputc(ch, stdout);
+	return fputc(ch, stdout);
 }
 /*!
  * \brief This function shall write the null-terminated string pointed to by s to the stream pointed
@@ -98,29 +98,29 @@ int putchar(int ch)
  */
 int fputs(const char *s, FILE* stream)
 {
-    int cnt = 0;
-    int result;
+	int cnt = 0;
+	int result;
 
-    if ((NULL == stream) || (NULL == s))
-    {
-        return EOF;
-    }
+	if ((NULL == stream) || (NULL == s))
+	{
+		return EOF;
+	}
 
-    /* get string length */
-    while (0 != s[cnt])
-    {
-        cnt++;
-    }
-    /* write string to buffer. Terminating null character is not writen*/
-    result  = _buf_write((const unsigned char *)s, cnt, stream);
+	/* get string length */
+	while (0 != s[cnt])
+	{
+		cnt++;
+	}
+	/* write string to buffer. Terminating null character is not writen*/
+	result  = _buf_write((const unsigned char *)s, cnt, stream);
 
-    if (0 > result)
-    {
-        /* Mark error */
-        stream->_MODE |= _MODE_ERR;
-        return EOF;
-    }
-    return result;
+	if (0 > result)
+	{
+		/* Mark error */
+		stream->_MODE |= _MODE_ERR;
+		return EOF;
+	}
+	return result;
 }
 /*!
  * \brief function shall write the string pointed to by s,followed by a <newline>, to the
@@ -133,28 +133,28 @@ int fputs(const char *s, FILE* stream)
  */
 int puts(const char *s)
 {
-    int result;
+	int result;
 
-    if (NULL == s)
-    {
-        return EOF;
-    }
-    /* write string to stream */
-    result = fputs(s, stdout);
-    if (0 > result)
-    {
-        /* Mark error */
-        stdout->_MODE |= _MODE_ERR;
-        return EOF;
-    }
-    /* write <newline> to stream */
-    result = putchar('\n');
-    if (0 > result)
-    {
-        /* Mark error */
-        stdout->_MODE |= _MODE_ERR;
-        return EOF;
-    }
+	if (NULL == s)
+	{
+		return EOF;
+	}
+	/* write string to stream */
+	result = fputs(s, stdout);
+	if (0 > result)
+	{
+		/* Mark error */
+		stdout->_MODE |= _MODE_ERR;
+		return EOF;
+	}
+	/* write <newline> to stream */
+	result = putchar('\n');
+	if (0 > result)
+	{
+		/* Mark error */
+		stdout->_MODE |= _MODE_ERR;
+		return EOF;
+	}
 
-    return result;
+	return result;
 }

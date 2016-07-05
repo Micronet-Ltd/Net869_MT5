@@ -1,27 +1,27 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
 *
 * $FileName: khci_prv.h$
-* $Version : 
-* $Date    : 
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -34,56 +34,56 @@
 
 enum
 {
-    TR_CTRL,
-    TR_IN,
-    TR_OUT,
-    TR_OUT_HNDSK,
-    TR_IN_HNDSK
+	TR_CTRL,
+	TR_IN,
+	TR_OUT,
+	TR_OUT_HNDSK,
+	TR_IN_HNDSK
 };
 
 enum
 {
-    USB_ATTACH_STATE_IDLE,
-    USB_ATTACH_STATE_BEGIN,
-    USB_ATTACH_STATE_SPEED_DETECTION,
-    USB_ATTACH_STATE_SPEED_DETECTION_BEGIN,
-    USB_ATTACH_STATE_SPEED_DETECTION_TIMEOUT,
-    USB_ATTACH_STATE_RESET,
-    USB_ATTACH_STATE_RESET_DONE,
-    USB_ATTACH_STATE_ENABLE_SOF,
-    USB_ATTACH_STATE_SOF_ENABLED,
-    USB_ATTACH_STATE_DONE
+	USB_ATTACH_STATE_IDLE,
+	USB_ATTACH_STATE_BEGIN,
+	USB_ATTACH_STATE_SPEED_DETECTION,
+	USB_ATTACH_STATE_SPEED_DETECTION_BEGIN,
+	USB_ATTACH_STATE_SPEED_DETECTION_TIMEOUT,
+	USB_ATTACH_STATE_RESET,
+	USB_ATTACH_STATE_RESET_DONE,
+	USB_ATTACH_STATE_ENABLE_SOF,
+	USB_ATTACH_STATE_SOF_ENABLED,
+	USB_ATTACH_STATE_DONE
 };
 
 /* Transaction type */
 typedef enum
 {
-    TR_MSG_UNKNOWN,     // unknow - not used
-    TR_MSG_SETUP,       // setup transaction
-    TR_MSG_SEND,        // send transaction
-    TR_MSG_RECV         // receive transaction
+	TR_MSG_UNKNOWN,     // unknow - not used
+	TR_MSG_SETUP,       // setup transaction
+	TR_MSG_SEND,        // send transaction
+	TR_MSG_RECV         // receive transaction
 } tr_msg_type_t;
 
 typedef enum
 {
-    TR_MSG_IDLE ,    // normal transfer
-    TR_MSG_NAK,       // nak transfer 
-    TR_BUS_TIMEOUT,
+	TR_MSG_IDLE ,    // normal transfer
+	TR_MSG_NAK,       // nak transfer
+	TR_BUS_TIMEOUT,
 } tr_msg_state_t;
 
 typedef enum
 {
-    KHCI_TR_GET_MSG,
-    KHCI_TR_START_TRANSMIT,
-    KHCI_TR_TRANSMITING,
-    KHCI_TR_TRANSMIT_DONE,
-    KHCI_TR_NONE
+	KHCI_TR_GET_MSG,
+	KHCI_TR_START_TRANSMIT,
+	KHCI_TR_TRANSMITING,
+	KHCI_TR_TRANSMIT_DONE,
+	KHCI_TR_NONE
 } khci_tr_state_t;
 
 typedef enum
 {
-    TYPE_INT,
-    TYPE_NAK
+	TYPE_INT,
+	TYPE_NAK
 } que_type_t;
 
 
@@ -100,21 +100,21 @@ typedef enum
 /* Transaction message */
 typedef struct
 {
-      tr_msg_type_t     type;           /* transaction type */
-      pipe_struct_t*    pipe_desc;      /* pointer to pipe descriptor */
-      tr_struct_t*      pipe_tr;        /* pointer to transaction */
-      tr_msg_state_t    msg_state;
-      uint32_t          frame;          /* record the transfer timeout */
-      uint32_t          naktimeout;     /* record the transfer timeout */
-      uint8_t           retry;
+	  tr_msg_type_t     type;           /* transaction type */
+	  pipe_struct_t*    pipe_desc;      /* pointer to pipe descriptor */
+	  tr_struct_t*      pipe_tr;        /* pointer to transaction */
+	  tr_msg_state_t    msg_state;
+	  uint32_t          frame;          /* record the transfer timeout */
+	  uint32_t          naktimeout;     /* record the transfer timeout */
+	  uint8_t           retry;
 } tr_msg_struct_t;
 
 /* Interrupt transaction message queue */
 typedef struct tr_int_que_itm_struct
 {
-    uint32_t        frame;         /* next time to fire interrupt */
-    uint16_t        period;        /* period in [ms] for interrupt endpoint */
-    tr_msg_struct_t msg;           /* atom transaction message */  
+	uint32_t        frame;         /* next time to fire interrupt */
+	uint16_t        period;        /* period in [ms] for interrupt endpoint */
+	tr_msg_struct_t msg;           /* atom transaction message */
 } tr_int_que_itm_struct_t;
 
 #define BDT_BASE                ((uint32_t*)(&bdt[0]))

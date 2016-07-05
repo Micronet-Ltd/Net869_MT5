@@ -28,13 +28,13 @@
 
 /*!
  * \brief Normalizes ticks and partial ticks in a tick structure
- * 
+ *
  * \param[in,out] tick_ptr Tick structure to be normalized
  */
 void _psp_normalize_ticks
    (
-       /* [IN/OUT] Tick structure to be normalized */
-       PSP_TICK_STRUCT_PTR tick_ptr
+	   /* [IN/OUT] Tick structure to be normalized */
+	   PSP_TICK_STRUCT_PTR tick_ptr
    )
 { /* Body */
    KERNEL_DATA_STRUCT_PTR  kernel_data;
@@ -45,9 +45,9 @@ void _psp_normalize_ticks
    ticks_per_tick = kernel_data->HW_TICKS_PER_TICK;
 
    if (tick_ptr->HW_TICKS[0] >= ticks_per_tick) {
-      register uint32_t t = tick_ptr->HW_TICKS[0] / ticks_per_tick;
-      tick_ptr->TICKS[0] += t;
-      tick_ptr->HW_TICKS[0] -= t * ticks_per_tick;
+	  register uint32_t t = tick_ptr->HW_TICKS[0] / ticks_per_tick;
+	  tick_ptr->TICKS[0] += t;
+	  tick_ptr->HW_TICKS[0] -= t * ticks_per_tick;
    } /* Endif */
 
 } /* Endbody */

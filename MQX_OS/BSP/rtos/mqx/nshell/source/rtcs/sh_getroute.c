@@ -50,51 +50,51 @@ int32_t Shell_getroute(int32_t argc, char *argv[] )
    _ip_address       gate_ipaddr = 0;
    _ip_address       ipaddr = 0;
    _ip_address       ipmask = 0;
-   
+
    SHELL_CONTEXT_PTR shell_ptr = Shell_get_context(argv);
-  
+
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if ((argc < 2) || (argc > 3)) {
-         return_code = SHELL_EXIT_ERROR;
-         print_usage = TRUE;
-      } else  {
-         if (! Shell_parse_ip_address( argv[1], &ipaddr  ))  {
-            fprintf(shell_ptr->STDOUT, "Error, invalid ipv4 address\n");
-            return_code = SHELL_EXIT_ERROR;
-         } else if (argc == 3)  {
-            if (! Shell_parse_ip_address( argv[2], &ipmask  ))  {
-               fprintf(shell_ptr->STDOUT, "Error, invalid ipv4 mask\n");
-               return_code = SHELL_EXIT_ERROR;
-            }
-         }          
-      }          
-         
-         
-      if (return_code == SHELL_EXIT_SUCCESS)  {
-         gate_ipaddr = RTCS_get_route(ipaddr, ipmask);
-         if(gate_ipaddr != 0)
-         {
-             fprintf(shell_ptr->STDOUT, "The route to ip address: %d.%d.%d.%d, netmask: %d.%d.%d.%d is gate %d.%d.%d.%d\n",
-            IPBYTES(ipaddr),IPBYTES(ipmask),IPBYTES(gate_ipaddr));
-         } 
-         else
-         {
-            fprintf(shell_ptr->STDOUT, "There is no gate to ip address: %d.%d.%d.%d, netmask: %d.%d.%d.%d\n",
-                    IPBYTES(ipaddr),IPBYTES(ipmask));
-          }
-      }
+	  if ((argc < 2) || (argc > 3)) {
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage = TRUE;
+	  } else  {
+		 if (! Shell_parse_ip_address( argv[1], &ipaddr  ))  {
+			fprintf(shell_ptr->STDOUT, "Error, invalid ipv4 address\n");
+			return_code = SHELL_EXIT_ERROR;
+		 } else if (argc == 3)  {
+			if (! Shell_parse_ip_address( argv[2], &ipmask  ))  {
+			   fprintf(shell_ptr->STDOUT, "Error, invalid ipv4 mask\n");
+			   return_code = SHELL_EXIT_ERROR;
+			}
+		 }
+	  }
+
+
+	  if (return_code == SHELL_EXIT_SUCCESS)  {
+		 gate_ipaddr = RTCS_get_route(ipaddr, ipmask);
+		 if(gate_ipaddr != 0)
+		 {
+			 fprintf(shell_ptr->STDOUT, "The route to ip address: %d.%d.%d.%d, netmask: %d.%d.%d.%d is gate %d.%d.%d.%d\n",
+			IPBYTES(ipaddr),IPBYTES(ipmask),IPBYTES(gate_ipaddr));
+		 }
+		 else
+		 {
+			fprintf(shell_ptr->STDOUT, "There is no gate to ip address: %d.%d.%d.%d, netmask: %d.%d.%d.%d\n",
+					IPBYTES(ipaddr),IPBYTES(ipmask));
+		  }
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <ip4addr> <netmask>\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <ip4addr> <netmask>\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <ipaddr>  = IPv4 address \n");
-         fprintf(shell_ptr->STDOUT, "   <netmask> = IPv4 Network mask\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <ip4addr> <netmask>\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <ip4addr> <netmask>\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <ipaddr>  = IPv4 address \n");
+		 fprintf(shell_ptr->STDOUT, "   <netmask> = IPv4 Network mask\n");
+	  }
    }
 
    return return_code;
@@ -117,28 +117,28 @@ int32_t Shell_walkroute(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc >1)  {
-         return_code = SHELL_EXIT_ERROR;
-         print_usage = TRUE;
-      }          
-         
-         
-      if (return_code == SHELL_EXIT_SUCCESS)  {
-        #if RTCSCFG_ENABLE_IP4
-            fprintf(shell_ptr->STDOUT, "IPv4 Routing Table:\n");
-            RTCS_walk_route();
-        #else
-            fprintf(shell_ptr->STDOUT, "The command does not support IPv6.\n");
-        #endif
-      } 
+	  if (argc >1)  {
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage = TRUE;
+	  }
+
+
+	  if (return_code == SHELL_EXIT_SUCCESS)  {
+		#if RTCSCFG_ENABLE_IP4
+			fprintf(shell_ptr->STDOUT, "IPv4 Routing Table:\n");
+			RTCS_walk_route();
+		#else
+			fprintf(shell_ptr->STDOUT, "The command does not support IPv6.\n");
+		#endif
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s\n", argv[0]);
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s\n", argv[0]);
+	  }
    }
 
    return return_code;
@@ -147,4 +147,3 @@ int32_t Shell_walkroute(int32_t argc, char *argv[] )
 #endif /* SHELLCFG_USES_RTCS */
 
 /* EOF */
-

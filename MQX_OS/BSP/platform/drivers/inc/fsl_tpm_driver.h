@@ -53,12 +53,12 @@ extern const IRQn_Type g_tpmIrqId[TPM_INSTANCE_COUNT];
  * @internal gui name="Basic configuration" id="tpmCfg"
  */
 typedef struct TpmGeneralConfig {
-    bool isDBGMode;          /*!< DBGMode behavioral, false to pause, true to continue run in DBG mode @internal gui name="Debug mode" id="DebugMode" */
-    bool isGlobalTimeBase;   /*!< If Global time base enabled, true to enable, false to disable @internal gui name="Global time base" id="GlobalTimeBase" */
-    bool isTriggerMode;      /*!< If Trigger mode enabled, true to enable, false to disable @internal gui name="Trigger mode" id="TriggerMode" */
-    bool isStopCountOnOveflow; /*!< True to stop counter after overflow, false to continue running @internal gui name="Stop count on overflow" id="StopOnOvf" */
-    bool isCountReloadOnTrig;  /*!< True to reload counter on trigger, false means counter is not reloaded @internal gui name="Reload counter on trigger" id="ReloadOnTrigger" */
-    tpm_trigger_source_t triggerSource; /*!< Trigger source if trigger mode enabled @internal gui name="Trigger source" id="TriggerSource" */
+	bool isDBGMode;          /*!< DBGMode behavioral, false to pause, true to continue run in DBG mode @internal gui name="Debug mode" id="DebugMode" */
+	bool isGlobalTimeBase;   /*!< If Global time base enabled, true to enable, false to disable @internal gui name="Global time base" id="GlobalTimeBase" */
+	bool isTriggerMode;      /*!< If Trigger mode enabled, true to enable, false to disable @internal gui name="Trigger mode" id="TriggerMode" */
+	bool isStopCountOnOveflow; /*!< True to stop counter after overflow, false to continue running @internal gui name="Stop count on overflow" id="StopOnOvf" */
+	bool isCountReloadOnTrig;  /*!< True to reload counter on trigger, false means counter is not reloaded @internal gui name="Reload counter on trigger" id="ReloadOnTrigger" */
+	tpm_trigger_source_t triggerSource; /*!< Trigger source if trigger mode enabled @internal gui name="Trigger source" id="TriggerSource" */
 }tpm_general_config_t;
 
 /*******************************************************************************
@@ -144,7 +144,7 @@ uint32_t TPM_DRV_GetClock(uint32_t instance);
  * @param enableOverflowInt true: enable timer overflow interrupt; false: disable
  */
 void TPM_DRV_CounterStart(uint32_t instance, tpm_counting_mode_t countMode, uint32_t countFinalVal,
-                                 bool enableOverflowInt);
+								 bool enableOverflowInt);
 
 /*!
  * @brief Stops the TPM counter.
@@ -171,7 +171,7 @@ uint32_t TPM_DRV_CounterRead(uint32_t instance);
  * @param intEnable true: enable channel interrupt; false: disable
  */
 void TPM_DRV_InputCaptureEnable(uint32_t instance, uint8_t channel, tpm_input_capture_mode_t mode,
-                                         uint32_t countFinalVal, bool intEnable);
+										 uint32_t countFinalVal, bool intEnable);
 
 /*!
  * @brief Reads back the current value of the TPM channel value.
@@ -193,7 +193,7 @@ uint32_t TPM_DRV_GetChnVal(uint32_t instance, uint8_t channel);
  * @param intEnable true: enable channel interrupt; false: disable
  */
 void TPM_DRV_OutputCompareEnable(uint32_t instance, uint8_t channel, tpm_output_compare_mode_t mode,
-                                            uint32_t countFinalVal, uint32_t matchVal, bool intEnable);
+											uint32_t countFinalVal, uint32_t matchVal, bool intEnable);
 
 /*!
  * @brief Shuts down the TPM driver.
@@ -224,4 +224,3 @@ void TPM_DRV_IRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

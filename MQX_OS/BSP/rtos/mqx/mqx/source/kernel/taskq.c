@@ -56,56 +56,56 @@
  */
 void *_taskq_create
 (
-    _mqx_uint policy
+	_mqx_uint policy
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TASK_QUEUE_STRUCT_PTR task_queue_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TASK_QUEUE_STRUCT_PTR task_queue_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_taskq_create, policy);
+	_KLOGE2(KLOG_taskq_create, policy);
 
 #if MQX_CHECK_ERRORS
-    if (! ((policy == MQX_TASK_QUEUE_FIFO) ||
-                                    (policy == MQX_TASK_QUEUE_BY_PRIORITY)))
-    {
-        _task_set_error(MQX_INVALID_PARAMETER);
-        _KLOGX2(KLOG_taskq_create, NULL);
-        return (NULL);
-    } /* Endif */
-    if (kernel_data->IN_ISR) {
-        _task_set_error(MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
-        _KLOGX2(KLOG_taskq_create, NULL);
-        return(NULL);
-    }/* Endif */
+	if (! ((policy == MQX_TASK_QUEUE_FIFO) ||
+									(policy == MQX_TASK_QUEUE_BY_PRIORITY)))
+	{
+		_task_set_error(MQX_INVALID_PARAMETER);
+		_KLOGX2(KLOG_taskq_create, NULL);
+		return (NULL);
+	} /* Endif */
+	if (kernel_data->IN_ISR) {
+		_task_set_error(MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
+		_KLOGX2(KLOG_taskq_create, NULL);
+		return(NULL);
+	}/* Endif */
 #endif
 
-    task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) _mem_alloc_system((_mem_size) sizeof(TASK_QUEUE_STRUCT));
+	task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) _mem_alloc_system((_mem_size) sizeof(TASK_QUEUE_STRUCT));
 #if MQX_CHECK_MEMORY_ALLOCATION_ERRORS
-    if (task_queue_ptr == NULL) {
-        _KLOGX2(KLOG_taskq_create, NULL);
-        return(NULL);
-    } /* Endif */
+	if (task_queue_ptr == NULL) {
+		_KLOGX2(KLOG_taskq_create, NULL);
+		return(NULL);
+	} /* Endif */
 #endif
 
-    _mem_set_type(task_queue_ptr, MEM_TYPE_TASK_Q);
+	_mem_set_type(task_queue_ptr, MEM_TYPE_TASK_Q);
 
-    task_queue_ptr->POLICY = policy;
-    _QUEUE_INIT(&task_queue_ptr->TD_QUEUE, 0);
-    task_queue_ptr->VALID = TASK_QUEUE_VALID;
-    _int_disable();
-    if (kernel_data->KERNEL_TASK_QUEUES.NEXT == NULL) {
-        /* Initialize the task queue */
-        _QUEUE_INIT(&kernel_data->KERNEL_TASK_QUEUES, 0);
+	task_queue_ptr->POLICY = policy;
+	_QUEUE_INIT(&task_queue_ptr->TD_QUEUE, 0);
+	task_queue_ptr->VALID = TASK_QUEUE_VALID;
+	_int_disable();
+	if (kernel_data->KERNEL_TASK_QUEUES.NEXT == NULL) {
+		/* Initialize the task queue */
+		_QUEUE_INIT(&kernel_data->KERNEL_TASK_QUEUES, 0);
 
-    } /* Endif */
-    _QUEUE_ENQUEUE(&kernel_data->KERNEL_TASK_QUEUES, task_queue_ptr);
-    _int_enable();
+	} /* Endif */
+	_QUEUE_ENQUEUE(&kernel_data->KERNEL_TASK_QUEUES, task_queue_ptr);
+	_int_enable();
 
-    _KLOGX2(KLOG_taskq_create, task_queue_ptr);
+	_KLOGX2(KLOG_taskq_create, task_queue_ptr);
 
-    return (task_queue_ptr);
+	return (task_queue_ptr);
 
 } /* Endbody */
 
@@ -136,56 +136,56 @@ void *_taskq_create
  */
 _mqx_uint _taskq_destroy
 (
-    void   *users_task_queue_ptr
+	void   *users_task_queue_ptr
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register TD_STRUCT_PTR td_ptr;
-    register TASK_QUEUE_STRUCT_PTR task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) users_task_queue_ptr;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register TD_STRUCT_PTR td_ptr;
+	register TASK_QUEUE_STRUCT_PTR task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) users_task_queue_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_taskq_destroy, users_task_queue_ptr);
+	_KLOGE2(KLOG_taskq_destroy, users_task_queue_ptr);
 
 #if MQX_CHECK_ERRORS
-    if (task_queue_ptr == NULL) {
-        _int_enable();
-        _KLOGX2(KLOG_taskq_destroy, MQX_INVALID_PARAMETER);
-        return(MQX_INVALID_PARAMETER);
-    } /* Endif */
-    if (kernel_data->IN_ISR) {
-        _KLOGX2(KLOG_taskq_destroy, MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
-        return(MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
-    }/* Endif */
+	if (task_queue_ptr == NULL) {
+		_int_enable();
+		_KLOGX2(KLOG_taskq_destroy, MQX_INVALID_PARAMETER);
+		return(MQX_INVALID_PARAMETER);
+	} /* Endif */
+	if (kernel_data->IN_ISR) {
+		_KLOGX2(KLOG_taskq_destroy, MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
+		return(MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
+	}/* Endif */
 #endif
 
-    _int_disable();
+	_int_disable();
 #if MQX_CHECK_VALIDITY
-    if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
-        _int_enable();
-        _KLOGX2(KLOG_taskq_destroy, MQX_INVALID_TASK_QUEUE);
-        return(MQX_INVALID_TASK_QUEUE);
-    } /* Endif */
+	if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
+		_int_enable();
+		_KLOGX2(KLOG_taskq_destroy, MQX_INVALID_TASK_QUEUE);
+		return(MQX_INVALID_TASK_QUEUE);
+	} /* Endif */
 #endif
 
-    task_queue_ptr->VALID = 0;
-    while (_QUEUE_GET_SIZE(&task_queue_ptr->TD_QUEUE)) {
-        _QUEUE_DEQUEUE(&task_queue_ptr->TD_QUEUE, td_ptr);
-        _TASK_READY(td_ptr, kernel_data);
-        _int_enable();
-        _int_disable();
-    } /* Endwhile */
+	task_queue_ptr->VALID = 0;
+	while (_QUEUE_GET_SIZE(&task_queue_ptr->TD_QUEUE)) {
+		_QUEUE_DEQUEUE(&task_queue_ptr->TD_QUEUE, td_ptr);
+		_TASK_READY(td_ptr, kernel_data);
+		_int_enable();
+		_int_disable();
+	} /* Endwhile */
 
-    _QUEUE_REMOVE(&kernel_data->KERNEL_TASK_QUEUES, task_queue_ptr);
+	_QUEUE_REMOVE(&kernel_data->KERNEL_TASK_QUEUES, task_queue_ptr);
 
-    _int_enable();
+	_int_enable();
 
-    _CHECK_RUN_SCHEDULER(); /* Let higher priority task run */
+	_CHECK_RUN_SCHEDULER(); /* Let higher priority task run */
 
-    _mem_free(task_queue_ptr);
+	_mem_free(task_queue_ptr);
 
-    _KLOGX2(KLOG_taskq_destroy, MQX_OK);
-    return (MQX_OK);
+	_KLOGX2(KLOG_taskq_destroy, MQX_OK);
+	return (MQX_OK);
 
 } /* Endbody */
 
@@ -215,56 +215,56 @@ _mqx_uint _taskq_destroy
  */
 _mqx_uint _taskq_suspend
 (
-    void   *users_task_queue_ptr
+	void   *users_task_queue_ptr
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register TD_STRUCT_PTR td_ptr;
-    register TASK_QUEUE_STRUCT_PTR task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) users_task_queue_ptr;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register TD_STRUCT_PTR td_ptr;
+	register TASK_QUEUE_STRUCT_PTR task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) users_task_queue_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_taskq_suspend, users_task_queue_ptr);
+	_KLOGE2(KLOG_taskq_suspend, users_task_queue_ptr);
 
 #if MQX_CHECK_ERRORS
-    if (task_queue_ptr == NULL) {
-        _KLOGX2(KLOG_taskq_suspend, MQX_INVALID_PARAMETER);
-        return(MQX_INVALID_PARAMETER);
-    } /* Endif */
-    if (kernel_data->IN_ISR) {
-        _KLOGX2(KLOG_taskq_suspend, MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
-        return(MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
-    }/* Endif */
+	if (task_queue_ptr == NULL) {
+		_KLOGX2(KLOG_taskq_suspend, MQX_INVALID_PARAMETER);
+		return(MQX_INVALID_PARAMETER);
+	} /* Endif */
+	if (kernel_data->IN_ISR) {
+		_KLOGX2(KLOG_taskq_suspend, MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
+		return(MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
+	}/* Endif */
 #endif
 
-    td_ptr = kernel_data->ACTIVE_PTR;
+	td_ptr = kernel_data->ACTIVE_PTR;
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 
 #if MQX_CHECK_VALIDITY
-    if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
-        _int_enable();
-        _KLOGX2(KLOG_taskq_suspend, MQX_INVALID_TASK_QUEUE);
-        return(MQX_INVALID_TASK_QUEUE);
-    } /* Endif */
+	if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
+		_int_enable();
+		_KLOGX2(KLOG_taskq_suspend, MQX_INVALID_TASK_QUEUE);
+		return(MQX_INVALID_TASK_QUEUE);
+	} /* Endif */
 #endif
 
-    td_ptr->STATE = TASK_QUEUE_BLOCKED;
-    _QUEUE_UNLINK(td_ptr); /* Remove task from ready to run queue */
-    td_ptr->INFO = (_mqx_uint) & task_queue_ptr->TD_QUEUE;
-    if (task_queue_ptr->POLICY & MQX_TASK_QUEUE_BY_PRIORITY) {
-        _sched_insert_priorityq_internal(&task_queue_ptr->TD_QUEUE, td_ptr);
-    }
-    else {
-        _QUEUE_ENQUEUE(&task_queue_ptr->TD_QUEUE, td_ptr);
-    } /* Endif */
+	td_ptr->STATE = TASK_QUEUE_BLOCKED;
+	_QUEUE_UNLINK(td_ptr); /* Remove task from ready to run queue */
+	td_ptr->INFO = (_mqx_uint) & task_queue_ptr->TD_QUEUE;
+	if (task_queue_ptr->POLICY & MQX_TASK_QUEUE_BY_PRIORITY) {
+		_sched_insert_priorityq_internal(&task_queue_ptr->TD_QUEUE, td_ptr);
+	}
+	else {
+		_QUEUE_ENQUEUE(&task_queue_ptr->TD_QUEUE, td_ptr);
+	} /* Endif */
 
-    _sched_execute_scheduler_internal(); /* Let the other tasks run */
+	_sched_execute_scheduler_internal(); /* Let the other tasks run */
 
-    _INT_ENABLE();
+	_INT_ENABLE();
 
-    _KLOGX2(KLOG_taskq_suspend, MQX_OK);
-    return (MQX_OK);
+	_KLOGX2(KLOG_taskq_suspend, MQX_OK);
+	return (MQX_OK);
 
 } /* Endbody */
 
@@ -286,59 +286,59 @@ _mqx_uint _taskq_suspend
  */
 _mqx_uint _taskq_resume
 (
-    void   *users_task_queue_ptr,
-    bool all_tasks
+	void   *users_task_queue_ptr,
+	bool all_tasks
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
-    (void)                  kernel_data; /* suppress 'unused variable' warning */
-    TD_STRUCT_PTR           td_ptr;
-    TASK_QUEUE_STRUCT_PTR   task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) users_task_queue_ptr;
+	KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
+	(void)                  kernel_data; /* suppress 'unused variable' warning */
+	TD_STRUCT_PTR           td_ptr;
+	TASK_QUEUE_STRUCT_PTR   task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) users_task_queue_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE3(KLOG_taskq_resume, users_task_queue_ptr, all_tasks);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE3(KLOG_taskq_resume, users_task_queue_ptr, all_tasks);
 
 #if MQX_CHECK_ERRORS
-    if (task_queue_ptr == NULL) {
-        _KLOGX2(KLOG_taskq_resume, MQX_INVALID_TASK_QUEUE);
-        return(MQX_INVALID_TASK_QUEUE);
-    } /* Endif */
+	if (task_queue_ptr == NULL) {
+		_KLOGX2(KLOG_taskq_resume, MQX_INVALID_TASK_QUEUE);
+		return(MQX_INVALID_TASK_QUEUE);
+	} /* Endif */
 #endif
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 
 #if MQX_CHECK_VALIDITY
-    if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
-        _int_enable();
-        _KLOGX2(KLOG_taskq_resume, MQX_INVALID_TASK_QUEUE);
-        return(MQX_INVALID_TASK_QUEUE);
-    } /* Endif */
+	if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
+		_int_enable();
+		_KLOGX2(KLOG_taskq_resume, MQX_INVALID_TASK_QUEUE);
+		return(MQX_INVALID_TASK_QUEUE);
+	} /* Endif */
 #endif
 
-    if (_QUEUE_GET_SIZE(&task_queue_ptr->TD_QUEUE) == 0) {
-        /* Task queue is empty */
-        _int_enable();
-        _KLOGX2(KLOG_taskq_resume, MQX_TASK_QUEUE_EMPTY);
-        return (MQX_TASK_QUEUE_EMPTY);
-    } /* Endif */
+	if (_QUEUE_GET_SIZE(&task_queue_ptr->TD_QUEUE) == 0) {
+		/* Task queue is empty */
+		_int_enable();
+		_KLOGX2(KLOG_taskq_resume, MQX_TASK_QUEUE_EMPTY);
+		return (MQX_TASK_QUEUE_EMPTY);
+	} /* Endif */
 
-    if (all_tasks) {
-        while (_QUEUE_GET_SIZE(&task_queue_ptr->TD_QUEUE)) {
-            _QUEUE_DEQUEUE(&task_queue_ptr->TD_QUEUE, td_ptr);
-            _TASK_READY(td_ptr, kernel_data);
-        } /* Endwhile */
-    }
-    else {
-        _QUEUE_DEQUEUE(&task_queue_ptr->TD_QUEUE, td_ptr);
-        _TASK_READY(td_ptr, kernel_data);
-    } /* Endif */
+	if (all_tasks) {
+		while (_QUEUE_GET_SIZE(&task_queue_ptr->TD_QUEUE)) {
+			_QUEUE_DEQUEUE(&task_queue_ptr->TD_QUEUE, td_ptr);
+			_TASK_READY(td_ptr, kernel_data);
+		} /* Endwhile */
+	}
+	else {
+		_QUEUE_DEQUEUE(&task_queue_ptr->TD_QUEUE, td_ptr);
+		_TASK_READY(td_ptr, kernel_data);
+	} /* Endif */
 
-    _INT_ENABLE();
+	_INT_ENABLE();
 
-    _CHECK_RUN_SCHEDULER();/* Let higher priority task run */
+	_CHECK_RUN_SCHEDULER();/* Let higher priority task run */
 
-    _KLOGX2(KLOG_taskq_resume, MQX_OK);
-    return (MQX_OK);
+	_KLOGX2(KLOG_taskq_resume, MQX_OK);
+	return (MQX_OK);
 
 } /* Endbody */
 
@@ -366,69 +366,69 @@ _mqx_uint _taskq_resume
  */
 _mqx_uint _taskq_test
 (
-    void    **task_queue_error_ptr,
-    void    **td_error_ptr
+	void    **task_queue_error_ptr,
+	void    **td_error_ptr
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TASK_QUEUE_STRUCT_PTR task_queue_ptr;
-    _mqx_uint queue_size;
-    _mqx_uint result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TASK_QUEUE_STRUCT_PTR task_queue_ptr;
+	_mqx_uint queue_size;
+	_mqx_uint result;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE3(KLOG_taskq_test, task_queue_error_ptr, td_error_ptr);
+	_KLOGE3(KLOG_taskq_test, task_queue_error_ptr, td_error_ptr);
 
-    *td_error_ptr = NULL;
-    *task_queue_error_ptr = NULL;
+	*td_error_ptr = NULL;
+	*task_queue_error_ptr = NULL;
 
 #if MQX_CHECK_ERRORS
-    if (kernel_data->IN_ISR) {
-        _KLOGX2(KLOG_taskq_test, MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
-        return(MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
-    }/* Endif */
+	if (kernel_data->IN_ISR) {
+		_KLOGX2(KLOG_taskq_test, MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
+		return(MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
+	}/* Endif */
 #endif
 
-    task_queue_ptr = (TASK_QUEUE_STRUCT_PTR)
-    ((void *)kernel_data->KERNEL_TASK_QUEUES.NEXT);
-    if (_QUEUE_GET_SIZE(&kernel_data->KERNEL_TASK_QUEUES) == 0) {
-        _KLOGX2(KLOG_taskq_test, MQX_OK);
-        return(MQX_OK);
-    } /* Endif */
+	task_queue_ptr = (TASK_QUEUE_STRUCT_PTR)
+	((void *)kernel_data->KERNEL_TASK_QUEUES.NEXT);
+	if (_QUEUE_GET_SIZE(&kernel_data->KERNEL_TASK_QUEUES) == 0) {
+		_KLOGX2(KLOG_taskq_test, MQX_OK);
+		return(MQX_OK);
+	} /* Endif */
 
-    _int_disable();
+	_int_disable();
 
-    result = _queue_test((QUEUE_STRUCT_PTR)&kernel_data->KERNEL_TASK_QUEUES,
-                    task_queue_error_ptr);
-    if (result != MQX_OK) {
-        _int_enable();
-        _KLOGX3(KLOG_taskq_test, result, *task_queue_error_ptr);
-        return(result);
-    } /* Endif */
+	result = _queue_test((QUEUE_STRUCT_PTR)&kernel_data->KERNEL_TASK_QUEUES,
+					task_queue_error_ptr);
+	if (result != MQX_OK) {
+		_int_enable();
+		_KLOGX3(KLOG_taskq_test, result, *task_queue_error_ptr);
+		return(result);
+	} /* Endif */
 
-    queue_size = _QUEUE_GET_SIZE(&kernel_data->KERNEL_TASK_QUEUES);
-    while (queue_size--) {
-        if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
-            result = MQX_INVALID_TASK_QUEUE;
-            break;
-        } /* Endif */
+	queue_size = _QUEUE_GET_SIZE(&kernel_data->KERNEL_TASK_QUEUES);
+	while (queue_size--) {
+		if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
+			result = MQX_INVALID_TASK_QUEUE;
+			break;
+		} /* Endif */
 
-        result = _queue_test(&task_queue_ptr->TD_QUEUE, td_error_ptr);
-        if (result != MQX_OK) {
-            break;
-        } /* Endif */
+		result = _queue_test(&task_queue_ptr->TD_QUEUE, td_error_ptr);
+		if (result != MQX_OK) {
+			break;
+		} /* Endif */
 
-        task_queue_ptr = task_queue_ptr->NEXT;
-    } /* Endwhile */
+		task_queue_ptr = task_queue_ptr->NEXT;
+	} /* Endwhile */
 
-    _int_enable();
+	_int_enable();
 
-    if (result != MQX_OK) {
-        *task_queue_error_ptr = (void *)task_queue_ptr;
-    } /* Endif */
-    _KLOGX4(KLOG_taskq_test, result, *task_queue_error_ptr, *td_error_ptr);
+	if (result != MQX_OK) {
+		*task_queue_error_ptr = (void *)task_queue_ptr;
+	} /* Endif */
+	_KLOGX4(KLOG_taskq_test, result, *task_queue_error_ptr, *td_error_ptr);
 
-    return(result);
+	return(result);
 
 } /* Endbody */
 
@@ -461,71 +461,71 @@ _mqx_uint _taskq_test
  */
 _mqx_uint _taskq_suspend_task
 (
-    _task_id task_id,
-    void    *users_task_queue_ptr
+	_task_id task_id,
+	void    *users_task_queue_ptr
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register TASK_QUEUE_STRUCT_PTR task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) users_task_queue_ptr;
-    register TD_STRUCT_PTR td_ptr;
-    bool me;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register TASK_QUEUE_STRUCT_PTR task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) users_task_queue_ptr;
+	register TD_STRUCT_PTR td_ptr;
+	bool me;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE3(KLOG_taskq_suspend_task, task_id, users_task_queue_ptr);
+	_KLOGE3(KLOG_taskq_suspend_task, task_id, users_task_queue_ptr);
 
-    td_ptr = (TD_STRUCT_PTR) _task_get_td(task_id);
-    me = (td_ptr == kernel_data->ACTIVE_PTR);
+	td_ptr = (TD_STRUCT_PTR) _task_get_td(task_id);
+	me = (td_ptr == kernel_data->ACTIVE_PTR);
 
 #if MQX_CHECK_ERRORS
-    if (td_ptr == NULL) {
-        _KLOGX2(KLOG_taskq_suspend_task, MQX_INVALID_TASK_ID);
-        return(MQX_INVALID_TASK_ID);
-    } /* Endif */
-    if (task_queue_ptr == NULL) {
-        _KLOGX2(KLOG_taskq_suspend_task, MQX_INVALID_PARAMETER);
-        return(MQX_INVALID_PARAMETER);
-    } /* Endif */
-    if (me && kernel_data->IN_ISR) {
-        _KLOGX2(KLOG_taskq_suspend_task, MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
-        return(MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
-    }/* Endif */
+	if (td_ptr == NULL) {
+		_KLOGX2(KLOG_taskq_suspend_task, MQX_INVALID_TASK_ID);
+		return(MQX_INVALID_TASK_ID);
+	} /* Endif */
+	if (task_queue_ptr == NULL) {
+		_KLOGX2(KLOG_taskq_suspend_task, MQX_INVALID_PARAMETER);
+		return(MQX_INVALID_PARAMETER);
+	} /* Endif */
+	if (me && kernel_data->IN_ISR) {
+		_KLOGX2(KLOG_taskq_suspend_task, MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
+		return(MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
+	}/* Endif */
 #endif
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 
 #if MQX_CHECK_VALIDITY
-    if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
-        _int_enable();
-        _KLOGX2(KLOG_taskq_suspend_task, MQX_INVALID_TASK_QUEUE);
-        return(MQX_INVALID_TASK_QUEUE);
-    } /* Endif */
+	if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
+		_int_enable();
+		_KLOGX2(KLOG_taskq_suspend_task, MQX_INVALID_TASK_QUEUE);
+		return(MQX_INVALID_TASK_QUEUE);
+	} /* Endif */
 #endif
 
-    if (td_ptr->STATE != READY) {
-        _INT_ENABLE();
-        _KLOGX2(KLOG_taskq_suspend_task, MQX_INVALID_TASK_STATE);
-        return (MQX_INVALID_TASK_STATE);
-    } /* Endif */
+	if (td_ptr->STATE != READY) {
+		_INT_ENABLE();
+		_KLOGX2(KLOG_taskq_suspend_task, MQX_INVALID_TASK_STATE);
+		return (MQX_INVALID_TASK_STATE);
+	} /* Endif */
 
-    td_ptr->STATE = TASK_QUEUE_BLOCKED;
-    _QUEUE_UNLINK(td_ptr); /* Remove task from ready to run queue */
-    td_ptr->INFO = (_mqx_uint) & task_queue_ptr->TD_QUEUE;
-    if (task_queue_ptr->POLICY & MQX_TASK_QUEUE_BY_PRIORITY) {
-        _sched_insert_priorityq_internal(&task_queue_ptr->TD_QUEUE, td_ptr);
-    }
-    else {
-        _QUEUE_ENQUEUE(&task_queue_ptr->TD_QUEUE, td_ptr);
-    } /* Endif */
+	td_ptr->STATE = TASK_QUEUE_BLOCKED;
+	_QUEUE_UNLINK(td_ptr); /* Remove task from ready to run queue */
+	td_ptr->INFO = (_mqx_uint) & task_queue_ptr->TD_QUEUE;
+	if (task_queue_ptr->POLICY & MQX_TASK_QUEUE_BY_PRIORITY) {
+		_sched_insert_priorityq_internal(&task_queue_ptr->TD_QUEUE, td_ptr);
+	}
+	else {
+		_QUEUE_ENQUEUE(&task_queue_ptr->TD_QUEUE, td_ptr);
+	} /* Endif */
 
-    if (me && (kernel_data->IN_ISR == 0)) {
-        _sched_execute_scheduler_internal(); /* Let the other tasks run */
-    } /* Endif */
+	if (me && (kernel_data->IN_ISR == 0)) {
+		_sched_execute_scheduler_internal(); /* Let the other tasks run */
+	} /* Endif */
 
-    _INT_ENABLE();
+	_INT_ENABLE();
 
-    _KLOGX2(KLOG_taskq_suspend_task, MQX_OK);
-    return (MQX_OK);
+	_KLOGX2(KLOG_taskq_suspend_task, MQX_OK);
+	return (MQX_OK);
 
 } /* Endbody */
 
@@ -549,26 +549,26 @@ _mqx_uint _taskq_suspend_task
  */
 _mqx_uint _taskq_get_value
 (
-    void   *users_task_queue_ptr
+	void   *users_task_queue_ptr
 )
 { /* Body */
-    register TASK_QUEUE_STRUCT_PTR task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) users_task_queue_ptr;
+	register TASK_QUEUE_STRUCT_PTR task_queue_ptr = (TASK_QUEUE_STRUCT_PTR) users_task_queue_ptr;
 
 #if MQX_CHECK_ERRORS
-    if (task_queue_ptr == NULL) {
-        _task_set_error(MQX_INVALID_PARAMETER);
-        return(MAX_MQX_UINT);
-    } /* Endif */
+	if (task_queue_ptr == NULL) {
+		_task_set_error(MQX_INVALID_PARAMETER);
+		return(MAX_MQX_UINT);
+	} /* Endif */
 #endif
 
 #if MQX_CHECK_VALIDITY
-    if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
-        _task_set_error(MQX_INVALID_TASK_QUEUE);
-        return(MAX_MQX_UINT);
-    } /* Endif */
+	if (task_queue_ptr->VALID != TASK_QUEUE_VALID) {
+		_task_set_error(MQX_INVALID_TASK_QUEUE);
+		return(MAX_MQX_UINT);
+	} /* Endif */
 #endif
 
-    return (task_queue_ptr->TD_QUEUE.SIZE);
+	return (task_queue_ptr->TD_QUEUE.SIZE);
 
 } /* Endbody */
 #endif

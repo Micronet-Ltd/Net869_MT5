@@ -62,7 +62,7 @@ void *__dso_handle = NULL;
  */
 int __cxa_atexit (void (*fn) (void *), void *arg, void *d)
 {
-    return 0;
+	return 0;
 }
 /*! \endcond */
 
@@ -72,7 +72,7 @@ int __cxa_atexit (void (*fn) (void *), void *arg, void *d)
  */
 void _init(void)
 {
-    ;
+	;
 }
 /*! \endcond */
 
@@ -82,7 +82,7 @@ void _init(void)
  */
 void _fini(void)
 {
-    ;
+	;
 }
 /*! \endcond */
 
@@ -96,7 +96,7 @@ void _fini(void)
  */
 void *malloc(size_t bytes)
 {
-    return _mem_alloc_system(bytes);
+	return _mem_alloc_system(bytes);
 }
 
 /*!
@@ -122,7 +122,7 @@ void *malloc(size_t bytes)
  */
 void *calloc(size_t n, size_t z)
 {
-    return _mem_alloc_system_zero(n*z);
+	return _mem_alloc_system_zero(n*z);
 }
 
 /*!
@@ -132,19 +132,19 @@ void *calloc(size_t n, size_t z)
  */
 void free(void *p)
 {
-    _mem_free(p);
+	_mem_free(p);
 }
 #endif /* MQXCFG_ALLOCATOR */
 
 typedef struct {
-    uint32_t *  TARGET;
-    uint32_t    BYTESIZE;
+	uint32_t *  TARGET;
+	uint32_t    BYTESIZE;
 } STARTUP_ZEROTABLE_STRUCT, * STARTUP_ZEROTABLE_STRUCT_PTR;
 
 typedef struct {
-    uint32_t *  SOURCE;
-    uint32_t *  TARGET;
-    uint32_t    BYTESIZE;
+	uint32_t *  SOURCE;
+	uint32_t *  TARGET;
+	uint32_t    BYTESIZE;
 } STARTUP_COPYTABLE_STRUCT, * STARTUP_COPYTABLE_STRUCT_PTR;
 
 
@@ -160,7 +160,7 @@ extern STARTUP_COPYTABLE_STRUCT __DATA_END[];
  */
 void _start(void)
 {
-    return;
+	return;
 }
 /*! \endcond */
 
@@ -171,11 +171,11 @@ void _start(void)
 void toolchain_startup(void)
 {
 // register destructor calls of static objects
-    atexit(__libc_fini_array);
+	atexit(__libc_fini_array);
 // run constructor calls of static objects
-    __libc_init_array();
+	__libc_init_array();
 // run main, if return go to exit
-    exit(main());
+	exit(main());
 }
 /*! \endcond */
 
@@ -188,8 +188,8 @@ void toolchain_startup(void)
 void _exit(int status)
 {
 // disable all interrupts, run infinite loop
-    __asm("cpsid i");
-    while(1);
+	__asm("cpsid i");
+	while(1);
 }
 /*! \endcond */
 
@@ -202,8 +202,7 @@ void _exit(int status)
  */
 void *_sbrk(intptr_t increment)
 {
-    _exit(-1);
-    return 0;
+	_exit(-1);
+	return 0;
 }
 /*! \endcond */
-

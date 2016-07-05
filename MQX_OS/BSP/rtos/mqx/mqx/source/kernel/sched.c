@@ -42,11 +42,11 @@
  */
 _mqx_uint _sched_get_max_priority
 (
-    _mqx_uint policy
+	_mqx_uint policy
 )
 { /* Body */
 
-    return (0);
+	return (0);
 
 } /* Endbody */
 
@@ -66,14 +66,14 @@ _mqx_uint _sched_get_max_priority
  */
 _mqx_uint _sched_get_min_priority
 (
-    _mqx_uint policy
+	_mqx_uint policy
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    return (kernel_data->LOWEST_TASK_PRIORITY);
+	return (kernel_data->LOWEST_TASK_PRIORITY);
 
 } /* Endbody */
 
@@ -101,80 +101,80 @@ _mqx_uint _sched_get_min_priority
  */
 _mqx_uint _sched_set_policy
 (
-    _task_id  task_id,
-    _mqx_uint policy
+	_task_id  task_id,
+	_mqx_uint policy
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
-    (void)                  kernel_data; /* suppress 'unused variable' warning */
-    TD_STRUCT_PTR           td_ptr = NULL;
-    (void)                  td_ptr; /* suppress 'unused variable' warning */
-    _mqx_uint               old_policy = MQX_SCHED_FIFO;
+	KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
+	(void)                  kernel_data; /* suppress 'unused variable' warning */
+	TD_STRUCT_PTR           td_ptr = NULL;
+	(void)                  td_ptr; /* suppress 'unused variable' warning */
+	_mqx_uint               old_policy = MQX_SCHED_FIFO;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE3(KLOG_sched_set_policy, (_mqx_uint)task_id, policy);
+	_KLOGE3(KLOG_sched_set_policy, (_mqx_uint)task_id, policy);
 #if MQX_HAS_TIME_SLICE
 
 #if MQX_CHECK_ERRORS
-    if (! ((policy == MQX_SCHED_FIFO) || (policy == MQX_SCHED_RR)))
-    {
-        _task_set_error(MQX_SCHED_INVALID_POLICY);
-        _KLOGX3(KLOG_sched_set_policy, MAX_MQX_UINT, MQX_SCHED_INVALID_POLICY);
-        return(MAX_MQX_UINT);
-    } /* Endif */
+	if (! ((policy == MQX_SCHED_FIFO) || (policy == MQX_SCHED_RR)))
+	{
+		_task_set_error(MQX_SCHED_INVALID_POLICY);
+		_KLOGX3(KLOG_sched_set_policy, MAX_MQX_UINT, MQX_SCHED_INVALID_POLICY);
+		return(MAX_MQX_UINT);
+	} /* Endif */
 #endif
 
-    /* Handle default case */
-    if (task_id == MQX_DEFAULT_TASK_ID)
-    {
-        old_policy = kernel_data->SCHED_POLICY;
-        kernel_data->SCHED_POLICY = policy;
-    }
-    else
-    {
-        td_ptr = (TD_STRUCT_PTR)_task_get_td(task_id);
-        if (td_ptr == NULL)
-        {
-            _task_set_error(MQX_SCHED_INVALID_TASK_ID);
-            _KLOGX3(KLOG_sched_set_policy, MAX_MQX_UINT, MQX_SCHED_INVALID_TASK_ID);
-            return(MAX_MQX_UINT);
-        } /* Endif */
-        if (td_ptr->FLAGS & MQX_TIME_SLICE_TASK)
-        {
-            old_policy = MQX_SCHED_RR;
-        }
-        else
-        {
-            old_policy = MQX_SCHED_FIFO;
-        } /* Endif */
-        _int_disable();
-        if (policy == MQX_SCHED_RR)
-        {
-            td_ptr->FLAGS |= MQX_TIME_SLICE_TASK;
-        }
-        else
-        {
-            td_ptr->FLAGS &= ~MQX_TIME_SLICE_TASK;
-        } /* Endif */
-        _int_enable();
-    } /* Endif */
+	/* Handle default case */
+	if (task_id == MQX_DEFAULT_TASK_ID)
+	{
+		old_policy = kernel_data->SCHED_POLICY;
+		kernel_data->SCHED_POLICY = policy;
+	}
+	else
+	{
+		td_ptr = (TD_STRUCT_PTR)_task_get_td(task_id);
+		if (td_ptr == NULL)
+		{
+			_task_set_error(MQX_SCHED_INVALID_TASK_ID);
+			_KLOGX3(KLOG_sched_set_policy, MAX_MQX_UINT, MQX_SCHED_INVALID_TASK_ID);
+			return(MAX_MQX_UINT);
+		} /* Endif */
+		if (td_ptr->FLAGS & MQX_TIME_SLICE_TASK)
+		{
+			old_policy = MQX_SCHED_RR;
+		}
+		else
+		{
+			old_policy = MQX_SCHED_FIFO;
+		} /* Endif */
+		_int_disable();
+		if (policy == MQX_SCHED_RR)
+		{
+			td_ptr->FLAGS |= MQX_TIME_SLICE_TASK;
+		}
+		else
+		{
+			td_ptr->FLAGS &= ~MQX_TIME_SLICE_TASK;
+		} /* Endif */
+		_int_enable();
+	} /* Endif */
 #else
 
 #if MQX_CHECK_ERRORS
-    if (policy != MQX_SCHED_FIFO)
-    {
-        _task_set_error(MQX_SCHED_INVALID_POLICY);
-        _KLOGX3(KLOG_sched_set_policy, MAX_MQX_UINT, MQX_SCHED_INVALID_POLICY);
-        return (MAX_MQX_UINT);
-    } /* Endif */
-    old_policy = MQX_SCHED_FIFO;
+	if (policy != MQX_SCHED_FIFO)
+	{
+		_task_set_error(MQX_SCHED_INVALID_POLICY);
+		_KLOGX3(KLOG_sched_set_policy, MAX_MQX_UINT, MQX_SCHED_INVALID_POLICY);
+		return (MAX_MQX_UINT);
+	} /* Endif */
+	old_policy = MQX_SCHED_FIFO;
 #endif
 
 #endif
 
-    _KLOGX3(KLOG_sched_set_policy, old_policy, 0L);
-    return (old_policy);
+	_KLOGX3(KLOG_sched_set_policy, old_policy, 0L);
+	return (old_policy);
 
 } /* Endbody */
 
@@ -196,45 +196,45 @@ _mqx_uint _sched_set_policy
  */
 _mqx_uint _sched_get_policy
 (
-    _task_id      task_id,
-    _mqx_uint_ptr policy_ptr
+	_task_id      task_id,
+	_mqx_uint_ptr policy_ptr
 )
 { /* Body */
 #if MQX_HAS_TIME_SLICE
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR          td_ptr;
-    _mqx_uint              old_policy;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR          td_ptr;
+	_mqx_uint              old_policy;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    /* Handle default case */
-    if (task_id == MQX_DEFAULT_TASK_ID)
-    {
-        old_policy = kernel_data->SCHED_POLICY;
-    }
-    else
-    {
-        td_ptr = (TD_STRUCT_PTR)_task_get_td(task_id);
-        if (td_ptr == NULL)
-        {
-            return(MQX_SCHED_INVALID_TASK_ID);
-        } /* Endif */
-        if (td_ptr->FLAGS & MQX_TIME_SLICE_TASK)
-        {
-            old_policy = MQX_SCHED_RR;
-        }
-        else
-        {
-            old_policy = MQX_SCHED_FIFO;
-        } /* Endif */
-    } /* Endif */
+	/* Handle default case */
+	if (task_id == MQX_DEFAULT_TASK_ID)
+	{
+		old_policy = kernel_data->SCHED_POLICY;
+	}
+	else
+	{
+		td_ptr = (TD_STRUCT_PTR)_task_get_td(task_id);
+		if (td_ptr == NULL)
+		{
+			return(MQX_SCHED_INVALID_TASK_ID);
+		} /* Endif */
+		if (td_ptr->FLAGS & MQX_TIME_SLICE_TASK)
+		{
+			old_policy = MQX_SCHED_RR;
+		}
+		else
+		{
+			old_policy = MQX_SCHED_FIFO;
+		} /* Endif */
+	} /* Endif */
 
-    *policy_ptr = old_policy;
+	*policy_ptr = old_policy;
 #else
-    *policy_ptr = MQX_SCHED_FIFO;
+	*policy_ptr = MQX_SCHED_FIFO;
 #endif
 
-    return (MQX_OK);
+	return (MQX_OK);
 
 } /* Endbody */
 
@@ -259,38 +259,38 @@ _mqx_uint _sched_get_policy
  */
 uint32_t _sched_get_rr_interval
 (
-    _task_id   task_id,
-    uint32_t *ms_ptr
+	_task_id   task_id,
+	uint32_t *ms_ptr
 )
 { /* Body */
-    TIME_STRUCT     time;
-    MQX_TICK_STRUCT tick;
-    uint32_t         slice;
+	TIME_STRUCT     time;
+	MQX_TICK_STRUCT tick;
+	uint32_t         slice;
 
-    if (_sched_get_rr_interval_ticks(task_id, &tick) != MQX_OK)
-    {
-        *ms_ptr = MAX_UINT_32;
-        return MAX_UINT_32;
-    } /* Endif */
+	if (_sched_get_rr_interval_ticks(task_id, &tick) != MQX_OK)
+	{
+		*ms_ptr = MAX_UINT_32;
+		return MAX_UINT_32;
+	} /* Endif */
 
-    PSP_TICKS_TO_TIME(&tick, &time);
+	PSP_TICKS_TO_TIME(&tick, &time);
 
-    if (time.SECONDS >= (MAX_UINT_32/1000))
-    {
-        *ms_ptr = MAX_UINT_32;
-        return(MAX_UINT_32);
-    } /* Endif */
+	if (time.SECONDS >= (MAX_UINT_32/1000))
+	{
+		*ms_ptr = MAX_UINT_32;
+		return(MAX_UINT_32);
+	} /* Endif */
 
-    slice = time.SECONDS * 1000;
-    if (slice >= (MAX_UINT_32 - time.MILLISECONDS))
-    {
-        *ms_ptr = MAX_UINT_32;
-        return(MAX_UINT_32);
-    } /* Endif */
+	slice = time.SECONDS * 1000;
+	if (slice >= (MAX_UINT_32 - time.MILLISECONDS))
+	{
+		*ms_ptr = MAX_UINT_32;
+		return(MAX_UINT_32);
+	} /* Endif */
 
-    *ms_ptr = slice + time.MILLISECONDS;
+	*ms_ptr = slice + time.MILLISECONDS;
 
-    return(MQX_OK);
+	return(MQX_OK);
 
 } /* Endbody */
 
@@ -318,46 +318,46 @@ uint32_t _sched_get_rr_interval
  */
 _mqx_uint _sched_get_rr_interval_ticks
 (
-    _task_id            task_id,
-    MQX_TICK_STRUCT_PTR tick_ptr
+	_task_id            task_id,
+	MQX_TICK_STRUCT_PTR tick_ptr
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR                   td_ptr;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR                   td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
 #if MQX_CHECK_ERRORS
-    /* Validate parameters */
-    if ( tick_ptr == NULL )
-    {
-        _task_set_error( MQX_SCHED_INVALID_PARAMETER_PTR );
-        return( MQX_SCHED_INVALID_PARAMETER_PTR );
-    } /* Endif */
+	/* Validate parameters */
+	if ( tick_ptr == NULL )
+	{
+		_task_set_error( MQX_SCHED_INVALID_PARAMETER_PTR );
+		return( MQX_SCHED_INVALID_PARAMETER_PTR );
+	} /* Endif */
 #endif
 
-    /* Handle default case */
-    if ( task_id == MQX_DEFAULT_TASK_ID )
-    {
+	/* Handle default case */
+	if ( task_id == MQX_DEFAULT_TASK_ID )
+	{
 
-        *tick_ptr = kernel_data->SCHED_TIME_SLICE;
+		*tick_ptr = kernel_data->SCHED_TIME_SLICE;
 
-    }
-    else
-    {
+	}
+	else
+	{
 
-        td_ptr = (TD_STRUCT_PTR)_task_get_td( task_id );
-        if ( td_ptr == NULL )
-        {
-            _task_set_error( MQX_SCHED_INVALID_TASK_ID );
-            return( MQX_SCHED_INVALID_TASK_ID );
-        } /* Endif */
+		td_ptr = (TD_STRUCT_PTR)_task_get_td( task_id );
+		if ( td_ptr == NULL )
+		{
+			_task_set_error( MQX_SCHED_INVALID_TASK_ID );
+			return( MQX_SCHED_INVALID_TASK_ID );
+		} /* Endif */
 
-        *tick_ptr = td_ptr->TIME_SLICE;
+		*tick_ptr = td_ptr->TIME_SLICE;
 
-    } /* Endif */
+	} /* Endif */
 
-    return( MQX_OK );
+	return( MQX_OK );
 
 } /* Endbody */
 
@@ -383,54 +383,54 @@ _mqx_uint _sched_get_rr_interval_ticks
  */
 uint32_t _sched_set_rr_interval
 (
-    _task_id task_id,
-    uint32_t  rr_interval
+	_task_id task_id,
+	uint32_t  rr_interval
 )
 { /* Body */
-    _KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
-    uint32_t         old_rr_interval;
-    MQX_TICK_STRUCT ticks;
-    MQX_TICK_STRUCT old_ticks;
-    _mqx_uint       result;
+	_KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
+	uint32_t         old_rr_interval;
+	MQX_TICK_STRUCT ticks;
+	MQX_TICK_STRUCT old_ticks;
+	_mqx_uint       result;
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
 
-    _KLOGE3(KLOG_sched_set_rr_interval, (_mqx_uint)task_id, rr_interval);
+	_KLOGE3(KLOG_sched_set_rr_interval, (_mqx_uint)task_id, rr_interval);
 
 #if MQX_CHECK_ERRORS
-    /* Validate parameters */
-    if (0 == rr_interval)
-    {
-        _KLOGX2(KLOG_sched_set_rr_interval, MAX_UINT_32);
-        _task_set_error( MQX_SCHED_INVALID_PARAMETER_PTR );
-        return (MAX_UINT_32);
-    } /* Endif */
+	/* Validate parameters */
+	if (0 == rr_interval)
+	{
+		_KLOGX2(KLOG_sched_set_rr_interval, MAX_UINT_32);
+		_task_set_error( MQX_SCHED_INVALID_PARAMETER_PTR );
+		return (MAX_UINT_32);
+	} /* Endif */
 #endif
 
-    /* Compute the number of tick events required to accomplish the least amount of time[ms]. */
-    /* tick_events = (required_time[ms] + (time_per_tick[ms] - 1)) / time_per_tick[ms])  -->
-     * tick_events = ((required_time[ms] - 1) / time_per_tick[ms]) + 1
-     */
-    rr_interval--;
-    /* Convert milliseconds to ticks, truncated */
-    PSP_MILLISECONDS_TO_TICKS_QUICK(rr_interval, &ticks);
-    /* Resolve truncation by adding one tick. */
-    PSP_ADD_TICKS_TO_TICK_STRUCT(&ticks, 1, &ticks);
+	/* Compute the number of tick events required to accomplish the least amount of time[ms]. */
+	/* tick_events = (required_time[ms] + (time_per_tick[ms] - 1)) / time_per_tick[ms])  -->
+	 * tick_events = ((required_time[ms] - 1) / time_per_tick[ms]) + 1
+	 */
+	rr_interval--;
+	/* Convert milliseconds to ticks, truncated */
+	PSP_MILLISECONDS_TO_TICKS_QUICK(rr_interval, &ticks);
+	/* Resolve truncation by adding one tick. */
+	PSP_ADD_TICKS_TO_TICK_STRUCT(&ticks, 1, &ticks);
 
-    result = _sched_set_rr_interval_internal(task_id, &ticks, &old_ticks);
+	result = _sched_set_rr_interval_internal(task_id, &ticks, &old_ticks);
 
-    if (result != MQX_OK)
-    {
-        _task_set_error(result);
-        _KLOGX2(KLOG_sched_set_rr_interval, MAX_UINT_32);
-        return(MAX_UINT_32);
-    } /* Endif */
+	if (result != MQX_OK)
+	{
+		_task_set_error(result);
+		_KLOGX2(KLOG_sched_set_rr_interval, MAX_UINT_32);
+		return(MAX_UINT_32);
+	} /* Endif */
 
-    old_rr_interval = PSP_TICKS_TO_MILLISECONDS(&old_ticks, &result);
+	old_rr_interval = PSP_TICKS_TO_MILLISECONDS(&old_ticks, &result);
 
-    _KLOGX2(KLOG_sched_set_rr_interval, old_rr_interval);
+	_KLOGX2(KLOG_sched_set_rr_interval, old_rr_interval);
 
-    return(old_rr_interval);
+	return(old_rr_interval);
 
 } /* Endbody */
 
@@ -458,30 +458,30 @@ uint32_t _sched_set_rr_interval
  */
 _mqx_uint _sched_set_rr_interval_ticks
 (
-    _task_id            task_id,
-    MQX_TICK_STRUCT_PTR new_rr_interval_ptr,
-    MQX_TICK_STRUCT_PTR old_rr_interval_ptr
+	_task_id            task_id,
+	MQX_TICK_STRUCT_PTR new_rr_interval_ptr,
+	MQX_TICK_STRUCT_PTR old_rr_interval_ptr
 
 )
 { /* Body */
-    _KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
-    _mqx_uint result;
+	_KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
+	_mqx_uint result;
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
 
-    _KLOGE2(KLOG_sched_set_rr_interval_ticks, task_id);
+	_KLOGE2(KLOG_sched_set_rr_interval_ticks, task_id);
 
-    result = _sched_set_rr_interval_internal(task_id, new_rr_interval_ptr,
-                    old_rr_interval_ptr);
+	result = _sched_set_rr_interval_internal(task_id, new_rr_interval_ptr,
+					old_rr_interval_ptr);
 
-    if (result != MQX_OK)
-    {
-        _task_set_error(result);
-    } /* Endif */
+	if (result != MQX_OK)
+	{
+		_task_set_error(result);
+	} /* Endif */
 
-    _KLOGX2(KLOG_sched_set_rr_interval_ticks, result);
+	_KLOGX2(KLOG_sched_set_rr_interval_ticks, result);
 
-    return result;
+	return result;
 
 } /* Endbody */
 
@@ -497,20 +497,20 @@ _mqx_uint _sched_set_rr_interval_ticks
  */
 void _sched_yield(void)
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR          td_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR          td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOG(_klog_yield_internal();)
+	_KLOG(_klog_yield_internal();)
 
-    td_ptr = kernel_data->ACTIVE_PTR;
+	td_ptr = kernel_data->ACTIVE_PTR;
 
-    _INT_DISABLE();
-    _QUEUE_UNLINK(td_ptr);
-    _TASK_READY(td_ptr, kernel_data);
-    _sched_execute_scheduler_internal();
-    _INT_ENABLE();
+	_INT_DISABLE();
+	_QUEUE_UNLINK(td_ptr);
+	_TASK_READY(td_ptr, kernel_data);
+	_sched_execute_scheduler_internal();
+	_INT_ENABLE();
 
 } /* Endbody */
 
@@ -531,24 +531,24 @@ void _sched_yield(void)
  */
 void _sched_boost_priority_internal
 (
-    register TD_STRUCT_PTR td_ptr,
-    register _mqx_uint     priority
+	register TD_STRUCT_PTR td_ptr,
+	register _mqx_uint     priority
 )
 { /* Body */
-    _KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
+	_KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
-    _KLOGE4(KLOG_sched_boost_priority, td_ptr, priority, td_ptr->MY_QUEUE->PRIORITY);
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGE4(KLOG_sched_boost_priority, td_ptr, priority, td_ptr->MY_QUEUE->PRIORITY);
 
-    td_ptr->FLAGS |= TASK_PRIORITY_BOOSTED;
-    ++td_ptr->BOOSTED;
+	td_ptr->FLAGS |= TASK_PRIORITY_BOOSTED;
+	++td_ptr->BOOSTED;
 
-    _sched_set_priority_internal(td_ptr, priority);
+	_sched_set_priority_internal(td_ptr, priority);
 
-    /* Allow higher priority tasks to run */
-    _CHECK_RUN_SCHEDULER();
+	/* Allow higher priority tasks to run */
+	_CHECK_RUN_SCHEDULER();
 
-    _KLOGX1(KLOG_sched_boost_priority);
+	_KLOGX1(KLOG_sched_boost_priority);
 
 } /* Endbody */
 /*! \endcond */
@@ -569,32 +569,32 @@ void _sched_boost_priority_internal
  */
 void _sched_unboost_priority_internal
 (
-    register TD_STRUCT_PTR td_ptr,
-    register _mqx_uint     number_of_boosts
+	register TD_STRUCT_PTR td_ptr,
+	register _mqx_uint     number_of_boosts
 )
 { /* Body */
-    _KLOGM(register KERNEL_DATA_STRUCT_PTR kernel_data);
+	_KLOGM(register KERNEL_DATA_STRUCT_PTR kernel_data);
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
-    _KLOGE5(KLOG_sched_unboost_priority, td_ptr, number_of_boosts, td_ptr->BOOSTED, td_ptr->HOME_QUEUE->PRIORITY);
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGE5(KLOG_sched_unboost_priority, td_ptr, number_of_boosts, td_ptr->BOOSTED, td_ptr->HOME_QUEUE->PRIORITY);
 
-    if (td_ptr->FLAGS & TASK_PRIORITY_BOOSTED)
-    {
-        if (td_ptr->BOOSTED > number_of_boosts)
-        {
-            td_ptr->BOOSTED = td_ptr->BOOSTED - number_of_boosts;
-        }
-        else
-        {
-            td_ptr->BOOSTED = 0;
-            td_ptr->FLAGS &= ~TASK_PRIORITY_BOOSTED;
-            _sched_set_priority_internal(td_ptr, (_mqx_uint) td_ptr->HOME_QUEUE->PRIORITY);
-            /* Allow higher priority tasks to run */
-            _CHECK_RUN_SCHEDULER();
-        } /* Endif */
-    } /* Endif */
+	if (td_ptr->FLAGS & TASK_PRIORITY_BOOSTED)
+	{
+		if (td_ptr->BOOSTED > number_of_boosts)
+		{
+			td_ptr->BOOSTED = td_ptr->BOOSTED - number_of_boosts;
+		}
+		else
+		{
+			td_ptr->BOOSTED = 0;
+			td_ptr->FLAGS &= ~TASK_PRIORITY_BOOSTED;
+			_sched_set_priority_internal(td_ptr, (_mqx_uint) td_ptr->HOME_QUEUE->PRIORITY);
+			/* Allow higher priority tasks to run */
+			_CHECK_RUN_SCHEDULER();
+		} /* Endif */
+	} /* Endif */
 
-    _KLOGX1(KLOG_sched_unboost_priority);
+	_KLOGX1(KLOG_sched_unboost_priority);
 
 } /* Endbody */
 /*! \endcond */
@@ -616,31 +616,31 @@ void _sched_unboost_priority_internal
  */
 void _sched_insert_priorityq_internal
 (
-    register QUEUE_STRUCT_PTR queue_ptr,
-    register TD_STRUCT_PTR    td_ptr
+	register QUEUE_STRUCT_PTR queue_ptr,
+	register TD_STRUCT_PTR    td_ptr
 )
 { /* Body */
-    register TD_STRUCT_PTR td2_ptr;
-    register TD_STRUCT_PTR td_prev_ptr;
-    register _mqx_uint     priority;
-    register _mqx_uint     count;
+	register TD_STRUCT_PTR td2_ptr;
+	register TD_STRUCT_PTR td_prev_ptr;
+	register _mqx_uint     priority;
+	register _mqx_uint     count;
 
-    td_prev_ptr = (TD_STRUCT_PTR) ((void *) queue_ptr);
-    td2_ptr = (TD_STRUCT_PTR) ((void *) queue_ptr->NEXT);
-    count = _QUEUE_GET_SIZE(queue_ptr) + 1;
-    priority = td_ptr->MY_QUEUE->PRIORITY;
-    while (--count)
-    {
-        if (td2_ptr->MY_QUEUE->PRIORITY > priority)
-        {
-            break;
-        } /* Endif */
-        td_prev_ptr = td2_ptr;
-        td2_ptr = td2_ptr->TD_NEXT;
-    } /* Endwhile */
-    _QUEUE_INSERT(queue_ptr,
-                    (QUEUE_ELEMENT_STRUCT_PTR)((void *)td_prev_ptr),
-                    (QUEUE_ELEMENT_STRUCT_PTR)((void *)td_ptr));
+	td_prev_ptr = (TD_STRUCT_PTR) ((void *) queue_ptr);
+	td2_ptr = (TD_STRUCT_PTR) ((void *) queue_ptr->NEXT);
+	count = _QUEUE_GET_SIZE(queue_ptr) + 1;
+	priority = td_ptr->MY_QUEUE->PRIORITY;
+	while (--count)
+	{
+		if (td2_ptr->MY_QUEUE->PRIORITY > priority)
+		{
+			break;
+		} /* Endif */
+		td_prev_ptr = td2_ptr;
+		td2_ptr = td2_ptr->TD_NEXT;
+	} /* Endwhile */
+	_QUEUE_INSERT(queue_ptr,
+					(QUEUE_ELEMENT_STRUCT_PTR)((void *)td_prev_ptr),
+					(QUEUE_ELEMENT_STRUCT_PTR)((void *)td_ptr));
 
 } /* Endbody */
 /*! \endcond */
@@ -659,25 +659,25 @@ void _sched_insert_priorityq_internal
  */
 _mqx_uint _sched_get_max_priority_on_q_internal
 (
-    register QUEUE_STRUCT_PTR queue_ptr
+	register QUEUE_STRUCT_PTR queue_ptr
 )
 { /* Body */
-    register TD_STRUCT_PTR td_ptr;
-    register _mqx_uint     priority;
-    register _mqx_uint     count;
+	register TD_STRUCT_PTR td_ptr;
+	register _mqx_uint     priority;
+	register _mqx_uint     count;
 
-    td_ptr = (TD_STRUCT_PTR) ((void *) queue_ptr->NEXT);
-    count = _QUEUE_GET_SIZE(queue_ptr) + 1;
-    priority = MAX_MQX_UINT;
-    while (--count)
-    {
-        if (td_ptr->MY_QUEUE->PRIORITY < priority)
-        {
-            priority = td_ptr->MY_QUEUE->PRIORITY;
-        } /* Endif */
-        td_ptr = td_ptr->TD_NEXT;
-    } /* Endwhile */
-    return priority;
+	td_ptr = (TD_STRUCT_PTR) ((void *) queue_ptr->NEXT);
+	count = _QUEUE_GET_SIZE(queue_ptr) + 1;
+	priority = MAX_MQX_UINT;
+	while (--count)
+	{
+		if (td_ptr->MY_QUEUE->PRIORITY < priority)
+		{
+			priority = td_ptr->MY_QUEUE->PRIORITY;
+		} /* Endif */
+		td_ptr = td_ptr->TD_NEXT;
+	} /* Endwhile */
+	return priority;
 
 } /* Endbody */
 /*! \endcond */
@@ -697,63 +697,63 @@ _mqx_uint _sched_get_max_priority_on_q_internal
  */
 void _sched_set_priority_internal
 (
-    register TD_STRUCT_PTR td_ptr,
-    register _mqx_uint     new_priority
+	register TD_STRUCT_PTR td_ptr,
+	register _mqx_uint     new_priority
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register READY_Q_STRUCT_PTR     ready_q_ptr;
-    register _mqx_uint              old_priority;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register READY_Q_STRUCT_PTR     ready_q_ptr;
+	register _mqx_uint              old_priority;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    /* Find the new queue */
-    ready_q_ptr = kernel_data->READY_Q_LIST;
-    old_priority = td_ptr->MY_QUEUE->PRIORITY;
+	/* Find the new queue */
+	ready_q_ptr = kernel_data->READY_Q_LIST;
+	old_priority = td_ptr->MY_QUEUE->PRIORITY;
 
-    ready_q_ptr = ready_q_ptr - new_priority;
+	ready_q_ptr = ready_q_ptr - new_priority;
 
-    /*
-      * Remove the current task from the head of the queue, and
-      * place the task at the back of the specified queue.
-      */
-    td_ptr->TASK_SR = ready_q_ptr->ENABLE_SR;
-    td_ptr->MY_QUEUE = ready_q_ptr;
-    if (td_ptr->STATE == READY)
-    {
-        _QUEUE_UNLINK(td_ptr);
-        _TASK_READY(td_ptr,kernel_data);
-        if (kernel_data->ACTIVE_PTR == td_ptr)
-        {
-            /* Changing the current task's priority */
-            kernel_data->ACTIVE_SR = td_ptr->TASK_SR;
-            if (new_priority > old_priority)
-            {
-                /*
-                  * Save state, and re-run the scheduler
-                  * since the actice task's priority has been lowered,
-                  * and now a higher priority task may be ready to run
-                  */
-                _sched_execute_scheduler_internal();
-            } /* Endif */
-        }
-        else
-        {
-            /* May need to mod sr value of task on stack */
-            if (td_ptr->DISABLED_LEVEL == 0)
-            {
-                _task_sync_priority_internal(td_ptr);
-            } /* Endif */
-        } /* Endif */
-    }
-    else
-    {
-        /* May need to mod sr value of task on stack */
-        if (td_ptr->DISABLED_LEVEL == 0)
-        {
-            _task_sync_priority_internal(td_ptr);
-        } /* Endif */
-    } /* Endif */
+	/*
+	  * Remove the current task from the head of the queue, and
+	  * place the task at the back of the specified queue.
+	  */
+	td_ptr->TASK_SR = ready_q_ptr->ENABLE_SR;
+	td_ptr->MY_QUEUE = ready_q_ptr;
+	if (td_ptr->STATE == READY)
+	{
+		_QUEUE_UNLINK(td_ptr);
+		_TASK_READY(td_ptr,kernel_data);
+		if (kernel_data->ACTIVE_PTR == td_ptr)
+		{
+			/* Changing the current task's priority */
+			kernel_data->ACTIVE_SR = td_ptr->TASK_SR;
+			if (new_priority > old_priority)
+			{
+				/*
+				  * Save state, and re-run the scheduler
+				  * since the actice task's priority has been lowered,
+				  * and now a higher priority task may be ready to run
+				  */
+				_sched_execute_scheduler_internal();
+			} /* Endif */
+		}
+		else
+		{
+			/* May need to mod sr value of task on stack */
+			if (td_ptr->DISABLED_LEVEL == 0)
+			{
+				_task_sync_priority_internal(td_ptr);
+			} /* Endif */
+		} /* Endif */
+	}
+	else
+	{
+		/* May need to mod sr value of task on stack */
+		if (td_ptr->DISABLED_LEVEL == 0)
+		{
+			_task_sync_priority_internal(td_ptr);
+		} /* Endif */
+	} /* Endif */
 
 } /* Endbody */
 /*! \endcond */
@@ -781,46 +781,46 @@ void _sched_set_priority_internal
  */
 _mqx_uint _sched_get_rr_interval_internal
 (
-    _task_id            task_id,
-    MQX_TICK_STRUCT_PTR tick_ptr
+	_task_id            task_id,
+	MQX_TICK_STRUCT_PTR tick_ptr
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR                   td_ptr;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR                   td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
 #if MQX_CHECK_ERRORS
-    /* Validate parameters */
-    if ( tick_ptr == NULL )
-    {
-        _task_set_error( MQX_SCHED_INVALID_PARAMETER_PTR );
-        return( MQX_SCHED_INVALID_PARAMETER_PTR );
-    } /* Endif */
+	/* Validate parameters */
+	if ( tick_ptr == NULL )
+	{
+		_task_set_error( MQX_SCHED_INVALID_PARAMETER_PTR );
+		return( MQX_SCHED_INVALID_PARAMETER_PTR );
+	} /* Endif */
 #endif
 
-    /* Handle default case */
-    if ( task_id == MQX_DEFAULT_TASK_ID )
-    {
+	/* Handle default case */
+	if ( task_id == MQX_DEFAULT_TASK_ID )
+	{
 
-        *tick_ptr = kernel_data->SCHED_TIME_SLICE;
+		*tick_ptr = kernel_data->SCHED_TIME_SLICE;
 
-    }
-    else
-    {
+	}
+	else
+	{
 
-        td_ptr = (TD_STRUCT_PTR)_task_get_td( task_id );
-        if ( td_ptr == NULL )
-        {
-            _task_set_error( MQX_SCHED_INVALID_TASK_ID );
-            return( MQX_SCHED_INVALID_TASK_ID );
-        } /* Endif */
+		td_ptr = (TD_STRUCT_PTR)_task_get_td( task_id );
+		if ( td_ptr == NULL )
+		{
+			_task_set_error( MQX_SCHED_INVALID_TASK_ID );
+			return( MQX_SCHED_INVALID_TASK_ID );
+		} /* Endif */
 
-        *tick_ptr = td_ptr->TIME_SLICE;
+		*tick_ptr = td_ptr->TIME_SLICE;
 
-    } /* Endif */
+	} /* Endif */
 
-    return( MQX_OK );
+	return( MQX_OK );
 
 } /* Endbody */
 /*! \endcond */
@@ -846,39 +846,39 @@ _mqx_uint _sched_get_rr_interval_internal
  */
 _mqx_uint _sched_set_rr_interval_internal
 (
-    _task_id            task_id,
-    MQX_TICK_STRUCT_PTR new_rr_tick_ptr,
-    MQX_TICK_STRUCT_PTR old_rr_tick_ptr
+	_task_id            task_id,
+	MQX_TICK_STRUCT_PTR new_rr_tick_ptr,
+	MQX_TICK_STRUCT_PTR old_rr_tick_ptr
 
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR          td_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR          td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    /* Handle default case */
-    if (task_id == MQX_DEFAULT_TASK_ID)
-    {
-        *old_rr_tick_ptr = kernel_data->SCHED_TIME_SLICE;
-        _int_disable();
-        kernel_data->SCHED_TIME_SLICE = *new_rr_tick_ptr;
-        _int_enable();
-    }
-    else
-    {
-        td_ptr = (TD_STRUCT_PTR)_task_get_td(task_id);
-        if (td_ptr == NULL)
-        {
-            return(MQX_SCHED_INVALID_TASK_ID);
-        } /* Endif */
-        *old_rr_tick_ptr = td_ptr->TIME_SLICE;
-        _int_disable();
-        td_ptr->TIME_SLICE = *new_rr_tick_ptr;
-        _int_enable();
-    } /* Endif */
+	/* Handle default case */
+	if (task_id == MQX_DEFAULT_TASK_ID)
+	{
+		*old_rr_tick_ptr = kernel_data->SCHED_TIME_SLICE;
+		_int_disable();
+		kernel_data->SCHED_TIME_SLICE = *new_rr_tick_ptr;
+		_int_enable();
+	}
+	else
+	{
+		td_ptr = (TD_STRUCT_PTR)_task_get_td(task_id);
+		if (td_ptr == NULL)
+		{
+			return(MQX_SCHED_INVALID_TASK_ID);
+		} /* Endif */
+		*old_rr_tick_ptr = td_ptr->TIME_SLICE;
+		_int_disable();
+		td_ptr->TIME_SLICE = *new_rr_tick_ptr;
+		_int_enable();
+	} /* Endif */
 
-    return(MQX_OK);
+	return(MQX_OK);
 
 } /* Endbody */
 /*! \endcond */
