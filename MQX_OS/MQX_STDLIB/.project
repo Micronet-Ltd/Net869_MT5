@@ -42,128 +42,122 @@
 		<link>
 			<name>mqx_stdlib_Source/include/std_prv.h</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/include/std_prv.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/include/std_prv.h</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/include/stdio.h</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/include/stdio.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/include/stdio.h</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/include/strings.h</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/include/strings.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/include/strings.h</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/buf_prv.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/buf_prv.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/buf_prv.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/buf_prv.h</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/buf_prv.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/buf_prv.h</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/err.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/err.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/err.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/fclose.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/fclose.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/fclose.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/fflush.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/fflush.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/fflush.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/fopen.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/fopen.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/fopen.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/fp_prv.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/fp_prv.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/fp_prv.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/fp_prv.h</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/fp_prv.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/fp_prv.h</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/fread.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/fread.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/fread.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/fwrite.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/fwrite.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/fwrite.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/get.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/get.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/get.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/pos.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/pos.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/pos.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/print.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/print.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/print.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/print_prv.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/print_prv.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/print_prv.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/print_prv.h</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/print_prv.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/print_prv.h</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/put.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/put.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/put.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/scan.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/scan.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/scan.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/scan_prv.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/scan_prv.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/scan_prv.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/scan_prv.h</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/scan_prv.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/scan_prv.h</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_stdio/stdio.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/stdio/stdio.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/stdio/stdio.c</locationURI>
 		</link>
 		<link>
 			<name>mqx_stdlib_Source/mqx_strings/strings.c</name>
 			<type>1</type>
-			<locationURI>PROJECT_KSDK_PATH/rtos/mqx/mqx_stdlib/source/strings/strings.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/BSP/rtos/mqx/mqx_stdlib/source/strings/strings.c</locationURI>
 		</link>
 	</linkedResources>
-	<variableList>
-		<variable>
-			<name>PROJECT_KSDK_PATH</name>
-			<value>file:/c:/Freescale/KSDK_1.3.0</value>
-		</variable>
-	</variableList>
 </projectDescription>

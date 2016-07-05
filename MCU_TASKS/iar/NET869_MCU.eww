@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\..\..\BootLoader\BootLoader.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\NET869_MCU.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\MQX_OS\MQX_LIB\iar\ksdk_mqx_20d100m_lib.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\MQX_OS\MQX_PSP\iar\mqx_psp_20d100m.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\MQX_OS\MQX_STDLIB\iar\mqx_stdlib_20d100m.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\MQX_OS\MQX_USB_DEVICE\iar\usbd_sdk_mqx_lib_20d100m.ewp</path>
+  </project>
+  <batchBuild/>
+</workspace>
+
+

@@ -1,0 +1,56 @@
+# ##############################################################################
+
+# iCEcube PCF
+
+# Version:            2013.12.25022
+
+# File Generated:     Oct 12 2015 16:44:21
+
+# Family & Device:    iCE40HX4K
+
+# Package:            CB132
+
+# ##############################################################################
+
+###IOSet List 5
+set_io led2_blue D5
+set_io led2_green C4
+set_io led2_red A5
+
+set_io led3_blue C12
+set_io led3_green A12
+set_io led3_red A10
+
+set_io CPU_UART_rx E14
+set_io CPU_UART_tx D14
+
+set_io J1708_UART_tx L1
+set_io J1708_UART_rx M1
+
+
+set_io CPU_I2C_scl B1 
+set_io CPU_I2C_sda C1 
+
+set_io gpio_in[1] P2
+set_io gpio_in[2] P3
+set_io gpio_in[3] P4
+set_io gpio_in[4] P5
+set_io gpio_in[5] P9
+set_io gpio_in[6] M12
+set_io gpio_in[7] L14
+set_io gpio_test  D1
+
+set_io irq C3
+#set_io rst H1
+set_io clk A7
+
+
+#set_io tp34         	G1
+#set_io tp35         	H1
+#set_io tp36         	K3
+#set_io tp39         	P7
+#set_io tp41         	P8
+#set_io tp42         	P10
+#set_io test_irq     	D1
+
+

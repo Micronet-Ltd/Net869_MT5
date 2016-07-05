@@ -43,14 +43,12 @@
 #define CLOCK_NUMBER_OF_CONFIGURATIONS 3U
 
 #ifndef CLOCK_INIT_CONFIG
-#define CLOCK_INIT_CONFIG CLOCK_RUN
+#define CLOCK_INIT_CONFIG CLOCK_RUN //CLOCK_VLPR
 #endif
 
-#if (CLOCK_INIT_CONFIG == CLOCK_RUN)
 #define CORE_CLOCK_FREQ 96000000U
-#else
-#define CORE_CLOCK_FREQ 4000000U
-#endif
+#define CORE_LPM_CLOCK_FREQ 4000000U
+
 
 /* OSC0 configuration. */
 #define OSC0_XTAL_FREQ 26000000U
@@ -83,19 +81,21 @@
 #define BOARD_RTC_CLK_FREQUENCY     32768U;
 /* The UART to use for debug messages. */
 #ifndef BOARD_DEBUG_UART_INSTANCE
-    #define BOARD_DEBUG_UART_INSTANCE   5
-    #define BOARD_DEBUG_UART_BASEADDR   UART5
+    #define BOARD_DEBUG_UART_INSTANCE  4
+    #define BOARD_DEBUG_UART_BASEADDR   UART4
 #endif
 #ifndef BOARD_DEBUG_UART_BAUD
     #define BOARD_DEBUG_UART_BAUD       115200
 #endif
 
+#define	UART_UPDATE_FW_IDX				UART3_IDX
+
 /* This define to use for power manager demo */
 #define BOARD_LOW_POWER_UART_BAUD       9600
 
 #define BOARD_USE_UART
-#define PM_DBG_UART_IRQ_HANDLER         UART5_RX_TX_IRQHandler
-#define PM_DBG_UART_IRQn                UART5_RX_TX_IRQn
+#define PM_DBG_UART_IRQ_HANDLER         UART4_RX_TX_IRQHandler
+#define PM_DBG_UART_IRQn                UART4_RX_TX_IRQn
 
 /* Define feature for the low_power_demo */
 #define FSL_FEATURE_HAS_VLLS2 (1)
@@ -137,7 +137,9 @@
 #define BOARD_DAC_DEMO_ADC_CHANNEL      10U
 
 /* The CAN instance used for board */
-#define BOARD_CAN_INSTANCE              1
+#define BOARD_CAN_INSTANCE              2
+#define BSP_CAN_DEVICE_0				0
+#define BSP_CAN_DEVICE_1				1
 
 /* The i2c instance used for i2c DAC demo */
 #define BOARD_DAC_I2C_INSTANCE          1
@@ -278,6 +280,11 @@ uint8_t usb_device_board_init(uint8_t controller_id);
 uint8_t usb_host_board_init(uint8_t controller_id);
 /*Function to handle board-specified initialization*/
 uint8_t usb_otg_board_init(uint8_t controller_id);
+void update_fw_uart_init(void);
+
+void Board_SetVerySlowClk  (void);
+void Board_SetFastClk (void);
+void Board_SetSlowClk (void);
 
 #if defined(__cplusplus)
 }

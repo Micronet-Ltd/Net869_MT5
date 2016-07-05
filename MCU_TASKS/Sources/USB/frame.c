@@ -13,10 +13,10 @@
 // TODO: this is based on old code, may have some bugs which were fixed.
 
 // buffer d is atleast 2*len+2, assuming all bytes are escaped and 2 FEND.
-int frame_encode(unsigned char *s, unsigned char *d, int len)
+int frame_encode(uint8_t *s, const uint8_t *d, int len)
 {
-	unsigned char *p = d;
-	unsigned char c;
+	uint8_t *p = (uint8_t*)d;
+	uint8_t c;
 
 	*p++ = FEND;
 
@@ -98,10 +98,9 @@ int frame_process_buffer(frame_t * frame, uint8_t *buffer, uint32_t len)
 	for(i = 0; i < len; i++)
 	{
 		if(frame_input(frame, buffer[i]))
-			return i;
+			return i+1;
 	}
 
-	// Must never return > len or < 0
 	return i;
 }
 
