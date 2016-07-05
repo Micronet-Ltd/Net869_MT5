@@ -4,14 +4,14 @@
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the <organization> nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -61,56 +61,56 @@
 #endif /* End of CPU_CORE */
 
 uint32_t SIZE_OPTIMIZATION PFlashFacGetSAProtection (PFLASH_SSD_CONFIG pSSDConfig, \
-                       uint8_t *protectStatus, \
-                       uint8_t *numberOfSegments,\
-                       uint32_t *segmentSize)
+					   uint8_t *protectStatus, \
+					   uint8_t *numberOfSegments,\
+					   uint32_t *segmentSize)
 {
 #if PFLASH_FAC_PRESENCE
-    uint8_t reg[8];
-    uint32_t temp;        /* temporary variable */
+	uint8_t reg[8];
+	uint32_t temp;        /* temporary variable */
 
-    // Get Number of Segments for P-Flash
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FACSN_OFFSET;
-    *numberOfSegments = REG_READ(temp);
+	// Get Number of Segments for P-Flash
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FACSN_OFFSET;
+	*numberOfSegments = REG_READ(temp);
 
-    // Get Segment size
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FACSS_OFFSET;
-    *segmentSize = 256ul << REG_READ(temp);
+	// Get Segment size
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FACSS_OFFSET;
+	*segmentSize = 256ul << REG_READ(temp);
 
-    // Get protection status
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCL0_OFFSET;
-    reg[0] = REG_READ(temp);
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCL1_OFFSET;
-    reg[1] = REG_READ(temp);
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCL2_OFFSET;
-    reg[2] = REG_READ(temp);
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCL3_OFFSET;
-    reg[3] = REG_READ(temp);
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCH0_OFFSET;
-    reg[4] = REG_READ(temp);
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCH1_OFFSET;
-    reg[5] = REG_READ(temp);
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCH2_OFFSET;
-    reg[6] = REG_READ(temp);
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCH3_OFFSET;
-    reg[7] = REG_READ(temp);
+	// Get protection status
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCL0_OFFSET;
+	reg[0] = REG_READ(temp);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCL1_OFFSET;
+	reg[1] = REG_READ(temp);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCL2_OFFSET;
+	reg[2] = REG_READ(temp);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCL3_OFFSET;
+	reg[3] = REG_READ(temp);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCH0_OFFSET;
+	reg[4] = REG_READ(temp);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCH1_OFFSET;
+	reg[5] = REG_READ(temp);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCH2_OFFSET;
+	reg[6] = REG_READ(temp);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_SACCH3_OFFSET;
+	reg[7] = REG_READ(temp);
 
-    for(temp = 0; temp < 8; temp++)
-    {
-        protectStatus[temp] = reg[temp];
-    }
+	for(temp = 0; temp < 8; temp++)
+	{
+		protectStatus[temp] = reg[temp];
+	}
 
 #if C90TFS_ENABLE_DEBUG
-    /* Enter Debug state if enabled */
-    if (TRUE == (pSSDConfig->DebugEnable))
-    {
-        ENTER_DEBUG_MODE;
-    }
+	/* Enter Debug state if enabled */
+	if (TRUE == (pSSDConfig->DebugEnable))
+	{
+		ENTER_DEBUG_MODE;
+	}
 #endif
 
-    return(FTFx_OK);
+	return(FTFx_OK);
 #else
-    return (FTFx_ERR_NOFAC);
+	return (FTFx_ERR_NOFAC);
 #endif // PFLASH_FAC_PRESENCE
 }
 

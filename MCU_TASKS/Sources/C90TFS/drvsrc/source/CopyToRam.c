@@ -4,14 +4,14 @@
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the <organization> nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -39,8 +39,8 @@
 
 /************************** CHANGES *************************************
 1.1.GA      09.25.2014      FPT Team      First version of SDK C90TFS flash driver
-                                          inherited from BM C90TFS flash driver v1.02
-                                          (08.04.2014, FPT Team)
+										  inherited from BM C90TFS flash driver v1.02
+										  (08.04.2014, FPT Team)
 *************************************************************************/
 /* include the header files */
 #include "SSD_FTFx.h"
@@ -61,19 +61,19 @@
 
 uint32_t SIZE_OPTIMIZATION RelocateFunction(uint32_t dest, uint32_t size, uint32_t src)
 {
-    uint32_t temp;
-    uint16_t value, i, *pSrc, *pDest;
-    temp = PGM2DATA((uint32_t)src - LAUNCH_COMMAND_OFFSET);
-    pSrc = (uint16_t *)temp;
-    pDest = (uint16_t *)dest;
-    temp = size >>1;
-    for (i = 0x0U; i < temp; i++)
-    {
-        value = READ16(pSrc);
-        pSrc++;
-        WRITE16(pDest, value);
-        pDest++;
-    }
-    return ((uint32_t)DATA2PGM((uint32_t)dest + LAUNCH_COMMAND_OFFSET));
+	uint32_t temp;
+	uint16_t value, i, *pSrc, *pDest;
+	temp = PGM2DATA((uint32_t)src - LAUNCH_COMMAND_OFFSET);
+	pSrc = (uint16_t *)temp;
+	pDest = (uint16_t *)dest;
+	temp = size >>1;
+	for (i = 0x0U; i < temp; i++)
+	{
+		value = READ16(pSrc);
+		pSrc++;
+		WRITE16(pDest, value);
+		pDest++;
+	}
+	return ((uint32_t)DATA2PGM((uint32_t)dest + LAUNCH_COMMAND_OFFSET));
 }
 /* End of file */

@@ -5,7 +5,7 @@
 extern "C"
 {
 #endif
-  
+
 #include "fsl_power_manager.h"
 
 #define CABLE_TYPE_VOLTAGE					(3300 / 2)

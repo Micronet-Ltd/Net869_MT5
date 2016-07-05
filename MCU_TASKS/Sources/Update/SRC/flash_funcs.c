@@ -34,27 +34,27 @@
 
 FLASH_SSD_CONFIG flashSSDConfig =
 {
-    FTFx_REG_BASE,          /* FTFx control register base */
-    P_FLASH_BASE, //PFLASH_BASE,      /* base address of PFlash block */
-    P_FLASH_SIZE,//PBLOCK_SIZE,            /* size of PFlash block */
-    FLEXNVM_BASE,     /* base address of DFlash block */
-    0,				        /* size of DFlash block */
-    EERAM_BASE,       		/* base address of EERAM block */
-    0,                      /* size of EEE block */
-    0,            			/* background debug mode enable bit */
-    NULL_CALLBACK           /* pointer to callback function */
+	FTFx_REG_BASE,          /* FTFx control register base */
+	P_FLASH_BASE, //PFLASH_BASE,      /* base address of PFlash block */
+	P_FLASH_SIZE,//PBLOCK_SIZE,            /* size of PFlash block */
+	FLEXNVM_BASE,     /* base address of DFlash block */
+	0,				        /* size of DFlash block */
+	EERAM_BASE,       		/* base address of EERAM block */
+	0,                      /* size of EEE block */
+	0,            			/* background debug mode enable bit */
+	NULL_CALLBACK           /* pointer to callback function */
 };
 
 /////////
 uint32_t EraseSectors(int32_t sid)
 {
-    uint32_t ret;          /* Return code from each SSD function */
-    uint32_t destination;         /* Address of the target location */
-    uint32_t size;
+	uint32_t ret;          /* Return code from each SSD function */
+	uint32_t destination;         /* Address of the target location */
+	uint32_t size;
 
 	switch(sid)
 	{
-		case FROM_P_FLASH:  
+		case FROM_P_FLASH:
 		{	destination = PFLASH_BASE;//flashSSDConfig.PFlashBase;
 			size		= PBLOCK_SIZE;//flashSSDConfig.PFlashSize;
 		}
@@ -71,9 +71,9 @@ uint32_t EraseSectors(int32_t sid)
 //			size 		= FLEXNVM_SECTOR_SIZE;//BOOT_REGISTERS_SIZE;
 //		}
 		break;
-		default: 
+		default:
 		{
-		  	printf("updater: EraseSection wrong parameter 0x%x\n", sid);
+			printf("updater: EraseSection wrong parameter 0x%x\n", sid);
 			return -1;
 		}
 	}
@@ -83,19 +83,19 @@ uint32_t EraseSectors(int32_t sid)
 //    {
 //        ErrorTrap(ret);
 //    }
-	
+
 	return ret;
 }
 uint32_t Flash_Init(void)
 {
-    CACHE_DISABLE
-	  
+	CACHE_DISABLE
+
 	return	FlashInit(&flashSSDConfig);
 }
-uint32_t Flash_Program(uint32_t dest, uint32_t size, uint8_t* pData) 
+uint32_t Flash_Program(uint32_t dest, uint32_t size, uint8_t* pData)
 {
    return FlashProgram(&flashSSDConfig, dest, size, pData, FlashCommandSequence);
 }
 //////////
-              
+
 /* end of file */

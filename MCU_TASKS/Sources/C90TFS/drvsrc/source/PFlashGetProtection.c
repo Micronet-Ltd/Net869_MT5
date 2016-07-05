@@ -4,14 +4,14 @@
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the <organization> nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -39,8 +39,8 @@
 
 /************************** CHANGES *************************************
 1.1.GA      09.25.2014      FPT Team      First version of SDK C90TFS flash driver
-                                          inherited from BM C90TFS flash driver v1.02
-                                          (08.04.2014, FPT Team)
+										  inherited from BM C90TFS flash driver v1.02
+										  (08.04.2014, FPT Team)
 *************************************************************************/
 /* include the header files */
 #include "SSD_FTFx.h"
@@ -62,26 +62,26 @@
 
 uint32_t SIZE_OPTIMIZATION PFlashGetProtection(PFLASH_SSD_CONFIG pSSDConfig, uint32_t* protectStatus)
 {
-    uint32_t reg0, reg1, reg2, reg3;
-    uint32_t temp;        /* temporary variable */
+	uint32_t reg0, reg1, reg2, reg3;
+	uint32_t temp;        /* temporary variable */
 
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FPROT0_OFFSET;
-    reg0 = REG_READ(temp);
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FPROT1_OFFSET;
-    reg1 = REG_READ(temp);
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FPROT2_OFFSET;
-    reg2 = REG_READ(temp);
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FPROT3_OFFSET;
-    reg3 = REG_READ(temp);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FPROT0_OFFSET;
+	reg0 = REG_READ(temp);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FPROT1_OFFSET;
+	reg1 = REG_READ(temp);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FPROT2_OFFSET;
+	reg2 = REG_READ(temp);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FPROT3_OFFSET;
+	reg3 = REG_READ(temp);
 
-    *protectStatus = (uint32_t)((uint32_t)(reg0 << 24) | (uint32_t)(reg1 << 16) | (uint32_t)(reg2 << 8) | reg3);
+	*protectStatus = (uint32_t)((uint32_t)(reg0 << 24) | (uint32_t)(reg1 << 16) | (uint32_t)(reg2 << 8) | reg3);
 
 #if C90TFS_ENABLE_DEBUG
-    /* Enter Debug state if enabled */
-    if (TRUE == (pSSDConfig->DebugEnable))
-    {
-        ENTER_DEBUG_MODE;
-    }
+	/* Enter Debug state if enabled */
+	if (TRUE == (pSSDConfig->DebugEnable))
+	{
+		ENTER_DEBUG_MODE;
+	}
 #endif
 
   return(FTFx_OK);

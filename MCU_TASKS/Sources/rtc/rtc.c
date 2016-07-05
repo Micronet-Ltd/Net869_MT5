@@ -108,11 +108,11 @@ bool rtc_check_oscillator(void)
 	if ((flags & 0x4))
 	{
 		rtc_oscillator_kick_start();
-        /* The oscillator must start and have run for at least 4 seconds before 
-        attempting to reset the OF bit to 0 pg 44 of RTC data sheet */
-        printf("rtc_check_oscillator: Sleep 4 seconds before clearing oscillator flag \n");
-        _time_delay(4100);
-        
+		/* The oscillator must start and have run for at least 4 seconds before
+		attempting to reset the OF bit to 0 pg 44 of RTC data sheet */
+		printf("rtc_check_oscillator: Sleep 4 seconds before clearing oscillator flag \n");
+		_time_delay(4100);
+
 		/* clear oscillator flag */
 		flags &= ~0x4;
 		if (!rtc_send_data (&cmd_buff,  1, &flags, 1))

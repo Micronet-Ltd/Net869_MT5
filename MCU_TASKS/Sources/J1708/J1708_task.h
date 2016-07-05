@@ -21,4 +21,3 @@ extern void J1708_disable (void);
 #endif
 
 #endif /* J1708_TASK_H_ */
-

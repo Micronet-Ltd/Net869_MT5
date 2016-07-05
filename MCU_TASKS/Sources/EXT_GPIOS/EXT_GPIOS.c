@@ -21,7 +21,7 @@
 
 typedef struct {
 	const KADC_CHANNELS_t adc_channel;
-	      uint32_t        gpio_input_voltage;
+		  uint32_t        gpio_input_voltage;
 } GPIO_INPUT;
 
 #ifdef __cplusplus
@@ -73,7 +73,7 @@ void GPIO_sample_all (KGPIOS_INPUT_CHANNELS i)
 			state_current = state_temp;
 		}
 
-		
+
 		if (state_current != state_prev) {
 			printf ("GPIO_IN %d level became %d\n", i, state_current);
 			gpio_event |= (1 << i);

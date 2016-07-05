@@ -18,8 +18,8 @@
 #define MIC_DEBUG_UART_PUTCHAR          UART_debug_putchar
 #define MIC_DEBUG_UART_GETCHAR          UART_debug_getchar
 #else
-#define MIC_DEBUG_UART_PRINTF 
-#define MIC_DEBUG_UART_SCANF  
+#define MIC_DEBUG_UART_PRINTF
+#define MIC_DEBUG_UART_SCANF
 #define MIC_DEBUG_UART_PUTCHAR
 #define MIC_DEBUG_UART_GETCHAR
 #endif

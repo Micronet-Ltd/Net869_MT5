@@ -1,34 +1,34 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2008, 2013 - 2015 Freescale Semiconductor;
  * All Rights Reserved
  *
  * Copyright (c) 1989-2008 ARC International;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
  *
  * $FileName: usb_descriptor.c$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
- * @brief The file contains USB descriptors 
+ * @brief The file contains USB descriptors
  *
  *****************************************************************************/
 
@@ -395,14 +395,14 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	CALL_MANAGEMENT_FUNC_DESC,
 	CM_D0_D1,                               /* D0(if set): device handles call management itself
-											    D1(if set): process commands multiplexed over the data interface*/
+												D1(if set): process commands multiplexed over the data interface*/
 	0x01,                                   /* Indicates multiplexed commands are handled via data interface */
 
 	CDC_ABSTRACT_DESC_SIZE,                 /* Size of this descriptor */
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	ABSTRACT_CONTROL_FUNC_DESC,
 	0x06,                                   /* Device supports request send break, device supports request
-											 combination o set_line_coding, set_control_line_state, 
+											 combination o set_line_coding, set_control_line_state,
 											 get_line_coding and the notification serial state */
 
 	CDC_UNION_FUNC_DESC_SIZE,               /* size of Functional Desc in bytes */
@@ -494,7 +494,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	ABSTRACT_CONTROL_FUNC_DESC,
 	0x06,                                   /* Device supports request send break, device supports request
-											 combination o set_line_coding, set_control_line_state, 
+											 combination o set_line_coding, set_control_line_state,
 											 get_line_coding and the notification serial state */
 
 	CDC_UNION_FUNC_DESC_SIZE,               /* size of Functional Desc in bytes */
@@ -590,7 +590,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	ABSTRACT_CONTROL_FUNC_DESC,
 	0x06,                                   /* Device supports request send break, device supports request
-											 combination o set_line_coding, set_control_line_state, 
+											 combination o set_line_coding, set_control_line_state,
 											 get_line_coding and the notification serial state */
 
 	//Union Functional Descriptor
@@ -685,7 +685,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	ABSTRACT_CONTROL_FUNC_DESC,
 	0x06,                                   /* Device supports request send break, device supports request
-											 combination o set_line_coding, set_control_line_state, 
+											 combination o set_line_coding, set_control_line_state,
 											 get_line_coding and the notification serial state */
 
 	CDC_UNION_FUNC_DESC_SIZE,               /* size of Functional Desc in bytes */
@@ -779,7 +779,7 @@ uint8_t g_config_descriptor[CONFIG_DESC_SIZE] =
 	USB_CS_INTERFACE,                       /* descriptor type*/
 	ABSTRACT_CONTROL_FUNC_DESC,
 	0x06,                                   /* Device supports request send break, device supports request
-											 combination o set_line_coding, set_control_line_state, 
+											 combination o set_line_coding, set_control_line_state,
 											 get_line_coding and the notification serial state */
 
 	CDC_UNION_FUNC_DESC_SIZE,               /* size of Functional Desc in bytes */
@@ -900,7 +900,7 @@ uint8_t g_other_speed_config_descriptor[OTHER_SPEED_CONFIG_DESCRIPTOR_SIZE] =
 	USB_CS_INTERFACE, /* descriptor type*/
 	ABSTRACT_CONTROL_FUNC_DESC,
 	0x06, /* Device supports request send break, device supports request
-	  combination o set_line_coding, set_control_line_state, 
+	  combination o set_line_coding, set_control_line_state,
 	  get_line_coding and the notification serial state */
 
 	CDC_UNION_FUNC_DESC_SIZE, /* size of Functional Desc in bytes */
@@ -978,7 +978,7 @@ uint8_t USB_STR_1[] = { //[USB_STR_1_SIZE + USB_STR_DESC_SIZE] = {
 	'.', 0
 };
 
-uint8_t USB_STR_2[] = { //[USB_STR_2_SIZE + USB_STR_DESC_SIZE] = { 	
+uint8_t USB_STR_2[] = { //[USB_STR_2_SIZE + USB_STR_DESC_SIZE] = {
 	0x00,//sizeof(USB_STR_2),
 	USB_STRING_DESCRIPTOR,
 	'M', 0,
@@ -1000,8 +1000,8 @@ uint8_t USB_STR_2[] = { //[USB_STR_2_SIZE + USB_STR_DESC_SIZE] = {
 	'.', 0
 };
 
-uint8_t USB_STR_n[] = { //[USB_STR_n_SIZE + USB_STR_DESC_SIZE] = 
- 	0x00,//sizeof(USB_STR_n),
+uint8_t USB_STR_n[] = { //[USB_STR_n_SIZE + USB_STR_DESC_SIZE] =
+	0x00,//sizeof(USB_STR_n),
 	USB_STRING_DESCRIPTOR,
 	'B', 0,
 	'A', 0,
@@ -1048,7 +1048,7 @@ uint8_t *g_std_descriptors[USB_MAX_STD_DESCRIPTORS + 1] = {
 #endif
 };
 
-uint8_t g_string_desc_size[USB_MAX_STRING_DESCRIPTORS + 1] = { 	
+uint8_t g_string_desc_size[USB_MAX_STRING_DESCRIPTORS + 1] = {
 	sizeof(USB_STR_0),
 	sizeof(USB_STR_1),
 	sizeof(USB_STR_2),
@@ -1071,8 +1071,8 @@ usb_language_t usb_lang[USB_MAX_LANGUAGES_SUPPORTED] =
 	},
 };
 
-usb_all_languages_t g_languages = { 
-	USB_STR_0, 
+usb_all_languages_t g_languages = {
+	USB_STR_0,
 	sizeof(USB_STR_0),
 	USB_MAX_LANGUAGES_SUPPORTED,
 	usb_lang
@@ -1090,7 +1090,7 @@ static uint8_t g_alternate_interface[USB_MAX_SUPPORTED_INTERFACES];
  *****************************************************************************/
 
 /*****************************************************************************
- * Local Functions Prototypes 
+ * Local Functions Prototypes
  *****************************************************************************/
 
 /*****************************************************************************
@@ -1111,10 +1111,10 @@ static uint8_t g_alternate_interface[USB_MAX_SUPPORTED_INTERFACES];
 *
 * @brief The function returns the corresponding descriptor
 *
-* @param handle:        handle     
-* @param type:          type of descriptor requested     
-* @param str_num:       string index for string descriptor     
-* @param index:         string descriptor language Id     
+* @param handle:        handle
+* @param type:          type of descriptor requested
+* @param str_num:       string index for string descriptor
+* @param index:         string descriptor language Id
 * @param descriptor:    output descriptor pointer
 * @param size:          size of descriptor returned
 *
@@ -1182,7 +1182,7 @@ uint8_t USB_Desc_Get_Descriptor( uint32_t handle,
 				return USBERR_INVALID_REQ_TYPE;
 			}
 		}
-	} 
+	}
 	else if ( type < USB_MAX_STD_DESCRIPTORS + 1 )
 	{
 		/* set return val for descriptor and size*/
@@ -1197,7 +1197,7 @@ uint8_t USB_Desc_Get_Descriptor( uint32_t handle,
 			return USBERR_INVALID_REQ_TYPE;
 		}
 		*size = g_std_desc_size[type];
-	} 
+	}
 	else /* invalid descriptor */
 	{
 		return USBERR_INVALID_REQ_TYPE;
@@ -1211,9 +1211,9 @@ uint8_t USB_Desc_Get_Descriptor( uint32_t handle,
  *
  * @brief The function returns the alternate interface
  *
- * @param handle:         handle     
- * @param interface:      interface number     
- * @param alt_interface:  output alternate interface     
+ * @param handle:         handle
+ * @param interface:      interface number
+ * @param alt_interface:  output alternate interface
  *
  * @return USB_OK                              When Success
  *         USBERR_INVALID_REQ_TYPE             when Error
@@ -1245,9 +1245,9 @@ uint8_t USB_Desc_Get_Interface( uint32_t handle,
  *
  * @brief The function sets the alternate interface
  *
- * @param handle:         handle     
- * @param interface:      interface number     
- * @param alt_interface:  input alternate interface     
+ * @param handle:         handle
+ * @param interface:      interface number
+ * @param alt_interface:  input alternate interface
  *
  * @return USB_OK                              When Success
  *         USBERR_INVALID_REQ_TYPE             when Error
@@ -1277,11 +1277,11 @@ uint8_t USB_Desc_Set_Interface( uint32_t handle,
  *
  * @name  USB_Desc_Valid_Configation
  *
- * @brief The function checks whether the configuration parameter 
+ * @brief The function checks whether the configuration parameter
  *        input is valid or not
  *
- * @param handle          handle    
- * @param config_val      configuration value     
+ * @param handle          handle
+ * @param config_val      configuration value
  *
  * @return TRUE           When Valid
  *         FALSE          When Error
@@ -1310,7 +1310,7 @@ bool USB_Desc_Valid_Configation( uint32_t handle, uint16_t config_val )
  *
  * @brief The function checks whether the remote wakeup is supported or not
  *
- * @param handle:        handle     
+ * @param handle:        handle
  *
  * @return USBCFG_DEV_REMOTE_WAKEUP (TRUE) - if remote wakeup supported
  *****************************************************************************/
@@ -1378,11 +1378,11 @@ uint8_t USB_Desc_Get_Entity( cdc_handle_t handle, entity_type type, uint32_t *ob
 	{
 	case USB_CLASS_INFO:
 /*
-#ifdef MIC_DESCR_MEM                             
+#ifdef MIC_DESCR_MEM
 		*object = (uint32_t) g_MIC_usb_dec_class;
-#else                                            
-		*object = (uint32_t) usb_dec_class;      
-#endif                                           
+#else
+		*object = (uint32_t) usb_dec_class;
+#endif
 */
 		break;
 	case USB_CLASS_INTERFACE_INDEX_INFO:
@@ -1412,8 +1412,8 @@ uint8_t USB_Desc_Get_Entity( cdc_handle_t handle, entity_type type, uint32_t *ob
  *
  * @brief The function is used to set device speed
  *
- * @param handle:         handle     
- * @param speed:          speed    
+ * @param handle:         handle
+ * @param speed:          speed
  *
  * @return USB_OK                              When Success
  *         USBERR_INVALID_REQ_TYPE             when Error
@@ -1645,4 +1645,3 @@ void USB_prepare_descroptors ( void )
 }
 
 /* EOF */
-	

@@ -19,22 +19,22 @@ extern void *g_GPIO_event_h;
 void send_control_msg(packet_t * msg, uint8_t msg_size)
 {
 #if 1
-    pcdc_mic_queue_element_t pqMemElem;
+	pcdc_mic_queue_element_t pqMemElem;
 
-    pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_1);
-    if (NULL == pqMemElem) {
-        printf("%s: Error get mem for USB drop\n", __func__);
-        return;
-    }
+	pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_1);
+	if (NULL == pqMemElem) {
+		printf("%s: Error get mem for USB drop\n", __func__);
+		return;
+	}
 
-    //TODO: for now hard coding the sequence
-    msg->seq = 0x99;
-    
-    pqMemElem->send_size = frame_encode((uint8_t*)msg, (const uint8_t*)(pqMemElem->data_buff), (msg_size + 2) );
+	//TODO: for now hard coding the sequence
+	msg->seq = 0x99;
 
-    if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_1)) {
-        printf("%s: Error send data to CDC0\n", __func__);
-    }
+	pqMemElem->send_size = frame_encode((uint8_t*)msg, (const uint8_t*)(pqMemElem->data_buff), (msg_size + 2) );
+
+	if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_1)) {
+		printf("%s: Error send data to CDC0\n", __func__);
+	}
 #else
 	APPLICATION_MESSAGE_T *ctl_tx_msg;
 	_mqx_uint err_task;
@@ -51,11 +51,11 @@ void send_control_msg(packet_t * msg, uint8_t msg_size)
 	{
 		//TODO: for now hard coding the sequence
 		msg->seq = 0x99;
-        /* copy seq(1byte) and packet type(1byte)*/
-        memcpy(ctl_tx_msg->data,(uint8_t *) msg, sizeof(msg->seq) + sizeof(msg->pkt_type));
-        /* copy the data */
-        memcpy(ctl_tx_msg->data + sizeof(msg->seq) + sizeof(msg->pkt_type), msg->data, msg_size);
-        
+		/* copy seq(1byte) and packet type(1byte)*/
+		memcpy(ctl_tx_msg->data,(uint8_t *) msg, sizeof(msg->seq) + sizeof(msg->pkt_type));
+		/* copy the data */
+		memcpy(ctl_tx_msg->data + sizeof(msg->seq) + sizeof(msg->pkt_type), msg->data, msg_size);
+
 		ctl_tx_msg->header.SOURCE_QID = _msgq_get_id(0, CONTROL_TX_QUEUE);
 		ctl_tx_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
 		ctl_tx_msg->header.SIZE = (msg_size + sizeof(msg->seq) + sizeof(msg->pkt_type));//add seq and packet type
@@ -75,9 +75,9 @@ void control_task (uint32_t initial_data)
 {
 	APPLICATION_MESSAGE_T *ctl_rx_msg;
 	const _queue_id     control_rx_qid = _msgq_open (CONTROL_RX_QUEUE, 0);
-    uint32_t time_diff = 0;
-    uint32_t current_time = 0;
-    TIME_STRUCT time;
+	uint32_t time_diff = 0;
+	uint32_t current_time = 0;
+	TIME_STRUCT time;
 
 	printf ("\n control_task: Start \n");
 
@@ -91,10 +91,10 @@ void control_task (uint32_t initial_data)
 			if (ctl_rx_msg != NULL && ctl_rx_msg->header.SIZE >= 2)
 			{
 				//TODO: For debug only
-	            _time_get(&time);
-            
-	            time_diff = ((time.SECONDS * 1000) +  time.MILLISECONDS) - current_time;
-	            current_time += time_diff;
+				_time_get(&time);
+
+				time_diff = ((time.SECONDS * 1000) +  time.MILLISECONDS) - current_time;
+				current_time += time_diff;
 				printf("\n time diff: %d ms, data : %x,%x, \t ,%x,%x, size %d \n", time_diff, ctl_rx_msg->data[0],
 						ctl_rx_msg->data[1],ctl_rx_msg->data[ctl_rx_msg->header.SIZE -2],
 						ctl_rx_msg->data[ctl_rx_msg->header.SIZE -1], ctl_rx_msg->header.SIZE);
@@ -103,7 +103,7 @@ void control_task (uint32_t initial_data)
 				break;
 			}
 		} while (0);
-		
+
 		if (NULL != ctl_rx_msg) {
 			_msg_free   (ctl_rx_msg);
 			ctl_rx_msg = NULL;
@@ -114,5 +114,3 @@ void control_task (uint32_t initial_data)
 	printf ("\n control_task: End \n");
 	_task_block();
 }
-
-

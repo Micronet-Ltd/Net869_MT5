@@ -51,11 +51,11 @@ extern TIME_STRUCT tt[];
 
 void print_first_irqs(void)
 {
-  	uint8_t i;
-	printf("-------\n");  
+	uint8_t i;
+	printf("-------\n");
 	for(i = 0; i < 16; i++)
 	{
-		printf("%x %x %x %x %d:%d\n", s1[i], rcfifo[i], sfifo[i], ch[i], tt[i].SECONDS, tt[i].MILLISECONDS); 
+		printf("%x %x %x %x %d:%d\n", s1[i], rcfifo[i], sfifo[i], ch[i], tt[i].SECONDS, tt[i].MILLISECONDS);
 	}
 	printf("-------\n");
 }
@@ -91,14 +91,14 @@ typedef enum
   ERB,
   RAB,
   PFD,
-//------- FPGA commands --------  
+//------- FPGA commands --------
   FRE,
   STF,
   SFD,
   UNN	= -1
 } cmd_id;
 
-const char*	cmds[] =	
+const char*	cmds[] =
 {
   "REV",
   "STA",
@@ -107,13 +107,13 @@ const char*	cmds[] =
   "ERB",
   "RAB",
   "PFD",
-//------- FPGA commands --------  
+//------- FPGA commands --------
   "FRE",
   "STF",
   "SFD",
-  ""	
+  ""
 };
-const char*	cmds_srec[] =	
+const char*	cmds_srec[] =
 {
   "S1",
   "S2",
@@ -132,7 +132,7 @@ _mqx_uint  	msgf[UPD_MSG_SIZE];
 _task_id	Upd_idTask = MQX_NULL_TASK_ID;//temp place
 uint32_t	g_start_flag = 0;
 uint8_t 	g_ok = 0;
-int32_t		g_fd = -1; 
+int32_t		g_fd = -1;
 
 int32_t cs_get(uint8_t* arr, uint32_t len)
 {
@@ -147,48 +147,48 @@ int32_t find_cmd(const char* names[], char* buf, int32_t len)
 	int32_t i = 0, ind = -1;
 	while(0 != strcmp(names[i], ""))
 	{
-		if(0 == strncmp(names[i], buf, len)) 
+		if(0 == strncmp(names[i], buf, len))
 		{
 			ind = i;
 			break;
 		}
 		i++;
 	}
-	
+
 	return ind;
 }
 char char2hex(char *num)
 {
-    uint8_t digh, digl;
-    digh = ('0' <= num[0] && num[0] <= '9') ? num[0] - '0':
-           ('A' <= num[0] && num[0] <= 'F') ? num[0] - 'A' + 10:
-           ('a' <= num[0] && num[0] <= 'f') ? num[0] - 'a' + 10:-1;
-    if (digh < 0) 
+	uint8_t digh, digl;
+	digh = ('0' <= num[0] && num[0] <= '9') ? num[0] - '0':
+		   ('A' <= num[0] && num[0] <= 'F') ? num[0] - 'A' + 10:
+		   ('a' <= num[0] && num[0] <= 'f') ? num[0] - 'a' + 10:-1;
+	if (digh < 0)
 	{
-	  	printf("updater[%s]: high not digit %c%c\n\n", __func__, num[0], num[1]); 
-        return digh;
-    }
+		printf("updater[%s]: high not digit %c%c\n\n", __func__, num[0], num[1]);
+		return digh;
+	}
 
-    digl = ('0' <= num[1] && num[1] <= '9') ? num[1] - '0':
-           ('A' <= num[1] && num[1] <= 'F') ? num[1] - 'A' + 10:
-           ('a' <= num[1] && num[1] <= 'f') ? num[1] - 'a' + 10:-1;
-    if (digl < 0) 
+	digl = ('0' <= num[1] && num[1] <= '9') ? num[1] - '0':
+		   ('A' <= num[1] && num[1] <= 'F') ? num[1] - 'A' + 10:
+		   ('a' <= num[1] && num[1] <= 'f') ? num[1] - 'a' + 10:-1;
+	if (digl < 0)
 	{
-        printf("updater[%s]: low not digit %c%c\n\n", __func__, num[0], num[1]); 
-        return digl;
-    }
+		printf("updater[%s]: low not digit %c%c\n\n", __func__, num[0], num[1]);
+		return digl;
+	}
 
-    return (digh << 4) | digl; 
+	return (digh << 4) | digl;
 }
 
 uint32_t chars2uint(char* num)
 {
 	uint32_t i = 0, n = 0;
-  	for(i = 0; i < 4; ++i)
+	for(i = 0; i < 4; ++i)
 	{
-		n |= (char2hex(&num[i*2]) << (8 * (3 - i))) ; 
+		n |= (char2hex(&num[i*2]) << (8 * (3 - i))) ;
 	}
-	
+
 	return n;
 }
 void ClearUart_Reply(uint8_t* buf, char* pReply)
@@ -200,7 +200,7 @@ void ClearUart_Reply(uint8_t* buf, char* pReply)
 uint32_t chars2hex_arr(uint8_t* arr, char *nums, uint32_t len)
 {
 	uint32_t i = 0;
-  	for(i = 0; i < len; ++i)
+	for(i = 0; i < len; ++i)
 		arr[i] = char2hex(&nums[i*2]);
 	return 0;
 }
@@ -212,79 +212,79 @@ void tasks_kill(void)
 	while(i < NUM_TASKS)
 	{
 		if(	0					!= g_TASK_ids[i] &&
-		   	UPDATER_TASK 		!= i && 
+			UPDATER_TASK 		!= i &&
 			UPDATER_EXEC_TASK 	!= i )
 		{
-		  	if(MQX_INVALID_TASK_ID == _task_destroy(g_TASK_ids[i]) )
+			if(MQX_INVALID_TASK_ID == _task_destroy(g_TASK_ids[i]) )
 			{
-			  	//printf("updater: cannot destroy task %d\n", i);
+				//printf("updater: cannot destroy task %d\n", i);
 			}
 		}
 		i++;
 	}
 }
 /*
- 	KERNEL_DATA_STRUCT_PTR   kernel_data;
-    _GET_KERNEL_DATA(kernel_data);
-    TD_STRUCT_PTR           td_ptr;
-    _mqx_uint               size;
+	KERNEL_DATA_STRUCT_PTR   kernel_data;
+	_GET_KERNEL_DATA(kernel_data);
+	TD_STRUCT_PTR           td_ptr;
+	_mqx_uint               size;
 	_task_id				my_idTask = _task_get_id();
 
-	/// SPR P171-0022-01 Use int disable, not a semaphore 
+	/// SPR P171-0022-01 Use int disable, not a semaphore
 //    _INT_DISABLE();
-    // END SPR
+	// END SPR
 
-    td_ptr = (TD_STRUCT_PTR)((unsigned char *)kernel_data->TD_LIST.NEXT - FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
+	td_ptr = (TD_STRUCT_PTR)((unsigned char *)kernel_data->TD_LIST.NEXT - FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
 
-    size   = _QUEUE_GET_SIZE(&kernel_data->TD_LIST);
-    while (size--)
-    {
-        if (td_ptr->TASK_ID != Upd_idTask && td_ptr->TASK_ID != my_idTask)
-        {
-		  	_task_destroy(td_ptr->TASK_ID);
-        }
-        td_ptr = (TD_STRUCT_PTR)((unsigned char *)td_ptr->TD_LIST_INFO.NEXT - FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
-    }
+	size   = _QUEUE_GET_SIZE(&kernel_data->TD_LIST);
+	while (size--)
+	{
+		if (td_ptr->TASK_ID != Upd_idTask && td_ptr->TASK_ID != my_idTask)
+		{
+			_task_destroy(td_ptr->TASK_ID);
+		}
+		td_ptr = (TD_STRUCT_PTR)((unsigned char *)td_ptr->TD_LIST_INFO.NEXT - FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
+	}
 
-    // SPR P171-0022-01 Use int disable, not a semaphore
+	// SPR P171-0022-01 Use int disable, not a semaphore
 //    _int_enable();
-    // END SPR
-*/  
+	// END SPR
+*/
 
 int32_t start_update(uint32_t id)
-{	
+{
 	tasks_kill();
-	
-  	Upd_idTask = _task_create(0, UPDATER_EXEC_TASK, 0);
+
+	Upd_idTask = _task_create(0, UPDATER_EXEC_TASK, 0);
 	if(MQX_NULL_TASK_ID == Upd_idTask)
 	{
-      	printf("updater: _task_create failed\n");
-	  	return -1;
+		printf("updater: _task_create failed\n");
+		return -1;
 	}
 //////////////////////////////
-	
+
 	if(FROM_P_FLASH == id)
 	{
-	  	g_offset = PFLASH_BASE;
+		g_offset = PFLASH_BASE;
 	}
 	else
 	{
-	  	Flash_Init();
-	  	g_offset = NVFLASH_BASE;
+		Flash_Init();
+		g_offset = NVFLASH_BASE;
 	}
 	return 0;
 }
 int32_t start_phys(uint32_t id)
 {
- 	int32_t ret, upd = UPDATE_START;  	
-	
+	int32_t ret, upd = UPDATE_START;
+
 	ret = EraseSectors(id);
 
 	if(0 == ret)
-	  	ret = Flash_Program(g_offset + READY_OFFSET, 4, (uint8_t*)&upd	);
+		ret = Flash_Program(g_offset + READY_OFFSET, 4, (uint8_t*)&upd	);
 	if(0 == ret)
 	{
-	  	upd = g_offset + RESET_OFFSET; 	
+		upd = g_offset + RESET_OFFSET;
 		ret = Flash_Program(g_offset, 4, (uint8_t*)&upd	);//address first
 	}
 
@@ -292,13 +292,13 @@ int32_t start_phys(uint32_t id)
 }
 int32_t end_update(void)
 {
- 	int32_t ret = -1, upd = READY_RUN;  	
+	int32_t ret = -1, upd = READY_RUN;
 	uint32_t* ptr = (uint32_t*)(g_offset + READY_OFFSET);//*((uint32_t*)BOOT_REGISTERS_START_ADDR);
 
 	//check start???
 	if((UPDATE_START & 0xFF000000) != (*ptr & 0xFF000000))
 	{
-	  	printf("updater: update end without start\n");
+		printf("updater: update end without start\n");
 		return ret;
 	}
 
@@ -306,29 +306,29 @@ int32_t end_update(void)
 	upd = *ptr - 1;
 
 	ret = Flash_Program(g_offset + COUNT_OFFSET, 4, (uint8_t*)&upd	);//counter
-		
+
 	if(0 == ret)//must be last!!!
 	{
-	  	upd = READY_RUN; 	
+		upd = READY_RUN;
 		ret = Flash_Program(g_offset + READY_OFFSET, 4, (uint8_t*)&upd	);
-	}	
+	}
 
 	return ret;
 }
 uint32_t choose_flash(void)
 {
-  	void* pfunc = (void*)choose_flash;
-  	
+	void* pfunc = (void*)choose_flash;
+
 	uint32_t ret = FROM_P_FLASH;
 
 	if((uint32_t)pfunc & 0x10000000)
 	  ret = FROM_FLEX_NVM;
-	
+
 	return ret;
 }
 void version_srec(char* out_buf)
 {
-  	sprintf(out_buf, "%02X%02X%02X%02X", FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD); 
+	sprintf(out_buf, "%02X%02X%02X%02X", FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD);
 }
 
 int32_t exec_cmd(cmd_id id, char* out_buf)
@@ -349,27 +349,27 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 		break;
 		case STA:
 		{
-		  	ret = start_update(FROM_P_FLASH);
+			ret = start_update(FROM_P_FLASH);
 			printf("updater: STA ret %d\n", ret);
 		}
 		break;
 		case STB:
 		{
-		  	ret = start_update(FROM_FLEX_NVM);
+			ret = start_update(FROM_FLEX_NVM);
 			printf("updater: STB ret %d\n", ret);
 		}
 		break;
 		case ERA:
 		{
-		  	ret = start_phys(FROM_P_FLASH);
+			ret = start_phys(FROM_P_FLASH);
 			if(0 == ret)
 			  g_start_flag = 1;
-			printf("updater: ERA ret %d\n", ret);			
+			printf("updater: ERA ret %d\n", ret);
 		}
 		break;
 		case ERB:
 		{
-		  	ret = start_phys(FROM_FLEX_NVM);
+			ret = start_phys(FROM_FLEX_NVM);
 			if(0 == ret)
 			  g_start_flag = 1;
 			printf("updater: ERB ret %d\n", ret);
@@ -378,23 +378,23 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 		case RAB:
 		{
 			val = choose_flash();
-		  	if(FROM_FLEX_NVM == val)
+			if(FROM_FLEX_NVM == val)
 			{
 			  strcpy(out_buf, BB_str);
 			}
 			else //			if(FROM_P_FLASH == val)
 			{
-			  strcpy(out_buf, AA_str);			  
+			  strcpy(out_buf, AA_str);
 			}
 
-			printf("updater: RAB ret %s\n", out_buf);			
+			printf("updater: RAB ret %s\n", out_buf);
 		}
 		break;
 		case PFD:
 		{
-			print_first_irqs();			
-			printf("updater: PFD\n");			
-			
+			print_first_irqs();
+			printf("updater: PFD\n");
+
 			g_start_flag = 0;
 			if(g_ok)
 				end_update();
@@ -403,17 +403,17 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 		break;
 		case FRE:
 		{
-		 	fpga_get_version(out_buf);
+			fpga_get_version(out_buf);
 			printf("updater: FRE %s\n", out_buf);
 		}
 		break;
 //		case STF:
-//		{		  	
+//		{
 //		}
 //		break;
 		case SFD:
 		{
-			printf("updater: SFD\n");			
+			printf("updater: SFD\n");
 			fpga_deinit();
 			g_start_flag = 0;
 		}
@@ -429,13 +429,13 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 
 uint32_t transmit_polling(const uint8_t* pbuf, uint32_t length)//return received
 {
-  	uint32_t st = kStatus_UART_Success;
+	uint32_t st = kStatus_UART_Success;
 	UART_Type * base = g_uartBase[UART_UPDATE_FW_IDX];
 
 	UART_HAL_SendDataPolling(base, (const uint8_t*)pbuf, length);
 	//int32_t err;
 	//int32_t st;
-	
+
 	//st = _nio_write(g_fd, pbuf, length, &err);
 	return st;
 }
@@ -450,42 +450,42 @@ int32_t	make_msg_cs_check(uint32_t* mm, uint8_t* buf, uint8_t* tmp_buf)
 	if(cs != tmp_buf[len])
 	{
 		printf("updater: cs error %d - %d\n", cs, tmp_buf[len]);
-	  	return -1;
+		return -1;
 	}
 
 	tmp_len = 2;//length of length
 	if('2' == buf[1] || '8' == buf[1])
 	{
-	  	tmp_len = 3;//address bytes
+		tmp_len = 3;//address bytes
 	}
 	else if('3' == buf[1] || '7' == buf[1])
 	{
-	  	tmp_len = 4;//address bytes
+		tmp_len = 4;//address bytes
 	}
-	data_len = len - tmp_len - 1;		  	
+	data_len = len - tmp_len - 1;
 	memcpy((uint8_t*)&mm[3], &tmp_buf[tmp_len + 1], data_len);//copy data
-					
+
 	memset(tmp_buf, '0', 4*4);
 	memcpy(&tmp_buf[(4 - tmp_len)*2], &buf[4], tmp_len*2);//chars of address
-					
+
 	mm[0] = 0;//type
 	mm[1] = chars2uint((char*)tmp_buf);//+ g_offset + RESET_OFFSET
 	mm[2] = data_len;
-	
+
 	//workaround for the last length
 	if(16 > data_len)
 	{
 		if(data_len % 4)
 		{
-		  	mm[2] += (4 - data_len % 4);
+			mm[2] += (4 - data_len % 4);
 		}
 	}
 	return 1;
 }
 void	set_result(uint32_t res)
 {
-  	uint8_t* ptr = 0;
-  	_event_clear(g_event_ptr, 1);//for flash operations
+	uint8_t* ptr = 0;
+	_event_clear(g_event_ptr, 1);//for flash operations
 	if(FTFx_OK == res)
 	  ptr = (uint8_t*)OK_str;
 	else
@@ -502,28 +502,28 @@ uint32_t rstr_32_dig(uint8_t* buf)
 	char b[2] = {0};
 	for(i = 0; i < 8; i++)
 	{
-	  	b[0] = buf[i * 2 + 1];
-		dig |= (strtol(b, 0, 16) & 0xFF) << (28 - i * 4); 	  
+		b[0] = buf[i * 2 + 1];
+		dig |= (strtol(b, 0, 16) & 0xFF) << (28 - i * 4);
 	}
 	return dig;
 }
 void fpga_data(uint8_t* buf, uint32_t len)
 {
-  	int32_t		err = 0;//, count = 0;
-  	uint32_t 	tmp_len = 0, wr_len = 0, diff, crc;
+	int32_t		err = 0;//, count = 0;
+	uint32_t 	tmp_len = 0, wr_len = 0, diff, crc;
 	uint8_t* 	ptr = (uint8_t*)OK_str;
 	uint32_t*	pTmp;
 //	TIME_STRUCT tt;
-	
-  	g_start_flag = 2;
+
+	g_start_flag = 2;
 	tasks_kill();
 
 	len = rstr_32_dig(buf);
 //	len = 135180;//temp!!!
-	
+
 	if(0 != fpga_init())
 	{
-	  	ptr = (uint8_t*)ERR_str;
+		ptr = (uint8_t*)ERR_str;
 		transmit_polling(ptr, strlen((char*)ptr));
 		return;
 	}
@@ -531,39 +531,39 @@ void fpga_data(uint8_t* buf, uint32_t len)
 
 	do
 	{
-	  	err = 0;
-	  	ptr = (uint8_t*)OK_str;
-	  	diff = (SPI_FLASH_SECTOR_SIZE < len - wr_len) ? SPI_FLASH_SECTOR_SIZE : len - wr_len;
-		
+		err = 0;
+		ptr = (uint8_t*)OK_str;
+		diff = (SPI_FLASH_SECTOR_SIZE < len - wr_len) ? SPI_FLASH_SECTOR_SIZE : len - wr_len;
+
 		tmp_len = _nio_read(g_fd, &buf[4], diff + 4, &err);
-		
+
 		if(tmp_len < diff)
 		{
-		  	ptr = (uint8_t*)nCRC_str;// or ERR ???;
+			ptr = (uint8_t*)nCRC_str;// or ERR ???;
 			err = 1;
 		}
-		
+
 		if(0 == err)
 		{
-		  	pTmp = (uint32_t*)(&buf[diff + 4]);
+			pTmp = (uint32_t*)(&buf[diff + 4]);
 
 			tmp_len = *pTmp;
 			crc = crc_32(&buf[4], diff);
-			//if(crc_32(buf, diff) != tmp_len) 
-			if(crc != tmp_len) 
+			//if(crc_32(buf, diff) != tmp_len)
+			if(crc != tmp_len)
 			{
-				printf("updater: fpga crc error %x (%x)\n", crc, tmp_len);			
-			  	ptr = (uint8_t*)nCRC_str;
+				printf("updater: fpga crc error %x (%x)\n", crc, tmp_len);
+				ptr = (uint8_t*)nCRC_str;
 				err = 2;
 			}
-		}		
+		}
 		if(0 == err)
 		{
-		  	uint32_t deb = wr_len % ERASABLE_BLOCK_SIZE;
+			uint32_t deb = wr_len % ERASABLE_BLOCK_SIZE;
 			if(0 == (wr_len % ERASABLE_BLOCK_SIZE))//sector offset
 			{
 //				_time_get(&tt);
-//				printf("erase %d:%d\n", tt.SECONDS, tt.MILLISECONDS); 
+//				printf("erase %d:%d\n", tt.SECONDS, tt.MILLISECONDS);
 //			  	printf("erase 0x%x (%d)\n", wr_len, deb);
 				if(0 != fpga_erase_sector(wr_len))
 				{
@@ -571,34 +571,34 @@ void fpga_data(uint8_t* buf, uint32_t len)
 					err = 4;
 				}
 //				_time_get(&tt);
-//				printf("erase %d:%d\n", tt.SECONDS, tt.MILLISECONDS); 				
+//				printf("erase %d:%d\n", tt.SECONDS, tt.MILLISECONDS);
 			}
 		}
 		if(0 == err)
 		{
 //			_time_get(&tt);
-//			printf("fpga_write_data %d:%d\n", tt.SECONDS, tt.MILLISECONDS); 
+//			printf("fpga_write_data %d:%d\n", tt.SECONDS, tt.MILLISECONDS);
 //		  	printf("fpga_write_data 0x%x + 0x%x (count %d)\n", wr_len, diff, ++count);
 			if(0 != fpga_write_data(wr_len, buf, diff))
 			{
-			  	ptr = (uint8_t*)ERR_str;
+				ptr = (uint8_t*)ERR_str;
 				err = 5;
 			}
 //			_time_get(&tt);
-//			printf("fpga_write_data %d:%d\n", tt.SECONDS, tt.MILLISECONDS); 
+//			printf("fpga_write_data %d:%d\n", tt.SECONDS, tt.MILLISECONDS);
 		}
 
 		transmit_polling(ptr, strlen((char*)ptr));
-		
+
 		if(0 == err)
 			wr_len += diff;
 
-	}while((len > wr_len) && (3 > err)); 
+	}while((len > wr_len) && (3 > err));
 	buf[0] = 0;
 }
 void updater_task(uint32_t param)
 {
-/*  
+/*
 	const uart_user_config_t uart_config = {
 		.bitCountPerChar = kUart9BitsPerChar, //kUart8BitsPerChar,
 		.parityMode      = kUartParityOdd, //kUartParityDisabled,
@@ -608,55 +608,55 @@ void updater_task(uint32_t param)
 */
 	const NIO_SERIAL_INIT_DATA_STRUCT nserial3_init =
 	{
-        .SERIAL_INSTANCE		= UART_UPDATE_FW_IDX,
-        .BAUDRATE            	= 115228,
-        .PARITY_MODE         	= kNioSerialParityOdd,
-        .STOPBIT_COUNT       	= kNioSerialOneStopBit,
-        .BITCOUNT_PERCHAR    	= 9,
+		.SERIAL_INSTANCE		= UART_UPDATE_FW_IDX,
+		.BAUDRATE            	= 115228,
+		.PARITY_MODE         	= kNioSerialParityOdd,
+		.STOPBIT_COUNT       	= kNioSerialOneStopBit,
+		.BITCOUNT_PERCHAR    	= 9,
 		.MODULE					= kNioSerialUart,
 		.RXTX_PRIOR		       	= 3,
-    #if defined(BOARD_USE_UART) && defined(BOARD_UART_CLOCK_SOURCE)
-        .CLK_SOURCE          = BOARD_UART_CLOCK_SOURCE,
-    #else
-        .CLK_SOURCE          = 1,
-    #endif
-	   	.RX_BUFF_SIZE        	= NIO_SERIAL_BUFF_SIZE,
-        .TX_BUFF_SIZE        	= NIO_SERIAL_BUFF_SIZE,
-	};  
+	#if defined(BOARD_USE_UART) && defined(BOARD_UART_CLOCK_SOURCE)
+		.CLK_SOURCE          = BOARD_UART_CLOCK_SOURCE,
+	#else
+		.CLK_SOURCE          = 1,
+	#endif
+		.RX_BUFF_SIZE        	= NIO_SERIAL_BUFF_SIZE,
+		.TX_BUFF_SIZE        	= NIO_SERIAL_BUFF_SIZE,
+	};
 //	UART_Type* 	base = g_uartBase[UART_UPDATE_FW_IDX];
-  	_mqx_uint 	result;
+	_mqx_uint 	result;
 	int32_t 	stat = -1;
 	uint32_t 	len = 0;
-  	uint32_t 	tmp_len = 0;
+	uint32_t 	tmp_len = 0;
 	cmd_id 		id = UNN;
-    int32_t 	error;
+	int32_t 	error;
 	NIO_DEV_STRUCT*	pNio = 0;
 
 	printf("updater: task started\n");
-	
+
 	update_fw_uart_init();//muxing
-	
- 	pNio = _nio_dev_install(dev_name, &nio_serial_dev_fn, (void*)&nserial3_init, NULL);
-   	if(0 == pNio) 
-   	{
-    	printf("updater: _nio_dev_install failed\n");
+
+	pNio = _nio_dev_install(dev_name, &nio_serial_dev_fn, (void*)&nserial3_init, NULL);
+	if(0 == pNio)
+	{
+		printf("updater: _nio_dev_install failed\n");
 		_mqx_exit(0);
-   	}
+	}
 	Set_IRQHandler_spec();
-	
+
 	g_fd = _nio_open(dev_name, O_RDWR, 0);
 	if(0 > g_fd)
-   	{
-    	printf("updater: cannot open nio dev\n");
+	{
+		printf("updater: cannot open nio dev\n");
 		_mqx_exit(0);
-   	}
+	}
 
-   	result = _lwmsgq_init((void *)client_queue, NUM_MESSAGES, UPD_MSG_SIZE);
-   	if (result != MQX_OK) 
-   	{
-    	printf("updater: lwmsgq_init client_queue failed\n");
+	result = _lwmsgq_init((void *)client_queue, NUM_MESSAGES, UPD_MSG_SIZE);
+	if (result != MQX_OK)
+	{
+		printf("updater: lwmsgq_init client_queue failed\n");
 		_mqx_exit(0);
-   	}
+	}
  //////////
 	if (_event_create("globalll") != MQX_OK) {
 		printf("updater: Make event failed\n");
@@ -665,22 +665,22 @@ void updater_task(uint32_t param)
 	if (_event_open("globalll", &g_event_ptr) != MQX_OK) {
 		printf("updater: Open event failed\n");
 	}
-//////////////////	
-    while(true)
-    {
+//////////////////
+	while(true)
+	{
 		id = UNN;
-		
+
 		memset(bbb, 0, sizeof(bbb));
 		// Wait to receive input data
 		stat = _nio_read(g_fd, bbb, 3, &error);
 		if(0 < stat)
 		{
-	  		tmp_len = 3;
-	  
+			tmp_len = 3;
+
 			if(-1 != (id = (cmd_id)find_cmd(cmds_srec, (char*)bbb, 2)))
-			{		  
-				///S-records part started				  
-			  	tmp_len += 1;
+			{
+				///S-records part started
+				tmp_len += 1;
 				stat = _nio_read(g_fd, &bbb[3], 1, &error);
 				if(0 > stat)//== 1
 				{
@@ -699,7 +699,7 @@ void updater_task(uint32_t param)
 					ClearUart_Reply(bbb, (char*)nRDY_str);
 					continue;
 				}
-					
+
 				if(0 > make_msg_cs_check(msgf, bbb, tmp_buf))
 				{
 					ClearUart_Reply(bbb, (char*)nRDY_str);
@@ -707,7 +707,7 @@ void updater_task(uint32_t param)
 				}
 				if('7' <= bbb[1] && '9' >= bbb[1])
 				{
-				  	g_ok = 1;
+					g_ok = 1;
 					printf("ok %s\n", bbb);
 					stat = transmit_polling((uint8_t*)OK_str, strlen(OK_str));
 					continue;
@@ -715,60 +715,60 @@ void updater_task(uint32_t param)
 				_event_get_value(g_event_ptr, &tmp_len);
 				if(1 == tmp_len)
 				{
-				  	stat = transmit_polling((uint8_t*)nRDY_str, strlen(nRDY_str));
-				  	continue;
+					stat = transmit_polling((uint8_t*)nRDY_str, strlen(nRDY_str));
+					continue;
 				}
 				_event_set(g_event_ptr, 1);
 				_lwmsgq_send((void *)client_queue, msgf, LWMSGQ_SEND_BLOCK_ON_FULL);
 			}
 			else //commands
 			{
-			  	uint8_t* ptr = 0;
-			  	int32_t res = -1;
+				uint8_t* ptr = 0;
+				int32_t res = -1;
 				int32_t len = 0;
-				
+
 				id = (cmd_id)find_cmd(cmds, (char*)bbb, 3);
-					
+
 				res = -1;
-					
+
 				if(UNN != id)
 				{
 						if(STF == id)
 						{
-						  	len = _nio_read(g_fd, bbb, 17, &error);
+							len = _nio_read(g_fd, bbb, 17, &error);
 							printf("updater: read len %d (%d)\n", len, error);
-						  	fpga_data(bbb, len);
+							fpga_data(bbb, len);
 							continue;
 						}
-				  	res = exec_cmd((int32_t)id, (char*)tmp_buf);
+					res = exec_cmd((int32_t)id, (char*)tmp_buf);
 					if(0 == res)
 					{
-					  	ptr = tmp_buf;
+						ptr = tmp_buf;
 						len = strlen((char*)ptr);
 						if(REV == id)
-						  	len += 1;//for NULL
-						if(SFD != id)	
+							len += 1;//for NULL
+						if(SFD != id)
 							stat = transmit_polling(ptr, len);
 					}
 					else
 					{
-						print_first_irqs();								  	
+						print_first_irqs();
 						ClearUart_Reply(bbb, (char*)ERR_str);
 					}
 				}
 				else//error
 				{
-					print_first_irqs();								  	
+					print_first_irqs();
 					ClearUart_Reply(bbb, (g_start_flag ? ((char*)nRDY_str) : ((char*)ERR_str)));
-				}					
+				}
 			}
 		}
 		else
 		{
-		  	printf("updater: r1 %d (0x%x)\n", stat, bbb[0]);
+			printf("updater: r1 %d (0x%x)\n", stat, bbb[0]);
 		}
-    }
-	
+	}
+
 	return;
 }
 ////////////////////////////////////////////////////////////////////////////////

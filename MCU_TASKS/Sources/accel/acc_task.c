@@ -50,8 +50,8 @@ bool acc_enabled_g = false;
 extern MUTEX_STRUCT g_i2c0_mutex;
 
 __packed typedef struct{
-    uint64_t timestamp;
-    uint8_t buff[ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE];
+	uint64_t timestamp;
+	uint8_t buff[ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE];
 }acc_data_messg, *pacc_data_messg;
 
 /**************************************************************************************
@@ -110,8 +110,8 @@ void Acc_task (uint32_t initial_data)
 	TIME_STRUCT                 time;
 	TIME_STRUCT                 new_time;
 	uint64_t                    time_diff;
-    acc_data_messg              acc_data_buff;
-    pcdc_mic_queue_element_t    pqMemElem;
+	acc_data_messg              acc_data_buff;
+	pcdc_mic_queue_element_t    pqMemElem;
 
 	//APPLICATION_MESSAGE_T *msg;
 	//const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
@@ -144,7 +144,7 @@ void Acc_task (uint32_t initial_data)
 	{
 		_time_delay (10000);
 	}
-   
+
 	AccEnable();
 
 	//TODO: Remote Test acc message
@@ -155,10 +155,10 @@ void Acc_task (uint32_t initial_data)
 	while (1)
 	{
 #if 1
-        _event_wait_all(g_acc_event_h, 1, 0);
+		_event_wait_all(g_acc_event_h, 1, 0);
 		_event_clear(g_acc_event_h, 1);
 
-        _time_get(&new_time);
+		_time_get(&new_time);
 		time_diff = ((new_time.SECONDS * 1000) +  new_time.MILLISECONDS) - ((time.SECONDS * 1000) +  time.MILLISECONDS);
 		/* Add delay on back to back reads to avoid overwhelming the USB */
 		if (time_diff == 0)
@@ -166,21 +166,21 @@ void Acc_task (uint32_t initial_data)
 			_time_delay (1);
 		}
 
-        acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
+		acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
 		_time_get(&time);
-        acc_data_buff.timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
+		acc_data_buff.timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
 
-        pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
-        if (NULL == pqMemElem) {
-            printf("%s: Error get mem for USB drop\n", __func__);
-            continue;
-        }
+		pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
+		if (NULL == pqMemElem) {
+			printf("%s: Error get mem for USB drop\n", __func__);
+			continue;
+		}
 
-        pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
+		pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
 
-        if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2)) {
-            printf("%s: Error send data to CDC1\n", __func__);
-        }
+		if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2)) {
+			printf("%s: Error send data to CDC1\n", __func__);
+		}
 #else
 		APPLICATION_MESSAGE_T *acc_msg;
 		_mqx_uint err_task;
@@ -266,42 +266,42 @@ bool accInit (void)
 	// reset device
 	write_data[0] = ACC_REG_CTRL_REG2   ;
 	write_data[1] = ACC_VALUE_RESET_CMD ;
-    if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
-    OSA_TimeDelay(1);
+	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	OSA_TimeDelay(1);
 
 	// set CTRL_REG1 to STANDBY Normal mode with 1.56Hz sample rates reads at SLEEP mode and 800Hz at ACTIVE mode
 	write_data[0] = ACC_REG_CTRL_REG1   ;
 	write_data[1] = 0x00 ;
-    if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
 
 	write_data[0] = ACC_REG_CTRL_REG1   ;
 	write_data[1] = 0xC0 ;
-    if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
 
 	// configure device to Low power in Sleep mode and Normal power mode at Active
 	write_data[0] = ACC_REG_CTRL_REG2   ;
 	write_data[1] = 0x18 ;
-    if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
 
 	// configure interrupt source to FIFO interrupt on INT1 pin with water mark of 10 samples
 	// when FIFO sample count exceeding the water mark event does not stop the FIFO from accepting new data
 	// FIFO always contains the most recent samples when overflowed (FMODE = 01)
 	write_data[0] = ACC_REG_CTRL_REG5   ;
 	write_data[1] = 0x40 ;
-    if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
 
 	write_data[0] = ACC_REG_CTRL_REG4   ;
 	write_data[1] = 0x40 ;
-    if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
 
 	write_data[0] = ACC_REG_F_SETUP   ;
 	write_data[1] = 0x4A ;
-    if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
 
 	// configure output buffer data format using 8g scale range
 	write_data[0] = ACC_REG_XYZ_DATA_CFG   ;
 	write_data[1] = 0x02 ;
-    if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
 
 	printf ("ACC Task: Device Configured \n");
 	_mutex_unlock(&g_i2c0_mutex);
@@ -363,7 +363,7 @@ void AccDisable (void)
 	write_data[1] = read_data &= ~0x1;
 	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)			goto _ACC_DISABLE_FAIL;
 
-        // read control register
+		// read control register
 	write_data[0] = ACC_REG_CTRL_REG1;
 	if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_DISABLE_FAIL;
 
@@ -426,4 +426,3 @@ void ISR_accIrq (void* param)
 	lwgpio_int_clear_flag (gpio);
 }
 #endif
-

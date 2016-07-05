@@ -124,7 +124,7 @@ void enable_peripheral_clocks(void)
   uint8_t i;
   for (i = 1; i < PORT_INSTANCE_COUNT; i++)
   {
-    CLOCK_SYS_EnablePortClock (i);
+	CLOCK_SYS_EnablePortClock (i);
   }
 }
 
@@ -134,7 +134,7 @@ void disable_peripheral_clocks(void)
   uint8_t i;
   for (i = 1; i < PORT_INSTANCE_COUNT; i++)
   {
-    CLOCK_SYS_DisablePortClock (i);
+	CLOCK_SYS_DisablePortClock (i);
   }
 }
 
@@ -143,7 +143,7 @@ void Device_update_state (uint32_t * time_diff)
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
 	uint32_t ignition_voltage  = ADC_get_value (kADC_ANALOG_IN1 );
 	uint32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
-    uint32_t supercap_voltage;
+	uint32_t supercap_voltage;
 
 	Device_control_GPIO(time_diff);
 
@@ -164,10 +164,10 @@ void Device_update_state (uint32_t * time_diff)
 			if ((power_in_voltage < POWER_IN_TURN_ON_TH ) ||
 				(temperature      < TEMPERATURE_MIN_TH  ) ||
 				(temperature      > TEMPERATURE_MAX_TH  )  )
-            {
+			{
 				break;
-            }
-            
+			}
+
 			if (ignition_voltage >= ignition_threshold_g)
 			{
 				printf ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
@@ -194,18 +194,18 @@ void Device_update_state (uint32_t * time_diff)
 			// wait while pulse is still generated (time period didn't reach threshold)
 			if (!Device_control_GPIO_status())
 			{
-                switch_power_mode(kPowerManagerRun);
-                enable_peripheral_clocks();
+				switch_power_mode(kPowerManagerRun);
+				enable_peripheral_clocks();
 				peripherals_enable ();
-                _bsp_MQX_tick_timer_init ();
-                //Board_SetFastClk ();
+				_bsp_MQX_tick_timer_init ();
+				//Board_SetFastClk ();
 				Device_turn_on     ();
 				device_state_g = DEVICE_STATE_ON;
 				printf ("\nPOWER_MGM: DEVICE RUNNING\n");
-                FPGA_init ();
-                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
-                GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
-                _event_set(power_up_event_g, 1);
+				FPGA_init ();
+				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
+				GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
+				_event_set(power_up_event_g, 1);
 			}
 			break;
 
@@ -216,7 +216,7 @@ void Device_update_state (uint32_t * time_diff)
 			{
 				printf ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - SHUTING DOWN !!! \n", power_in_voltage);
 				device_state_g = DEVICE_STATE_BACKUP_RECOVERY;
-                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
+				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
 				break;
 			}
 
@@ -225,8 +225,8 @@ void Device_update_state (uint32_t * time_diff)
 				(temperature > TEMPERATURE_MAX_TH)    )
 			{
 				printf ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
-                device_state_g = DEVICE_STATE_OFF;
-                Device_off_req(0);
+				device_state_g = DEVICE_STATE_OFF;
+				Device_off_req(0);
 			}
 			break;
 
@@ -237,9 +237,9 @@ void Device_update_state (uint32_t * time_diff)
 			if (backup_power_cnt_g > BACKUP_RECOVER_TIME_TH)
 			{
 				GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
-                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0xFF, 0); /* Yellow LED*/
+				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0xFF, 0); /* Yellow LED*/
 				//peripherals_disable ();
-                //switch_power_mode(kPowerManagerVlpr);
+				//switch_power_mode(kPowerManagerVlpr);
 				//Board_SetVerySlowClk ();
 				device_state_g = DEVICE_STATE_BACKUP_POWER;
 				printf ("\nPOWER_MGM: Recovery period is over\n");
@@ -252,7 +252,7 @@ void Device_update_state (uint32_t * time_diff)
 				printf ("\nPOWER_MGM: INPUT POWER OK %d\n", power_in_voltage);
 				backup_power_cnt_g = 0;
 				device_state_g = DEVICE_STATE_ON;
-                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
+				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 			}
 			break;
 
@@ -260,7 +260,7 @@ void Device_update_state (uint32_t * time_diff)
 			// if power is back during backup period - turn on a YELLOW LED
 			if (power_in_voltage >= POWER_IN_TURN_ON_TH)
 			{
-                printf ("\nPOWER_MGM: DEVICE_STATE_BACKUP_POWER power back up");
+				printf ("\nPOWER_MGM: DEVICE_STATE_BACKUP_POWER power back up");
 			}
 
 			backup_power_cnt_g += *time_diff;
@@ -271,7 +271,7 @@ void Device_update_state (uint32_t * time_diff)
 				led_blink_cnt_g = 0;
 				Device_turn_off ();
 				device_state_g = DEVICE_STATE_TURN_OFF;
-                supercap_voltage = ADC_get_value (kADC_POWER_VCAP);
+				supercap_voltage = ADC_get_value (kADC_POWER_VCAP);
 				printf ("\nPOWER_MGM: backup period is over - shutting down, supercap voltage = %d\n", supercap_voltage);
 			}
 			break;
@@ -282,11 +282,11 @@ void Device_update_state (uint32_t * time_diff)
 			{
 				printf ("\nPOWER_MGM: DEVICE IS OFF\n");
 				device_state_g = DEVICE_STATE_OFF;
-                Device_off_req(0);
+				Device_off_req(0);
 				//Wiggle_sensor_restart ();
 				//peripherals_disable ();
 				//Wiggle_sensor_start ();	// enable interrupt
-                //disable_peripheral_clocks();
+				//disable_peripheral_clocks();
 			}
 			break;
 
@@ -294,7 +294,7 @@ void Device_update_state (uint32_t * time_diff)
 			printf ("\nPOWER_MGM: ERROR: UNKNOWN STATE %d\n", device_state_g );
 			device_state_g = DEVICE_STATE_OFF;
 			Wiggle_sensor_restart ();
-            enable_peripheral_clocks();
+			enable_peripheral_clocks();
 
 			break;
 	}
@@ -310,14 +310,14 @@ void Device_off_req(uint8_t wait_time)
 	uint32_t cpu_off_wait_time = 0;
 	uint8_t cpu_status_pin = 0;
 
-    GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
-    FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
+	GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
+	FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
 	_time_delay(wait_time*1000);
 
-    /* Turn device off */
-    GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
-    _time_delay (DEVICE_CONTROL_TIME_OFF_TH);
-    GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+	/* Turn device off */
+	GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+	_time_delay (DEVICE_CONTROL_TIME_OFF_TH);
+	GPIO_DRV_SetPinOutput(CPU_ON_OFF);
 
 #ifdef MCU_AND_CPU_BOARD_CONNECTED
 	/* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
@@ -349,7 +349,7 @@ void Device_off_req(uint8_t wait_time)
 	//Board_SetSlowClk ();
 	printf ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
 	device_state_g = DEVICE_STATE_OFF;
-    WDG_RESET_MCU();
+	WDG_RESET_MCU();
 	//Wiggle_sensor_restart ();
 	//peripherals_disable ();
 	//Wiggle_sensor_start ();
@@ -416,63 +416,63 @@ DEVICE_STATE_t Device_get_status (void) {return device_state_g;}
 void peripherals_enable (void)
 {
 	uint32_t i;
-    uint32_t total_wait_time = 0;
+	uint32_t total_wait_time = 0;
 
 	GPIO_DRV_ClearPinOutput (FPGA_RSTB);
 
-    GPIO_DRV_SetPinOutput   (POWER_5V0_ENABLE);	// turn on 5V0 power rail
-    GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
-    GPIO_DRV_SetPinOutput   (FPGA_RSTB);
+	GPIO_DRV_SetPinOutput   (POWER_5V0_ENABLE);	// turn on 5V0 power rail
+	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
+	GPIO_DRV_SetPinOutput   (FPGA_RSTB);
 
-    //AccEnable();
-    GPIO_DRV_SetPinOutput   (CAN1_J1708_PWR_ENABLE);		// Enable CAN1 and J1708
-    GPIO_DRV_SetPinOutput   (CAN2_SWC_PWR_ENABLE);		// Enable CAN2 and SWC
+	//AccEnable();
+	GPIO_DRV_SetPinOutput   (CAN1_J1708_PWR_ENABLE);		// Enable CAN1 and J1708
+	GPIO_DRV_SetPinOutput   (CAN2_SWC_PWR_ENABLE);		// Enable CAN2 and SWC
 
 //    GPIO_DRV_ClearPinOutput (USB_OTG_SEL);		// Connect D1 <-> D MCU or HUB
 //  GPIO_DRV_SetPinOutput(USB_OTG_SEL);			// Connect D2 <-> D A8 OTG
-    GPIO_DRV_ClearPinOutput (USB_OTG_OE);		//Enable OTG/MCU switch
+	GPIO_DRV_ClearPinOutput (USB_OTG_OE);		//Enable OTG/MCU switch
 
-    // Enable USB for DEBUG
-    GPIO_DRV_SetPinOutput   (USB_HUB_RSTN);
-    GPIO_DRV_SetPinOutput   (USB_ENABLE);
+	// Enable USB for DEBUG
+	GPIO_DRV_SetPinOutput   (USB_HUB_RSTN);
+	GPIO_DRV_SetPinOutput   (USB_ENABLE);
 
-    GPIO_DRV_SetPinOutput   (UART_ENABLE);			// Enable UART
-    GPIO_DRV_SetPinOutput   (FTDI_RSTN);
-    
-    /* Only enable the speakers if CPU_SPKR_EN is set */
-    if (GPIO_DRV_ReadPinInput(CPU_SPKR_EN))
-    {
-        GPIO_DRV_SetPinOutput (SPKR_RIGHT_EN);
-        GPIO_DRV_SetPinOutput (SPKR_LEFT_EN);       
-    }   
-    else 
-    {
-        GPIO_DRV_ClearPinOutput(SPKR_RIGHT_EN);
-        GPIO_DRV_ClearPinOutput(SPKR_LEFT_EN);
-    }
+	GPIO_DRV_SetPinOutput   (UART_ENABLE);			// Enable UART
+	GPIO_DRV_SetPinOutput   (FTDI_RSTN);
+
+	/* Only enable the speakers if CPU_SPKR_EN is set */
+	if (GPIO_DRV_ReadPinInput(CPU_SPKR_EN))
+	{
+		GPIO_DRV_SetPinOutput (SPKR_RIGHT_EN);
+		GPIO_DRV_SetPinOutput (SPKR_LEFT_EN);
+	}
+	else
+	{
+		GPIO_DRV_ClearPinOutput(SPKR_RIGHT_EN);
+		GPIO_DRV_ClearPinOutput(SPKR_LEFT_EN);
+	}
 //	GPIO_DRV_SetPinOutput (SPKR_EXT_EN);
 //	GPIO_DRV_SetPinOutput (CPU_MIC_EN);
 
-    // wait till FPGA is loaded
-    while(1)
-    {
-    	if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1)
-    	{
-            printf ("\nPOWER_MGM: INFO: FPGA is loaded, wait_time: %d ms\n", total_wait_time );
-    		break;
-    	}
-        _time_delay(1);
-        total_wait_time++;
-        /* Measured to take 71ms typically (tested on 1 board, 10 reboot cycles) - Abid */
-        if(total_wait_time > 10000)
-        {
-            printf("\nPOWER_MGM: INFO: FPGA FAILED TO LOAD!, wait_time: %d ms\n", total_wait_time);
-            break;
-        }
-    }
+	// wait till FPGA is loaded
+	while(1)
+	{
+		if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1)
+		{
+			printf ("\nPOWER_MGM: INFO: FPGA is loaded, wait_time: %d ms\n", total_wait_time );
+			break;
+		}
+		_time_delay(1);
+		total_wait_time++;
+		/* Measured to take 71ms typically (tested on 1 board, 10 reboot cycles) - Abid */
+		if(total_wait_time > 10000)
+		{
+			printf("\nPOWER_MGM: INFO: FPGA FAILED TO LOAD!, wait_time: %d ms\n", total_wait_time);
+			break;
+		}
+	}
 
-    // TODO: need to be removed after tasks enable will be set fro USB protocol
-    //J1708_enable  (7);
+	// TODO: need to be removed after tasks enable will be set fro USB protocol
+	//J1708_enable  (7);
 
 }
 

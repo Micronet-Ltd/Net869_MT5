@@ -16,24 +16,24 @@
  * Constants - None
  *****************************************************************************/
 
-/*****************************************************************************    
-  * Types                                                                         
-  ****************************************************************************/   
+/*****************************************************************************
+  * Types
+  ****************************************************************************/
 typedef struct cdc_mic_queue_element_struct {
-    QUEUE_ELEMENT_STRUCT    HEADER;
-    uint32_t                packetNum;
-    uint8_t                 send_size;
-    uint8_t                data_buff[];
+	QUEUE_ELEMENT_STRUCT    HEADER;
+	uint32_t                packetNum;
+	uint8_t                 send_size;
+	uint8_t                data_buff[];
 }cdc_mic_queue_element_t, *pcdc_mic_queue_element_t;
 
 typedef enum {
-    //USB_NVIC_IRQ_Priority = (BSP_SYSTIMER_ISR_PRIOR + 2),
-    CAN_NVIC_IRQ_Priority = 0x03U,
-    ADC_NVIC_IRQ_Priority = 0x04U,
-    ACC_NVIC_IRQ_Priority = 0x0CU,
-    I2C_NVIC_IRQ_Priority = 0x0CU,
-    PORT_NVIC_IRQ_Priority = 0x0CU,
-    UART_NVIC_IRQ_Priority = 0x0CU,
+	//USB_NVIC_IRQ_Priority = (BSP_SYSTIMER_ISR_PRIOR + 2),
+	CAN_NVIC_IRQ_Priority = 0x03U,
+	ADC_NVIC_IRQ_Priority = 0x04U,
+	ACC_NVIC_IRQ_Priority = 0x0CU,
+	I2C_NVIC_IRQ_Priority = 0x0CU,
+	PORT_NVIC_IRQ_Priority = 0x0CU,
+	UART_NVIC_IRQ_Priority = 0x0CU,
 }NVIC_Priority_table_enum;
 /******************************************************************************
  * Macro's
@@ -49,9 +49,9 @@ typedef enum {
  * Global Variables
  ****************************************************************************/
 
-//extern _pool_id         g_out_message_pool;	// msg pool for send information USB out 
+//extern _pool_id         g_out_message_pool;	// msg pool for send information USB out
 extern _pool_id         g_in_message_pool;	// msg pool for recieve USB information
-extern const uint16_t   g_CanCDCPacketsize; 
+extern const uint16_t   g_CanCDCPacketsize;
 
 /*****************************************************************************
  * Global Functions
@@ -62,5 +62,3 @@ extern bool SetUSBWriteBuffer(pcdc_mic_queue_element_t pcdcBuff, uint8_t cdcport
 extern uint32_t GetUSBFreeBufferCount (uint8_t cdcport);
 
 #endif //~_MIC_TYPEDEFS_H__
-
-

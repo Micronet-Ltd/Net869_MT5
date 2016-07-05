@@ -45,7 +45,7 @@ int process_receive_slcan(int contex, uint8_t * data, uint32_t size)
 
 
 
-/// BEGIN 
+/// BEGIN
 
 void protocol_init_data()
 {
@@ -191,8 +191,8 @@ int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t s
 			frame_reset(frame);
 		}
 	}
-        
-    frame_reset(frame);
+
+	frame_reset(frame);
 
 	// TODO: status return here
 	return 0;
