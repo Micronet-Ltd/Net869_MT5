@@ -75,13 +75,13 @@ void Main_task( uint32_t initial_data ) {
 	registerInit ();
 #endif
 
-	// board Initialization
-	//hardware_init();
-	OSA_Init();
-	GPIO_Config();
-	ADC_init ();
-
-
+    // board Initialization
+    post_bsp_hardware_init ();
+    OSA_Init();
+    GPIO_Config();
+    ADC_init ();
+	
+	
 
 	NVIC_SetPriority(PORTA_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);

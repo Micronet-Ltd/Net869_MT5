@@ -258,6 +258,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 void hardware_init(void);
+void post_bsp_hardware_init (void);
 void dbg_uart_init(void);
 /*This function to used for power manager demo*/
 void disable_unused_pins(void);

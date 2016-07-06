@@ -290,6 +290,20 @@ void update_fw_uart_init(void)
 	configure_uart_pins(UART_UPDATE_FW_IDX);
 }
 
+void post_bsp_hardware_init (void)
+{
+    uint8_t i;
+
+    /* enable clock for PORTs */
+    for (i = 0; i < PORT_INSTANCE_COUNT; i++)
+    {
+        CLOCK_SYS_EnablePortClock(i);
+    }
+
+    /* Init board clock */
+    BOARD_ClockInit();
+}
+
 /******************************************************************************
  *
  *   @name      usb_device_board_init
