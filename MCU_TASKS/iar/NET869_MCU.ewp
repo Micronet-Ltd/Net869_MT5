@@ -383,9 +383,8 @@
           <state>$PROJ_DIR$\..\Sources\rtc</state>
           <state>$PROJ_DIR$\..\Sources</state>
           <state>$PROJ_DIR$\..\Board_Files</state>
-          <state>$PROJ_DIR$\..\Sources\ADC</state>
-          <state>$PROJ_DIR$\..\Sources\EXT_GPIOS</state>
           <state>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include</state>
+          <state>$PROJ_DIR$\..\Sources\watchdog</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2360,6 +2359,15 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Sources\USB\virtual_com.h</name>
+      </file>
+    </group>
+    <group>
+      <name>watchdog</name>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\watchdog\watchdog_mgmt.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\watchdog\watchdog_mgmt.h</name>
       </file>
     </group>
     <file>

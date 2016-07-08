@@ -80,6 +80,7 @@
 #include "fsl_power_manager.h"
 #include "fsl_clock_manager.h"
 #include "mqx_prv.h"
+#include "watchdog_mgmt.h"
 
 #define DEVICE_CONTROL_TIME_ON_TH				 3200		// number of mili-seconds pulse for turning device on
 #define DEVICE_CONTROL_TIME_OFF_TH				 3200		// number of mili-seconds pulse for turning device off

@@ -7,7 +7,7 @@
 #include <fsl_flexcan_hal.h>
 #include <lwmsgq.h>
 #include <mutex.h>
-#include <watchdog.h>
+#include <lwtimer.h>
 
 #include "fsl_i2c_master_driver.h"
 
@@ -26,10 +26,30 @@
 #include "rtc.h"
 #include "Wiggle_sensor.h"
 #include "Device_control_GPIO.h"
+#include "watchdog_mgmt.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
+<<<<<<< fb3a74dd2ae7442c5a225fd647e6cc58c6e84335
+<<<<<<< 41bad560a596ffabb2d6c961b7108a1da62a0df6
+=======
+<<<<<<< 223ac6fe63897b1d7288fd92377d396de91d602d
+<<<<<<< 9b5df5c78e3e98650764832d68e720cba49a4676
+>>>>>>> ENH: Add A8 watchdog and refactor code so we have all watchdog related code in one watchdog folder
+//#define MCU_HARD_FAULT_DEBUG 1
+<<<<<<< 764e0183e3d042850a488acdf4e614b5828b2561
+#define WATCHDOG_MCU_MAX_TIME       10000 //ms
+<<<<<<< 41bad560a596ffabb2d6c961b7108a1da62a0df6
+=======
+>>>>>>> ENH: Implement MCU hardware watchdog. Set the expire time to 10sec
+=======
+>>>>>>> ENH: Add A8 watchdog and refactor code so we have all watchdog related code in one watchdog folder
+>>>>>>> ENH: Add A8 watchdog and refactor code so we have all watchdog related code in one watchdog folder
+=======
 //#define MCU_HARD_FAULT_DEBUG 1
 #define WATCHDOG_MCU_MAX_TIME       10000 //ms
+>>>>>>> DEBUG CHANGES:
+=======
+>>>>>>> ENH: Fix watchdog linker error
 
 //void MQX_I2C0_IRQHandler (void);
 //void MQX_I2C1_IRQHandler (void);
@@ -51,7 +71,6 @@ void HardFault_Handler_asm(void);
 _pool_id   g_in_message_pool;
 
 _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
-volatile uint32_t a8_watchdog_count_g = 0;
 extern WIGGLE_SENSOR_t sensor_g;
 
 extern void * g_acc_event_h;
@@ -63,6 +82,14 @@ extern void handle_mcu_watchdog_expiry(void *);
 
 MUTEX_STRUCT g_i2c0_mutex;
 
+<<<<<<< fb3a74dd2ae7442c5a225fd647e6cc58c6e84335
+<<<<<<< 41bad560a596ffabb2d6c961b7108a1da62a0df6
+=======
+<<<<<<< 223ac6fe63897b1d7288fd92377d396de91d602d
+<<<<<<< 9b5df5c78e3e98650764832d68e720cba49a4676
+>>>>>>> ENH: Add A8 watchdog and refactor code so we have all watchdog related code in one watchdog folder
+=======
+>>>>>>> DEBUG CHANGES:
 /* induce_hard_fault: Induce divide by zero hard fault(used for debugging) */
 void induce_hard_fault(void)
 {
@@ -80,6 +107,7 @@ void induce_hard_fault(void)
 	}
 	printf("j=%d\n", j);
 }
+
 #ifdef MCU_HARD_FAULT_DEBUG
 /**
  * HardFaultHandler_C:
@@ -148,6 +176,7 @@ void HardFault_HandlerC(unsigned long *hardfault_args)
 	__asm("BKPT #0\n") ; // Break into the debugger
 }
 #endif
+
 void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 {
 	 /*
@@ -171,6 +200,7 @@ void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 #endif
 	WDG_RESET_MCU();
 	);
+<<<<<<< fb3a74dd2ae7442c5a225fd647e6cc58c6e84335
 }
 
 /*FUNCTION*------------------------------------------------------
@@ -188,6 +218,8 @@ void handle_mcu_watchdog_expiry
 {
   printf("\r\n MCU Watchdog Expired, resetting MCU! \r\n");
   WDG_RESET_MCU();
+=======
+>>>>>>> DEBUG CHANGES:
 }
 
 void Main_task( uint32_t initial_data ) {
@@ -211,16 +243,8 @@ void Main_task( uint32_t initial_data ) {
     // board Initialization
     post_bsp_hardware_init ();
     OSA_Init();
-    result = _watchdog_create_component(BSP_SYSTIMER_INTERRUPT_VECTOR,
-                                        handle_mcu_watchdog_expiry);
-    _watchdog_start(WATCHDOG_MCU_MAX_TIME);
-    
-    if (result != MQX_OK) 
-    {
-      printf("\nError creating watchdog component.");
-      _task_block();
-    }    
-    
+	watchdog_mcu_init();
+	_watchdog_start(WATCHDOG_MCU_MAX_TIME);
     GPIO_Config();
     ADC_init ();
 	
@@ -265,14 +289,6 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create POWER_MGM_TASK\n");
 	}
 
-/*
-	g_out_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
-	if (g_out_message_pool == MSGPOOL_NULL_POOL_ID)
-	{
-		printf("\nCould not create a g_out_message_pool message pool\n");
-		_task_block();
-	}
-*/
 	g_in_message_pool = _msgpool_create (sizeof(APPLICATION_MESSAGE_T), NUM_CLIENTS, 0, 0);
 	if (g_in_message_pool == MSGPOOL_NULL_POOL_ID)
 	{
@@ -402,12 +418,39 @@ void Main_task( uint32_t initial_data ) {
 
 	FPGA_read_version(&FPGA_version);
 	printf("\n FPGA version, %x", FPGA_version);
+	
+	LWTIMER_STRUCT watchdog_a8_timer;
+	LWTIMER_PERIOD_STRUCT lwtimer_period;
+	MQX_TICK_STRUCT ticks;
+
+	_lwtimer_create_periodic_queue(&lwtimer_period, 20, 0);
+//	 * \param[in] period_ptr The location of the data structure to be initialized.
+// * \param[in] period     The cycle length of this timer in ticks.
+// * \param[in] wait_ticks The number of ticks to wait before starting this queue.
+//	(
+//	LWTIMER_PERIOD_STRUCT_PTR period_ptr,
+//	_mqx_uint                 period,
+//	_mqx_uint                 wait_ticks
+//)
+	
+	//_time_get_elapsed_ticks(&ticks);
+   //_time_add_sec_to_ticks(&ticks, 1);
+	
+	 _lwtimer_add_timer_to_queue(&lwtimer_period, &watchdog_a8_timer, 0, (LWTIMER_ISR_FPTR)check_a8_watchdog, 0);
+//	 * \param[in] period_ptr Pointer to the periodic queue.
+// * \param[in] timer_ptr  Pointer to the lightweight timer to add to the queue,
+// * must be smaller than queue.
+// * \param[in] ticks      Tick offset from the timers period to expire at.
+// * \param[in] func       Function to call when the timer expires.
+// * \param[in] parameter  Parameter to pass to the function.
+	
 
 	printf("\nMain Task: Loop \n");
 
     while ( 1 ) 
     {
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+		check_a8_watchdog();
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
 #ifdef DEBUG_BLINKING_RIGHT_LED
 		FPGA_write_led_status(LED_RIGHT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
@@ -499,7 +542,7 @@ void MQX_PORTB_IRQHandler(void)
 	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG))
 	{
 		GPIO_DRV_ClearPinIntFlag(CPU_WATCHDOG);
-		a8_watchdog_count_g++;
+		update_a8_watchdog();
 	}
 
 	if (GPIO_DRV_IsPinIntPending(CPU_SPKR_EN))

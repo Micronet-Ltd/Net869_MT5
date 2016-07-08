@@ -26,8 +26,6 @@ typedef enum {
 
 #define WDG_RESET_MCU() WDOG_UNLOCK = 0xd928;  WDOG_UNLOCK = 0xc520;
 
-#define WDG_RESET_MCU() WDOG_UNLOCK = 0xd928;  WDOG_UNLOCK = 0xc520;
-
 void Device_init         (uint32_t delay_period);
 void Device_update_state (uint32_t * time_diff);
 void Device_turn_on      (void);
