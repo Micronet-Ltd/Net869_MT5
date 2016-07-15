@@ -26,6 +26,7 @@
 #include "Wiggle_sensor.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
+//#define MCU_HARD_FAULT_DEBUG 1
 
 //void MQX_I2C0_IRQHandler (void);
 //void MQX_I2C1_IRQHandler (void);
@@ -34,6 +35,9 @@ void MQX_PORTB_IRQHandler(void);
 void MQX_PORTC_IRQHandler(void);
 void MQX_PORTE_IRQHandler(void);
 void configure_otg_for_host_or_device(void);
+/* The prototype shows it is a naked function - in effect this is just an
+assembly function. */
+void HardFault_Handler_asm(void);
 
 #define	MAIN_TASK_SLEEP_PERIOD	1000			// 10 mSec sleep
 #define TIME_ONE_SECOND_PERIOD	((int) (1000 / MAIN_TASK_SLEEP_PERIOD))
@@ -55,6 +59,121 @@ extern void * power_up_event_g;
 void _test_CANFLEX( void );
 
 MUTEX_STRUCT g_i2c0_mutex;
+
+/* induce_hard_fault: Induce divide by zero hard fault(used for debugging) */
+void induce_hard_fault(void)
+{
+	volatile uint8_t j = 0;
+	volatile uint8_t i = 0;
+
+	SCB->CCR |= 0x10;
+	for (i=0;i<15;i++)
+	{
+		if (i == 10)
+		{
+			printf("i=10\n");
+		}
+		j = i/(i-10);
+	}
+	printf("j=%d\n", j);
+}
+
+/**
+ * HardFaultHandler_C:
+ * This is called from the HardFault_HandlerAsm with a pointer the Fault stack
+ * as the parameter. We can then read the values from the stack and place them
+ * into local variables for ease of reading.
+ * We then read the various Fault Status and Address Registers to help decode
+ * cause of the fault.
+ * The function ends with a BKPT instruction to force control back into the debugger
+ */
+void HardFault_HandlerC(unsigned long *hardfault_args){
+
+	volatile unsigned long stacked_r0 ;
+	volatile unsigned long stacked_r1 ;
+	volatile unsigned long stacked_r2 ;
+	volatile unsigned long stacked_r3 ;
+	volatile unsigned long stacked_r12 ;
+	volatile unsigned long stacked_lr ;
+	volatile unsigned long stacked_pc ;
+	volatile unsigned long stacked_psr ;
+	volatile unsigned long _CFSR ;
+	volatile unsigned long _HFSR ;
+	volatile unsigned long _DFSR ;
+	volatile unsigned long _AFSR ;
+	volatile unsigned long _BFAR ;
+	volatile unsigned long _MMAR ;
+
+	stacked_r0 = ((unsigned long)hardfault_args[0]) ;
+	stacked_r1 = ((unsigned long)hardfault_args[1]) ;
+	stacked_r2 = ((unsigned long)hardfault_args[2]) ;
+	stacked_r3 = ((unsigned long)hardfault_args[3]) ;
+	stacked_r12 = ((unsigned long)hardfault_args[4]) ;
+	stacked_lr = ((unsigned long)hardfault_args[5]) ;
+	stacked_pc = ((unsigned long)hardfault_args[6]) ;
+	stacked_psr = ((unsigned long)hardfault_args[7]) ;
+
+	// Configurable Fault Status Register
+	// Consists of MMSR, BFSR and UFSR
+	_CFSR = (*((volatile unsigned long *)(0xE000ED28))) ;
+
+	// Hard Fault Status Register
+	_HFSR = (*((volatile unsigned long *)(0xE000ED2C))) ;
+
+	// Debug Fault Status Register
+	_DFSR = (*((volatile unsigned long *)(0xE000ED30))) ;
+
+	// Auxiliary Fault Status Register
+	_AFSR = (*((volatile unsigned long *)(0xE000ED3C))) ;
+
+	// Read the Fault Address Registers. These may not contain valid values.
+	// Check BFARVALID/MMARVALID to see if they are valid values
+	// MemManage Fault Address Register
+	_MMAR = (*((volatile unsigned long *)(0xE000ED34))) ;
+	// Bus Fault Address Register
+	_BFAR = (*((volatile unsigned long *)(0xE000ED38))) ;
+
+	printf("\n %s: r0: %x \r r1: %x \r r2: %x \r r3: %x \r r12: %x \r " ,
+		   __func__, stacked_r0, stacked_r1, stacked_r2, stacked_r3, stacked_r12);
+
+	printf("\n %s: lr: %x \r pc %x \r psr: %x\r",
+		   __func__, stacked_lr, stacked_pc, stacked_psr);
+
+	printf("\n %s: CFSR: %x \r HFSR %x \r DFSR: %x \r AFSR: %x \r",
+		   __func__, _CFSR, _HFSR, _DFSR, _AFSR);
+
+#ifdef MCU_HARD_FAULT_DEBUG
+	__asm("BKPT #0\n") ; // Break into the debugger
+#else
+	//TODO: use watchdog MACRO once watchdog code is merged
+	// Induce a watchdog reset
+	//WDG_RESET_MCU();
+	WDOG_UNLOCK = 0xd928;  WDOG_UNLOCK = 0xc520;
+#endif
+}
+
+void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
+{
+	 /*
+         * Get the appropriate stack pointer, depending on our mode,
+         * and use it as the parameter to the C handler. This function
+         * will never return
+         */
+	__asm volatile (
+	" movs r0,#4       \n"
+	" movs r1, lr      \n"
+	" tst r0, r1       \n"
+	" beq _MSP         \n"
+	" mrs r0, psp      \n"
+	" b _HALT          \n"
+	"_MSP:               \n"
+	" mrs r0, msp      \n"
+	"_HALT:              \n"
+	" ldr r1,[r0,#20]  \n"
+	" b HardFault_HandlerC \n"
+	" bkpt #0          \n"
+	);
+}
 
 void Main_task( uint32_t initial_data ) {
 
@@ -81,7 +200,7 @@ void Main_task( uint32_t initial_data ) {
     GPIO_Config();
     ADC_init ();
 	
-	
+	OSA_InstallIntHandler(HardFault_IRQn, HardFault_Handler_asm);
 
 	NVIC_SetPriority(PORTA_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
