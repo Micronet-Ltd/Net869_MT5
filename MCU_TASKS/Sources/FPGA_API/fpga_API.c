@@ -353,7 +353,7 @@ void FPGA_UART_Rx_task (uint32_t initial_data)
 	fpga_uart_rx_buf_wr_idx = 0;
 	printf ("\nFPGA_UART_Rx Task: Start \n");
 
-	while (1) {
+	while (0 == g_flag_Exit) {
 		// get message via UART channel
 		uart_rx_status = UART_DRV_ReceiveDataBlocking (FPGA_UART_PORT, &fpga_uart_rx_buf [fpga_uart_rx_buf_wr_idx], 1, 1000);
 

@@ -91,7 +91,7 @@ void control_task (uint32_t initial_data)
 
 	protocol_init_data();
 
-	while (1)
+	while (0 == g_flag_Exit)
 	{
 		/* wait forever for interrupt message */
 		ctl_rx_msg = _msgq_receive(control_rx_qid, 0);

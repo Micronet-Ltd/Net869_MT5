@@ -56,7 +56,7 @@ void J1708_Tx_task (uint32_t initial_data)
 
 	printf ("\nJ1708_Tx Task: Start \n");
 
-	while (1) {
+	while (0 == g_flag_Exit) {
 		while (J1708_state == J1708_DISABLED)
 			_time_delay (10000);
 
@@ -122,7 +122,7 @@ void J1708_Rx_task (uint32_t initial_data)
 	_event_open   ("event.J1708_RX", &g_J1708_event_h);
 	printf ("\nJ1708_Rx Task: Start \n");
 
-	while (1) {
+	while (0 == g_flag_Exit) {
 		while (J1708_state == J1708_DISABLED)
 			_time_delay (10000);
 

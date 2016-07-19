@@ -39,8 +39,15 @@
 #include "nio_serial.h"
 #include "spi_settings.h"
 #include "W25X40CL.h"
+#include "fsl_power_manager.h"
+
 
 extern int32_t	Set_IRQHandler_spec(void);
+extern void disable_others(uint32_t WithFpga);
+extern void disable_spi(void);
+extern void Device_reset_req(int32_t wait_time);
+
+uint8_t g_flag_Exit = 0; 
 
 #ifdef DEB_PRINT_FIRST_IRQS
 extern uint8_t s1[];
@@ -133,6 +140,23 @@ _task_id	Upd_idTask = MQX_NULL_TASK_ID;//temp place
 uint32_t	g_start_flag = 0;
 uint8_t 	g_ok = 0;
 int32_t		g_fd = -1;
+const NIO_SERIAL_INIT_DATA_STRUCT nserial3_init =
+{
+	.SERIAL_INSTANCE		= UART_UPDATE_FW_IDX,
+	.BAUDRATE            	= 115228,
+	.PARITY_MODE         	= kNioSerialParityOdd,
+	.STOPBIT_COUNT       	= kNioSerialOneStopBit,
+	.BITCOUNT_PERCHAR    	= 9,
+	.MODULE					= kNioSerialUart,
+	.RXTX_PRIOR		       	= 3,
+	#if defined(BOARD_USE_UART) && defined(BOARD_UART_CLOCK_SOURCE)
+	.CLK_SOURCE          = BOARD_UART_CLOCK_SOURCE,
+	#else
+	.CLK_SOURCE          = 1,
+	#endif
+	.RX_BUFF_SIZE        	= NIO_SERIAL_BUFF_SIZE,
+	.TX_BUFF_SIZE        	= NIO_SERIAL_MIN_BUFF_SIZE,//NIO_SERIAL_BUFF_SIZE, is not used
+};
 
 int32_t cs_get(uint8_t* arr, uint32_t len)
 {
@@ -209,6 +233,8 @@ void tasks_kill(void)
 {
 	uint32_t i = 0;
 
+	g_flag_Exit = 1;
+	
 	while(i < NUM_TASKS)
 	{
 		if(	0					!= g_TASK_ids[i] &&
@@ -222,6 +248,8 @@ void tasks_kill(void)
 		}
 		i++;
 	}
+	
+	POWER_SYS_SetMode(kPowerManagerRun, kPowerManagerPolicyAgreement);
 }
 /*
 	KERNEL_DATA_STRUCT_PTR   kernel_data;
@@ -254,7 +282,7 @@ void tasks_kill(void)
 int32_t start_update(uint32_t id)
 {
 	tasks_kill();
-
+	disable_others(0);
 	Upd_idTask = _task_create(0, UPDATER_EXEC_TASK, 0);
 	if(MQX_NULL_TASK_ID == Upd_idTask)
 	{
@@ -398,7 +426,8 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 			g_start_flag = 0;
 			if(g_ok)
 				end_update();
-			NVIC_SystemReset();
+			//NVIC_SystemReset();
+			Device_reset_req(0);
 		}
 		break;
 		case FRE:
@@ -416,6 +445,8 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 			printf("updater: SFD\n");
 			fpga_deinit();
 			g_start_flag = 0;
+//			NVIC_SystemReset();
+			Device_reset_req(0);
 		}
 		break;
 		default:
@@ -509,7 +540,7 @@ uint32_t rstr_32_dig(uint8_t* buf)
 }
 void fpga_data(uint8_t* buf, uint32_t len)
 {
-	int32_t		err = 0;//, count = 0;
+	int32_t		err = 0, count = 0;
 	uint32_t 	tmp_len = 0, wr_len = 0, diff, crc;
 	uint8_t* 	ptr = (uint8_t*)OK_str;
 	uint32_t*	pTmp;
@@ -528,7 +559,9 @@ void fpga_data(uint8_t* buf, uint32_t len)
 		return;
 	}
 	transmit_polling((uint8_t*)OK_str, strlen((char*)OK_str));
-
+	
+	printf("update: %s len %d\n", __func__, len);
+	
 	do
 	{
 		err = 0;
@@ -537,6 +570,7 @@ void fpga_data(uint8_t* buf, uint32_t len)
 
 		tmp_len = _nio_read(g_fd, &buf[4], diff + 4, &err);
 
+		//printf("updater: read %d (%d)   ", tmp_len, err);
 		if(tmp_len < diff)
 		{
 			ptr = (uint8_t*)nCRC_str;// or ERR ???;
@@ -587,14 +621,17 @@ void fpga_data(uint8_t* buf, uint32_t len)
 //			_time_get(&tt);
 //			printf("fpga_write_data %d:%d\n", tt.SECONDS, tt.MILLISECONDS);
 		}
-
+//		printf("updater: %d\n", count++);
 		transmit_polling(ptr, strlen((char*)ptr));
-
+		
 		if(0 == err)
 			wr_len += diff;
 
 	}while((len > wr_len) && (3 > err));
 	buf[0] = 0;
+	
+	disable_spi();	
+	printf("update: %s end (%d)\n", __func__, err);
 }
 void updater_task(uint32_t param)
 {
@@ -606,7 +643,7 @@ void updater_task(uint32_t param)
 		.baudRate        = BAUD_115200 //38400
 	};
 */
-	const NIO_SERIAL_INIT_DATA_STRUCT nserial3_init =
+/*	const NIO_SERIAL_INIT_DATA_STRUCT nserial3_init =
 	{
 		.SERIAL_INSTANCE		= UART_UPDATE_FW_IDX,
 		.BAUDRATE            	= 115228,
@@ -623,6 +660,7 @@ void updater_task(uint32_t param)
 		.RX_BUFF_SIZE        	= NIO_SERIAL_BUFF_SIZE,
 		.TX_BUFF_SIZE        	= NIO_SERIAL_BUFF_SIZE,
 	};
+*/
 //	UART_Type* 	base = g_uartBase[UART_UPDATE_FW_IDX];
 	_mqx_uint 	result;
 	int32_t 	stat = -1;
@@ -669,7 +707,7 @@ void updater_task(uint32_t param)
 	while(true)
 	{
 		id = UNN;
-
+		error = 0;
 		memset(bbb, 0, sizeof(bbb));
 		// Wait to receive input data
 		stat = _nio_read(g_fd, bbb, 3, &error);

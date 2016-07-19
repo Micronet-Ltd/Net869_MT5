@@ -824,7 +824,7 @@ void Usb_task(uint32_t arg)
 
 		_time_delay(1);
 
-	} while (1);
+	} while (0 == g_flag_Exit);
 }
 
 #if 0

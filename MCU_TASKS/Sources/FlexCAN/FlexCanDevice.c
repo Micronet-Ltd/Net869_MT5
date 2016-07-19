@@ -686,7 +686,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 			if ( (0 >= msg_size) || (CAN_OK_RESPONCE != erroResp) ) {
 				break;
 			}
-		}while ( 1 );
+		}while (0 == g_flag_Exit);
 
 		if ( msg_ptr ) {
 #if 1
@@ -878,7 +878,7 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 
 		_time_delay(1);
 
-	} while ( 1 );
+	} while (0 == g_flag_Exit);
 }
 
 pflexcanInstance_t FlexCanDevice_GetInstance( flexcandevice_module_t moduleID ) {

@@ -158,7 +158,7 @@ void Acc_task (uint32_t initial_data)
 	//test_acc_msg.header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
 	//test_acc_msg.header.SIZE = sizeof(MESSAGE_HEADER_STRUCT) + strlen((char *)msg->data) + 1;
 	//acc_msg = &test_acc_msg;
-	while (1)
+	while (0 == g_flag_Exit)
 	{
 #if 1
 		_event_wait_all(g_acc_event_h, 1, 0);

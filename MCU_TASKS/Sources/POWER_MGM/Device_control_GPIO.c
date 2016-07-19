@@ -180,7 +180,10 @@ void Device_update_state (uint32_t * time_diff)
 				printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
 				turn_on_condition_g |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
 			}
-
+			if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
+			{
+			  	turn_on_condition_g |= POWER_MGM_DEVICE_SW_RESET_REQ;
+			}
 			if (turn_on_condition_g != 0)
 			{
 
@@ -371,6 +374,58 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 	printf ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
 	WDG_RESET_MCU();
 	device_off_req_in_progress = FALSE;
+}
+
+// delay in msec
+void Device_reset_req(int32_t wait_time)
+{
+	int32_t cpu_off_wait_time;
+	uint8_t cpu_status_pin = 0;
+
+	GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
+	FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
+
+	cpu_off_wait_time = CPU_OFF_CHECK_TIME*((wait_time + (CPU_OFF_CHECK_TIME >> 1))/CPU_OFF_CHECK_TIME);
+	if (cpu_off_wait_time > MAX_CPU_OFF_CHECK_TIME)
+	  cpu_off_wait_time = MAX_CPU_OFF_CHECK_TIME;
+	
+	_time_delay(cpu_off_wait_time);
+
+#ifdef MCU_AND_CPU_BOARD_CONNECTED
+	while (cpu_off_wait_time) {
+		/* Turn device off */
+		GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+		_time_delay (100);
+		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+
+	  	/* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
+		cpu_status_pin = GPIO_DRV_ReadPinInput (CPU_STATUS);
+		if (0 == cpu_status_pin) {
+			printf ("Device_off_req: CPU_status pin %d, wait_time %d ms\n", cpu_status_pin, cpu_off_wait_time);
+			break;
+		}
+		
+		_time_delay(CPU_OFF_CHECK_TIME);
+		cpu_off_wait_time -= CPU_OFF_CHECK_TIME;
+	}
+
+	/* turning off the 5V rail always. */
+	//printf ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
+	//GPIO_DRV_ClearPinOutput(POWER_5V0_ENABLE);	// turn off 5V0 power rail
+#endif
+	//GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
+	printf ("\nPOWER_MGM: DEVICE reset through Device_reset_req\n");
+	device_state_g = DEVICE_STATE_OFF;
+
+	// Vladimir
+	// TODO: should be investigated influence of GPIOA11 and GPIOE25 pins during reset
+	// default states
+	// 	output register: 		0
+	//	direction register:		inputs
+	// PTA11: disabled
+	// PTE25: ADC0SE18
+	
+	NVIC_SystemReset();
 }
 
 void Device_init (uint32_t delay_period)

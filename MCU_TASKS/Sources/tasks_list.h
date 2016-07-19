@@ -75,6 +75,8 @@ typedef struct {
 
 #define APP_MESSAGE_NO_ARRAY_SIZE (sizeof(MESSAGE_HEADER_STRUCT)+sizeof(uint64_t)+sizeof(uint8_t))
 
+extern uint8_t g_flag_Exit; 
+
 extern void Main_task        (uint32_t);
 extern void Power_MGM_task   (uint32_t);
 
