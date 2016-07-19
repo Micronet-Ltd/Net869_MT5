@@ -144,6 +144,7 @@ void Device_update_state (uint32_t * time_diff)
 	uint32_t ignition_voltage  = ADC_get_value (kADC_ANALOG_IN1 );
 	uint32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
 	uint32_t supercap_voltage;
+	static bool print_backup_power = FALSE;
 
 	Device_control_GPIO(time_diff);
 
@@ -257,10 +258,10 @@ void Device_update_state (uint32_t * time_diff)
 			break;
 
 		case DEVICE_STATE_BACKUP_POWER:
-			// if power is back during backup period - turn on a YELLOW LED
-			if (power_in_voltage >= POWER_IN_TURN_ON_TH)
+			if (power_in_voltage >= POWER_IN_TURN_ON_TH && !print_backup_power)
 			{
-				printf ("\nPOWER_MGM: DEVICE_STATE_BACKUP_POWER power back up");
+				printf ("\nPOWER_MGM: DEVICE_STATE_BACKUP_POWER state, power returned\n");
+				print_backup_power = TRUE; /*only print power returned once */
 			}
 
 			backup_power_cnt_g += *time_diff;
