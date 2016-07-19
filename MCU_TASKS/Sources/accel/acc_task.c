@@ -236,6 +236,7 @@ bool accInit (void)
 	uint8_t read_data      =  0 ;
 	uint8_t write_data [2] = {0};
 	_mqx_uint ret = MQX_OK;
+	i2c_status_t ret_i2c;
 
 	I2C_Enable(ACC_I2C_PORT); /* Note:Both accelerometer and RTC are on the same bus*/
 
@@ -248,9 +249,9 @@ bool accInit (void)
 
 	// read recognition device ID
 	write_data[0] = ACC_REG_WHO_AM_I   ;
-	if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT) != kStatus_I2C_Success)
+	if ((ret_i2c = I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT)) != kStatus_I2C_Success)
 	{
-		printf("accInit: I2C Rx access failed\n");
+		printf("accInit: I2C Rx access failed, i2c error %d\n", ret_i2c);
 		goto _ACC_CONFIG_FAIL;
 	}
 	if (read_data == ACC_VALUE_ID)
