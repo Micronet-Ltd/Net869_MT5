@@ -35,8 +35,7 @@ void MQX_PORTB_IRQHandler(void);
 void MQX_PORTC_IRQHandler(void);
 void MQX_PORTE_IRQHandler(void);
 void configure_otg_for_host_or_device(void);
-/* The prototype shows it is a naked function - in effect this is just an
-assembly function. */
+
 void HardFault_Handler_asm(void);
 
 #define	MAIN_TASK_SLEEP_PERIOD	1000			// 10 mSec sleep
@@ -77,7 +76,7 @@ void induce_hard_fault(void)
 	}
 	printf("j=%d\n", j);
 }
-
+#ifdef MCU_HARD_FAULT_DEBUG
 /**
  * HardFaultHandler_C:
  * This is called from the HardFault_HandlerAsm with a pointer the Fault stack
@@ -87,23 +86,22 @@ void induce_hard_fault(void)
  * cause of the fault.
  * The function ends with a BKPT instruction to force control back into the debugger
  */
-void HardFault_HandlerC(unsigned long *hardfault_args){
-
-	volatile unsigned long stacked_r0 ;
-	volatile unsigned long stacked_r1 ;
-	volatile unsigned long stacked_r2 ;
-	volatile unsigned long stacked_r3 ;
-	volatile unsigned long stacked_r12 ;
-	volatile unsigned long stacked_lr ;
-	volatile unsigned long stacked_pc ;
-	volatile unsigned long stacked_psr ;
-	volatile unsigned long _CFSR ;
-	volatile unsigned long _HFSR ;
-	volatile unsigned long _DFSR ;
-	volatile unsigned long _AFSR ;
-	volatile unsigned long _BFAR ;
-	volatile unsigned long _MMAR ;
-
+volatile unsigned long stacked_r0 ;
+volatile unsigned long stacked_r1 ;
+volatile unsigned long stacked_r2 ;
+volatile unsigned long stacked_r3 ;
+volatile unsigned long stacked_r12 ;
+volatile unsigned long stacked_lr ;
+volatile unsigned long stacked_pc ;
+volatile unsigned long stacked_psr ;
+volatile unsigned long _CFSR ;
+volatile unsigned long _HFSR ;
+volatile unsigned long _DFSR ;
+volatile unsigned long _AFSR ;
+volatile unsigned long _BFAR ;
+volatile unsigned long _MMAR ;
+void HardFault_HandlerC(unsigned long *hardfault_args)
+{
 	stacked_r0 = ((unsigned long)hardfault_args[0]) ;
 	stacked_r1 = ((unsigned long)hardfault_args[1]) ;
 	stacked_r2 = ((unsigned long)hardfault_args[2]) ;
@@ -133,25 +131,19 @@ void HardFault_HandlerC(unsigned long *hardfault_args){
 	// Bus Fault Address Register
 	_BFAR = (*((volatile unsigned long *)(0xE000ED38))) ;
 
-	printf("\n %s: r0: %x \r r1: %x \r r2: %x \r r3: %x \r r12: %x \r " ,
-		   __func__, stacked_r0, stacked_r1, stacked_r2, stacked_r3, stacked_r12);
+	//printf("\n %s: r0: %x \r r1: %x \r r2: %x \r r3: %x \r r12: %x \r " ,
+	//	   __func__, stacked_r0, stacked_r1, stacked_r2, stacked_r3, stacked_r12);
 
-	printf("\n %s: lr: %x \r pc %x \r psr: %x\r",
-		   __func__, stacked_lr, stacked_pc, stacked_psr);
+	//printf("\n %s: lr: %x \r pc %x \r psr: %x\r",
+	//	   __func__, stacked_lr, stacked_pc, stacked_psr);
 
-	printf("\n %s: CFSR: %x \r HFSR %x \r DFSR: %x \r AFSR: %x \r",
-		   __func__, _CFSR, _HFSR, _DFSR, _AFSR);
+	//printf("\n %s: CFSR: %x \r HFSR %x \r DFSR: %x \r AFSR: %x \r",
+	//	   __func__, _CFSR, _HFSR, _DFSR, _AFSR);
 
-#ifdef MCU_HARD_FAULT_DEBUG
+
 	__asm("BKPT #0\n") ; // Break into the debugger
-#else
-	//TODO: use watchdog MACRO once watchdog code is merged
-	// Induce a watchdog reset
-	//WDG_RESET_MCU();
-	WDOG_UNLOCK = 0xd928;  WDOG_UNLOCK = 0xc520;
-#endif
 }
-
+#endif
 void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 {
 	 /*
@@ -170,7 +162,9 @@ void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 	" mrs r0, msp      \n"
 	"_HALT:              \n"
 	" ldr r1,[r0,#20]  \n"
+#ifdef MCU_HARD_FAULT_DEBUG
 	" b HardFault_HandlerC \n"
+#endif
 	" bkpt #0          \n"
 	);
 }
