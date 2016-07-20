@@ -48,6 +48,9 @@
 _Pragma ("diag_suppress= Pm101")
 #endif
 
+uint8_t g_cb_inst = 0;
+uint8_t g_rcv_complete = 0;
+
 static int nio_serial_open(void *dev_context, const char *dev_name, int flags, void **fp_context, int *error);
 static int nio_serial_read(void *dev_context, void *fp_context, void *buf, size_t nbytes, int *error);
 static int nio_serial_write(void *dev_context, void *fp_context, const void *buf, size_t nbytes, int *error);
@@ -342,7 +345,22 @@ static int nio_serial_read(void *dev_context, void *fp_context, void *buf, size_
 			{
 				rxBuffer->WAIT_NUM = (nbytes - readed);
 			}
-			status = OSA_SemaWait(&rxBuffer->SEMA, OSA_WAIT_FOREVER);
+			
+			if(UART3_IDX == serial_dev_context->instance)
+			{
+			  	while(!g_rcv_complete)
+				{
+				  	if(0 == readed)
+						_time_delay(100);
+					else
+						_time_delay(2);
+				}
+			 	g_rcv_complete = 0;
+				status = kStatus_OSA_Success;
+			}
+			else
+				status = OSA_SemaWait(&rxBuffer->SEMA, OSA_WAIT_FOREVER);
+			
 			if (status != kStatus_OSA_Success)
 			{
 				if (error) {
@@ -828,10 +846,6 @@ static int nio_serial_init(void *init_data, void **dev_context, int *error)
 				result = NIO_ENOMEM;
 				goto cleanupH;
 			}
-			/* SERIAL handler interrupt installation */
-			IRQNumber = g_uartRxTxIrqId[init->SERIAL_INSTANCE];
-			NVIC_SetPriority((IRQn_Type)IRQNumber, init->RXTX_PRIOR);
-			_int_install_isr(IRQNumber, (INT_ISR_FPTR)UART_DRV_IRQHandler, (void*)init->SERIAL_INSTANCE);
 			/* SDK HAL init */
 			if ( kStatus_UART_Success != UART_DRV_Init(init->SERIAL_INSTANCE, (uart_state_t *) serial_dev_context->serial_state, &uartConfig))
 			{
@@ -842,6 +856,11 @@ static int nio_serial_init(void *init_data, void **dev_context, int *error)
 			UART_DRV_InstallRxCallback(init->SERIAL_INSTANCE, &nio_serial_uart_rxcallback, rxBuffer->BUFF, rxBuffer, true);
 			/* Install callback function to handle TX buffer */
 			UART_DRV_InstallTxCallback(init->SERIAL_INSTANCE, &nio_serial_uart_txcallback, txBuffer->BUFF, txBuffer);
+
+			/* SERIAL handler interrupt installation */
+			IRQNumber = g_uartRxTxIrqId[init->SERIAL_INSTANCE];
+			NVIC_SetPriority((IRQn_Type)IRQNumber, init->RXTX_PRIOR);
+			_int_install_isr(IRQNumber, (INT_ISR_FPTR)UART_DRV_IRQHandler, (void*)init->SERIAL_INSTANCE);
 			break;
 		}
 #endif
@@ -1024,7 +1043,14 @@ static inline void nio_serial_rxcallback(NIO_SERIAL_BUFFER_STRUCT *buffer, uint8
 			/* disable 'unused variable' warning */
 			(void)status;
 			buffer->FLAGS &= ~NIO_SERIAL_WAITING;
-			status = OSA_SemaPost(&buffer->SEMA);
+
+			if(UART3_IDX == g_cb_inst)
+			{
+			  	g_rcv_complete = 1;
+			}
+			else
+			  status = OSA_SemaPost(&buffer->SEMA);
+			
 			/* Should always pass */
 			assert(kStatus_OSA_Success == status);
 		}
@@ -1037,6 +1063,7 @@ static inline void nio_serial_rxcallback(NIO_SERIAL_BUFFER_STRUCT *buffer, uint8
 void nio_serial_uart_rxcallback(uint32_t instance, void * serialState)
 {
 	uart_state_t* serial_dev_context = (uart_state_t*)serialState;
+	g_cb_inst = instance;
 	NIO_SERIAL_BUFFER_STRUCT *rxBuffer = (NIO_SERIAL_BUFFER_STRUCT*)serial_dev_context->rxCallbackParam;
 	nio_serial_rxcallback(rxBuffer, &serial_dev_context->rxBuff);
 	return;

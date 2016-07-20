@@ -141,7 +141,7 @@ int32_t fpga_update_init(uint32_t instance)
 	spiDevice.bitsPerSec =  500000;
 
 //	GPIO_DRV_ClearPinOutput (FPGA_RSTB);
-	disable_others(1);//temp!!! debug
+	disable_others(1);
 	
 	status = DSPI_DRV_MasterConfigureBus(instance, &spiDevice, &calculatedBaudRate);
 	if(status != kStatus_DSPI_Success)

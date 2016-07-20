@@ -131,7 +131,7 @@ const char*	cmds_srec[] =
   ""
 };
 uint32_t 	g_offset = NVFLASH_BASE;
-uint8_t 	bbb[264] = {0};//[64] = {0};
+uint8_t 	bbb[MAX_RCV_SIZE] = {0};
 uint8_t 	tmp_buf[32] = {0};
 void*		g_event_ptr;
 uint32_t	client_queue[sizeof(LWMSGQ_STRUCT)/sizeof(uint32_t) + NUM_MESSAGES * UPD_MSG_SIZE];
@@ -154,7 +154,7 @@ const NIO_SERIAL_INIT_DATA_STRUCT nserial3_init =
 	#else
 	.CLK_SOURCE          = 1,
 	#endif
-	.RX_BUFF_SIZE        	= NIO_SERIAL_BUFF_SIZE,
+	.RX_BUFF_SIZE        	= MAX_RCV_SIZE, //NIO_SERIAL_BUFF_SIZE,
 	.TX_BUFF_SIZE        	= NIO_SERIAL_MIN_BUFF_SIZE,//NIO_SERIAL_BUFF_SIZE, is not used
 };
 

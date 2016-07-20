@@ -14,7 +14,8 @@
 #include <bsp.h>
 #include <lwmsgq.h>
 
-#define BAUD_115200 115200
+#define MAX_RCV_SIZE	264
+#define BAUD_115200 	115200
 #define NUM_MESSAGES  	1//2
 #define UPD_MSG_SIZE   	8 //type + addr + size + 256 bytes + 1
 
