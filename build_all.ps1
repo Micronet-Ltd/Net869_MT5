@@ -1,8 +1,8 @@
 
-$iar_tool = "c:\Program Files `(x86`)\IAR Systems\Embedded Workbench 7.4\common\bin\iarbuild.exe"
+$iar_tool = "c:\Program Files `(x86`)\IAR Systems\Embedded Workbench 7.5\common\bin\iarbuild.exe"
 $tproj = 'Release'
 $tproj_m = 'release'
-$core_num = 4
+$core_num = 8
 #-log errors|warnings|info|all	
 $jar_log = 'info'
 $out_path = "$PSScriptRoot\out"

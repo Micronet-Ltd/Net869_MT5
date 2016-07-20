@@ -484,8 +484,10 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					pbuff++;
 					msg_size--;
 					if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data ) ) {
-						if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage ( ((pflexcanInstance_t)param), 14, &Tx_data ) )
+						if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage ( ((pflexcanInstance_t)param), 14, &Tx_data ) ) {
+							printf("!!!Error FlexCanDevice_TxMessage\n");
 							erroResp = CAN_ERROR_RESPONCE;
+						}
 
 						_msg_free(msg_ptr);
 						msg_ptr = NULL;
@@ -513,8 +515,10 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 						pqMemElem = NULL;
 #endif
 					}//if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data ) )
-					else
+					else {
+						printf("!!!Error decode TR message\n");
 						erroResp = CAN_ERROR_RESPONCE;
+					}
 				} while (0);
 
 				msg_size = 0;
@@ -1204,6 +1208,9 @@ flexcan_device_status_t FlexCanDevice_TxMessage ( pflexcanInstance_t pinstance, 
 	if ( fcStatus_FLEXCAN_Success == ret ) {
 		//ret = (flexcan_device_status_t)FLEXCAN_DRV_SendBlocking(pinstance->instance, MbId, &txInfo, pTxData->msgID, pTxData->msgData, FLEXCAN_DEVICE_TX_TIMEOUT);
 		ret = (flexcan_device_status_t)FLEXCAN_DRV_Send(pinstance->instance, MbId, &txInfo, pTxData->msgID, pTxData->msgData);
+	}
+	else {
+		printf("Error FLEXCAN_DRV_ConfigTxMb\n");
 	}
 
 	return ret;

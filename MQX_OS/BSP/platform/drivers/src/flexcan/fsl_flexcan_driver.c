@@ -317,18 +317,31 @@ flexcan_status_t FLEXCAN_DRV_ConfigTxMb(
 	flexcan_data_info_t *tx_info,
 	uint32_t msg_id)
 {
+    flexcan_status_t ret;
 	assert(instance < CAN_INSTANCE_COUNT);
 
 	flexcan_msgbuff_code_status_t cs;
 	CAN_Type * base = g_flexcanBase[instance];
 	flexcan_state_t * state = g_flexcanStatePtr[instance];
 
+//  if (state->isTxBusy)
+//  {
+//      printf("FLEXCAN_DRV_StartSendData TX busy\n");
+//  	return kStatus_FLEXCAN_TxBusy;
+//  }
+//  state->isTxBusy = true;
+
 	state->tx_mb_idx = mb_idx;
 	/* Initialize transmit mb*/
 	cs.dataLen = tx_info->data_length;
 	cs.msgIdType = tx_info->msg_id_type;
 	cs.code = kFlexCanTXInactive;
-	return FLEXCAN_HAL_SetTxMsgBuff(base, mb_idx, &cs, msg_id, NULL);
+	ret = FLEXCAN_HAL_SetTxMsgBuff(base, mb_idx, &cs, msg_id, NULL);
+    if (kStatus_FLEXCAN_Success != ret) {
+        state->isTxBusy = false;
+    }
+
+    return ret;
 }
 
 /*FUNCTION**********************************************************************
@@ -407,16 +420,7 @@ flexcan_status_t FLEXCAN_DRV_Send(
 	state->isTxBlocking = false;
 
 	result = FLEXCAN_DRV_StartSendData(instance, mb_idx, tx_info, msg_id, mb_data);
-	if(result == kStatus_FLEXCAN_Success)
-	{
-		/* Enable message buffer interrupt*/
-		FLEXCAN_HAL_SetMsgBuffIntCmd(base, mb_idx, true);
-		/* Enable error interrupts */
-		FLEXCAN_HAL_SetErrIntCmd(base,kFlexCanIntErr,true);
-		FLEXCAN_HAL_SetErrIntCmd(base,kFlexCanIntBusoff,true);
-	}
-	else
-	{
+	if(result != kStatus_FLEXCAN_Success) {
 		return result;
 	}
 
@@ -678,28 +682,27 @@ uint32_t FLEXCAN_DRV_Deinit(uint8_t instance)
 //extern uint32_t g_flexacandevice_PacketCountRX1;
 //uint32_t g_CanDataCurr = 0;
 //uint32_t g_CanDataPrev = 0;
+//volatile uint32_t g_imask[4] = {0};
 void FLEXCAN_DRV_IRQHandler(CAN_Type *base, flexcan_state_t *state)
 {
 	volatile uint32_t flag_reg;
 	volatile uint32_t reg_ESR1;
 	uint32_t temp, temp1, i;
-	//_mqx_uint mRet;
 	flexcan_data_info_t rxInfo;
 	pFLEXCAN_queue_element_t pqueue_elem;
-	//CAN_Type * base = g_flexcanBase[instance];
-	//flexcan_state_t * state = g_flexcanStatePtr[instance];
-
+	
+	/* Get the interrupts that are enabled and ready */
+	flag_reg = ((FLEXCAN_HAL_GetAllMsgBuffIntStatusFlag(base)) & CAN_IMASK1_BUFLM_MASK) & CAN_RD_IMASK1(base);
+	
 	FLEXCAN_HAL_GetErrCounter ( base, &(g_Flexdebug.errorCount) ) ;
 
 	if (NULL == state) {
 		FLEXCAN_HAL_ClearMsgBuffIntStatusFlag (base, CAN_RD_IFLAG1(base) );
+        return;
 	}
 
 	/* Store error and status register*/
 	reg_ESR1 = FLEXCAN_HAL_GetErrStatus (base);
-
-	/* Get the interrupts that are enabled and ready */
-	flag_reg = ((FLEXCAN_HAL_GetAllMsgBuffIntStatusFlag(base)) & CAN_IMASK1_BUFLM_MASK) & CAN_RD_IMASK1(base);
 
 	/* Handle FlexCAN Error and Status Interrupt. */
 	if (reg_ESR1 & (CAN_ESR1_WAKINT_MASK | CAN_ESR1_ERRINT_MASK | CAN_ESR1_BOFFINT_MASK | CAN_ESR1_RXWRN_MASK | CAN_ESR1_TXWRN_MASK)) {
@@ -1059,20 +1062,27 @@ static flexcan_status_t FLEXCAN_DRV_StartSendData(
 	flexcan_state_t * state = g_flexcanStatePtr[instance];
 	CAN_Type * base = g_flexcanBase[instance];
 
-	if (state->isTxBusy)
-	{
-		return kStatus_FLEXCAN_TxBusy;
-	}
-	state->isTxBusy = true;
-
 	state->tx_mb_idx = mb_idx;
 	cs.dataLen = tx_info->data_length;
 	cs.msgIdType = tx_info->msg_id_type;
 
 	/* Set up FlexCAN message buffer for transmitting data*/
 	cs.code = kFlexCanTXData;
-	result = FLEXCAN_HAL_SetTxMsgBuff(base, mb_idx, &cs, msg_id, mb_data);
-	return result;
+
+    result = FLEXCAN_HAL_SetTxMsgBuff(base, mb_idx, &cs, msg_id, mb_data);
+    if (kStatus_FLEXCAN_Success == result) {
+        /* Enable message buffer interrupt*/
+        FLEXCAN_HAL_SetMsgBuffIntCmd(base, mb_idx, true);
+        /* Enable error interrupts */
+        FLEXCAN_HAL_SetErrIntCmd(base,kFlexCanIntErr,true);
+        FLEXCAN_HAL_SetErrIntCmd(base,kFlexCanIntBusoff,true);
+    }
+    else {
+        /* Enable message buffer interrupt*/
+        FLEXCAN_HAL_SetMsgBuffIntCmd(base, mb_idx, false);
+        state->isTxBusy = false;
+    }
+    return result;
 }
 
 /*FUNCTION**********************************************************************
