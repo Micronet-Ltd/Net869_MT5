@@ -309,12 +309,22 @@ void Device_off_req(uint8_t wait_time)
 {
 	uint32_t cpu_off_wait_time = 0;
 	uint8_t cpu_status_pin = 0;
+	volatile static bool device_off_req_in_progress;
+
+	/* If this command is called from a different thread, it will not execute
+	again while it is already being performed */
+	if (device_off_req_in_progress == TRUE)
+	{
+		return;
+	}
+
+	device_off_req_in_progress = TRUE;
 
 	GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
 	FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
 	_time_delay(wait_time*1000);
 
-	/* Turn device off */
+	/* Turn A8 device off */
 	GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
 	_time_delay (DEVICE_CONTROL_TIME_OFF_TH);
 	GPIO_DRV_SetPinOutput(CPU_ON_OFF);
@@ -346,13 +356,10 @@ void Device_off_req(uint8_t wait_time)
 	backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
 	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
-	//Board_SetSlowClk ();
 	printf ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
 	device_state_g = DEVICE_STATE_OFF;
 	WDG_RESET_MCU();
-	//Wiggle_sensor_restart ();
-	//peripherals_disable ();
-	//Wiggle_sensor_start ();
+	device_off_req_in_progress = FALSE;
 }
 
 void Device_init (uint32_t delay_period)
