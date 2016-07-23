@@ -63,7 +63,9 @@ bool rtc_receive_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t 
 	}
 
 	if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (RTC_I2C_PORT, &rtc_device_g, cmd,  cmd_size, data, data_size, RTC_TIME_OUT)) != kStatus_I2C_Success)
+	{
 		printf ("rtc_receive_data: ERROR: Could not receive command 0x%X (I2C error code %d)\n", *cmd, i2c_status);
+	}
 
 	_mutex_unlock(&g_i2c0_mutex);
 	return (i2c_status == kStatus_I2C_Success);

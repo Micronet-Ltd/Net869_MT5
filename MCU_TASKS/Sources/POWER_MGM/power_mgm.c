@@ -607,6 +607,8 @@ void Power_MGM_task (uint32_t initial_data )
 	/* Start off with the peripherals disabled */
 	peripherals_disable ();
 	disable_peripheral_clocks();
+	/* Enable power to the vibration sensor and accelerometer */
+	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 
 	printf ("\nPower Management Task: Start \n");
 

@@ -276,7 +276,7 @@ void Main_task( uint32_t initial_data ) {
 	}
 
 
-	GPIO_DRV_SetPinOutput(ACC_ENABLE);
+	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 
 	//Enable UART
 	GPIO_DRV_SetPinOutput(UART_ENABLE);

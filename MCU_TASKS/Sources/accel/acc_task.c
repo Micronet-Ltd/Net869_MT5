@@ -19,6 +19,7 @@
 
 #define ACC_DEVICE_ADDRESS 			0x1D
 #define	I2C_BAUD_RATE				400
+#define ACC_TIME_OUT				100		//  in milliseconds
 
 #define	ACC_I2C_PORT				I2C0_IDX
 
@@ -35,16 +36,15 @@
 #define ACC_REG_CTRL_REG2			0x2B
 #define ACC_REG_CTRL_REG4			0x2D
 #define ACC_REG_CTRL_REG5			0x2E
+#define ACC_REG_MAX_ADDR			0x32
 
 #define MAX_FIFO_SIZE				192
 #define ACC_MAX_POOL_SIZE			10
 #define ACC_XYZ_PKT_SIZE			6
 
-#define TIME_OUT					100		//  in miliseconds
-
 #define DEBUG						TRUE
 
-static i2c_device_t acc_device = {.address = ACC_DEVICE_ADDRESS,    .baudRate_kbps = I2C_BAUD_RATE};
+static i2c_device_t acc_device_g = {.address = ACC_DEVICE_ADDRESS,    .baudRate_kbps = I2C_BAUD_RATE};
 bool acc_enabled_g = false;
 
 extern MUTEX_STRUCT g_i2c0_mutex;
@@ -136,13 +136,17 @@ void Acc_task (uint32_t initial_data)
 
 	printf("\nACC Task: Start \n");
 
-//	GPIO_DRV_SetPinOutput   (ACC_ENABLE       );
+//	GPIO_DRV_SetPinOutput   (ACC_VIB_ENABLE       );
 	_time_delay(100);
 //	AccIntEnable();
 	// try to initialize accelerometer every 10 seconds
 	while (accInit () == false)
 	{
-		_time_delay (10000);
+		/* To reset accel. chip if I2C is failing we toggle ACC_VIB_ENABLE */
+		GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
+		_time_delay (1000);
+		GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
+		_time_delay (1000);
 	}
 
 	AccEnable();
@@ -230,6 +234,58 @@ void Acc_task (uint32_t initial_data)
 	_task_block();
 }
 
+bool acc_receive_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data_size)
+{
+	i2c_status_t  i2c_status ;
+	_mqx_uint ret = MQX_OK;
+
+	if (*cmd > ACC_REG_MAX_ADDR)
+	{
+		printf("acc_receive_data: invalid command address, address %d \n", *cmd);
+		return FALSE;
+	}
+
+	/* Get i2c0 mutex */
+	if ((ret =_mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+	{
+		printf("acc_receive_data: i2c mutex lock failed, ret %d \n", ret);
+		_task_block();
+	}
+
+	if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device_g, cmd,  cmd_size, data, data_size, ACC_TIME_OUT)) != kStatus_I2C_Success)
+	{
+		printf ("acc_receive_data: ERROR: Could not receive command 0x%X (I2C error code %d)\n", *cmd, i2c_status);
+	}
+
+	_mutex_unlock(&g_i2c0_mutex);
+	return (i2c_status == kStatus_I2C_Success);
+}
+
+bool acc_send_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data_size)
+{
+	i2c_status_t  i2c_status ;
+	_mqx_uint ret = MQX_OK;
+
+	if (*cmd > ACC_REG_MAX_ADDR)
+	{
+		printf("accel_send_data: invalid command address, address %d \n", *cmd);
+		return FALSE;
+	}
+
+	/* Get i2c0 mutex */
+	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+	{
+		printf("accel_send_data: i2c mutex lock failed, ret %d \n", ret);
+		_task_block();
+	}
+
+	if ((i2c_status = I2C_DRV_MasterSendDataBlocking (ACC_I2C_PORT, &acc_device_g, cmd,  cmd_size, data, data_size, ACC_TIME_OUT)) != kStatus_I2C_Success)
+		printf ("accel_send_data: ERROR: Could not send command 0x%X (I2C error code %d)\n", *cmd, i2c_status);
+
+	_mutex_unlock(&g_i2c0_mutex);
+	return (i2c_status == kStatus_I2C_Success);
+}
+
 
 bool accInit (void)
 {
@@ -238,20 +294,13 @@ bool accInit (void)
 	_mqx_uint ret = MQX_OK;
 	i2c_status_t ret_i2c;
 
-	I2C_Enable(ACC_I2C_PORT); /* Note:Both accelerometer and RTC are on the same bus*/
-
-	/* Get i2c0 mutex */
-	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
-	{
-		printf("acc_init: i2c mutex lock failed, ret=%d \n", ret);
-		_task_block();
-	}
+	I2C_Enable(ACC_I2C_PORT); /* Note:Both accelerometer and accel are on the same bus*/
 
 	// read recognition device ID
 	write_data[0] = ACC_REG_WHO_AM_I   ;
-	if ((ret_i2c = I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT)) != kStatus_I2C_Success)
+	if (!acc_receive_data(&write_data[0], 1, &read_data, 1))
 	{
-		printf("accInit: I2C Rx access failed, i2c error %d\n", ret_i2c);
+		printf("accInit: i2c read ACC_REG_WHO_AM_I failed\n");
 		goto _ACC_CONFIG_FAIL;
 	}
 	if (read_data == ACC_VALUE_ID)
@@ -267,42 +316,42 @@ bool accInit (void)
 	// reset device
 	write_data[0] = ACC_REG_CTRL_REG2   ;
 	write_data[1] = ACC_VALUE_RESET_CMD ;
-	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_CONFIG_FAIL;
 	OSA_TimeDelay(1);
 
 	// set CTRL_REG1 to STANDBY Normal mode with 1.56Hz sample rates reads at SLEEP mode and 800Hz at ACTIVE mode
 	write_data[0] = ACC_REG_CTRL_REG1   ;
 	write_data[1] = 0x00 ;
-	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_CONFIG_FAIL;
 
 	write_data[0] = ACC_REG_CTRL_REG1   ;
 	write_data[1] = 0xC0 ;
-	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_CONFIG_FAIL;
 
 	// configure device to Low power in Sleep mode and Normal power mode at Active
 	write_data[0] = ACC_REG_CTRL_REG2   ;
 	write_data[1] = 0x18 ;
-	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_CONFIG_FAIL;
 
 	// configure interrupt source to FIFO interrupt on INT1 pin with water mark of 10 samples
 	// when FIFO sample count exceeding the water mark event does not stop the FIFO from accepting new data
 	// FIFO always contains the most recent samples when overflowed (FMODE = 01)
 	write_data[0] = ACC_REG_CTRL_REG5   ;
 	write_data[1] = 0x40 ;
-	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_CONFIG_FAIL;
 
 	write_data[0] = ACC_REG_CTRL_REG4   ;
 	write_data[1] = 0x40 ;
-	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_CONFIG_FAIL;
 
 	write_data[0] = ACC_REG_F_SETUP   ;
 	write_data[1] = 0x4A ;
-	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_CONFIG_FAIL;
 
 	// configure output buffer data format using 8g scale range
 	write_data[0] = ACC_REG_XYZ_DATA_CFG   ;
 	write_data[1] = 0x02 ;
-	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_CONFIG_FAIL;
+	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_CONFIG_FAIL;
 
 	printf ("ACC Task: Device Configured \n");
 	_mutex_unlock(&g_i2c0_mutex);
@@ -318,28 +367,18 @@ void AccEnable (void)
 {
 	uint8_t read_data      =  0 ;
 	uint8_t write_data [2] = {0};
-	_mqx_uint ret = MQX_OK;
-
-	/* Get i2c0 mutex */
-	if ((ret=_mutex_lock(&g_i2c0_mutex)) != MQX_OK)
-	{
-		printf("AccEnable: i2c mutex lock failed ret=%d \n", ret);
-		_task_block();
-	}
 
 	// read recognition register
 	write_data[0] = ACC_REG_CTRL_REG1;
-	if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_ENABLE_FAIL;
+	if (!acc_receive_data(&write_data[0], 1, &read_data, 1))	goto _ACC_ENABLE_FAIL;
 
 	write_data[1] = read_data |= 0x1;
-	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)			goto _ACC_ENABLE_FAIL;
+	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_ENABLE_FAIL;
 	printf ("ACC Task: Accelerometer Enabled \n");
 	acc_enabled_g = TRUE;
-	_mutex_unlock(&g_i2c0_mutex);
 	return;
 
 _ACC_ENABLE_FAIL:
-	_mutex_unlock(&g_i2c0_mutex);
 	printf ("ACC Task: ERROR: Accelerometer NOT enabled \n");
 
 }
@@ -348,34 +387,23 @@ void AccDisable (void)
 {
 	uint8_t read_data      =  0 ;
 	uint8_t write_data [2] = {0};
-	_mqx_uint ret = MQX_OK;
-
-	/* Get i2c0 mutex */
-	if ((ret=_mutex_lock(&g_i2c0_mutex)) != MQX_OK)
-	{
-		printf("AccDisable: i2c mutex lock failed ret=%d \n", ret);
-		_task_block();
-	}
 
 	// read control register
 	write_data[0] = ACC_REG_CTRL_REG1;
-	if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_DISABLE_FAIL;
+	if (!acc_receive_data(&write_data[0], 1, &read_data, 1))	goto _ACC_DISABLE_FAIL;
 
 	write_data[1] = read_data &= ~0x1;
-	if (I2C_DRV_MasterSendDataBlocking    (ACC_I2C_PORT, &acc_device, NULL,  0, write_data, 2, TIME_OUT) != kStatus_I2C_Success)			goto _ACC_DISABLE_FAIL;
+	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_DISABLE_FAIL;
 
 		// read control register
 	write_data[0] = ACC_REG_CTRL_REG1;
-	if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_DISABLE_FAIL;
-
+	if (!acc_receive_data(&write_data[0], 1, &read_data, 1))	goto _ACC_DISABLE_FAIL;
 
 	printf ("ACC Task: Accelerometer Disabled \n");
 	acc_enabled_g = FALSE;
-	_mutex_unlock(&g_i2c0_mutex);
 	return;
 
 _ACC_DISABLE_FAIL:
-	_mutex_unlock(&g_i2c0_mutex);
 	printf ("ACC Task: ERROR: Accelerometer NOT disabled \n");
 }
 
@@ -384,17 +412,12 @@ void acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 	uint8_t u8ByteCnt      =  0 ;
 	uint8_t read_data      =  0 ;
 	uint8_t write_data [2] = {0};
-	_mqx_uint ret = MQX_OK;
 
-	/* Get i2c0 mutex */
-	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
-	{
-		printf("acc_fifo_read: i2c mutex lock failed ret=%d\n", ret);
-		_task_block();
-	}
 	// read status register
 	write_data[0] = ACC_REG_STATUS;
-	if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT*10) != kStatus_I2C_Success)		goto _ACC_FIFO_READ_FAIL;
+	//if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT*10) != kStatus_I2C_Success)		goto _ACC_FIFO_READ_FAIL;
+	//TODO: Why was timout set to 100*10 milliseconds??? Abid
+	if (!acc_receive_data(&write_data[0], 1, &read_data, 1))	goto _ACC_FIFO_READ_FAIL;
 
 	u8ByteCnt  = (read_data & ACC_VALUE_STATUS_WATERMARK);				// get amount of samples in FIFO
 	u8ByteCnt *= 6;														// read 2 Bytes per Sample (each sample is 12 bits): Max 192 Samples
@@ -403,12 +426,12 @@ void acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 		u8ByteCnt = max_buffer_size;
 
 	write_data[0] = ACC_REG_FIFO_SAMPLES;
-	if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, buffer, u8ByteCnt, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_FIFO_READ_FAIL;
-	_mutex_unlock(&g_i2c0_mutex);
+	//if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, buffer, u8ByteCnt, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_FIFO_READ_FAIL;
+	if (!acc_receive_data(&write_data[0], 1, buffer, u8ByteCnt))		goto _ACC_FIFO_READ_FAIL;
+
 	return;
 
 _ACC_FIFO_READ_FAIL:
-	_mutex_unlock(&g_i2c0_mutex);
 	printf ("ACC Task: ERROR: Accelerometer read failure \n");
 }
 

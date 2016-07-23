@@ -325,12 +325,11 @@ void Device_off_req(uint8_t wait_time)
 	FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
 	_time_delay(wait_time*1000);
 
+#ifdef MCU_AND_CPU_BOARD_CONNECTED
 	/* Turn A8 device off */
 	GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
 	_time_delay (DEVICE_CONTROL_TIME_OFF_TH);
 	GPIO_DRV_SetPinOutput(CPU_ON_OFF);
-
-#ifdef MCU_AND_CPU_BOARD_CONNECTED
 	/* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
 	while (cpu_off_wait_time < MAX_CPU_OFF_CHECK_TIME)
 	{
@@ -357,10 +356,12 @@ void Device_off_req(uint8_t wait_time)
 	backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
 	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
+	/* Shut off power to the accelerometer */
+	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
+	//Board_SetSlowClk ();
 	printf ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
-	device_state_g = DEVICE_STATE_OFF;
 	WDG_RESET_MCU();
-	device_off_req_in_progress = FALSE;
+	device_state_g = DEVICE_STATE_OFF;
 }
 
 void Device_init (uint32_t delay_period)
