@@ -378,6 +378,8 @@ void I2C_DRV_MasterIRQHandler(uint32_t instance)
 		{
 			OSA_SemaPost(&master->irqSync);
 		}
+		/* Indicate I2C bus is idle. */
+		master->i2cIdle = true;
 
 		return;
 	}
@@ -835,6 +837,12 @@ static i2c_status_t I2C_DRV_MasterReceive(uint32_t instance,
 
 		/* Indicate I2C bus is idle. */
 		master->i2cIdle = true;
+	}
+	/* workaround provided by NXP: https://community.nxp.com/thread/386211 */
+	else if (master->status == kStatus_I2C_AribtrationLost) 
+	{
+		I2C_HAL_Disable(base);
+		I2C_HAL_Enable(base);
 	}
 
 	return master->status;
