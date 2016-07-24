@@ -50,6 +50,7 @@ _Pragma ("diag_suppress= Pm101")
 
 uint8_t g_cb_inst = 0;
 uint8_t g_rcv_complete = 0;
+extern uint32_t	g_start_flag;
 
 static int nio_serial_open(void *dev_context, const char *dev_name, int flags, void **fp_context, int *error);
 static int nio_serial_read(void *dev_context, void *fp_context, void *buf, size_t nbytes, int *error);
@@ -351,7 +352,12 @@ static int nio_serial_read(void *dev_context, void *fp_context, void *buf, size_
 			  	while(!g_rcv_complete)
 				{
 				  	if(0 == readed)
-						_time_delay(100);
+					{
+					  	if(0 == g_start_flag)
+					  		_time_delay(100);
+						else
+					  		_time_delay(10);
+					}
 					else
 						_time_delay(2);
 				}
