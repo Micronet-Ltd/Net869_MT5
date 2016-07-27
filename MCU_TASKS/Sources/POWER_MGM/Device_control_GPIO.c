@@ -227,7 +227,7 @@ void Device_update_state (uint32_t * time_diff)
 			{
 				printf ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
 				device_state_g = DEVICE_STATE_OFF;
-				Device_off_req(0);
+				Device_off_req(FALSE, 0);
 			}
 			break;
 
@@ -281,9 +281,9 @@ void Device_update_state (uint32_t * time_diff)
 			// wait while pulse is still generated (time period didn't reach threshold)
 			if (!Device_control_GPIO_status())
 			{
-				printf ("\nPOWER_MGM: DEVICE IS OFF\n");
+				printf ("\nPOWER_MGM: DEVICE IS about to turn OFF\n");
+				Device_off_req(FALSE, 0);
 				device_state_g = DEVICE_STATE_OFF;
-				Device_off_req(0);
 				//Wiggle_sensor_restart ();
 				//peripherals_disable ();
 				//Wiggle_sensor_start ();	// enable interrupt
@@ -306,7 +306,7 @@ void Device_get_turn_on_reason(uint8_t * turn_on_reason)
 	*turn_on_reason = turn_on_condition_g;
 }
 
-void Device_off_req(uint8_t wait_time)
+void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 {
 	uint32_t cpu_off_wait_time = 0;
 	uint8_t cpu_status_pin = 0;
@@ -324,8 +324,16 @@ void Device_off_req(uint8_t wait_time)
 	GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
 	FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
 	_time_delay(wait_time*1000);
-
+	
+	/* Disable the Accelerometer and RTC because we were seeing I2C issues where 
+	SCL line was stuck on boot up */
+	AccDisable();
+	/* Shut off power to the accelerometer */
+	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
+	if (!skip_a8_shutdown)
+	{
 #ifdef MCU_AND_CPU_BOARD_CONNECTED
+	printf ("Device_off_req: shutting down A8\n");
 	/* Turn A8 device off */
 	GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
 	_time_delay (DEVICE_CONTROL_TIME_OFF_TH);
@@ -353,6 +361,7 @@ void Device_off_req(uint8_t wait_time)
 		GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
 	}
 #endif
+	}
 	backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
 	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
@@ -361,7 +370,7 @@ void Device_off_req(uint8_t wait_time)
 	//Board_SetSlowClk ();
 	printf ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
 	WDG_RESET_MCU();
-	device_state_g = DEVICE_STATE_OFF;
+	device_off_req_in_progress = FALSE;
 }
 
 void Device_init (uint32_t delay_period)

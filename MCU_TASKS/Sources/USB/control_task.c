@@ -12,13 +12,21 @@
 
 
 #include "frame.h"
+#include "Device_control_GPIO.h"
 
 //extern _pool_id   g_out_message_pool;
 extern void *g_GPIO_event_h;
+extern DEVICE_STATE_t device_state_g;
 
 void send_control_msg(packet_t * msg, uint8_t msg_size)
 {
 #if 1
+	/* Do not try to send a control message if the A8 board is not ON */
+	if ((device_state_g != DEVICE_STATE_ON) && (device_state_g != DEVICE_STATE_BACKUP_RECOVERY))
+	{
+		return;	
+	}
+
 	pcdc_mic_queue_element_t pqMemElem;
 
 	pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_1);

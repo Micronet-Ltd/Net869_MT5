@@ -142,11 +142,13 @@ void Acc_task (uint32_t initial_data)
 	// try to initialize accelerometer every 10 seconds
 	while (accInit () == false)
 	{
+		I2C_Disable(ACC_I2C_PORT); /* Note: Both accelerometer and accel are on the same bus*/
 		/* To reset accel. chip if I2C is failing we toggle ACC_VIB_ENABLE */
 		GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
-		_time_delay (1000);
+		_time_delay (4000);
 		GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 		_time_delay (1000);
+		I2C_Enable(ACC_I2C_PORT); /* Note: Both accelerometer and accel are on the same bus*/
 	}
 
 	AccEnable();

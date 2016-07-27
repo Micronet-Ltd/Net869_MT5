@@ -685,14 +685,17 @@ void check_supercap_voltage (void)
 	uint32_t supercap_voltage = ADC_get_value (kADC_POWER_VCAP);
 
 	/* we do not want to try to use the supercap when there isn't enough power to run the MCU */
-	if ((power_in_voltage < POWER_IN_SHUTDOWN_TH) && (supercap_voltage < MCU_MIN_OPERATING_VOLTAGE))
+	if ((power_in_voltage < POWER_IN_SHUTDOWN_TH) && (supercap_voltage < MCU_MIN_OPERATING_VOLTAGE)
+		&& (device_state_g != DEVICE_STATE_OFF))
 	{
 		// send a message only once
 		if (GPIO_DRV_ReadPinInput (POWER_DISCHARGE_ENABLE) == 1)
 		{
 			printf ("\nPOWER_MGM: SUPERCAP stop DisCharged (power in voltage is: %d mV, supercap voltage is %d mV)\n", power_in_voltage, supercap_voltage);
 		}
-		GPIO_DRV_ClearPinOutput (POWER_DISCHARGE_ENABLE);
+		/* Instead of disabling supercap power we put the MCU in low power mode when we don't have enough power */
+		//GPIO_DRV_ClearPinOutput (POWER_DISCHARGE_ENABLE);
+		Device_off_req(TRUE, 0);
 	}
 }
 

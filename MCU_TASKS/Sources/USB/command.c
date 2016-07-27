@@ -216,7 +216,7 @@ static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * ptu
 
 static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice_off)
 {
-	Device_off_req(data[0]);
+	Device_off_req(FALSE, data[0]);
 }
 
 static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)

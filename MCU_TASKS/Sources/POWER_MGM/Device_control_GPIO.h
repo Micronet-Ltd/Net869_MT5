@@ -27,7 +27,7 @@ void Device_turn_on      (void);
 void Device_turn_off     (void);
 void Device_reset        (void);
 void Device_get_turn_on_reason(uint8_t * turn_on_reason);
-void Device_off_req(uint8_t wait_time);
+void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time);
 
 DEVICE_STATE_t Device_get_status   (void);
 void peripherals_enable         (void);
