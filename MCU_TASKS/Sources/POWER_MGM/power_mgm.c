@@ -507,7 +507,7 @@ void switch_power_mode(power_manager_modes_t mode)
 
 				if (POWER_SYS_GetCurrentMode() == kPowerManagerRun)
 				{
-					// update Clock Mode to Run
+					/* update Clock Mode to Run */
 					update_clock_mode(CLOCK_RUN);
 				}
 			}
@@ -521,7 +521,7 @@ void switch_power_mode(power_manager_modes_t mode)
 
 			if (POWER_SYS_GetCurrentMode() == kPowerManagerRun)
 			{
-				// update Clock Mode to Run
+				/* update Clock Mode to Run */
 				update_clock_mode(CLOCK_RUN);
 			}
 			break;
@@ -578,10 +578,7 @@ void Power_MGM_task (uint32_t initial_data )
 		ADC_sample_input (i);
 	}
 
-	//ADC_Set_IRQ_TH (kADC_POWER_IN, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
 	ADC_Set_IRQ_TH (kADC_POWER_IN_ISR, POWER_IN_SUPERCAP_DISCHARGE_TH, POWER_IN_TURN_ON_TH);
-	//ADC_Set_IRQ_TH (kADC_POWER_IN, 2000, 3000);
-	//ADC_Compare_enable (kADC_POWER_IN);
 	ADC_Compare_enable (kADC_POWER_IN_ISR);
 
 	CLOCK_SYS_Init(g_defaultClockConfigurations,
@@ -591,7 +588,7 @@ void Power_MGM_task (uint32_t initial_data )
 
 	CLOCK_SYS_UpdateConfiguration(cmConfigMode, kClockManagerPolicyForcible);
 
-	// initialize power manager driver
+	/* initialize power manager driver */
 	POWER_SYS_Init(powerConfigs, powerConfigsSize, pm_callback_tbl, pm_callback_tbl_size);
 
 	// Enables LowLeakageWakeupUnit interrupt
@@ -614,21 +611,18 @@ void Power_MGM_task (uint32_t initial_data )
 
 	while (1)
 	{
-		//ADC_Compare_disable (kADC_POWER_IN);
-
-		if (adc_input < kADC_POWER_IN)
-		{
-			GPIO_sample_all ((KGPIOS_INPUT_CHANNELS)adc_input);
-		}
-		else
-		{
-			ADC_sample_input (adc_input);
-		}
-
+		ADC_sample_input (adc_input);
 		if (++adc_input >= (kADC_CHANNELS - 1))
 		{
-				//printf ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
+			//printf ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
+			GPIO_all_check_for_change();
 			adc_input = kADC_ANALOG_IN1;
+		}
+		
+		/* update the supercap voltage at twice the frequency of all the other ADCs */
+		if (adc_input == (kADC_CHANNELS - kADC_POWER_VCAP))
+		{
+			ADC_sample_input(kADC_POWER_VCAP);
 		}
 
 
@@ -652,15 +646,15 @@ void Power_MGM_task (uint32_t initial_data )
 	}
 }
 
-// charge supercap if supercap voltage level is below threshold.
-// continue till supercap voltage level reaches upper threshold.
+/* charge supercap if supercap voltage level is below threshold.
+ continue till supercap voltage level reaches upper threshold. */
 void Supercap_charge_state (void)
 {
 	uint32_t supercap_voltage = ADC_get_value (kADC_POWER_VCAP);
 
 	if (supercap_voltage >= SUPERCAP_MAX_TH)
 	{
-		// send a message only once
+		/* send a message only once */
 		if (GPIO_DRV_ReadPinInput (POWER_CHARGE_ENABLE) == 1)
 		{
 			printf ("\nPOWER_MGM: SUPERCAP full Charged %d mV\n", supercap_voltage);
@@ -669,7 +663,7 @@ void Supercap_charge_state (void)
 	}
 	else if (supercap_voltage <= SUPERCAP_MIN_TH)
 	{
-		// send a message only once
+		/* send a message only once */
 		if (GPIO_DRV_ReadPinInput (POWER_CHARGE_ENABLE) == 0)
 		{
 			printf ("\nPOWER_MGM: SUPERCAP low %d mV - Start Charging\n", supercap_voltage);
@@ -688,7 +682,7 @@ void check_supercap_voltage (void)
 	if ((power_in_voltage < POWER_IN_SHUTDOWN_TH) && (supercap_voltage < MCU_MIN_OPERATING_VOLTAGE)
 		&& (device_state_g != DEVICE_STATE_OFF))
 	{
-		// send a message only once
+		/* send a message only once */
 		if (GPIO_DRV_ReadPinInput (POWER_DISCHARGE_ENABLE) == 1)
 		{
 			printf ("\nPOWER_MGM: SUPERCAP stop DisCharged (power in voltage is: %d mV, supercap voltage is %d mV)\n", power_in_voltage, supercap_voltage);
@@ -700,7 +694,7 @@ void check_supercap_voltage (void)
 }
 
 #if 0
-// discharge supercap if input power is below threshold
+/* discharge supercap if input power is below threshold */
 void Supercap_discharge_state (void)
 {
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN);
@@ -709,7 +703,7 @@ void Supercap_discharge_state (void)
 	/* we do not want to try to use the supercap when there isn't enough power to run the MCU */
 	if ((power_in_voltage <= POWER_IN_SHUTDOWN_TH) && (supercap_voltage >= MCU_MIN_OPERATING_VOLTAGE))
 	{
-		// send a message only once
+		/* send a message only once */
 		if (GPIO_DRV_ReadPinInput (POWER_DISCHARGE_ENABLE) == 0)
 		{
 		  printf ("\nPOWER_MGM: SUPERCAP start DisCharged (power in voltage is: %d mV, supercap voltage is: %d mV)\n", power_in_voltage, supercap_voltage);
@@ -718,7 +712,7 @@ void Supercap_discharge_state (void)
 	}
 	else
 	{
-		// send a message only once
+		/* send a message only once */
 		if (GPIO_DRV_ReadPinInput (POWER_DISCHARGE_ENABLE) == 1)
 		{
 			printf ("\nPOWER_MGM: SUPERCAP stop DisCharged (power in voltage is: %d mV, supercap voltage is %d mV)\n", power_in_voltage, supercap_voltage);

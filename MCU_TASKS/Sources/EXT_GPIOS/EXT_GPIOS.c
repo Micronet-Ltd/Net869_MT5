@@ -51,21 +51,18 @@ void *g_GPIO_event_h;
 
 KINPUT_LOGIC_LEVEL GPIO_INPUT_convert_voltage_to_level (uint32_t voltage);
 
-//void GPIO_sample_all (void)
-void GPIO_sample_all (KGPIOS_INPUT_CHANNELS i)
+void GPIO_all_check_for_change (void)
 {
 	uint32_t gpio_event = 0;
-//	KGPIOS_INPUT_CHANNELS i;
+	KGPIOS_INPUT_CHANNELS i;
 	KINPUT_LOGIC_LEVEL state_prev, state_current, state_temp;
 
-//	for (i = kANALOG_EXT_IN; i < NUM_OF_GPI; i++) {
+	for (i = kANALOG_EXT_IN; i < NUM_OF_INPUT_GPIOS; i++) {
 		state_prev = GPIO_INPUT_get_logic_level (i);
-		ADC_sample_input (gpio_inputs[i].adc_channel);
 		gpio_inputs[i].gpio_input_voltage = ADC_get_value (gpio_inputs[i].adc_channel);
 		state_temp = GPIO_INPUT_get_logic_level (i);
 
 		/* Do not update the state if it is in between low and high */
-		//TODO: verify this with Eyal, -Abid
 		if (state_temp == GPIO_IN_LOGIC_3STATE){
 			state_current = state_prev;
 		}
@@ -73,14 +70,13 @@ void GPIO_sample_all (KGPIOS_INPUT_CHANNELS i)
 			state_current = state_temp;
 		}
 
-
 		if (state_current != state_prev) {
 			printf ("GPIO_IN %d level became %d\n", i, state_current);
 			gpio_event |= (1 << i);
 		}
-//	}
+	}
 
-	//TODO: for now just send the control message from within the GPIO driver
+	//send the control message from within the GPIO driver
 	if (gpio_event != 0){
 		send_gpi_change((uint8_t *)&gpio_event);
 	}
