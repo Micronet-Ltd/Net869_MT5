@@ -49,7 +49,6 @@ _Pragma ("diag_suppress= Pm101")
 #endif
 
 uint8_t g_cb_inst = 0;
-uint8_t g_rcv_complete = 0;
 extern uint32_t	g_start_flag;
 
 static int nio_serial_open(void *dev_context, const char *dev_name, int flags, void **fp_context, int *error);
@@ -259,6 +258,11 @@ static int nio_serial_read(void *dev_context, void *fp_context, void *buf, size_
 	osa_status_t status;
 	NIO_SERIAL_BUFFER_STRUCT* rxBuffer = &serial_dev_context->rxbuffer;
 	size_t readed = 0;
+	MQX_TICK_STRUCT start_tick, end_tick;
+	int32_t time_diff_milli = 0;
+	bool overflow = false;
+	int32_t first_flag = 1;
+	
 
 	if (0 == nbytes)
 	{
@@ -271,29 +275,34 @@ static int nio_serial_read(void *dev_context, void *fp_context, void *buf, size_
 		}
 		return -1;
 	}
-	status = OSA_MutexLock(&serial_dev_context->rlock, OSA_WAIT_FOREVER);
-	if (status != kStatus_OSA_Success)
+	if(UART3_IDX != serial_dev_context->instance)
 	{
-		if (error) {
-			*error = NIO_EIO;
+	  	status = OSA_MutexLock(&serial_dev_context->rlock, OSA_WAIT_FOREVER);
+		if (status != kStatus_OSA_Success)
+		{
+			if (error) {
+				*error = NIO_EIO;
+			}
+			return -1;
 		}
-		return -1;
 	}
-
 	while (readed < nbytes)
 	{   /* Check abort flag */
 		if (rxBuffer->FLAGS & NIO_SERIAL_ABORT)
 		{   /* Clear abort flag and unlock read mutex */
 			rxBuffer->FLAGS &= ~NIO_SERIAL_ABORT;
-			status = OSA_MutexUnlock(&serial_dev_context->rlock);
-			if (status != kStatus_OSA_Success)
+			if(UART3_IDX != serial_dev_context->instance)
 			{
-				if (error) {
-					*error = NIO_EIO;
+				status = OSA_MutexUnlock(&serial_dev_context->rlock);
+				if (status != kStatus_OSA_Success)
+				{
+					if (error) {
+						*error = NIO_EIO;
+					}
+					return -1;
 				}
-				return -1;
+				return readed;
 			}
-			return readed;
 		}
 		/* Read data from rx buffer */
 		/* If read_id is smaller than write_id (write_id doesn't reach the top),
@@ -349,20 +358,45 @@ static int nio_serial_read(void *dev_context, void *fp_context, void *buf, size_
 			
 			if(UART3_IDX == serial_dev_context->instance)
 			{
-			  	while(!g_rcv_complete)
+				uint32_t tout = 2000;
+			  	if(first_flag)
 				{
-				  	if(0 == readed)
+				  	if(2 == g_start_flag)
+					  tout = 4000;
+					
+					_time_get_ticks(&start_tick);
+					do
 					{
-					  	if(0 == g_start_flag)
-					  		_time_delay(100);
+						if(0 == readed)
+						{
+							if(1 == g_start_flag)
+								_time_delay(20);
+							else
+								_time_delay(100);
+						}
 						else
-					  		_time_delay(10);
-					}
-					else
-						_time_delay(2);
+							_time_delay(nbytes - readed);
+		
+						_time_get_ticks(&end_tick);
+						time_diff_milli = _time_diff_milliseconds(&end_tick, &start_tick, &overflow);
+						if(overflow)//can be only if end_tick < start_tick
+						{
+							_time_get_ticks(&start_tick);
+							tout = 2000;  
+							_time_get_ticks(&end_tick);
+							time_diff_milli = _time_diff_milliseconds(&end_tick, &start_tick, &overflow);
+						}
+					}while((0 < (int32_t)rxBuffer->WAIT_NUM) && (tout > time_diff_milli));
+					
+					first_flag = 0;
+					status = kStatus_OSA_Success;
 				}
-			 	g_rcv_complete = 0;
-				status = kStatus_OSA_Success;
+				else//2nd
+				{
+				  	status = kStatus_OSA_Timeout;
+					if(readed || g_start_flag)
+					  printf("updater timeout readed %d (%d) wait %d\n", readed, nbytes, rxBuffer->WAIT_NUM);//temp!!! debug
+				}
 			}
 			else
 				status = OSA_SemaWait(&rxBuffer->SEMA, OSA_WAIT_FOREVER);
@@ -372,15 +406,20 @@ static int nio_serial_read(void *dev_context, void *fp_context, void *buf, size_
 				if (error) {
 					*error = NIO_EIO;
 				}
+				if(UART3_IDX != serial_dev_context->instance)
+					OSA_MutexUnlock(&serial_dev_context->rlock);
 				return -1;
 			}
 		}
 	}   /* while */
-	status = OSA_MutexUnlock(&serial_dev_context->rlock);
-	if (status != kStatus_OSA_Success)
+	if(UART3_IDX != serial_dev_context->instance)
 	{
-		if (error) {
-			*error = NIO_EIO;
+	  	status = OSA_MutexUnlock(&serial_dev_context->rlock);
+		if (status != kStatus_OSA_Success)
+		{
+			if (error) {
+				*error = NIO_EIO;
+			}
 		}
 	}
 	assert(readed == nbytes);
@@ -1050,12 +1089,8 @@ static inline void nio_serial_rxcallback(NIO_SERIAL_BUFFER_STRUCT *buffer, uint8
 			(void)status;
 			buffer->FLAGS &= ~NIO_SERIAL_WAITING;
 
-			if(UART3_IDX == g_cb_inst)
-			{
-			  	g_rcv_complete = 1;
-			}
-			else
-			  status = OSA_SemaPost(&buffer->SEMA);
+			if(UART3_IDX != g_cb_inst)
+				status = OSA_SemaPost(&buffer->SEMA);
 			
 			/* Should always pass */
 			assert(kStatus_OSA_Success == status);

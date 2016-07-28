@@ -42,6 +42,8 @@
 #define ACC_MAX_POOL_SIZE			10
 #define ACC_XYZ_PKT_SIZE			6
 
+#define TIME_OUT					200		//  in miliseconds
+
 #define DEBUG						TRUE
 
 static i2c_device_t acc_device_g = {.address = ACC_DEVICE_ADDRESS,    .baudRate_kbps = I2C_BAUD_RATE};
@@ -67,7 +69,7 @@ bool accInit       (void);
 void AccDisable    (void);
 void AccEnable     (void);
 void ISR_accIrq    (void* param);
-void acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size);
+bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size);
 
 void * g_acc_event_h;
 
@@ -172,20 +174,28 @@ void Acc_task (uint32_t initial_data)
 			_time_delay (1);
 		}
 
-		acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
-		_time_get(&time);
-		acc_data_buff.timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
+		if(acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE)))
+		{
+			_time_get(&time);
+			acc_data_buff.timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
 
-		pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
-		if (NULL == pqMemElem) {
-			printf("%s: Error get mem for USB drop\n", __func__);
-			continue;
+			pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
+			if (NULL == pqMemElem)
+			{
+				printf("%s: Error get mem for USB drop\n", __func__);
+				continue;
+			}
+
+			pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
+
+			if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2))
+			{
+				printf("%s: Error send data to CDC1\n", __func__);
+			}
 		}
-
-		pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
-
-		if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2)) {
-			printf("%s: Error send data to CDC1\n", __func__);
+		else
+		{
+		  	_time_delay(1000);//delay after read error 
 		}
 #else
 		APPLICATION_MESSAGE_T *acc_msg;
@@ -409,7 +419,7 @@ _ACC_DISABLE_FAIL:
 	printf ("ACC Task: ERROR: Accelerometer NOT disabled \n");
 }
 
-void acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
+bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 {
 	uint8_t u8ByteCnt      =  0 ;
 	uint8_t read_data      =  0 ;
@@ -431,10 +441,11 @@ void acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 	//if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, buffer, u8ByteCnt, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_FIFO_READ_FAIL;
 	if (!acc_receive_data(&write_data[0], 1, buffer, u8ByteCnt))		goto _ACC_FIFO_READ_FAIL;
 
-	return;
+	return TRUE;
 
 _ACC_FIFO_READ_FAIL:
 	printf ("ACC Task: ERROR: Accelerometer read failure \n");
+	return FALSE;
 }
 
 #if 0

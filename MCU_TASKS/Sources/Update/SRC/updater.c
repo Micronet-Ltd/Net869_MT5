@@ -234,7 +234,7 @@ void tasks_kill(void)
 	uint32_t i = 0;
 
 	g_flag_Exit = 1;
-	
+		
 	while(i < NUM_TASKS)
 	{
 		if(	0					!= g_TASK_ids[i] &&
@@ -570,8 +570,8 @@ void fpga_data(uint8_t* buf, uint32_t len)
 
 		tmp_len = _nio_read(g_fd, &buf[4], diff + 4, &err);
 
-		//printf("updater: read %d (%d)   ", tmp_len, err);
-		if(tmp_len < diff)
+		//printf("updater: read %d (%d)\n", tmp_len, err);
+		if(err)
 		{
 			ptr = (uint8_t*)nCRC_str;// or ERR ???;
 			err = 1;
@@ -711,8 +711,14 @@ void updater_task(uint32_t param)
 		memset(bbb, 0, sizeof(bbb));
 		// Wait to receive input data
 		stat = _nio_read(g_fd, bbb, 3, &error);
-		if(0 < stat)
+		if(0 < stat || 1 == g_start_flag)
 		{
+			if(0 > stat)//== len * 2
+			{
+				printf("updater: error rcv len %d\n", len * 2);
+				ClearUart_Reply(bbb, (char*)nRDY_str);
+				continue;
+			}
 			tmp_len = 3;
 
 			if(-1 != (id = (cmd_id)find_cmd(cmds_srec, (char*)bbb, 2)))
@@ -801,10 +807,10 @@ void updater_task(uint32_t param)
 				}
 			}
 		}
-		else
-		{
-			printf("updater: r1 %d (0x%x)\n", stat, bbb[0]);
-		}
+		//else
+		//{
+		//	printf("updater: r1 %d (0x%x)\n", stat, bbb[0]);
+		//}
 	}
 
 	return;
