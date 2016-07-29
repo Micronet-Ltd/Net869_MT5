@@ -619,8 +619,8 @@ void Power_MGM_task (uint32_t initial_data )
 			adc_input = kADC_ANALOG_IN1;
 		}
 		
-		/* update the supercap voltage at twice the frequency of all the other ADCs */
-		if (adc_input == (kADC_CHANNELS - kADC_POWER_VCAP))
+		/* update the supercap voltage at a higher frequency compared to all the other ADCs */
+		if ((0 == adc_input%3) && (adc_input != kADC_POWER_VCAP) )
 		{
 			ADC_sample_input(kADC_POWER_VCAP);
 		}
