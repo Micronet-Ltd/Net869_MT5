@@ -378,6 +378,8 @@ void I2C_DRV_MasterIRQHandler(uint32_t instance)
 		{
 			OSA_SemaPost(&master->irqSync);
 		}
+		/* Set TXAK bit to handle case when we get stuck in arbitration */
+		I2C_HAL_SendNak(base);
 		/* Indicate I2C bus is idle. */
 		master->i2cIdle = true;
 
