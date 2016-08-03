@@ -259,12 +259,26 @@ static void set_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg
 
 static void get_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_gpio)
 {
-	p_gpio[0] = (uint8_t)GPIO_DRV_ReadPinInput((uint32_t) ((data[0]<<8) | data[1]));
+	uint32_t gpio_pin_name = (uint32_t)((data[0]<<8) | data[1]);
+	uint8_t gpio_port = data[0];
+
+	if (gpio_port < GPIO_INSTANCE_COUNT)
+	{
+		p_gpio[0] = (uint8_t)GPIO_DRV_ReadPinInput(gpio_pin_name);
+	}
+	else
+	{
+		p_gpio[0] = 0xFF; /*invalid port number request */
+	}
 }
 
 static void set_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_gpio)
 {
-	uint32_t gpio_number = (uint32_t) ((data[0]<<8) | data[1]);
+	uint32_t gpio_pin_name = (uint32_t) ((data[0]<<8) | data[1]);
 	uint32_t gpio_val = (uint32_t)data[2];
-	GPIO_DRV_WritePinOutput(gpio_number, gpio_val);
+	uint8_t gpio_port = data[0];
+	if (gpio_port < GPIO_INSTANCE_COUNT)
+	{
+		GPIO_DRV_WritePinOutput(gpio_pin_name, gpio_val);
+	}
 }
