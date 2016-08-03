@@ -372,7 +372,7 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
 	//Board_SetSlowClk ();
 	printf ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
-	WDG_RESET_MCU();
+	NVIC_SystemReset();
 	device_off_req_in_progress = FALSE;
 }
 
