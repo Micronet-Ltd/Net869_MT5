@@ -38,6 +38,8 @@ static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * p
 static void set_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
 static void get_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
 static void set_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
+static void get_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_gpio);
+static void set_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_gpio);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -87,6 +89,12 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 							   GET_COMMAND,
 							   sizeof(uint8_t)},
 	[COMM_SET_RTC_REG_DBG] = {set_rtc_data_dbg,
+							   SET_COMMAND,
+							   0},
+	[COMM_GET_MCU_GPIO_STATE_DBG] = {get_mcu_gpio_state_dbg,
+							   GET_COMMAND,
+							   sizeof(uint8_t)},
+	[COMM_SET_MCU_GPIO_STATE_DBG] = {set_mcu_gpio_state_dbg,
 							   SET_COMMAND,
 							   0},
 };
@@ -247,4 +255,16 @@ static void get_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg
 static void set_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg)
 {
 	rtc_send_data (&data[0], 1, &data[1], 1);
+}
+
+static void get_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_gpio)
+{
+	p_gpio[0] = (uint8_t)GPIO_DRV_ReadPinInput((uint32_t) ((data[0]<<8) | data[1]));
+}
+
+static void set_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_gpio)
+{
+	uint32_t gpio_number = (uint32_t) ((data[0]<<8) | data[1]);
+	uint32_t gpio_val = (uint32_t)data[2];
+	GPIO_DRV_WritePinOutput(gpio_number, gpio_val);
 }
