@@ -20,7 +20,8 @@ typedef enum {
 
 #define POWER_MGM_DEVICE_ON_IGNITION_TRIGGER	(1 << 0)
 #define POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER		(1 << 1)
-#define POWER_MGM_DEVICE_SW_RESET_REQ			(1 << 2)
+#define POWER_MGM_DEVICE_ARM_LOCKUP				(1 << 2)
+#define POWER_MGM_DEVICE_WATCHDOG_RESET			(1 << 3)
 
 void Device_init         (uint32_t delay_period);
 void Device_update_state (uint32_t * time_diff);

@@ -180,13 +180,21 @@ void Device_update_state (uint32_t * time_diff)
 				printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
 				turn_on_condition_g |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
 			}
-			if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
+
+			if(RCM_BRD_SRS1_LOCKUP((RCM_Type*)RCM_BASE))
 			{
-			  	turn_on_condition_g |= POWER_MGM_DEVICE_SW_RESET_REQ;
+				printf ("\nPOWER_MGM: TURNING ON DEVICE due to ARM LOCKUP \n");
+				turn_on_condition_g |= POWER_MGM_DEVICE_ARM_LOCKUP;
 			}
+
+			if(RCM_BRD_SRS0_WDOG((RCM_Type*)RCM_BASE))
+			{
+				printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
+				turn_on_condition_g |= POWER_MGM_DEVICE_WATCHDOG_RESET;
+			}
+
 			if (turn_on_condition_g != 0)
 			{
-
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
 				//send_power_change  (&turn_on_condition);
@@ -424,8 +432,8 @@ void Device_reset_req(int32_t wait_time)
 	//	direction register:		inputs
 	// PTA11: disabled
 	// PTE25: ADC0SE18
+	WDG_RESET_MCU();
 	
-	NVIC_SystemReset();
 }
 
 void Device_init (uint32_t delay_period)
