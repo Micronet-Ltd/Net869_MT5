@@ -93,8 +93,6 @@
 
 #define MCU_AND_CPU_BOARD_CONNECTED
 
-#define WDG_RESET_MCU() WDOG_UNLOCK = 0xd928;  WDOG_UNLOCK = 0xc520;
-
 typedef struct
 {
 	uint32_t time_threshold;								// pulse time period

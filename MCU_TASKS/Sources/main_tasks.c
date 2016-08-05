@@ -24,6 +24,7 @@
 #include "FlexCanDevice.h"
 #include "rtc.h"
 #include "Wiggle_sensor.h"
+#include "Device_control_GPIO.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
@@ -165,8 +166,8 @@ void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 #ifdef MCU_HARD_FAULT_DEBUG
 	" b HardFault_HandlerC \n"
 #endif
-	" bkpt #0          \n"
 	);
+	WDG_RESET_MCU();
 }
 
 void Main_task( uint32_t initial_data ) {
