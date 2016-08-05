@@ -44,8 +44,11 @@
 #define CABLE_TYPE_MIN_VOLTAGE		(CABLE_TYPE_VOLTAGE *  90/100)
 #define CABLE_TYPE_MAX_VOLTAGE		(CABLE_TYPE_VOLTAGE * 110/100)
 
-#define SUPERCAP_MIN_TH		5000//4500
-#define SUPERCAP_MAX_TH		5300//4800
+#define SUPERCAP_MIN_TH_WHEN_DEV_OFF	5000//4000
+#define SUPERCAP_MAX_TH_WHEN_DEV_OFF	5300//4300
+
+#define SUPERCAP_MIN_TH_WHEN_DEV_ON		5000//4500
+#define SUPERCAP_MAX_TH_WHEN_DEV_ON		5300//4800
 
 /* The LPTMR instance used for LPTMR */
 #define PM_RTOS_DEMO_LPTMR_FUNC_INSTANCE                0
@@ -646,13 +649,10 @@ void Power_MGM_task (uint32_t initial_data )
 	}
 }
 
-/* charge supercap if supercap voltage level is below threshold.
- continue till supercap voltage level reaches upper threshold. */
-void Supercap_charge_state (void)
+void supercap_charge_discarge(uint32_t min_threshold, uint32_t max_threshold)
 {
-	uint32_t supercap_voltage = ADC_get_value (kADC_POWER_VCAP);
-
-	if (supercap_voltage >= SUPERCAP_MAX_TH)
+	uint32_t supercap_voltage;
+	if (supercap_voltage >= max_threshold)
 	{
 		/* send a message only once */
 		if (GPIO_DRV_ReadPinInput (POWER_CHARGE_ENABLE) == 1)
@@ -661,7 +661,7 @@ void Supercap_charge_state (void)
 		}
 		GPIO_DRV_ClearPinOutput (POWER_CHARGE_ENABLE);
 	}
-	else if (supercap_voltage <= SUPERCAP_MIN_TH)
+	else if (supercap_voltage <= min_threshold)
 	{
 		/* send a message only once */
 		if (GPIO_DRV_ReadPinInput (POWER_CHARGE_ENABLE) == 0)
@@ -670,6 +670,26 @@ void Supercap_charge_state (void)
 		}
 		GPIO_DRV_SetPinOutput (POWER_CHARGE_ENABLE);
 	}
+}
+
+/* charge supercap if supercap voltage level is below threshold.
+ continue till supercap voltage level reaches upper threshold. */
+void Supercap_charge_state (void)
+{
+	uint32_t supercap_voltage = ADC_get_value (kADC_POWER_VCAP);
+
+	/* The supercap manufucturer informed us that charging the supercap to 5V at temperatures
+	above 70c degrades the supercap. Since the device is mostly in the off state when the 
+	temperature is high, we are reducing the voltage we charge to in the off state */
+	if (device_state_g == DEVICE_STATE_OFF)
+	{
+		supercap_charge_discarge(SUPERCAP_MIN_TH_WHEN_DEV_OFF, SUPERCAP_MAX_TH_WHEN_DEV_OFF);
+	}
+	else
+	{
+		supercap_charge_discarge(SUPERCAP_MIN_TH_WHEN_DEV_ON, SUPERCAP_MAX_TH_WHEN_DEV_ON);
+	}
+
 }
 
 /* Disable the supercap if we do not have enough power to run the MCU */
