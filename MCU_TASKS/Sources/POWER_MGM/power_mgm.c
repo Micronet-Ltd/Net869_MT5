@@ -651,7 +651,7 @@ void Power_MGM_task (uint32_t initial_data )
 
 void supercap_charge_discarge(uint32_t min_threshold, uint32_t max_threshold)
 {
-	uint32_t supercap_voltage;
+	uint32_t supercap_voltage  = ADC_get_value (kADC_POWER_VCAP);
 	if (supercap_voltage >= max_threshold)
 	{
 		/* send a message only once */

@@ -22,6 +22,7 @@ typedef enum {
 #define POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER		(1 << 1)
 #define POWER_MGM_DEVICE_ARM_LOCKUP				(1 << 2)
 #define POWER_MGM_DEVICE_WATCHDOG_RESET			(1 << 3)
+#define POWER_MGM_DEVICE_SW_RESET_REQ			(1 << 4)
 
 #define WDG_RESET_MCU() WDOG_UNLOCK = 0xd928;  WDOG_UNLOCK = 0xc520;
 

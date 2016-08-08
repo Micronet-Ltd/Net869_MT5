@@ -191,6 +191,11 @@ void Device_update_state (uint32_t * time_diff)
 				turn_on_condition_g |= POWER_MGM_DEVICE_WATCHDOG_RESET;
 			}
 
+			//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
+			//{
+			//  	turn_on_condition_g |= POWER_MGM_DEVICE_SW_RESET_REQ;
+			//}
+
 			if (turn_on_condition_g != 0)
 			{
 				led_blink_cnt_g = 0;
