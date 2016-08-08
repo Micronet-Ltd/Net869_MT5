@@ -162,8 +162,7 @@ void Acc_task (uint32_t initial_data)
 	//acc_msg = &test_acc_msg;
 	while (0 == g_flag_Exit)
 	{
-#if 1
-		_event_wait_all(g_acc_event_h, 1, 0);
+        _event_wait_all(g_acc_event_h, 1, 0);
 		_event_clear(g_acc_event_h, 1);
 
 		_time_get(&new_time);
@@ -197,48 +196,6 @@ void Acc_task (uint32_t initial_data)
 		{
 		  	_time_delay(1000);//delay after read error 
 		}
-#else
-		APPLICATION_MESSAGE_T *acc_msg;
-		_mqx_uint err_task;
-
-		// TODO: add pm code
-		if ((acc_msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_out_message_pool)) == NULL)
-		{
-			if (MQX_OK != (err_task = _task_get_error()))
-			{
-				_task_set_error(MQX_OK);
-			}
-			printf("ACC Task: ERROR: message allocation failed %x\n", err_task);
-		}
-
-		_event_wait_all(g_acc_event_h, 1, 0);
-		_event_clear(g_acc_event_h, 1);
-
-		_time_get(&new_time);
-		time_diff = ((new_time.SECONDS * 1000) +  new_time.MILLISECONDS) - ((time.SECONDS * 1000) +  time.MILLISECONDS);
-		/* Add delay on back to back reads to avoid overwhelming the USB */
-		if (time_diff == 0)
-		{
-			_time_delay (1);
-		}
-
-		if(acc_msg) {
-			acc_fifo_read ((acc_msg->data), (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
-			_time_get(&time);
-			acc_msg->timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
-			acc_msg->header.SOURCE_QID = acc_qid;
-			acc_msg->header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
-			acc_msg->header.SIZE = (ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE);//sizeof(acc_msg->data)-sizeof(uint64_t);
-			acc_msg->portNum = MIC_CDC_USB_2;
-			_msgq_send (acc_msg);
-
-			if (MQX_OK != (err_task = _task_get_error()))
-			{
-				printf("ACC Task: ERROR: message send failed %x\n", err_task);
-				_task_set_error(MQX_OK);
-			}
-		}
-#endif // if 0
 	}
 
 	// should never get here
