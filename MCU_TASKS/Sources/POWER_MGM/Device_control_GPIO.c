@@ -142,6 +142,7 @@ void Device_update_state (uint32_t * time_diff)
 	uint32_t ignition_voltage  = ADC_get_value (kADC_ANALOG_IN1 );
 	uint32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
 	uint32_t supercap_voltage;
+	static bool printed_temp_error = FALSE;
 	static bool print_backup_power = FALSE;
 
 	Device_control_GPIO(time_diff);
@@ -160,10 +161,20 @@ void Device_update_state (uint32_t * time_diff)
 			// and stop the interrupts for better running efficiency
 			Wiggle_sensor_update ();
 
-			if ((power_in_voltage < POWER_IN_TURN_ON_TH ) ||
-				(temperature      < TEMPERATURE_MIN_TH  ) ||
-				(temperature      > TEMPERATURE_MAX_TH  )  )
+			if (power_in_voltage < POWER_IN_TURN_ON_TH )
 			{
+				break;
+			}
+
+			if ((temperature < TEMPERATURE_TURNON_MIN_TH  ) ||
+				(temperature > TEMPERATURE_TURNON_MAX_TH  )  )
+			{
+				if (printed_temp_error == FALSE)
+				{
+					printf("%s: temperature alert! temp: %d mV", __func__,temperature);
+					/* To avoid printing the error over and over, we use a flag */
+					printed_temp_error = TRUE;
+				}
 				break;
 			}
 
@@ -201,6 +212,8 @@ void Device_update_state (uint32_t * time_diff)
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
 				//send_power_change  (&turn_on_condition);
+				printf("%s: device turn on temperature: %d mV", __func__, temperature);
+				printed_temp_error = FALSE;
 				device_state_g = DEVICE_STATE_TURNING_ON;
 			}
 			break;
@@ -236,8 +249,8 @@ void Device_update_state (uint32_t * time_diff)
 			}
 
 			// if temperature is out of range - turn off device
-			if ((temperature < TEMPERATURE_MIN_TH)   ||
-				(temperature > TEMPERATURE_MAX_TH)    )
+			if ((temperature < TEMPERATURE_SHUTDOWN_MIN_TH)   ||
+				(temperature > TEMPERATURE_SHUTDOWN_MAX_TH)    )
 			{
 				printf ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
 				device_state_g = DEVICE_STATE_OFF;
