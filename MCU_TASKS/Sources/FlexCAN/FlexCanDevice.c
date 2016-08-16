@@ -32,6 +32,8 @@
 #define CAN_OK_RESPONCE 	0x0D
 #define CAN_ERROR_RESPONCE	0x07
 
+#define FLEXCAN_FLOW_CTR_COMMAND "t7E083000050000000000\r"
+
 //#define FLEXCAN_DEVICE_DEBUG_
 
 /* The following tables are the CAN bit timing parameters that are calculated by using the method
@@ -95,7 +97,7 @@ bool                        parseAsciToUInt (const int8_t * line, uint8_t len, u
 bool 						parseAsciToShort (const uint8_t* pbuff, uint16_t* val);
 bool                        AllocateFIFOFilterTable (pflexcanInstance_t pinst,flexcan_rx_fifo_id_filter_num_t filtnum, flexcan_rx_fifo_id_element_format_t tableFormat);
 
-int32_t                     ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *DestBuff);
+int32_t                     ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *DestBuff, uint32_t* isFlowCntrol);
 bool						CheckCommandIdSupp ( const uint8_t* buff, uint16_t* IdVal);
 
 void FlexCanDevice_InitHW ( )
@@ -812,13 +814,39 @@ void FLEXCAN_Rx_Task( uint32_t param ) {
 					}
 
 					if ( pqMemElem && pqueue_msg ) {
-						curr_msg_len = ParseCanMessToString (pqueue_msg, (const uint8_t*)pmsg_str);
+
+                        APPLICATION_MESSAGE_T *app_msg;
+                        uint32_t isFlowControl;
+
+						curr_msg_len = ParseCanMessToString (pqueue_msg, (const uint8_t*)pmsg_str, &isFlowControl);
 
 						FlexCanMsg_queue_enqueue (&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
 #ifdef FLEXCAN_DEVICE_DEBUG_
 						printf("Return to queue %x elm %x\n",(uint32_t)(&(((pflexcanInstance_t)param)->Rx_FreeMSGQueue)), (uint32_t)pqueue_msg );
 #endif
 						pqueue_msg = NULL;
+
+                        if (1 == isFlowControl){
+                            do {
+                                if ((app_msg = (APPLICATION_MESSAGE_PTR_T)_msg_alloc(g_in_message_pool)) == NULL)
+                                {
+                                    printf("ERROR: app message allocation failed\n");
+                                    break;
+                                }
+
+                                _mem_copy ( FLEXCAN_FLOW_CTR_COMMAND, app_msg->data, sizeof(FLEXCAN_FLOW_CTR_COMMAND) );
+                            	app_msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
+                                if ( (((pflexcanInstance_t)param)->instance) ) {
+                                    app_msg->header.TARGET_QID = _msgq_get_id(0, CAN2_TX_QUEUE);
+                                }
+                                else {
+                                    app_msg->header.TARGET_QID = _msgq_get_id(0, CAN1_TX_QUEUE);
+                                }
+                            	app_msg->header.SIZE = sizeof(FLEXCAN_FLOW_CTR_COMMAND) + APP_MESSAGE_NO_ARRAY_SIZE;
+                            	app_msg->portNum = MIC_CDC_USB_3;
+                            	_msgq_send (app_msg);
+                            } while (0);
+                        }
 
 						if (0 > curr_msg_len) {
 							printf("Error pars CAN to String\n");
@@ -1452,15 +1480,16 @@ bool AllocateFIFOFilterTable (pflexcanInstance_t pinst, flexcan_rx_fifo_id_filte
 	return true;
 }
 
-int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *pDestBuff) {
+int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *pDestBuff, uint32_t* isFlowCntrol) {
 	uint8_t   tmp, tmp1, ind, *pmsg_str, curr_msg_len = 0;
 
-	if (NULL == pCanMess || NULL == pDestBuff) {
+	if (NULL == pCanMess || NULL == pDestBuff || NULL == isFlowCntrol) {
 		printf("%s: Error wrong params\n", __func__);
 		return -1;
 	}
 
 	pmsg_str = (uint8_t*)pDestBuff;
+    *isFlowCntrol = 0;
 
 	//Detect remoute or regular message
 	tmp = (uint8_t) ((pCanMess->msg_buff.cs >> 20) & 0x1);
@@ -1494,7 +1523,7 @@ int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *
 		pmsg_str += 3;
 		curr_msg_len += 3;
 	}
-	//Message length
+    //Message length
 	tmp = (uint8_t)((pCanMess->msg_buff.cs >> 16) & 0xF);
 	*pmsg_str = tmp + '0';
 	pmsg_str++;
@@ -1532,6 +1561,12 @@ int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *
 	}
 	pmsg_str += 5;
 	curr_msg_len += 5;
+
+    //Check if flow control msg need
+    if (0x7E8 == pCanMess->msg_buff.msgId && 
+        0x10 == pCanMess->msg_buff.data[0] && 0x14 == pCanMess->msg_buff.data[1] && 0x49 == pCanMess->msg_buff.data[2]) {
+        *isFlowCntrol = 1;
+    }
 
 	//Add CAN_OK_RESPONCE character
 	*pmsg_str = CAN_OK_RESPONCE;
