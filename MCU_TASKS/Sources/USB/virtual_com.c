@@ -997,7 +997,7 @@ void CDC2_resv ( cdc_struct_t *handle )
 	handle->recv_size = 0;
 #else
 	_mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
-	msg->header.SOURCE_QID = _msgq_get_id( 0, USB_TEST_QUEUE );
+	msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
 	msg->header.TARGET_QID = _msgq_get_id( 0, CAN1_TX_QUEUE );
 	msg->header.SIZE = handle->recv_size + APP_MESSAGE_NO_ARRAY_SIZE;
 	msg->portNum = MIC_CDC_USB_3;
@@ -1029,7 +1029,7 @@ void CDC3_resv ( cdc_struct_t *handle )
 	handle->recv_size = 0;
 #else
 	_mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
-	msg->header.SOURCE_QID = _msgq_get_id( 0, USB_TEST_QUEUE );
+	msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
 	msg->header.TARGET_QID = _msgq_get_id( 0, CAN2_TX_QUEUE );
 	msg->header.SIZE = handle->recv_size + APP_MESSAGE_NO_ARRAY_SIZE;
 	msg->portNum = MIC_CDC_USB_4;
