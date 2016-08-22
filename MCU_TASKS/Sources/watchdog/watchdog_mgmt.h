@@ -14,7 +14,7 @@
 #define WATCHDOG_MCU_MAX_TIME 10000//ms
 #define WDG_RESET_MCU() WDOG_UNLOCK = 0xd928;  WDOG_UNLOCK = 0xc520;
 
-#define WATCHDOG_A8_CPU_STATUS_BIT (1 << 0)
+#define WATCHDOG_A8_CPU_WATCHDOG_BIT (1 << 0)
 #define WATCHDOG_A8_USB_PINGING_BIT (1 << 1)
 
 typedef struct watchdog_a8_s

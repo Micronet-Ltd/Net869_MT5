@@ -113,9 +113,9 @@ void pet_a8_watchdog_isr(void)
 		/* Pet the A8 watchdog if cpu_status_pin is toggling and we are getting ping messages */
 		if (_event_get_value(a8_watchdog_event_g, &event_bits) == MQX_OK) 
 		{ 
-			if (event_bits == (WATCHDOG_A8_USB_PINGING_BIT | WATCHDOG_A8_CPU_STATUS_BIT))
+			if (event_bits == (WATCHDOG_A8_USB_PINGING_BIT | WATCHDOG_A8_CPU_WATCHDOG_BIT))
 			{
-				_event_clear(a8_watchdog_event_g, WATCHDOG_A8_USB_PINGING_BIT | WATCHDOG_A8_CPU_STATUS_BIT);
+				_event_clear(a8_watchdog_event_g, WATCHDOG_A8_USB_PINGING_BIT | WATCHDOG_A8_CPU_WATCHDOG_BIT);
 				_time_get_elapsed_ticks(&watchdog_a8_g.curr_ticks);
 				watchdog_a8_g.count++;
 			}

@@ -472,7 +472,7 @@ void MQX_PORTB_IRQHandler(void)
 	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG))
 	{
 		GPIO_DRV_ClearPinIntFlag(CPU_WATCHDOG);
-		_event_set(a8_watchdog_event_g, WATCHDOG_A8_CPU_STATUS_BIT); 
+		_event_set(a8_watchdog_event_g, WATCHDOG_A8_CPU_WATCHDOG_BIT); 
 	}
 
 	if (GPIO_DRV_IsPinIntPending(CPU_SPKR_EN))
