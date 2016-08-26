@@ -13,7 +13,7 @@
 
 #define MS_PER_TICK	5
 #define WATCHDOG_MCU_MAX_TICKS 10000/MS_PER_TICK /* 10000ms */
-#define WATCHDOG_A8_MAX_TICKS 60000/MS_PER_TICK /* 60000ms */
+#define WATCHDOG_A8_MAX_TICKS 300000/MS_PER_TICK /* 5 minutes */
 #define WATCHDOG_A8_PET_TICKS 5000/MS_PER_TICK /* 5000ms */
 
 static watchdog_a8_t watchdog_a8_g;
