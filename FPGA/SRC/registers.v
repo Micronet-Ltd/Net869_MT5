@@ -36,6 +36,11 @@ module REGISTERS (
 	output reg          interrupt      = 0 ,
 	input               register_read      ,
 
+	output reg   [ 7:0] led1_dutycycle = 0 ,
+	output reg   [ 7:0] led1_red       = 0 ,
+	output reg   [ 7:0] led1_green     = 0 ,
+	output reg   [ 7:0] led1_blue      = 0 ,
+
 	output reg   [ 7:0] led2_dutycycle = 0 ,
 	output reg   [ 7:0] led2_red       = 0 ,
 	output reg   [ 7:0] led2_green     = 0 ,
@@ -71,8 +76,9 @@ localparam ADDR_VERSION     = 6'h00,
            ADDR_IRQ_STATUS  = 6'h01,
            ADDR_IRQ_MASK    = 6'h02,
 
-           ADDR_LED2_RGB    = 6'h10,
-           ADDR_LED3_RGB    = 6'h11,
+	ADDR_LED1_RGB    = 6'h10,
+           ADDR_LED2_RGB    = 6'h11,
+           ADDR_LED3_RGB    = 6'h12,
            
            ADDR_J1708_CNTRL = 6'h20,
            ADDR_J1708_TX    = 6'h21,
@@ -93,12 +99,14 @@ wire [31:0] irq_trigger               ;
 always @(posedge clk or posedge rst)
 begin
 	if (rst) begin
+		{led1_dutycycle, led1_red, led1_green, led1_blue } <= 0;
 		{led2_dutycycle, led2_red, led2_green, led2_blue } <= 0;
 		{led3_dutycycle, led3_red, led3_green, led3_blue } <= 0;
 		{J1708_enable,   J1708_TX_len, J1708_TX_prio     } <= 0;
 	end else if (data_in_valid)
 		case (address)
 			ADDR_IRQ_MASK     :  irq_mask                                          <= data_in ;
+			ADDR_LED1_RGB     : {led1_dutycycle, led1_red, led1_green, led1_blue } <= data_in ;
 			ADDR_LED2_RGB     : {led2_dutycycle, led2_red, led2_green, led2_blue } <= data_in ;
 			ADDR_LED3_RGB     : {led3_dutycycle, led3_red, led3_green, led3_blue } <= data_in ;
 			ADDR_J1708_CNTRL  : begin
@@ -119,6 +127,7 @@ begin
 	     ADDR_VERSION    : data_out <= {fpga_version_type, fpga_version_major, fpga_version_minor, fpga_version_debug};
 	     ADDR_IRQ_STATUS : data_out <= irq_status;
  	     ADDR_IRQ_MASK   : data_out <= irq_mask;
+	     ADDR_LED1_RGB   : data_out <= {led1_dutycycle, led1_red, led1_green, led1_blue } ;
 	     ADDR_LED2_RGB   : data_out <= {led2_dutycycle, led2_red, led2_green, led2_blue } ;
 	     ADDR_LED3_RGB   : data_out <= {led3_dutycycle, led3_red, led3_green, led3_blue } ;
 		 
