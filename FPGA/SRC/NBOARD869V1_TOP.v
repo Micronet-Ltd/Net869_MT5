@@ -39,7 +39,7 @@ localparam	CLK_FRQ_MHZ          = 26     ,
 			FPGA_I2C_ADDR        = 7'h5E  ;
           
 
-localparam	FPGA_VERSION_TYPE    = "A"    ,
+localparam	FPGA_VERSION_TYPE    = "Z"    ,
 			FPGA_VERSION_MAJOR   =  0     ,
 			FPGA_VERSION_MINOR   =  0     ,
 			FPGA_VERSION_DEBUG   =  2     ;
