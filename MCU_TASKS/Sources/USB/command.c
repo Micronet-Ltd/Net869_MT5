@@ -16,6 +16,7 @@
 #include "Wiggle_sensor.h"
 #include "power_mgm.h"
 #include "rtc.h"
+#include "watchdog_mgmt.h"
 
 #define GET_COMMAND 0
 #define SET_COMMAND 1
@@ -40,6 +41,7 @@ static void get_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg
 static void set_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
 static void get_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_gpio);
 static void set_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_gpio);
+static void set_app_watchdog_req(uint8_t * data, uint16_t data_size, uint8_t * p_watchdog);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -95,6 +97,9 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 							   GET_COMMAND,
 							   sizeof(uint8_t)},
 	[COMM_SET_MCU_GPIO_STATE_DBG] = {set_mcu_gpio_state_dbg,
+							   SET_COMMAND,
+							   0},
+	[COMM_SET_APP_WATCHDOG_REQ] = {set_app_watchdog_req,
 							   SET_COMMAND,
 							   0},
 };
@@ -281,4 +286,9 @@ static void set_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t *
 	{
 		GPIO_DRV_WritePinOutput(gpio_pin_name, gpio_val);
 	}
+}
+
+static void set_app_watchdog_req(uint8_t * data, uint16_t data_size, uint8_t * p_watchdog)
+{
+	handle_mcu_watchdog_expiry(NULL);
 }
