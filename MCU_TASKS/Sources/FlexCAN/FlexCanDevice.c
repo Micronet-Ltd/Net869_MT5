@@ -1475,7 +1475,8 @@ flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_f
 
 	_mem_zero ((void*)p_flowCmdTable->p_response[idx], FLEXCAN_FLOW_CTR_COMMAND_MAX_SIZE);
 	p_flowCmdTable->resp_size[idx] = 0;
-	
+	p_flowCmdTable->msg_id[idx] = 0;
+
 	if ( TRUE ==  p_flowCmdTable->bisExtended[idx] ){
 		id_size = CAN_MSG_ID_SIZE_EXT;
 		p_flowCmdTable->p_response[idx][0] = 'T';
@@ -1488,14 +1489,8 @@ flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_f
 		p_flowCmdTable->resp_size[idx] += 1;
 		msg_size = CAN_FLOW_CONTROL_MSG_SIZE;
 	}
-	_mem_copy((const void*)(pbuff + id_size), (void*)&(p_flowCmdTable->p_response[idx][1]), msg_size);
-	p_flowCmdTable->resp_size[idx] += msg_size;
-	p_flowCmdTable->p_response[idx][p_flowCmdTable->resp_size[idx]] = '\r';
-	p_flowCmdTable->resp_size[idx] += 1;
-	
-    p_flowCmdTable->msg_id[idx] = 0;
 
-    /* convert ID from ASCII to uint */
+	/* convert ID from ASCII to uint */
 	for ( i = 0; CAN_OK_RESPONCE != *pbuff && i < id_size; i++ ) {
 		p_flowCmdTable->msg_id[idx] <<= 4;
 		if ( fcStatus_FLEXCAN_Success != parseHex (pbuff, 1, &tmp) )
@@ -1503,6 +1498,13 @@ flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_f
 		p_flowCmdTable->msg_id[idx] |= (tmp & 0x0F);
 		pbuff++;
 	}
+
+	/* copy t or T message for flowcontrol response */
+	_mem_copy((const void*)(pbuff), (void*)&(p_flowCmdTable->p_response[idx][1]), msg_size);
+	p_flowCmdTable->resp_size[idx] += msg_size;
+	p_flowCmdTable->p_response[idx][p_flowCmdTable->resp_size[idx]] = '\r';
+	p_flowCmdTable->resp_size[idx] += 1;
+
 	pbuff += (p_flowCmdTable->resp_size[idx] - id_size);
 	pbuff++;
     return ret;
