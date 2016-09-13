@@ -62,7 +62,9 @@ static inline void blink_red_led(uint8_t count)
 	{
 		delay_1s();
 		GPIO_HAL_TogglePinOutput(gpioBasePortA, 4); //LED_RED
-	}	
+	}
+	GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
+	delay_1s();
 }
 
 
