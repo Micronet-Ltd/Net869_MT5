@@ -11,6 +11,7 @@
 #include <event.h>
 #include "watchdog_mgmt.h"
 
+//#define WATCHDOG_DEBUG
 #define MS_PER_TICK	5
 #define WATCHDOG_MCU_MAX_TICKS 10000/MS_PER_TICK /* 10000ms */
 #define WATCHDOG_A8_MAX_TICKS 300000/MS_PER_TICK /* 5 minutes */
@@ -56,13 +57,14 @@ static inline void blink_red_led(uint8_t count)
 	GPIO_HAL_ClearPinOutput(gpioBasePortA, 4); //LED_RED
 	GPIO_HAL_ClearPinOutput(gpioBasePortA, 7); //LED_BLUE
 	GPIO_HAL_ClearPinOutput(gpioBasePortA, 5); //LED_GREEN
-
+#ifdef WATCHDOG_DEBUG
 	/* Blink LED */
 	for (i = 0; i < count; i++)
 	{
 		delay_1s();
 		GPIO_HAL_TogglePinOutput(gpioBasePortA, 4); //LED_RED
 	}
+#endif
 	GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
 	delay_1s();
 }
