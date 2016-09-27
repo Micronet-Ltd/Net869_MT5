@@ -375,6 +375,10 @@ flexcan_status_t FLEXCAN_HAL_SetTxMsgBuff(
 
 			/* Set the code*/
 			flexcan_reg_ptr->MB[msgBuffIdx].CS |= CAN_CS_CODE(cs->code);
+			
+			//workaround - errata ERR005641
+			flexcan_reg_ptr->MB[msgBuffIdx+1].CS &= ~CAN_CS_CODE_MASK;
+			flexcan_reg_ptr->MB[msgBuffIdx+1].CS &= ~CAN_CS_CODE_MASK;
 		}
 	}
 	else
