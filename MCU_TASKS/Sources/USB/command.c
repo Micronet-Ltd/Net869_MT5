@@ -290,5 +290,7 @@ static void set_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t *
 
 static void set_app_watchdog_req(uint8_t * data, uint16_t data_size, uint8_t * p_watchdog)
 {
-	handle_mcu_watchdog_expiry(NULL);
+	uint8_t color = LED_RED_GPIO_NUM;
+	printf("\r\n App Watchdog Expired, resetting MCU! \r\n");
+	handle_watchdog_expiry(&color);
 }

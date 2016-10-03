@@ -145,6 +145,10 @@ enum _gpio_pins_pinNames {
 //	I2C_SCL = GPIO_MAKE_PIN(GPIOB_IDX, 3),
 };
 
+#define LED_RED_GPIO_NUM 	4 
+#define LED_BLUE_GPIO_NUM 	7
+#define LED_GREEN_GPIO_NUM	5 
+
 // I2C INTERFACE - CHANNEL 2
 #define I2C0_SDA_GPIO_PORT			PORTB
 #define I2C0_SDA_GPIO_PIN			3
