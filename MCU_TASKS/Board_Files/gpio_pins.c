@@ -2,6 +2,7 @@
 #if 1
 #include "gpio_pins.h"
 #include <stdbool.h>
+#include <mqx.h>
 
 const gpio_output_pin_user_config_t outputPins[] = {
 	// Power Rail Control
@@ -92,6 +93,88 @@ const gpio_input_pin_user_config_t inputPins[] = {
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE	}
 };
 
+/* I2C_reset_bus: If the SDA line is stuck in the low state, we try to send some 
+additional clocks and generate a stop condition
+
+http://www.analog.com/media/en/technical-documentation/application-notes/54305147357414AN686_0.pdf
+
+NOTE: Since the i2c port is changed to a GPIO for bitbanging, 
+You need to manually set the port back to i2c mode and reinit the i2c port
+*/
+bool I2C_reset_bus(uint32_t sda_pin_name, uint32_t scl_pin_name)
+{
+	uint8_t i;
+	const gpio_input_pin_user_config_t input_pin_SDA =
+	{
+		  .pinName = sda_pin_name,
+		  .config.isPullEnable = true,
+		  .config.pullSelect = kPortPullUp,
+		  .config.isPassiveFilterEnabled = false,
+		  .config.interrupt = kPortIntDisabled,
+	};
+	const gpio_input_pin_user_config_t input_pin_SCL =
+	{
+		  .pinName = scl_pin_name,
+		  .config.isPullEnable = true,
+		  .config.pullSelect = kPortPullUp,
+		  .config.isPassiveFilterEnabled = false,
+		  .config.interrupt = kPortIntDisabled,
+	};
+	
+	const gpio_output_pin_user_config_t output_pin_SDA =
+	{
+		.pinName = sda_pin_name,	    
+		.config.outputLogic = 1,
+		.config.slewRate = kPortFastSlewRate,
+		.config.isOpenDrainEnabled = false,  
+		.config.driveStrength = kPortHighDriveStrength,
+	};
+	const gpio_output_pin_user_config_t output_pin_SCL =
+	{
+		.pinName = scl_pin_name,
+		.config.outputLogic = 1,
+		.config.slewRate = kPortFastSlewRate,
+		.config.isOpenDrainEnabled = false,  
+		.config.driveStrength = kPortHighDriveStrength,
+	};
+
+	/* configure i2c lines as GPInputs */
+	GPIO_DRV_InputPinInit(&input_pin_SDA);
+	GPIO_DRV_InputPinInit(&input_pin_SCL);
+  	
+	/* Check if they are already both high */ 
+	if(GPIO_DRV_ReadPinInput(sda_pin_name) && GPIO_DRV_ReadPinInput(scl_pin_name)) 
+	{
+		return true;
+	}
+
+	_time_delay (10);
+	if(!GPIO_DRV_ReadPinInput(scl_pin_name)) 
+	{
+		return false; /* SCL held low externally, nothing we can do */
+	}
+	
+	for(i = 0; i<9; i++) /* up to 9 clocks until SDA goes high */
+	{
+		GPIO_DRV_OutputPinInit(&output_pin_SCL);
+		GPIO_DRV_WritePinOutput(scl_pin_name, 0);
+		_time_delay (10);
+		GPIO_DRV_InputPinInit(&input_pin_SCL);
+		_time_delay (10);
+		if(GPIO_DRV_ReadPinInput(sda_pin_name)) 
+		{
+			break; /* finally SDA high so we can generate a STOP */
+		}
+	}
+		
+	if(!GPIO_DRV_ReadPinInput(sda_pin_name)) 
+	{
+		return false; /* after 9 clocks still nothing */
+	}
+	
+	return (GPIO_DRV_ReadPinInput(sda_pin_name) && GPIO_DRV_ReadPinInput(scl_pin_name)); /* both high then we succeeded */
+}
+
 
 void GPIO_Config( void ) {
 	/*
@@ -101,7 +184,10 @@ void GPIO_Config( void ) {
 	CLOCK_SYS_EnablePortClock(PORTD_IDX);
 */
 
+	bool ret;
 	GPIO_DRV_Init(inputPins, outputPins);
+	I2C_reset_bus(I2C0_SDA, I2C0_SCL);
+	I2C_reset_bus(I2C1_SDA, I2C1_SCL);
 
 	// I2C0 configuration
 	PORT_HAL_SetMuxMode     (I2C0_SDA_GPIO_PORT, I2C0_SDA_GPIO_PIN, kPortMuxAlt2);
