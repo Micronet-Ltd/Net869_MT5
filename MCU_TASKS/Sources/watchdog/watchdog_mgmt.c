@@ -79,7 +79,12 @@ void shutdown_fpga_accel(void)
 
 void handle_watchdog_expiry(void * td_ptr)
 {
+	uint8_t i;
 	printf("\r\n watchdog Expired, resetting MCU! \r\n");
+	for (i=0; i < 3; i++)
+	{
+		delay_1s();
+	}
 	shutdown_fpga_accel();
 
 #ifdef WATCHDOG_DEBUG
