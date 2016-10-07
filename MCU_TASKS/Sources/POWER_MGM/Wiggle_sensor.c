@@ -124,6 +124,7 @@ void Wiggle_sensor_update (void)
 		sensor_g.movement_period  += sensor_g.delay_period;
 		return;
 	}
+	printf("%s wiggle count = %d\n", __func__, sensor_g.wiggle_sensor_cnt);
 
 	sensor_g.status     = (sensor_g.wiggle_sensor_cnt > sensor_g.vibration_threshold);
 	sensor_g.movement_period = 0;
