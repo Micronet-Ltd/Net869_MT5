@@ -59,7 +59,6 @@ extern void * a8_watchdog_event_g;
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
-extern void handle_mcu_watchdog_expiry(void *);
 
 MUTEX_STRUCT g_i2c0_mutex;
 

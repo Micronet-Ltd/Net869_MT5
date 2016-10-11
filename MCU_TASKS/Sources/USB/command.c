@@ -42,6 +42,8 @@ static void set_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg
 static void get_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_gpio);
 static void set_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_gpio);
 static void set_app_watchdog_req(uint8_t * data, uint16_t data_size, uint8_t * p_watchdog);
+static void set_wiggle_en_req(uint8_t * data, uint16_t data_size, uint8_t * p_wig_en);
+static void get_wiggle_sensor_count_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_wig_cnt);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -102,6 +104,12 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_SET_APP_WATCHDOG_REQ] = {set_app_watchdog_req,
 							   SET_COMMAND,
 							   0},
+	[COMM_SET_WIGGLE_EN_REQ_DBG] = {set_wiggle_en_req,
+							   SET_COMMAND,
+							   0},
+	[COMM_GET_WIGGLE_COUNT_REQ_DBG] = {get_wiggle_sensor_count_dbg,
+							   GET_COMMAND,
+							   (sizeof(uint8_t)*4)},
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -293,4 +301,29 @@ static void set_app_watchdog_req(uint8_t * data, uint16_t data_size, uint8_t * p
 	uint8_t color = LED_RED_GPIO_NUM;
 	printf("\r\n App Watchdog Expired, resetting MCU! \r\n");
 	handle_watchdog_expiry(&color);
+}
+
+static void set_wiggle_en_req(uint8_t * data, uint16_t data_size, uint8_t * p_wig_en)
+{
+	uint8_t wiggle_en = data[0];
+	if (wiggle_en)
+	{
+		Wiggle_sensor_start();
+		Wiggle_sensor_restart();
+	}
+	else
+	{
+		Wiggle_sensor_stop();
+	}
+}
+
+static void get_wiggle_sensor_count_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_wig_cnt)
+{
+	uint32_t wiggle_count = 0;
+	wiggle_count = get_wiggle_sensor_count();
+	/*little endian */
+	p_wig_cnt[0] = (uint8_t) (wiggle_count&0xFF);
+	p_wig_cnt[1] = (uint8_t) ((wiggle_count>>8)&0xFF);
+	p_wig_cnt[2] = (uint8_t) ((wiggle_count>>16)&0xFF);
+	p_wig_cnt[3] = (uint8_t) ((wiggle_count>>24)&0xFF);
 }

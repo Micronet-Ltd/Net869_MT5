@@ -24,7 +24,7 @@ typedef struct watchdog_a8_s
 	uint32_t count;
 }watchdog_a8_t;
 
-void handle_mcu_watchdog_expiry(void *td_ptr);
+void handle_watchdog_expiry(void * td_ptr);
 bool watchdog_mcu_init(void);
 void a8_watchdog_init(void);
 void pet_a8_watchdog_isr(void);

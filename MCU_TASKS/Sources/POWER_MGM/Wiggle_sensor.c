@@ -168,3 +168,8 @@ void Wiggle_sensor_update (void)
 		sensor_g.status = (sensor_g.wiggle_sensor_cnt > sensor_g.vibration_threshold);
 #endif
 }
+
+uint32_t get_wiggle_sensor_count(void)
+{
+	return sensor_g.wiggle_sensor_cnt;
+}
