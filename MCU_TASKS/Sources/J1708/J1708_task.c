@@ -23,6 +23,7 @@
 
 #include "tasks_list.h"
 #include "J1708_task.h"
+#include "frame.h"
 
 #include "fpga_api.h"
 
