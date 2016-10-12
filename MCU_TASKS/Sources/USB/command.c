@@ -17,6 +17,7 @@
 #include "power_mgm.h"
 #include "rtc.h"
 #include "watchdog_mgmt.h"
+#include "acc_task.h"
 
 #define GET_COMMAND 0
 #define SET_COMMAND 1
@@ -44,6 +45,9 @@ static void set_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t *
 static void set_app_watchdog_req(uint8_t * data, uint16_t data_size, uint8_t * p_watchdog);
 static void set_wiggle_en_req(uint8_t * data, uint16_t data_size, uint8_t * p_wig_en);
 static void get_wiggle_sensor_count_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_wig_cnt);
+static void set_accel_standby_active_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_accel_active);
+static void get_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
+static void set_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -110,6 +114,15 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_GET_WIGGLE_COUNT_REQ_DBG] = {get_wiggle_sensor_count_dbg,
 							   GET_COMMAND,
 							   (sizeof(uint8_t)*4)},
+	[COMM_SET_ACCEL_STANDBY_ACTIVE_DBG] = {set_accel_standby_active_dbg,
+							   SET_COMMAND,
+							   0},
+	[COMM_GET_ACCEL_REGISTER_DBG] = {get_accel_register_dbg,
+							   GET_COMMAND,
+							   sizeof(uint8_t)},
+	[COMM_SET_ACCEL_REGISTER_DBG] = {set_accel_register_dbg,
+							   SET_COMMAND,
+							   0},
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -326,4 +339,32 @@ static void get_wiggle_sensor_count_dbg(uint8_t * data, uint16_t data_size, uint
 	p_wig_cnt[1] = (uint8_t) ((wiggle_count>>8)&0xFF);
 	p_wig_cnt[2] = (uint8_t) ((wiggle_count>>16)&0xFF);
 	p_wig_cnt[3] = (uint8_t) ((wiggle_count>>24)&0xFF);
+}
+
+/* 0: Accel standby, 1: Accel Active, fifo enabled */
+static void set_accel_standby_active_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_accel_active)
+{
+	uint8_t accel_active = data[0];
+	if (accel_active)
+	{
+		AccDisable();
+		_time_delay(10);
+		accInit(); /* Reenable Fifo */
+		_time_delay(10);
+		AccEnable(); /* Go into accelorometer active mode */
+	}
+	else
+	{
+		AccDisable();
+	}
+}
+
+static void get_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg)
+{
+	AccReadRegister (data[0], &p_reg[0]);
+}
+
+static void set_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg)
+{
+	AccWriteRegister (data[0], data[1]);
 }
