@@ -179,7 +179,8 @@ void Device_update_state (uint32_t * time_diff)
 				break;
 			}
 
-			if (ignition_voltage >= ignition_threshold_g)
+			//if (ignition_voltage >= ignition_threshold_g)
+			if (ignition_voltage >= 0) /*HACK for tester to always bootup */
 			{
 				printf ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
 				turn_on_condition_g |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;

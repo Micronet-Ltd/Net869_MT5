@@ -23,7 +23,7 @@ typedef enum {
 	CAN_TASK_TX_PRIORITY,
 	CONTROL_TASK_PRIORITY,
 	J1708_TX_TASK_PRIORITY,
-	J1708_RX_TASK_PRIORITY,
+	J1708_RX_TX_LOOPBACK_TASK_PRIORITY,
 	FPGA_UART_RX_TASK_PRIORITY,
 	ACC_TASK_PRIORITY,
 	VIB_SENSOR_TASK_PRIORITY  ,
@@ -40,7 +40,7 @@ typedef enum {
 	CAN_TASK_RX_1    ,
 	CAN_TASK_TX_1    ,
 	J1708_TX_TASK    ,
-	J1708_RX_TASK    ,
+	J1708_RX_TX_LOOPBACK_TASK    ,
 	FPGA_UART_RX_TASK,
 	ACC_TASK         ,
 	CONTROL_TASK	 ,
@@ -84,7 +84,7 @@ extern void Acc_task         (uint32_t);
 extern void Usb_task         (uint32_t);
 
 extern void J1708_Tx_task     (uint32_t);
-extern void J1708_Rx_task     (uint32_t);
+extern void J1708_Rx_Tx_task_loopback     (uint32_t);
 extern void FPGA_UART_Rx_task (uint32_t );
 
 extern void control_task (uint32_t );

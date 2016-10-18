@@ -108,19 +108,23 @@ void J1708_Tx_task (uint32_t initial_data)
 
 //#define MIC_LED_TEST
 
-void J1708_Rx_task (uint32_t initial_data)
+void J1708_Rx_Tx_task_loopback (uint32_t initial_data)
 {
-	pcdc_mic_queue_element_t    pqMemElem;
+	//pcdc_mic_queue_element_t    pqMemElem;
 	_mqx_uint                   err_task;
 
-    uint8_t                     readbuff[J1708_MAX_MESSAGE_SIZE];    
+	uint8_t                     readbuff[J1708_MAX_MESSAGE_SIZE] = {0};    
 	uint32_t                    J1708_rx_event_bit;
 	bool                        J1708_rx_status;
 	uint8_t                     J1708_rx_len;
+	uint8_t						count = 0;
 
 	_event_create ("event.J1708_RX");
 	_event_open   ("event.J1708_RX", &g_J1708_event_h);
 	printf ("\nJ1708_Rx Task: Start \n");
+	
+	/* Enable J1708 power by default for tester */
+	GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
 
 	while (0 == g_flag_Exit) {
 		while (J1708_state == J1708_DISABLED)
@@ -154,12 +158,12 @@ void J1708_Rx_task (uint32_t initial_data)
             continue;
         }
         // send buffer - Since the buffer is cyclic, it might be needed to split buffer to 2 buffers
-		pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_5);
-		if (NULL == pqMemElem) {
-			printf("%s: Error get mem for USB drop\n", __func__);
-			continue;
-		}
-        pqMemElem->send_size = 0;
+		//pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_5);
+		//if (NULL == pqMemElem) {
+		//	printf("%s: Error get mem for USB drop\n", __func__);
+		//	continue;
+		//}
+       // pqMemElem->send_size = 0;
 
 		// add header size to message length
 		//pqMemElem->send_size = J1708_rx_len;
@@ -168,15 +172,44 @@ void J1708_Rx_task (uint32_t initial_data)
 		if (!FPGA_read_J1708_packet (readbuff, J1708_rx_len)) {
 			printf ("\nJ1708_Rx: ERROR: Could not read UART message buffer\n");
 			J1708_reset ();
-            SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_5);
+            //SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_5);
             continue;
 		}
 
-        pqMemElem->send_size = frame_encode((uint8_t*)readbuff, (const uint8_t*)(pqMemElem->data_buff), J1708_rx_len );
+        //pqMemElem->send_size = frame_encode((uint8_t*)readbuff, (const uint8_t*)(pqMemElem->data_buff), J1708_rx_len );
 
-		if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_5)) {
-			printf("%s: Error send data to CDC5\n", __func__);
+		//if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_5)) {
+		//	printf("%s: Error send data to CDC5\n", __func__);
+		//}
+
+		/* Loop back data Start */
+				// send message via UART channel
+		if (!FPGA_write_J1708_packet  (readbuff, J1708_rx_len)) {
+			//_msg_free   (msg);
+			J1708_reset ();
+			continue;
 		}
+		
+		printf("j1708 request received %d\n", ++count);
+		
+		FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
+		_time_delay(90); /* Delay just in case the response is sent to fast */
+		FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0, 0, 0); /*Clear LED */
+		_time_delay(10); /* Delay just in case the response is sent to fast */
+		
+		printf("j1708 resp %x , %x , %x, %x , %x , %x length = %d \n", readbuff[0], readbuff[1], readbuff[2], readbuff[3], readbuff[4], readbuff[5], J1708_rx_len);
+		
+
+		//_msg_free   (msg);
+
+		// send command via I2C channel
+		
+		
+		if (!FPGA_write_J1708_tx_length (&J1708_rx_len)) {
+			J1708_reset ();
+			continue;
+		}
+		/* Loop back data End */
 	}
 
 	// should never get here

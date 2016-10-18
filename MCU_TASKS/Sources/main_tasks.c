@@ -27,9 +27,9 @@
 #include "Device_control_GPIO.h"
 #include "watchdog_mgmt.h"
 
-//#define DEBUG_BLINKING_RIGHT_LED 1
+#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
-//#define DEBUG_A8_WATCHOG_DISABLED 1
+#define DEBUG_A8_WATCHOG_DISABLED 1
 
 //void MQX_I2C0_IRQHandler (void);
 //void MQX_I2C1_IRQHandler (void);
@@ -301,14 +301,14 @@ void Main_task( uint32_t initial_data ) {
 
 	J1708_enable  (7);
 
-	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
-	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create J1708_TX_TASK\n");
-	}
+//	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
+//	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create J1708_TX_TASK\n");
+//	}
 
-	g_TASK_ids[J1708_RX_TASK] = _task_create(0, J1708_RX_TASK, 0 );
-	if (g_TASK_ids[J1708_RX_TASK] == MQX_NULL_TASK_ID)
+	g_TASK_ids[J1708_RX_TX_LOOPBACK_TASK] = _task_create(0, J1708_RX_TX_LOOPBACK_TASK, 0 );
+	if (g_TASK_ids[J1708_RX_TX_LOOPBACK_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create J1708_RX_TASK\n");
 	}

@@ -12,7 +12,7 @@ TASK_TEMPLATE_STRUCT MQX_template_list[] =
 	{ CAN_TASK_RX_1,		FLEXCAN_Rx_Task,	1024,   	CAN_TASK_RX_PRIORITY,		"CAN_TASK_RX1",			0,							0,              0 },
 	{ CAN_TASK_TX_0,		FLEXCAN_Tx_Task,	1024,   	CAN_TASK_TX_PRIORITY,		"CAN_TASK_TX0",			0,							0,              0 },
 	{ CAN_TASK_TX_1,		FLEXCAN_Tx_Task,	1024,   	CAN_TASK_TX_PRIORITY,		"CAN_TASK_TX1",			0,							0,              0 },
-	{ J1708_RX_TASK,		J1708_Rx_task,		1024,		J1708_RX_TASK_PRIORITY,		"J1708_RX_TASK",		0,							0,				0 },
+	{ J1708_RX_TX_LOOPBACK_TASK,		J1708_Rx_Tx_task_loopback,		1024,		J1708_RX_TX_LOOPBACK_TASK_PRIORITY,		"J1708_RX_TX_LOOPBACK_TASK",		0,							0,				0 },
 	{ J1708_TX_TASK,		J1708_Tx_task,		1024,		J1708_TX_TASK_PRIORITY,		"J1708_TX_TASK",		0,							0,				0 },
 	{ FPGA_UART_RX_TASK,	FPGA_UART_Rx_task,	1024,		FPGA_UART_RX_TASK_PRIORITY,	"FPGA_UART_RX_TASK",	0,							0,				0 },
 	{ POWER_MGM_TASK,		Power_MGM_task,		1024,		POWER_MGM_TASK_PRIORITY,	"POWER_MGM_TASK",		0,							0,				0 },
