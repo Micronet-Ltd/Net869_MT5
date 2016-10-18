@@ -15,9 +15,9 @@
 	- the maximum length of each part of version is 2 digits (0xFF)
 */
 /* 0xA : Application, 0xB: Bootloader */
-#define FW_VER_BTLD_OR_APP 0xA
-#define FW_VER_MAJOR 0x1
-#define FW_VER_MINOR 0x4
-#define FW_VER_BUILD 0x1
+#define FW_VER_BTLD_OR_APP 0xC
+#define FW_VER_MAJOR 0x0
+#define FW_VER_MINOR 0x1
+#define FW_VER_BUILD 0x0
 
 #endif /* _VERSION_H_ */
