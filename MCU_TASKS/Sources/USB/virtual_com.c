@@ -1072,12 +1072,12 @@ void CDC4_resv ( cdc_struct_t *handle )
 		return;
 	}
 
-	frame_setbuffer ( &frame_buf, handle->curr_recv_buf, handle->recv_size );
-	frame_process_buffer ( &frame_buf, msg->data, handle->recv_size );
+	frame_setbuffer ( &frame_buf, msg->data, handle->recv_size );
+	frame_process_buffer ( &frame_buf, handle->curr_recv_buf, handle->recv_size );
+	msg->header.SIZE = frame_buf.data_len;
 
 	msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
 	msg->header.TARGET_QID = _msgq_get_id( 0, J1708_TX_QUEUE );
-	msg->header.SIZE = handle->recv_size;
 	msg->portNum = MIC_CDC_USB_5;
 	_msgq_send (msg);
 #endif
