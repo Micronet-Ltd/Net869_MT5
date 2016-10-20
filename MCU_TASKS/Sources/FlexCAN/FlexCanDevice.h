@@ -129,6 +129,7 @@ extern void FLEXCAN_Rx_Task( uint32_t param );
 /* Functions */
 extern void     print_result( uint32_t );
 extern void     get_string( char *, uint32_t * );
+void test_setup_swc(void);
 
 /* Global variables */
 

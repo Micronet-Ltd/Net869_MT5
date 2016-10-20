@@ -370,6 +370,8 @@ void Main_task( uint32_t initial_data ) {
 
 	FPGA_read_version(&FPGA_version);
 	printf("\n FPGA version, %x", FPGA_version);
+	
+	test_setup_swc();
 
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
 	a8_watchdog_init();

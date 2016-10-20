@@ -1751,3 +1751,56 @@ bool CheckCommandIdSupp ( const uint8_t* buff, uint16_t* IdVal) {
 
 	return true;
 }
+
+void add_msg_to_flexcan_q(const char * req, uint8_t req_size)
+{
+	APPLICATION_MESSAGE_T *msg;
+	if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
+	{
+		printf("CDC3_resv USB Task: ERROR: message allocation failed\n");
+		return;
+	}
+
+	_mem_copy (req, msg->data, req_size);
+	msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
+	msg->header.TARGET_QID = _msgq_get_id( 0, CAN2_TX_QUEUE );
+	msg->header.SIZE = req_size + APP_MESSAGE_NO_ARRAY_SIZE;
+	msg->portNum = MIC_CDC_USB_4;
+	_msgq_send (msg);
+}
+
+/* 
+echo -ne 'Cu0001\r' > /dev/ttyACM3
+echo -ne 'mt000007FFu0002\r' > /dev/ttyACM3
+echo -ne 'Mt000007E0u0003\r' > /dev/ttyACM3
+echo -ne 'Mf7e07e880102030405060708u0004\r' > /dev/ttyACM3
+echo -ne 'S2u0005\r' > /dev/ttyACM3
+echo -ne 'O1u0006\r' > /dev/ttyACM3
+*/
+void test_setup_swc(void)
+{
+	char can_close_msg[] = "Cu0001\r";
+	add_msg_to_flexcan_q(can_close_msg, sizeof(can_close_msg));
+	_time_delay(50);
+	
+	char can_set_mask_msg[] = "mt000007FFu0002\r"; 
+	add_msg_to_flexcan_q(can_set_mask_msg, sizeof(can_set_mask_msg));
+	_time_delay(50);
+	
+	char can_set_acceptable_code_msg[] = "Mt000007E0u0003\r";
+	add_msg_to_flexcan_q(can_set_acceptable_code_msg, sizeof(can_set_acceptable_code_msg));
+	_time_delay(50);
+	
+	char can_set_flow_control_msg[] = "Mf7e07e880102030405060708u0004\r";
+	add_msg_to_flexcan_q(can_set_flow_control_msg, sizeof(can_set_flow_control_msg));
+	_time_delay(50);
+	
+	char can_set_baud_rate_msg[] = "S2u0005\r";
+	add_msg_to_flexcan_q(can_set_baud_rate_msg, sizeof(can_set_baud_rate_msg));
+	_time_delay(50);
+	
+	char can_open_msg[] = "O1u0006\r" ;
+	add_msg_to_flexcan_q(can_open_msg, sizeof(can_open_msg));
+	_time_delay(50);
+		
+}
