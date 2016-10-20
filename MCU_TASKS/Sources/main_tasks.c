@@ -26,6 +26,7 @@
 #include "Wiggle_sensor.h"
 #include "Device_control_GPIO.h"
 #include "watchdog_mgmt.h"
+#include "power_mgm.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
@@ -56,6 +57,8 @@ extern WIGGLE_SENSOR_t sensor_g;
 extern void * g_acc_event_h;
 extern void * power_up_event_g;
 extern void * a8_watchdog_event_g;
+extern void * cpu_status_event_g;
+tick_measure_t cpu_status_time_g = {0, 0, 0};
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
@@ -490,11 +493,27 @@ void MQX_PORTB_IRQHandler(void)
 	}
 }
 
+
 void MQX_PORTC_IRQHandler(void)
 {
-	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO0)) {
+	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO0)) 
+	{
 		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
 		_event_set(g_J1708_event_h, EVENT_J1708_RX);
+	}
+	if (GPIO_DRV_IsPinIntPending (CPU_STATUS)) 
+	{
+		GPIO_DRV_ClearPinIntFlag(CPU_STATUS);
+		if (GPIO_DRV_ReadPinInput(CPU_STATUS))
+		{
+			_time_get_elapsed_ticks(&(cpu_status_time_g.start_ticks));
+			_event_set(cpu_status_event_g, EVENT_CPU_STATUS_HIGH);
+		}
+		else
+		{
+			_time_get_elapsed_ticks(&(cpu_status_time_g.end_ticks));
+			_event_set(cpu_status_event_g, EVENT_CPU_STATUS_LOW);
+		}
 	}
 }
 

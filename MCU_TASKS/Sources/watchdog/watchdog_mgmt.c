@@ -13,7 +13,7 @@
 #include "gpio_pins.h"
 
 //#define WATCHDOG_DEBUG
-#define MS_PER_TICK	5
+
 #define WATCHDOG_MCU_MAX_TICKS 10000/MS_PER_TICK /* 10000ms */
 #define WATCHDOG_A8_MAX_TICKS 300000/MS_PER_TICK /* 5 minutes */
 #define WATCHDOG_A8_CHECK_TICKS 30000/MS_PER_TICK /* 30 seconds */

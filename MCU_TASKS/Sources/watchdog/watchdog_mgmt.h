@@ -16,6 +16,7 @@
 
 #define WATCHDOG_A8_CPU_WATCHDOG_BIT (1 << 0)
 #define WATCHDOG_A8_USB_PINGING_BIT (1 << 1)
+#define MS_PER_TICK	5
 
 typedef struct watchdog_a8_s
 {
