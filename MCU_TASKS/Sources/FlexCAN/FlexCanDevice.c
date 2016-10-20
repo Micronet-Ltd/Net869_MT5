@@ -26,6 +26,7 @@
 #include "FlexCanDevice.h"
 #include "mic_typedef.h"
 #include "FlexCanMsg_queue.h"
+#include "fpga_API.h"
 
 /* Definition */
 
@@ -1718,6 +1719,10 @@ int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *
 			if (pCanMess->msg_buff.msgId == flowcontrol->msg_id[ind]){
 				//printf("\nflow control found at index %d, msgid %d\n", ind, flowcontrol->msg_id[ind]);
 				flowcontrol->match_position = ind;
+
+				FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /*Red LED */
+				_time_delay(20); /* Delay just in case the response is sent to fast */
+				FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0, 0, 0); /*Clear LED */
 				break;
 			}
 		}

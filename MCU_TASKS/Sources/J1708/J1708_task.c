@@ -192,7 +192,7 @@ void J1708_Rx_Tx_task_loopback (uint32_t initial_data)
 		
 		printf("j1708 request received %d\n", ++count);
 		
-		FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
+		FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0xFF, 0x0, 0x0); /*Red LED */
 		_time_delay(90); /* Delay just in case the response is sent to fast */
 		FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0, 0, 0); /*Clear LED */
 		_time_delay(10); /* Delay just in case the response is sent to fast */
