@@ -29,7 +29,7 @@ extern "C"
 typedef struct tick_measure_s{
 	MQX_TICK_STRUCT start_ticks;
 	MQX_TICK_STRUCT end_ticks;
-	uint32_t time_diff; //ms
+	int32_t time_diff; //ms
 }tick_measure_t;
 
 void get_ignition_threshold(uint32_t * p_ignition_threshold);
