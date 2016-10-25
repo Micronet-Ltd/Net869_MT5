@@ -53,7 +53,7 @@
 #define SUPERCAP_MAX_TH_WHEN_DEV_ON		5300//4800
 
 #define CPU_STATUS_SHUTDOWN_DURATION 50 //ms
-#define CPU_STATUS_TURNON_DURATION 100  //ms
+#define CPU_STATUS_TURNON_DURATION 150  //ms
 
 /* The LPTMR instance used for LPTMR */
 #define PM_RTOS_DEMO_LPTMR_FUNC_INSTANCE                0
