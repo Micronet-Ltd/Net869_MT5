@@ -678,7 +678,7 @@ void Power_MGM_task (uint32_t initial_data )
 			if (event_bits & EVENT_CPU_STATUS_LOW) 
             {
 				_event_clear(cpu_status_event_g, 2);
-				cpu_status_time_g.time_diff = (uint32_t)((cpu_status_time_g.end_ticks.TICKS[0] - cpu_status_time_g.start_ticks.TICKS[0])* MS_PER_TICK);
+				cpu_status_time_g.time_diff = (int32_t)((cpu_status_time_g.end_ticks.TICKS[0] - cpu_status_time_g.start_ticks.TICKS[0])* MS_PER_TICK);
 				printf("%s: cpu_status_event_g low, high time %d \n", __func__, cpu_status_time_g.time_diff);
 				
 				/* A8 sent a shutdown request */

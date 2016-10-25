@@ -93,7 +93,7 @@
 #define CPU_OFF_CHECK_TIME						1000		// time between checks for CPU/A8 off
 #define MAX_CPU_OFF_CHECK_TIME					15000		// Max time to wait before shutting off the unit by killing the power
 
-#define MAX_CPU_TICKS_TAKEN_TO_BOOT				15000/MS_PER_TICK  //maximum time to wait for the CPU_STATUS signal to be received from the A8
+#define MAX_CPU_TICKS_TAKEN_TO_BOOT				45000/MS_PER_TICK  //maximum time to wait for the CPU_STATUS signal to be received from the A8
 
 #define MCU_AND_CPU_BOARD_CONNECTED
 
