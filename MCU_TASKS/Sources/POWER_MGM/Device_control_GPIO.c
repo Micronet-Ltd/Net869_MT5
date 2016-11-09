@@ -215,10 +215,46 @@ void Device_update_state (uint32_t * time_diff)
 				//send_power_change  (&turn_on_condition);
 				printf("%s: device turn on temperature: %d mV", __func__, temperature);
 				printed_temp_error = FALSE;
-				device_state_g = DEVICE_STATE_TURNING_ON;
+				//device_state_g = DEVICE_STATE_TURNING_ON;
+                                device_state_g = DEVICE_STATE_TURNING_ON_POWER_TEST;
 			}
 			break;
+#if 1
+		case DEVICE_STATE_TURNING_ON_POWER_TEST:
+			// wait while pulse is still generated (time period didn't reach threshold)
+			if (!Device_control_GPIO_status())
+			{
+                                GPIO_DRV_ClearPinOutput (FPGA_RSTB);
+                                GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
+                                GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
+                                GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
 
+                                GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+                                GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
+                                GPIO_DRV_ClearPinOutput (USB_ENABLE);
+                                GPIO_DRV_ClearPinOutput (UART_ENABLE);
+                                GPIO_DRV_ClearPinOutput (FTDI_RSTN);
+                                GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
+                                GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
+                                GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
+                                GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
+                                
+                                GPIO_DRV_SetPinOutput   (POWER_5V0_ENABLE);	// turn on 5V0 power rail
+
+				Device_turn_on     ();
+				device_state_g = DEVICE_STATE_ON;
+				printf ("\nPOWER_MGM: DEVICE RUNNING\n");
+				GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
+                                
+                                //GPIO_DRV_ClearPinOutput (LED_RED);
+                                //GPIO_DRV_SetPinOutput   (LED_GREEN);
+                               // GPIO_DRV_SetPinOutput   (LED_BLUE);
+                                
+                                
+//				_event_set(power_up_event_g, 1);
+			}
+			break;
+#endif                     
 		case DEVICE_STATE_TURNING_ON:
 			// wait while pulse is still generated (time period didn't reach threshold)
 			if (!Device_control_GPIO_status())
