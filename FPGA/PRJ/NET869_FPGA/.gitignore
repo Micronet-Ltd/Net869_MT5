@@ -1,3 +1,4 @@
 /NET869_FPGA_Implmnt/
 /stdout.log
 /synlog.tcl
+*.log.bak
