@@ -88,7 +88,8 @@
 #define DEVICE_CONTROL_TIME_RESET_TH			  500		// number of mili-seconds pulse for reseting device
 
 #define BACKUP_RECOVER_TIME_TH					 2000		// number of mili-seconds to try power failure overcome (device is powered by supercap)
-#define BACKUP_POWER_TIME_TH					20000		// number of mili-seconds to power device by supercap
+//NOTE: The BACKUP_POWER_TIME_TH needs to be greater than the OS 'off_delay’ timeout which is defaulted to 19sec in OS 21.0 
+#define BACKUP_POWER_TIME_TH					24000		// number of mili-seconds to power device by supercap
 
 #define CPU_OFF_CHECK_TIME						1000		// time between checks for CPU/A8 off
 #define MAX_CPU_OFF_CHECK_TIME					15000		// Max time to wait before shutting off the unit by killing the power
