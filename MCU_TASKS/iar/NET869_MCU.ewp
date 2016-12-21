@@ -385,6 +385,7 @@
           <state>$PROJ_DIR$\..\Board_Files</state>
           <state>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include</state>
           <state>$PROJ_DIR$\..\Sources\watchdog</state>
+          <state>$PROJ_DIR$\..\Sources\nvm</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2261,6 +2262,21 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Sources\J1708\J1708_task.h</name>
+      </file>
+    </group>
+    <group>
+      <name>nvm</name>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\nvm\nvm.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\nvm\nvm.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\nvm\nvm_configs.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\nvm\nvm_configs.h</name>
       </file>
     </group>
     <group>

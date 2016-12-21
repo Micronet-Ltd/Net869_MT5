@@ -4,15 +4,15 @@
 /* Change this version every time the eeprom struc is changed and
  * inform the python developers of a structure version change
  */
-#define EEPROM_STRUC_VERSION	3
+#define EEPROM_STRUC_VERSION	1
 
-#define SERIAL_OFFSET 				0
-#define MOTOR_CONFIG_OFFSET 	16
-#define MOTOR_RUNTIMESTATS_OFFSET 256
-#define SYSTEM_STATS_OFFSET 	320
-#define CRASH_DATA_OFFSET 		384
+#define SERIAL_OFFSET 					0
+#define MOTOR_CONFIG_OFFSET 			16
+#define MOTOR_RUNTIMESTATS_OFFSET 		256
+#define SYSTEM_STATS_OFFSET 			320
+#define CRASH_DATA_OFFSET 				384
 #define EEPROM_STRUC_VER_OFFSET			510
-#define NVM_SIZE							512
+#define NVM_SIZE						512
 
 typedef struct motorConfigs  //offset = 16 (Max size = 240 bytes)
 {

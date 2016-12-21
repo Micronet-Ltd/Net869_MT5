@@ -27,6 +27,7 @@
 #include "Device_control_GPIO.h"
 #include "watchdog_mgmt.h"
 #include "power_mgm.h"
+#include "nvm.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
@@ -203,6 +204,8 @@ void Main_task( uint32_t initial_data ) {
 	_watchdog_start(WATCHDOG_MCU_MAX_TIME);
     GPIO_Config();
     ADC_init ();
+	
+	nvm_init();
 	
 	OSA_InstallIntHandler(HardFault_IRQn, HardFault_Handler_asm);
 

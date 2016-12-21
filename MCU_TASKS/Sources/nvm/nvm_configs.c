@@ -4,16 +4,19 @@
  *  Created on: Mar 20, 2015
  *      Author: esmail
  */
-#include "Cpu.h"
+#include <mqx.h>
+#include <bsp.h>
 #include "nvm.h"
 #include "nvm_configs.h"
+#include "FTFx_KX_flash_config.h"
+
 //#include "Events.h"
 //#include "mqx_tasks.h"
 
 //#include "comm.h"
 //#include "motor.h"
-#include "main.h"
-#include <cstddef>
+//#include "main.h"
+//#include <cstddef>
 
 /***************************************************************************//**
  * Definitions
@@ -73,7 +76,8 @@ SettingsStruct nvData =
 		.EEPROMVersion = EEPROM_STRUC_VERSION
 };
 
-SettingsStruct * pNVData = &nvData;
+//SettingsStruct * pNVData = &nvData;
+void * pNVData = &nvData;
 
 /***************************************************************************//**
  * Prototypes
@@ -118,7 +122,7 @@ int readFullNVMStruct()
 //void read8bitFromFlexRAM(uint32_t addrOffset, uint8_t * data)
 int writeNVMVar(void * pData, uint16_t size)
 {
-	uint32_t offset = (pData - (void *)(pNVData)) * sizeof(uint8_t);
+	uint32_t offset = (&pData - &pNVData) * sizeof(uint8_t);
 	return writeBlockToEEPROM(offset , pData, size);
 }
 
@@ -128,7 +132,8 @@ int writeNVMVar(void * pData, uint16_t size)
 */
 int readNVMVar(void * pData, uint16_t size)
 {
-	uint32_t offset = (pData - (void *)(pNVData)) * sizeof(uint8_t);
+	uint32_t offset = (&pData - &(pNVData)) * sizeof(uint8_t);
+	//uint32_t offset = (&pData - (&pData)) * sizeof(uint8_t);
 	return readBlockFromEEPROM(offset , pData, size);
 }
 
