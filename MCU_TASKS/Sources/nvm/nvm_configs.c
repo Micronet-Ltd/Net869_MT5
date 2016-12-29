@@ -87,6 +87,18 @@ void * pNVData = &nvData;
  * Code
  ******************************************************************************/
 
+void nvm_config_init(void)
+{
+	 readNVMVar(&nvData.EEPROMVersion, sizeof(nvData.EEPROMVersion));
+	/* if invalid struct in eeprom, restore defaults */
+	if ( nvData.EEPROMVersion != EEPROM_STRUC_VERSION)
+	{
+		writeFullNVMStruct(1);
+	}
+
+	readFullNVMStruct();	
+}
+
 /*! @fn void writeSettingsStruct(settingsStruct * data)
     @brief write settingStruct into NonVolatileEEEPROM 
     @return success = 0, failure -1

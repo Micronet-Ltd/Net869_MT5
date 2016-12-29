@@ -76,6 +76,7 @@ typedef struct settingsStruct
 	uint16_t EEPROMVersion;
 } SettingsStruct;
 
+void nvm_config_init();
 void getSerialNumNVM(char * serial);
 void setSerialNumNVM(char * serial);
 int writeFullNVMStruct(uint8_t skipSerial);

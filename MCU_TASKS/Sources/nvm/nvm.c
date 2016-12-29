@@ -2,6 +2,7 @@
 #include <bsp.h>
 #include <stdio.h>
 #include "nvm.h"
+#include "nvm_configs.h"
 
 #include "SSD_Types.h"
 
@@ -28,6 +29,12 @@ void error_trap(void)
     printf("\r\n\r\n\r\n\t---- HALTED DUE TO FLASH ERROR! ----");
     while (1)
     {}
+}
+
+void test_serial(void)
+{
+	char ser[10] = "abcdefghij";
+	setSerialNumNVM(ser);
 }
 
 void nvm_init(void)
@@ -90,12 +97,37 @@ void nvm_init(void)
 			break;
 	}
 	printf("\r\n");
+	char serial2[10];
+//	if (partition_flash(0x30 | FTFL_PDD_EEPROM_DATA_SIZE_512_B, DFLASH_SIZE0)) //K20 Ref Manual pg 636
+//	{
+//		clearEEPROM(NVM_SIZE);
+//		writeFullNVMStruct(0);
+//	}
+	
+	getSerialNumNVM(serial2);
+	printf("serial %s", serial2);
+	//test_serial();
+	//readFullNVMStruct();
+	
+	//test_serial();
+	//readFullNVMStruct();
+	
 
 //	if (partition_flash(0x30 | FTFL_PDD_EEPROM_DATA_SIZE_512_B, DFLASH_SIZE0)) //K20 Ref Manual pg 636
 //	{
 //		clearEEPROM(NVM_SIZE);
 //		writeFullNVMStruct(0);
 //	}
+}
+
+void nvm_init2(void)
+{
+	if (partition_flash(0x30 | FTFL_PDD_EEPROM_DATA_SIZE_512_B, DFLASH_SIZE0)) //K20 Ref Manual pg 636
+	{
+		clearEEPROM(NVM_SIZE);
+		writeFullNVMStruct(0);
+	}
+	nvm_config_init();
 }
 
 
@@ -241,7 +273,6 @@ int writeBlockToEEPROM(uint32_t addrOffset, void * pData, uint16_t dataSize)
 	{
 		for (i = 0; i < dataSize; i += 2 )
 		{
-			//TODO: ABID FIX THIS
 			write16bitToEEPROM(addrOffset + i, (uint16_t *)(&pData + i));
 		}
 	}
@@ -260,8 +291,7 @@ int readBlockFromEEPROM(uint32_t addrOffset, void * pData, uint16_t dataSize)
 	{
 		for (i = 0; i < dataSize; i += 2 )
 		{
-			//TODO: ABID FIX THIS
-			//read16bitFromEEPROM(addrOffset + i, (uint16_t *)(pData + i));
+			read16bitFromEEPROM(addrOffset + i, (uint16_t *)(&pData + i));
 		}
 	}
 	return 0;

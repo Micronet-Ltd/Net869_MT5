@@ -199,13 +199,14 @@ void Main_task( uint32_t initial_data ) {
 
     // board Initialization
     post_bsp_hardware_init ();
+	nvm_init2();
     OSA_Init();
 	watchdog_mcu_init();
 	_watchdog_start(WATCHDOG_MCU_MAX_TIME);
     GPIO_Config();
     ADC_init ();
 	
-	nvm_init();
+	
 	
 	OSA_InstallIntHandler(HardFault_IRQn, HardFault_Handler_asm);
 
