@@ -289,8 +289,10 @@ void Main_task( uint32_t initial_data ) {
 	}
 
 	//Enable UART
-	GPIO_DRV_SetPinOutput(UART_ENABLE);
+	GPIO_DRV_SetPinOutput(UART_ENABLE);	
 	GPIO_DRV_SetPinOutput(FTDI_RSTN);
+	
+	GPIO_DRV_SetPinOutput(RS485_ENABLE);
 	/*Note: rtc_init() is intentionally placed before accelerometer init 
 	because I was seeing  i2c arbitration errors - Abid */
 	rtc_init();
