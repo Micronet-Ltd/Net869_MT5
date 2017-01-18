@@ -199,7 +199,7 @@ void Main_task( uint32_t initial_data ) {
 
     // board Initialization
     post_bsp_hardware_init ();
-	nvm_init2();
+	nvm_init();
     OSA_Init();
 	watchdog_mcu_init();
 	_watchdog_start(WATCHDOG_MCU_MAX_TIME);

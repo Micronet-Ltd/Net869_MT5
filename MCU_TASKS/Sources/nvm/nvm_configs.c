@@ -1,7 +1,7 @@
 /*
  * configs.c
  *
- *  Created on: Mar 20, 2015
+ *  Created on: Jan 17, 2016
  *      Author: esmail
  */
 #include <mqx.h>
@@ -9,14 +9,6 @@
 #include "nvm.h"
 #include "nvm_configs.h"
 #include "FTFx_KX_flash_config.h"
-
-//#include "Events.h"
-//#include "mqx_tasks.h"
-
-//#include "comm.h"
-//#include "motor.h"
-//#include "main.h"
-//#include <cstddef>
 
 /***************************************************************************//**
  * Definitions
@@ -26,58 +18,51 @@
 /***************************************************************************//**
  * Global Variables
  ******************************************************************************/
-SettingsStruct nvData = 
+settings_struct_t nv_data =
 {
-		.serialNum = "TT12345678",
-		.MotorConfigs = 
+
+		.NVM_struct_version = NVM_STRUC_VERSION, //offset = 0
+
+		.mcu_manufacturing_data =
 		{
-				.countsPerRev = 76160,
-				.intsPerSec = 1000, // interrupt every 1 ms
-				.totalRevTime = 10, // 10 seconds for 1 revolution
-				.maxTimeSlices = 10000, // INTS_PER_SEC * TOTAL_REV_TIME
-				.calibratePwm = 30000,
-				.rotKp = 150,
-				.rotKi = .25,
-				.rotKd = 0,
-				.tiltKp = 150,
-				.tiltKi = .25,
-				.tiltKd = 0,
-				.ramp = 1.5, // radians/second/second
-				.slew = 0.7, // radians/second
-				.maxCurrent = 20000,
-				.maxPower = 5.0,
-				.maxTilt = -180,
-				.minTilt = 0,
-				.hardStopToHome = 2.0, // the hardstop is at -2 degrees
-				.maxCount = 0xFFFF, //maximum count for the quadrature decoder counters
-				.maxPWM = 38000, //maximum pwm before over current error is issued
-				.sigmaErrCap = 28000 // to keep the 'I' term from gaining too much momentum
+				.device_mfg_date = "123456",
+				.serial_num = "1234567890",
+				.customer_id = "123456",
+				.odm_id = "123456",
+				.ems_id = "123456",
 		},
-		.MotorRunTimeStats = 
+		.mcu_board_configs =
 		{
-				.isHardstopCalibrated = 0,
-				.isOptoCalibrated = 0
+				.board_version = 1,
+				.wiggle_sensor_available = 1,
+				.accel_on_mcu = 1,
+				.GPIOs_available = 0xFFFF,
+				.speakers_available = 1,
+				.protocols_available = 0xFFFF,
 		},
-		.SystemStats = 
+		.mcu_runtime_configs =
 		{
-				.totalRotationAngle[0] = 0,
-				.totalRotationAngle[1] = 0,
-				.totalRotationAngle[2] = 0,
-				.totalRotationAngle[3] = 0,
-				.totalTiltAngle[0] = 0,
-				.totalTiltAngle[1] = 0,
-				.totalTiltAngle[2] = 0,
-				.totalTiltAngle[3] = 0
+				.reboot_reason = 0,
 		},
-		.CrashData = 
+		.mcu_user_configs =
 		{
-				.reasonForCrash = 0
+				.ignition_threshold = 12000, //TODO: use correct value from define
+				.wiggle_cnt_threshold = 20, //TODO: use correct value from define
+				//.gpinput_thresholds, //TODO: define this better, needs to be a structure
 		},
-		.EEPROMVersion = EEPROM_STRUC_VERSION
+		.mcu_stats =
+		{
+				.reboot_count = 0,
+		},
+		.crash_data =
+		{
+				.reason_for_crash = 0,
+		},
+		.nvm_end_of_struct = "STOP",
 };
 
 //SettingsStruct * pNVData = &nvData;
-void * pNVData = &nvData;
+void * p_nv_data = &nv_data;
 
 /***************************************************************************//**
  * Prototypes
@@ -89,14 +74,16 @@ void * pNVData = &nvData;
 
 void nvm_config_init(void)
 {
-	 readNVMVar(&nvData.EEPROMVersion, sizeof(nvData.EEPROMVersion));
+	uint16_t default_NVM_struct_version = nv_data.NVM_struct_version;
+	read_NVM_var(&nv_data.NVM_struct_version, sizeof(nv_data.NVM_struct_version));
 	/* if invalid struct in eeprom, restore defaults */
-	if ( nvData.EEPROMVersion != EEPROM_STRUC_VERSION)
+	if ( nv_data.NVM_struct_version != NVM_STRUC_VERSION)
 	{
-		writeFullNVMStruct(1);
+		nv_data.NVM_struct_version = default_NVM_struct_version;
+		write_full_NVM_struct(0);
 	}
 
-	readFullNVMStruct();	
+	read_full_NVM_struct();	
 }
 
 /*! @fn void writeSettingsStruct(settingsStruct * data)
@@ -104,16 +91,16 @@ void nvm_config_init(void)
     @return success = 0, failure -1
 */
 
-int writeFullNVMStruct(uint8_t skipSerial)
+int write_full_NVM_struct(uint8_t skip_version)
 {
 	int ret = 0;
-	if (skipSerial)
+	if (skip_version)
 	{
-		ret = writeBlockToEEPROM(MOTOR_CONFIG_OFFSET, &nvData.MotorConfigs, sizeof(nvData) - MOTOR_CONFIG_OFFSET);
+		ret = write_block_to_EEPROM(MCU_MANUFACTURING_DATA_OFFSET, &nv_data.mcu_manufacturing_data, sizeof(nv_data) - MCU_MANUFACTURING_DATA_OFFSET);
 	}
 	else
 	{
-		ret = writeBlockToEEPROM(0, &nvData, sizeof(nvData));
+		ret = write_block_to_EEPROM(0, &nv_data, sizeof(nv_data));
 	}
 	return ret;
 }
@@ -122,9 +109,9 @@ int writeFullNVMStruct(uint8_t skipSerial)
     @brief read settingStruct from NonVolatileEEEPROM
     @return success = 0, failure -1
 */
-int readFullNVMStruct()
+int read_full_NVM_struct()
 {
-	return readBlockFromEEPROM(0, &nvData, sizeof(nvData));
+	return read_block_from_EEPROM(0, &nv_data, sizeof(nv_data));
 }
 
 /*! @fn void writeSettingsStructVal(settingsStruct * data)
@@ -132,34 +119,35 @@ int readFullNVMStruct()
     @return success = 0, failure -1
 */
 //void read8bitFromFlexRAM(uint32_t addrOffset, uint8_t * data)
-int writeNVMVar(void * pData, uint16_t size)
+int write_NVM_var(void * pData, uint16_t size)
 {
-	uint32_t offset = (&pData - &pNVData) * sizeof(uint8_t);
-	return writeBlockToEEPROM(offset , pData, size);
+	uint32_t offset = ((uint8_t *)pData - (uint8_t *)p_nv_data) * sizeof(uint8_t);
+	return write_block_to_EEPROM(offset , pData, size);
 }
 
 /*! @fn void readSettingsStruct(settingsStruct * data)
     @brief read settingStruct from NonVolatileEEEPROM
     @return success = 0, failure -1
 */
-int readNVMVar(void * pData, uint16_t size)
+int read_NVM_var(void * pData, uint16_t size)
 {
-	uint32_t offset = (&pData - &(pNVData)) * sizeof(uint8_t);
-	//uint32_t offset = (&pData - (&pData)) * sizeof(uint8_t);
-	return readBlockFromEEPROM(offset , pData, size);
+	uint32_t offset = ((uint8_t *)pData - (uint8_t *)p_nv_data) * sizeof(uint8_t);
+	return read_block_from_EEPROM(offset , pData, size);
 }
 
-void getSerialNumNVM(char * serial)
+void get_serial_num_NVM(char * serial)
 {
-	readBlockFromEEPROM(SERIAL_OFFSET, serial, 10);
+	read_NVM_var(serial, sizeof(nv_data.mcu_manufacturing_data.serial_num));
+	//read_block_from_EEPROM(SERIAL_OFFSET, serial, 10);
 }
 
-void setSerialNumNVM(char * serial)
+void set_serial_num_NVM(char * serial)
 {
-	writeBlockToEEPROM(SERIAL_OFFSET, serial, 10);
+	write_NVM_var(serial, sizeof(nv_data.mcu_manufacturing_data.serial_num));
+	//write_block_to_EEPROM(SERIAL_OFFSET, serial, 10);
 }
 
-void flexRamTest(void)
+void flex_ram_test(void)
 {
 	//uint32_t writeData32 = 0x12345678;
 	//uint16_t writeData16 = 0xABCD;
@@ -170,11 +158,10 @@ void flexRamTest(void)
 	//write32bitToFlexRAM(0, &writeData32);
 	//read32bitFromFlexRAM(0, &readData32);
 	uint8_t status;
-	status = writeFullNVMStruct(0);
-	status = readFullNVMStruct();
-	nvData.MotorConfigs.countsPerRev = 1234;
-	status = writeNVMVar(&nvData.MotorConfigs.countsPerRev, sizeof(nvData.MotorConfigs.countsPerRev));
-	nvData.MotorConfigs.countsPerRev= 9999;
-	status = readNVMVar(&nvData.MotorConfigs.countsPerRev, sizeof(nvData.MotorConfigs.countsPerRev));
+	status = write_full_NVM_struct(0);
+	status = read_full_NVM_struct();
+	nv_data.mcu_user_configs.ignition_threshold = 8000;
+	status = write_NVM_var(&nv_data.mcu_user_configs.ignition_threshold, sizeof(nv_data.mcu_user_configs.ignition_threshold));
+	nv_data.mcu_user_configs.ignition_threshold = 9999;
+	status = read_NVM_var(&nv_data.mcu_user_configs.ignition_threshold, sizeof(&nv_data.mcu_user_configs.ignition_threshold));
 }
-

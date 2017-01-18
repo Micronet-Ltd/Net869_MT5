@@ -9,10 +9,10 @@
 #define NVM_H_
 
 #include "SSD_FTFx.h"
+#include "MK20D10_features.h"
 
 #define FLEX_RAM_START_ADDR 0x14000000
-#define EEPROM32	0x39	  // 32 bytes for k20, 100MHz.
-#define DFLASH_SIZE0 0x03	  // 224Kbytes for Data flash and 32kBytes for EEPROM backup from K20, 100Mhz RM (pg 641)
+#define DFLASH_SIZE_64K_EEPROM_SIZE_192K 0x12	  // 0b1100: 224Kbytes for Data flash and 32kBytes for EEPROM backup from K20, 100Mhz RM (pg 641)
 
 #define DEBUGENABLE               0x00
 
@@ -52,16 +52,21 @@
 #define FTFL_PDD_EEPROM_DATA_SIZE_8192_B  0x1U   /**< 8192 bytes of EEPROM data */
 #define FTFL_PDD_EEPROM_DATA_SIZE_16384_B 0U     /**< 16384 bytes of EEPROM data */
 
+#define FTFL_PDD_EEPROM_SPLIT_FACTOR_A_1_8 	0x00U  /* Subsystem A: EESIZE*1/8, Subsystem B: EESIZE*7/8 */
+#define FTFL_PDD_EEPROM_SPLIT_FACTOR_A_1_4 	0x10U  /* Subsystem A: EESIZE*1/4, Subsystem B: EESIZE*3/4 */
+#define FTFL_PDD_EEPROM_SPLIT_FACTOR_A_1_2 	0x20U  /* Subsystem A: EESIZE*1/2, Subsystem B: EESIZE*1/2 */
+#define FTFL_PDD_EEPROM_SPLIT_FACTOR_B_1_2 	0x30U  /* Subsystem A: EESIZE*1/2, Subsystem B: EESIZE*1/2 */
+
 void nvm_init(void);
-void clearEEPROM(uint32_t size);
-int partition_flash(int eeprom_size, int dflash_size);
-void write8bitToEEPROM(uint32_t addrOffset, uint8_t * data);
-void read8bitFromEEPROM(uint32_t addrOffset, uint8_t * data);
-void write16bitToEEPROM(uint32_t addrOffset, uint16_t * data);
-void write32bitToEEPROM(uint32_t addrOffset, uint32_t * data);
-void read16bitFromEEPROM(uint32_t addrOffset, uint16_t * data);
-void read32bitFromEEPROM(uint32_t addrOffset, uint32_t * data);
-int writeBlockToEEPROM(uint32_t addrOffset, void * pData, uint16_t dataSize);
-int readBlockFromEEPROM(uint32_t addrOffset, void * pData, uint16_t dataSize);
+void clear_EEPROM(uint32_t size);
+int partition_flash(uint8_t eeprom_split_and_size, uint8_t dflash_size);
+void write8bit_to_EEPROM(uint32_t addr_offset, uint8_t * data);
+void read8bit_from_EEPROM(uint32_t addr_offset, uint8_t * data);
+void write16bit_to_EEPROM(uint32_t addr_offset, uint16_t * data);
+void write32bit_to_EEPROM(uint32_t addr_offset, uint32_t * data);
+void read16bit_from_EEPROM(uint32_t addr_offset, uint16_t * data);
+void read32bit_from_EEPROM(uint32_t addr_offset, uint32_t * data);
+int write_block_to_EEPROM(uint32_t addr_offset, void * p_data, uint16_t data_size);
+int read_block_from_EEPROM(uint32_t addr_offset, void * p_data, uint16_t data_size);
 
 #endif /* NVM_H_ */

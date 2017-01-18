@@ -34,10 +34,10 @@ void error_trap(void)
 void test_serial(void)
 {
 	char ser[10] = "abcdefghij";
-	setSerialNumNVM(ser);
+	set_serial_num_NVM(ser);
 }
 
-void nvm_init(void)
+void nvm_init_test(void)
 {
 	uint32_t result;               /*! Return code from each SSD function */
 	uint8_t  securityStatus = 0;   /*! Return protection status */
@@ -53,7 +53,7 @@ void nvm_init(void)
 	// Print flash information - PFlash.
 	printf("\r\n Flash Information: ");
 	printf("\r\n Total Flash Size:\t%d KB, Hex: (0x%x)", (P_FLASH_SIZE/ONE_KB), P_FLASH_SIZE);
-	printf("\r\n Flash Sector Size:\t%d KB, Hex: (0x%x) ", (FTFx_PSECTOR_SIZE/ONE_KB), FTFx_PSECTOR_SIZE);
+	//printf("\r\n Flash Sector Size:\t%d KB, Hex: (0x%x) ", (FTFx_PSECTOR_SIZE/ONE_KB), FTFx_PSECTOR_SIZE);
 	// Check if DFlash exist on this device.
 	if (flashSSDConfig1.DFlashSize)
 	{
@@ -104,7 +104,7 @@ void nvm_init(void)
 //		writeFullNVMStruct(0);
 //	}
 	
-	getSerialNumNVM(serial2);
+	get_serial_num_NVM(serial2);
 	printf("serial %s", serial2);
 	//test_serial();
 	//readFullNVMStruct();
@@ -120,16 +120,25 @@ void nvm_init(void)
 //	}
 }
 
-void nvm_init2(void)
+void nvm_init(void)
 {
-	if (partition_flash(0x30 | FTFL_PDD_EEPROM_DATA_SIZE_512_B, DFLASH_SIZE0)) //K20 Ref Manual pg 636
+	if (partition_flash(FTFL_PDD_EEPROM_SPLIT_FACTOR_B_1_2 | FTFL_PDD_EEPROM_SIZE_2048_B, DFLASH_SIZE_64K_EEPROM_SIZE_192K)) //K20 Ref Manual pg 636
 	{
-		clearEEPROM(NVM_SIZE);
-		writeFullNVMStruct(0);
+		clear_EEPROM(NVM_SIZE);
+		write_full_NVM_struct(0);
 	}
 	nvm_config_init();
 }
 
+void clear_EEPROM(uint32_t size)
+{
+	uint32_t addr_offset = 0;
+	for (addr_offset = 0; addr_offset < size/4 ; addr_offset+=4)
+	{
+		*(uint32_t*)(FLEX_RAM_START_ADDR + addr_offset) = 0;
+		while(!(FTFL_FCNFG & FTFL_FCNFG_EEERDY_MASK)); // Wait for command completion
+	}
+}
 
 /********************************************************************/
 /* Partition flash routine. This function can be used to setup
@@ -148,19 +157,7 @@ void nvm_init2(void)
  * 1  partitioning completed successfully
  * 0  partitioning not completed (device is already partitioned)
  */
-
-
-void clearEEPROM(uint32_t size)
-{
-	uint32_t addrOffset = 0;
-	for (addrOffset = 0; addrOffset < size/4 ; addrOffset+=4)
-	{
-		*(uint32_t*)(FLEX_RAM_START_ADDR + addrOffset) = 0;
-		while(!(FTFL_FCNFG & FTFL_FCNFG_EEERDY_MASK)); // Wait for command completion
-	}
-}
-
-int partition_flash(int eeprom_size, int dflash_size)
+int partition_flash(uint8_t eeprom_split_and_size, uint8_t dflash_size)
 {
       /* Test to make sure the device is not already partitioned. If it
        * is already partitioned, then return with no action performed.
@@ -169,7 +166,7 @@ int partition_flash(int eeprom_size, int dflash_size)
       {
 	
     	  //printf("\nDevice is already partitioned.\n");
-          return 0;
+          //return 0;
       }
 
       /* Write the FCCOB registers */
@@ -179,11 +176,12 @@ int partition_flash(int eeprom_size, int dflash_size)
       FTFL_FCCOB3 = 0x00;
 
       /* FCCOB4 is written with the code for the subsystem sizes (eeprom_size define) */
-      FTFL_FCCOB4 = eeprom_size;
+      //FTFL_FCCOB4 = ((0xC0) | eeprom_split_and_size);
+	  FTFL_FCCOB4 = eeprom_split_and_size;
 
       /* FFCOB5 is written with the code for the Dflash size (dflash_size define) */
-      FTFL_FCCOB5 = dflash_size;
-
+      //FTFL_FCCOB5 = (0xF0) | dflash_size;
+	  FTFL_FCCOB5 = dflash_size;
 
       /* All required FCCOBx registers are written, so launch the command */
       FTFL_FSTAT = FTFL_FSTAT_CCIF_MASK;
@@ -199,9 +197,9 @@ int partition_flash(int eeprom_size, int dflash_size)
     @brief write to flex RAM by providing the address offset and pointer to data
     @return void
 */
-void write8bitToEEPROM(uint32_t addrOffset, uint8_t * data)
+void write8bit_to_EEPROM(uint32_t addr_offset, uint8_t * data)
 {
-	*(uint8_t*)(FLEX_RAM_START_ADDR + addrOffset) = *data;
+	*(uint8_t*)(FLEX_RAM_START_ADDR + addr_offset) = *data;
 	while(!(FTFL_FCNFG & FTFL_FCNFG_EEERDY_MASK)); // Wait for command completion
 }
 
@@ -210,9 +208,9 @@ void write8bitToEEPROM(uint32_t addrOffset, uint8_t * data)
     the data is to be stored
     @return void
 */
-void read8bitFromEEPROM(uint32_t addrOffset, uint8_t * data)
+void read8bit_from_EEPROM(uint32_t addr_offset, uint8_t * data)
 {
-	uint8_t * pData = (uint8_t*)(FLEX_RAM_START_ADDR + addrOffset);
+	uint8_t * pData = (uint8_t*)(FLEX_RAM_START_ADDR + addr_offset);
 	*data = *pData;
 	while(!(FTFL_FCNFG & FTFL_FCNFG_EEERDY_MASK)); // Wait for command completion
 }
@@ -221,9 +219,9 @@ void read8bitFromEEPROM(uint32_t addrOffset, uint8_t * data)
     @brief write to flex RAM by providing the address offset and pointer to data
     @return void
 */
-void write16bitToEEPROM(uint32_t addrOffset, uint16_t * data)
+void write16bit_to_EEPROM(uint32_t addr_offset, uint16_t * data)
 {
-	*(uint16_t*)(FLEX_RAM_START_ADDR + addrOffset) = *data;
+	*(uint16_t*)(FLEX_RAM_START_ADDR + addr_offset) = *data;
 	while(!(FTFL_FSTAT & FTFL_FSTAT_CCIF_MASK)); // Wait for command completion
 }
 
@@ -232,9 +230,9 @@ void write16bitToEEPROM(uint32_t addrOffset, uint16_t * data)
     the data is to be stored
     @return void
 */
-void read16bitFromEEPROM(uint32_t addrOffset, uint16_t * data)
+void read16bit_from_EEPROM(uint32_t addr_offset, uint16_t * data)
 {
-	uint16_t * pData = (uint16_t*)(FLEX_RAM_START_ADDR + addrOffset);
+	uint16_t * pData = (uint16_t*)(FLEX_RAM_START_ADDR + addr_offset);
 	*data = *pData;
 	while(!(FTFL_FCNFG & FTFL_FCNFG_EEERDY_MASK)); // Wait for command completion
 }
@@ -243,9 +241,9 @@ void read16bitFromEEPROM(uint32_t addrOffset, uint16_t * data)
     @brief write to flex RAM by providing the address offset and pointer to data
     @return void
 */
-void write32bitToEEPROM(uint32_t addrOffset, uint32_t * data)
+void write32bit_to_EEPROM(uint32_t addr_offset, uint32_t * data)
 {	
-	*(uint32_t*)(FLEX_RAM_START_ADDR + addrOffset) = *data;
+	*(uint32_t*)(FLEX_RAM_START_ADDR + addr_offset) = *data;
 	while(!(FTFL_FCNFG & FTFL_FCNFG_EEERDY_MASK)); // Wait for command completion
 }
 
@@ -254,18 +252,19 @@ void write32bitToEEPROM(uint32_t addrOffset, uint32_t * data)
     the data is to be stored
     @return void
 */
-void read32bitFromEEPROM(uint32_t addrOffset, uint32_t * data)
+void read32bit_from_EEPROM(uint32_t addr_offset, uint32_t * data)
 {
-	uint32_t * pData = (uint32_t*)(FLEX_RAM_START_ADDR + addrOffset);
+	uint32_t * pData = (uint32_t*)(FLEX_RAM_START_ADDR + addr_offset);
 	*data = *pData;
 	while(!(FTFL_FCNFG & FTFL_FCNFG_EEERDY_MASK)); // Wait for command completion
 }
 
-int writeBlockToEEPROM(uint32_t addrOffset, void * pData, uint16_t dataSize)
+int write_block_to_EEPROM(uint32_t addr_offset, void * pdata, uint16_t dataSize)
 {
-	int i = 0;
+	uint16_t i = 0;
+	uint16_t * u16_pdata = (uint16_t *) pdata;
 
-	if ((dataSize > 512) || (addrOffset > 512))
+	if ((dataSize > NVM_SIZE) || (addr_offset > NVM_SIZE))
 	{
 		return -1;
 	}
@@ -273,17 +272,20 @@ int writeBlockToEEPROM(uint32_t addrOffset, void * pData, uint16_t dataSize)
 	{
 		for (i = 0; i < dataSize; i += 2 )
 		{
-			write16bitToEEPROM(addrOffset + i, (uint16_t *)(&pData + i));
+			//write16bitToEEPROM(addr_offset + i, (uint16_t *)(pData + i));
+			/* I needed to do u16_pData + i/2 because the pointer was being incremented by 4 instead of 2  - Abid*/
+			write16bit_to_EEPROM((addr_offset + i), (u16_pdata + i/2));
 		}
 	}
 	return 0;
 }
 
-int readBlockFromEEPROM(uint32_t addrOffset, void * pData, uint16_t dataSize)
+int read_block_from_EEPROM(uint32_t addr_offset, void * pdata, uint16_t dataSize)
 {
-	int i = 0;
+	uint16_t i = 0;
+	uint16_t * u16_pdata = (uint16_t *) pdata;
 
-	if ((dataSize > 512) || (addrOffset > 512))
+	if ((dataSize > NVM_SIZE) || (addr_offset > NVM_SIZE))
 	{
 		return -1;
 	}
@@ -291,7 +293,8 @@ int readBlockFromEEPROM(uint32_t addrOffset, void * pData, uint16_t dataSize)
 	{
 		for (i = 0; i < dataSize; i += 2 )
 		{
-			read16bitFromEEPROM(addrOffset + i, (uint16_t *)(&pData + i));
+			/* I needed to do u16_pData + i/2 because the pointer was being incremented by 4 instead of 2  - Abid*/
+			read16bit_from_EEPROM(addr_offset + i, u16_pdata + i/2);
 		}
 	}
 	return 0;
