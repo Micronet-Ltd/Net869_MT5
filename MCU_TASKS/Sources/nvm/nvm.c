@@ -166,7 +166,7 @@ int partition_flash(uint8_t eeprom_split_and_size, uint8_t dflash_size)
       {
 	
     	  //printf("\nDevice is already partitioned.\n");
-          //return 0;
+          return 0;
       }
 
       /* Write the FCCOB registers */
