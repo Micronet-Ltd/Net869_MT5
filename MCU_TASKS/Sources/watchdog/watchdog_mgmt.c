@@ -80,6 +80,14 @@ void shutdown_fpga_accel(void)
 void handle_watchdog_expiry(void * td_ptr)
 {
 	uint8_t i;
+	
+	/* if in Debug mode, do not reset the MCU */
+	if (GPIO_DRV_ReadPinInput (OTG_ID) == 0)
+	{
+		printf("\r\n watchdog Expired, but NOT resetting because in debug mode! \r\n");
+		return;
+	}
+	
 	printf("\r\n watchdog Expired, resetting MCU! \r\n");
 	for (i=0; i < 3; i++)
 	{
