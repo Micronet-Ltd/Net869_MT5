@@ -385,6 +385,7 @@
           <state>$PROJ_DIR$\..\Board_Files</state>
           <state>$PROJ_DIR$\..\Sources\C90TFS\drvsrc\include</state>
           <state>$PROJ_DIR$\..\Sources\watchdog</state>
+          <state>$PROJ_DIR$\..\Sources\one_wire</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -803,7 +804,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\linker\MK20DX256xxx10_flash.icf</state>
+          <state>C:\Users\abid.esmail\Documents\micronet\source\Net869_MT5\MCU_TASKS\linker\MK20DX256xxx10_flash_debug.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2261,6 +2262,15 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Sources\J1708\J1708_task.h</name>
+      </file>
+    </group>
+    <group>
+      <name>one_wire</name>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\one_wire\one_wire_task.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Sources\one_wire\one_wire_task.h</name>
       </file>
     </group>
     <group>

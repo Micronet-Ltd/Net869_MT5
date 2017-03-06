@@ -259,6 +259,113 @@ bool FPGA_write_J1708_tx_length (uint8_t *len)
 }
 
 /*****************************************************************
+*                      FPGA 1-WIRE INTERFACE                     *
+*****************************************************************/
+bool FPGA_one_wire_enable (void)
+{
+	uint32_t command = FPGA_REG_1WIRE_CONTROL_ENABLE_BIT;
+	return FPGA_SetData (FPGA_REG_1WIRE_CONTROL_REG, &command);
+}
+
+bool FPGA_one_wire_disable (void)
+{
+	uint32_t command = 0;
+	return FPGA_SetData (FPGA_REG_1WIRE_CONTROL_REG, &command);
+}
+
+bool FPGA_one_wire_reset (void)
+{
+	uint32_t command = FPGA_REG_1WIRE_CONTROL_RESET_BIT | FPGA_REG_1WIRE_CONTROL_ENABLE_BIT;
+        
+	if (!FPGA_one_wire_ready_status())
+		return false;
+	
+        // data will be written only if module is enabled and ready for new command
+	return FPGA_SetData (FPGA_REG_1WIRE_CONTROL_REG, &command);
+}
+
+bool FPGA_one_wire_write_byte (uint8_t data)
+{
+	uint32_t command = FPGA_REG_1WIRE_CONTROL_WRITE_BIT | FPGA_REG_1WIRE_CONTROL_ENABLE_BIT;
+	uint32_t local_data = data;
+        	
+	if (!FPGA_one_wire_ready_status())
+		return false;
+	
+        // data will be written only if module is enabled and ready for new command
+	if (!FPGA_SetData (FPGA_REG_1WIRE_TX_REG, &local_data))
+		return false;
+        
+	return FPGA_SetData (FPGA_REG_1WIRE_CONTROL_REG, &command);
+}
+
+bool FPGA_one_wire_read_byte (uint8_t *data)
+{
+	uint32_t local_data;
+	uint32_t command = FPGA_REG_1WIRE_CONTROL_READ_BIT | FPGA_REG_1WIRE_CONTROL_ENABLE_BIT;
+	
+	if (data == NULL)
+		return false;
+
+	if (!FPGA_one_wire_ready_status())
+		return false;
+	
+	// data will be written only if module is enabled and ready for new command        
+	if (!FPGA_SetData (FPGA_REG_1WIRE_CONTROL_REG, &command))
+		return false;
+
+	// wait till data arrive or timeout
+	if (!FPGA_one_wire_ready_status())
+		return false;
+
+	if (!FPGA_GetData (FPGA_REG_1WIRE_RX_REG, &local_data))
+		return false;
+
+	*data = (uint8_t) local_data;
+	return true;
+}
+
+bool FPGA_one_wire_get_device_present (bool *device_present)
+{
+	uint32_t status;
+	
+	if (device_present == NULL)
+		return false;
+
+	if (!FPGA_one_wire_ready_status ())
+		return false;
+	
+	if (!FPGA_GetData (FPGA_REG_1WIRE_CONTROL_REG, &status))
+		return FALSE;
+
+	*device_present = ((status & FPGA_REG_1WIRE_CONTROL_PRESENT_BIT) != 0);
+	return true;
+}
+  	
+
+bool FPGA_one_wire_ready_status (void)
+{
+	uint32_t status;
+	uint32_t counter;
+        
+	for (counter = 0; counter < 1000; counter++) {
+		if (!FPGA_GetData (FPGA_REG_1WIRE_CONTROL_REG, &status))
+			return FALSE;
+
+                // if module disabled
+		if ((status & FPGA_REG_1WIRE_CONTROL_ENABLE_BIT) == 0)
+			return FALSE;
+		
+                // if module is ready
+		if ((status & FPGA_REG_1WIRE_CONTROL_READY_BIT) != 0)
+			break;
+	}
+	return (counter < 1000);
+}
+
+
+
+/*****************************************************************
 *                      FPGA I2C INTERFACE                        *
 *****************************************************************/
 bool FPGA_GetData (uint8_t register_addr, uint32_t *register_data)

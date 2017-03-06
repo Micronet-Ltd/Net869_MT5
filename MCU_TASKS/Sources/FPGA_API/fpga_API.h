@@ -113,5 +113,28 @@ bool FPGA_write_J1708_tx_length  (uint8_t *len);
 bool FPGA_read_J1708_packet  (uint8_t *buffer, uint8_t length);
 bool FPGA_write_J1708_packet (uint8_t *buffer, uint8_t length);
 
+/*****************************************************
+*                       1-WIRE Bus API               *
+*****************************************************/
+
+#define FPGA_REG_1WIRE_CONTROL_REG		0x30
+#define FPGA_REG_1WIRE_TX_REG			0x31
+#define FPGA_REG_1WIRE_RX_REG			0x32
+
+#define FPGA_REG_1WIRE_CONTROL_ENABLE_BIT			(1 << 0)
+#define FPGA_REG_1WIRE_CONTROL_RESET_BIT			(1 << 1)
+#define FPGA_REG_1WIRE_CONTROL_WRITE_BIT			(1 << 2)
+#define FPGA_REG_1WIRE_CONTROL_READ_BIT				(1 << 3)
+#define FPGA_REG_1WIRE_CONTROL_PRESENT_BIT			(1 << 6)
+#define FPGA_REG_1WIRE_CONTROL_READY_BIT			(1 << 7)
+
+bool FPGA_one_wire_enable(void);
+bool FPGA_one_wire_disable(void);
+bool FPGA_one_wire_reset(void);
+bool FPGA_one_wire_write_byte(uint8_t data);
+bool FPGA_one_wire_read_byte(uint8_t *data);
+bool FPGA_one_wire_get_device_present(bool *device_present);
+bool FPGA_one_wire_ready_status(void);
+
 
 #endif  /* __fpga_api_h_ */
