@@ -22,6 +22,7 @@ typedef enum
 	PING_RESP 		 = 0x5,
 	GPIO_INT_STATUS  = 0x6,
 	POWER_MGM_STATUS = 0x7,
+	ONE_WIRE_DATA	 = 0x8,
 }packet_type_enum;
 
 __packed typedef struct
