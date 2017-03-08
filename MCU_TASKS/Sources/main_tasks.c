@@ -31,7 +31,7 @@
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
-//#define DEBUG_A8_WATCHOG_DISABLED 1
+#define DEBUG_A8_WATCHOG_DISABLED 1
 
 //void MQX_I2C0_IRQHandler (void);
 //void MQX_I2C1_IRQHandler (void);

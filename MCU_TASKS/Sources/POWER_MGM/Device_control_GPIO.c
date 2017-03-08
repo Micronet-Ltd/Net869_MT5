@@ -511,8 +511,9 @@ void Device_turn_on  (void)
 	/* Create a timer that calls a watchdog reset if the A8 does NOT turn ON in MAX_CPU_TICKS_TAKEN_TO_BOOT */
 	/* NOTE: This timer NEEDs to be cancelled if a successful bootup happens */
 	_lwtimer_create_periodic_queue(&lwtimer_period_a8_turn_on_g, MAX_CPU_TICKS_TAKEN_TO_BOOT, MAX_CPU_TICKS_TAKEN_TO_BOOT);
-	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_turn_on_g, &lwtimer_a8_turn_on_g, 0, \
-		(LWTIMER_ISR_FPTR)handle_watchdog_expiry, 0);
+	//HACK TO PREVENT OS WATCHDOG
+	//_lwtimer_add_timer_to_queue(&lwtimer_period_a8_turn_on_g, &lwtimer_a8_turn_on_g, 0, \
+	//	(LWTIMER_ISR_FPTR)handle_watchdog_expiry, 0);
 }
 
 void Device_turn_off (void)
