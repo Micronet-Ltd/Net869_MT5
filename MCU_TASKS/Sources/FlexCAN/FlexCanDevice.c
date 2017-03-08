@@ -1426,16 +1426,20 @@ flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen
 	uint32_t i, msg_limit = 3;
 	uint8_t tmp;
 	int8_t *pbuff =  (int8_t*)buff;
+	flexcan_msgbuff_id_type_t msg_type;
 
 	if ( NULL == buff || 0 == bufflen ||  NULL == pTxData) {
 		return fcStatus_FLEXCAN_InvalidArgument;
 	}
 
-	if ( kFlexCanMsgIdExt ==  pTxData->msgbuffType )
+	if ( kFlexCanMsgIdExt ==  pTxData->msgbuffType ){
 		msg_limit = 8;
-
+		msg_type = pTxData->msgbuffType;
+	}
 	_mem_zero ((void*)pTxData, sizeof(flexcandevice_TX_data_t));
 
+	pTxData->msgbuffType = msg_type;
+	
 	for ( i = 0; CAN_OK_RESPONCE != *pbuff && 1 < bufflen; i++ ) {
 		if ( msg_limit > i ) {
 			pTxData->msgID <<= 4;
