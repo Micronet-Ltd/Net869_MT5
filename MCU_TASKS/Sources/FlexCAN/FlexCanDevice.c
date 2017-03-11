@@ -112,7 +112,7 @@ extern FLEXCAN_Debug_t g_Flexdebug;
 
 flexcan_device_bitrate_t    ConvertTimetoBitRate( flexcan_time_segment_t *ptimeSegmentTable,  flexcan_time_segment_t *ptimeSegment );
 flexcan_device_status_t     FlexCanDevice_InitInstance( uint8_t instNum, pflexcandevice_initparams_t pinstance_Can );
-flexcan_device_status_t		DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData );
+flexcan_device_status_t		DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData, bool is_remote_frame);
 flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_flowcontrol_t p_flowCmdTable );
 flexcan_device_status_t 	parseHex(int8_t * line, uint8_t len, uint8_t * value);
 bool                        parseAsciToUInt (const int8_t * line, uint8_t len, uint32_t *val);
@@ -178,6 +178,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 	int32_t                     msg_size;
 	char                        erroResp;
 	pcdc_mic_queue_element_t    pqMemElem;
+	bool 						is_remote_frame = false;
 
 	bool 						flowcontrol_msg, flowcontrol_msg_extended;
 
@@ -529,6 +530,12 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					if ('T' == *pbuff || 'R' == *pbuff) {
 						Tx_data.msgbuffType = kFlexCanMsgIdExt;
 					}
+					if ('R' == *pbuff || 'r' == *pbuff){
+						is_remote_frame = true;	
+					}
+					else{
+						is_remote_frame = false;	
+					}
 					if ( ((4 > msg_size) && (kFlexCanMsgIdStd == Tx_data.msgbuffType)) || ((9 > msg_size) && (kFlexCanMsgIdExt == Tx_data.msgbuffType)) ) {
 						printf("Error CAN transmit format\n" );
 						_msg_free(msg_ptr);
@@ -538,8 +545,8 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					}
 					pbuff++;
 					msg_size--;
-					if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data ) ) {
-						if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage ( ((pflexcanInstance_t)param), 14, &Tx_data ) ) {
+					if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data , is_remote_frame) ) {
+						if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage ( ((pflexcanInstance_t)param), 14, &Tx_data, is_remote_frame) ) {
 							printf("!!!Error FlexCanDevice_TxMessage\n");
 							erroResp = CAN_ERROR_RESPONCE;
 						}
@@ -1315,7 +1322,7 @@ flexcan_device_status_t FlexCanDevice_setMailbox( pflexcanInstance_t pinstance, 
 	return ret;
 }
 
-flexcan_device_status_t FlexCanDevice_TxMessage ( pflexcanInstance_t pinstance, uint32_t MbId, pflexcandevice_TX_data_t pTxData ) {
+flexcan_device_status_t FlexCanDevice_TxMessage ( pflexcanInstance_t pinstance, uint32_t MbId, pflexcandevice_TX_data_t pTxData, bool is_remote_frame ) {
 	flexcan_device_status_t ret = fcStatus_FLEXCAN_Success;
 	flexcan_data_info_t txInfo;
 
@@ -1333,7 +1340,7 @@ flexcan_device_status_t FlexCanDevice_TxMessage ( pflexcanInstance_t pinstance, 
 	ret = (flexcan_device_status_t)FLEXCAN_DRV_ConfigTxMb(pinstance->instance, MbId, &txInfo, pTxData->msgID);
 	if ( fcStatus_FLEXCAN_Success == ret ) {
 		//ret = (flexcan_device_status_t)FLEXCAN_DRV_SendBlocking(pinstance->instance, MbId, &txInfo, pTxData->msgID, pTxData->msgData, FLEXCAN_DEVICE_TX_TIMEOUT);
-		ret = (flexcan_device_status_t)FLEXCAN_DRV_Send(pinstance->instance, MbId, &txInfo, pTxData->msgID, pTxData->msgData);
+		ret = (flexcan_device_status_t)FLEXCAN_DRV_Send(pinstance->instance, MbId, &txInfo, pTxData->msgID, pTxData->msgData, is_remote_frame);
 	}
 	else {
 		printf("Error FLEXCAN_DRV_ConfigTxMb\n");
@@ -1421,7 +1428,7 @@ flexcan_device_status_t FlexCanDevice_SetRxIndividualMask( pflexcanInstance_t pi
 	return (flexcan_device_status_t)FLEXCAN_DRV_SetRxIndividualMask(pinstance->instance, id_type, mb_idx, mask);
 }
 
-flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData ) {
+flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData, bool is_remote_frame ) {
 	flexcan_device_status_t ret = fcStatus_FLEXCAN_Success;
 	uint32_t i, msg_limit = 3;
 	uint8_t tmp;
@@ -1434,8 +1441,9 @@ flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen
 
 	if ( kFlexCanMsgIdExt ==  pTxData->msgbuffType ){
 		msg_limit = 8;
-		msg_type = pTxData->msgbuffType;
 	}
+	msg_type = pTxData->msgbuffType;
+	
 	_mem_zero ((void*)pTxData, sizeof(flexcandevice_TX_data_t));
 
 	pTxData->msgbuffType = msg_type;
@@ -1456,10 +1464,12 @@ flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen
 			pbuff++;
 			continue;
 		}
-		if ( fcStatus_FLEXCAN_Success != parseHex (pbuff, 2, &tmp) )
-			return fcStatus_FLEXCAN_Error;
-		pTxData->msgData[i-(msg_limit + 1)] = (tmp & 0xFF);
-		pbuff += 2;
+		if (!is_remote_frame){ /* no data if it is a remote frame */
+			if ( fcStatus_FLEXCAN_Success != parseHex (pbuff, 2, &tmp) )
+				return fcStatus_FLEXCAN_Error;
+			pTxData->msgData[i-(msg_limit + 1)] = (tmp & 0xFF);
+			pbuff += 2;
+		}
 	}
 	pbuff++;
 	return ret;
@@ -1633,6 +1643,8 @@ bool AllocateFIFOFilterTable (pflexcanInstance_t pinst, flexcan_rx_fifo_id_filte
 
 int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *pDestBuff, flowcontrol_t * flowcontrol) {
 	uint8_t   tmp, tmp1, ind, *pmsg_str, curr_msg_len = 0;
+	
+	bool remote_frame = false;
 
 	if (NULL == pCanMess || NULL == pDestBuff) {
 		printf("%s: Error wrong params\n", __func__);
@@ -1650,6 +1662,7 @@ int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *
 		if (tmp1) {
 			*pmsg_str = 'R';
 		}
+		remote_frame = true;
 	}
 	else {
 		//standard frame
@@ -1657,6 +1670,7 @@ int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *
 		if (tmp1) {
 			*pmsg_str = 'T';
 		}
+		remote_frame = false;
 	}
 	pmsg_str++;
 	curr_msg_len++;
@@ -1678,26 +1692,27 @@ int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *
 	*pmsg_str = tmp + '0';
 	pmsg_str++;
 	curr_msg_len ++;
+	
+	if (!remote_frame){
+		for (ind = 0; ind < tmp; ind++) {
+			tmp1 = (pCanMess->msg_buff.data[ind]>>4) & 0xF;
+			if (tmp1 > 9 )
+				*pmsg_str = tmp1 - 10 + 'A';
+			else
+				*pmsg_str = tmp1 + '0';
 
-	for (ind = 0; ind < tmp; ind++) {
-		tmp1 = (pCanMess->msg_buff.data[ind]>>4) & 0xF;
-		if (tmp1 > 9 )
-			*pmsg_str = tmp1 - 10 + 'A';
-		else
-			*pmsg_str = tmp1 + '0';
+			pmsg_str++;
+			curr_msg_len++;
+			tmp1 = pCanMess->msg_buff.data[ind] & 0xF;
+			if (tmp1 > 9 )
+				*pmsg_str = tmp1 - 10 + 'A';
+			else
+				*pmsg_str = tmp1 + '0';
 
-		pmsg_str++;
-		curr_msg_len++;
-		tmp1 = pCanMess->msg_buff.data[ind] & 0xF;
-		if (tmp1 > 9 )
-			*pmsg_str = tmp1 - 10 + 'A';
-		else
-			*pmsg_str = tmp1 + '0';
-
-		pmsg_str++;
-		curr_msg_len++;
+			pmsg_str++;
+			curr_msg_len++;
+		}
 	}
-
 	//Message time stamp
 	pmsg_str += 3;
 	for (ind = 0; ind < 4; ind++) {

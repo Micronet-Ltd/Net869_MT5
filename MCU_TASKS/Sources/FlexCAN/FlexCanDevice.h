@@ -163,7 +163,7 @@ extern flexcan_device_status_t FlexCanDevice_GetBitrate( pflexcanInstance_t pins
 extern flexcan_device_status_t FlexCanDevice_setMailbox( pflexcanInstance_t pinstance, flexcan_msgbuff_id_type_t id_type, uint32_t id, uint32_t mask, bool enabled );
 
 /* Transfer message over */
-extern flexcan_device_status_t FlexCanDevice_TxMessage ( pflexcanInstance_t pinstance, uint32_t MbId, pflexcandevice_TX_data_t pTxData );
+extern flexcan_device_status_t FlexCanDevice_TxMessage ( pflexcanInstance_t pinstance, uint32_t MbId, pflexcandevice_TX_data_t pTxData, bool is_remote_frame );
 
 /* Enable/Disable termination*/
 extern flexcan_device_status_t FlexCanDevice_SetTermination( pflexcanInstance_t, bool isSet );
