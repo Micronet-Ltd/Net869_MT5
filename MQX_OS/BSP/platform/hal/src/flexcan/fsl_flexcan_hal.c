@@ -251,6 +251,8 @@ void FLEXCAN_HAL_GetTimeSegments(
  * transmission.
  *
  *END**************************************************************************/
+/* Having issue where extended messages were not being sent correctly on high optimization */
+#pragma optimize=balanced low
 flexcan_status_t FLEXCAN_HAL_SetTxMsgBuff(
 	CAN_Type * base,
 	uint32_t msgBuffIdx,

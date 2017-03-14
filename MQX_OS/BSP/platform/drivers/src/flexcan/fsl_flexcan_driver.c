@@ -1062,7 +1062,9 @@ static flexcan_status_t FLEXCAN_DRV_StartSendData(
 					)
 {
 	flexcan_status_t result;
-	flexcan_msgbuff_code_status_t cs;
+	flexcan_msgbuff_code_status_t cs = {.code = kFlexCanTXData,
+										.msgIdType = kFlexCanMsgIdStd,
+										.dataLen = 0};
 	flexcan_state_t * state = g_flexcanStatePtr[instance];
 	CAN_Type * base = g_flexcanBase[instance];
 
