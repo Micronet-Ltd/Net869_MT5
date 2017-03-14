@@ -343,7 +343,6 @@ flexcan_status_t FLEXCAN_HAL_SetTxMsgBuff(
 			{
 				/* clear RTR bit*/
 				flexcan_reg_ptr->MB[msgBuffIdx].CS &= ~CAN_CS_RTR_MASK;
-				cs->code = kFlexCanTXData;
 			}
 
 			/* Reset the code*/
@@ -379,7 +378,6 @@ flexcan_status_t FLEXCAN_HAL_SetTxMsgBuff(
 			{
 				/* clear RTR bit*/
 				flexcan_reg_ptr->MB[msgBuffIdx].CS &= ~CAN_CS_RTR_MASK;
-				cs->code = kFlexCanTXData;
 			}
 
 
