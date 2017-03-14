@@ -1470,6 +1470,12 @@ flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen
 			pTxData->msgData[i-(msg_limit + 1)] = (tmp & 0xFF);
 			pbuff += 2;
 		}
+		else{
+			pbuff++; /* increment pbuff so we can continue search for CAN_OK_RESPONSE(\r) */
+		}
+		if (i > bufflen){ /* Never found CAN_OK_RESPONSE in packet*/
+			return fcStatus_FLEXCAN_Error;
+		}
 	}
 	pbuff++;
 	return ret;
