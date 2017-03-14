@@ -339,6 +339,12 @@ flexcan_status_t FLEXCAN_HAL_SetTxMsgBuff(
 				flexcan_reg_ptr->MB[msgBuffIdx].CS |= CAN_CS_RTR_MASK;
 				cs->code = kFlexCanTXData;
 			}
+			else if (cs->code == kFlexCanTXData || cs->code == kFlexCanTXTanswer)
+			{
+				/* clear RTR bit*/
+				flexcan_reg_ptr->MB[msgBuffIdx].CS &= ~CAN_CS_RTR_MASK;
+				cs->code = kFlexCanTXData;
+			}
 
 			/* Reset the code*/
 			flexcan_reg_ptr->MB[msgBuffIdx].CS &= ~(CAN_CS_CODE_MASK);
@@ -369,6 +375,13 @@ flexcan_status_t FLEXCAN_HAL_SetTxMsgBuff(
 				flexcan_reg_ptr->MB[msgBuffIdx].CS |= CAN_CS_RTR_MASK;
 				cs->code = kFlexCanTXData;
 			}
+			else if (cs->code == kFlexCanTXData || cs->code == kFlexCanTXTanswer)
+			{
+				/* clear RTR bit*/
+				flexcan_reg_ptr->MB[msgBuffIdx].CS &= ~CAN_CS_RTR_MASK;
+				cs->code = kFlexCanTXData;
+			}
+
 
 			/* Reset the code*/
 			flexcan_reg_ptr->MB[msgBuffIdx].CS &= ~CAN_CS_CODE_MASK;
