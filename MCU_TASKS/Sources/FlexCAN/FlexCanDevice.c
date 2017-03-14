@@ -112,7 +112,7 @@ extern FLEXCAN_Debug_t g_Flexdebug;
 
 flexcan_device_bitrate_t    ConvertTimetoBitRate( flexcan_time_segment_t *ptimeSegmentTable,  flexcan_time_segment_t *ptimeSegment );
 flexcan_device_status_t     FlexCanDevice_InitInstance( uint8_t instNum, pflexcandevice_initparams_t pinstance_Can );
-flexcan_device_status_t		DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData, bool is_remote_frame);
+flexcan_device_status_t		DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData, flexcan_msgbuff_id_type_t msg_type, bool is_remote_frame );
 flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_flowcontrol_t p_flowCmdTable );
 flexcan_device_status_t 	parseHex(int8_t * line, uint8_t len, uint8_t * value);
 bool                        parseAsciToUInt (const int8_t * line, uint8_t len, uint32_t *val);
@@ -179,6 +179,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 	char                        erroResp;
 	pcdc_mic_queue_element_t    pqMemElem;
 	bool 						is_remote_frame = false;
+	flexcan_msgbuff_id_type_t 	msg_type = kFlexCanMsgIdStd;
 
 	bool 						flowcontrol_msg, flowcontrol_msg_extended;
 
@@ -518,7 +519,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 				break;
 			case 't':
 			case 'r':
-				Tx_data.msgbuffType = kFlexCanMsgIdStd;
+				msg_type = kFlexCanMsgIdStd;
 			case 'T':
 			case 'R':
 				do {
@@ -528,7 +529,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 						break;
 					}
 					if ('T' == *pbuff || 'R' == *pbuff) {
-						Tx_data.msgbuffType = kFlexCanMsgIdExt;
+						msg_type = kFlexCanMsgIdExt;
 					}
 					if ('R' == *pbuff || 'r' == *pbuff){
 						is_remote_frame = true;	
@@ -536,7 +537,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					else{
 						is_remote_frame = false;	
 					}
-					if ( ((4 > msg_size) && (kFlexCanMsgIdStd == Tx_data.msgbuffType)) || ((9 > msg_size) && (kFlexCanMsgIdExt == Tx_data.msgbuffType)) ) {
+					if ( ((4 > msg_size) && (kFlexCanMsgIdStd == msg_type)) || ((9 > msg_size) && (kFlexCanMsgIdExt == msg_type)) ) {
 						printf("Error CAN transmit format\n" );
 						_msg_free(msg_ptr);
 						msg_ptr = NULL;
@@ -545,7 +546,7 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					}
 					pbuff++;
 					msg_size--;
-					if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data , is_remote_frame) ) {
+					if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data , msg_type, is_remote_frame) ) {
 						if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage ( ((pflexcanInstance_t)param), 14, &Tx_data, is_remote_frame) ) {
 							printf("!!!Error FlexCanDevice_TxMessage\n");
 							erroResp = CAN_ERROR_RESPONCE;
@@ -1428,25 +1429,22 @@ flexcan_device_status_t FlexCanDevice_SetRxIndividualMask( pflexcanInstance_t pi
 	return (flexcan_device_status_t)FLEXCAN_DRV_SetRxIndividualMask(pinstance->instance, id_type, mb_idx, mask);
 }
 
-flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData, bool is_remote_frame ) {
+flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData, flexcan_msgbuff_id_type_t msg_type, bool is_remote_frame ) {
 	flexcan_device_status_t ret = fcStatus_FLEXCAN_Success;
 	uint32_t i, msg_limit = 3;
 	uint8_t tmp;
 	int8_t *pbuff =  (int8_t*)buff;
-	flexcan_msgbuff_id_type_t msg_type;
 
 	if ( NULL == buff || 0 == bufflen ||  NULL == pTxData) {
 		return fcStatus_FLEXCAN_InvalidArgument;
 	}
 
-	if ( kFlexCanMsgIdExt ==  pTxData->msgbuffType ){
+	_mem_zero ((void*)pTxData, sizeof(flexcandevice_TX_data_t));
+	
+	pTxData->msgbuffType = msg_type;
+	if ( kFlexCanMsgIdExt == msg_type ){
 		msg_limit = 8;
 	}
-	msg_type = pTxData->msgbuffType;
-	
-	_mem_zero ((void*)pTxData, sizeof(flexcandevice_TX_data_t));
-
-	pTxData->msgbuffType = msg_type;
 	
 	for ( i = 0; CAN_OK_RESPONCE != *pbuff && 1 < bufflen; i++ ) {
 		if ( msg_limit > i ) {
