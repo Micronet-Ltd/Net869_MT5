@@ -1170,7 +1170,7 @@ flexcan_status_t FLEXCAN_HAL_SetRxIndividualExtMask(
 
 	/* 29-bit extended mask*/
 	//CAN_WR_RXIMR(base, msgBuffIdx, CAN_ID_EXT(extMask));
-	CAN_WR_RXIMR(base, msgBuffIdx, (((extMask & 0x1FFFFFFF)<<1))| 0x40000000); //TODO: Test by Abid
+	CAN_WR_RXIMR(base, msgBuffIdx, (((extMask & 0x1FFFFFFF)<<1))| 0x40000000); //This modification only works when set up to use FIFO
 
 	/* De-assert Freeze Mode*/
 	FLEXCAN_HAL_ExitFreezeMode(base);
