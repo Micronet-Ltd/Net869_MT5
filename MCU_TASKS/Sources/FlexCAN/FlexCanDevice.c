@@ -101,6 +101,20 @@ flexcan_time_segment_t bitRateTable75Mhz[] = {
 	{ 6, 3, 3,  4, 3 },  /* 1   MHz */
 };
 
+typedef enum _get_message_type_enum
+{
+	GET_MSG_MASK = 0,
+	GET_MSG_FILTER_CODE,
+	GET_MSG_AUTO_FLOW,
+} get_message_type_enum;
+
+
+typedef struct get_message_s
+{
+	get_message_type_enum message_type;
+	uint8_t index;
+}get_message_t;
+
 flexcanInstance_t g_flexcanDeviceInstance[BOARD_CAN_INSTANCE];
 pflexcanInstance_t can_Device_0 = &g_flexcanDeviceInstance[BSP_CAN_DEVICE_0];
 pflexcanInstance_t can_Device_1 = &g_flexcanDeviceInstance[BSP_CAN_DEVICE_1];
@@ -122,6 +136,7 @@ bool 						AllocateFIFOMaskTable (pflexcanInstance_t pinst);
 
 int32_t                     ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *DestBuff, flowcontrol_t * flowcontrol);
 bool						CheckCommandIdSupp ( const uint8_t* buff, uint16_t* IdVal);
+int8_t 						get_msg_response(pflexcanInstance_t pinst, get_message_t * msg_req, char * resp, uint8_t resp_max_size);
 
 void flow_control_init()
 {
@@ -186,6 +201,10 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 
 	flexcandevice_initparams_t  initCan;
 	pflexcanInstance_t pcan = (pflexcanInstance_t)param_in;
+
+	get_message_t msg_req;
+	char get_resp[50]= {0};
+	uint32_t resp_msg_size = 0;
 
 	if ( NULL == (pcan) || BOARD_CAN_INSTANCE <= (pcan)->instance ) {
 		printf( "CAN_TX thread wrong param %u\n", (pcan)->instance );
@@ -799,6 +818,94 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					msg_size--;
 				} while (0);
 				break;
+
+			case 'G': /* get info */
+				/*
+				 *  Possible messages and responses
+				 *  Gmii where ii is index of mask list:  0 - 15
+				 *  	Response: Gm<t/T/r/R><iiiiiiii>\r
+				 *  GMii where ii is index of filter ID list: 0 - 23
+				 *   	Response: GM<t/T/r/R><iiiiiiii>\r
+				 *  Gfii where ii is index of auto flow list. ii : 0 - 7
+				 *  	Response: G<f/F>iiiiiiiiaaaaaaaaLbbbbbbbbbbbbbbbb\r
+				 *  				f: standard ID
+				 *  				F: Extended ID
+				 *  				iiiiiiii: search ID
+				 *  				aaaaaaaa: response ID
+				 *  				L: response length (0-8)
+				 *  				bbbbbbbbbbbbbbbb: Data byte pairs
+				 * */
+				do {
+					if (4 > msg_size) {
+						printf("ERROR: incorrect size of get request\n" );
+						erroResp = CAN_ERROR_RESPONCE;
+						break;
+					}
+					pbuff++;
+					msg_size--;
+
+					switch (*pbuff) {
+					case 'm':
+						msg_req.message_type = GET_MSG_MASK;
+						break;
+					case 'M':
+						msg_req.message_type = GET_MSG_FILTER_CODE;
+						break;
+					case 'f':
+						msg_req.message_type = GET_MSG_AUTO_FLOW;
+					default:
+						printf("ERROR get_message Invalid type\n");
+						erroResp = CAN_ERROR_RESPONCE;
+						break;
+					}
+					pbuff++;
+					msg_size--;
+
+					/* get ii char */
+					if (fcStatus_FLEXCAN_Success != parseHex((int8_t *)pbuff, 2, &(msg_req.index))) {
+						printf("ERROR get_message: parsing index\n");
+						erroResp = CAN_ERROR_RESPONCE;
+						break;
+					}
+
+					pbuff += 2;
+					msg_size -= 2;
+
+					if (CheckCommandIdSupp ( (const uint8_t*)pbuff, &msg_ID )) {
+						pbuff += 5;
+						msg_size -= 5;
+					}
+
+					if (CAN_OK_RESPONCE != *pbuff) {
+						printf("ERROR get_message: \r not found\n");
+						erroResp = CAN_ERROR_RESPONCE;
+						break;
+					}
+					pbuff++;
+					msg_size--;
+
+					/* send the appropriate response */
+					resp_msg_size = get_msg_response(pcan, &msg_req, get_resp, sizeof(get_resp));
+					if (resp_msg_size > 0) {
+						pqMemElem = GetUSBWriteBuffer(pcan->instance + 2);
+						if (NULL == pqMemElem) {
+							printf("%s: Error get mem for USB responce_\n", __func__);
+							break;
+						}
+						
+						pbuff = (char*)pqMemElem->data_buff;
+						memcpy(pbuff, get_resp, resp_msg_size);
+						pqMemElem->send_size = resp_msg_size;
+
+						if (!SetUSBWriteBuffer(pqMemElem, (pcan->instance + 2)) ) {
+							printf("%s: ERROR sending get_message resp data to CDC_%d\n", __func__, (uint32_t)(pcan->instance + 2));
+						}
+						pqMemElem = NULL;
+						pbuff = NULL;
+					}
+				} while (0);
+				
+				break;
 			case 'F':
 				pbuff++;
 				msg_size--;
@@ -831,7 +938,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				_msg_free(msg_ptr);
 				msg_ptr = NULL;
 				msg_size = 0;
-				//erroResp = CAN_ERROR_RESPONCE;
+				erroResp = CAN_ERROR_RESPONCE;
 			}
 
 			if ( (0 >= msg_size) || (CAN_OK_RESPONCE != erroResp) ) {
@@ -1849,4 +1956,74 @@ bool CheckCommandIdSupp ( const uint8_t* buff, uint16_t* IdVal) {
 	}
 
 	return true;
+}
+
+int8_t convert_mask_to_ASCII(flexcan_mask_id_table_t * pFIFOIdMaskTable, char * pbuff){
+	int8_t msg_size = 0;
+	if(pFIFOIdMaskTable->isExtendedFrame && !pFIFOIdMaskTable->isRemoteFrame ){
+		*pbuff = 'T';
+	}
+	else if(!pFIFOIdMaskTable->isExtendedFrame && !pFIFOIdMaskTable->isRemoteFrame ){
+		*pbuff =  't';
+	}
+	else if (pFIFOIdMaskTable->isExtendedFrame && pFIFOIdMaskTable->isRemoteFrame ){
+		*pbuff = 'R';
+	}
+	else if (!pFIFOIdMaskTable->isExtendedFrame && pFIFOIdMaskTable->isRemoteFrame ){
+		*pbuff = 'r';
+	}
+	pbuff++;
+	msg_size++;
+	
+	sprintf ( (char*)pbuff, "%08x", pFIFOIdMaskTable->MaskId);
+	pbuff += 8;
+	msg_size += 8;
+	
+	return msg_size;
+}
+
+int8_t convert_filter_ID_to_ASCII(flexcan_id_table_t * pFIFOIdTable, char * pbuff){
+	int8_t msg_size = 0;
+	if(pFIFOIdTable->isExtendedFrame && !pFIFOIdTable->isRemoteFrame ){
+		*pbuff = 'T';
+	}
+	else if(!pFIFOIdTable->isExtendedFrame && !pFIFOIdTable->isRemoteFrame ){
+		*pbuff =  't';
+	}
+	else if (pFIFOIdTable->isExtendedFrame && pFIFOIdTable->isRemoteFrame ){
+		*pbuff = 'R';
+	}
+	else if (!pFIFOIdTable->isExtendedFrame && pFIFOIdTable->isRemoteFrame ){
+		*pbuff = 'r';
+	}
+	pbuff++;
+	msg_size++;
+
+	sprintf ( (char*)pbuff, "%08x", pFIFOIdTable->idFilter);
+	pbuff += 8;
+	msg_size += 8;
+
+	return msg_size;
+}
+
+int8_t get_msg_response(pflexcanInstance_t pinst, get_message_t * msg_req, char * resp, uint8_t resp_max_size){
+	int8_t resp_size = 0;
+	resp[0] = 'G';
+	resp_size++;
+	switch (msg_req->message_type){
+	case GET_MSG_MASK:
+		resp_size += convert_mask_to_ASCII(pinst->pFIFOIdMaskTable + msg_req->index, &resp[1]);
+		break;
+	case GET_MSG_FILTER_CODE:
+		resp_size += convert_filter_ID_to_ASCII(pinst->pFIFOIdFilterTable + msg_req->index, &resp[1]);
+		break;
+	case GET_MSG_AUTO_FLOW:
+		//TODO: get autoflow control message
+		break;
+	default:
+		return -1;
+	}
+	//resp[resp_size] = CAN_OK_RESPONCE;
+	//resp_size++;
+	return resp_size;
 }
