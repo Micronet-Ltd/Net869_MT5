@@ -84,8 +84,11 @@ typedef struct flexcanInstance {
 	flexcan_id_table_t*             pFIFOIdFilterTable;         // FIFO ID filter table
 	uint32_t                        FIFOFilterTableSize;        // FIFO ID filter table size
 	uint32_t                        FIFOTableIndx;              // FIFO ID filter table next index
-	flexcan_id_table_t              FIFOAceptableMask;          // FIFO Aceptable mask
-	//bool 							suppress_tx_msg;				// suppress message to host during flowcontrol msg
+
+	flexcan_mask_id_table_t*        pFIFOIdMaskTable;         // FIFO ID Mask table
+	uint32_t                        FIFOMaskTableSize;        	// FIFO ID Mask table size
+	uint32_t                        FIFOMaskTableIndx;          // FIFO ID Mask table next index
+	//bool 							suppress_tx_msg;			// suppress message to host during flowcontrol msg
 }flexcanInstance_t, *pflexcanInstance_t;
 
 typedef enum _flexcaninstance_operation_modes {

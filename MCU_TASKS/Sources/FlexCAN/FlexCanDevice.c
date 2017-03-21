@@ -118,6 +118,7 @@ flexcan_device_status_t 	parseHex(int8_t * line, uint8_t len, uint8_t * value);
 bool                        parseAsciToUInt (const int8_t * line, uint8_t len, uint32_t *val);
 bool 						parseAsciToShort (const uint8_t* pbuff, uint16_t* val);
 bool                        AllocateFIFOFilterTable (pflexcanInstance_t pinst,flexcan_rx_fifo_id_filter_num_t filtnum, flexcan_rx_fifo_id_element_format_t tableFormat);
+bool 						AllocateFIFOMaskTable (pflexcanInstance_t pinst);
 
 int32_t                     ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *DestBuff, flowcontrol_t * flowcontrol);
 bool						CheckCommandIdSupp ( const uint8_t* buff, uint16_t* IdVal);
@@ -199,12 +200,17 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
 	((pflexcanInstance_t)param)->pMesagebuff = _mem_alloc(RX_FLEXCAN_MSGQ_MESAGES * sizeof(FLEXCAN_queue_element_t));
 	if (NULL == ((pflexcanInstance_t)param)->pMesagebuff) {
-		printf( "ERROR alocate message queue buffer\n");
+		printf( "ERROR allocating  message queue buffer\n");
 		_task_block();
 	}
 
 	if (!AllocateFIFOFilterTable(((pflexcanInstance_t)param), initCan.num_id_filters, initCan.fifoElemFormat)) {
-		printf( "ERROR alocate FIFO ID filter table\n");
+		printf( "ERROR allocating FIFO ID filter table\n");
+		_task_block();
+	}
+
+	if (!AllocateFIFOMaskTable((pflexcanInstance_t)param)){
+		printf( "ERROR allocating FIFO ID mask table\n");
 		_task_block();
 	}
 
@@ -372,31 +378,44 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 
 				if (initCan.is_rx_fifo_needed)
 				{
+					// TODO: Setting the global mask might not be necessary
 					ret = FlexCanDevice_SetRxMaskType(((pflexcanInstance_t)param), true);
 					printf("FlexCanDevice_SetRxMaskType( ) to global return %d\n", ret);
+					FlexCanDevice_SetRxFifoGlobalMask(((pflexcanInstance_t)param), kFlexCanMsgIdExt, 0x7fffffff);
 
-					for (int i = 0; i < 16; i++) {
-						ret = FlexCanDevice_SetRxIndividualMask ( ((pflexcanInstance_t)param), kFlexCanMsgIdStd, i, 0x00000000 );
-						ret = FlexCanDevice_SetRxIndividualMask ( ((pflexcanInstance_t)param), kFlexCanMsgIdExt, i, 0x00000000 );
+					ret = FlexCanDevice_SetRxMaskType(((pflexcanInstance_t)param), false);
+					for (uint32_t i = 0; i < ((pflexcanInstance_t)param)->FIFOMaskTableSize; i++){
+
+						/* set default values if the mask is not set */
+						if (i >= ((pflexcanInstance_t)param)->FIFOMaskTableIndx){
+							if (i%2){
+								(((pflexcanInstance_t)param)->pFIFOIdMaskTable + i)->MaskId = 0x7ff;
+								(((pflexcanInstance_t)param)->pFIFOIdMaskTable + i)->isExtendedFrame = false;
+								(((pflexcanInstance_t)param)->pFIFOIdMaskTable + i)->isRemoteFrame = false;
+							}
+							else{
+								(((pflexcanInstance_t)param)->pFIFOIdMaskTable + i)->MaskId = 0x1fffffff;
+								(((pflexcanInstance_t)param)->pFIFOIdMaskTable + i)->isExtendedFrame = true;
+								(((pflexcanInstance_t)param)->pFIFOIdMaskTable + i)->isRemoteFrame = false;
+							}
+						}
+
+						ret = FlexCanDevice_SetRxIndividualMask ( ((pflexcanInstance_t)param),\
+								(flexcan_msgbuff_id_type_t)(((pflexcanInstance_t)param)->pFIFOIdMaskTable + i)->isExtendedFrame,\
+								i,\
+								(((pflexcanInstance_t)param)->pFIFOIdMaskTable + i)->MaskId);
 					}
 
-					printf("Set FIFO for recieve\n");
-//                  if (0 != ((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter) {
-//                      ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdExt, 0xFFFFFFFF );
-//                      ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdStd, 0xFFFFFFFF );
-//                  }
-//                  else {
-//                      ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdExt, 0x00000000 );
-//                      ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdStd, 0x00000000 );
-//                  }
-					if (((pflexcanInstance_t)param)->FIFOAceptableMask.isExtendedFrame)
-						ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdExt, ((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter);
-					else
-						ret = (flexcan_device_status_t)FLEXCAN_DRV_SetRxFifoGlobalMask(((pflexcanInstance_t)param)->instance, kFlexCanMsgIdStd, ((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter);
-					if (ret)
-					{
-						printf("\r\nFLEXCAN set rx fifo global mask failed. result: 0x%lx", result);
+					/* print all the masks and filter */
+					printf("\nFIFO table[ii]: Mask     : ext : filter : ext \n");
+					for (uint32_t i = 0; i < 24; i++){
+						printf("FIFO table[%02d]: %08x : %s : %08x : %s \n", i,
+								(i < ((pflexcanInstance_t)param)->FIFOMaskTableSize) ? ((((pflexcanInstance_t)param)->pFIFOIdMaskTable + i)->MaskId) : 0x1fffffff ,
+								(((pflexcanInstance_t)param)->pFIFOIdMaskTable + i)->isExtendedFrame ? "ext": "std"	,
+								((((pflexcanInstance_t)param)->pFIFOIdFilterTable + i)->idFilter),
+								(((pflexcanInstance_t)param)->pFIFOIdFilterTable + i)->isExtendedFrame ? "ext": "std");
 					}
+
 
 					ret = (flexcan_device_status_t)FLEXCAN_DRV_ConfigRxFifo(((pflexcanInstance_t)param)->instance, initCan.fifoElemFormat, ((pflexcanInstance_t)param)->pFIFOIdFilterTable);
 					if (ret)
@@ -505,6 +524,10 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					_mem_zero((void *)(((pflexcanInstance_t)param)->pFIFOIdFilterTable), ((pflexcanInstance_t)param)->FIFOFilterTableSize);
 				}
 				((pflexcanInstance_t)param)->FIFOTableIndx = 0;
+				if (NULL != ((pflexcanInstance_t)param)->pFIFOIdMaskTable) {
+					_mem_zero((void *)(((pflexcanInstance_t)param)->pFIFOIdMaskTable), ((pflexcanInstance_t)param)->FIFOMaskTableSize);
+				}
+				((pflexcanInstance_t)param)->FIFOMaskTableIndx = 0;
 				flow_control_init();
 
 				initCan.flexcanMode         = fdFlexCanNormalMode;
@@ -596,16 +619,29 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					pbuff++;
 					msg_size--;
 
-					_mem_zero ((void*)&(((pflexcanInstance_t)param)->FIFOAceptableMask), sizeof(flexcan_id_table_t) );
+					if (NULL == ((pflexcanInstance_t)param)->pFIFOIdMaskTable) {
+											printf("ERROR set FIFO Mask table NULL\n" );
+											erroResp = CAN_ERROR_RESPONCE;
+											break;
+					}
+
+					if (((pflexcanInstance_t)param)->FIFOMaskTableIndx >= (((pflexcanInstance_t)param)->FIFOMaskTableSize)) {
+											printf ("Overwrite FIFO Mask table, start index set to 0\n");
+											((pflexcanInstance_t)param)->FIFOMaskTableIndx = 0;
+					}
+
+					_mem_zero ((void*)(((pflexcanInstance_t)param)->pFIFOIdMaskTable + ((pflexcanInstance_t)param)->FIFOMaskTableIndx), sizeof(flexcan_mask_id_table_t) );
+
 					switch (*pbuff) {
 					case 'R':
-						((pflexcanInstance_t)param)->FIFOAceptableMask.isExtendedFrame = true;
+						(((pflexcanInstance_t)param)->pFIFOIdMaskTable + ((pflexcanInstance_t)param)->FIFOMaskTableIndx)->isExtendedFrame = true;
 					case 'r':
-						((pflexcanInstance_t)param)->FIFOAceptableMask.isRemoteFrame = true;
+						(((pflexcanInstance_t)param)->pFIFOIdMaskTable + ((pflexcanInstance_t)param)->FIFOMaskTableIndx)->isRemoteFrame = true;
 						break;
 					case 'T':
-						((pflexcanInstance_t)param)->FIFOAceptableMask.isExtendedFrame = true;
+						(((pflexcanInstance_t)param)->pFIFOIdMaskTable + ((pflexcanInstance_t)param)->FIFOMaskTableIndx)->isExtendedFrame = true;
 					case 't':
+						/* assumed as not extended since we memzeroed the FIFOIdMaskTable */
 						break;
 					default:
 						printf("ERROR format extended/remote bit\n");
@@ -615,13 +651,18 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					pbuff++;
 					msg_size--;
 
-					if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(((pflexcanInstance_t)param)->FIFOAceptableMask.idFilter))) {
-						printf("ERROR parse ID FIFO MASK\n");
+					if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(((pflexcanInstance_t)param)->pFIFOIdMaskTable + ((pflexcanInstance_t)param)->FIFOMaskTableIndx)->MaskId)) {
+						printf("ERROR parse FIFO ID MASK\n");
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
 					pbuff += 8;
 					msg_size -= 8;
+
+					printf("Set FIFO Mask[%d] RTR %d IDE %d val %x\n", ((pflexcanInstance_t)param)->FIFOMaskTableIndx,
+												   (((pflexcanInstance_t)param)->pFIFOIdMaskTable + ((pflexcanInstance_t)param)->FIFOMaskTableIndx)->isRemoteFrame,
+												   (((pflexcanInstance_t)param)->pFIFOIdMaskTable + ((pflexcanInstance_t)param)->FIFOMaskTableIndx)->isExtendedFrame,
+												   (((pflexcanInstance_t)param)->pFIFOIdMaskTable + ((pflexcanInstance_t)param)->FIFOMaskTableIndx)->MaskId);
 
 					if (CheckCommandIdSupp ( (const uint8_t*)pbuff, &msg_ID )) {
 						pbuff += 5;
@@ -631,9 +672,10 @@ void FLEXCAN_Tx_Task( uint32_t param ) {
 					if (CAN_OK_RESPONCE != *pbuff) {
 						printf("Wrong Set FIFO acceptable mask set \r not found\n");
 						erroResp = CAN_ERROR_RESPONCE;
-						_mem_zero ((void*)&(((pflexcanInstance_t)param)->FIFOAceptableMask), sizeof(flexcan_id_table_t) );
+						_mem_zero ((void*)(((pflexcanInstance_t)param)->pFIFOIdMaskTable + ((pflexcanInstance_t)param)->FIFOMaskTableIndx), sizeof(flexcan_id_table_t) );
 						break;
 					}
+					((pflexcanInstance_t)param)->FIFOMaskTableIndx++;
 					pbuff++;
 					msg_size--;
 				} while (0);
@@ -1158,7 +1200,7 @@ flexcan_device_status_t FlexCanDevice_Stop( pflexcanInstance_t pInstance ) {
 	}
 
 	FLEXCAN_DRV_Deinit(pInstance->instance);
-	//pInstance->bScanInstanceStarted = false;
+	pInstance->bScanInstanceStarted = false;
 	return ret;
 }
 
@@ -1641,6 +1683,37 @@ bool AllocateFIFOFilterTable (pflexcanInstance_t pinst, flexcan_rx_fifo_id_filte
 		return false;
 	}
 	pinst->FIFOTableIndx = 0;
+
+	return true;
+}
+
+bool AllocateFIFOMaskTable (pflexcanInstance_t pinst)
+{
+	_mqx_uint ret;
+
+	if (!pinst) {
+		return false;
+	}
+
+	if (pinst->pFIFOIdMaskTable && 0 != pinst->FIFOMaskTableSize) {
+		ret = _mem_free ((void*)pinst->pFIFOIdMaskTable);
+		if (MQX_OK != ret) {
+			printf("ERROR(%d) free FIFO mask table\n", ret);
+			return false;
+		}
+	}
+
+	pinst->FIFOMaskTableIndx = 0;
+
+	pinst->FIFOMaskTableSize = 16; /* we can only set a maximum of 16 masks in FIFO mode */
+
+	pinst->pFIFOIdMaskTable = (flexcan_mask_id_table_t*)_mem_alloc_zero( pinst->FIFOMaskTableSize );
+	if (NULL == pinst->pFIFOIdMaskTable) {
+		printf( "%s:ERROR allocate FIFO ID filter table elem\n", __func__);
+		pinst->FIFOMaskTableSize = 0;
+		return false;
+	}
+	pinst->FIFOMaskTableIndx = 0;
 
 	return true;
 }
