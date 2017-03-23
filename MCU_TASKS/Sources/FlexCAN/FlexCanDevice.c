@@ -32,28 +32,6 @@
 #define CAN_OK_RESPONCE 	0x0D
 #define CAN_ERROR_RESPONCE	0x07
 
-#define FLOW_CONTROL_ARR_SIZE 0x8
-#define FLOW_CONTROL_INVALID_POS 0xFF
-#define FLOW_CONTROL_INVALID_ID 0x0
-
-#define CAN_MSG_ID_SIZE 3
-#define CAN_MSG_ID_SIZE_EXT 8
-#define CAN_FLOW_CONTROL_MSG_SIZE 20
-#define CAN_FLOW_CONTROL_MSG_SIZE_EXT 25
-
-#define FLEXCAN_FLOW_CTR_COMMAND_MAX_SIZE   (1+(4<<1)+1+(8<<1)+1) //27
-
-typedef struct flowcontrol_s
-{
-	uint8_t match_position; /* 0 to FLOW_CONTROL_ARR_SIZE, FLOW_CONTROL_INVALID_POS means no match was found */
-	uint8_t idx;
-	uint32_t msg_id[FLOW_CONTROL_ARR_SIZE];
-	char * p_response[FLOW_CONTROL_ARR_SIZE];
-    uint8_t resp_size[FLOW_CONTROL_ARR_SIZE];
-    bool    bisExtended[FLOW_CONTROL_ARR_SIZE];
-	//TODO: wait_time : time to wait before sending response
-}flowcontrol_t, *p_flowcontrol_t;
-
 //#define FLEXCAN_DEVICE_DEBUG_
 
 /* The following tables are the CAN bit timing parameters that are calculated by using the method
@@ -120,7 +98,7 @@ pflexcanInstance_t can_Device_0 = &g_flexcanDeviceInstance[BSP_CAN_DEVICE_0];
 pflexcanInstance_t can_Device_1 = &g_flexcanDeviceInstance[BSP_CAN_DEVICE_1];
 
 uint32_t g_flexacandeviceSeted = 0;
-flowcontrol_t g_flowcontrol;
+//flowcontrol_t pinst->g_flowcontrol;
 
 extern FLEXCAN_Debug_t g_Flexdebug;
 
@@ -138,17 +116,37 @@ int32_t                     ParseCanMessToString (pFLEXCAN_queue_element_t pCanM
 bool						CheckCommandIdSupp ( const uint8_t* buff, uint16_t* IdVal);
 int8_t 						get_msg_response(pflexcanInstance_t pinst, get_message_t * msg_req, char * resp, uint8_t resp_max_size);
 
-void flow_control_init()
+bool flow_control_init(pflexcanInstance_t pinst)
 {
 	uint8_t idx;
+	bool ret;
+	
+	if (!pinst) {
+		return false;
+	}
+
+	if (0 != pinst->flowcontrol.p_response[0]) {
+		ret = _mem_free ((void*)pinst->flowcontrol.p_response[0]);
+		if (MQX_OK != ret) {
+			printf("ERROR(%d) free flow control response table\n", ret);
+			return false;
+		}
+	}
+	
+	pinst->flowcontrol.p_response[0] = _mem_alloc_zero(FLOW_CONTROL_ARR_SIZE * FLEXCAN_FLOW_CTR_COMMAND_MAX_SIZE);
+	if (NULL == pinst->flowcontrol.p_response[0] ){
+        return false;
+    }
 	/*fill the msg_ids with a default ID */
 	for (idx = 0; idx < FLOW_CONTROL_ARR_SIZE; idx++){
-		g_flowcontrol.msg_id[idx] = FLOW_CONTROL_INVALID_ID;
-        g_flowcontrol.resp_size[idx] = 0;
-        g_flowcontrol.bisExtended[idx] = false;
+		pinst->flowcontrol.msg_id[idx] = FLOW_CONTROL_INVALID_ID;
+        pinst->flowcontrol.resp_size[idx] = 0;
+        pinst->flowcontrol.bisExtended[idx] = false;
+		pinst->flowcontrol.p_response[idx] = pinst->flowcontrol.p_response[0] + (FLEXCAN_FLOW_CTR_COMMAND_MAX_SIZE*idx);
 	}
-	g_flowcontrol.match_position = FLOW_CONTROL_INVALID_POS;
-	g_flowcontrol.idx = 0; 
+	pinst->flowcontrol.match_position = FLOW_CONTROL_INVALID_POS;
+	pinst->flowcontrol.idx = 0; 
+	return true;
 }
 	
 
@@ -178,8 +176,6 @@ void FlexCanDevice_InitHW ( )
 
 	g_flexcanDeviceInstance[BSP_CAN_DEVICE_0].instance = BSP_CAN_DEVICE_0;
 	g_flexcanDeviceInstance[BSP_CAN_DEVICE_1].instance = BSP_CAN_DEVICE_1;
-
-	flow_control_init();
 }
 
 void FLEXCAN_Tx_Task( uint32_t param_in ) {
@@ -191,7 +187,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 	flexcandevice_TX_data_t     Tx_data;
 	uint8_t                     termination, baudrate, Baudrate_notSet = 1;
 	char*                       pbuff;
-	int32_t                     msg_size;
+	int32_t                     msg_size = 0;
 	char                        erroResp;
 	pcdc_mic_queue_element_t    pqMemElem;
 	bool 						is_remote_frame = false;
@@ -234,16 +230,10 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 		_task_block();
 	}
 
-    g_flowcontrol.p_response[0] = _mem_alloc(FLOW_CONTROL_ARR_SIZE * FLEXCAN_FLOW_CTR_COMMAND_MAX_SIZE);
-    if (NULL == g_flowcontrol.p_response[0] )
-    {
-        printf("ERROR alocate flow control messages buffer\n");
+	if (!flow_control_init(pcan) ){
+        printf("ERROR allocate flow control messages buffer\n");
         _task_block();
     }
-    for (msg_size = 1; msg_size < FLOW_CONTROL_ARR_SIZE; msg_size++) {
-        g_flowcontrol.p_response[msg_size] = g_flowcontrol.p_response[0] + (FLEXCAN_FLOW_CTR_COMMAND_MAX_SIZE*msg_size);
-    }
-    msg_size = 0;
 
 	FlexCanMsg_queue_init(&(pcan->Rx_FreeMSGQueue), 0);
 	FlexCanMsg_queue_init(&(pcan->Rx_ReadyMSGQueue), 0);
@@ -536,19 +526,21 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				printf("FlexCanDevice_DeInit( ) return %d\n", ret);
 
 				pcan->bScanInstanceStarted = false;
-
-
-				//TODO
-				//Add function for init
-				if (NULL != pcan->pFIFOIdFilterTable) {
-					_mem_zero((void *)(pcan->pFIFOIdFilterTable), pcan->FIFOFilterTableSize);
+				
+				if (!AllocateFIFOFilterTable(pcan, initCan.num_id_filters, initCan.fifoElemFormat)) {
+					printf( "ERROR allocating FIFO ID filter table\n");
+					_task_block();
 				}
-				pcan->FIFOTableIndx = 0;
-				if (NULL != pcan->pFIFOIdMaskTable) {
-					_mem_zero((void *)(pcan->pFIFOIdMaskTable), pcan->FIFOMaskTableSize);
+
+				if (!AllocateFIFOMaskTable(pcan)){
+					printf( "ERROR allocating FIFO ID mask table\n");
+					_task_block();
 				}
-				pcan->FIFOMaskTableIndx = 0;
-				flow_control_init();
+
+				if (!flow_control_init(pcan) ){
+					printf("ERROR allocating flow control messages buffer\n");
+					_task_block();
+				}
 
 				initCan.flexcanMode         = fdFlexCanNormalMode;
 				initCan.instanceBitrate     = fdBitrate_500_kHz;
@@ -709,20 +701,20 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					}
 					pbuff++;
 					msg_size--;
-
-					if (NULL == pcan->pFIFOIdFilterTable) {
-						printf("ERROR set FIFO ID table NULL\n" );
-						erroResp = CAN_ERROR_RESPONCE;
-						break;
+					/* only init filterTable memory if is not a flow control req */
+					if (*pbuff != 'F' && (*pbuff != 'f')){
+						if (NULL == pcan->pFIFOIdFilterTable) {
+							printf("ERROR set FIFO ID table NULL\n" );
+							erroResp = CAN_ERROR_RESPONCE;
+							break;
+						}
+						
+						if (pcan->FIFOTableIndx >= (pcan->FIFOFilterTableSize/sizeof(flexcan_id_table_t))) {
+							printf ("Overwrite FIFO ID Filter table start\n");
+							pcan->FIFOTableIndx = 0;
+						}
+						_mem_zero ((void*)(pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx), sizeof(flexcan_id_table_t) );
 					}
-
-					if (pcan->FIFOTableIndx >= (pcan->FIFOFilterTableSize/sizeof(flexcan_id_table_t))) {
-						printf ("Overwrite FIFO ID Filter table start\n");
-						pcan->FIFOTableIndx = 0;
-					}
-
-					_mem_zero ((void*)(pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx), sizeof(flexcan_id_table_t) );
-
                     flowcontrol_msg_extended = flowcontrol_msg = FALSE;
 
 					switch (*pbuff) {
@@ -753,11 +745,11 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 
                     if (flowcontrol_msg) {
 						//WARNING: looping over if all elements are used
-						g_flowcontrol.idx = (g_flowcontrol.idx)%FLOW_CONTROL_ARR_SIZE;
+						pcan->flowcontrol.idx = (pcan->flowcontrol.idx)%FLOW_CONTROL_ARR_SIZE;
                         if (flowcontrol_msg_extended) {
-                            g_flowcontrol.bisExtended[g_flowcontrol.idx] = TRUE;
+                            pcan->flowcontrol.bisExtended[pcan->flowcontrol.idx] = TRUE;
                         }
-                        if (DecodeFlowCmd ( (char const*)pbuff, (uint32_t) msg_size, &g_flowcontrol )){
+                        if (DecodeFlowCmd ( (char const*)pbuff, (uint32_t) msg_size, &pcan->flowcontrol )){
 							printf("Error decoding flow control message \n");
 							erroResp = CAN_ERROR_RESPONCE;
 							break;
@@ -787,6 +779,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 							   (pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx)->isRemoteFrame,
 							   (pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx)->isExtendedFrame,
 							   (pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx)->idFilter);
+						
                     }
 
 					if (CheckCommandIdSupp ( (const uint8_t*)pbuff, &msg_ID )) {
@@ -797,7 +790,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					if (CAN_OK_RESPONCE != *pbuff) {
 						if (flowcontrol_msg){
 							printf("Set flow control failed\n");
-							_mem_zero ((void*)g_flowcontrol.p_response[g_flowcontrol.idx ], FLEXCAN_FLOW_CTR_COMMAND_MAX_SIZE);
+							_mem_zero ((void*)pcan->flowcontrol.p_response[pcan->flowcontrol.idx ], FLEXCAN_FLOW_CTR_COMMAND_MAX_SIZE);
 						}
 						else{
 							printf("Wrong Set FIFO ID filter table set \r not found\n");
@@ -808,7 +801,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					}
 						
 					if (flowcontrol_msg){
-						g_flowcontrol.idx++;
+						pcan->flowcontrol.idx++;
 					}
 					else{
 						pcan->FIFOTableIndx++;
@@ -1077,21 +1070,21 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 					if ( pqMemElem && pqueue_msg ) {
 
 						APPLICATION_MESSAGE_T *app_msg;
-						curr_msg_len = ParseCanMessToString (pqueue_msg, (const uint8_t*)pmsg_str, &g_flowcontrol);
+						curr_msg_len = ParseCanMessToString (pqueue_msg, (const uint8_t*)pmsg_str, &pcan->flowcontrol);
 						FlexCanMsg_queue_enqueue (&(pcan->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
 #ifdef FLEXCAN_DEVICE_DEBUG_
 						printf("Return to queue %x elm %x\n",(uint32_t)(&(pcan->Rx_FreeMSGQueue)), (uint32_t)pqueue_msg );
 #endif
 						pqueue_msg = NULL;
 
-						if (g_flowcontrol.match_position != FLOW_CONTROL_INVALID_POS){
+						if (pcan->flowcontrol.match_position != FLOW_CONTROL_INVALID_POS){
 							do {
 								if ((app_msg = (APPLICATION_MESSAGE_PTR_T)_msg_alloc(g_in_message_pool)) == NULL)
 								{
 									printf("ERROR: app message allocation failed\n");
 									break;
 								}
-								_mem_copy ( g_flowcontrol.p_response[g_flowcontrol.match_position], app_msg->data, g_flowcontrol.resp_size[g_flowcontrol.match_position] );
+								_mem_copy ( pcan->flowcontrol.p_response[pcan->flowcontrol.match_position], app_msg->data, pcan->flowcontrol.resp_size[pcan->flowcontrol.match_position] );
 								app_msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
 								//((pflexcanInstance_t)param)->suppress_tx_msg = TRUE;
 								if ( (pcan->instance) ) {
@@ -1100,7 +1093,7 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 								else {
 									app_msg->header.TARGET_QID = _msgq_get_id(0, CAN1_TX_QUEUE);
 								}
-								app_msg->header.SIZE = sizeof(g_flowcontrol.p_response[g_flowcontrol.match_position]) + APP_MESSAGE_NO_ARRAY_SIZE;
+								app_msg->header.SIZE = pcan->flowcontrol.resp_size[pcan->flowcontrol.match_position] + APP_MESSAGE_NO_ARRAY_SIZE;
 								app_msg->portNum = MIC_CDC_USB_3;
 								_msgq_send (app_msg);
 							} while (0);
@@ -1817,7 +1810,7 @@ bool AllocateFIFOMaskTable (pflexcanInstance_t pinst)
 
 	pinst->FIFOMaskTableSize = 16; /* we can only set a maximum of 16 masks in FIFO mode */
 
-	pinst->pFIFOIdMaskTable = (flexcan_mask_id_table_t*)_mem_alloc_zero( pinst->FIFOMaskTableSize );
+	pinst->pFIFOIdMaskTable = (flexcan_mask_id_table_t*)_mem_alloc_zero( (pinst->FIFOMaskTableSize * sizeof(flexcan_mask_id_table_t)));
 	if (NULL == pinst->pFIFOIdMaskTable) {
 		printf( "%s:ERROR allocate FIFO ID filter table elem\n", __func__);
 		pinst->FIFOMaskTableSize = 0;

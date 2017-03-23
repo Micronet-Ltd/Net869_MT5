@@ -24,6 +24,28 @@ extern "C"
 #define FLEXCAN_DEVICE_TX_TIMEOUT       (200)
 
 #define FLEXCAN_MAX_MSG_STR_SIZE        (32)
+	
+#define FLOW_CONTROL_ARR_SIZE 0x8
+#define FLOW_CONTROL_INVALID_POS 0xFF
+#define FLOW_CONTROL_INVALID_ID 0x0
+
+#define CAN_MSG_ID_SIZE 3
+#define CAN_MSG_ID_SIZE_EXT 8
+#define CAN_FLOW_CONTROL_MSG_SIZE 20
+#define CAN_FLOW_CONTROL_MSG_SIZE_EXT 25
+
+#define FLEXCAN_FLOW_CTR_COMMAND_MAX_SIZE   (1+(4<<1)+1+(8<<1)+1) //27
+
+typedef struct flowcontrol_s
+{
+	uint8_t match_position; /* 0 to FLOW_CONTROL_ARR_SIZE, FLOW_CONTROL_INVALID_POS means no match was found */
+	uint8_t idx;
+	uint32_t msg_id[FLOW_CONTROL_ARR_SIZE];
+	char * p_response[FLOW_CONTROL_ARR_SIZE];
+    uint8_t resp_size[FLOW_CONTROL_ARR_SIZE];
+    bool    bisExtended[FLOW_CONTROL_ARR_SIZE];
+	//TODO: wait_time : time to wait before sending response
+}flowcontrol_t, *p_flowcontrol_t;
 
 typedef enum _flexcan_device_status
 {
@@ -89,6 +111,7 @@ typedef struct flexcanInstance {
 	uint32_t                        FIFOMaskTableSize;        	// FIFO ID Mask table size
 	uint32_t                        FIFOMaskTableIndx;          // FIFO ID Mask table next index
 	//bool 							suppress_tx_msg;			// suppress message to host during flowcontrol msg
+	flowcontrol_t					flowcontrol;
 }flexcanInstance_t, *pflexcanInstance_t;
 
 typedef enum _flexcaninstance_operation_modes {
