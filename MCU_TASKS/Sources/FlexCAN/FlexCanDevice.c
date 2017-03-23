@@ -846,6 +846,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 						break;
 					case 'f':
 						msg_req.message_type = GET_MSG_AUTO_FLOW;
+						break;
 					default:
 						printf("%s:ERROR, case G, get_message Invalid type\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
@@ -883,6 +884,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 						pqMemElem = GetUSBWriteBuffer(pcan->instance + 2);
 						if (NULL == pqMemElem) {
 							printf("%s:ERROR, case G, get mem for USB response\n", __func__);
+							erroResp = CAN_ERROR_RESPONCE;
 							break;
 						}
 						
@@ -892,7 +894,10 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 
 						if (!SetUSBWriteBuffer(pqMemElem, (pcan->instance + 2)) ) {
 							printf("%s:ERROR, case G, sending get_message resp data to CDC_%d\n", __func__, (uint32_t)(pcan->instance + 2));
+							erroResp = CAN_ERROR_RESPONCE;
+							break;
 						}
+						erroResp = CAN_OK_RESPONCE;
 						pqMemElem = NULL;
 						pbuff = NULL;
 					}
@@ -2018,9 +2023,9 @@ int8_t convert_flowcontrol_setting_to_ASCII(flowcontrol_t * pflowcontrol, uint8_
 		msg_size += 3;
 	}
 
-	_mem_copy(pflowcontrol->p_response[i], (char*)pbuff, pflowcontrol->resp_size[i]);
-	pbuff += pflowcontrol->resp_size[i];
-	msg_size += pflowcontrol->resp_size[i];
+	_mem_copy(pflowcontrol->p_response[i], (char*)pbuff, (pflowcontrol->resp_size[i] - 1));
+	pbuff += pflowcontrol->resp_size[i] - 1;
+	msg_size += pflowcontrol->resp_size[i] - 1;
 
 	return msg_size;
 }
@@ -2037,13 +2042,10 @@ int8_t get_msg_response(pflexcanInstance_t pinst, get_message_t * msg_req, char 
 		resp_size += convert_filter_ID_to_ASCII(pinst->pFIFOIdFilterTable + msg_req->index, &resp[1]);
 		break;
 	case GET_MSG_AUTO_FLOW:
-		//TODO: get autoflow control message
 		resp_size += convert_flowcontrol_setting_to_ASCII(&(pinst->flowcontrol), msg_req->index, &resp[1]);
 		break;
 	default:
 		return -1;
 	}
-	//resp[resp_size] = CAN_OK_RESPONCE;
-	//resp_size++;
 	return resp_size;
 }
