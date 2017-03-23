@@ -128,7 +128,7 @@ bool flow_control_init(pflexcanInstance_t pinst)
 	if (0 != pinst->flowcontrol.p_response[0]) {
 		ret = _mem_free ((void*)pinst->flowcontrol.p_response[0]);
 		if (MQX_OK != ret) {
-			printf("ERROR(%d) free flow control response table\n", ret);
+			printf("%s:ERROR(%d) free flow control response table\n", __func__, ret);
 			return false;
 		}
 	}
@@ -203,7 +203,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 	uint32_t resp_msg_size = 0;
 
 	if ( NULL == (pcan) || BOARD_CAN_INSTANCE <= (pcan)->instance ) {
-		printf( "CAN_TX thread wrong param %u\n", (pcan)->instance );
+		printf( "%s:thread wrong param %u\n", __func__, (pcan)->instance );
 		return;
 	}
 
@@ -216,22 +216,22 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 
 	pcan->pMesagebuff = _mem_alloc(RX_FLEXCAN_MSGQ_MESAGES * sizeof(FLEXCAN_queue_element_t));
 	if (NULL == (pcan)->pMesagebuff) {
-		printf( "ERROR allocating  message queue buffer\n");
+		printf( "%s:ERROR allocating  message queue buffer\n", __func__);
 		_task_block();
 	}
 
 	if (!AllocateFIFOFilterTable(pcan, initCan.num_id_filters, initCan.fifoElemFormat)) {
-		printf( "ERROR allocating FIFO ID filter table\n");
+		printf( "%s:ERROR allocating FIFO ID filter table\n", __func__);
 		_task_block();
 	}
 
 	if (!AllocateFIFOMaskTable(pcan)){
-		printf( "ERROR allocating FIFO ID mask table\n");
+		printf( "%s:ERROR allocating FIFO ID mask table\n", __func__);
 		_task_block();
 	}
 
 	if (!flow_control_init(pcan) ){
-        printf("ERROR allocate flow control messages buffer\n");
+        printf("%s:ERROR allocate flow control messages buffer\n", __func__);
         _task_block();
     }
 
@@ -247,7 +247,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 
 	if (MSGQ_NULL_QUEUE_ID == msg_qid)
 	{
-	   printf("\nCould not create a message pool CAN %u _TX_QUEU\n", pcan->instance);
+	   printf("\n%s:ERROR Could not create a message pool CAN %u _TX_QUEU\n", __func__, pcan->instance);
 	   _task_block();
 	}
 
@@ -257,7 +257,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 //        _task_block();// ( kStatus_FLEXCAN_Fail );
 //    }
 
-	printf("FLEXCAN_Tx_Task Task: Loop instance %u \n", pcan->instance);
+	printf("%s:INFO Task: Loop instance %u \n", __func__, pcan->instance);
 
 	do {
 		msg_ptr = _msgq_receive(msg_qid, 1);
@@ -274,7 +274,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 			case 'S':
 				if ( msg_size > 2 ) {
 					if (true == pcan->bScanInstanceStarted && fdFlexCanListenOnlyMode != initCan.flexcanMode) {
-						printf("The baudrate tried change on open instance\n");
+						printf("%s:ERROR, case S, Tried to change baudrate when CAN is open\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
@@ -282,7 +282,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					msg_size--;
 
 					if (fcStatus_FLEXCAN_Success != parseHex((int8_t *)pbuff, 1, &baudrate)) {
-						printf("Error parse the Baudrate value %x %x\n", *pbuff, baudrate );
+						printf("%s:ERROR, case S, parsing the Baudrate value %x %x\n", __func__, *pbuff, baudrate );
 						Baudrate_notSet = 1;
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
@@ -298,23 +298,23 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					if ( (fdBitrate_10_kHz <= baudrate) && ( fdBitrate_MAX > baudrate ) ) {
 						if ( BSP_CAN_DEVICE_0 == pcan->instance && fdBitrate_33_kHz == baudrate )
 						{
-							printf("Error set baudrate 33Khz to instance %d\n", pcan->instance);
+							printf("%s:ERROR, case S, set baudrate 33Khz to instance %d\n", __func__, pcan->instance);
 							erroResp = CAN_ERROR_RESPONCE;
 							break;
 						}
 						else {
 							initCan.instanceBitrate = ( flexcan_device_bitrate_t )baudrate;
-							printf("Set baudrate command %x \n", baudrate );
+							printf("%s:INFO, case S, Set baudrate command %x \n", __func__, baudrate );
 							Baudrate_notSet = 0;
 						}
 					}
 					else {
-						printf("Error get baudrate command %c \n", baudrate );
+						printf("%s:ERROR, case S, incorrect baudrate value %c \n", __func__, baudrate );
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
 					if (CAN_OK_RESPONCE != *pbuff) {
-						printf("Wrong Set Baudrate command \r not found\n");
+						printf("%s:ERROR, case S, Baud rate command, \r not found\n", __func__);
 						Baudrate_notSet = 1;
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
@@ -330,13 +330,13 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				msg_size--;
 
 				if (1 == Baudrate_notSet) {
-					printf("The baudrate not configured Open command terminated\n");
+					printf("%s:ERROR, case O, The baudrate not configured Open command terminated\n", __func__);
 					erroResp = CAN_ERROR_RESPONCE;
 					break;
 				}
 
 				if ( fcStatus_FLEXCAN_Success != parseHex((int8_t*)pbuff, 1, &termination)) {
-					printf("Error parse the Termination value %x %x\n", *pbuff, termination );
+					printf("%s:ERROR, case O, parse the Termination value %x %x\n", __func__, *pbuff, termination );
 					erroResp = CAN_ERROR_RESPONCE;
 					break;
 				}
@@ -349,7 +349,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				}
 
 				if (CAN_OK_RESPONCE != *pbuff) {
-					printf("Wrong Open command \r not found\n");
+					printf("%s:ERROR, case O, Open command, \r not found\n", __func__);
 					erroResp = CAN_ERROR_RESPONCE;
 					break;
 				}
@@ -357,7 +357,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				msg_size--;
 
 				if ( true == pcan->bScanInstanceStarted ) {
-					printf("%s:CAN%d already opened\n", __func__, pcan->instance);
+					printf("%s:INFO, case O, CAN%d already opened\n", __func__, pcan->instance);
 					break;
 				}
 
@@ -367,7 +367,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				else {
 					ret = FlexCanDevice_Init(NULL, &initCan);
 				}
-				printf("FlexCanDevice_Init( ) return %d\n", ret);
+				printf("%s:INFO, case O, FlexCanDevice_Init( ) return %d\n", __func__, ret);
 
 				//((pflexcanInstance_t)param)->canState.pevent_ISR = &event_ISR;
 				pcan->canState.fifo_free_messages = &(pcan->Rx_FreeMSGQueue);
@@ -379,10 +379,10 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				else{
 					ret = FlexCanDevice_SetTermination(pcan, true);
 				}
-				printf("FlexCanDevice_SetTermination( ) return %d on set %d\n", ret, termination);
+				printf("%s:INFO, case O, FlexCanDevice_SetTermination( ) return %d on set %d\n", __func__, ret, termination);
 
 				ret = FlexCanDevice_Start(pcan);
-				printf("FlexCanDevice_Start( ) return %d\n", ret);
+				printf("%s:INFO, case O, FlexCanDevice_Start( ) return %d\n", __func__, ret);
 
 				pcan->bScanInstanceStarted = true;
 
@@ -390,7 +390,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				{
 					// TODO: Setting the global mask might not be necessary
 					ret = FlexCanDevice_SetRxMaskType(pcan, true);
-					printf("FlexCanDevice_SetRxMaskType( ) to global return %d\n", ret);
+					printf("%s:INFO: case O, FlexCanDevice_SetRxMaskType( ) to global return %d\n", __func__, ret);
 					FlexCanDevice_SetRxFifoGlobalMask(pcan, kFlexCanMsgIdExt, 0x7fffffff);
 
 					ret = FlexCanDevice_SetRxMaskType(pcan, false);
@@ -417,9 +417,9 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					}
 
 					/* print all the masks and filter */
-					printf("\nFIFO table[ii]: Mask     : ext : filter : ext \n");
+					printf("\n%s:INFO, case O, FIFO table[ii]: Mask     : ext : filter : ext \n", __func__);
 					for (uint32_t i = 0; i < 24; i++){
-						printf("FIFO table[%02d]: %08x : %s : %08x : %s \n", i,
+						printf("%s:INFO, case O, FIFO table[%02d]: %08x : %s : %08x : %s \n", __func__, i,
 								(i < pcan->FIFOMaskTableSize) ? ((pcan->pFIFOIdMaskTable + i)->MaskId) : 0x1fffffff ,
 								(pcan->pFIFOIdMaskTable + i)->isExtendedFrame ? "ext": "std",
 								(pcan->pFIFOIdFilterTable + i)->idFilter,
@@ -430,7 +430,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					ret = (flexcan_device_status_t)FLEXCAN_DRV_ConfigRxFifo(pcan->instance, initCan.fifoElemFormat, pcan->pFIFOIdFilterTable);
 					if (ret)
 					{
-						printf("\r\nFLEXCAN_DRV_ConfigRxFifo failed. result: 0x%lx", result);
+						printf("%s:ERROR, case O, \r\n FLEXCAN_DRV_ConfigRxFifo failed. result: 0x%lx", __func__, result);
 					}
 
 					FLEXCAN_DRV_RxFifo(pcan->instance, NULL);
@@ -438,7 +438,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				else {
 
 					ret = FlexCanDevice_SetRxMaskType(pcan, false);
-					printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
+					printf("%s:INFO, case O, FlexCanDevice_SetRxMaskType( ) return %d\n", __func__, ret);
 					//ret = FlexCanDevice_SetRxMaskType(((pflexcanInstance_t)param), true);
 					//printf("FlexCanDevice_SetRxMaskType( ) return %d\n", ret);
 
@@ -448,9 +448,9 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					for (int i = 0; i < 14; i++) {
 						//ret = FlexCanDevice_SetRxIndividualMask ( ((pflexcanInstance_t)param), kFlexCanMsgIdStd, i, 0xF00 );
 						ret = FlexCanDevice_SetRxIndividualMask (pcan, kFlexCanMsgIdStd, i, 0x700 ); // Mask Value
-						printf("FlexCanDevice_SetRxIndividualMask %d return %d\n", i, ret);
+						printf("%s:INFO, case O, FlexCanDevice_SetRxIndividualMask %d return %d\n", __func__, i, ret);
 						ret = FlexCanDevice_setMailbox(pcan, kFlexCanMsgIdStd, i, 0x700, true); //Filter value
-						printf("FlexCanDevice_setMailbox %d return %d\n", i, ret);
+						printf("%s:INFO, case O, FlexCanDevice_setMailbox %d return %d\n", __func__, i, ret);
 					}
 
 				}
@@ -461,7 +461,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				}
 				else {
 					if ( fdBitrate_33_kHz == initCan.instanceBitrate) {
-						printf("Set elec fo 33.33 baudrate\n");
+						printf("%s:INFO, case O, Set elec fo 33.33 baudrate\n", __func__);
 						//Set SWC to operation mode
 						//Set CAN2 to regular mode twisted
 						GPIO_DRV_SetPinOutput(CAN2_SWC_SELECT);
@@ -503,7 +503,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				}
 
 				if (CAN_OK_RESPONCE != *pbuff) {
-					printf("Wrong close command \r not found\n");
+					printf("%s:ERROR, case C, close command, \r not found\n", __func__);
 					erroResp = CAN_ERROR_RESPONCE;
 					break;
 				}
@@ -520,25 +520,25 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				}
 
 				ret = FlexCanDevice_SetTermination(pcan, false);
-				printf("FlexCanDevice_SetTermination( ) return %d\n", ret);
+				printf("%s:INFO, case C, FlexCanDevice_SetTermination( ) return %d\n", __func__, ret);
 
 				ret = FlexCanDevice_DeInit(pcan);
-				printf("FlexCanDevice_DeInit( ) return %d\n", ret);
+				printf("%s:INFO, case C, FlexCanDevice_DeInit( ) return %d\n", __func__, ret);
 
 				pcan->bScanInstanceStarted = false;
 				
 				if (!AllocateFIFOFilterTable(pcan, initCan.num_id_filters, initCan.fifoElemFormat)) {
-					printf( "ERROR allocating FIFO ID filter table\n");
+					printf( "%s:ERROR, case C, allocating FIFO ID filter table\n", __func__);
 					_task_block();
 				}
 
 				if (!AllocateFIFOMaskTable(pcan)){
-					printf( "ERROR allocating FIFO ID mask table\n");
+					printf( "%s:ERROR, case C, allocating FIFO ID mask table\n", __func__);
 					_task_block();
 				}
 
 				if (!flow_control_init(pcan) ){
-					printf("ERROR allocating flow control messages buffer\n");
+					printf("%s:ERROR, case C, allocating flow control messages buffer\n", __func__);
 					_task_block();
 				}
 
@@ -559,7 +559,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 			case 'R':
 				do {
 					if (fdFlexCanListenOnlyMode == initCan.flexcanMode) {
-						printf("Error CAN in listener mode\n" );
+						printf("%s:ERROR, case trTR, CAN in listener mode\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
@@ -573,7 +573,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 						is_remote_frame = false;	
 					}
 					if ( ((4 > msg_size) && (kFlexCanMsgIdStd == msg_type)) || ((9 > msg_size) && (kFlexCanMsgIdExt == msg_type)) ) {
-						printf("Error CAN transmit format\n" );
+						printf("%s:ERROR, case trTR, CAN transmit format\n", __func__);
 						_msg_free(msg_ptr);
 						msg_ptr = NULL;
 						msg_size = 0;
@@ -583,7 +583,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					msg_size--;
 					if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data , msg_type, is_remote_frame) ) {
 						if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage (pcan, 14, &Tx_data, is_remote_frame) ) {
-							printf("!!!Error FlexCanDevice_TxMessage\n");
+							printf("%s:ERROR, case trTR, FlexCanDevice_TxMessage failed\n", __func__);
 							erroResp = CAN_ERROR_RESPONCE;
 						}
 
@@ -592,7 +592,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 #if 0
 						pqMemElem = GetUSBWriteBuffer (pcan->instance + 2);
 						if (NULL == pqMemElem) {
-							printf("%s: Error get mem for USB responce\n", __func__);
+							printf("%s:ERROR, case trTR, get mem for USB responce\n", __func__);
 							break;
 						}
 
@@ -608,13 +608,13 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 						pqMemElem->send_size = 2;
 
 						if (!SetUSBWriteBuffer(pqMemElem, (pcan->instance + 2)) ) {
-							printf("%s: Error send data to CDC_%d\n", __func__, (uint32_t)(pcan->instance + 2));
+							printf("%s:ERROR, case trTR, send data to CDC_%d\n", __func__, (uint32_t)(pcan->instance + 2));
 						}
 						pqMemElem = NULL;
 #endif
 					}//if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data ) )
 					else {
-						printf("!!!Error decode TR message\n");
+						printf("%s:ERROR, case trTR, decode message\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 					}
 				} while (0);
@@ -624,7 +624,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 			case 'm': //FIFO acceptable mask set
 				do {
 					if ((10 > msg_size) || (true == pcan->bScanInstanceStarted)) {
-						printf("ERROR set FIFO MASK\n" );
+						printf("%s:ERROR, case m, incorrect msg size, canInst %d\n", __func__, pcan->bScanInstanceStarted);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
@@ -632,13 +632,13 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					msg_size--;
 
 					if (NULL == pcan->pFIFOIdMaskTable) {
-						printf("ERROR set FIFO Mask table NULL\n" );
+						printf("%s:ERROR, case m, pFIFOIdMaskTable NULL\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
 
 					if (pcan->FIFOMaskTableIndx >= pcan->FIFOMaskTableSize) {
-						printf ("Overwrite FIFO Mask table, start index set to 0\n");
+						printf ("%s:INFO, case m, Overwrite FIFO Mask table, FIFOMaskTableIndx=0\n", __func__);
 						pcan->FIFOMaskTableIndx = 0;
 					}
 
@@ -656,7 +656,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 						/* assumed as not extended since we memzeroed the FIFOIdMaskTable */
 						break;
 					default:
-						printf("ERROR format extended/remote bit\n");
+						printf("%s:ERROR, case m, incorrect msg type\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
@@ -664,14 +664,14 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					msg_size--;
 
 					if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(pcan->pFIFOIdMaskTable + pcan->FIFOMaskTableIndx)->MaskId)) {
-						printf("ERROR parse FIFO ID MASK\n");
+						printf("%s:ERROR, case m, parsing FIFO ID MASK\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
 					pbuff += 8;
 					msg_size -= 8;
 
-					printf("Set FIFO Mask[%d] RTR %d IDE %d val %x\n", pcan->FIFOMaskTableIndx,
+					printf("%s:INFO, case m, Set FIFO Mask[%d] RTR %d IDE %d val %x\n", __func__, pcan->FIFOMaskTableIndx,
 												   (pcan->pFIFOIdMaskTable + pcan->FIFOMaskTableIndx)->isRemoteFrame,
 												   (pcan->pFIFOIdMaskTable + pcan->FIFOMaskTableIndx)->isExtendedFrame,
 												   (pcan->pFIFOIdMaskTable + pcan->FIFOMaskTableIndx)->MaskId);
@@ -682,7 +682,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					}
 
 					if (CAN_OK_RESPONCE != *pbuff) {
-						printf("Wrong Set FIFO acceptable mask set \r not found\n");
+						printf("%s:ERROR, case m, set mask command, \r not found\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 						_mem_zero ((void*)(pcan->pFIFOIdMaskTable + pcan->FIFOMaskTableIndx), sizeof(flexcan_id_table_t) );
 						break;
@@ -695,7 +695,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 			case 'M':
 				do {
 					if ((10 > msg_size) || (true == pcan->bScanInstanceStarted)) {
-						printf("ERROR set FIFO ID filder\n" );
+						printf("%s:ERROR, case M, incorrect msg size, canInst %d\n", __func__, pcan->bScanInstanceStarted);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
@@ -704,13 +704,13 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					/* only init filterTable memory if is not a flow control req */
 					if (*pbuff != 'F' && (*pbuff != 'f')){
 						if (NULL == pcan->pFIFOIdFilterTable) {
-							printf("ERROR set FIFO ID table NULL\n" );
+							printf("%s:ERROR, case M, set FIFO ID table NULL\n", __func__);
 							erroResp = CAN_ERROR_RESPONCE;
 							break;
 						}
 						
 						if (pcan->FIFOTableIndx >= (pcan->FIFOFilterTableSize/sizeof(flexcan_id_table_t))) {
-							printf ("Overwrite FIFO ID Filter table start\n");
+							printf ("%s:INFO, case M, Overwriting FIFO ID Filter table FIFOTableIndx=0\n", __func__);
 							pcan->FIFOTableIndx = 0;
 						}
 						_mem_zero ((void*)(pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx), sizeof(flexcan_id_table_t) );
@@ -736,7 +736,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 						flowcontrol_msg_extended = FALSE;
 						break;
 					default:
-						printf("ERROR format extended/remote bit\n");
+						printf("%s:ERROR, case M, incorrect msg type\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
@@ -750,7 +750,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
                             pcan->flowcontrol.bisExtended[pcan->flowcontrol.idx] = TRUE;
                         }
                         if (DecodeFlowCmd ( (char const*)pbuff, (uint32_t) msg_size, &pcan->flowcontrol )){
-							printf("Error decoding flow control message \n");
+							printf("%s:ERROR, case M fF, decoding flow control message \n", __func__);
 							erroResp = CAN_ERROR_RESPONCE;
 							break;
                         }
@@ -767,7 +767,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
                     else {
 
                         if (!parseAsciToUInt((const int8_t*)pbuff, (msg_size - 1), &(pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx)->idFilter)) {
-                            printf("ERROR parse FIFO ID table value\n");
+                            printf("%s:ERROR, case M TtRr, parse FIFO ID table value\n", __func__);
                             erroResp = CAN_ERROR_RESPONCE;
                             break;
                         }
@@ -775,7 +775,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
                         pbuff += 8;
                         msg_size -= 8;
 						
-						printf("Set FIFO table[%d] RTR %d IDE %d val %x\n", pcan->FIFOTableIndx,
+						printf("%s:INFO, case M TtRr, Set FIFO table[%d] RTR %d IDE %d val %x\n", __func__, pcan->FIFOTableIndx,
 							   (pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx)->isRemoteFrame,
 							   (pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx)->isExtendedFrame,
 							   (pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx)->idFilter);
@@ -789,11 +789,11 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 
 					if (CAN_OK_RESPONCE != *pbuff) {
 						if (flowcontrol_msg){
-							printf("Set flow control failed\n");
+							printf("%s:ERROR, case M fF, set flowcontrol command, \r not found \n", __func__);
 							_mem_zero ((void*)pcan->flowcontrol.p_response[pcan->flowcontrol.idx ], FLEXCAN_FLOW_CTR_COMMAND_MAX_SIZE);
 						}
 						else{
-							printf("Wrong Set FIFO ID filter table set \r not found\n");
+							printf("%s:ERROR, case M TtRr, set FIFO ID filter table, \r not found\n", __func__);
 							_mem_zero ((void*)(pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx), sizeof(flexcan_id_table_t) );
 						}
 						erroResp = CAN_ERROR_RESPONCE;
@@ -830,7 +830,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				 * */
 				do {
 					if (4 > msg_size) {
-						printf("ERROR: incorrect size of get request\n" );
+						printf("%s: ERROR, case G, incorrect size of get request\n" , __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
@@ -847,7 +847,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					case 'f':
 						msg_req.message_type = GET_MSG_AUTO_FLOW;
 					default:
-						printf("ERROR get_message Invalid type\n");
+						printf("%s:ERROR, case G, get_message Invalid type\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
@@ -856,7 +856,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 
 					/* get ii char */
 					if (fcStatus_FLEXCAN_Success != parseHex((int8_t *)pbuff, 2, &(msg_req.index))) {
-						printf("ERROR get_message: parsing index\n");
+						printf("%s:ERROR, case G, get_message parsing index\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
@@ -870,7 +870,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					}
 
 					if (CAN_OK_RESPONCE != *pbuff) {
-						printf("ERROR get_message: \r not found\n");
+						printf("%s:ERROR, case G, get_message, \r not found\n", __func__);
 						erroResp = CAN_ERROR_RESPONCE;
 						break;
 					}
@@ -882,7 +882,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					if (resp_msg_size > 0) {
 						pqMemElem = GetUSBWriteBuffer(pcan->instance + 2);
 						if (NULL == pqMemElem) {
-							printf("%s: Error get mem for USB responce_\n", __func__);
+							printf("%s:ERROR, case G, get mem for USB response\n", __func__);
 							break;
 						}
 						
@@ -891,7 +891,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 						pqMemElem->send_size = resp_msg_size;
 
 						if (!SetUSBWriteBuffer(pqMemElem, (pcan->instance + 2)) ) {
-							printf("%s: ERROR sending get_message resp data to CDC_%d\n", __func__, (uint32_t)(pcan->instance + 2));
+							printf("%s:ERROR, case G, sending get_message resp data to CDC_%d\n", __func__, (uint32_t)(pcan->instance + 2));
 						}
 						pqMemElem = NULL;
 						pbuff = NULL;
@@ -909,8 +909,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				}
 
 				if (CAN_OK_RESPONCE != *pbuff) {
-					printf("Wrong Set FIFO ID filter table set \r not found\n");
-					_mem_zero ((void*)(pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx), sizeof(flexcan_id_table_t) );
+					printf("%s:ERROR:F command, \r not found\n", __func__);
 					erroResp = CAN_ERROR_RESPONCE;
 					break;
 				}
@@ -927,7 +926,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 //  			msg_size--;
 //  			break;
 			default:
-				printf( "ERROR Command not recognized %c %d size %d\n", *pbuff, *pbuff, msg_size  );
+				printf( "%s:ERROR, case default, Command not recognized %c %d size %d\n", __func__, *pbuff, *pbuff, msg_size  );
 				_msg_free(msg_ptr);
 				msg_ptr = NULL;
 				msg_size = 0;
@@ -947,7 +946,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 			do {
 				pqMemElem = GetUSBWriteBuffer(pcan->instance + 2);
 				if (NULL == pqMemElem) {
-					printf("%s: Error get mem for USB responce_\n", __func__);
+					printf("%s:ERROR, get mem for USB response\n", __func__);
 					break;
 				}
 				pqMemElem->send_size = 0;
@@ -962,7 +961,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				pqMemElem->send_size += 1;
 
 				if (!SetUSBWriteBuffer(pqMemElem, (pcan->instance + 2)) ) {
-					printf("%s: Error send data to CDC_%d\n", __func__, (uint32_t)(pcan->instance + 2));
+					printf("%s:ERROR, send data to CDC_%d\n", __func__, (uint32_t)(pcan->instance + 2));
 				}
 				pqMemElem = NULL;
 				pbuff = NULL;
@@ -1013,11 +1012,11 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 	pflexcanInstance_t pcan = (pflexcanInstance_t)param_in;
 
 	if ( (NULL == pcan) || (BOARD_CAN_INSTANCE <= pcan->instance) ) {
-		printf( "CAN_RX thread wrong param %u\n", pcan->instance );
+		printf( "%s:ERROR,CAN_RX thread incorrect param %u\n", __func__, pcan->instance );
 		return;
 	}
 
-	printf("FLEXCAN_Rx_Task Task: Loop instance %u \n", ((pflexcanInstance_t)pcan)->instance);
+	printf("%s:INFO Loop instance %u \n", __func__, ((pflexcanInstance_t)pcan)->instance);
 
 	do {
 		if (false == pcan->bScanInstanceStarted )
@@ -1051,7 +1050,7 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 					if (NULL == pqMemElem) {
 						pqMemElem = GetUSBWriteBuffer (pcan->instance + 2);
 						if (NULL == pqMemElem) {
-							printf("%s: Error get mem for USB drop\n", __func__);
+							printf("%s:ERROR, get mem for USB response\n", __func__);
 							continue;
 						}
 						else {
@@ -1062,7 +1061,7 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 
 					if (NULL != pqMemElem) {
 #ifdef FLEXCAN_DEVICE_DEBUG_
-						printf("Get from queue %x elm %x\n",(uint32_t)(&(pcan->Rx_ReadyMSGQueue)), (uint32_t)pqueue_msg );
+						printf("%s:ERROR, Get from queue %x elm %x\n",__func__, (uint32_t)(&(pcan->Rx_ReadyMSGQueue)), (uint32_t)pqueue_msg );
 #endif
 						pqueue_msg = (pFLEXCAN_queue_element_t)FlexCanMsg_queue_dequeue(&(pcan->Rx_ReadyMSGQueue));
 					}
@@ -1073,7 +1072,7 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 						curr_msg_len = ParseCanMessToString (pqueue_msg, (const uint8_t*)pmsg_str, &pcan->flowcontrol);
 						FlexCanMsg_queue_enqueue (&(pcan->Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_msg);
 #ifdef FLEXCAN_DEVICE_DEBUG_
-						printf("Return to queue %x elm %x\n",(uint32_t)(&(pcan->Rx_FreeMSGQueue)), (uint32_t)pqueue_msg );
+						printf("%s:INFO, Return to queue %x elm %x\n", __func__, (uint32_t)(&(pcan->Rx_FreeMSGQueue)), (uint32_t)pqueue_msg );
 #endif
 						pqueue_msg = NULL;
 
@@ -1081,7 +1080,7 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 							do {
 								if ((app_msg = (APPLICATION_MESSAGE_PTR_T)_msg_alloc(g_in_message_pool)) == NULL)
 								{
-									printf("ERROR: app message allocation failed\n");
+									printf("%s:ERROR: app message allocation failed\n", __func__);
 									break;
 								}
 								_mem_copy ( pcan->flowcontrol.p_response[pcan->flowcontrol.match_position], app_msg->data, pcan->flowcontrol.resp_size[pcan->flowcontrol.match_position] );
@@ -1100,7 +1099,7 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 						}
 
 						if (0 > curr_msg_len) {
-							printf("Error pars CAN to String\n");
+							printf("%s:ERROR pars CAN to String\n", __func__);
 							//TODO
 							//Add Error handler
 						}
@@ -1111,7 +1110,7 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 
 								//put message to USB send
 								if (!SetUSBWriteBuffer(pqMemElem, (pcan->instance + 2))) {
-									printf("%s: Error send data to CDC1\n", __func__);
+									printf("%s:ERROR send data to CDC1\n", __func__);
 									//TODO
 									//ADD error handler
 								}
@@ -1128,7 +1127,7 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 					else {
 						if (pqMemElem) {
 							if (!SetUSBWriteBuffer(pqMemElem, (pcan->instance + 2))) {
-								printf("%s: Error send data to CDC1\n", __func__);
+								printf("%s:ERROR send data to CDC1\n", __func__);
 								//TODO
 								//ADD error handler
 							}
@@ -1144,7 +1143,7 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 				}//End for ( i = 0; i < queue_count; i++ )
 				if (pqMemElem) {
 					if (!SetUSBWriteBuffer(pqMemElem, (pcan->instance + 2))) {
-						printf("%s: Error send data to CDC1\n", __func__);
+						printf("%s:ERROR send data to CDC1\n", __func__);
 						//TODO
 						//ADD error handler
 					}
@@ -1190,7 +1189,7 @@ flexcan_device_status_t FlexCanDevice_InitInstance(  uint8_t instNum, pflexcande
 	if ( g_flexcanDeviceInstance[instNum].initialize ) {
 		ret = (flexcan_device_status_t)_mutex_init(&(g_flexcanDeviceInstance[instNum].mutex_MB_sync), NULL);
 		if ( MQX_EOK != ret ) {
-			printf("Error init mutex for instance %u - %x\n", instNum, ret);
+			printf("%s:ERROR, init mutex for instance %u - %x\n", __func__, instNum, ret);
 			g_flexcanDeviceInstance[instNum].initialize = false;
 			ret = fcStatus_FLEXCAN_Error;
 		}
@@ -1209,7 +1208,7 @@ flexcan_device_status_t FlexCanDevice_InitInstance(  uint8_t instNum, pflexcande
 
 		for (i = 0; i < RX_FLEXCAN_MSGQ_MESAGES; i++) {
 			if (!FlexCanMsg_queue_enqueue (&(g_flexcanDeviceInstance[instNum].Rx_FreeMSGQueue), (QUEUE_ELEMENT_STRUCT_PTR)pqueue_elem)) {
-				printf("ERROR add element to queue\n");
+				printf("%s:ERROR add element to queue\n", __func__);
 				ret = fcStatus_FLEXCAN_Error;
 				break;
 			}
@@ -1226,14 +1225,14 @@ flexcan_device_status_t FlexCanDevice_Init( pflexcandevice_initparams_t pinstanc
 	if ( NULL != pinstance_Can0 ) {
 		ret = FlexCanDevice_InitInstance(BSP_CAN_DEVICE_0, pinstance_Can0);
 		if ( 0 > ret ) {
-			printf("Error Initialize instance 0\n");
+			printf("%s:ERROR Initializing instance 0\n", __func__);
 		}
 	}
 
 	if ( NULL != pinstance_Can1 ) {
 		ret = FlexCanDevice_InitInstance(BSP_CAN_DEVICE_1, pinstance_Can1);
 		if ( 0 > ret ) {
-			printf("Error Initialize instance 1\n");
+			printf("%s:ERROR Initializing instance 1\n", __func__);
 		}
 	}
 
@@ -1255,11 +1254,11 @@ flexcan_device_status_t FlexCanDevice_DeInit( pflexcanInstance_t pInstance ) {
 
 	ret = FlexCanDevice_Stop(pInstance);
 	if ( fcStatus_FLEXCAN_Success != ret ) {
-		printf(" Error FlexCanDevice_Stop - %x\n", ret);
+		printf("%s:ERROR FlexCanDevice_Stop - %x\n", __func__, ret);
 	}
 
 	if ( MQX_EOK != _mutex_destroy(&(pInstance->mutex_MB_sync)) ) {
-		printf(" Error _mutex_destroy\n");
+		printf("%s:ERROR _mutex_destroy\n", __func__);
 	}
 
 	pInstance->initialize = false;
@@ -1275,13 +1274,13 @@ flexcan_device_status_t FlexCanDevice_Start( pflexcanInstance_t pInstance ) {
 	}
 
 	if ( !pInstance->initialize ) {
-		printf("Instance not initialized correct\n");
+		printf("%s:ERROR, Instance not initialized correctly\n", __func__);
 		return fcStatus_FLEXCAN_Error;
 	}
 
 	ret = (flexcan_device_status_t)FLEXCAN_DRV_Init(pInstance->instance, &(pInstance->canState), &(pInstance->flexcanData));
 	if ( fcStatus_FLEXCAN_Success < ret ) {
-		printf("\r\nFLEXCAN initilization failed. result: 0x%x \n", ret);
+		printf("\n%s:ERROR:FLEXCAN initialization failed. result: 0x%x \n", __func__, ret);
 		return ret;
 	}
 	//pInstance->bScanInstanceStarted = (uint32_t)true;
@@ -1327,7 +1326,7 @@ flexcan_device_status_t FlexCanDevice_SetBitrate( pflexcanInstance_t pInstance, 
 	}
 
 	pInstance->canPeClk = canPeClk;
-	printf( "FlexCan clock %u\n", canPeClk );
+	printf( "%s:INFO:FlexCan clock %u\n", __func__, canPeClk );
 
 	/* Decide which table to use */
 	switch ( pInstance->canPeClk ) {
@@ -1383,7 +1382,7 @@ flexcan_device_status_t FlexCanDevice_GetBitrate( pflexcanInstance_t pInstance, 
 				ret = fcStatus_FLEXCAN_Error;
 			}
 		} else {
-			printf("\r\nFLEXCAN bitrate table not available for PE clock: %d \n", (int)pInstance->canPeClk);
+			printf("\n%s:ERROR, FLEXCAN bitrate table not available for PE clock: %d \n", __func__, (int)pInstance->canPeClk);
 			return fcStatus_FLEXCAN_Fail;
 		}
 	}
@@ -1439,23 +1438,23 @@ flexcan_device_status_t FlexCanDevice_setMailbox( pflexcanInstance_t pinstance, 
 	if ( enabled ) {
 		_mutex_lock(&(pinstance->mutex_MB_sync));
 		ret = FlexCanDevice_SetRxIndividualMask(pinstance, id_type, id, mask);
-		printf("\r\nFlexCAN SetRxIndividualMask ret %u MB %x\n", ret, id);
+		printf("\n%s:INFO, FlexCAN SetRxIndividualMask ret %u MB %x\n", __func__, ret, id);
 
 		if ( bprev != enabled ) {
 			rxInfo.msg_id_type = pinstance->canState.MB_config[id].iD_type;
 			rxInfo.data_length = kFlexCanMessageSize;
 
-			printf("\r\nFlexCAN MB receive config MB %x\n", id);
+			printf("\n%s:INFO, FlexCAN MB receive config MB %x\n", __func__, id);
 
 			/* Configure RX MB fields*/
 			ret = (flexcan_device_status_t)FLEXCAN_DRV_ConfigRxMb(pinstance->instance, id, &rxInfo, pinstance->canState.MB_config[id].iD_Mask);
 			if ( ret ) {
 				//numErrors++;
-				printf("\r\nFlexCAN RX MB configuration failed. result: 0x%lx\n", ret);
+				printf("\n%s:ERROR, FlexCAN RX MB configuration failed. result: 0x%lx\n", __func__, ret);
 			}
 			//Enable Interrupt and start recieving
 			ret = (flexcan_device_status_t)FLEXCAN_DRV_RxMessageBuffer(pinstance->instance, pinstance->canState.MB_config[id].iD, NULL);
-			printf("\r\nFLEXCAN_DRV_RxMessageBuffer. result: 0x%lx \n", ret);
+			printf("\n%s:INFO, FLEXCAN_DRV_RxMessageBuffer. result: 0x%lx \n", __func__, ret);
 		}
 		_mutex_unlock(&(pinstance->mutex_MB_sync));
 
@@ -1489,7 +1488,7 @@ flexcan_device_status_t FlexCanDevice_TxMessage ( pflexcanInstance_t pinstance, 
 		ret = (flexcan_device_status_t)FLEXCAN_DRV_Send(pinstance->instance, MbId, &txInfo, pTxData->msgID, pTxData->msgData, is_remote_frame);
 	}
 	else {
-		printf("Error FLEXCAN_DRV_ConfigTxMb\n");
+		printf("%s:ERROR, FLEXCAN_DRV_ConfigTxMb\n", __func__);
 	}
 
 	return ret;
@@ -1701,7 +1700,7 @@ bool parseAsciToUInt (const int8_t* line, uint8_t len, uint32_t* val){
 
 
 	if (NULL == line || (8 > len && 0 != len) || NULL == val) {
-		printf("Error parseAsciToInt\n");
+		printf("%s:ERROR parseAsciToInt\n", __func__);
 		return false;
 	}
 	*val = 0;
@@ -1726,7 +1725,7 @@ bool parseAsciToShort (const uint8_t* pbuff, uint16_t* val) {
 	uint8_t len = 4;
 
 	if (NULL == ptr || NULL == val) {
-		printf("Error parseAsciToShort\n");
+		printf("%s:ERROR parseAsciToShort\n", __func__);
 		return false;
 	}
 	*val = 0;
@@ -1756,7 +1755,7 @@ bool AllocateFIFOFilterTable (pflexcanInstance_t pinst, flexcan_rx_fifo_id_filte
 	if (pinst->pFIFOIdFilterTable && 0 != pinst->FIFOFilterTableSize) {
 		ret = _mem_free ((void*)pinst->pFIFOIdFilterTable);
 		if (MQX_OK != ret) {
-			printf("ERROR(%d) free FIFO filter table\n", ret);
+			printf("%s:ERROR(%d) free FIFO filter table\n", __func__, ret);
 			return false;
 		}
 	}
@@ -1781,7 +1780,7 @@ bool AllocateFIFOFilterTable (pflexcanInstance_t pinst, flexcan_rx_fifo_id_filte
 
 	pinst->pFIFOIdFilterTable = (flexcan_id_table_t*)_mem_alloc_zero( pinst->FIFOFilterTableSize );
 	if (NULL == pinst->pFIFOIdFilterTable) {
-		printf( "%s:ERROR alocate FIFO ID filter table elem\n", __func__);
+		printf( "%s:ERROR allocate FIFO ID filter table elem\n", __func__);
 		pinst->FIFOFilterTableSize = 0;
 		return false;
 	}
@@ -1801,7 +1800,7 @@ bool AllocateFIFOMaskTable (pflexcanInstance_t pinst)
 	if (pinst->pFIFOIdMaskTable && 0 != pinst->FIFOMaskTableSize) {
 		ret = _mem_free ((void*)pinst->pFIFOIdMaskTable);
 		if (MQX_OK != ret) {
-			printf("ERROR(%d) free FIFO mask table\n", ret);
+			printf("%s:ERROR(%d) free FIFO mask table\n", __func__, ret);
 			return false;
 		}
 	}
@@ -1812,7 +1811,7 @@ bool AllocateFIFOMaskTable (pflexcanInstance_t pinst)
 
 	pinst->pFIFOIdMaskTable = (flexcan_mask_id_table_t*)_mem_alloc_zero( (pinst->FIFOMaskTableSize * sizeof(flexcan_mask_id_table_t)));
 	if (NULL == pinst->pFIFOIdMaskTable) {
-		printf( "%s:ERROR allocate FIFO ID filter table elem\n", __func__);
+		printf( "%s:ERROR, allocate FIFO ID filter table elem\n", __func__);
 		pinst->FIFOMaskTableSize = 0;
 		return false;
 	}
@@ -1827,7 +1826,7 @@ int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *
 	bool remote_frame = false;
 
 	if (NULL == pCanMess || NULL == pDestBuff) {
-		printf("%s: Error wrong params\n", __func__);
+		printf("%s:ERROR, wrong params\n", __func__);
 		return -1;
 	}
 
@@ -1935,7 +1934,7 @@ bool CheckCommandIdSupp ( const uint8_t* buff, uint16_t* IdVal) {
 	uint8_t* src = (uint8_t*)buff;
 
 	if(NULL == buff || NULL == IdVal){
-		printf("%s: Error param\n", __func__ );
+		printf("%s:ERROR, param\n", __func__ );
 		return false;
 	}
 
