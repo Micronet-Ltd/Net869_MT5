@@ -1998,6 +1998,33 @@ int8_t convert_filter_ID_to_ASCII(flexcan_id_table_t * pFIFOIdTable, char * pbuf
 
 	return msg_size;
 }
+				 
+int8_t convert_flowcontrol_setting_to_ASCII(flowcontrol_t * pflowcontrol, uint8_t i, char * pbuff){
+	int8_t msg_size = 0;
+
+	if (pflowcontrol->bisExtended[i]){
+		*pbuff = 'F';
+		pbuff++;
+		msg_size++;
+		sprintf ( (char*)pbuff, "%08x", pflowcontrol->msg_id[i]);
+		pbuff += 8;
+		msg_size += 8;
+	}
+	else{
+		*pbuff = 'f';
+		pbuff++;
+		msg_size++;
+		sprintf ( (char*)pbuff, "%03x", pflowcontrol->msg_id[i]);
+		pbuff += 3;
+		msg_size += 3;
+	}
+
+	_mem_copy(pflowcontrol->p_response[i], (char*)pbuff, pflowcontrol->resp_size[i]);
+	pbuff += pflowcontrol->resp_size[i];
+	msg_size += pflowcontrol->resp_size[i];
+
+	return msg_size;
+}
 
 int8_t get_msg_response(pflexcanInstance_t pinst, get_message_t * msg_req, char * resp, uint8_t resp_max_size){
 	int8_t resp_size = 0;
@@ -2012,6 +2039,7 @@ int8_t get_msg_response(pflexcanInstance_t pinst, get_message_t * msg_req, char 
 		break;
 	case GET_MSG_AUTO_FLOW:
 		//TODO: get autoflow control message
+		resp_size += convert_flowcontrol_setting_to_ASCII(&(pinst->flowcontrol), msg_req->index, &resp[1]);
 		break;
 	default:
 		return -1;
