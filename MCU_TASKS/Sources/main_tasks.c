@@ -27,6 +27,7 @@
 #include "Device_control_GPIO.h"
 #include "watchdog_mgmt.h"
 #include "power_mgm.h"
+#include "version.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
@@ -374,7 +375,8 @@ void Main_task( uint32_t initial_data ) {
 	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
 
 	FPGA_read_version(&FPGA_version);
-	printf("\n FPGA version, %x", FPGA_version);
+	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
+	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
 
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
 	a8_watchdog_init();
