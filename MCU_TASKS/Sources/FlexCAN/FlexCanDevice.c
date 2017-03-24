@@ -427,6 +427,16 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 								(pcan->pFIFOIdFilterTable + i)->isExtendedFrame ? "ext": "std");
 					}
 
+					/* print all the flowcontrol responses*/
+					printf("\n\n%s:INFO, case O, Flowcontrol table[i]: ext : ID       : response \n", __func__);
+					for (uint32_t i = 0; i < FLOW_CONTROL_ARR_SIZE; i++){
+						printf("%s:INFO, case O, Flowcontrol table[%01d]: %s : %08x : %s\n", __func__, 
+							   i,
+							   pcan->flowcontrol.bisExtended[i] ? "ext" : "std",
+							   pcan->flowcontrol.msg_id[i],
+							   pcan->flowcontrol.p_response[i]);
+					}
+
 
 					ret = (flexcan_device_status_t)FLEXCAN_DRV_ConfigRxFifo(pcan->instance, initCan.fifoElemFormat, pcan->pFIFOIdFilterTable);
 					if (ret)
