@@ -763,6 +763,12 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
                             pbuff += 20 + 3;
                             msg_size -= (20 + 3);
                         }
+
+						printf("%s:INFO, case M TtRr, Set flowcontrol table[%d] IDE=%d, msgId=%x response=%s\n", __func__, 
+							   pcan->flowcontrol.idx,
+							   pcan->flowcontrol.bisExtended[pcan->flowcontrol.idx],
+							   pcan->flowcontrol.msg_id[pcan->flowcontrol.idx],
+							   pcan->flowcontrol.p_response[pcan->flowcontrol.idx]);
                     }
                     else {
 
@@ -775,7 +781,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
                         pbuff += 8;
                         msg_size -= 8;
 						
-						printf("%s:INFO, case M TtRr, Set FIFO table[%d] RTR %d IDE %d val %x\n", __func__, pcan->FIFOTableIndx,
+						printf("%s:INFO, case M TtRr, Set FIFO table[%d] RTR=%d, IDE=%d, val=%x\n", __func__, pcan->FIFOTableIndx,
 							   (pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx)->isRemoteFrame,
 							   (pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx)->isExtendedFrame,
 							   (pcan->pFIFOIdFilterTable + pcan->FIFOTableIndx)->idFilter);
@@ -900,6 +906,11 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 						erroResp = CAN_OK_RESPONCE;
 						pqMemElem = NULL;
 						pbuff = NULL;
+					}
+					else{
+						printf("%s:ERROR, case G, message_type=%d ,index=%d\n",__func__, msg_req.message_type, msg_req.index);
+						erroResp = CAN_ERROR_RESPONCE;
+						break;
 					}
 				} while (0);
 				
@@ -2036,13 +2047,28 @@ int8_t get_msg_response(pflexcanInstance_t pinst, get_message_t * msg_req, char 
 	resp_size++;
 	switch (msg_req->message_type){
 	case GET_MSG_MASK:
-		resp_size += convert_mask_to_ASCII(pinst->pFIFOIdMaskTable + msg_req->index, &resp[1]);
+		if ((msg_req->index >= 0) && (msg_req->index < pinst->FIFOMaskTableSize)){
+			resp_size += convert_mask_to_ASCII(pinst->pFIFOIdMaskTable + msg_req->index, &resp[1]);
+		}
+		else{
+			resp_size = 0;
+		}
 		break;
 	case GET_MSG_FILTER_CODE:
-		resp_size += convert_filter_ID_to_ASCII(pinst->pFIFOIdFilterTable + msg_req->index, &resp[1]);
+		if ((msg_req->index >= 0) && (msg_req->index < (pinst->FIFOFilterTableSize/ sizeof(flexcan_id_table_t)))){
+			resp_size += convert_filter_ID_to_ASCII(pinst->pFIFOIdFilterTable + msg_req->index, &resp[1]);
+		}
+		else{
+			resp_size = 0;
+		}
 		break;
 	case GET_MSG_AUTO_FLOW:
-		resp_size += convert_flowcontrol_setting_to_ASCII(&(pinst->flowcontrol), msg_req->index, &resp[1]);
+		if ((msg_req->index >= 0) && (msg_req->index < FLOW_CONTROL_ARR_SIZE)){
+			resp_size += convert_flowcontrol_setting_to_ASCII(&(pinst->flowcontrol), msg_req->index, &resp[1]);
+		}
+		else{
+			resp_size = 0;
+		}
 		break;
 	default:
 		return -1;
