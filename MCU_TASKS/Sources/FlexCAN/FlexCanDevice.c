@@ -105,7 +105,7 @@ extern FLEXCAN_Debug_t g_Flexdebug;
 flexcan_device_bitrate_t    ConvertTimetoBitRate( flexcan_time_segment_t *ptimeSegmentTable,  flexcan_time_segment_t *ptimeSegment );
 flexcan_device_status_t     FlexCanDevice_InitInstance( uint8_t instNum, pflexcandevice_initparams_t pinstance_Can );
 flexcan_device_status_t		DecodeSendTxMessage ( const char* buff, uint32_t bufflen, pflexcandevice_TX_data_t pTxData, flexcan_msgbuff_id_type_t msg_type, bool is_remote_frame );
-flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_flowcontrol_t p_flowCmdTable );
+flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_flowcontrol_t p_flowCmdTable,  uint8_t* bytes_read );
 flexcan_device_status_t 	parseHex(int8_t * line, uint8_t len, uint8_t * value);
 bool                        parseAsciToUInt (const int8_t * line, uint8_t len, uint32_t *val);
 bool 						parseAsciToShort (const uint8_t* pbuff, uint16_t* val);
@@ -201,6 +201,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 	get_message_t msg_req;
 	char get_resp[50]= {0};
 	uint32_t resp_msg_size = 0;
+	uint8_t bytes_read = 0;
 
 	if ( NULL == (pcan) || BOARD_CAN_INSTANCE <= (pcan)->instance ) {
 		printf( "%s:thread wrong param %u\n", __func__, (pcan)->instance );
@@ -749,20 +750,14 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
                         if (flowcontrol_msg_extended) {
                             pcan->flowcontrol.bisExtended[pcan->flowcontrol.idx] = TRUE;
                         }
-                        if (DecodeFlowCmd ( (char const*)pbuff, (uint32_t) msg_size, &pcan->flowcontrol )){
+                        bytes_read = 0;
+                        if (DecodeFlowCmd ( (char const*)pbuff, (uint32_t) msg_size, &pcan->flowcontrol, &bytes_read )){
 							printf("%s:ERROR, case M fF, decoding flow control message \n", __func__);
 							erroResp = CAN_ERROR_RESPONCE;
 							break;
                         }
-						
-                        if (flowcontrol_msg_extended) {
-                            pbuff += 25 + 8;
-                            msg_size -= (25 + 8);
-                        }
-                        else {
-                            pbuff += 20 + 3;
-                            msg_size -= (20 + 3);
-                        }
+						pbuff += bytes_read;
+                        msg_size -= bytes_read;
 
 						printf("%s:INFO, case M TtRr, Set flowcontrol table[%d] IDE=%d, msgId=%x response=%s\n", __func__, 
 							   pcan->flowcontrol.idx,
@@ -1639,13 +1634,14 @@ flexcan_device_status_t DecodeSendTxMessage ( const char* buff, uint32_t bufflen
 	return ret;
 }
 
-flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_flowcontrol_t p_flowCmdTable ){
+flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_flowcontrol_t p_flowCmdTable, uint8_t* bytes_read ){
     flexcan_device_status_t ret = fcStatus_FLEXCAN_Success;
     uint32_t i, id_size = CAN_MSG_ID_SIZE;
 	uint8_t tmp;
 	int8_t *pbuff =  (int8_t*)buff;
 	uint8_t idx = p_flowCmdTable->idx;
 	uint8_t msg_size = 0;
+	uint8_t resp_data_bytes_length = 0;
 
 	if ( NULL == buff || 0 == bufflen ||  NULL == p_flowCmdTable ) {
 		return fcStatus_FLEXCAN_InvalidArgument;
@@ -1659,13 +1655,15 @@ flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_f
 		id_size = CAN_MSG_ID_SIZE_EXT;
 		p_flowCmdTable->p_response[idx][0] = 'T';
 		p_flowCmdTable->resp_size[idx] += 1;
-		msg_size = CAN_FLOW_CONTROL_MSG_SIZE_EXT; 
+		parseHex(pbuff + 8 + 8, 1, &resp_data_bytes_length); /* Get 'L' char and convert to int */
+		msg_size = 8 + (resp_data_bytes_length*2) + 1; /* msg ID + datachars + \r */
 	}
 	else{
 		id_size = CAN_MSG_ID_SIZE;
 		p_flowCmdTable->p_response[idx][0] = 't';
 		p_flowCmdTable->resp_size[idx] += 1;
-		msg_size = CAN_FLOW_CONTROL_MSG_SIZE;
+		parseHex(pbuff + 3 + 3, 1, &resp_data_bytes_length); /* Get 'L' char and convert to int */
+		msg_size = 3 + (resp_data_bytes_length*2) + 1; /* msg ID + datachars + \r */
 	}
 
 	/* convert ID from ASCII to uint */
@@ -1675,6 +1673,7 @@ flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_f
 			return fcStatus_FLEXCAN_Error;
 		p_flowCmdTable->msg_id[idx] |= (tmp & 0x0F);
 		pbuff++;
+		(*bytes_read)++;
 	}
 
 	/* copy t or T message for flowcontrol response */
@@ -1683,8 +1682,7 @@ flexcan_device_status_t		DecodeFlowCmd ( const char* buff, uint32_t bufflen, p_f
 	p_flowCmdTable->p_response[idx][p_flowCmdTable->resp_size[idx]] = '\r';
 	p_flowCmdTable->resp_size[idx] += 1;
 
-	pbuff += (p_flowCmdTable->resp_size[idx] - id_size);
-	pbuff++;
+	(*bytes_read) += msg_size;
     return ret;
 }
 
