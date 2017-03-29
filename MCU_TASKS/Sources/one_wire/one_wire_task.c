@@ -6,7 +6,7 @@
 #include "protocol.h"
 #include "control_task.h"
 
-#define ONE_WIRE_DEBUG 0
+//#define ONE_WIRE_DEBUG 1
 #define ONE_WIRE_DEFAULT_TIME_DELAY 500
 #define ONE_WIRE_QUICK_TIME_DELAY	5
 
