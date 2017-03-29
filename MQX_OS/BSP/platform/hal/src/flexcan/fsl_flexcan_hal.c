@@ -251,6 +251,8 @@ void FLEXCAN_HAL_GetTimeSegments(
  * transmission.
  *
  *END**************************************************************************/
+/* Having issue where extended messages were not being sent correctly on high optimization */
+#pragma optimize=none
 flexcan_status_t FLEXCAN_HAL_SetTxMsgBuff(
 	CAN_Type * base,
 	uint32_t msgBuffIdx,
@@ -339,6 +341,11 @@ flexcan_status_t FLEXCAN_HAL_SetTxMsgBuff(
 				flexcan_reg_ptr->MB[msgBuffIdx].CS |= CAN_CS_RTR_MASK;
 				cs->code = kFlexCanTXData;
 			}
+			else if (cs->code == kFlexCanTXData || cs->code == kFlexCanTXTanswer)
+			{
+				/* clear RTR bit*/
+				flexcan_reg_ptr->MB[msgBuffIdx].CS &= ~CAN_CS_RTR_MASK;
+			}
 
 			/* Reset the code*/
 			flexcan_reg_ptr->MB[msgBuffIdx].CS &= ~(CAN_CS_CODE_MASK);
@@ -369,6 +376,12 @@ flexcan_status_t FLEXCAN_HAL_SetTxMsgBuff(
 				flexcan_reg_ptr->MB[msgBuffIdx].CS |= CAN_CS_RTR_MASK;
 				cs->code = kFlexCanTXData;
 			}
+			else if (cs->code == kFlexCanTXData || cs->code == kFlexCanTXTanswer)
+			{
+				/* clear RTR bit*/
+				flexcan_reg_ptr->MB[msgBuffIdx].CS &= ~CAN_CS_RTR_MASK;
+			}
+
 
 			/* Reset the code*/
 			flexcan_reg_ptr->MB[msgBuffIdx].CS &= ~CAN_CS_CODE_MASK;
@@ -1101,7 +1114,8 @@ void FLEXCAN_HAL_SetRxFifoGlobalExtMask(
 	FLEXCAN_HAL_EnterFreezeMode(base);
 
 	/* 29-bit extended mask*/
-	CAN_WR_RXFGMASK(base, CAN_ID_EXT(extMask));
+	//CAN_WR_RXFGMASK(base, CAN_ID_EXT(extMask));
+	CAN_WR_RXFGMASK(base, (((extMask & 0x1FFFFFFF)<<1))| 0x40000000); //TODO: Test by Abid
 
 	/* De-assert Freeze Mode*/
 	FLEXCAN_HAL_ExitFreezeMode(base);
@@ -1127,7 +1141,7 @@ flexcan_status_t FLEXCAN_HAL_SetRxIndividualStdMask(
 	FLEXCAN_HAL_EnterFreezeMode(base);
 
 	/* 11 bit standard mask*/
-	CAN_WR_RXIMR(base, msgBuffIdx, CAN_ID_STD(stdMask));
+	CAN_WR_RXIMR(base, msgBuffIdx, ((CAN_ID_STD(stdMask))<<1));
 
 	/* De-assert Freeze Mode*/
 	FLEXCAN_HAL_ExitFreezeMode(base);
@@ -1155,7 +1169,8 @@ flexcan_status_t FLEXCAN_HAL_SetRxIndividualExtMask(
 	FLEXCAN_HAL_EnterFreezeMode(base);
 
 	/* 29-bit extended mask*/
-	CAN_WR_RXIMR(base, msgBuffIdx, CAN_ID_EXT(extMask));
+	//CAN_WR_RXIMR(base, msgBuffIdx, CAN_ID_EXT(extMask));
+	CAN_WR_RXIMR(base, msgBuffIdx, (((extMask & 0x1FFFFFFF)<<1))| 0x40000000); //This modification only works when set up to use FIFO
 
 	/* De-assert Freeze Mode*/
 	FLEXCAN_HAL_ExitFreezeMode(base);
