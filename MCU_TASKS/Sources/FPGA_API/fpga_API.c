@@ -16,6 +16,8 @@
 #define FPGA_I2C_BAUD_RATE					400
 #define FPGA_I2C_TIMEOUT					100
 
+#define FPGA_ONE_WIRE_MAX_RETRIES			100
+
 #define FPGA_UART_RX_BUF_SIZE 		100
 
 const uart_user_config_t fpga_uart_config = {
@@ -348,7 +350,7 @@ bool FPGA_one_wire_ready_status (void)
 	uint32_t status;
 	uint32_t counter;
         
-	for (counter = 0; counter < 1000; counter++) {
+	for (counter = 0; counter < FPGA_ONE_WIRE_MAX_RETRIES; counter++) {
 		if (!FPGA_GetData (FPGA_REG_1WIRE_CONTROL_REG, &status))
 			return FALSE;
 
@@ -360,7 +362,8 @@ bool FPGA_one_wire_ready_status (void)
 		if ((status & FPGA_REG_1WIRE_CONTROL_READY_BIT) != 0)
 			break;
 	}
-	return (counter < 1000);
+	//printf("%s: counter = %d\n",__func__, counter);
+	return (counter < FPGA_ONE_WIRE_MAX_RETRIES);
 }
 
 
