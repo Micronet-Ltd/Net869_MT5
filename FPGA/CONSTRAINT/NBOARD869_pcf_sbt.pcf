@@ -47,6 +47,9 @@ set_io gpio_in[6] M12
 set_io gpio_in[7] L14
 set_io gpio_test  D1
 
+set_io OneWire_Rx J3
+set_io OneWire_Tx J1
+
 set_io irq C3
 #set_io rst H1
 set_io clk A7
