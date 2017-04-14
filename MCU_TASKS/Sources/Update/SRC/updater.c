@@ -91,17 +91,17 @@ const	char*	nCRC_str = "nCRC";
 //
 typedef enum
 {
-  REV,
-  STA,
-  STB,
-  ERA,
-  ERB,
-  RAB,
-  PFD,
+  REV, /* 0 */
+  STA, /* 1 */
+  STB, /* 2 */
+  ERA, /* 3 */
+  ERB, /* 4 */
+  RAB, /* 5 */
+  PFD, /* 6 */
 //------- FPGA commands --------
-  FRE,
-  STF,
-  SFD,
+  FRE, /* 7 */
+  STF, /* 8 */
+  SFD, /* 9 */
   UNN	= -1
 } cmd_id;
 
