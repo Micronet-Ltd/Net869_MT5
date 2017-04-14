@@ -133,7 +133,7 @@ bool FPGA_one_wire_disable(void);
 bool FPGA_one_wire_reset(void);
 bool FPGA_one_wire_write_byte(uint8_t data);
 bool FPGA_one_wire_read_byte(uint8_t *data);
-bool FPGA_one_wire_get_device_present(bool *device_present);
+bool FPGA_one_wire_get_device_present(void);
 bool FPGA_one_wire_ready_status(void);
 
 

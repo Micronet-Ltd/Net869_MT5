@@ -23,14 +23,12 @@ void send_one_wire_data (uint8_t *one_wire_data, uint8_t size);
 void one_wire_task (uint32_t initial_data)
 {
 	uint32_t i;
-    uint32_t data_tx;
 	uint32_t wait_time = ONE_WIRE_DEFAULT_TIME_DELAY;
 	one_wire_error_t err = {0, 0, 0};
 #ifdef ONE_WIRE_DEBUG
 	uint32_t count = 0;
 #endif        
     uint8_t data_rx [10] = {0};
-	bool     device_present;
 
 	printf ("\n1-WIRE Task: Start \n");
 
@@ -42,8 +40,7 @@ void one_wire_task (uint32_t initial_data)
 		
 		FPGA_one_wire_reset ();
 		
-		FPGA_one_wire_get_device_present (&device_present);
-		if (!device_present) 
+		if (!FPGA_one_wire_get_device_present()) 
 		{
 			wait_time = ONE_WIRE_DEFAULT_TIME_DELAY;
 			continue;

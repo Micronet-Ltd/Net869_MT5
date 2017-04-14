@@ -91,7 +91,7 @@ bool FPGA_read_irq_mask (uint32_t *status)
 
 bool FPGA_set_irq (uint32_t irqMask)
 {
-	uint32_t data;
+	uint32_t data = 0;
 
 	if (!FPGA_GetData (FPGA_REG_ADDR_IRQ_MASK, &data))
 		return false;
@@ -102,7 +102,7 @@ bool FPGA_set_irq (uint32_t irqMask)
 
 bool FPGA_clear_irq (uint32_t irqMask)
 {
-	uint32_t data;
+	uint32_t data = 0;
 
 	if (!FPGA_GetData (FPGA_REG_ADDR_IRQ_MASK, &data))
 		return false;
@@ -117,7 +117,7 @@ bool FPGA_clear_irq (uint32_t irqMask)
 *****************************************************************/
 bool FPGA_read_led_status  (uint8_t ledNum, uint8_t *brightness, uint8_t *red, uint8_t *green, uint8_t *blue)
 {
-	uint32_t data;
+	uint32_t data = 0;
 	bool status = false;
 
 	switch (ledNum) {
@@ -138,7 +138,7 @@ bool FPGA_read_led_status  (uint8_t ledNum, uint8_t *brightness, uint8_t *red, u
 
 bool FPGA_write_led_status (uint8_t ledNum, uint8_t brightness, uint8_t red, uint8_t green, uint8_t blue)
 {
-	uint32_t data;
+	uint32_t data = 0;
 
 	data  = ((brightness) << FPGA_REG_LED_BRIGHTNESS_SHIFT);
 	data |= ((red)        << FPGA_REG_LED_RED_SHIFT       );
@@ -158,7 +158,7 @@ bool FPGA_write_led_status (uint8_t ledNum, uint8_t brightness, uint8_t red, uin
 *****************************************************************/
 bool FPGA_J1708_enable (void)
 {
-	uint32_t data;
+	uint32_t data = 0;
 
 	if (!FPGA_GetData (FPGA_REG_ADDR_J1708_CONTROL , &data))
 		return false;
@@ -169,7 +169,7 @@ bool FPGA_J1708_enable (void)
 
 bool FPGA_J1708_disable (void)
 {
-	uint32_t data;
+	uint32_t data = 0;
 
 	if (!FPGA_GetData (FPGA_REG_ADDR_J1708_CONTROL , &data))
 		return false;
@@ -184,7 +184,7 @@ bool FPGA_J1708_disable (void)
 
 bool FPGA_read_J1708_status (bool *status)
 {
-	uint32_t data;
+	uint32_t data = 0;
 
 	if (!FPGA_GetData (FPGA_REG_ADDR_J1708_CONTROL , &data))
 		return false;
@@ -195,7 +195,7 @@ bool FPGA_read_J1708_status (bool *status)
 
 bool FPGA_read_J1708_priority (uint8_t *priority)
 {
-	uint32_t data;
+	uint32_t data = 0;
 
 	if (!FPGA_GetData (FPGA_REG_ADDR_J1708_CONTROL , &data))
 		return false;
@@ -206,7 +206,7 @@ bool FPGA_read_J1708_priority (uint8_t *priority)
 
 bool FPGA_write_J1708_priority (uint8_t *priority)
 {
-	uint32_t data;
+	uint32_t data = 0;
 
 	if (priority == NULL)
 		return false;
@@ -224,7 +224,7 @@ bool FPGA_write_J1708_priority (uint8_t *priority)
 *****************************************************************/
 bool FPGA_read_J1708_rx_register (bool *status, uint8_t *len)
 {
-	uint32_t data;
+	uint32_t data = 0;
 
 	if (!FPGA_GetData (FPGA_REG_ADDR_J1708_RX_LEN , &data))
 		return false;
@@ -239,7 +239,7 @@ bool FPGA_read_J1708_rx_register (bool *status, uint8_t *len)
 *****************************************************************/
 bool FPGA_read_J1708_tx_register (bool *status, uint8_t *len)
 {
-	uint32_t data;
+	uint32_t data = 0;
 
 	if (!FPGA_GetData (FPGA_REG_ADDR_J1708_TX_LEN , &data))
 		return false;
@@ -303,7 +303,7 @@ bool FPGA_one_wire_write_byte (uint8_t data)
 
 bool FPGA_one_wire_read_byte (uint8_t *data)
 {
-	uint32_t local_data;
+	uint32_t local_data = 0;
 	uint32_t command = FPGA_REG_1WIRE_CONTROL_READ_BIT | FPGA_REG_1WIRE_CONTROL_ENABLE_BIT;
 	
 	if (data == NULL)
@@ -327,36 +327,32 @@ bool FPGA_one_wire_read_byte (uint8_t *data)
 	return true;
 }
 
-bool FPGA_one_wire_get_device_present (bool *device_present)
+bool FPGA_one_wire_get_device_present (void)
 {
-	uint32_t status;
-	
-	if (device_present == NULL)
-		return false;
+	uint32_t status = 0;
 
 	if (!FPGA_one_wire_ready_status ())
 		return false;
 	
 	if (!FPGA_GetData (FPGA_REG_1WIRE_CONTROL_REG, &status))
-		return FALSE;
-
-	*device_present = ((status & FPGA_REG_1WIRE_CONTROL_PRESENT_BIT) != 0);
-	return true;
+		return false;
+	
+	return ((status & FPGA_REG_1WIRE_CONTROL_PRESENT_BIT) != 0);
 }
   	
 
 bool FPGA_one_wire_ready_status (void)
 {
-	uint32_t status;
-	uint32_t counter;
+	uint32_t status = 0;
+	uint32_t counter = 0;
         
 	for (counter = 0; counter < FPGA_ONE_WIRE_MAX_RETRIES; counter++) {
 		if (!FPGA_GetData (FPGA_REG_1WIRE_CONTROL_REG, &status))
-			return FALSE;
+			return false;
 
                 // if module disabled
 		if ((status & FPGA_REG_1WIRE_CONTROL_ENABLE_BIT) == 0)
-			return FALSE;
+			return false;
 		
                 // if module is ready
 		if ((status & FPGA_REG_1WIRE_CONTROL_READY_BIT) != 0)
