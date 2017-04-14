@@ -771,7 +771,7 @@
         <option>
           <name>IlinkConfigDefines</name>
           <state>__ram_vector_table__=1</state>
-          <state>__stack_size__=0x1200</state>
+          <state>__stack_size__=0x800</state>
           <state>__heap_size__=0x4000</state>
         </option>
         <option>
@@ -1813,7 +1813,7 @@
         <option>
           <name>IlinkConfigDefines</name>
           <state>__ram_vector_table__=1</state>
-          <state>__stack_size__=0x1200</state>
+          <state>__stack_size__=0x800</state>
           <state>__heap_size__=0x4000</state>
         </option>
         <option>
