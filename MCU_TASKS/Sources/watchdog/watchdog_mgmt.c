@@ -128,7 +128,11 @@ bool watchdog_mcu_init()
 
 void a8_watchdog_init(void)
 {
-	_event_create ("event.WATCHDOG");
+	if (_event_create ("event.WATCHDOG") != MQX_OK)
+	{
+		printf("%s: event.WATCHODOG create failed\n", __func__);
+		_mqx_exit(0);
+	}
 	_event_open   ("event.WATCHDOG", &a8_watchdog_event_g);
 	_lwtimer_create_periodic_queue(&lwtimer_period_a8_pet_g, WATCHDOG_A8_PET_TICKS, 0);
 	_lwtimer_create_periodic_queue(&lwtimer_period_a8_check_g, WATCHDOG_A8_CHECK_TICKS, 0);
