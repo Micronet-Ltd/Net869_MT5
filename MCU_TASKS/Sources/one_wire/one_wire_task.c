@@ -8,7 +8,7 @@
 
 //#define ONE_WIRE_DEBUG 1
 #define ONE_WIRE_DEFAULT_TIME_DELAY 500
-#define ONE_WIRE_QUICK_TIME_DELAY	5
+#define ONE_WIRE_QUICK_TIME_DELAY	50
 
 typedef struct
 {
