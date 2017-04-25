@@ -85,6 +85,7 @@ void handle_watchdog_expiry(void * td_ptr)
 	if (GPIO_DRV_ReadPinInput (OTG_ID) == 0)
 	{
 		printf("\r\n watchdog Expired, but NOT resetting because in debug mode! \r\n");
+		_watchdog_start(WATCHDOG_MCU_MAX_TIME);
 		return;
 	}
 	
