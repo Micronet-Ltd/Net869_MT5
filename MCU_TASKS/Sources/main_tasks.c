@@ -372,10 +372,6 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create 1-wire task\n");
 	}
 
-	configure_otg_for_host_or_device();
-	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
-	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
-
 	_event_create ("event.EXTERNAL_GPIOS");
 	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
 
@@ -393,6 +389,7 @@ void Main_task( uint32_t initial_data ) {
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
+		configure_otg_for_host_or_device();
 #ifdef DEBUG_BLINKING_RIGHT_LED
 		FPGA_write_led_status(LED_RIGHT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
 
@@ -441,23 +438,31 @@ void OTG_CONTROL (void)
 
 void configure_otg_for_host_or_device(void)
 {
-	if (GPIO_DRV_ReadPinInput (OTG_ID) == 1)
-	{
-		/* Connect D1 <-> D MCU or HUB */
-		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
-		GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+	static bool prev_otg_id_state = true;
+	bool curr_otg_id_state = false;
 
-		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-		GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
-	}
-	else
-	{
-		/* Connect D2 <-> D A8 OTG */
-		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
-		GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
+	curr_otg_id_state = GPIO_DRV_ReadPinInput (OTG_ID);
 
-		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-		GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+	if (curr_otg_id_state != prev_otg_id_state){
+		prev_otg_id_state =  curr_otg_id_state;
+		if (curr_otg_id_state == true)
+		{
+			/* Connect D1 <-> D MCU or HUB */
+			printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
+			GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+
+			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+			GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
+		}
+		else
+		{
+			/* Connect D2 <-> D A8 OTG */
+			printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
+			GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
+
+			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+			GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+		}
 	}
 }
 
