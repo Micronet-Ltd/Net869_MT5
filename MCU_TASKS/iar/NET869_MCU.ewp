@@ -804,7 +804,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>C:\Users\abid.esmail\Documents\micronet\source\Net869_MT5\MCU_TASKS\linker\MK20DX256xxx10_flash_debug.icf</state>
+          <state>C:\Users\abid.esmail\Documents\micronet\source\Net869_MT5\MCU_TASKS\linker\MK20DX256xxx10_flash.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
