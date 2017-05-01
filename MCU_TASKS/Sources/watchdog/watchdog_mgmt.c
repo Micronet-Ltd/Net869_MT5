@@ -13,7 +13,7 @@
 #include "gpio_pins.h"
 
 //#define WATCHDOG_DEBUG
-#define MS_PER_TICK	5
+
 #define WATCHDOG_MCU_MAX_TICKS 10000/MS_PER_TICK /* 10000ms */
 #define WATCHDOG_A8_MAX_TICKS 300000/MS_PER_TICK /* 5 minutes */
 #define WATCHDOG_A8_CHECK_TICKS 30000/MS_PER_TICK /* 30 seconds */
@@ -80,6 +80,14 @@ void shutdown_fpga_accel(void)
 void handle_watchdog_expiry(void * td_ptr)
 {
 	uint8_t i;
+	
+	/* if in Debug mode, do not reset the MCU */
+	if (GPIO_DRV_ReadPinInput (OTG_ID) == 0)
+	{
+		printf("\r\n watchdog Expired, but NOT resetting because in debug mode! \r\n");
+		return;
+	}
+	
 	printf("\r\n watchdog Expired, resetting MCU! \r\n");
 	for (i=0; i < 3; i++)
 	{
@@ -120,7 +128,11 @@ bool watchdog_mcu_init()
 
 void a8_watchdog_init(void)
 {
-	_event_create ("event.WATCHDOG");
+	if (_event_create ("event.WATCHDOG") != MQX_OK)
+	{
+		printf("%s: event.WATCHODOG create failed\n", __func__);
+		_mqx_exit(0);
+	}
 	_event_open   ("event.WATCHDOG", &a8_watchdog_event_g);
 	_lwtimer_create_periodic_queue(&lwtimer_period_a8_pet_g, WATCHDOG_A8_PET_TICKS, 0);
 	_lwtimer_create_periodic_queue(&lwtimer_period_a8_check_g, WATCHDOG_A8_CHECK_TICKS, 0);

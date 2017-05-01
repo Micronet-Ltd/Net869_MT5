@@ -54,7 +54,8 @@ static flexcan_status_t FLEXCAN_DRV_StartSendData(
 					uint32_t mb_idx,
 					flexcan_data_info_t *tx_info,
 					uint32_t msg_id,
-					uint8_t *mb_data
+					uint8_t *mb_data,
+					bool is_remote_frame
 					);
 static flexcan_status_t FLEXCAN_DRV_StartRxMessageBufferData(
 					uint8_t instance,
@@ -359,7 +360,8 @@ flexcan_status_t FLEXCAN_DRV_SendBlocking(
 	flexcan_data_info_t *tx_info,
 	uint32_t msg_id,
 	uint8_t *mb_data,
-	uint32_t timeout_ms)
+	uint32_t timeout_ms, 
+	bool is_remote_frame)
 {
 	assert(instance < CAN_INSTANCE_COUNT);
 
@@ -369,7 +371,7 @@ flexcan_status_t FLEXCAN_DRV_SendBlocking(
 	osa_status_t syncStatus;
 
 	state->isTxBlocking = true;
-	result = FLEXCAN_DRV_StartSendData(instance, mb_idx, tx_info, msg_id, mb_data);
+	result = FLEXCAN_DRV_StartSendData(instance, mb_idx, tx_info, msg_id, mb_data, is_remote_frame);
 	if(result == kStatus_FLEXCAN_Success)
 	{
 		/* Enable message buffer interrupt*/
@@ -409,7 +411,8 @@ flexcan_status_t FLEXCAN_DRV_Send(
 	uint32_t mb_idx,
 	flexcan_data_info_t *tx_info,
 	uint32_t msg_id,
-	uint8_t *mb_data)
+	uint8_t *mb_data, 
+	bool is_remote_frame)
 {
 	assert(instance < CAN_INSTANCE_COUNT);
 
@@ -419,7 +422,7 @@ flexcan_status_t FLEXCAN_DRV_Send(
 
 	state->isTxBlocking = false;
 
-	result = FLEXCAN_DRV_StartSendData(instance, mb_idx, tx_info, msg_id, mb_data);
+	result = FLEXCAN_DRV_StartSendData(instance, mb_idx, tx_info, msg_id, mb_data, is_remote_frame);
 	if(result != kStatus_FLEXCAN_Success) {
 		return result;
 	}
@@ -1054,11 +1057,14 @@ static flexcan_status_t FLEXCAN_DRV_StartSendData(
 					uint32_t mb_idx,
 					flexcan_data_info_t *tx_info,
 					uint32_t msg_id,
-					uint8_t *mb_data
+					uint8_t *mb_data,
+					bool is_remote_frame
 					)
 {
 	flexcan_status_t result;
-	flexcan_msgbuff_code_status_t cs;
+	flexcan_msgbuff_code_status_t cs = {.code = kFlexCanTXData,
+										.msgIdType = kFlexCanMsgIdStd,
+										.dataLen = 0};
 	flexcan_state_t * state = g_flexcanStatePtr[instance];
 	CAN_Type * base = g_flexcanBase[instance];
 
@@ -1067,7 +1073,12 @@ static flexcan_status_t FLEXCAN_DRV_StartSendData(
 	cs.msgIdType = tx_info->msg_id_type;
 
 	/* Set up FlexCAN message buffer for transmitting data*/
-	cs.code = kFlexCanTXData;
+	if (is_remote_frame){
+		cs.code = kFlexCanTXRemote;
+	}
+	else{
+		cs.code = kFlexCanTXData;
+	}
 
     result = FLEXCAN_HAL_SetTxMsgBuff(base, mb_idx, &cs, msg_id, mb_data);
     if (kStatus_FLEXCAN_Success == result) {

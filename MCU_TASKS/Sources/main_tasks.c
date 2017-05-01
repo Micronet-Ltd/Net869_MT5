@@ -26,6 +26,8 @@
 #include "Wiggle_sensor.h"
 #include "Device_control_GPIO.h"
 #include "watchdog_mgmt.h"
+#include "power_mgm.h"
+#include "version.h"
 
 #define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
@@ -56,6 +58,8 @@ extern WIGGLE_SENSOR_t sensor_g;
 extern void * g_acc_event_h;
 extern void * power_up_event_g;
 extern void * a8_watchdog_event_g;
+extern void * cpu_status_event_g;
+tick_measure_t cpu_status_time_g = {0, 0, 0};
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
@@ -286,8 +290,10 @@ void Main_task( uint32_t initial_data ) {
 	}
 
 	//Enable UART
-	GPIO_DRV_SetPinOutput(UART_ENABLE);
+	GPIO_DRV_SetPinOutput(UART_ENABLE);	
 	GPIO_DRV_SetPinOutput(FTDI_RSTN);
+	
+	//GPIO_DRV_SetPinOutput(RS485_ENABLE);
 	/*Note: rtc_init() is intentionally placed before accelerometer init 
 	because I was seeing  i2c arbitration errors - Abid */
 	rtc_init();
@@ -354,11 +360,16 @@ void Main_task( uint32_t initial_data ) {
 	else
 		printf("\nMain UPDATER_TASK created\n");
 
-
 	g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
 	if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create CONTROL_TASK\n");
+	}
+	
+	g_TASK_ids[ONE_WIRE_TASK] = _task_create(0, ONE_WIRE_TASK, 0);
+	if (g_TASK_ids[ONE_WIRE_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create 1-wire task\n");
 	}
 
 	configure_otg_for_host_or_device();
@@ -367,12 +378,11 @@ void Main_task( uint32_t initial_data ) {
 
 	_event_create ("event.EXTERNAL_GPIOS");
 	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
-
-	FPGA_read_version(&FPGA_version);
-	printf("\n FPGA version, %x", FPGA_version);
 	
-	test_setup_swc();
+	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
+	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
 
+	test_setup_swc();
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
 	a8_watchdog_init();
 #endif
@@ -492,11 +502,27 @@ void MQX_PORTB_IRQHandler(void)
 	}
 }
 
+
 void MQX_PORTC_IRQHandler(void)
 {
-	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO0)) {
+	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO0)) 
+	{
 		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
 		_event_set(g_J1708_event_h, EVENT_J1708_RX);
+	}
+	if (GPIO_DRV_IsPinIntPending (CPU_STATUS)) 
+	{
+		GPIO_DRV_ClearPinIntFlag(CPU_STATUS);
+		if (GPIO_DRV_ReadPinInput(CPU_STATUS))
+		{
+			_time_get_elapsed_ticks(&(cpu_status_time_g.start_ticks));
+			_event_set(cpu_status_event_g, EVENT_CPU_STATUS_HIGH);
+		}
+		else
+		{
+			_time_get_elapsed_ticks(&(cpu_status_time_g.end_ticks));
+			_event_set(cpu_status_event_g, EVENT_CPU_STATUS_LOW);
+		}
 	}
 }
 

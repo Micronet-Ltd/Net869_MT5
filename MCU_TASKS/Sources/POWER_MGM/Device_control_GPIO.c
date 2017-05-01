@@ -81,16 +81,20 @@
 #include "fsl_clock_manager.h"
 #include "mqx_prv.h"
 #include "watchdog_mgmt.h"
+#include <lwtimer.h>
 
 #define DEVICE_CONTROL_TIME_ON_TH				 3200		// number of mili-seconds pulse for turning device on
 #define DEVICE_CONTROL_TIME_OFF_TH				 3200		// number of mili-seconds pulse for turning device off
 #define DEVICE_CONTROL_TIME_RESET_TH			  500		// number of mili-seconds pulse for reseting device
 
 #define BACKUP_RECOVER_TIME_TH					 2000		// number of mili-seconds to try power failure overcome (device is powered by supercap)
-#define BACKUP_POWER_TIME_TH					20000		// number of mili-seconds to power device by supercap
+//NOTE: The BACKUP_POWER_TIME_TH needs to be greater than the OS 'off_delay’ timeout which is defaulted to 19sec in OS 21.0 
+#define BACKUP_POWER_TIME_TH					24000		// number of mili-seconds to power device by supercap
 
 #define CPU_OFF_CHECK_TIME						1000		// time between checks for CPU/A8 off
 #define MAX_CPU_OFF_CHECK_TIME					15000		// Max time to wait before shutting off the unit by killing the power
+
+#define MAX_CPU_TICKS_TAKEN_TO_BOOT				45000/MS_PER_TICK  //maximum time to wait for the CPU_STATUS signal to be received from the A8
 
 #define MCU_AND_CPU_BOARD_CONNECTED
 
@@ -113,6 +117,9 @@ uint8_t led_blink_cnt_g     = 0 ;
 extern uint32_t ignition_threshold_g;
 extern volatile uint32_t a8_watchdog_count_g;
 extern void * power_up_event_g;
+
+LWTIMER_PERIOD_STRUCT lwtimer_period_a8_turn_on_g;
+LWTIMER_STRUCT lwtimer_a8_turn_on_g;
 
 void Device_control_GPIO        (uint32_t * time_diff);
 bool Device_control_GPIO_status (void);
@@ -335,6 +342,34 @@ void Device_get_turn_on_reason(uint8_t * turn_on_reason)
 	*turn_on_reason = turn_on_condition_g;
 }
 
+void Device_off_req_immediate(bool clean_reset)
+{
+	uint32_t cpu_off_wait_time = 0;
+	uint8_t cpu_status_pin = 0;
+
+	/* Disable the Accelerometer and RTC because we were seeing I2C issues where 
+	SCL line was stuck on boot up */
+	AccDisable();
+	/* Shut off power to the accelerometer */
+	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
+	backup_power_cnt_g = 0;
+	led_blink_cnt_g = 0;
+	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
+	/* Shut off power to the accelerometer */
+	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
+
+	GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
+
+	if (clean_reset)
+	{
+		NVIC_SystemReset();
+	}
+	else
+	{
+		WDG_RESET_MCU();
+	}
+}
+
 void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 {
 	uint32_t cpu_off_wait_time = 0;
@@ -473,6 +508,12 @@ void Device_turn_on  (void)
 	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = true;
+
+	/* Create a timer that calls a watchdog reset if the A8 does NOT turn ON in MAX_CPU_TICKS_TAKEN_TO_BOOT */
+	/* NOTE: This timer NEEDs to be cancelled if a successful bootup happens */
+	_lwtimer_create_periodic_queue(&lwtimer_period_a8_turn_on_g, MAX_CPU_TICKS_TAKEN_TO_BOOT, MAX_CPU_TICKS_TAKEN_TO_BOOT);
+	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_turn_on_g, &lwtimer_a8_turn_on_g, 0, \
+		(LWTIMER_ISR_FPTR)handle_watchdog_expiry, 0);
 }
 
 void Device_turn_off (void)
