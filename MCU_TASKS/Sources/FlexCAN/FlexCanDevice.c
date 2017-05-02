@@ -480,8 +480,8 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 
 						//Set Speed to Normal 33KHz of NCV7356
 						GPIO_DRV_SetPinOutput(SWC_MODE0);
-						//GPIO_DRV_SetPinOutput(SWC_MODE1); // Configuratio Normal 33KHz Mode Mode0 High Mode1 High
-						GPIO_DRV_ClearPinOutput(SWC_MODE1); // Configuratio High up to 100Khz Mode Mode0 High Mode1 Low
+						GPIO_DRV_SetPinOutput(SWC_MODE1); // Configuratio Normal 33KHz Mode Mode0 High Mode1 High
+						//GPIO_DRV_ClearPinOutput(SWC_MODE1); // Configuratio High up to 100Khz Mode Mode0 High Mode1 Low
 
 						//Enable SWC
 						GPIO_DRV_ClearPinOutput(SWC_ENABLE);
