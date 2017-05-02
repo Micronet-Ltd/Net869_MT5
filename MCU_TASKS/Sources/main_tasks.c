@@ -345,13 +345,13 @@ void Main_task( uint32_t initial_data ) {
 	if ( g_TASK_ids[CAN_TASK_TX_1] == MQX_NULL_TASK_ID ) {
 			printf("Could not create CAN_TASK_TX for inst %u \n", can_Device_1->instance);
 	}
-
+/*
 	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
 	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create ACC_TASK\n");
 	}
-
+*/
 	g_TASK_ids[UPDATER_TASK] = _task_create(0, UPDATER_TASK, 0);
 	if (g_TASK_ids[UPDATER_TASK] == MQX_NULL_TASK_ID)
 	{
@@ -359,19 +359,20 @@ void Main_task( uint32_t initial_data ) {
 	}
 	else
 		printf("\nMain UPDATER_TASK created\n");
-
+/*
 	g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
 	if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create CONTROL_TASK\n");
 	}
-	
+*/
+/*	
 	g_TASK_ids[ONE_WIRE_TASK] = _task_create(0, ONE_WIRE_TASK, 0);
 	if (g_TASK_ids[ONE_WIRE_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create 1-wire task\n");
 	}
-
+*/
 	configure_otg_for_host_or_device();
 	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
