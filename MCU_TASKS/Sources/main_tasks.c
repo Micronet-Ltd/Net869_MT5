@@ -247,6 +247,9 @@ void Main_task( uint32_t initial_data ) {
 	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
 
+	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
+	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
+
 //    // I2C0 Initialization
 //    NVIC_SetPriority(I2C0_IRQn, I2C_NVIC_IRQ_Priority);
 //    OSA_InstallIntHandler(I2C0_IRQn, MQX_I2C0_IRQHandler);
@@ -667,6 +670,30 @@ void MQX_PORTE_IRQHandler(void)
 			{
 				/*OS/MSM out of suspend */
 				//GPIO_DRV_ClearPinIntFlag (USB_OTG_OE); /* Enable USB */
+				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+			}
+		}
+	}
+
+	if (GPIO_DRV_IsPinIntPending(CPU_INT))
+	{
+		GPIO_DRV_ClearPinIntFlag(CPU_INT);
+		if (a8_booted_up_correctly_g)
+		{
+			if (GPIO_DRV_ReadPinInput(CPU_INT) == 0)
+			{
+				/* OS/MSM requested a suspend */
+				GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
+				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+				GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
+			}
+			else
+			{
+				/*OS/MSM out of suspend */
+				GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+				GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
 				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
 			}
 		}
