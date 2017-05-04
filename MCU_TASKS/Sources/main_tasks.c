@@ -59,7 +59,9 @@ extern void * g_acc_event_h;
 extern void * power_up_event_g;
 extern void * a8_watchdog_event_g;
 extern void * cpu_status_event_g;
+extern void * cpu_int_suspend_event_g;
 tick_measure_t cpu_status_time_g = {0, 0, 0};
+extern bool a8_booted_up_correctly_g;
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
@@ -214,6 +216,9 @@ void Main_task( uint32_t initial_data ) {
 
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
+
+	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
+	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
 
 //    // I2C0 Initialization
 //    NVIC_SetPriority(I2C0_IRQn, I2C_NVIC_IRQ_Priority);
@@ -382,8 +387,8 @@ void Main_task( uint32_t initial_data ) {
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
 	a8_watchdog_init();
 #endif
+	configure_otg_for_host_or_device();
 	printf("\nMain Task: Loop \n");
-
     while ( 1 ) 
     {
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
@@ -537,6 +542,30 @@ void MQX_PORTE_IRQHandler(void)
 	{
 		GPIO_DRV_ClearPinIntFlag(OTG_ID);
 		configure_otg_for_host_or_device();
+	}
+
+	if (GPIO_DRV_IsPinIntPending(CPU_INT))
+	{
+		GPIO_DRV_ClearPinIntFlag(CPU_INT);
+		if (a8_booted_up_correctly_g)
+		{
+			if (GPIO_DRV_ReadPinInput(CPU_INT) == 0)
+			{
+				/* OS/MSM requested a suspend */
+				GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
+				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+				GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
+			}
+			else
+			{
+				/*OS/MSM out of suspend */
+				GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+				GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
+				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+			}
+		}
 	}
 }
 

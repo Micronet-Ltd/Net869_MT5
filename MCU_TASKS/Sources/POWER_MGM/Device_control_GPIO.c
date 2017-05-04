@@ -123,6 +123,8 @@ extern void * power_up_event_g;
 LWTIMER_PERIOD_STRUCT lwtimer_period_a8_turn_on_g;
 LWTIMER_STRUCT lwtimer_a8_turn_on_g;
 
+extern void * cpu_int_suspend_event_g;
+
 void Device_control_GPIO        (uint32_t * time_diff);
 bool Device_control_GPIO_status (void);
 void send_power_change          (uint8_t *power_mask);
@@ -146,6 +148,40 @@ void disable_peripheral_clocks(void)
   }
 }
 
+uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
+{
+	uint8_t turn_on_condition = 0;
+	if (*ignition_voltage >= ignition_threshold_g)
+	{
+		printf ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
+		turn_on_condition |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;
+	}
+
+	if (Wiggle_sensor_cross_TH ())
+	{
+		printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
+		turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
+	}
+
+	if(RCM_BRD_SRS1_LOCKUP((RCM_Type*)RCM_BASE))
+	{
+		printf ("\nPOWER_MGM: TURNING ON DEVICE due to ARM LOCKUP \n");
+		turn_on_condition |= POWER_MGM_DEVICE_ARM_LOCKUP;
+	}
+
+	if(RCM_BRD_SRS0_WDOG((RCM_Type*)RCM_BASE))
+	{
+		printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
+		turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
+	}
+
+	//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
+	//{
+	//  	turn_on_condition |= POWER_MGM_DEVICE_SW_RESET_REQ;
+	//}
+	return turn_on_condition;
+}
+
 void Device_update_state (uint32_t * time_diff)
 {
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
@@ -154,6 +190,8 @@ void Device_update_state (uint32_t * time_diff)
 	uint32_t supercap_voltage;
 	static bool printed_temp_error = FALSE;
 	static bool print_backup_power = FALSE;
+	_mqx_uint event_bits = 0;
+	_mqx_uint event_result = MQX_OK;
 
 	Device_control_GPIO(time_diff);
 
@@ -199,34 +237,8 @@ void Device_update_state (uint32_t * time_diff)
 				break;
 			}
 
-			if (ignition_voltage >= ignition_threshold_g)
-			{
-				printf ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
-				turn_on_condition_g |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;
-			}
+			turn_on_condition_g = get_turn_on_reason(&ignition_voltage);
 
-			if (Wiggle_sensor_cross_TH ())
-			{
-				printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
-				turn_on_condition_g |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
-			}
-
-			if(RCM_BRD_SRS1_LOCKUP((RCM_Type*)RCM_BASE))
-			{
-				printf ("\nPOWER_MGM: TURNING ON DEVICE due to ARM LOCKUP \n");
-				turn_on_condition_g |= POWER_MGM_DEVICE_ARM_LOCKUP;
-			}
-
-			if(RCM_BRD_SRS0_WDOG((RCM_Type*)RCM_BASE))
-			{
-				printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
-				turn_on_condition_g |= POWER_MGM_DEVICE_WATCHDOG_RESET;
-			}
-
-			//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
-			//{
-			//  	turn_on_condition_g |= POWER_MGM_DEVICE_SW_RESET_REQ;
-			//}
 
 			if (turn_on_condition_g != 0)
 			{
@@ -259,7 +271,6 @@ void Device_update_state (uint32_t * time_diff)
 			break;
 
 		case DEVICE_STATE_ON:
-
 			// if power drops below threshold - shutdown
 			if (power_in_voltage < POWER_IN_SHUTDOWN_TH)
 			{
@@ -276,6 +287,73 @@ void Device_update_state (uint32_t * time_diff)
 				printf ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
 				device_state_g = DEVICE_STATE_OFF;
 				Device_off_req(FALSE, 0);
+			}
+			event_result = _event_get_value(cpu_int_suspend_event_g, &event_bits)  ;
+			if (event_result == MQX_OK)
+			{
+				if (event_bits & EVENT_CPU_INT_SUSPEND_HIGH)
+				{
+					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
+					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+					printf("%s: cpu_int_suspend_event_g high \n", __func__);
+
+					/* Go into lower power mode */
+
+					/* Disable OS watchdog */
+
+					/* Enable Wake Source monitoring */
+					Wiggle_sensor_start();
+					Wiggle_sensor_restart();
+					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
+					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
+				}
+			}
+			break;
+
+		case DEVICE_STATE_ON_OS_SUSPENDED: /* has DEVICE_STATE_ON and DEVICE_STATE_OFF code */
+			turn_on_condition_g = 0;
+			Wiggle_sensor_update();
+			// if power drops below threshold - shutdown
+			if (power_in_voltage < POWER_IN_SHUTDOWN_TH)
+			{
+				printf ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - SHUTING DOWN !!! \n", power_in_voltage);
+				device_state_g = DEVICE_STATE_BACKUP_RECOVERY;
+				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
+				break;
+			}
+
+			// if temperature is out of range - turn off device
+			if ((temperature < TEMPERATURE_SHUTDOWN_MIN_TH)   ||
+				(temperature > TEMPERATURE_SHUTDOWN_MAX_TH)    )
+			{
+				printf ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
+				device_state_g = DEVICE_STATE_OFF;
+				Device_off_req(FALSE, 0);
+			}
+
+			turn_on_condition_g = get_turn_on_reason(&ignition_voltage);
+
+			event_result = _event_get_value(cpu_int_suspend_event_g, &event_bits)  ;
+			if (event_result == MQX_OK)
+			{
+				if (event_bits & EVENT_CPU_INT_SUSPEND_LOW)
+				{
+					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+					printf("%s: cpu_int_suspend_event_g low \n", __func__);
+					turn_on_condition_g |= POWER_MGM_DEVICE_MSM_WAKEUP ;
+					/* If we don't get EVENT_CPU_INT_SUSPEND_LOW event after a wakeup request we should reset the device */
+				}
+			}
+
+			if (turn_on_condition_g != 0)
+			{
+				led_blink_cnt_g = 0;
+				Wiggle_sensor_stop ();						// disable interrupt
+				GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+				GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
+				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
+				device_state_g = DEVICE_STATE_ON;
 			}
 			break;
 
