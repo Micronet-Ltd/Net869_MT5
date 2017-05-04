@@ -74,7 +74,7 @@ enum _gpio_pins_pinNames {
 	USB_HUB_RSTN						= GPIO_MAKE_PIN(GPIOC_IDX, 18),
 	USB_OTG_OE							= GPIO_MAKE_PIN(GPIOE_IDX,  6),
 	USB_OTG_SEL							= GPIO_MAKE_PIN(GPIOE_IDX,  7),
-	USB_OTG_PWR_REQ						= GPIO_MAKE_PIN(GPIOE_IDX, 28),
+	CPU_INT								= GPIO_MAKE_PIN(GPIOE_IDX, 28),
 	//	USB_DN							(USB0_DM),;
 	//	USB_DP							(USB0_DP),;
 
