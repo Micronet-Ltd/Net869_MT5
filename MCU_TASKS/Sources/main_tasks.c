@@ -40,7 +40,6 @@ void MQX_PORTA_IRQHandler(void);
 void MQX_PORTB_IRQHandler(void);
 void MQX_PORTC_IRQHandler(void);
 void MQX_PORTE_IRQHandler(void);
-
 void HardFault_Handler_asm(void);
 
 #define	MAIN_TASK_SLEEP_PERIOD	1000			// 10 mSec sleep
@@ -466,6 +465,7 @@ void Main_task( uint32_t initial_data ) {
 			}
 		}
 #undef DEBUG_BLINKING_RIGHT_LED
+
 #ifdef DEBUG_BLINKING_RIGHT_LED
 	if(!g_flag_Exit)
 	{
@@ -680,20 +680,16 @@ void MQX_PORTE_IRQHandler(void)
 		GPIO_DRV_ClearPinIntFlag(CPU_INT);
 		if (a8_booted_up_correctly_g)
 		{
-			if (GPIO_DRV_ReadPinInput(CPU_INT) == 0)
+			if (GPIO_DRV_ReadPinInput(CPU_INT) == 1)
 			{
 				/* OS/MSM requested a suspend */
-				GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
-				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-				GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+				//GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
 				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 			}
 			else
 			{
 				/*OS/MSM out of suspend */
-				GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
-				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-				GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
+				//GPIO_DRV_ClearPinIntFlag (USB_OTG_OE); /* Enable USB */
 				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
 			}
 		}

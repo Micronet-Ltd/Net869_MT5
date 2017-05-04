@@ -312,6 +312,7 @@ void Device_update_state (uint32_t * time_diff)
 					Wiggle_sensor_restart();
 					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
 					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
+					configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE); /* Needs to be done after changing state */
 				}
 			}
 			break;
@@ -355,7 +356,6 @@ void Device_update_state (uint32_t * time_diff)
 			{
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
-
 				/* Go into full power mode */
 				switch_power_mode(kPowerManagerRun);
 				enable_peripheral_clocks();
