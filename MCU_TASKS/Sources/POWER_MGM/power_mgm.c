@@ -236,6 +236,7 @@ void check_supercap_voltage (void);
 
 void * power_up_event_g;
 void * cpu_status_event_g;
+void * cpu_int_suspend_event_g;
 
 uint32_t ignition_threshold_g = IGNITION_TURN_ON_TH_DEFAULT;
 
@@ -246,6 +247,7 @@ extern LWTIMER_PERIOD_STRUCT lwtimer_period_a8_turn_on_g;
 extern LWTIMER_STRUCT lwtimer_a8_turn_on_g;
 
 extern tick_measure_t cpu_status_time_g;
+bool a8_booted_up_correctly_g = false;
 
 const clock_manager_user_config_t * g_defaultClockConfigurations[] =
 {
@@ -594,6 +596,15 @@ void Power_MGM_task (uint32_t initial_data )
 		printf("Power_MGM_task: Could not open cpuStatusEvent \n");
 	}
 
+	event_result = _event_create("event.cpuIntSuspendEvent");
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not create cpuIntSuspendEvent \n");
+	}
+	event_result = _event_open("event.cpuIntSuspendEvent", &cpu_int_suspend_event_g);
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not open cpuIntSuspendEvent \n");
+	}
+
 	Device_init (POWER_MGM_TIME_DELAY);
 	ADC_init ();
 	/* Get all the initial ADC values */
@@ -693,6 +704,7 @@ void Power_MGM_task (uint32_t initial_data )
 				{
 					_lwtimer_cancel_timer(&lwtimer_a8_turn_on_g);
 					_lwtimer_cancel_period(&lwtimer_period_a8_turn_on_g);
+					a8_booted_up_correctly_g = true;
 				}
             }
         }
