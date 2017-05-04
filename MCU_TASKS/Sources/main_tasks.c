@@ -63,6 +63,7 @@ extern void * cpu_status_event_g;
 extern void * cpu_int_suspend_event_g;
 tick_measure_t cpu_status_time_g = {0, 0, 0};
 extern bool a8_booted_up_correctly_g;
+extern DEVICE_STATE_t device_state_g;
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
@@ -509,39 +510,53 @@ void OTG_CONTROL (void)
 
 void configure_otg_for_host_or_device(int force)
 {
+/* configure_otg_for_host_or_device: monitors the USB_ID state and based on the state puts the USB switch OTG port into host or device mode
+ * If the device is not in a state where USB can be used, it disables USB
+ */
 	static bool prev_otg_id_state = true;
+	static bool usb_disabled = true;
 	bool curr_otg_id_state = false;
 
-	curr_otg_id_state = GPIO_DRV_ReadPinInput (OTG_ID);
+	if (device_state_g == DEVICE_STATE_ON |
+		device_state_g == DEVICE_STATE_BACKUP_RECOVERY |
+		device_state_g == DEVICE_STATE_BACKUP_POWER)
+	{
+		curr_otg_id_state = GPIO_DRV_ReadPinInput (OTG_ID);
 
-	if (curr_otg_id_state != prev_otg_id_state || force){
-		if (OTG_ID_CFG_FORCE_MCU_A8 == force) {
-			curr_otg_id_state = 1;
-		} else if (OTG_ID_CFG_FORCE_BYPASS == force) {
-			curr_otg_id_state = 0;
-		}
-		prev_otg_id_state =  curr_otg_id_state;
-		if (curr_otg_id_state == true)
-		{
-			/* Connect D1 <-> D MCU or HUB */
-			printf("connect D1 to MCU/hub ie clear USB_OTG_SEL\n");
-			GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+		if (curr_otg_id_state != prev_otg_id_state || force){
+			if (OTG_ID_CFG_FORCE_MCU_A8 == force) {
+				curr_otg_id_state = 1;
+			} else if (OTG_ID_CFG_FORCE_BYPASS == force) {
+				curr_otg_id_state = 0;
+			}
+			prev_otg_id_state =  curr_otg_id_state;
+			if (curr_otg_id_state == true)
+			{
+				/* Connect D1 <-> D MCU or HUB */
+				printf("connect D1 to MCU/hub ie clear USB_OTG_SEL\n");
+				GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
 
-			GPIO_DRV_SetPinOutput 	(FTDI_RSTN);
-			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-			GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
-		}
-		else
-		{
-			/* Connect D2 <-> D A8 OTG */
-			printf("connect D2 to A8 OTG ie set USB_OTG_SEL\n");
-			GPIO_DRV_SetPinOutput (USB_OTG_SEL);
+				GPIO_DRV_SetPinOutput 	(FTDI_RSTN);
+				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+				GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
+			}
+			else
+			{
+				/* Connect D2 <-> D A8 OTG */
+				printf("connect D2 to A8 OTG ie set USB_OTG_SEL\n");
+				GPIO_DRV_SetPinOutput (USB_OTG_SEL);
 
-			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-			GPIO_DRV_SetPinOutput 	(CPU_OTG_ID);
-			GPIO_DRV_ClearPinOutput (FTDI_RSTN);
-			g_otg_ctl_port_active = 0;
+				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+				GPIO_DRV_SetPinOutput 	(CPU_OTG_ID);
+				GPIO_DRV_ClearPinOutput (FTDI_RSTN);
+				g_otg_ctl_port_active = 0;
+			}
 		}
+	}
+	else
+	{
+		GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
+		usb_disabled = true;
 	}
 }
 
@@ -634,20 +649,16 @@ void MQX_PORTE_IRQHandler(void)
 		GPIO_DRV_ClearPinIntFlag(CPU_INT);
 		if (a8_booted_up_correctly_g)
 		{
-			if (GPIO_DRV_ReadPinInput(CPU_INT) == 0)
+			if (GPIO_DRV_ReadPinInput(CPU_INT) == 1)
 			{
 				/* OS/MSM requested a suspend */
-				GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
-				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-				GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+				//GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
 				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 			}
 			else
 			{
 				/*OS/MSM out of suspend */
-				GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
-				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-				GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
+				//GPIO_DRV_ClearPinIntFlag (USB_OTG_OE); /* Enable USB */
 				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
 			}
 		}
