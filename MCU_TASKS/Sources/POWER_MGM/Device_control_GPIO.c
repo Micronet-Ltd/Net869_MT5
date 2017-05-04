@@ -306,6 +306,7 @@ void Device_update_state (uint32_t * time_diff)
 					Wiggle_sensor_restart();
 					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
 					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
+					configure_USB(); /* Needs to be done after changing state */
 				}
 			}
 			break;
@@ -349,11 +350,9 @@ void Device_update_state (uint32_t * time_diff)
 			{
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
-				GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
-				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-				GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
 				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 				device_state_g = DEVICE_STATE_ON;
+				configure_USB(); /* Needs to be done after changing state */
 			}
 			break;
 
