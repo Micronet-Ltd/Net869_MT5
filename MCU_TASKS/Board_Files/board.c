@@ -94,7 +94,7 @@ const clock_manager_user_config_t g_defaultClockConfigRun =
 		.pll0EnableInFllMode        = false,  // PLL0 disable
 		.pll0EnableInStop  = false,  // PLL0 disalbe in STOP mode
 		.prdiv0            = 12,	// support input clock of 26MHz
-		.vdiv0             = 24,//(CORE_CLOCK_FREQ / 2000000) - 24,		// VDIV = CLK_FRQ / 2MHz - 24
+		.vdiv0             = (CORE_CLOCK_FREQ / 2000000) - 24,		// VDIV = CLK_FRQ / 2MHz - 24
 	},
 	.simConfig =
 	{
