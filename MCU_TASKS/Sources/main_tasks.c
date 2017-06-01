@@ -284,10 +284,10 @@ void Main_task( uint32_t initial_data ) {
 
 
 
-	g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
-	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
-			printf("\nMain Could not create USB_TASK\n");
-	}
+//	g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
+//	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
+//			printf("\nMain Could not create USB_TASK\n");
+//	}
 
 	//Enable UART
 	GPIO_DRV_SetPinOutput(UART_ENABLE);	
