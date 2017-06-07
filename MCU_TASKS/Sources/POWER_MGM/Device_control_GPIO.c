@@ -148,12 +148,22 @@ void Device_update_state (uint32_t * time_diff)
 {
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
 	uint32_t ignition_voltage  = ADC_get_value (kADC_ANALOG_IN1 );
-	uint32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
+	int32_t  temperature       = ADC_get_value (kADC_TEMPERATURE);
 	uint32_t supercap_voltage;
 	static bool printed_temp_error = FALSE;
 	static bool print_backup_power = FALSE;
+	static uint16_t time_since_temp_print = 0;
+
+	time_since_temp_print += *time_diff;
 
 	Device_control_GPIO(time_diff);
+
+	if ((device_state_g == DEVICE_STATE_OFF && time_since_temp_print > 45000) //about 10 seconds, coz running @ slower clock
+		|| (device_state_g != DEVICE_STATE_OFF && time_since_temp_print > 30000)) // 30 seconds
+	{
+		printf("temp x 10 : %d c \n", temperature-500);
+		time_since_temp_print = 0;
+	}
 
 	switch (device_state_g)
 	{
