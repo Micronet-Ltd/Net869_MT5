@@ -19,9 +19,9 @@ extern "C"
 
 /* Conversion from Temperature(c) to mV => 		mV = (temp * 10) + 500 */
 #define TEMPERATURE_SHUTDOWN_MIN_TH		250			 /* mV = (-25 * 10) + 500 */
-#define TEMPERATURE_SHUTDOWN_MAX_TH		1450		 /* mV = (95 * 10) + 500 */
+#define TEMPERATURE_SHUTDOWN_MAX_TH		2000 //150c //1450		 /* mV = (95 * 10) + 500 */
 #define TEMPERATURE_TURNON_MIN_TH		250			 /* mV = (-25 * 10) + 500 */
-#define TEMPERATURE_TURNON_MAX_TH		1250		 /* mV = (75 * 10) + 500 */
+#define TEMPERATURE_TURNON_MAX_TH		1800 //130c //1250		 /* mV = (75 * 10) + 500 */
 	
 #define EVENT_CPU_STATUS_HIGH 1
 #define EVENT_CPU_STATUS_LOW 2
