@@ -98,6 +98,8 @@
 
 #define MCU_AND_CPU_BOARD_CONNECTED
 
+#define TEMPERATURE_DBG_PRINT
+
 typedef struct
 {
 	uint32_t time_threshold;								// pulse time period
@@ -152,18 +154,19 @@ void Device_update_state (uint32_t * time_diff)
 	uint32_t supercap_voltage;
 	static bool printed_temp_error = FALSE;
 	static bool print_backup_power = FALSE;
-	static uint16_t time_since_temp_print = 0;
-
-	time_since_temp_print += *time_diff;
 
 	Device_control_GPIO(time_diff);
 
+#ifdef TEMPERATURE_DBG_PRINT
+	static uint16_t time_since_temp_print = 0;
+	time_since_temp_print += *time_diff;
 	if ((device_state_g == DEVICE_STATE_OFF && time_since_temp_print > 45000) //about 10 seconds, coz running @ slower clock
 		|| (device_state_g != DEVICE_STATE_OFF && time_since_temp_print > 30000)) // 30 seconds
 	{
 		printf("temp x 10 : %d c \n", temperature-500);
 		time_since_temp_print = 0;
 	}
+#endif
 
 	switch (device_state_g)
 	{
