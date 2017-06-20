@@ -20,6 +20,8 @@
 
 #define FPGA_UART_RX_BUF_SIZE 		100
 
+//#define J1708_DEBUG
+
 const uart_user_config_t fpga_uart_config = {
 	.bitCountPerChar = kUart8BitsPerChar,
 	.parityMode      = kUartParityDisabled,
@@ -400,6 +402,9 @@ bool FPGA_write_J1708_packet (uint8_t *buffer, uint8_t length)
 	if ((uart_status = UART_DRV_SendDataBlocking (FPGA_UART_PORT, buffer, length, FPGA_UART_TIMEOUT)) != kStatus_UART_Success)
 		printf ("\nFPGA: ERROR: Message was not sent to FPGA (UART error code %d)\n", uart_status);
 
+#ifdef J1708_DEBUG
+	printf("%s: %x, %x .. %x, %x, len = %d \n", __func__, buffer[0], buffer[1], buffer[2], buffer[3], length);
+#endif
 	return (uart_status == kStatus_UART_Success);
 }
 
@@ -412,9 +417,10 @@ bool FPGA_read_J1708_packet (uint8_t *buffer, uint8_t length)
 	if (buf_ptr == NULL)
 		return false;
 
-	if (check_uart_rx_buffer_overflow (len) == true)
+	if (check_uart_rx_buffer_overflow (len) == true){
+		printf("%s: check_uart_rx_buffer_overflow \n");
 		return false;
-
+	}
 	// Since the buffer is cyclic, it might be needed to generate the buffer by 2 stages
 	// first stage - only if source filled up and returned to beginning
 	if (fpga_uart_rx_buf_rd_idx + len >= FPGA_UART_RX_BUF_SIZE) {
@@ -431,6 +437,9 @@ bool FPGA_read_J1708_packet (uint8_t *buffer, uint8_t length)
 		memcpy (buf_ptr, &fpga_uart_rx_buf[fpga_uart_rx_buf_rd_idx], size);
 		fpga_uart_rx_buf_rd_idx += len;
 	}
+#ifdef J1708_DEBUG
+	printf("%s: %x, %x .. %x, %x, len = %d \n", __func__, buffer[0], buffer[1], buffer[2], buffer[3], size);
+#endif
 	return true;
 }
 
