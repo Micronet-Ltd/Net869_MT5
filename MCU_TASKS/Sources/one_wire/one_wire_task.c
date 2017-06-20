@@ -61,8 +61,17 @@ void one_wire_task (uint32_t initial_data)
 		if (data_rx[0] == 0)
 		{
 			err.invalid_family_code++;
-			printf("%s: invalid family code, count %d \n", __func__, err.invalid_family_code);
-			wait_time = ONE_WIRE_QUICK_TIME_DELAY;
+			//printf("%s: invalid family code, count %d \n", __func__, err.invalid_family_code);
+			if (err.invalid_family_code < 20)
+			{
+				wait_time = ONE_WIRE_DEFAULT_TIME_DELAY;
+			}
+			else
+			{
+				wait_time = 1000000; //1000 sec
+				//err.invalid_family_code = 0;
+			}
+
 			continue;
 		}
 
