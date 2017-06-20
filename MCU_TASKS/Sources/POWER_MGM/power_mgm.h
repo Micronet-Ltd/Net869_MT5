@@ -21,7 +21,7 @@ extern "C"
 #define TEMPERATURE_SHUTDOWN_MIN_TH		150			 /* mV = (-35 * 10) + 500 */
 #define TEMPERATURE_SHUTDOWN_MAX_TH		1700 	     /* mV = (120 * 10) + 500 */
 #define TEMPERATURE_TURNON_MIN_TH		250			 /* mV = (-25 * 10) + 500 */
-#define TEMPERATURE_TURNON_MAX_TH		1450         /* mV = (95 * 10) + 500 */
+#define TEMPERATURE_TURNON_MAX_TH		1400         /* mV = (90 * 10) + 500 */
 	
 #define EVENT_CPU_STATUS_HIGH 1
 #define EVENT_CPU_STATUS_LOW 2
