@@ -31,6 +31,7 @@
 
 #include "wiggle_sensor.h"
 
+//#define WIGGLE_DEBUG 1
 #define WIGGLE_SENSOR_SAMPLE_PERIOD					500
 
 #define WIGGLE_SENSOR_MOTION_DETECTION_PERIOD_TH	1000
@@ -124,7 +125,9 @@ void Wiggle_sensor_update (void)
 		sensor_g.movement_period  += sensor_g.delay_period;
 		return;
 	}
-
+#ifdef WIGGLE_DEBUG
+	printf("%s wiggle count = %d\n", __func__, sensor_g.wiggle_sensor_cnt);
+#endif
 	sensor_g.status     = (sensor_g.wiggle_sensor_cnt > sensor_g.vibration_threshold);
 	sensor_g.movement_period = 0;
 	sensor_g.wiggle_sensor_cnt = 0;
@@ -166,4 +169,9 @@ void Wiggle_sensor_update (void)
 	if (sensor_g.movement_period >= sensor_g.duration_threshold)
 		sensor_g.status = (sensor_g.wiggle_sensor_cnt > sensor_g.vibration_threshold);
 #endif
+}
+
+uint32_t get_wiggle_sensor_count(void)
+{
+	return sensor_g.wiggle_sensor_cnt;
 }

@@ -159,6 +159,14 @@ typedef struct FLEXCANIdTable {
 	uint32_t idFilter;     /*!< Receive FIFO ID filter elements*/
 } flexcan_id_table_t;
 
+
+/*! @brief FlexCAN receive FIFO Mask ID table structure*/
+typedef struct FLEXCANMaskIdTable {
+	bool isRemoteFrame;     /*!< Remote frame*/
+	bool isExtendedFrame;   /*!< Extended frame*/
+	uint32_t MaskId;     /*!< Receive FIFO ID mask */
+} flexcan_mask_id_table_t;
+
 /*! @brief FlexCAN receive mask type.*/
 typedef enum _flexcan_rx_mask_type {
 	kFlexCanRxMaskGlobal,      /*!< Receive global mask*/

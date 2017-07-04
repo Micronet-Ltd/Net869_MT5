@@ -299,7 +299,8 @@ flexcan_status_t FLEXCAN_DRV_SendBlocking(
 	flexcan_data_info_t *tx_info,
 	uint32_t msg_id,
 	uint8_t *mb_data,
-	uint32_t timeout_ms);
+	uint32_t timeout_ms, 
+	bool is_remote_frame);
 
 /*!
  * @brief Sends FlexCAN messages.
@@ -316,7 +317,8 @@ flexcan_status_t FLEXCAN_DRV_Send(
 	uint32_t mb_idx,
 	flexcan_data_info_t *tx_info,
 	uint32_t msg_id,
-	uint8_t *mb_data);
+	uint8_t *mb_data,
+	bool is_remote_frame);
 
 
 /*@}*/

@@ -3,6 +3,7 @@
 #include <bsp.h>
 #include <message.h>
 #include <lwmsgq.h>
+#include <lwtimer.h>
 
 #include "MK20D10_extension.h"
 #include "fsl_power_manager.h"
@@ -31,6 +32,7 @@
 #include "board.h"
 #include "bsp.h"
 #include "mic_typedef.h"
+#include "watchdog_mgmt.h"
 
 #define SUPERCAP_CHRG_DISCHRG_ENABLE   1
 //#define DEBUGGING_ENABLED                1
@@ -49,6 +51,9 @@
 
 #define SUPERCAP_MIN_TH_WHEN_DEV_ON		5000//4500
 #define SUPERCAP_MAX_TH_WHEN_DEV_ON		5300//4800
+
+#define CPU_STATUS_SHUTDOWN_DURATION 50 //ms
+#define CPU_STATUS_TURNON_DURATION 150  //ms
 
 /* The LPTMR instance used for LPTMR */
 #define PM_RTOS_DEMO_LPTMR_FUNC_INSTANCE                0
@@ -230,12 +235,17 @@ void check_supercap_voltage (void);
 //void Supercap_discharge_state (void);
 
 void * power_up_event_g;
+void * cpu_status_event_g;
 
 uint32_t ignition_threshold_g = IGNITION_TURN_ON_TH_DEFAULT;
 
 extern const clock_manager_user_config_t g_defaultClockConfigRun;
 extern const clock_manager_user_config_t g_defaultClockConfigVlpr;
 extern DEVICE_STATE_t        device_state_g;
+extern LWTIMER_PERIOD_STRUCT lwtimer_period_a8_turn_on_g;
+extern LWTIMER_STRUCT lwtimer_a8_turn_on_g;
+
+extern tick_measure_t cpu_status_time_g;
 
 const clock_manager_user_config_t * g_defaultClockConfigurations[] =
 {
@@ -559,8 +569,9 @@ void Power_MGM_task (uint32_t initial_data )
 	uint32_t time_diff_milli_u = 0;
 	int32_t time_diff_micro = 0;
 	bool time_diff_overflow = false;
-
+    _mqx_uint event_bits;
 	_mqx_uint event_result;
+	
 	_time_get_elapsed_ticks_fast(&ticks_prev);
 
 	event_result = _event_create("event.PowerUpEvent");
@@ -571,6 +582,16 @@ void Power_MGM_task (uint32_t initial_data )
 	event_result = _event_open("event.PowerUpEvent", &power_up_event_g);
 	if(MQX_OK != event_result){
 		printf("Power_MGM_task: Could not open PowerUp event \n");
+	}
+
+	event_result = _event_create("event.cpuStatusEvent");
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not create cpuStatusEvent \n");
+	}
+
+	event_result = _event_open("event.cpuStatusEvent", &cpu_status_event_g);
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not open cpuStatusEvent \n");
 	}
 
 	Device_init (POWER_MGM_TIME_DELAY);
@@ -646,6 +667,35 @@ void Power_MGM_task (uint32_t initial_data )
 		time_diff_milli_u = (uint32_t) time_diff_milli;
 
 		Device_update_state(&time_diff_milli_u);
+		
+        if (_event_get_value(cpu_status_event_g, &event_bits) == MQX_OK) 
+        {
+            if (event_bits & EVENT_CPU_STATUS_HIGH) 
+            {
+				_event_clear(cpu_status_event_g, 1);
+				printf("%s: cpu_status_event_g high \n", __func__);
+            }
+			if (event_bits & EVENT_CPU_STATUS_LOW) 
+            {
+				_event_clear(cpu_status_event_g, 2);
+				cpu_status_time_g.time_diff = (int32_t)((cpu_status_time_g.end_ticks.TICKS[0] - cpu_status_time_g.start_ticks.TICKS[0])* MS_PER_TICK);
+				printf("%s: cpu_status_event_g low, high time %d \n", __func__, cpu_status_time_g.time_diff);
+				
+				/* A8 sent a shutdown request */
+				if (cpu_status_time_g.time_diff > (CPU_STATUS_SHUTDOWN_DURATION - 10) && cpu_status_time_g.time_diff < (CPU_STATUS_SHUTDOWN_DURATION + 30))
+				{
+					printf ("\n%s : DEVICE shutdown request by A8\n", __func__);
+					_time_delay(100); /* give some time for the print statement */
+					Device_off_req_immediate(true);
+				}
+				/* A8 booted up correctly, cancel the incorrect-a8-bootup timer */
+				else if (cpu_status_time_g.time_diff > (CPU_STATUS_TURNON_DURATION - 10) && cpu_status_time_g.time_diff < (CPU_STATUS_TURNON_DURATION + 30))
+				{
+					_lwtimer_cancel_timer(&lwtimer_a8_turn_on_g);
+					_lwtimer_cancel_period(&lwtimer_period_a8_turn_on_g);
+				}
+            }
+        }
 	}
 }
 

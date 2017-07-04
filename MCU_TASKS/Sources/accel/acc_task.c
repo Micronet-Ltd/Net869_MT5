@@ -7,6 +7,7 @@
 #include <event.h>
 
 //extern const gpio_input_pin_user_config_t inputPins *;
+#include "acc_task.h"
 #include "gpio_pins.h"
 #include "tasks_list.h"
 
@@ -65,9 +66,6 @@ __packed typedef struct{
 * The MCU resets and reconfigure the accelerometer every power up. accelerometer data *
 * is read from its internal FIFO.
 **************************************************************************************/
-bool accInit       (void);
-void AccDisable    (void);
-void AccEnable     (void);
 void ISR_accIrq    (void* param);
 bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size);
 
@@ -144,13 +142,7 @@ void Acc_task (uint32_t initial_data)
 	// try to initialize accelerometer every 10 seconds
 	while (accInit () == false)
 	{
-		I2C_Disable(ACC_I2C_PORT); /* Note: Both accelerometer and accel are on the same bus*/
-		/* To reset accel. chip if I2C is failing we toggle ACC_VIB_ENABLE */
-		GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
-		_time_delay (4000);
-		GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
-		_time_delay (1000);
-		I2C_Enable(ACC_I2C_PORT); /* Note: Both accelerometer and accel are on the same bus*/
+		_time_delay (10000);
 	}
 
 	AccEnable();
@@ -374,6 +366,24 @@ void AccDisable (void)
 
 _ACC_DISABLE_FAIL:
 	printf ("ACC Task: ERROR: Accelerometer NOT disabled \n");
+}
+
+/* AccReadRegister: Helper function to read 1 byte from a register */
+void AccReadRegister(uint8_t address, uint8_t * read_data)
+{
+	if (!acc_receive_data(&address, 1, read_data, 1))
+	{
+		printf("%s: read address: %d failed\n", __func__, address);
+	}
+}
+
+/* AccWriteRegister: Helper function to read 1 byte from a register */
+void AccWriteRegister(uint8_t address, uint8_t write_data)
+{
+	if (!acc_send_data(&address, 1, &write_data, 1))
+	{
+		printf("%s: write address: %d with data %d failed\n", __func__, address, write_data);
+	}
 }
 
 bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)

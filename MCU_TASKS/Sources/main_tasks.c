@@ -26,6 +26,8 @@
 #include "Wiggle_sensor.h"
 #include "Device_control_GPIO.h"
 #include "watchdog_mgmt.h"
+#include "power_mgm.h"
+#include "version.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
@@ -56,10 +58,11 @@ extern WIGGLE_SENSOR_t sensor_g;
 extern void * g_acc_event_h;
 extern void * power_up_event_g;
 extern void * a8_watchdog_event_g;
+extern void * cpu_status_event_g;
+tick_measure_t cpu_status_time_g = {0, 0, 0};
 
 //TEST CANFLEX funtion
 void _test_CANFLEX( void );
-extern void handle_mcu_watchdog_expiry(void *);
 
 MUTEX_STRUCT g_i2c0_mutex;
 
@@ -287,8 +290,10 @@ void Main_task( uint32_t initial_data ) {
 	}
 
 	//Enable UART
-	GPIO_DRV_SetPinOutput(UART_ENABLE);
+	GPIO_DRV_SetPinOutput(UART_ENABLE);	
 	GPIO_DRV_SetPinOutput(FTDI_RSTN);
+	
+	//GPIO_DRV_SetPinOutput(RS485_ENABLE);
 	/*Note: rtc_init() is intentionally placed before accelerometer init 
 	because I was seeing  i2c arbitration errors - Abid */
 	rtc_init();
@@ -355,22 +360,24 @@ void Main_task( uint32_t initial_data ) {
 	else
 		printf("\nMain UPDATER_TASK created\n");
 
-
 	g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
 	if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create CONTROL_TASK\n");
 	}
-
-	configure_otg_for_host_or_device();
-	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
-	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
+	
+	g_TASK_ids[ONE_WIRE_TASK] = _task_create(0, ONE_WIRE_TASK, 0);
+	if (g_TASK_ids[ONE_WIRE_TASK] == MQX_NULL_TASK_ID)
+	{
+		printf("\nMain Could not create 1-wire task\n");
+	}
 
 	_event_create ("event.EXTERNAL_GPIOS");
 	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
 
 	FPGA_read_version(&FPGA_version);
-	printf("\n FPGA version, %x", FPGA_version);
+	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
+	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
 
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
 	a8_watchdog_init();
@@ -382,6 +389,7 @@ void Main_task( uint32_t initial_data ) {
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
+		configure_otg_for_host_or_device();
 #ifdef DEBUG_BLINKING_RIGHT_LED
 		FPGA_write_led_status(LED_RIGHT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
 
@@ -430,23 +438,31 @@ void OTG_CONTROL (void)
 
 void configure_otg_for_host_or_device(void)
 {
-	if (GPIO_DRV_ReadPinInput (OTG_ID) == 1)
-	{
-		/* Connect D1 <-> D MCU or HUB */
-		printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
-		GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+	static bool prev_otg_id_state = true;
+	bool curr_otg_id_state = false;
 
-		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-		GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
-	}
-	else
-	{
-		/* Connect D2 <-> D A8 OTG */
-		printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
-		GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
+	curr_otg_id_state = GPIO_DRV_ReadPinInput (OTG_ID);
 
-		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-		GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+	if (curr_otg_id_state != prev_otg_id_state){
+		prev_otg_id_state =  curr_otg_id_state;
+		if (curr_otg_id_state == true)
+		{
+			/* Connect D1 <-> D MCU or HUB */
+			printf("/r/n connect D1 to MCU/hub ie clear USB_OTG_SEL");
+			GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+
+			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+			GPIO_DRV_ClearPinOutput   (CPU_OTG_ID);
+		}
+		else
+		{
+			/* Connect D2 <-> D A8 OTG */
+			printf("/r/n connect D2 to A8 OTG ie set USB_OTG_SEL");
+			GPIO_DRV_SetPinOutput   (USB_OTG_SEL);
+
+			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+			GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+		}
 	}
 }
 
@@ -491,11 +507,27 @@ void MQX_PORTB_IRQHandler(void)
 	}
 }
 
+
 void MQX_PORTC_IRQHandler(void)
 {
-	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO0)) {
+	if (GPIO_DRV_IsPinIntPending (FPGA_GPIO0)) 
+	{
 		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
 		_event_set(g_J1708_event_h, EVENT_J1708_RX);
+	}
+	if (GPIO_DRV_IsPinIntPending (CPU_STATUS)) 
+	{
+		GPIO_DRV_ClearPinIntFlag(CPU_STATUS);
+		if (GPIO_DRV_ReadPinInput(CPU_STATUS))
+		{
+			_time_get_elapsed_ticks(&(cpu_status_time_g.start_ticks));
+			_event_set(cpu_status_event_g, EVENT_CPU_STATUS_HIGH);
+		}
+		else
+		{
+			_time_get_elapsed_ticks(&(cpu_status_time_g.end_ticks));
+			_event_set(cpu_status_event_g, EVENT_CPU_STATUS_LOW);
+		}
 	}
 }
 

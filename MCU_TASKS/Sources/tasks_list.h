@@ -26,9 +26,10 @@ typedef enum {
 	J1708_RX_TASK_PRIORITY,
 	FPGA_UART_RX_TASK_PRIORITY,
 	ACC_TASK_PRIORITY,
-	VIB_SENSOR_TASK_PRIORITY  ,
+	ONE_WIRE_TASK_PRIORITY,
+//	VIB_SENSOR_TASK_PRIORITY  ,
 	UPDATER_TASK_PRIORITY,
-	MAIN_TASK_PRIORITY = (VIB_SENSOR_TASK_PRIORITY + START_APPLICATION_PRIORITY),
+	MAIN_TASK_PRIORITY = (UPDATER_TASK_PRIORITY + START_APPLICATION_PRIORITY),
 }PRIORITY_TASK_INDEX_T;
 
 typedef enum {
@@ -43,6 +44,7 @@ typedef enum {
 	J1708_RX_TASK    ,
 	FPGA_UART_RX_TASK,
 	ACC_TASK         ,
+	ONE_WIRE_TASK    ,
 	CONTROL_TASK	 ,
 	UPDATER_TASK	 ,
 	UPDATER_EXEC_TASK	 ,
@@ -60,6 +62,7 @@ typedef enum {
 	J1708_RX_QUEUE   ,
 	FPGA_UART_RX_QUEUE,
 	ACC_QUEUE        ,
+	ONE_WIRE_QUEUE   ,
 	POWER_MGM_QUEUE  ,
 	CONTROL_RX_QUEUE ,
 	CONTROL_TX_QUEUE ,
@@ -94,5 +97,7 @@ extern void FLEXCAN_Rx_Task( uint32_t param );
 
 extern void updater_task (uint32_t );
 extern void upd_exec_task (uint32_t );
+
+extern void one_wire_task (uint32_t);
 
 #endif /* __tasks_list_h_ */

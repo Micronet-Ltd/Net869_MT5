@@ -18,10 +18,19 @@ extern "C"
 #define IGNITION_TURN_ON_TH_DEFAULT			POWER_IN_TURN_ON_TH
 
 /* Conversion from Temperature(c) to mV => 		mV = (temp * 10) + 500 */
-#define TEMPERATURE_SHUTDOWN_MIN_TH		250			 /* mV = (-25 * 10) + 500 */
-#define TEMPERATURE_SHUTDOWN_MAX_TH		1450		 /* mV = (95 * 10) + 500 */
+#define TEMPERATURE_SHUTDOWN_MIN_TH		150			 /* mV = (-35 * 10) + 500 */
+#define TEMPERATURE_SHUTDOWN_MAX_TH		1700 	     /* mV = (120 * 10) + 500 */
 #define TEMPERATURE_TURNON_MIN_TH		250			 /* mV = (-25 * 10) + 500 */
-#define TEMPERATURE_TURNON_MAX_TH		1250		 /* mV = (75 * 10) + 500 */
+#define TEMPERATURE_TURNON_MAX_TH		1400         /* mV = (90 * 10) + 500 */
+	
+#define EVENT_CPU_STATUS_HIGH 1
+#define EVENT_CPU_STATUS_LOW 2
+
+typedef struct tick_measure_s{
+	MQX_TICK_STRUCT start_ticks;
+	MQX_TICK_STRUCT end_ticks;
+	int32_t time_diff; //ms
+}tick_measure_t;
 
 void get_ignition_threshold(uint32_t * p_ignition_threshold);
 void set_ignition_threshold(uint32_t ignition_threshold);

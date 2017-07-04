@@ -10,10 +10,13 @@
 #include <lwtimer.h>
 #include <event.h>
 #include "watchdog_mgmt.h"
+#include "gpio_pins.h"
 
-#define MS_PER_TICK	5
+//#define WATCHDOG_DEBUG
+
 #define WATCHDOG_MCU_MAX_TICKS 10000/MS_PER_TICK /* 10000ms */
 #define WATCHDOG_A8_MAX_TICKS 300000/MS_PER_TICK /* 5 minutes */
+#define WATCHDOG_A8_CHECK_TICKS 30000/MS_PER_TICK /* 30 seconds */
 #define WATCHDOG_A8_PET_TICKS 5000/MS_PER_TICK /* 5000ms */
 
 static watchdog_a8_t watchdog_a8_g;
@@ -32,16 +35,37 @@ static inline void delay_1s(void)
 
 /*FUNCTION*------------------------------------------------------
 *
-* Function Name  : handle_mcu_watchdog_expiry
-* Returned Value : none
-* Comments       :
-*     This function is called when a watchdog has expired.
+* Function Name  : blink_led
+* Arg 1		 : count: Number of times to blink LED
+* Arg 2		 : color: LED_RED = 4, 
+* Returned Value : NONE
+* Comments       : Do not call this fx from a task as it has a delay loop
+*     Blinks the LED, 
 *END*-----------------------------------------------------------*/
 
 /* only use this fx from hardfault handler because it resets FPGA */
-static inline void blink_red_led(uint8_t count)
+static inline void blink_led(uint8_t count, uint8_t color)
 {
 	uint8_t i = 0;
+	GPIO_Type * gpioBasePortA = g_gpioBase[GPIOA_IDX];
+
+	GPIO_HAL_SetPinOutput(gpioBasePortA, 11);	// turn on 5V0 power rail(If off)
+
+	/* Set all LEDs off */
+	GPIO_HAL_ClearPinOutput(gpioBasePortA, LED_RED_GPIO_NUM); //LED_RED
+	GPIO_HAL_ClearPinOutput(gpioBasePortA, LED_BLUE_GPIO_NUM); //LED_BLUE
+	GPIO_HAL_ClearPinOutput(gpioBasePortA, LED_GREEN_GPIO_NUM); //LED_GREEN
+
+	/* Blink LED */
+	for (i = 0; i < count; i++)
+	{
+		delay_1s();
+		GPIO_HAL_TogglePinOutput(gpioBasePortA, color);
+	}
+}
+
+void shutdown_fpga_accel(void)
+{
 	GPIO_Type * gpioBasePortA = g_gpioBase[GPIOA_IDX];
 	
 	GPIO_HAL_SetPinOutput(gpioBasePortA, 11);	// turn on 5V0 power rail
@@ -51,28 +75,41 @@ static inline void blink_red_led(uint8_t count)
 	/* Reset and Disable FPGA */
 	GPIO_HAL_ClearPinOutput(gpioBasePortA, 12); //FPGA_RSTB
 	GPIO_HAL_ClearPinOutput(gpioBasePortA, 13); //FPGA_PWR_ENABLE
-
-	/* Set all LEDs off */
-	GPIO_HAL_ClearPinOutput(gpioBasePortA, 4); //LED_RED
-	GPIO_HAL_ClearPinOutput(gpioBasePortA, 7); //LED_BLUE
-	GPIO_HAL_ClearPinOutput(gpioBasePortA, 5); //LED_GREEN
-
-	/* Blink LED */
-	for (i = 0; i < count; i++)
-	{
-		delay_1s();
-		GPIO_HAL_TogglePinOutput(gpioBasePortA, 4); //LED_RED
-	}
-	GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
-	delay_1s();
 }
 
-
-void handle_mcu_watchdog_expiry(void * td_ptr)
+void handle_watchdog_expiry(void * td_ptr)
 {
-	printf("\r\n MCU Watchdog Expired, resetting MCU! \r\n");
-	blink_red_led(10);
-	/* on hard fault reset the system */
+	uint8_t i;
+	
+	/* if in Debug mode, do not reset the MCU */
+	if (GPIO_DRV_ReadPinInput (OTG_ID) == 0)
+	{
+		printf("\r\n watchdog Expired, but NOT resetting because in debug mode! \r\n");
+		_watchdog_start(WATCHDOG_MCU_MAX_TIME);
+		return;
+	}
+	
+	printf("\r\n watchdog Expired, resetting MCU! \r\n");
+	for (i=0; i < 3; i++)
+	{
+		delay_1s();
+	}
+	shutdown_fpga_accel();
+
+#ifdef WATCHDOG_DEBUG
+	if (td_ptr == NULL)
+	{
+		blink_led(20, LED_RED_GPIO_NUM);
+	}
+	else
+	{
+		blink_led(20, *((uint8_t * )(td_ptr)));		
+	}
+#endif
+	
+	GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
+	delay_1s();
+	
 	WDG_RESET_MCU();
 }
 
@@ -80,7 +117,7 @@ bool watchdog_mcu_init()
 {
 	_mqx_uint result;
 	result = _watchdog_create_component(BSP_SYSTIMER_INTERRUPT_VECTOR,
-                                       handle_mcu_watchdog_expiry);
+                                       handle_watchdog_expiry);
     
 	if (result != MQX_OK) 
 	{
@@ -92,10 +129,14 @@ bool watchdog_mcu_init()
 
 void a8_watchdog_init(void)
 {
-	_event_create ("event.WATCHDOG");
+	if (_event_create ("event.WATCHDOG") != MQX_OK)
+	{
+		printf("%s: event.WATCHODOG create failed\n", __func__);
+		_mqx_exit(0);
+	}
 	_event_open   ("event.WATCHDOG", &a8_watchdog_event_g);
 	_lwtimer_create_periodic_queue(&lwtimer_period_a8_pet_g, WATCHDOG_A8_PET_TICKS, 0);
-	_lwtimer_create_periodic_queue(&lwtimer_period_a8_check_g, WATCHDOG_A8_MAX_TICKS, 0);
+	_lwtimer_create_periodic_queue(&lwtimer_period_a8_check_g, WATCHDOG_A8_CHECK_TICKS, 0);
 	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_pet_g, &lwtimer_a8_pet_g, 0, \
 		(LWTIMER_ISR_FPTR)pet_a8_watchdog_isr, 0);
 	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_check_g, &lwtimer_a8_check_g, \
@@ -133,23 +174,31 @@ void pet_a8_watchdog_isr(void)
 /* check_a8_watchdog_expiry_isr() is serviced every WATCHDOG_A8_CHECK_TICKS */
 void check_a8_watchdog_expiry_isr(void)
 {
-	MQX_TICK_STRUCT time_diff_ticks;
-	_mqx_uint res;
-
-	res = _time_diff_ticks(&watchdog_a8_g.curr_ticks, 
-		&watchdog_a8_g.prev_ticks, &time_diff_ticks);
-
-	if (res == MQX_OK)
+	int32_t time_diff_ticks;
+	bool overflow;
+	uint8_t color = LED_BLUE_GPIO_NUM;
+	
+	/* if we are getting pings, diff will be -ve, if not getting pings, diff will
+	be positive and keep incrementing */
+	time_diff_ticks = _time_diff_ticks_int32(&watchdog_a8_g.prev_ticks, 
+		&watchdog_a8_g.curr_ticks, &overflow);
+	
+	/* we should not be getting an overflow, but in case it happens, just reset counts */
+	if (overflow)
 	{
-		if (time_diff_ticks.TICKS[0] < WATCHDOG_A8_MAX_TICKS)
-		{
-			_time_get_elapsed_ticks(&watchdog_a8_g.prev_ticks);
-		}
-		else
-		{
-			_time_get_elapsed_ticks(&watchdog_a8_g.prev_ticks);
-			printf("%s: A8 Watchdog Expired, resetting MCU! \r\n", __func__);
-			handle_mcu_watchdog_expiry(NULL);
-		}
+		_time_get_elapsed_ticks(&watchdog_a8_g.prev_ticks);
+		_time_get_elapsed_ticks(&watchdog_a8_g.curr_ticks);
+		time_diff_ticks = 0;
+	}
+	
+	if (time_diff_ticks < WATCHDOG_A8_MAX_TICKS)
+	{
+		_time_get_elapsed_ticks(&watchdog_a8_g.prev_ticks);
+	}
+	else
+	{
+		_time_get_elapsed_ticks(&watchdog_a8_g.prev_ticks);
+		printf("%s: A8 Watchdog Expired, resetting MCU! \r\n", __func__);
+		handle_watchdog_expiry(&color);
 	}
 }
