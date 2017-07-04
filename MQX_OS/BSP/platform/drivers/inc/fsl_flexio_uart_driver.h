@@ -43,7 +43,7 @@
  * @addtogroup flexio_uart_driver
  * @{
  */
- 
+
 /*! @brief UART receive callback function type */
 typedef void (* flexio_uart_rx_callback_t)(void * uartState);
 
@@ -57,11 +57,11 @@ typedef void (* flexio_uart_rx_callback_t)(void * uartState);
  * @internal gui name="UART configuration" id="uartCfg"
  */
 typedef struct flexio_uart_userconfig{
-    uint32_t baudRate; /*!< UART baud rate @internal gui name="Baudrate" id="uartBaudrate" */
-    flexio_uart_bit_count_per_char_t bitCounter; /*!< number of bits, 5/6/7/8 bits configurable @internal gui name="Bits" id="uartBits" */
-    flexio_uart_mode_t uartMode; /*!< FLEXIO UART working modes: Tx Only,Rx Only or both @internal gui name="Mode" id="uartMode" */
-    flexio_uart_hwconfig_t txConfig; /*!< FLEXIO UART TX device hardware resource config @internal gui name="Tx configuration" id="txConfig" */
-    flexio_uart_hwconfig_t rxConfig; /*!< FLEXIO UART RX device hardware resource config @internal gui name="Rx configuration" id="rxConfig" */ 
+	uint32_t baudRate; /*!< UART baud rate @internal gui name="Baudrate" id="uartBaudrate" */
+	flexio_uart_bit_count_per_char_t bitCounter; /*!< number of bits, 5/6/7/8 bits configurable @internal gui name="Bits" id="uartBits" */
+	flexio_uart_mode_t uartMode; /*!< FLEXIO UART working modes: Tx Only,Rx Only or both @internal gui name="Mode" id="uartMode" */
+	flexio_uart_hwconfig_t txConfig; /*!< FLEXIO UART TX device hardware resource config @internal gui name="Tx configuration" id="txConfig" */
+	flexio_uart_hwconfig_t rxConfig; /*!< FLEXIO UART RX device hardware resource config @internal gui name="Rx configuration" id="rxConfig" */
 }flexio_uart_userconfig_t;
 /*!
  * @brief Runtime state of the FlexIO UART driver.
@@ -73,21 +73,21 @@ typedef struct flexio_uart_userconfig{
  * FlexIO UART driver fills out the members.
  */
 typedef struct flexio_uart_state{
-    flexio_uart_mode_t mode;
-    flexio_uart_tx_dev_t txDev;    
-    flexio_uart_rx_dev_t rxDev;
-    const uint8_t *txBuff;
-    uint8_t *rxBuff;
-    volatile size_t txSize;
-    volatile size_t rxSize;
-    volatile bool isTxBusy;
-    volatile bool isRxBusy;
-    volatile bool isTxBlocking;    /*!< True if transmit is blocking transaction. */
-    volatile bool isRxBlocking;    /*!< True if receive is blocking transaction. */
-    semaphore_t txIrqSync;         /*!< Used to wait for ISR to complete its TX business. */
-    semaphore_t rxIrqSync;         /*!< Used to wait for ISR to complete its RX business. */
-    flexio_uart_rx_callback_t rxCallback; /*!< Callback to invoke after receiving byte.*/
-    void * rxCallbackParam;        /*!< Receive callback parameter pointer.*/
+	flexio_uart_mode_t mode;
+	flexio_uart_tx_dev_t txDev;
+	flexio_uart_rx_dev_t rxDev;
+	const uint8_t *txBuff;
+	uint8_t *rxBuff;
+	volatile size_t txSize;
+	volatile size_t rxSize;
+	volatile bool isTxBusy;
+	volatile bool isRxBusy;
+	volatile bool isTxBlocking;    /*!< True if transmit is blocking transaction. */
+	volatile bool isRxBlocking;    /*!< True if receive is blocking transaction. */
+	semaphore_t txIrqSync;         /*!< Used to wait for ISR to complete its TX business. */
+	semaphore_t rxIrqSync;         /*!< Used to wait for ISR to complete its RX business. */
+	flexio_uart_rx_callback_t rxCallback; /*!< Callback to invoke after receiving byte.*/
+	void * rxCallbackParam;        /*!< Receive callback parameter pointer.*/
 }flexio_uart_state_t;
 
 /*******************************************************************************
@@ -110,27 +110,27 @@ extern "C" {
  * configures the underlying FlexIO pin, shifter, and timer resource, and enables the FlexIO
  * simulated UART module interrupt.
  * This example shows how to set up the flexio_uart_state_t and the
- * flexio_uart_userconfig_t parameters and how to call the FLEXIO_UART_DRV_Init function 
+ * flexio_uart_userconfig_t parameters and how to call the FLEXIO_UART_DRV_Init function
  * by passing in these parameters:
    @code
-    flexio_uart_userconfig_t uartConfig;
-    uartConfig.baudRate = 9600;
-    uartConfig.bitCountPerChar = kUart8BitsPerChar;
-    uartConfig.uartMode = flexioUART_TxRx;
+	flexio_uart_userconfig_t uartConfig;
+	uartConfig.baudRate = 9600;
+	uartConfig.bitCountPerChar = kUart8BitsPerChar;
+	uartConfig.uartMode = flexioUART_TxRx;
    @endcode
  *
  * @param instance The FlexIO instance number.
- * @param uartState A pointer to the global FlexIOs UART driver state structure memory. 
+ * @param uartState A pointer to the global FlexIOs UART driver state structure memory.
  *  The user passes in the memory for the run-time state structure. The FlexIO UART driver
  *  populates the members. This run-time state structure keeps track of the
  *  current transfer in progress.
- * @param uartConfig The user configuration structure of type flexio_uart_userconfig_t. 
+ * @param uartConfig The user configuration structure of type flexio_uart_userconfig_t.
  *  The user populates the members of this structure and passes the pointer of this structure
  *  to this function.
  * @return An error code or kStatus_FlexIO_UART_Success.
  */
 flexio_uart_status_t FLEXIO_UART_DRV_Init(uint32_t instance, flexio_uart_state_t * uartState,
-                               const flexio_uart_userconfig_t * uartConfig);
+							   const flexio_uart_userconfig_t * uartConfig);
 /*!
  * @brief Shuts down the FlexIO UART.
  *
@@ -152,10 +152,10 @@ void FLEXIO_UART_DRV_Deinit(flexio_uart_state_t *uartState);
  * @param alwaysEnableRxIrq Whether always enable Rx IRQ or not.
  * @return Former UART receive callback function pointer.
  */
-flexio_uart_rx_callback_t FLEXIO_UART_DRV_InstallRxCallback(flexio_uart_state_t *uartState,flexio_uart_rx_callback_t function, 
-                                              uint8_t * rxBuff,void * callbackParam,bool alwaysEnableRxIrq);
+flexio_uart_rx_callback_t FLEXIO_UART_DRV_InstallRxCallback(flexio_uart_state_t *uartState,flexio_uart_rx_callback_t function,
+											  uint8_t * rxBuff,void * callbackParam,bool alwaysEnableRxIrq);
 /*!
- * @brief Sends (transmits) data out through the FlexIO-simulated UART module using a 
+ * @brief Sends (transmits) data out through the FlexIO-simulated UART module using a
  * blocking method.
  * @param uartState The run-time structure of FlexIO-simulated UART.
  * @param txBuff A pointer to the source buffer containing 8-bit data chars to send.
@@ -163,12 +163,12 @@ flexio_uart_rx_callback_t FLEXIO_UART_DRV_InstallRxCallback(flexio_uart_state_t 
  * @param timeout A timeout value for RTOS abstraction sync control in milliseconds (ms).
  * @return An error code or kStatus_FlexIO_UART_Success.
  */
-flexio_uart_status_t FLEXIO_UART_DRV_SendDataBlocking(flexio_uart_state_t *uartState, 
-                                        const uint8_t * txBuff,
-                                        uint32_t txSize, 
-                                        uint32_t timeout);
+flexio_uart_status_t FLEXIO_UART_DRV_SendDataBlocking(flexio_uart_state_t *uartState,
+										const uint8_t * txBuff,
+										uint32_t txSize,
+										uint32_t timeout);
 /*!
- * @brief Sends (transmits) data through the FlexIO-simulated UART module using a 
+ * @brief Sends (transmits) data through the FlexIO-simulated UART module using a
  * non-blocking method.
  * @param uartState The run-time structure of FlexIO-simulated UART.
  * @param txBuff A pointer to the source buffer containing 8-bit data chars to send.
@@ -176,8 +176,8 @@ flexio_uart_status_t FLEXIO_UART_DRV_SendDataBlocking(flexio_uart_state_t *uartS
  * @return An error code or kStatus_FlexIO_UART_Success.
  */
 flexio_uart_status_t FLEXIO_UART_DRV_SendData(flexio_uart_state_t *uartState,
-                                const uint8_t * txBuff,
-                                uint32_t txSize);
+								const uint8_t * txBuff,
+								uint32_t txSize);
 /*!
  * @brief Returns whether the previous FlexIO-simulated UART transmit has finished.
  *
@@ -209,7 +209,7 @@ flexio_uart_status_t FLEXIO_UART_DRV_AbortSendingData(flexio_uart_state_t *uartS
  * @return An error code or kStatus_FlexIO_UART_Success.
  */
 flexio_uart_status_t FLEXIO_UART_DRV_ReceiveDataBlocking(flexio_uart_state_t *uartState, uint8_t * rxBuff,
-                                           uint32_t rxSize, uint32_t timeout);
+										   uint32_t rxSize, uint32_t timeout);
 /*!
  * @brief Gets (receives) data from the FlexIO-simulated UART module using a non-blocking method.
  *
@@ -219,8 +219,8 @@ flexio_uart_status_t FLEXIO_UART_DRV_ReceiveDataBlocking(flexio_uart_state_t *ua
  * @return An error code or kStatus_FlexIO_UART_Success.
  */
 flexio_uart_status_t FLEXIO_UART_DRV_ReceiveData(flexio_uart_state_t *uartState,
-                                   uint8_t * rxBuff,
-                                   uint32_t rxSize);
+								   uint8_t * rxBuff,
+								   uint32_t rxSize);
 /*!
  * @brief Returns whether the previous FlexIO-simulated UART receive is complete.
  *
@@ -233,7 +233,7 @@ flexio_uart_status_t FLEXIO_UART_DRV_ReceiveData(flexio_uart_state_t *uartState,
  *     filled with the number of bytes which are received up to that point.
  */
 flexio_uart_status_t FLEXIO_UART_DRV_GetReceiveStatus(flexio_uart_state_t *uartState,
-                                        uint32_t * bytesRemaining);
+										uint32_t * bytesRemaining);
 /*!
  * @brief Terminates a non-blocking FlexIO-simulated UART receive early.
  *

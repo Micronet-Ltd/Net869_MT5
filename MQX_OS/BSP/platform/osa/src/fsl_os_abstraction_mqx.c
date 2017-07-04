@@ -47,38 +47,38 @@
  *END**************************************************************************/
 
 osa_status_t OSA_TaskCreate(task_t          task,
-                         uint8_t        *name,
-                         uint16_t        stackSize,
-                         task_stack_t   *stackMem,
-                         uint16_t        priority,
-                         task_param_t    param,
-                         bool            usesFloat,
-                         task_handler_t *handler)
+						 uint8_t        *name,
+						 uint16_t        stackSize,
+						 task_stack_t   *stackMem,
+						 uint16_t        priority,
+						 task_param_t    param,
+						 bool            usesFloat,
+						 task_handler_t *handler)
 {
-    taskinit_t task_parameters;
-    task_parameters.exec       = task;
-    task_parameters.stacksize  = stackSize;
-    task_parameters.stackaddr  = stackSize == 0 ? NULL : stackMem;
-    task_parameters.priority   = PRIORITY_OSA_TO_RTOS(priority);
-    task_parameters.name       = (char *)name;
-    task_parameters.exec_param = (void *)param;
-    task_parameters.attributes = MQX_AUTO_START_TASK |
+	taskinit_t task_parameters;
+	task_parameters.exec       = task;
+	task_parameters.stacksize  = stackSize;
+	task_parameters.stackaddr  = stackSize == 0 ? NULL : stackMem;
+	task_parameters.priority   = PRIORITY_OSA_TO_RTOS(priority);
+	task_parameters.name       = (char *)name;
+	task_parameters.exec_param = (void *)param;
+	task_parameters.attributes = MQX_AUTO_START_TASK |
 #if MQX_HAS_TIME_SLICE
-                                 MQX_TIME_SLICE_TASK |
+								 MQX_TIME_SLICE_TASK |
 #endif
-                                 (usesFloat ? MQX_FLOATING_POINT_TASK : 0U);
-    task_parameters.time_slice = 0U;
+								 (usesFloat ? MQX_FLOATING_POINT_TASK : 0U);
+	task_parameters.time_slice = 0U;
 
-    *handler = create_task(&task_parameters);
+	*handler = create_task(&task_parameters);
 
-    if (MQX_NULL_TASK_ID != *handler)
-    {
-        return kStatus_OSA_Success;
-    }
-    else
-    {
-        return kStatus_OSA_Error;
-    }
+	if (MQX_NULL_TASK_ID != *handler)
+	{
+		return kStatus_OSA_Success;
+	}
+	else
+	{
+		return kStatus_OSA_Error;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -90,7 +90,7 @@ osa_status_t OSA_TaskCreate(task_t          task,
  *END**************************************************************************/
 osa_status_t OSA_TaskDestroy(task_handler_t handler)
 {
-    return (MQX_OK == _task_destroy(handler)) ? kStatus_OSA_Success : kStatus_OSA_Error;
+	return (MQX_OK == _task_destroy(handler)) ? kStatus_OSA_Success : kStatus_OSA_Error;
 }
 
 /*FUNCTION**********************************************************************
@@ -102,8 +102,8 @@ osa_status_t OSA_TaskDestroy(task_handler_t handler)
  *END**************************************************************************/
 osa_status_t OSA_TaskYield(void)
 {
-    _sched_yield();
-    return kStatus_OSA_Success;
+	_sched_yield();
+	return kStatus_OSA_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -114,7 +114,7 @@ osa_status_t OSA_TaskYield(void)
  *END**************************************************************************/
 task_handler_t OSA_TaskGetHandler(void)
 {
-    return _task_get_id_from_td(_task_get_td(MQX_NULL_TASK_ID));
+	return _task_get_id_from_td(_task_get_td(MQX_NULL_TASK_ID));
 }
 
 /*FUNCTION**********************************************************************
@@ -125,9 +125,9 @@ task_handler_t OSA_TaskGetHandler(void)
  *END**************************************************************************/
 uint16_t OSA_TaskGetPriority(task_handler_t handler)
 {
-    _mqx_uint priority;
-    _task_get_priority(handler, &priority);
-    return PRIORITY_RTOS_TO_OSA(priority);
+	_mqx_uint priority;
+	_task_get_priority(handler, &priority);
+	return PRIORITY_RTOS_TO_OSA(priority);
 }
 
 /*FUNCTION**********************************************************************
@@ -139,18 +139,18 @@ uint16_t OSA_TaskGetPriority(task_handler_t handler)
 osa_status_t OSA_TaskSetPriority(task_handler_t handler, uint16_t priority)
 {
 #if MQX_HAS_DYNAMIC_PRIORITIES
-    _mqx_uint oldPriority;
+	_mqx_uint oldPriority;
 
-    if (MQX_OK == _task_set_priority(handler, PRIORITY_OSA_TO_RTOS(priority), &oldPriority))
-    {
-        return kStatus_OSA_Success;
-    }
-    else
-    {
-        return kStatus_OSA_Error;
-    }
+	if (MQX_OK == _task_set_priority(handler, PRIORITY_OSA_TO_RTOS(priority), &oldPriority))
+	{
+		return kStatus_OSA_Success;
+	}
+	else
+	{
+		return kStatus_OSA_Error;
+	}
 #else /* MQX_HAS_DYNAMIC_PRIORITIES */
-    return kStatus_OSA_Error;
+	return kStatus_OSA_Error;
 #endif /* MQX_HAS_DYNAMIC_PRIORITIES */
 }
 
@@ -163,24 +163,24 @@ osa_status_t OSA_TaskSetPriority(task_handler_t handler, uint16_t priority)
  *END**************************************************************************/
 static uint32_t wait_timeout_msec_to_tick(uint32_t timeout)
 {
-    if (OSA_WAIT_FOREVER == timeout)   /* Wait forever. */
-    {
-        return 0U; /* Timeout 0 means wait forever for MQX. */
-    }
-    else
-    {
-        timeout *= _time_get_ticks_per_sec();
-        timeout /= 1000U;
-        /*
-         * If timeout is too short that changed to 0 tick, reset it to 1 tick
-         * in case of infinitely wait.
-         */
-        if (!timeout)
-        {
-            timeout = 1U;
-        }
-        return timeout;
-    }
+	if (OSA_WAIT_FOREVER == timeout)   /* Wait forever. */
+	{
+		return 0U; /* Timeout 0 means wait forever for MQX. */
+	}
+	else
+	{
+		timeout *= _time_get_ticks_per_sec();
+		timeout /= 1000U;
+		/*
+		 * If timeout is too short that changed to 0 tick, reset it to 1 tick
+		 * in case of infinitely wait.
+		 */
+		if (!timeout)
+		{
+			timeout = 1U;
+		}
+		return timeout;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -192,9 +192,9 @@ static uint32_t wait_timeout_msec_to_tick(uint32_t timeout)
  *END**************************************************************************/
 osa_status_t OSA_SemaCreate(semaphore_t *pSem, uint8_t initValue)
 {
-    return MQX_OK == _lwsem_create(pSem, initValue) ?
-                     kStatus_OSA_Success            :
-                     kStatus_OSA_Error;
+	return MQX_OK == _lwsem_create(pSem, initValue) ?
+					 kStatus_OSA_Success            :
+					 kStatus_OSA_Error;
 }
 
 /*FUNCTION**********************************************************************
@@ -212,32 +212,32 @@ osa_status_t OSA_SemaCreate(semaphore_t *pSem, uint8_t initValue)
  *END**************************************************************************/
 osa_status_t OSA_SemaWait(semaphore_t *pSem, uint32_t timeout)
 {
-    _mqx_uint retVal;
+	_mqx_uint retVal;
 
-    /* If timeout is 0, try to get the semaphore. */
-    if (!timeout)
-    {
-        return _lwsem_poll(pSem) ? kStatus_OSA_Success : kStatus_OSA_Timeout;
-    }
-    else
-    {
-        /* If timeout is not 0, convert it to ticks. */
-        timeout = wait_timeout_msec_to_tick(timeout);
-        retVal = _lwsem_wait_ticks(pSem, timeout);
+	/* If timeout is 0, try to get the semaphore. */
+	if (!timeout)
+	{
+		return _lwsem_poll(pSem) ? kStatus_OSA_Success : kStatus_OSA_Timeout;
+	}
+	else
+	{
+		/* If timeout is not 0, convert it to ticks. */
+		timeout = wait_timeout_msec_to_tick(timeout);
+		retVal = _lwsem_wait_ticks(pSem, timeout);
 
-        if(MQX_OK == retVal)
-        {
-            return kStatus_OSA_Success;
-        }
-        else if (MQX_LWSEM_WAIT_TIMEOUT == retVal)
-        {
-            return kStatus_OSA_Timeout;
-        }
-        else
-        {
-            return kStatus_OSA_Error;
-        }
-    }
+		if(MQX_OK == retVal)
+		{
+			return kStatus_OSA_Success;
+		}
+		else if (MQX_LWSEM_WAIT_TIMEOUT == retVal)
+		{
+			return kStatus_OSA_Timeout;
+		}
+		else
+		{
+			return kStatus_OSA_Error;
+		}
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -251,7 +251,7 @@ osa_status_t OSA_SemaWait(semaphore_t *pSem, uint32_t timeout)
  *END**************************************************************************/
 osa_status_t OSA_SemaPost(semaphore_t *pSem)
 {
-    return (MQX_OK == _lwsem_post(pSem)) ? kStatus_OSA_Success : kStatus_OSA_Error;
+	return (MQX_OK == _lwsem_post(pSem)) ? kStatus_OSA_Success : kStatus_OSA_Error;
 }
 
 /*FUNCTION**********************************************************************
@@ -264,7 +264,7 @@ osa_status_t OSA_SemaPost(semaphore_t *pSem)
  *END**************************************************************************/
 osa_status_t OSA_SemaDestroy(semaphore_t *pSem)
 {
-    return (MQX_OK == _lwsem_destroy(pSem)) ? kStatus_OSA_Success : kStatus_OSA_Error;
+	return (MQX_OK == _lwsem_destroy(pSem)) ? kStatus_OSA_Success : kStatus_OSA_Error;
 }
 
 /*FUNCTION**********************************************************************
@@ -277,15 +277,15 @@ osa_status_t OSA_SemaDestroy(semaphore_t *pSem)
  *END**************************************************************************/
 osa_status_t OSA_MutexCreate(mutex_t *pMutex)
 {
-    if (NULL == pMutex)
-    {
-        return kStatus_OSA_Error;
-    }
+	if (NULL == pMutex)
+	{
+		return kStatus_OSA_Error;
+	}
 
-    pMutex->owner = 0U;
-    return MQX_OK == _lwsem_create(&(pMutex->sema), 1) ?
-                     kStatus_OSA_Success :
-                     kStatus_OSA_Error;
+	pMutex->owner = 0U;
+	return MQX_OK == _lwsem_create(&(pMutex->sema), 1) ?
+					 kStatus_OSA_Success :
+					 kStatus_OSA_Error;
 }
 
 /*FUNCTION**********************************************************************
@@ -301,62 +301,62 @@ osa_status_t OSA_MutexCreate(mutex_t *pMutex)
  *END**************************************************************************/
 osa_status_t OSA_MutexLock(mutex_t *pMutex, uint32_t timeout)
 {
-    _mqx_uint retVal;
-    osa_status_t ret = kStatus_OSA_Error;
-    uint32_t tid = _task_get_id();
-    assert(tid != 0);
-    if (NULL == pMutex)
-    {
-        return kStatus_OSA_Error;
-    }
+	_mqx_uint retVal;
+	osa_status_t ret = kStatus_OSA_Error;
+	uint32_t tid = _task_get_id();
+	assert(tid != 0);
+	if (NULL == pMutex)
+	{
+		return kStatus_OSA_Error;
+	}
 
-    /* Check whether the mutex has been locked by current task. */
-    if (pMutex->owner == tid)
-    {
-        return kStatus_OSA_Error;
-    }
+	/* Check whether the mutex has been locked by current task. */
+	if (pMutex->owner == tid)
+	{
+		return kStatus_OSA_Error;
+	}
 
-    /* If timeout is 0, try to get the semaphore. */
-    if (timeout == 0)
-    {
-        /* Ensure that the owner is updated together with mutex acquisition. */
-        _int_disable();
-        retVal = _lwsem_poll(&(pMutex->sema)) ? MQX_OK : MQX_LWSEM_WAIT_TIMEOUT;
-    }
-    else if (timeout == OSA_WAIT_FOREVER)
-    {
-        _int_disable();
-        retVal = _lwsem_wait(&(pMutex->sema));
-    }
-    else
-    {
-        /* Convert timeout to ticks. */
-        timeout = wait_timeout_msec_to_tick(timeout);
-        _int_disable();
-        /* Check if the conversion has overflown */
-        if (timeout)
-        {
-            retVal = _lwsem_wait_ticks(&(pMutex->sema), timeout);
-        }
-        else
-        {
-            /* The conversion has overflown, timeout is 0 and should not be. Wait forever. */
-            retVal = _lwsem_wait(&(pMutex->sema));
-        }
-    }
+	/* If timeout is 0, try to get the semaphore. */
+	if (timeout == 0)
+	{
+		/* Ensure that the owner is updated together with mutex acquisition. */
+		_int_disable();
+		retVal = _lwsem_poll(&(pMutex->sema)) ? MQX_OK : MQX_LWSEM_WAIT_TIMEOUT;
+	}
+	else if (timeout == OSA_WAIT_FOREVER)
+	{
+		_int_disable();
+		retVal = _lwsem_wait(&(pMutex->sema));
+	}
+	else
+	{
+		/* Convert timeout to ticks. */
+		timeout = wait_timeout_msec_to_tick(timeout);
+		_int_disable();
+		/* Check if the conversion has overflown */
+		if (timeout)
+		{
+			retVal = _lwsem_wait_ticks(&(pMutex->sema), timeout);
+		}
+		else
+		{
+			/* The conversion has overflown, timeout is 0 and should not be. Wait forever. */
+			retVal = _lwsem_wait(&(pMutex->sema));
+		}
+	}
 
-    if (MQX_OK == retVal)
-    {
-        pMutex->owner = tid;
-        ret = kStatus_OSA_Success;
-    }
-    else if (MQX_LWSEM_WAIT_TIMEOUT == retVal)
-    {
-        ret = kStatus_OSA_Timeout;
-    }
-    _int_enable();
+	if (MQX_OK == retVal)
+	{
+		pMutex->owner = tid;
+		ret = kStatus_OSA_Success;
+	}
+	else if (MQX_LWSEM_WAIT_TIMEOUT == retVal)
+	{
+		ret = kStatus_OSA_Timeout;
+	}
+	_int_enable();
 
-    return ret;
+	return ret;
 }
 
 /*FUNCTION**********************************************************************
@@ -367,38 +367,38 @@ osa_status_t OSA_MutexLock(mutex_t *pMutex, uint32_t timeout)
  *END**************************************************************************/
 osa_status_t OSA_MutexUnlock(mutex_t *pMutex)
 {
-    osa_status_t ret = kStatus_OSA_Error;
-    uint32_t tid = _task_get_id();
-    assert(tid != 0);
-    
-    if (NULL == pMutex)
-    {
-        return kStatus_OSA_Error;
-    }
+	osa_status_t ret = kStatus_OSA_Error;
+	uint32_t tid = _task_get_id();
+	assert(tid != 0);
 
-    /* If task does not own this mutex, it can not unlock it. */
-    if (pMutex->owner != tid)
-    {
-        return kStatus_OSA_Error;
-    }
+	if (NULL == pMutex)
+	{
+		return kStatus_OSA_Error;
+	}
 
-    _int_disable();
-    /* We suppose the successfull post of semaphore. After semaphore is posted it would
-    ** be too late to set the owner of the mutex to 'nobody'. */
-    pMutex->owner = 0U;
-    /* Ensure that the owner is updated together with mutex unlocking. */
-    if (MQX_OK == _lwsem_post(&(pMutex->sema)))
-    {     
-        ret = kStatus_OSA_Success;
-    }
-    else
-    {
-        /* The current task still owns the mutex. */
-        pMutex->owner = tid;
-    }
-    _int_enable();
+	/* If task does not own this mutex, it can not unlock it. */
+	if (pMutex->owner != tid)
+	{
+		return kStatus_OSA_Error;
+	}
 
-    return ret;
+	_int_disable();
+	/* We suppose the successfull post of semaphore. After semaphore is posted it would
+	** be too late to set the owner of the mutex to 'nobody'. */
+	pMutex->owner = 0U;
+	/* Ensure that the owner is updated together with mutex unlocking. */
+	if (MQX_OK == _lwsem_post(&(pMutex->sema)))
+	{
+		ret = kStatus_OSA_Success;
+	}
+	else
+	{
+		/* The current task still owns the mutex. */
+		pMutex->owner = tid;
+	}
+	_int_enable();
+
+	return ret;
 }
 
 /*FUNCTION**********************************************************************
@@ -411,23 +411,23 @@ osa_status_t OSA_MutexUnlock(mutex_t *pMutex)
  *END**************************************************************************/
 osa_status_t OSA_MutexDestroy(mutex_t *pMutex)
 {
-    osa_status_t ret;
+	osa_status_t ret;
 
-    assert(pMutex != NULL);
+	assert(pMutex != NULL);
 
-    _int_disable();
-    if (MQX_OK == _lwsem_destroy(&(pMutex->sema)))
-    {
-        pMutex->owner = 0U;
-        ret = kStatus_OSA_Success;
-    }
-    else
-    {
-        ret = kStatus_OSA_Error;
-    }
-    _int_enable();
+	_int_disable();
+	if (MQX_OK == _lwsem_destroy(&(pMutex->sema)))
+	{
+		pMutex->owner = 0U;
+		ret = kStatus_OSA_Success;
+	}
+	else
+	{
+		ret = kStatus_OSA_Error;
+	}
+	_int_enable();
 
-    return ret;
+	return ret;
 }
 
 /*FUNCTION**********************************************************************
@@ -439,11 +439,11 @@ osa_status_t OSA_MutexDestroy(mutex_t *pMutex)
  *END**************************************************************************/
 osa_status_t OSA_EventCreate(event_t *pEvent, osa_event_clear_mode_t clearMode)
 {
-    _mqx_uint retVal;
+	_mqx_uint retVal;
 
-    retVal = _lwevent_create(pEvent, (kEventAutoClear == clearMode) ? LWEVENT_AUTO_CLEAR : 0);
+	retVal = _lwevent_create(pEvent, (kEventAutoClear == clearMode) ? LWEVENT_AUTO_CLEAR : 0);
 
-    return (retVal == MQX_OK) ? kStatus_OSA_Success : kStatus_OSA_Error;
+	return (retVal == MQX_OK) ? kStatus_OSA_Success : kStatus_OSA_Error;
 }
 
 /*FUNCTION**********************************************************************
@@ -462,61 +462,61 @@ osa_status_t OSA_EventCreate(event_t *pEvent, osa_event_clear_mode_t clearMode)
  *
  *END**************************************************************************/
 osa_status_t OSA_EventWait(event_t       *pEvent,
-                        event_flags_t  flagsToWait,
-                        bool           waitAll,
-                        uint32_t       timeout,
-                        event_flags_t *setFlags)
+						event_flags_t  flagsToWait,
+						bool           waitAll,
+						uint32_t       timeout,
+						event_flags_t *setFlags)
 {
-    _mqx_uint retVal;
+	_mqx_uint retVal;
 
-    *setFlags = 0;
-    /*
-     * TODO:
-     * MQX lwevent doesn't provide API to poll event, so use a work around here.
-     */
-    if (!timeout)
-    {
-        _int_disable();
-        if ((waitAll && ((pEvent->VALUE & flagsToWait) == flagsToWait)) ||
-           ((!waitAll) && (pEvent->VALUE & flagsToWait)))
-        {
-            retVal = _lwevent_wait_ticks(pEvent, flagsToWait, waitAll, 1);
-            _int_enable();
-            if (MQX_OK == retVal)
-            {
-                *setFlags = _lwevent_get_signalled();
-                return kStatus_OSA_Success;
-            }
-            else
-            {
-                return kStatus_OSA_Error;
-            }
-        }
-        else
-        {
-            _int_enable();
-            return kStatus_OSA_Timeout;
-        }
-    }
-    else
-    {
-        timeout = wait_timeout_msec_to_tick(timeout);
-        retVal = _lwevent_wait_ticks(pEvent, flagsToWait, waitAll, timeout);
+	*setFlags = 0;
+	/*
+	 * TODO:
+	 * MQX lwevent doesn't provide API to poll event, so use a work around here.
+	 */
+	if (!timeout)
+	{
+		_int_disable();
+		if ((waitAll && ((pEvent->VALUE & flagsToWait) == flagsToWait)) ||
+		   ((!waitAll) && (pEvent->VALUE & flagsToWait)))
+		{
+			retVal = _lwevent_wait_ticks(pEvent, flagsToWait, waitAll, 1);
+			_int_enable();
+			if (MQX_OK == retVal)
+			{
+				*setFlags = _lwevent_get_signalled();
+				return kStatus_OSA_Success;
+			}
+			else
+			{
+				return kStatus_OSA_Error;
+			}
+		}
+		else
+		{
+			_int_enable();
+			return kStatus_OSA_Timeout;
+		}
+	}
+	else
+	{
+		timeout = wait_timeout_msec_to_tick(timeout);
+		retVal = _lwevent_wait_ticks(pEvent, flagsToWait, waitAll, timeout);
 
-        if (MQX_OK == retVal)
-        {
-            *setFlags = _lwevent_get_signalled();
-            return kStatus_OSA_Success;
-        }
-        else if (LWEVENT_WAIT_TIMEOUT == retVal)
-        {
-            return kStatus_OSA_Timeout;
-        }
-        else
-        {
-            return kStatus_OSA_Error;
-        }
-    }
+		if (MQX_OK == retVal)
+		{
+			*setFlags = _lwevent_get_signalled();
+			return kStatus_OSA_Success;
+		}
+		else if (LWEVENT_WAIT_TIMEOUT == retVal)
+		{
+			return kStatus_OSA_Timeout;
+		}
+		else
+		{
+			return kStatus_OSA_Error;
+		}
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -528,9 +528,9 @@ osa_status_t OSA_EventWait(event_t       *pEvent,
  *END**************************************************************************/
 osa_status_t OSA_EventSet(event_t *pEvent, event_flags_t flagsToSet)
 {
-    return (MQX_OK == _lwevent_set(pEvent, flagsToSet)) ?
-                                    kStatus_OSA_Success :
-                                    kStatus_OSA_Error;
+	return (MQX_OK == _lwevent_set(pEvent, flagsToSet)) ?
+									kStatus_OSA_Success :
+									kStatus_OSA_Error;
 }
 
 /*FUNCTION**********************************************************************
@@ -542,9 +542,9 @@ osa_status_t OSA_EventSet(event_t *pEvent, event_flags_t flagsToSet)
  *END**************************************************************************/
 osa_status_t OSA_EventClear(event_t *pEvent, event_flags_t flagsToClear)
 {
-    return (MQX_OK == _lwevent_clear(pEvent, flagsToClear)) ?
-                                        kStatus_OSA_Success :
-                                        kStatus_OSA_Error;
+	return (MQX_OK == _lwevent_clear(pEvent, flagsToClear)) ?
+										kStatus_OSA_Success :
+										kStatus_OSA_Error;
 }
 
 /*FUNCTION**********************************************************************
@@ -556,9 +556,9 @@ osa_status_t OSA_EventClear(event_t *pEvent, event_flags_t flagsToClear)
  *END**************************************************************************/
 event_flags_t OSA_EventGetFlags(event_t *pEvent)
 {
-    assert(pEvent);
+	assert(pEvent);
 
-    return pEvent->VALUE;
+	return pEvent->VALUE;
 }
 
 /*FUNCTION**********************************************************************
@@ -571,7 +571,7 @@ event_flags_t OSA_EventGetFlags(event_t *pEvent)
  *END**************************************************************************/
 osa_status_t OSA_EventDestroy(event_t *pEvent)
 {
-    return (MQX_OK == _lwevent_destroy(pEvent)) ? kStatus_OSA_Success : kStatus_OSA_Error;
+	return (MQX_OK == _lwevent_destroy(pEvent)) ? kStatus_OSA_Success : kStatus_OSA_Error;
 }
 
 /*FUNCTION**********************************************************************
@@ -583,22 +583,22 @@ osa_status_t OSA_EventDestroy(event_t *pEvent)
  *
  *END**************************************************************************/
 msg_queue_handler_t OSA_MsgQCreate(msg_queue_t *queue,
-                                        uint16_t  message_number,
-                                        uint16_t  message_size)
+										uint16_t  message_number,
+										uint16_t  message_size)
 {
-    _mqx_uint retVal;
+	_mqx_uint retVal;
 
-    /* Create the message queue where each element is a pointer to the message item. */
-    retVal = _lwmsgq_init(queue, message_number, SIZE_IN_MMT_UNITS(message_size * 4));
+	/* Create the message queue where each element is a pointer to the message item. */
+	retVal = _lwmsgq_init(queue, message_number, SIZE_IN_MMT_UNITS(message_size * 4));
 
-    if (MQX_OK == retVal)
-    {
-        return (msg_queue_handler_t)queue;
-    }
-    else
-    {
-        return (msg_queue_handler_t)NULL;
-    }
+	if (MQX_OK == retVal)
+	{
+		return (msg_queue_handler_t)queue;
+	}
+	else
+	{
+		return (msg_queue_handler_t)NULL;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -611,10 +611,10 @@ msg_queue_handler_t OSA_MsgQCreate(msg_queue_t *queue,
  *END**************************************************************************/
 osa_status_t OSA_MsgQPut(msg_queue_handler_t handler, void* pMessage)
 {
-    /* Does not block if full */
-    return (MQX_OK == _lwmsgq_send(handler, (_mqx_max_type_ptr)pMessage, 0)) ?
-                                                         kStatus_OSA_Success :
-                                                         kStatus_OSA_Error;
+	/* Does not block if full */
+	return (MQX_OK == _lwmsgq_send(handler, (_mqx_max_type_ptr)pMessage, 0)) ?
+														 kStatus_OSA_Success :
+														 kStatus_OSA_Error;
 }
 
 /*FUNCTION**********************************************************************
@@ -631,34 +631,34 @@ osa_status_t OSA_MsgQPut(msg_queue_handler_t handler, void* pMessage)
  *
  *END**************************************************************************/
 osa_status_t OSA_MsgQGet(msg_queue_handler_t handler,
-                           void               *pMessage,
-                           uint32_t            timeout)
+						   void               *pMessage,
+						   uint32_t            timeout)
 {
-    _mqx_uint retVal;
+	_mqx_uint retVal;
 
-    if(!timeout)
-    {
-        retVal = _lwmsgq_receive(handler, (_mqx_max_type_ptr)pMessage, 0, 0, NULL);
-    }
-    else
-    {
-        timeout = wait_timeout_msec_to_tick(timeout);
-        retVal = _lwmsgq_receive(handler, (_mqx_max_type_ptr)pMessage,
-                LWMSGQ_RECEIVE_BLOCK_ON_EMPTY, timeout, NULL);
-    }
+	if(!timeout)
+	{
+		retVal = _lwmsgq_receive(handler, (_mqx_max_type_ptr)pMessage, 0, 0, NULL);
+	}
+	else
+	{
+		timeout = wait_timeout_msec_to_tick(timeout);
+		retVal = _lwmsgq_receive(handler, (_mqx_max_type_ptr)pMessage,
+				LWMSGQ_RECEIVE_BLOCK_ON_EMPTY, timeout, NULL);
+	}
 
-    if (MQX_OK == retVal)
-    {
-        return kStatus_OSA_Success;
-    }
-    else if ((LWMSGQ_TIMEOUT == retVal) || (LWMSGQ_EMPTY == retVal))
-    {
-        return kStatus_OSA_Timeout;
-    }
-    else
-    {
-        return kStatus_OSA_Error;
-    }
+	if (MQX_OK == retVal)
+	{
+		return kStatus_OSA_Success;
+	}
+	else if ((LWMSGQ_TIMEOUT == retVal) || (LWMSGQ_EMPTY == retVal))
+	{
+		return kStatus_OSA_Timeout;
+	}
+	else
+	{
+		return kStatus_OSA_Error;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -671,7 +671,7 @@ osa_status_t OSA_MsgQGet(msg_queue_handler_t handler,
  *END**************************************************************************/
 osa_status_t OSA_MsgQDestroy(msg_queue_handler_t handler)
 {
-    return (MQX_OK == _lwmsgq_deinit(handler)) ? kStatus_OSA_Success : kStatus_OSA_Error;
+	return (MQX_OK == _lwmsgq_deinit(handler)) ? kStatus_OSA_Success : kStatus_OSA_Error;
 }
 
 /*FUNCTION**********************************************************************
@@ -683,13 +683,13 @@ osa_status_t OSA_MsgQDestroy(msg_queue_handler_t handler)
  *END**************************************************************************/
 void * OSA_MemAlloc(size_t size)
 {
-     /* We allocate memory as a system, not as a calling task. That will prevent
-      * us from failures during freeing the same memory from another task.
-      */
+	 /* We allocate memory as a system, not as a calling task. That will prevent
+	  * us from failures during freeing the same memory from another task.
+	  */
 #if MQXCFG_ALLOCATOR
-    return _mem_alloc_system(size);
+	return _mem_alloc_system(size);
 #else
-    return NULL;
+	return NULL;
 #endif //MQXCFG_ALLOCATOR
 }
 
@@ -704,9 +704,9 @@ void * OSA_MemAlloc(size_t size)
 void * OSA_MemAllocZero(size_t size)
 {
 #if MQXCFG_ALLOCATOR
-    return _mem_alloc_system_zero(size);
+	return _mem_alloc_system_zero(size);
 #else
-    return NULL;
+	return NULL;
 #endif //MQXCFG_ALLOCATOR
 }
 
@@ -719,9 +719,9 @@ void * OSA_MemAllocZero(size_t size)
 osa_status_t OSA_MemFree(void *ptr)
 {
 #if MQXCFG_ALLOCATOR
-    return MQX_OK == _mem_free(ptr) ? kStatus_OSA_Success : kStatus_OSA_Error;
+	return MQX_OK == _mem_free(ptr) ? kStatus_OSA_Success : kStatus_OSA_Error;
 #else
-    return kStatus_OSA_Error;
+	return kStatus_OSA_Error;
 #endif //MQXCFG_ALLOCATOR
 }
 
@@ -733,14 +733,14 @@ osa_status_t OSA_MemFree(void *ptr)
  *END**************************************************************************/
 void OSA_EnterCritical(osa_critical_section_mode_t mode)
 {
-    if (kCriticalDisableInt == mode)
-    {
-        _int_disable();
-    }
-    else
-    {
-        _task_stop_preemption();
-    }
+	if (kCriticalDisableInt == mode)
+	{
+		_int_disable();
+	}
+	else
+	{
+		_task_stop_preemption();
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -751,14 +751,14 @@ void OSA_EnterCritical(osa_critical_section_mode_t mode)
  *END**************************************************************************/
 void OSA_ExitCritical(osa_critical_section_mode_t mode)
 {
-    if (kCriticalDisableInt == mode)
-    {
-        _int_enable();
-    }
-    else
-    {
-        _task_start_preemption();
-    }
+	if (kCriticalDisableInt == mode)
+	{
+		_int_enable();
+	}
+	else
+	{
+		_task_start_preemption();
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -769,7 +769,7 @@ void OSA_ExitCritical(osa_critical_section_mode_t mode)
  *END**************************************************************************/
 void OSA_TimeDelay(uint32_t delay)
 {
-    _time_delay(delay);
+	_time_delay(delay);
 }
 
 /*FUNCTION**********************************************************************
@@ -780,13 +780,13 @@ void OSA_TimeDelay(uint32_t delay)
  *END**************************************************************************/
 uint32_t OSA_TimeGetMsec(void)
 {
-    /*
-     * NOTE: Time overflow is not checked.
-     */
-    bool overflow;
-    MQX_TICK_STRUCT tickStruct;
-    _time_get_elapsed_ticks(&tickStruct);
-    return(PSP_TICKS_TO_MILLISECONDS(&tickStruct, &overflow));
+	/*
+	 * NOTE: Time overflow is not checked.
+	 */
+	bool overflow;
+	MQX_TICK_STRUCT tickStruct;
+	_time_get_elapsed_ticks(&tickStruct);
+	return(PSP_TICKS_TO_MILLISECONDS(&tickStruct, &overflow));
 }
 
 /*FUNCTION**********************************************************************
@@ -796,12 +796,12 @@ uint32_t OSA_TimeGetMsec(void)
  *
  *END**************************************************************************/
 osa_int_handler_t OSA_InstallIntHandler(int32_t IRQNumber,
-                                        osa_int_handler_t handler)
+										osa_int_handler_t handler)
 {
 #if defined ( __IAR_SYSTEMS_ICC__ )
 _Pragma ("diag_suppress = Pm138")
 #endif
-    return (osa_int_handler_t)_int_install_isr(IRQNumber, (INT_ISR_FPTR)handler, NULL);
+	return (osa_int_handler_t)_int_install_isr(IRQNumber, (INT_ISR_FPTR)handler, NULL);
 #if defined ( __IAR_SYSTEMS_ICC__ )
 _Pragma ("diag_remark = PM138")
 #endif
@@ -817,12 +817,12 @@ _Pragma ("diag_remark = PM138")
  *END**************************************************************************/
 osa_status_t OSA_Init(void)
 {
-    #if MQX_CUSTOM_MAIN
-        extern MQX_INITIALIZATION_STRUCT MQX_init_struct;
-        return MQX_OK == mqx_init(&MQX_init_struct) ? kStatus_OSA_Success : kStatus_OSA_Error;
-    #else /* MQX_CUSTOM_MAIN */
-        return kStatus_OSA_Success;
-    #endif /* MQX_CUSTOM_MAIN */
+	#if MQX_CUSTOM_MAIN
+		extern MQX_INITIALIZATION_STRUCT MQX_init_struct;
+		return MQX_OK == mqx_init(&MQX_init_struct) ? kStatus_OSA_Success : kStatus_OSA_Error;
+	#else /* MQX_CUSTOM_MAIN */
+		return kStatus_OSA_Success;
+	#endif /* MQX_CUSTOM_MAIN */
 }
 
 /*FUNCTION**********************************************************************
@@ -833,11 +833,11 @@ osa_status_t OSA_Init(void)
  *END**************************************************************************/
 osa_status_t OSA_Start(void)
 {
-    #if MQX_CUSTOM_MAIN
-        return MQX_OK == mqx_start() ? kStatus_OSA_Success : kStatus_OSA_Error;
-    #else /* MQX_CUSTOM_MAIN */
-        return kStatus_OSA_Success;
-    #endif /* MQX_CUSTOM_MAIN */
+	#if MQX_CUSTOM_MAIN
+		return MQX_OK == mqx_start() ? kStatus_OSA_Success : kStatus_OSA_Error;
+	#else /* MQX_CUSTOM_MAIN */
+		return kStatus_OSA_Success;
+	#endif /* MQX_CUSTOM_MAIN */
 }
 
 

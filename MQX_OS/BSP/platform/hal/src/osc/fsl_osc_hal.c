@@ -43,23 +43,22 @@
  *
  * Function Name : OSC_HAL_SetCapacitor
  * Description   : Enable/disable the capacitor configuration for oscillator
- * This function will enable/disable the specified capacitors configuration for  
+ * This function will enable/disable the specified capacitors configuration for
  * oscillator. This should be done in early system level init function call
  * based on system configuration.
- * 
+ *
  *END**************************************************************************/
 void OSC_HAL_SetCapacitor(OSC_Type * base, uint32_t bitMask)
 {
-    OSC_WR_CR(base, (OSC_RD_CR(base)
-                    & ~(OSC_CR_SC2P_MASK |
-                        OSC_CR_SC4P_MASK |
-                        OSC_CR_SC8P_MASK |
-                        OSC_CR_SC16P_MASK))
-                    | bitMask);
+	OSC_WR_CR(base, (OSC_RD_CR(base)
+					& ~(OSC_CR_SC2P_MASK |
+						OSC_CR_SC4P_MASK |
+						OSC_CR_SC8P_MASK |
+						OSC_CR_SC16P_MASK))
+					| bitMask);
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

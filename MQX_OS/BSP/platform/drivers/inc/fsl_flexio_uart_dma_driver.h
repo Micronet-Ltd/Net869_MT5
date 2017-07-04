@@ -52,33 +52,33 @@
  * @brief Runtime state structure for FlexIO UART driver with DMA.
  */
 typedef struct flexio_uart_dmastate {
-    flexio_uart_mode_t mode;
-    flexio_uart_tx_dev_t txDev;    
-    flexio_uart_rx_dev_t rxDev;
-    volatile bool isTxBusy;     /*!< True if there is an active transmit. */
-    volatile bool isRxBusy;     /*!< True if there is an active receive. */
-    volatile bool isTxBlocking; /*!< True if transmit is blocking transaction. */
-    volatile bool isRxBlocking; /*!< True if receive is blocking transaction. */
-    semaphore_t txIrqSync;      /*!< Used to wait for ISR to complete its TX business. */
-    semaphore_t rxIrqSync;      /*!< Used to wait for ISR to complete its RX business. */
-    dma_channel_t dmaUartTx;    /*!< DMA channel used for send. */
-    dma_channel_t dmaUartRx;   /*!< DMA channel used for receive. */
+	flexio_uart_mode_t mode;
+	flexio_uart_tx_dev_t txDev;
+	flexio_uart_rx_dev_t rxDev;
+	volatile bool isTxBusy;     /*!< True if there is an active transmit. */
+	volatile bool isRxBusy;     /*!< True if there is an active receive. */
+	volatile bool isTxBlocking; /*!< True if transmit is blocking transaction. */
+	volatile bool isRxBlocking; /*!< True if receive is blocking transaction. */
+	semaphore_t txIrqSync;      /*!< Used to wait for ISR to complete its TX business. */
+	semaphore_t rxIrqSync;      /*!< Used to wait for ISR to complete its RX business. */
+	dma_channel_t dmaUartTx;    /*!< DMA channel used for send. */
+	dma_channel_t dmaUartRx;   /*!< DMA channel used for receive. */
 } flexio_uart_dmastate_t;
 
 /*!
  * @brief User configuration structure for the FlexIO UART driver with DMA.
  *
- * Use an instance of this structure with the FLEXIO_UART_DRV_DmaInit()function. This enables 
- * configuration of the most common settings of the UART peripheral with a single function call. 
- * Settings include: UART baud rate, UART parity mode: disabled (default), or even or odd, 
+ * Use an instance of this structure with the FLEXIO_UART_DRV_DmaInit()function. This enables
+ * configuration of the most common settings of the UART peripheral with a single function call.
+ * Settings include: UART baud rate, UART parity mode: disabled (default), or even or odd,
  * the number of stop bits, and the number of bits per data word.
  */
 typedef struct flexio_uartdma_userconfig {
-    uint32_t baudRate;            /*!< UART baud rate*/
-    flexio_uart_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 5/6/7/8 bits configurable*/
-    flexio_uart_mode_t uartMode;     /*!< FlexIO UART working modes: Tx only, Rx only, or both*/
-    flexio_uart_hwconfig_t txConfig;    /*!< FlexIO UART TX device hardware resource configuration*/
-    flexio_uart_hwconfig_t rxConfig;    /*!< FlexIO UART RX device hardware resource configuration*/ 
+	uint32_t baudRate;            /*!< UART baud rate*/
+	flexio_uart_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 5/6/7/8 bits configurable*/
+	flexio_uart_mode_t uartMode;     /*!< FlexIO UART working modes: Tx only, Rx only, or both*/
+	flexio_uart_hwconfig_t txConfig;    /*!< FlexIO UART TX device hardware resource configuration*/
+	flexio_uart_hwconfig_t rxConfig;    /*!< FlexIO UART RX device hardware resource configuration*/
 } flexio_uartdma_userconfig_t;
 
 /*******************************************************************************
@@ -102,27 +102,27 @@ extern "C" {
  * configures the underlying FlexIO pin, shifter, and timer resource, and enables the FlexIO
  * simulated UART module DMA interrupt.
  * This example shows how to set up the flexio_uartdma_state_t and the
- * flexio_uartdma_userconfig_t parameters and how to call the FLEXIO_UART_DRV_DmaInit function 
+ * flexio_uartdma_userconfig_t parameters and how to call the FLEXIO_UART_DRV_DmaInit function
  * by passing in these parameters:
    @code
-    flexio_uartdma_userconfig_t uartDmaConfig;
-    uartDmaConfig.baudRate = 9600;
-    uartDmaConfig.bitCountPerChar = kUart8BitsPerChar;
-    uartDmaConfig.uartMode = flexioUART_TxRx;
+	flexio_uartdma_userconfig_t uartDmaConfig;
+	uartDmaConfig.baudRate = 9600;
+	uartDmaConfig.bitCountPerChar = kUart8BitsPerChar;
+	uartDmaConfig.uartMode = flexioUART_TxRx;
    @endcode
  *
  * @param instance The FlexIO instance number.
- * @param uartDmaState A pointer to the global FlexIO UART driver state structure memory. 
+ * @param uartDmaState A pointer to the global FlexIO UART driver state structure memory.
  *  The user passes in the memory for the run-time state structure. The FlexIO UART driver
  *  populates the members. This run-time state structure keeps track of the
  *  current transfer in progress.
- * @param uartDmaConfig The user configuration structure of type flexio_uartdma_userconfig_t. 
+ * @param uartDmaConfig The user configuration structure of type flexio_uartdma_userconfig_t.
  *  The user populates the members of this structure and passes the pointer of this structure
  *  to this function.
  * @return An error code or kStatus_FlexIO_UART_Success.
  */
 flexio_uart_status_t FLEXIO_UART_DRV_DmaInit(uint32_t instance, flexio_uart_dmastate_t * uartDmaState,
-                               const flexio_uartdma_userconfig_t * uartDmaConfig);
+							   const flexio_uartdma_userconfig_t * uartDmaConfig);
 /*!
  * @brief Shuts down the FlexIO UART.
  *
@@ -133,7 +133,7 @@ flexio_uart_status_t FLEXIO_UART_DRV_DmaInit(uint32_t instance, flexio_uart_dmas
 void FLEXIO_UART_DRV_DmaDeinit(flexio_uart_dmastate_t * uartDmaState);
 
 /*!
- * @brief Sends (transmits) data out through the FlexIO-simulated UART-DMA module using a 
+ * @brief Sends (transmits) data out through the FlexIO-simulated UART-DMA module using a
  * blocking method.
  * @param uartDmaState The run-time structure of FlexIO-simulated UART.
  * @param txBuff A pointer to the source buffer containing 8-bit data chars to send.
@@ -142,12 +142,12 @@ void FLEXIO_UART_DRV_DmaDeinit(flexio_uart_dmastate_t * uartDmaState);
  * @return An error code or kStatus_FlexIO_UART_Success.
  */
 flexio_uart_status_t FLEXIO_UART_DRV_DmaSendDataBlocking(flexio_uart_dmastate_t * uartDmaState,
-                                           const uint8_t * txBuff,
-                                           uint32_t txSize,
-                                           uint32_t timeout);
+										   const uint8_t * txBuff,
+										   uint32_t txSize,
+										   uint32_t timeout);
 
 /*!
- * @brief Sends (transmits) data through the FlexIO-simulated UART-DMA module using a 
+ * @brief Sends (transmits) data through the FlexIO-simulated UART-DMA module using a
  * non-blocking method.
  * @param uartDmaState The run-time structure of FlexIO-simulated UART.
  * @param txBuff A pointer to the source buffer containing 8-bit data chars to send.
@@ -155,8 +155,8 @@ flexio_uart_status_t FLEXIO_UART_DRV_DmaSendDataBlocking(flexio_uart_dmastate_t 
  * @return An error code or kStatus_FlexIO_UART_Success.
  */
 flexio_uart_status_t FLEXIO_UART_DRV_DmaSendData(flexio_uart_dmastate_t * uartDmaState,
-                                   const uint8_t * txBuff,
-                                   uint32_t txSize);
+								   const uint8_t * txBuff,
+								   uint32_t txSize);
 /*!
  * @brief Returns whether the previous FlexIO-simulated UART-DMA transmit has finished.
  *
@@ -168,8 +168,8 @@ flexio_uart_status_t FLEXIO_UART_DRV_DmaSendData(flexio_uart_dmastate_t * uartDm
  * @retval kStatus_FlexIO_UART_TxBusy The transmit is still in progress. @a bytesTransmitted is
  *     filled with the number of bytes which are transmitted up to that point.
  */
-flexio_uart_status_t FLEXIO_UART_DRV_DmaGetTransmitStatus(flexio_uart_dmastate_t * uartDmaState, 
-                                   uint32_t * bytesRemaining);
+flexio_uart_status_t FLEXIO_UART_DRV_DmaGetTransmitStatus(flexio_uart_dmastate_t * uartDmaState,
+								   uint32_t * bytesRemaining);
 /*!
  * @brief Terminates a non-blocking FlexIO-simulated UART-DMA transmission early.
  *
@@ -190,9 +190,9 @@ flexio_uart_status_t FLEXIO_UART_DRV_DmaAbortSendingData(flexio_uart_dmastate_t 
  * @return An error code or kStatus_FlexIO_UART_Success.
  */
 flexio_uart_status_t FLEXIO_UART_DRV_DmaReceiveDataBlocking(flexio_uart_dmastate_t * uartDmaState,
-                                              uint8_t * rxBuff,
-                                              uint32_t rxSize,
-                                              uint32_t timeout);
+											  uint8_t * rxBuff,
+											  uint32_t rxSize,
+											  uint32_t timeout);
 /*!
  * @brief Gets (receives) data from the FlexIO-simulated UART-DMA module using a non-blocking method.
  *
@@ -202,8 +202,8 @@ flexio_uart_status_t FLEXIO_UART_DRV_DmaReceiveDataBlocking(flexio_uart_dmastate
  * @return An error code or kStatus_FlexIO_UART_Success.
  */
 flexio_uart_status_t FLEXIO_UART_DRV_DmaReceiveData(flexio_uart_dmastate_t * uartDmaState,
-                                      uint8_t * rxBuff,
-                                      uint32_t rxSize);
+									  uint8_t * rxBuff,
+									  uint32_t rxSize);
 
 /*!
  * @brief Returns whether the previous FlexIO-simulated UART-DMA receive is complete.
@@ -216,8 +216,8 @@ flexio_uart_status_t FLEXIO_UART_DRV_DmaReceiveData(flexio_uart_dmastate_t * uar
  * @retval kStatus_FlexIO_UART_RxBusy The receive is still in progress. @a bytesReceived is
  *     filled with the number of bytes which are received up to that point.
  */
-flexio_uart_status_t FLEXIO_UART_DRV_DmaGetReceiveStatus(flexio_uart_dmastate_t * uartDmaState, 
-                                  uint32_t * bytesRemaining);
+flexio_uart_status_t FLEXIO_UART_DRV_DmaGetReceiveStatus(flexio_uart_dmastate_t * uartDmaState,
+								  uint32_t * bytesRemaining);
 /*!
  * @brief Terminates a non-blocking FlexIO-simulated UART-DMA receive early.
  *
@@ -242,4 +242,3 @@ flexio_uart_status_t FLEXIO_UART_DRV_DmaAbortReceivingData(flexio_uart_dmastate_
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

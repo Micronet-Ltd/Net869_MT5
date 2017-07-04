@@ -74,7 +74,7 @@ extern _mqx_uint     _partition_get_number_of(void);
 extern _mqx_uint     _partition_get_total_blocks(_partition_id);
 extern _mem_size     _partition_get_block_size(_partition_id);
 extern _mem_size     _partition_get_total_size(_partition_id);
-extern _mqx_uint     _partition_test(_partition_id *, void **, 
+extern _mqx_uint     _partition_test(_partition_id *, void **,
    void   **);
 extern _mqx_uint     _partition_transfer(void *, _task_id);
 #endif

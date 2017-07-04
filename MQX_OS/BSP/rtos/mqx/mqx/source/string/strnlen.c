@@ -21,7 +21,7 @@
 *
 * Comments:
 *
-*   This file contains the function for calculating the length of a 
+*   This file contains the function for calculating the length of a
 *   string, length limited.
 *
 *
@@ -32,29 +32,29 @@
 
 /*!
  * \brief Gets the length of the length-limited string.
- * 
+ *
  * \param[in] string_ptr The address of the string.
  * \param[in] max_len    Maximum number of characters in the string.
- * 
+ *
  * \return The number of characters in the string.
- * 
- * \see _str_mqx_uint_to_hex_string 
- */ 
+ *
+ * \see _str_mqx_uint_to_hex_string
+ */
 _mqx_uint _strnlen
    (
-      register char  *string_ptr,
-      register _mqx_uint max_len
+	  register char  *string_ptr,
+	  register _mqx_uint max_len
    )
 { /* Body */
    register _mqx_uint i = 0;
 
-   
+
    while (*string_ptr++ && max_len--) {
-      ++i;
+	  ++i;
    } /* Endwhile */
 
    return(i);
-   
+
 } /* Endbody */
 
 /* EOF */

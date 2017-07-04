@@ -50,49 +50,49 @@ int32_t  Shell_help(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc==1)  {
-         shell_ptr->ARGV[1] = "help";
-         shell_ptr->ARGV[2] = "short";
-         shell_ptr->ARGV[3] = NULL;
-         fprintf(shell_ptr->STDOUT, "Available commands:\n");
-         command_ptr = shell_ptr->COMMAND_LIST_PTR;
-         while (command_ptr->COMMAND != NULL)  {
-            shell_ptr->ARGV[0] = command_ptr->COMMAND;
-            fprintf(shell_ptr->STDOUT, "   ");
-            return_code = (*command_ptr->SHELL_FUNC)(3, shell_ptr->ARGV);
-            command_ptr++;
-         } /* Endwhile */
-      } else {
-         /* Help on a specific command */
-         if (argc==2)  {
-            shell_ptr->ARGV[0] = argv[1];
-            shell_ptr->ARGV[1] = "help";
-            shell_ptr->ARGV[2] = "usage";
-            shell_ptr->ARGV[3] = NULL;
-            command_ptr = shell_ptr->COMMAND_LIST_PTR;
-            while (command_ptr->COMMAND != NULL)  {
-               if (strcmp(argv[0], command_ptr->COMMAND) == 0)  {
-                  return_code = (*command_ptr->SHELL_FUNC)(3, shell_ptr->ARGV);
-                  break;
-               }
-               command_ptr++;
-            } /* Endwhile */
-            if (command_ptr->COMMAND == NULL)  {
-               fprintf(shell_ptr->STDOUT, "Error, command \"%s\" not registered.\n", argv[1] );
-            }
-         } else {
-            print_usage = true;
-         }
-      }
+	  if (argc==1)  {
+		 shell_ptr->ARGV[1] = "help";
+		 shell_ptr->ARGV[2] = "short";
+		 shell_ptr->ARGV[3] = NULL;
+		 fprintf(shell_ptr->STDOUT, "Available commands:\n");
+		 command_ptr = shell_ptr->COMMAND_LIST_PTR;
+		 while (command_ptr->COMMAND != NULL)  {
+			shell_ptr->ARGV[0] = command_ptr->COMMAND;
+			fprintf(shell_ptr->STDOUT, "   ");
+			return_code = (*command_ptr->SHELL_FUNC)(3, shell_ptr->ARGV);
+			command_ptr++;
+		 } /* Endwhile */
+	  } else {
+		 /* Help on a specific command */
+		 if (argc==2)  {
+			shell_ptr->ARGV[0] = argv[1];
+			shell_ptr->ARGV[1] = "help";
+			shell_ptr->ARGV[2] = "usage";
+			shell_ptr->ARGV[3] = NULL;
+			command_ptr = shell_ptr->COMMAND_LIST_PTR;
+			while (command_ptr->COMMAND != NULL)  {
+			   if (strcmp(argv[0], command_ptr->COMMAND) == 0)  {
+				  return_code = (*command_ptr->SHELL_FUNC)(3, shell_ptr->ARGV);
+				  break;
+			   }
+			   command_ptr++;
+			} /* Endwhile */
+			if (command_ptr->COMMAND == NULL)  {
+			   fprintf(shell_ptr->STDOUT, "Error, command \"%s\" not registered.\n", argv[1] );
+			}
+		 } else {
+			print_usage = true;
+		 }
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s [<command>]\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s [<command>]\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <command> = command to get help on\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s [<command>]\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s [<command>]\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <command> = command to get help on\n");
+	  }
    }
    return return_code;
 } /* Endbody */

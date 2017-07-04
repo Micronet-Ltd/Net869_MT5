@@ -60,9 +60,9 @@
  */
 typedef enum _flexio_camera_status
 {
-    kStatus_FlexIO_Camera_Success         = 0U, /*!< Success. */
-    kStatus_FlexIO_Camera_InvalidArgument = 1U, /*!< Invalid argument exists. */
-    kStatus_FlexIO_Camera_Failed          = 2U  /*!< Execution failed. */
+	kStatus_FlexIO_Camera_Success         = 0U, /*!< Success. */
+	kStatus_FlexIO_Camera_InvalidArgument = 1U, /*!< Invalid argument exists. */
+	kStatus_FlexIO_Camera_Failed          = 2U  /*!< Execution failed. */
 } flexio_camera_status_t;
 
 /*******************************************************************************
@@ -73,20 +73,20 @@ typedef enum _flexio_camera_status
 */
 typedef struct FlexioCameraHwConfig
 {
-    uint32_t flexioInstance; /*!< Instance of FlexIO device. */
-    
-    /* Pins. */
-    uint32_t datPinStartIdx;  /*!< First data pin (D0) index for flexio_camera.
-                                   Then the successive following FLEXIO_CAMERA_DATA_WIDTH-1 pins
-                                   is used as D1-D7.*/
-    uint32_t pclkPinIdx;      /*!< Pixel clock pin (PCLK) index for flexio_camera. */
-    uint32_t hrefPinIdx;      /*!< Horizontal sync pin (HREF) index for flexio_camera. */
+	uint32_t flexioInstance; /*!< Instance of FlexIO device. */
 
-    /* Shifters. */
-    uint32_t shifterStartIdx; /*!< First shifter index used for flexio_camera data FIFO. */
-    
-    /* Timers. */
-    uint32_t timerIdx;        /*!< Timer index used for flexio_camera in FlexIO. */
+	/* Pins. */
+	uint32_t datPinStartIdx;  /*!< First data pin (D0) index for flexio_camera.
+								   Then the successive following FLEXIO_CAMERA_DATA_WIDTH-1 pins
+								   is used as D1-D7.*/
+	uint32_t pclkPinIdx;      /*!< Pixel clock pin (PCLK) index for flexio_camera. */
+	uint32_t hrefPinIdx;      /*!< Horizontal sync pin (HREF) index for flexio_camera. */
+
+	/* Shifters. */
+	uint32_t shifterStartIdx; /*!< First shifter index used for flexio_camera data FIFO. */
+
+	/* Timers. */
+	uint32_t timerIdx;        /*!< Timer index used for flexio_camera in FlexIO. */
 } flexio_camera_user_config_t;
 
 /*!
@@ -94,9 +94,9 @@ typedef struct FlexioCameraHwConfig
 */
 typedef struct CameraEdmaConfig
 {
-    edma_channel_indicator_t userEdmaChn;    /*!< Indicated eDMA channel for flexio_camera.  */
-    uint32_t                 userBufAddr;    /*!< Pointer to the user buffer. */
-    uint32_t                 userBufLenByte; /*!< Length of the user buffer in bytes. */
+	edma_channel_indicator_t userEdmaChn;    /*!< Indicated eDMA channel for flexio_camera.  */
+	uint32_t                 userBufAddr;    /*!< Pointer to the user buffer. */
+	uint32_t                 userBufLenByte; /*!< Length of the user buffer in bytes. */
 } camera_edma_user_config_t;
 
 /*!
@@ -104,18 +104,18 @@ typedef struct CameraEdmaConfig
  *
  * Users do not have to be familiar with every field in this structure,
  * because the driver maintains them. However, users must
- * allocate memory for the handler structure. 
+ * allocate memory for the handler structure.
  */
 typedef struct FlexioCameraEdmaHandler
 {
-    /* flexio_camera_interface. */
-    flexio_camera_dev_t     flexioCameraHwConfig; /*!< Keeps the original configuration for flexio_camera interface. */
-    
-    /* edma configure. */
-    edma_chn_state_t         rxEdmaChnState; /*!< Keeps the run-time parameter. */
-    edma_channel_indicator_t userEdmaChn;    /*!< Indicates the eDMA channel for FlexIO.  */
-    uint32_t                 userBufAddr;    /*!< Pointer to the user buffer. */
-    uint32_t                 userBufLenByte; /*!< Length of the user buffer in bytes. */
+	/* flexio_camera_interface. */
+	flexio_camera_dev_t     flexioCameraHwConfig; /*!< Keeps the original configuration for flexio_camera interface. */
+
+	/* edma configure. */
+	edma_chn_state_t         rxEdmaChnState; /*!< Keeps the run-time parameter. */
+	edma_channel_indicator_t userEdmaChn;    /*!< Indicates the eDMA channel for FlexIO.  */
+	uint32_t                 userBufAddr;    /*!< Pointer to the user buffer. */
+	uint32_t                 userBufLenByte; /*!< Length of the user buffer in bytes. */
 } flexio_camera_edma_handler_t;
 
 #if defined(__cplusplus)
@@ -133,11 +133,11 @@ extern "C" {
  * eDMA channel moving data from the FlexIO interface to the user defined memory.
  * With this function, an image of the camera sensor can be mapped into the user-defined
  * memory. Then, the user can read the mapped memory any time in the application.
- * Note: 
+ * Note:
  *     The selection of the eDMA channel is limited to a specific range for each chip.
  *     Ensure that the channel can be used by checking the reference
  *     manual. Usually, channels 16 - 31 are available.
- *     
+ *
  *
  * @param handler A pointer to the structure that handles the flexio_camera_edma device.
  * @param userFlexioCameraConfigPtr A pointer to the configuration structure for the FlexIO interface.
@@ -145,9 +145,9 @@ extern "C" {
  * @return Execution status.
  */
 flexio_camera_status_t FLEXIO_Camera_DRV_InitEdmaRx(
-                flexio_camera_edma_handler_t *handler,                   /* Output. */
-                flexio_camera_user_config_t  *userFlexioCameraConfigPtr, /* Input. */
-                camera_edma_user_config_t    *userEdmaConfigPtr );       /* Input. */
+				flexio_camera_edma_handler_t *handler,                   /* Output. */
+				flexio_camera_user_config_t  *userFlexioCameraConfigPtr, /* Input. */
+				camera_edma_user_config_t    *userEdmaConfigPtr );       /* Input. */
 
 /*!
  * @brief Deinitializes the flexio_camera_edma device.
@@ -160,7 +160,7 @@ flexio_camera_status_t FLEXIO_Camera_DRV_InitEdmaRx(
  * @return Execution status.
  */
 flexio_camera_status_t FLEXIO_Camera_DRV_DeinitEdmaRx(
-                flexio_camera_edma_handler_t *handler );
+				flexio_camera_edma_handler_t *handler );
 
 /*!
  * @brief Resets the eDMA transfer loop when moving data.
@@ -175,7 +175,7 @@ flexio_camera_status_t FLEXIO_Camera_DRV_DeinitEdmaRx(
  * @return Execution status.
  */
 flexio_camera_status_t FLEXIO_Camera_DRV_ResetEdmaRx(
-                flexio_camera_edma_handler_t *handler ) ;
+				flexio_camera_edma_handler_t *handler ) ;
 
 /*!
  * @brief Starts the flexio_camera_edma device.
@@ -188,7 +188,7 @@ flexio_camera_status_t FLEXIO_Camera_DRV_ResetEdmaRx(
  * @return Execution status.
  */
 flexio_camera_status_t FLEXIO_Camera_DRV_StartEdmaRx(
-                flexio_camera_edma_handler_t *handler );
+				flexio_camera_edma_handler_t *handler );
 
 /*!
  * @brief Sets the flexio_camera's DMA trigger if more DMA triggers are needed in the application.
@@ -204,7 +204,7 @@ flexio_camera_status_t FLEXIO_Camera_DRV_StartEdmaRx(
  * @param enable true if enable the trigger or not.
  */
 void FLEXIO_Camera_DRV_SetBufferTriggerForExtEdma(
-                flexio_camera_edma_handler_t *handler, uint32_t syncMsk, bool enable );
+				flexio_camera_edma_handler_t *handler, uint32_t syncMsk, bool enable );
 
 #if defined(__cplusplus)
 }
@@ -215,4 +215,3 @@ void FLEXIO_Camera_DRV_SetBufferTriggerForExtEdma(
 #endif /* FSL_FEATURE_SOC_FLEXIO_COUNT && FSL_FEATURE_SOC_EDMA_COUNT*/
 
 #endif /* __FSL_FLEXIO_CAMERA_DRIVER_H__*/
-

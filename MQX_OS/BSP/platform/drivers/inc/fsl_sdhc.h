@@ -157,10 +157,10 @@
 #define  SDHC_INT_E_TUNING         (0x1U << 26)              /*!< SDHC NORMAL INTERRUPT TUNING ERROR BIT */
 
 #define SDHC_INT_CMD_MASK          (SDHC_INT_CMD_DONE | SDHC_INT_E_CMD_TIMEOUT |\
-                                    SDHC_INT_E_CMD_CRC | SDHC_INT_E_CMD_INDEX |\
-                                    SDHC_INT_E_CMD_END_BIT)
+									SDHC_INT_E_CMD_CRC | SDHC_INT_E_CMD_INDEX |\
+									SDHC_INT_E_CMD_END_BIT)
 #define SDHC_INT_DATA_MASK         (SDHC_INT_TRANSFER_DONE | SDHC_INT_E_DATA_TIMEOUT |\
-                                    SDHC_INT_E_DATA_CRC | SDHC_INT_E_DATA_END_BIT)
+									SDHC_INT_E_DATA_CRC | SDHC_INT_E_DATA_END_BIT)
 #define SDHC_INT_CARD_DET_MASK     (SDHC_INT_CARD_REMOVE | SDHC_INT_CARD_INSERT)
 #define SDHC_INT_NORMAL_MASK       (0x00007FFFU)
 #define SDHC_INT_ERROR_MASK        (0xFFFF8000U)

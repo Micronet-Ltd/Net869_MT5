@@ -28,19 +28,19 @@
 
 /*!
  * \brief r = a - b
- * 
+ *
  * \param[in] a_ptr The two structures to subtract - both must be normalized
- * \param[in] b_ptr 
+ * \param[in] b_ptr
  * \param[out] r_ptr The result of the subtraction
  */
 void _psp_subtract_ticks
    (
-       /* [IN] The two structures to subtract - both must be normalized */
-       PSP_TICK_STRUCT_PTR a_ptr,
-       PSP_TICK_STRUCT_PTR b_ptr,
+	   /* [IN] The two structures to subtract - both must be normalized */
+	   PSP_TICK_STRUCT_PTR a_ptr,
+	   PSP_TICK_STRUCT_PTR b_ptr,
 
-       /* [OUT] The result of the subtraction */
-       PSP_TICK_STRUCT_PTR r_ptr
+	   /* [OUT] The result of the subtraction */
+	   PSP_TICK_STRUCT_PTR r_ptr
    )
 { /* Body */
    register uint32_t       a_hw_ticks;
@@ -52,8 +52,8 @@ void _psp_subtract_ticks
    b_hw_ticks  = b_ptr->HW_TICKS[0];
 
    if ( a_hw_ticks < b_hw_ticks) {
-      a_hw_ticks += _mqx_kernel_data->HW_TICKS_PER_TICK;
-      r_ptr->TICKS[0]--;
+	  a_hw_ticks += _mqx_kernel_data->HW_TICKS_PER_TICK;
+	  r_ptr->TICKS[0]--;
    } /* Endif */
 
    r_ptr->HW_TICKS[0] = a_hw_ticks - b_hw_ticks;
@@ -63,19 +63,19 @@ void _psp_subtract_ticks
 
 /*!
  * \brief r = a - b, clamp into range <-(MAX_INT_32 + 1), MAX_INT_32>
- * 
+ *
  * \param[in] a_ptr The two structures to subtract - both must be normalized
- * \param[in] b_ptr 
+ * \param[in] b_ptr
  * \param[out] o_ptr The result of the subtraction
  */
 int32_t _psp_subtract_ticks_int32
    (
-       /* [IN] The two structures to subtract - both must be normalized */
-       PSP_TICK_STRUCT_PTR a_ptr,
-       PSP_TICK_STRUCT_PTR b_ptr,
+	   /* [IN] The two structures to subtract - both must be normalized */
+	   PSP_TICK_STRUCT_PTR a_ptr,
+	   PSP_TICK_STRUCT_PTR b_ptr,
 
-       /* [OUT] The result of the subtraction */
-       bool        *o_ptr
+	   /* [OUT] The result of the subtraction */
+	   bool        *o_ptr
    )
 { /* Body */
    register uint32_t       a_hw_ticks;
@@ -89,8 +89,8 @@ int32_t _psp_subtract_ticks_int32
 
    if ( a_hw_ticks < b_hw_ticks)
    {
-      a_hw_ticks += _mqx_kernel_data->HW_TICKS_PER_TICK;
-      r.TICKS[0]--;
+	  a_hw_ticks += _mqx_kernel_data->HW_TICKS_PER_TICK;
+	  r.TICKS[0]--;
    } /* Endif */
 
    /* exchange sign bits between the 32bit halves of 64bit signed difference */
@@ -106,8 +106,8 @@ int32_t _psp_subtract_ticks_int32
    /* a_hw_ticks contains 32bit signed result, b_hw_ticks must contain all zeroes or all ones according to sign */
    if ((a_hw_ticks >> 31) * MAX_UINT_32 != b_hw_ticks)
    {
-      a_hw_ticks = MAX_INT_32 + (a_hw_ticks >> 31);
-      if (o_ptr != NULL) *o_ptr = TRUE;
+	  a_hw_ticks = MAX_INT_32 + (a_hw_ticks >> 31);
+	  if (o_ptr != NULL) *o_ptr = TRUE;
    }
 
    return (int32_t)a_hw_ticks;

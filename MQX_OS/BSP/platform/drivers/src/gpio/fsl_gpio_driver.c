@@ -50,25 +50,25 @@
  *
  *END**************************************************************************/
 void GPIO_DRV_Init(const gpio_input_pin_user_config_t * inputPins,
-                   const gpio_output_pin_user_config_t * outputPins)
+				   const gpio_output_pin_user_config_t * outputPins)
 {
-    if (inputPins)
-    {
-        /* Initialize input pins.*/
-        while (inputPins->pinName != GPIO_PINS_OUT_OF_RANGE)
-        {
-            GPIO_DRV_InputPinInit(inputPins++);
-        }
-    }
+	if (inputPins)
+	{
+		/* Initialize input pins.*/
+		while (inputPins->pinName != GPIO_PINS_OUT_OF_RANGE)
+		{
+			GPIO_DRV_InputPinInit(inputPins++);
+		}
+	}
 
-    if (outputPins)
-    {
-        /* Initialize output pins.*/
-        while (outputPins->pinName != GPIO_PINS_OUT_OF_RANGE)
-        {
-            GPIO_DRV_OutputPinInit(outputPins++);
-        }
-    }
+	if (outputPins)
+	{
+		/* Initialize output pins.*/
+		while (outputPins->pinName != GPIO_PINS_OUT_OF_RANGE)
+		{
+			GPIO_DRV_OutputPinInit(outputPins++);
+		}
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -79,46 +79,46 @@ void GPIO_DRV_Init(const gpio_input_pin_user_config_t * inputPins,
  *END**************************************************************************/
 void GPIO_DRV_InputPinInit(const gpio_input_pin_user_config_t *inputPin)
 {
-    /* Get actual port and pin number.*/
-    uint32_t port = GPIO_EXTRACT_PORT(inputPin->pinName);
-    uint32_t pin = GPIO_EXTRACT_PIN(inputPin->pinName);
-    GPIO_Type * gpioBase = g_gpioBase[port];
-    PORT_Type * portBase = g_portBase[port];
+	/* Get actual port and pin number.*/
+	uint32_t port = GPIO_EXTRACT_PORT(inputPin->pinName);
+	uint32_t pin = GPIO_EXTRACT_PIN(inputPin->pinName);
+	GPIO_Type * gpioBase = g_gpioBase[port];
+	PORT_Type * portBase = g_portBase[port];
 
-    /* Un-gate port clock*/
-    CLOCK_SYS_EnablePortClock(port);
+	/* Un-gate port clock*/
+	CLOCK_SYS_EnablePortClock(port);
 
-    /* Set current pin as gpio.*/
-    PORT_HAL_SetMuxMode(portBase, pin, kPortMuxAsGpio);
+	/* Set current pin as gpio.*/
+	PORT_HAL_SetMuxMode(portBase, pin, kPortMuxAsGpio);
 
-    /* Set current pin as digital input.*/
-    GPIO_HAL_SetPinDir(gpioBase, pin, kGpioDigitalInput);
+	/* Set current pin as digital input.*/
+	GPIO_HAL_SetPinDir(gpioBase, pin, kGpioDigitalInput);
 
-    /* Configure GPIO input features. */
-    #if FSL_FEATURE_PORT_HAS_PULL_ENABLE
-    PORT_HAL_SetPullCmd(portBase, pin, inputPin->config.isPullEnable);
-    #endif
-    #if FSL_FEATURE_PORT_HAS_PULL_SELECTION
-    PORT_HAL_SetPullMode(portBase, pin, inputPin->config.pullSelect);
-    #endif
-    #if FSL_FEATURE_PORT_HAS_PASSIVE_FILTER
-    PORT_HAL_SetPassiveFilterCmd(portBase, pin,
-            inputPin->config.isPassiveFilterEnabled);
-    #endif
-    #if FSL_FEATURE_PORT_HAS_DIGITAL_FILTER
-    PORT_HAL_SetDigitalFilterCmd(portBase, pin,
-            inputPin->config.isDigitalFilterEnabled);
-    #endif
-    #if FSL_FEATURE_GPIO_HAS_INTERRUPT_VECTOR
-    PORT_HAL_SetPinIntMode(portBase, pin, inputPin->config.interrupt);
+	/* Configure GPIO input features. */
+	#if FSL_FEATURE_PORT_HAS_PULL_ENABLE
+	PORT_HAL_SetPullCmd(portBase, pin, inputPin->config.isPullEnable);
+	#endif
+	#if FSL_FEATURE_PORT_HAS_PULL_SELECTION
+	PORT_HAL_SetPullMode(portBase, pin, inputPin->config.pullSelect);
+	#endif
+	#if FSL_FEATURE_PORT_HAS_PASSIVE_FILTER
+	PORT_HAL_SetPassiveFilterCmd(portBase, pin,
+			inputPin->config.isPassiveFilterEnabled);
+	#endif
+	#if FSL_FEATURE_PORT_HAS_DIGITAL_FILTER
+	PORT_HAL_SetDigitalFilterCmd(portBase, pin,
+			inputPin->config.isDigitalFilterEnabled);
+	#endif
+	#if FSL_FEATURE_GPIO_HAS_INTERRUPT_VECTOR
+	PORT_HAL_SetPinIntMode(portBase, pin, inputPin->config.interrupt);
 
-    /* Configure NVIC */
-    if ((inputPin->config.interrupt) && (g_portIrqId[port]))
-    {
-        /* Enable GPIO interrupt.*/
-        INT_SYS_EnableIRQ(g_portIrqId[port]);
-    }
-    #endif
+	/* Configure NVIC */
+	if ((inputPin->config.interrupt) && (g_portIrqId[port]))
+	{
+		/* Enable GPIO interrupt.*/
+		INT_SYS_EnableIRQ(g_portIrqId[port]);
+	}
+	#endif
 }
 
 /*FUNCTION**********************************************************************
@@ -129,32 +129,32 @@ void GPIO_DRV_InputPinInit(const gpio_input_pin_user_config_t *inputPin)
  *END**************************************************************************/
 void GPIO_DRV_OutputPinInit(const gpio_output_pin_user_config_t *outputPin)
 {
-    /* Get actual port and pin number.*/
-    uint32_t port = GPIO_EXTRACT_PORT(outputPin->pinName);
-    uint32_t pin = GPIO_EXTRACT_PIN(outputPin->pinName);
-    GPIO_Type * gpioBase = g_gpioBase[port];
-    PORT_Type * portBase = g_portBase[port];
+	/* Get actual port and pin number.*/
+	uint32_t port = GPIO_EXTRACT_PORT(outputPin->pinName);
+	uint32_t pin = GPIO_EXTRACT_PIN(outputPin->pinName);
+	GPIO_Type * gpioBase = g_gpioBase[port];
+	PORT_Type * portBase = g_portBase[port];
 
-    /* Un-gate port clock*/
-    CLOCK_SYS_EnablePortClock(port);
+	/* Un-gate port clock*/
+	CLOCK_SYS_EnablePortClock(port);
 
-    /* Set current pin as gpio.*/
-    PORT_HAL_SetMuxMode(portBase, pin, kPortMuxAsGpio);
+	/* Set current pin as gpio.*/
+	PORT_HAL_SetMuxMode(portBase, pin, kPortMuxAsGpio);
 
-    /* Set current pin as digital output.*/
-    GPIO_HAL_SetPinDir(gpioBase, pin, kGpioDigitalOutput);
+	/* Set current pin as digital output.*/
+	GPIO_HAL_SetPinDir(gpioBase, pin, kGpioDigitalOutput);
 
-    /* Configure GPIO output features. */
-    GPIO_HAL_WritePinOutput(gpioBase, pin, outputPin->config.outputLogic);
-    #if FSL_FEATURE_PORT_HAS_SLEW_RATE
-    PORT_HAL_SetSlewRateMode(portBase, pin, outputPin->config.slewRate);
-    #endif
-    #if FSL_FEATURE_PORT_HAS_DRIVE_STRENGTH
-    PORT_HAL_SetDriveStrengthMode(portBase, pin, outputPin->config.driveStrength);
-    #endif
-    #if FSL_FEATURE_PORT_HAS_OPEN_DRAIN
-    PORT_HAL_SetOpenDrainCmd(portBase, pin, outputPin->config.isOpenDrainEnabled);
-    #endif
+	/* Configure GPIO output features. */
+	GPIO_HAL_WritePinOutput(gpioBase, pin, outputPin->config.outputLogic);
+	#if FSL_FEATURE_PORT_HAS_SLEW_RATE
+	PORT_HAL_SetSlewRateMode(portBase, pin, outputPin->config.slewRate);
+	#endif
+	#if FSL_FEATURE_PORT_HAS_DRIVE_STRENGTH
+	PORT_HAL_SetDriveStrengthMode(portBase, pin, outputPin->config.driveStrength);
+	#endif
+	#if FSL_FEATURE_PORT_HAS_OPEN_DRAIN
+	PORT_HAL_SetOpenDrainCmd(portBase, pin, outputPin->config.isOpenDrainEnabled);
+	#endif
 }
 
 /*FUNCTION**********************************************************************
@@ -165,10 +165,10 @@ void GPIO_DRV_OutputPinInit(const gpio_output_pin_user_config_t *outputPin)
  *END**************************************************************************/
 gpio_pin_direction_t GPIO_DRV_GetPinDir(uint32_t pinName)
 {
-    GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
-    uint32_t pin = GPIO_EXTRACT_PIN(pinName);
+	GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
+	uint32_t pin = GPIO_EXTRACT_PIN(pinName);
 
-    return GPIO_HAL_GetPinDir(gpioBase, pin);
+	return GPIO_HAL_GetPinDir(gpioBase, pin);
 }
 
 /*FUNCTION**********************************************************************
@@ -179,10 +179,10 @@ gpio_pin_direction_t GPIO_DRV_GetPinDir(uint32_t pinName)
  *END**************************************************************************/
 void GPIO_DRV_SetPinDir(uint32_t pinName, gpio_pin_direction_t direction)
 {
-    GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
-    uint32_t pin = GPIO_EXTRACT_PIN(pinName);
+	GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
+	uint32_t pin = GPIO_EXTRACT_PIN(pinName);
 
-    GPIO_HAL_SetPinDir(gpioBase, pin, direction);
+	GPIO_HAL_SetPinDir(gpioBase, pin, direction);
 }
 
 /*FUNCTION**********************************************************************
@@ -193,10 +193,10 @@ void GPIO_DRV_SetPinDir(uint32_t pinName, gpio_pin_direction_t direction)
  *END**************************************************************************/
 void GPIO_DRV_WritePinOutput(uint32_t pinName, uint32_t output)
 {
-    GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
-    uint32_t pin = GPIO_EXTRACT_PIN(pinName);
+	GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
+	uint32_t pin = GPIO_EXTRACT_PIN(pinName);
 
-    GPIO_HAL_WritePinOutput(gpioBase, pin, output);
+	GPIO_HAL_WritePinOutput(gpioBase, pin, output);
 }
 
 /*FUNCTION**********************************************************************
@@ -207,10 +207,10 @@ void GPIO_DRV_WritePinOutput(uint32_t pinName, uint32_t output)
  *END**************************************************************************/
 void GPIO_DRV_SetPinOutput(uint32_t pinName)
 {
-    GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
-    uint32_t pin = GPIO_EXTRACT_PIN(pinName);
+	GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
+	uint32_t pin = GPIO_EXTRACT_PIN(pinName);
 
-    GPIO_HAL_SetPinOutput(gpioBase, pin);
+	GPIO_HAL_SetPinOutput(gpioBase, pin);
 }
 
 /*FUNCTION**********************************************************************
@@ -221,10 +221,10 @@ void GPIO_DRV_SetPinOutput(uint32_t pinName)
  *END**************************************************************************/
 void GPIO_DRV_ClearPinOutput(uint32_t pinName)
 {
-    GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
-    uint32_t pin = GPIO_EXTRACT_PIN(pinName);
+	GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
+	uint32_t pin = GPIO_EXTRACT_PIN(pinName);
 
-    GPIO_HAL_ClearPinOutput(gpioBase, pin);
+	GPIO_HAL_ClearPinOutput(gpioBase, pin);
 }
 
 /*FUNCTION**********************************************************************
@@ -235,10 +235,10 @@ void GPIO_DRV_ClearPinOutput(uint32_t pinName)
  *END**************************************************************************/
 void GPIO_DRV_TogglePinOutput(uint32_t pinName)
 {
-    GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
-    uint32_t pin = GPIO_EXTRACT_PIN(pinName);
+	GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
+	uint32_t pin = GPIO_EXTRACT_PIN(pinName);
 
-    GPIO_HAL_TogglePinOutput(gpioBase, pin);
+	GPIO_HAL_TogglePinOutput(gpioBase, pin);
 }
 
 /*FUNCTION**********************************************************************
@@ -249,10 +249,10 @@ void GPIO_DRV_TogglePinOutput(uint32_t pinName)
  *END**************************************************************************/
 uint32_t GPIO_DRV_ReadPinInput(uint32_t pinName)
 {
-    GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
-    uint32_t pin = GPIO_EXTRACT_PIN(pinName);
+	GPIO_Type * gpioBase = g_gpioBase[GPIO_EXTRACT_PORT(pinName)];
+	uint32_t pin = GPIO_EXTRACT_PIN(pinName);
 
-    return GPIO_HAL_ReadPinInput(gpioBase, pin);
+	return GPIO_HAL_ReadPinInput(gpioBase, pin);
 }
 
 #if FSL_FEATURE_PORT_HAS_DIGITAL_FILTER
@@ -264,10 +264,10 @@ uint32_t GPIO_DRV_ReadPinInput(uint32_t pinName)
  *END**************************************************************************/
 void GPIO_DRV_SetDigitalFilterCmd(uint32_t pinName, bool isDigitalFilterEnabled)
 {
-    PORT_Type * portBase = g_portBase[GPIO_EXTRACT_PORT(pinName)];
-    uint32_t pin = GPIO_EXTRACT_PIN(pinName);
+	PORT_Type * portBase = g_portBase[GPIO_EXTRACT_PORT(pinName)];
+	uint32_t pin = GPIO_EXTRACT_PIN(pinName);
 
-    PORT_HAL_SetDigitalFilterCmd(portBase, pin, isDigitalFilterEnabled);
+	PORT_HAL_SetDigitalFilterCmd(portBase, pin, isDigitalFilterEnabled);
 }
 #endif
 
@@ -279,10 +279,10 @@ void GPIO_DRV_SetDigitalFilterCmd(uint32_t pinName, bool isDigitalFilterEnabled)
  *END**************************************************************************/
 bool GPIO_DRV_IsPinIntPending(uint32_t pinName)
 {
-    PORT_Type * portBase = g_portBase[GPIO_EXTRACT_PORT(pinName)];
-    uint32_t pin = GPIO_EXTRACT_PIN(pinName);
+	PORT_Type * portBase = g_portBase[GPIO_EXTRACT_PORT(pinName)];
+	uint32_t pin = GPIO_EXTRACT_PIN(pinName);
 
-    return PORT_HAL_IsPinIntPending(portBase, pin);
+	return PORT_HAL_IsPinIntPending(portBase, pin);
 }
 
 /*FUNCTION**********************************************************************
@@ -293,14 +293,13 @@ bool GPIO_DRV_IsPinIntPending(uint32_t pinName)
  *END**************************************************************************/
 void GPIO_DRV_ClearPinIntFlag(uint32_t pinName)
 {
-    PORT_Type * portBase = g_portBase[GPIO_EXTRACT_PORT(pinName)];
-    uint32_t pin = GPIO_EXTRACT_PIN(pinName);
+	PORT_Type * portBase = g_portBase[GPIO_EXTRACT_PORT(pinName)];
+	uint32_t pin = GPIO_EXTRACT_PIN(pinName);
 
-    PORT_HAL_ClearPinIntFlag(portBase, pin);
+	PORT_HAL_ClearPinIntFlag(portBase, pin);
 }
 
 #endif /* FSL_FEATURE_SOC_GPIO_COUNT */
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

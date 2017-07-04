@@ -38,21 +38,21 @@
  */
 int fgetpos(FILE *stream, fpos_t *pos)
 {
-    long offset;
+	long offset;
 
-    if ((NULL == stream) || (NULL == pos))
-    {
-        return EOF;
-    }
+	if ((NULL == stream) || (NULL == pos))
+	{
+		return EOF;
+	}
 
-    offset = (long) _buf_get_pos(stream);
-    if (-1 == offset)
-    {
-        return EOF;
-    }
+	offset = (long) _buf_get_pos(stream);
+	if (-1 == offset)
+	{
+		return EOF;
+	}
 
-    pos->_OFF = (unsigned long) offset;
-    return 0;
+	pos->_OFF = (unsigned long) offset;
+	return 0;
 }
 
 /*!
@@ -69,28 +69,28 @@ int fgetpos(FILE *stream, fpos_t *pos)
 int fseek(FILE *stream, long int offset, int whence)
 {
 
-    if (NULL == stream)
-    {
-        return -1;
-    }
-    /* Flush data to stream */
-    if (EOF == fflush(stream))
-    {
-        /* Error indicator should be set by fflush function */
-        return -1;
-    }
-    if (0 > _buf_set_pos(stream, offset, whence))
-    {
-         /* set error indicator */
-        stream->_MODE |= _MODE_ERR;
-        return -1;
-    }
-    else
-    {
-        /* Clear end-of-file indicator, CR indicator, Unget char indikator*/
-        stream->_MODE &= ~(_MODE_EOF | _MODE_LASTCR | _MODE_UC);
-        return 0;
-    }
+	if (NULL == stream)
+	{
+		return -1;
+	}
+	/* Flush data to stream */
+	if (EOF == fflush(stream))
+	{
+		/* Error indicator should be set by fflush function */
+		return -1;
+	}
+	if (0 > _buf_set_pos(stream, offset, whence))
+	{
+		 /* set error indicator */
+		stream->_MODE |= _MODE_ERR;
+		return -1;
+	}
+	else
+	{
+		/* Clear end-of-file indicator, CR indicator, Unget char indikator*/
+		stream->_MODE &= ~(_MODE_EOF | _MODE_LASTCR | _MODE_UC);
+		return 0;
+	}
 }
 
 /*!
@@ -105,30 +105,30 @@ int fseek(FILE *stream, long int offset, int whence)
 int fsetpos(FILE *stream, const fpos_t *pos)
 {
 
-    if ((NULL == stream) || (NULL == pos))
-    {
-        return EOF;
-    }
+	if ((NULL == stream) || (NULL == pos))
+	{
+		return EOF;
+	}
 
-    /* Flush data to stream */
-    if (EOF == fflush(stream))
-    {
-        /* Error indicator should be set by fflush function */
-        return EOF;
-    }
+	/* Flush data to stream */
+	if (EOF == fflush(stream))
+	{
+		/* Error indicator should be set by fflush function */
+		return EOF;
+	}
 
-    if (0 >  _buf_set_pos(stream, pos->_OFF, SEEK_SET))
-    {
-        /* set error indicator */
-        stream->_MODE |= _MODE_ERR;
-        return EOF;
-    }
-    else
-    {
-        /* Clear end-of-file indicator, CR indicator, Unget char indikator*/
-        stream->_MODE &= ~(_MODE_EOF | _MODE_LASTCR | _MODE_UC);
-        return 0;
-    }
+	if (0 >  _buf_set_pos(stream, pos->_OFF, SEEK_SET))
+	{
+		/* set error indicator */
+		stream->_MODE |= _MODE_ERR;
+		return EOF;
+	}
+	else
+	{
+		/* Clear end-of-file indicator, CR indicator, Unget char indikator*/
+		stream->_MODE &= ~(_MODE_EOF | _MODE_LASTCR | _MODE_UC);
+		return 0;
+	}
 }
 
 /*!
@@ -141,11 +141,11 @@ int fsetpos(FILE *stream, const fpos_t *pos)
  */
 long int ftell(FILE *stream)
 {
-    if (NULL == stream)
-    {
-        return -1;
-    }
-    return (long int) _buf_get_pos(stream);
+	if (NULL == stream)
+	{
+		return -1;
+	}
+	return (long int) _buf_get_pos(stream);
 }
 
 /*!
@@ -157,6 +157,6 @@ long int ftell(FILE *stream)
  */
 void rewind(FILE *stream)
 {
-    fseek(stream, 0L, SEEK_SET);
-    stream->_MODE &= ~_MODE_ERR;
+	fseek(stream, 0L, SEEK_SET);
+	stream->_MODE &= ~_MODE_ERR;
 }

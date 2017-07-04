@@ -55,34 +55,34 @@
 #if defined(KM34Z7_SERIES)
 void PIT0_PIT1_IRQHandler(void)
 {
-    uint32_t i;
-    for(i=0; i < PIT_INSTANCE_COUNT; i++)
-    {
-        if (CLOCK_SYS_GetPitGateCmd(i))
-        {
-            for(i=0; i < FSL_FEATURE_PIT_TIMER_COUNT; i++)
-            {
-                if (PIT_HAL_IsIntPending(g_pitBase[0], i))
-                {
-                    /* Clear interrupt flag.*/
-                    PIT_HAL_ClearIntFlag(g_pitBase[0], i);
-                }
-            }
-        }
-    }
+	uint32_t i;
+	for(i=0; i < PIT_INSTANCE_COUNT; i++)
+	{
+		if (CLOCK_SYS_GetPitGateCmd(i))
+		{
+			for(i=0; i < FSL_FEATURE_PIT_TIMER_COUNT; i++)
+			{
+				if (PIT_HAL_IsIntPending(g_pitBase[0], i))
+				{
+					/* Clear interrupt flag.*/
+					PIT_HAL_ClearIntFlag(g_pitBase[0], i);
+				}
+			}
+		}
+	}
 }
 #else
 void PIT_IRQHandler(void)
 {
-    uint32_t i;
-    for(i=0; i < FSL_FEATURE_PIT_TIMER_COUNT; i++)
-    {
-        if (PIT_HAL_IsIntPending(g_pitBase[0], i))
-        {
-            /* Clear interrupt flag.*/
-            PIT_HAL_ClearIntFlag(g_pitBase[0], i);
-        }
-    }
+	uint32_t i;
+	for(i=0; i < FSL_FEATURE_PIT_TIMER_COUNT; i++)
+	{
+		if (PIT_HAL_IsIntPending(g_pitBase[0], i))
+		{
+			/* Clear interrupt flag.*/
+			PIT_HAL_ClearIntFlag(g_pitBase[0], i);
+		}
+	}
 }
 #endif
 #else
@@ -90,32 +90,32 @@ void PIT_IRQHandler(void)
 #if (FSL_FEATURE_PIT_TIMER_COUNT > 0U)
 void PIT0_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PIT_HAL_ClearIntFlag(g_pitBase[0], 0U);
+	/* Clear interrupt flag.*/
+	PIT_HAL_ClearIntFlag(g_pitBase[0], 0U);
 }
 #endif
 
 #if (FSL_FEATURE_PIT_TIMER_COUNT > 1U)
 void PIT1_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PIT_HAL_ClearIntFlag(g_pitBase[0], 1U);
+	/* Clear interrupt flag.*/
+	PIT_HAL_ClearIntFlag(g_pitBase[0], 1U);
 }
 #endif
 
 #if (FSL_FEATURE_PIT_TIMER_COUNT > 2U)
 void PIT2_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PIT_HAL_ClearIntFlag(g_pitBase[0], 2U);
+	/* Clear interrupt flag.*/
+	PIT_HAL_ClearIntFlag(g_pitBase[0], 2U);
 }
 #endif
 
 #if (FSL_FEATURE_PIT_TIMER_COUNT > 3U)
 void PIT3_IRQHandler(void)
 {
-    /* Clear interrupt flag.*/
-    PIT_HAL_ClearIntFlag(g_pitBase[0], 3U);
+	/* Clear interrupt flag.*/
+	PIT_HAL_ClearIntFlag(g_pitBase[0], 3U);
 }
 #endif
 
@@ -126,4 +126,3 @@ void PIT3_IRQHandler(void)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

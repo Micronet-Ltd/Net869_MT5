@@ -41,17 +41,17 @@
  *END**************************************************************************/
 void VREF_HAL_Init(VREF_Type * base)
 {
-    VREF_BWR_SC_VREFEN(base, true);
-    VREF_BWR_SC_REGEN(base, true);
-    VREF_BWR_TRM_TRIM(base, 0x00);
-    VREF_BWR_SC_MODE_LV(base, kVrefModeBandgapOnly);
+	VREF_BWR_SC_VREFEN(base, true);
+	VREF_BWR_SC_REGEN(base, true);
+	VREF_BWR_TRM_TRIM(base, 0x00);
+	VREF_BWR_SC_MODE_LV(base, kVrefModeBandgapOnly);
 
 #if FSL_FEATURE_VREF_HAS_COMPENSATION
-    VREF_BWR_SC_ICOMPEN(base, true);
+	VREF_BWR_SC_ICOMPEN(base, true);
 #endif
 
 #if FSL_FEATURE_VREF_HAS_CHOP_OSC
-    VREF_BWR_TRM_CHOPEN(base, true);
+	VREF_BWR_TRM_CHOPEN(base, true);
 #endif
 }
 
@@ -64,21 +64,21 @@ void VREF_HAL_Init(VREF_Type * base)
 void VREF_HAL_Configure(VREF_Type * base, const vref_user_config_t *userConfigPtr)
 {
 #if FSL_FEATURE_VREF_MODE_LV_TYPE
-    assert(userConfigPtr->bufferMode <= kVrefModeLowPowerBuffer);
+	assert(userConfigPtr->bufferMode <= kVrefModeLowPowerBuffer);
 #else
-    assert(userConfigPtr->bufferMode <= kVrefModeTightRegulationBuffer);
+	assert(userConfigPtr->bufferMode <= kVrefModeTightRegulationBuffer);
 #endif
-    assert(userConfigPtr->trimValue <= 0x3F);
+	assert(userConfigPtr->trimValue <= 0x3F);
 
 #if FSL_FEATURE_VREF_HAS_CHOP_OSC
-    VREF_BWR_TRM_CHOPEN(base, userConfigPtr->chopOscEnable);
+	VREF_BWR_TRM_CHOPEN(base, userConfigPtr->chopOscEnable);
 #endif
-    VREF_BWR_SC_REGEN(base, userConfigPtr->regulatorEnable);
+	VREF_BWR_SC_REGEN(base, userConfigPtr->regulatorEnable);
 #if FSL_FEATURE_VREF_HAS_COMPENSATION
-    VREF_BWR_SC_ICOMPEN(base, userConfigPtr->soccEnable);
+	VREF_BWR_SC_ICOMPEN(base, userConfigPtr->soccEnable);
 #endif
-    VREF_BWR_SC_MODE_LV(base, userConfigPtr->bufferMode);
-    VREF_BWR_TRM_TRIM(base, userConfigPtr->trimValue);
+	VREF_BWR_SC_MODE_LV(base, userConfigPtr->bufferMode);
+	VREF_BWR_TRM_TRIM(base, userConfigPtr->trimValue);
 }
 #endif
 

@@ -128,15 +128,15 @@
    * Status Register (S0) bitfields (Chap. 8.1 Status Register, pp. 11-12).
    */
 typedef  union {
-    uint8_t as_uint8;		//!< As unsigned 8-bit value.
-    struct {			//!< As bit-fields.
-      uint8_t BUSY:1;		//!< Erase/Write In Progress.
-      uint8_t WEL:1;		//!< Write Enable Latch.
-      uint8_t BP:3;		//!< Block Protect Bits.
-      uint8_t TB:1;		//!< Top/Bottom Protect.
-      uint8_t RESERVED:1;	//!< Reserved.
-      uint8_t SRP:1;		//!< Status Register Protect.
-    };
+	uint8_t as_uint8;		//!< As unsigned 8-bit value.
+	struct {			//!< As bit-fields.
+	  uint8_t BUSY:1;		//!< Erase/Write In Progress.
+	  uint8_t WEL:1;		//!< Write Enable Latch.
+	  uint8_t BP:3;		//!< Block Protect Bits.
+	  uint8_t TB:1;		//!< Top/Bottom Protect.
+	  uint8_t RESERVED:1;	//!< Reserved.
+	  uint8_t SRP:1;		//!< Status Register Protect.
+	};
 //    status_t(uint8_t value = 0)
 //    {
 //      as_uint8 = value;
@@ -161,25 +161,25 @@ typedef  union {
    * Instruction Set (chap. 8.2.2, pp. 15)
    */
 typedef  enum {
-    WREN = 0x06,		//!< Write Enable.
-    WREVSR = 0x50,		//!< Write Enable for Volatile Status Register.
-    WRDI = 0x04,		//!< Write Disable.
-    RDSR = 0x05,		//!< Read Status Register.
-    WRR = 0x01,			//!< Write Status Register.
-    READ = 0x03,		//!< Read Data.
-    FRD = 0x0b,			//!< Fast Read.
-    FRDDIO = 0xbb,	        //!< Fast Read Dual.
-    PP = 0x02,			//!< Page Program.
-    SER = 0x20,			//!< Sector Erase (4 kB).
-    B32ER = 0x52,		//!< Block Erase (32 kB).
-    B64ER = 0xd8,		//!< Block Erase (64kB).
-    CER = 0x60,			//!< Chip Erase.
-    PWD = 0xb9,			//!< Power-down
-    RLPWD = 0xab,		//!< Release Power-down/Device ID.
-    RDID = 0x90,		//!< Read Manufacturer/Device ID.
-    RDIDDIO = 0x92,		//!< Read Manufacturer/Device ID Dual I/O.
-    RDJID = 0x9f, 		//!< Read JEDEC ID.
-    RDUID = 0x4b		//!< Read Unique ID.
+	WREN = 0x06,		//!< Write Enable.
+	WREVSR = 0x50,		//!< Write Enable for Volatile Status Register.
+	WRDI = 0x04,		//!< Write Disable.
+	RDSR = 0x05,		//!< Read Status Register.
+	WRR = 0x01,			//!< Write Status Register.
+	READ = 0x03,		//!< Read Data.
+	FRD = 0x0b,			//!< Fast Read.
+	FRDDIO = 0xbb,	        //!< Fast Read Dual.
+	PP = 0x02,			//!< Page Program.
+	SER = 0x20,			//!< Sector Erase (4 kB).
+	B32ER = 0x52,		//!< Block Erase (32 kB).
+	B64ER = 0xd8,		//!< Block Erase (64kB).
+	CER = 0x60,			//!< Chip Erase.
+	PWD = 0xb9,			//!< Power-down
+	RLPWD = 0xab,		//!< Release Power-down/Device ID.
+	RDID = 0x90,		//!< Read Manufacturer/Device ID.
+	RDIDDIO = 0x92,		//!< Read Manufacturer/Device ID Dual I/O.
+	RDJID = 0x9f, 		//!< Read JEDEC ID.
+	RDUID = 0x4b		//!< Read Unique ID.
 }Command;
 
 #define	ERASABLE_BLOCK_SIZE		(4 * 1024)

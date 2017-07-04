@@ -19,7 +19,7 @@ static i2c_master_state_with_enable_t i2c_master_g [I2C_INSTANCE_COUNT] =
 		{[I2C0_IDX].enabled = FALSE,
 		[I2C1_IDX].enabled =  FALSE};
 
-void I2C_Enable  (uint8_t port) 
+void I2C_Enable  (uint8_t port)
 {
 	i2c_status_t ret = kStatus_I2C_Success;
 	if (port >= I2C_INSTANCE_COUNT)
@@ -27,7 +27,7 @@ void I2C_Enable  (uint8_t port)
 		printf("\nI2C Enable - illegal port\n");
 		return;
 	}
-	
+
 	/* only enable the port if it hasn't been enabled before */
 	if (i2c_master_g[port].enabled == FALSE)
 	{
@@ -61,7 +61,7 @@ void I2C_Enable  (uint8_t port)
 	}
 }
 
-void I2C_Disable (uint8_t port) 
+void I2C_Disable (uint8_t port)
 {
 	i2c_status_t ret = kStatus_I2C_Success;
 	if (port >= I2C_INSTANCE_COUNT)

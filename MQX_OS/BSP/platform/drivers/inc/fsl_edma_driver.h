@@ -77,15 +77,15 @@ extern const IRQn_Type g_edmaErrIrqId[DMA_INSTANCE_COUNT];
  * @internal gui name="Configuration" id="edmaCfg"
  */
 typedef struct EDMAUserConfig {
-    edma_channel_arbitration_t chnArbitration;  /*!< eDMA channel arbitration. @internal gui name="Channel arbitration" id="ChnArbitration" */
+	edma_channel_arbitration_t chnArbitration;  /*!< eDMA channel arbitration. @internal gui name="Channel arbitration" id="ChnArbitration" */
 #if FSL_FEATURE_EDMA_CHANNEL_GROUP_COUNT > 0x1U
-    edma_group_arbitration_t groupArbitration;  /*!< eDMA group arbitration. @internal gui name="Group arbitration" id="GroupArbitration" */
-    edma_group_priority_t groupPriority;        /*!< eDMA group priority. It is used while eDMA
-                                                     group arbitration is set to fixed priority. @internal gui name="Group priority" id="GroupPriority" */
+	edma_group_arbitration_t groupArbitration;  /*!< eDMA group arbitration. @internal gui name="Group arbitration" id="GroupArbitration" */
+	edma_group_priority_t groupPriority;        /*!< eDMA group priority. It is used while eDMA
+													 group arbitration is set to fixed priority. @internal gui name="Group priority" id="GroupPriority" */
 #endif
-    bool notHaltOnError;
-    /*!<  Any error causes the HALT bit to set. Subsequently, all service requests are ignored until the HALT bit is cleared.
-    @internal gui name="Set HALT on Error" id="HaltOnError" */
+	bool notHaltOnError;
+	/*!<  Any error causes the HALT bit to set. Subsequently, all service requests are ignored until the HALT bit is cleared.
+	@internal gui name="Set HALT on Error" id="HaltOnError" */
 } edma_user_config_t;
 
 /*!
@@ -95,9 +95,9 @@ typedef struct EDMAUserConfig {
  * or by calling EDMA_DRV_getStatus() function.
  */
 typedef enum _edma_chn_status {
-    kEDMAChnNormal = 0U,           /*!< eDMA channel is occupied. */
-    kEDMAChnIdle,                  /*!< eDMA channel is idle. */
-    kEDMAChnError                  /*!< An error occurs in the eDMA channel. */
+	kEDMAChnNormal = 0U,           /*!< eDMA channel is occupied. */
+	kEDMAChnIdle,                  /*!< eDMA channel is idle. */
+	kEDMAChnError                  /*!< An error occurs in the eDMA channel. */
 } edma_chn_status_t;
 
 
@@ -122,31 +122,31 @@ typedef void (*edma_callback_t)(void *parameter, edma_chn_status_t status);
 
 /*! @brief Data structure for the eDMA channel. */
 typedef struct EDMAChnState {
-    uint8_t channel;                /*!< Virtual channel indicator. */
-    edma_callback_t callback;       /*!< Callback function pointer for the eDMA channel. It will
-                                         be called at the eDMA channel complete and eDMA channel
-                                         error. */
-    void *parameter;                /*!< Parameter for the callback function pointer. */
-    volatile edma_chn_status_t status;   /*!< eDMA channel status. */
+	uint8_t channel;                /*!< Virtual channel indicator. */
+	edma_callback_t callback;       /*!< Callback function pointer for the eDMA channel. It will
+										 be called at the eDMA channel complete and eDMA channel
+										 error. */
+	void *parameter;                /*!< Parameter for the callback function pointer. */
+	volatile edma_chn_status_t status;   /*!< eDMA channel status. */
 } edma_chn_state_t;
 
 /*! @brief enum type for channel allocation.  */
 typedef enum _edma_chn_state_type {
-    kEDMAInvalidChannel = 0xFFU, /*!< Macros indicate the failure of the channel request. */
-    kEDMAAnyChannel = 0xFEU      /*!< Macros used when requesting channel dynamically. */
+	kEDMAInvalidChannel = 0xFFU, /*!< Macros indicate the failure of the channel request. */
+	kEDMAAnyChannel = 0xFEU      /*!< Macros used when requesting channel dynamically. */
 } edma_chn_state_type_t;
 
 /*! @brief A type for the DMA transfer. */
 typedef enum _edma_transfer_type {
-    kEDMAPeripheralToMemory,        /*!< Transfer from peripheral to memory */
-    kEDMAMemoryToPeripheral,        /*!< Transfer from memory to peripheral */
-    kEDMAMemoryToMemory,            /*!< Transfer from memory to memory */
+	kEDMAPeripheralToMemory,        /*!< Transfer from peripheral to memory */
+	kEDMAMemoryToPeripheral,        /*!< Transfer from memory to peripheral */
+	kEDMAMemoryToMemory,            /*!< Transfer from memory to memory */
 } edma_transfer_type_t;
 
 /*! @brief Data structure for configuring a discrete memory transfer. */
 typedef struct EDMAScatterGatherList {
-    uint32_t address;           /*!< Address of buffer. */
-    uint32_t length;            /*!< Length of buffer. */
+	uint32_t address;           /*!< Address of buffer. */
+	uint32_t length;            /*!< Length of buffer. */
 } edma_scatter_gather_list_t;
 
 /*!
@@ -159,10 +159,10 @@ typedef struct EDMAScatterGatherList {
  */
 typedef struct EDMAState {
 #if (USE_RTOS)
-    mutex_t lock;       /*!< Lock for channel allocation and release. */
+	mutex_t lock;       /*!< Lock for channel allocation and release. */
 #endif
-    edma_chn_state_t * volatile chn[FSL_FEATURE_EDMA_DMAMUX_CHANNELS];     /*!< Pointer array storing
-                                                                             channel state.  */
+	edma_chn_state_t * volatile chn[FSL_FEATURE_EDMA_DMAMUX_CHANNELS];     /*!< Pointer array storing
+																			 channel state.  */
 } edma_state_t;
 
 /*******************************************************************************
@@ -258,35 +258,35 @@ edma_status_t EDMA_DRV_Deinit(void);
  * successfully assigned to the user. If the channel is already occupied, the user
  * gets the return value kEDMAInvalidChn.
  * This is an example to request a channel statically:
-    @code
-    uint32_t channelNumber = 14;  <- Try to allocate the channel 14
-    edma_chn_state_t chn; <- The user simply allocates memory for this structure.
+	@code
+	uint32_t channelNumber = 14;  <- Try to allocate the channel 14
+	edma_chn_state_t chn; <- The user simply allocates memory for this structure.
 
-    if ( kEDMAInvalidChannel == EDMA_DRV_RequestChannel(channel, kDmaRequestMux0AlwaysOn54, chn))
-    {
-        printf("request channel %d failed!\n", channel);
-    }
+	if ( kEDMAInvalidChannel == EDMA_DRV_RequestChannel(channel, kDmaRequestMux0AlwaysOn54, chn))
+	{
+		printf("request channel %d failed!\n", channel);
+	}
 
-    @endcode
+	@endcode
  * In a dynamic allocation, any of the free eDMA channels are available for use. eDMA driver
  * assigns the first free channel to the user.
  * This is an example for user to request a channel dynamically :
-    @code
-    uint32_t channel;    <- Store the allocated channel number.
-    edma_chn_state_t chn;    <- The user simply allocates memory for this structure.
+	@code
+	uint32_t channel;    <- Store the allocated channel number.
+	edma_chn_state_t chn;    <- The user simply allocates memory for this structure.
 
-    channel = EDMA_DRV_RequestChannel(kEDMAAnyChannel, kDmaRequestMux0AlwaysOn54, chn);
+	channel = EDMA_DRV_RequestChannel(kEDMAAnyChannel, kDmaRequestMux0AlwaysOn54, chn);
 
-    if (channel == kEDMAInvalidChannel)
-    {
-        printf("request channel %d failed!\n", channel);
-    }
-    else
-    {
-        printf("Channel %d is successfully allocated! /n", channel);
-    }
+	if (channel == kEDMAInvalidChannel)
+	{
+		printf("request channel %d failed!\n", channel);
+	}
+	else
+	{
+		printf("Channel %d is successfully allocated! /n", channel);
+	}
 
-    @endcode
+	@endcode
  *
  * @param channel Requested channel number. If the channel is assigned with the kEDMAAnyChannel, the eDMA driver
  * allocates the channel dynamically. If the channel is assigned with a valid channel number, the eDMA driver
@@ -301,7 +301,7 @@ edma_status_t EDMA_DRV_Deinit(void);
  * failed.
  */
 uint8_t EDMA_DRV_RequestChannel(
-                uint8_t channel, dma_request_source_t source, edma_chn_state_t *chn);
+				uint8_t channel, dma_request_source_t source, edma_chn_state_t *chn);
 
 /*!
  * @brief Releases an eDMA channel.
@@ -340,15 +340,15 @@ edma_status_t EDMA_DRV_ReleaseChannel(edma_chn_state_t *chn);
  */
 
 static inline edma_status_t EDMA_DRV_PrepareDescriptorTransfer(
-                                edma_chn_state_t *chn, edma_software_tcd_t *stcd,
-                                edma_transfer_config_t *config,
-                                bool enableInt, bool disableDmaRequest)
+								edma_chn_state_t *chn, edma_software_tcd_t *stcd,
+								edma_transfer_config_t *config,
+								bool enableInt, bool disableDmaRequest)
 
 {
-    EDMA_HAL_STCDSetBasicTransfer(
-            VIRTUAL_CHN_TO_EDMA_MODULE_REGBASE(chn->channel), stcd, config, enableInt, disableDmaRequest);
+	EDMA_HAL_STCDSetBasicTransfer(
+			VIRTUAL_CHN_TO_EDMA_MODULE_REGBASE(chn->channel), stcd, config, enableInt, disableDmaRequest);
 
-    return kStatus_EDMA_Success;
+	return kStatus_EDMA_Success;
 
 }
 
@@ -369,11 +369,11 @@ static inline edma_status_t EDMA_DRV_PrepareDescriptorTransfer(
  * @return An eDMA error codes or kStatus_EDMA_Success.
  */
 static inline edma_status_t EDMA_DRV_PrepareDescriptorScatterGather(
-                                edma_software_tcd_t *stcd,
-                                edma_software_tcd_t *nextStcd)
+								edma_software_tcd_t *stcd,
+								edma_software_tcd_t *nextStcd)
 {
-    EDMA_HAL_STCDSetScatterGatherLink(stcd, nextStcd);
-    return kStatus_EDMA_Success;
+	EDMA_HAL_STCDSetScatterGatherLink(stcd, nextStcd);
+	return kStatus_EDMA_Success;
 }
 
 /*!
@@ -388,10 +388,10 @@ static inline edma_status_t EDMA_DRV_PrepareDescriptorScatterGather(
  * @return An eDMA error codes or kStatus_EDMA_Success.
  */
 static inline edma_status_t EDMA_DRV_PrepareDescriptorChannelLink(
-                                edma_software_tcd_t *stcd, uint32_t linkChn)
+								edma_software_tcd_t *stcd, uint32_t linkChn)
 {
-    EDMA_HAL_STCDSetChannelMajorLink(stcd, linkChn, true);
-    return kStatus_EDMA_Success;
+	EDMA_HAL_STCDSetChannelMajorLink(stcd, linkChn, true);
+	return kStatus_EDMA_Success;
 }
 
 /*!
@@ -406,10 +406,10 @@ static inline edma_status_t EDMA_DRV_PrepareDescriptorChannelLink(
  * @return An eDMA error codes or kStatus_EDMA_Success.
  */
 static inline edma_status_t EDMA_DRV_PrepareDescriptorMinorLink(
-                                edma_software_tcd_t *stcd, uint32_t linkChn)
+								edma_software_tcd_t *stcd, uint32_t linkChn)
 {
-    EDMA_HAL_STCDSetChannelMinorLink(stcd, linkChn, true);
-    return kStatus_EDMA_Success;
+	EDMA_HAL_STCDSetChannelMinorLink(stcd, linkChn, true);
+	return kStatus_EDMA_Success;
 }
 
 /*!
@@ -420,9 +420,9 @@ static inline edma_status_t EDMA_DRV_PrepareDescriptorMinorLink(
  */
 static inline edma_status_t EDMA_DRV_TriggerChannelStart(edma_chn_state_t *chn)
 {
-    EDMA_HAL_TriggerChannelStart(VIRTUAL_CHN_TO_EDMA_MODULE_REGBASE(chn->channel),
-                                            (edma_channel_indicator_t)chn->channel);
-    return kStatus_EDMA_Success;
+	EDMA_HAL_TriggerChannelStart(VIRTUAL_CHN_TO_EDMA_MODULE_REGBASE(chn->channel),
+											(edma_channel_indicator_t)chn->channel);
+	return kStatus_EDMA_Success;
 }
 
 /*!
@@ -477,10 +477,10 @@ edma_status_t EDMA_DRV_PushDescriptorToReg(edma_chn_state_t *chn, edma_software_
  * @return An error code of kStatus_EDMA_Success
  */
 edma_status_t EDMA_DRV_ConfigLoopTransfer(
-                            edma_chn_state_t *chn, edma_software_tcd_t *stcd,
-                            edma_transfer_type_t type,
-                            uint32_t srcAddr, uint32_t destAddr, uint32_t size,
-                            uint32_t bytesOnEachRequest, uint32_t totalLength, uint8_t number);
+							edma_chn_state_t *chn, edma_software_tcd_t *stcd,
+							edma_transfer_type_t type,
+							uint32_t srcAddr, uint32_t destAddr, uint32_t size,
+							uint32_t bytesOnEachRequest, uint32_t totalLength, uint8_t number);
 
 /*!
  * @brief Configures the DMA transfer in a scatter-gather mode.
@@ -511,11 +511,11 @@ edma_status_t EDMA_DRV_ConfigLoopTransfer(
  * @return An error code of kStatus_EDMA_Success
  */
 edma_status_t EDMA_DRV_ConfigScatterGatherTransfer(
-                        edma_chn_state_t *chn, edma_software_tcd_t *stcd,
-                        edma_transfer_type_t type,
-                        uint32_t size, uint32_t bytesOnEachRequest,
-                        edma_scatter_gather_list_t *srcList, edma_scatter_gather_list_t *destList,
-                        uint8_t number);
+						edma_chn_state_t *chn, edma_software_tcd_t *stcd,
+						edma_transfer_type_t type,
+						uint32_t size, uint32_t bytesOnEachRequest,
+						edma_scatter_gather_list_t *srcList, edma_scatter_gather_list_t *destList,
+						uint8_t number);
 
 /* @} */
 
@@ -570,7 +570,7 @@ edma_status_t EDMA_DRV_StopChannel(edma_chn_state_t *chn);
  * @return An eDMA error codes or kStatus_EDMA_Success.
  */
 edma_status_t EDMA_DRV_InstallCallback(
-        edma_chn_state_t *chn, edma_callback_t callback, void *parameter);
+		edma_chn_state_t *chn, edma_callback_t callback, void *parameter);
 
 /*!
  * @brief IRQ Handler for eDMA channel interrupt.
@@ -612,7 +612,7 @@ void EDMA_DRV_ErrorIRQHandler(uint8_t instance);
  */
 static inline edma_chn_status_t EDMA_DRV_GetChannelStatus(edma_chn_state_t *chn)
 {
-    return chn->status;
+	return chn->status;
 }
 
 /*!
@@ -628,11 +628,11 @@ static inline edma_chn_status_t EDMA_DRV_GetChannelStatus(edma_chn_state_t *chn)
  */
 static inline uint32_t EDMA_DRV_GetUnfinishedBytes(edma_chn_state_t *chn)
 {
-    uint32_t channel = chn->channel;
+	uint32_t channel = chn->channel;
 
-    return EDMA_HAL_HTCDGetUnfinishedBytes(
-                    VIRTUAL_CHN_TO_EDMA_MODULE_REGBASE(channel),
-                    VIRTUAL_CHN_TO_EDMA_CHN(channel));
+	return EDMA_HAL_HTCDGetUnfinishedBytes(
+					VIRTUAL_CHN_TO_EDMA_MODULE_REGBASE(channel),
+					VIRTUAL_CHN_TO_EDMA_CHN(channel));
 }
 
 /*!
@@ -648,11 +648,11 @@ static inline uint32_t EDMA_DRV_GetUnfinishedBytes(edma_chn_state_t *chn)
  */
 static inline uint32_t EDMA_DRV_GetFinishedBytes(edma_chn_state_t *chn)
 {
-    uint32_t channel = chn->channel;
+	uint32_t channel = chn->channel;
 
-    return EDMA_HAL_HTCDGetFinishedBytes(
-                    VIRTUAL_CHN_TO_EDMA_MODULE_REGBASE(channel),
-                    VIRTUAL_CHN_TO_EDMA_CHN(channel));
+	return EDMA_HAL_HTCDGetFinishedBytes(
+					VIRTUAL_CHN_TO_EDMA_MODULE_REGBASE(channel),
+					VIRTUAL_CHN_TO_EDMA_CHN(channel));
 }
 
 /* @} */
@@ -671,4 +671,3 @@ static inline uint32_t EDMA_DRV_GetFinishedBytes(edma_chn_state_t *chn)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

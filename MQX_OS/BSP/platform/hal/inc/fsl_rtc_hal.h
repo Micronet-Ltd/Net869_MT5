@@ -48,8 +48,8 @@
 /*! @brief Error codes for RTC driver. */
 typedef enum _rtc_status
 {
-    kStatusRtcSuccess = 0x00U,        /*!< RTC success status.*/
-    kStatusRtcFail    = 0x01U         /*!< RTC error status.*/
+	kStatusRtcSuccess = 0x00U,        /*!< RTC success status.*/
+	kStatusRtcFail    = 0x01U         /*!< RTC error status.*/
 } rtc_status_t;
 
 /*!
@@ -232,7 +232,7 @@ bool RTC_HAL_IncrementMonotonicCounter(RTC_Type *base);
  */
 static inline uint32_t RTC_HAL_GetSecsReg(RTC_Type *base)
 {
-    return RTC_RD_TSR(base);
+	return RTC_RD_TSR(base);
 }
 
 /*!
@@ -252,8 +252,8 @@ static inline uint32_t RTC_HAL_GetSecsReg(RTC_Type *base)
  */
 static inline void RTC_HAL_SetSecsReg(RTC_Type *base, const uint32_t seconds)
 {
-    RTC_WR_TPR_TPR(base, (uint32_t)0x00000000U);
-    RTC_WR_TSR(base, seconds);
+	RTC_WR_TPR_TPR(base, (uint32_t)0x00000000U);
+	RTC_WR_TSR(base, seconds);
 }
 
 /*!
@@ -268,7 +268,7 @@ static inline void RTC_HAL_SetSecsReg(RTC_Type *base, const uint32_t seconds)
  */
 static inline void RTC_HAL_SetAlarmReg(RTC_Type *base, const uint32_t seconds)
 {
-    RTC_WR_TAR(base, seconds);
+	RTC_WR_TAR(base, seconds);
 }
 
 /*!
@@ -280,7 +280,7 @@ static inline void RTC_HAL_SetAlarmReg(RTC_Type *base, const uint32_t seconds)
  */
 static inline uint32_t RTC_HAL_GetAlarmReg(RTC_Type *base)
 {
-    return RTC_RD_TAR(base);
+	return RTC_RD_TAR(base);
 }
 
 
@@ -295,7 +295,7 @@ static inline uint32_t RTC_HAL_GetAlarmReg(RTC_Type *base)
  */
 static inline uint16_t RTC_HAL_GetPrescaler(RTC_Type *base)
 {
-    return RTC_RD_TPR_TPR(base);
+	return RTC_RD_TPR_TPR(base);
 }
 
 /*!
@@ -311,7 +311,7 @@ static inline uint16_t RTC_HAL_GetPrescaler(RTC_Type *base)
  */
 static inline void RTC_HAL_SetPrescaler(RTC_Type *base, const uint16_t prescale)
 {
-    RTC_WR_TPR_TPR(base, prescale);
+	RTC_WR_TPR_TPR(base, prescale);
 }
 
 /*-------------------------------------------------------------------------------------------*/
@@ -327,7 +327,7 @@ static inline void RTC_HAL_SetPrescaler(RTC_Type *base, const uint16_t prescale)
  */
 static inline uint32_t RTC_HAL_GetCompensationReg(RTC_Type *base)
 {
-    return RTC_RD_TCR(base);
+	return RTC_RD_TCR(base);
 }
 
 /*!
@@ -338,7 +338,7 @@ static inline uint32_t RTC_HAL_GetCompensationReg(RTC_Type *base)
  */
 static inline void RTC_HAL_SetCompensationReg(RTC_Type *base, const uint32_t compValue)
 {
-    RTC_WR_TCR(base, compValue);
+	RTC_WR_TCR(base, compValue);
 }
 
 /*!
@@ -350,7 +350,7 @@ static inline void RTC_HAL_SetCompensationReg(RTC_Type *base, const uint32_t com
  */
 static inline uint8_t RTC_HAL_GetCompensationIntervalCounter(RTC_Type *base)
 {
-    return RTC_RD_TCR_CIC(base);
+	return RTC_RD_TCR_CIC(base);
 }
 
 /*!
@@ -362,7 +362,7 @@ static inline uint8_t RTC_HAL_GetCompensationIntervalCounter(RTC_Type *base)
  */
 static inline uint8_t RTC_HAL_GetTimeCompensationValue(RTC_Type *base)
 {
-    return RTC_RD_TCR_TCV(base);
+	return RTC_RD_TCR_TCV(base);
 }
 
 /*!
@@ -380,7 +380,7 @@ static inline uint8_t RTC_HAL_GetTimeCompensationValue(RTC_Type *base)
  */
 static inline uint8_t RTC_HAL_GetCompensationIntervalRegister(RTC_Type *base)
 {
-    return RTC_RD_TCR_CIR(base);
+	return RTC_RD_TCR_CIR(base);
 }
 
 /*!
@@ -399,7 +399,7 @@ static inline uint8_t RTC_HAL_GetCompensationIntervalRegister(RTC_Type *base)
  */
 static inline void RTC_HAL_SetCompensationIntervalRegister(RTC_Type *base, const uint8_t value)
 {
-    RTC_WR_TCR_CIR(base, value);
+	RTC_WR_TCR_CIR(base, value);
 }
 
 /*!
@@ -412,7 +412,7 @@ static inline void RTC_HAL_SetCompensationIntervalRegister(RTC_Type *base, const
  */
 static inline uint8_t RTC_HAL_GetTimeCompensationRegister(RTC_Type *base)
 {
-    return RTC_RD_TCR_TCR(base);
+	return RTC_RD_TCR_TCR(base);
 }
 
 /*!
@@ -427,7 +427,7 @@ static inline uint8_t RTC_HAL_GetTimeCompensationRegister(RTC_Type *base)
  */
 static inline void RTC_HAL_SetTimeCompensationRegister(RTC_Type *base, const uint8_t compValue)
 {
-    RTC_WR_TCR_TCR(base, compValue);
+	RTC_WR_TCR_TCR(base, compValue);
 }
 
 /*-------------------------------------------------------------------------------------------*/
@@ -444,7 +444,7 @@ static inline void RTC_HAL_SetTimeCompensationRegister(RTC_Type *base, const uin
  */
 static inline void RTC_HAL_SetOsc2pfLoadCmd(RTC_Type *base, bool enable)
 {
-    RTC_BWR_CR_SC2P(base, enable);
+	RTC_BWR_CR_SC2P(base, enable);
 }
 
 /*!
@@ -457,7 +457,7 @@ static inline void RTC_HAL_SetOsc2pfLoadCmd(RTC_Type *base, bool enable)
  */
 static inline bool RTC_HAL_GetOsc2pfLoad(RTC_Type *base)
 {
-    return (bool)RTC_BRD_CR_SC2P(base);
+	return (bool)RTC_BRD_CR_SC2P(base);
 }
 
 /*!
@@ -470,7 +470,7 @@ static inline bool RTC_HAL_GetOsc2pfLoad(RTC_Type *base)
  */
 static inline void RTC_HAL_SetOsc4pfLoadCmd(RTC_Type *base, bool enable)
 {
-    RTC_BWR_CR_SC4P(base, enable);
+	RTC_BWR_CR_SC4P(base, enable);
 }
 
 /*!
@@ -483,7 +483,7 @@ static inline void RTC_HAL_SetOsc4pfLoadCmd(RTC_Type *base, bool enable)
  */
 static inline bool RTC_HAL_GetOsc4pfLoad(RTC_Type *base)
 {
-    return (bool)RTC_BRD_CR_SC4P(base);
+	return (bool)RTC_BRD_CR_SC4P(base);
 }
 
 /*!
@@ -496,7 +496,7 @@ static inline bool RTC_HAL_GetOsc4pfLoad(RTC_Type *base)
  */
 static inline void RTC_HAL_SetOsc8pfLoadCmd(RTC_Type *base, bool enable)
 {
-    RTC_BWR_CR_SC8P(base, enable);
+	RTC_BWR_CR_SC8P(base, enable);
 }
 
 /*!
@@ -509,7 +509,7 @@ static inline void RTC_HAL_SetOsc8pfLoadCmd(RTC_Type *base, bool enable)
  */
 static inline bool RTC_HAL_GetOsc8pfLoad(RTC_Type *base)
 {
-    return (bool)RTC_BRD_CR_SC8P(base);
+	return (bool)RTC_BRD_CR_SC8P(base);
 }
 
 /*!
@@ -522,7 +522,7 @@ static inline bool RTC_HAL_GetOsc8pfLoad(RTC_Type *base)
  */
 static inline void RTC_HAL_SetOsc16pfLoadCmd(RTC_Type *base, bool enable)
 {
-    RTC_BWR_CR_SC16P(base, enable);
+	RTC_BWR_CR_SC16P(base, enable);
 }
 
 /*!
@@ -535,7 +535,7 @@ static inline void RTC_HAL_SetOsc16pfLoadCmd(RTC_Type *base, bool enable)
  */
 static inline bool RTC_HAL_GetOsc16pfLoad(RTC_Type *base)
 {
-    return (bool)RTC_BRD_CR_SC16P(base);
+	return (bool)RTC_BRD_CR_SC16P(base);
 }
 
 /*!
@@ -548,7 +548,7 @@ static inline bool RTC_HAL_GetOsc16pfLoad(RTC_Type *base)
  */
 static inline void RTC_HAL_SetClockOutCmd(RTC_Type *base, bool enable)
 {
-    RTC_BWR_CR_CLKO(base, !enable);
+	RTC_BWR_CR_CLKO(base, !enable);
 }
 
 /*!
@@ -561,7 +561,7 @@ static inline void RTC_HAL_SetClockOutCmd(RTC_Type *base, bool enable)
  */
 static inline bool RTC_HAL_GetClockOutCmd(RTC_Type *base)
 {
-    return (bool)RTC_BRD_CR_CLKO(base);
+	return (bool)RTC_BRD_CR_CLKO(base);
 }
 
 /*!
@@ -577,7 +577,7 @@ static inline bool RTC_HAL_GetClockOutCmd(RTC_Type *base)
  */
 static inline void RTC_HAL_SetOscillatorCmd(RTC_Type *base, bool enable)
 {
-    RTC_BWR_CR_OSCE(base, enable);
+	RTC_BWR_CR_OSCE(base, enable);
 }
 
 /*!
@@ -590,7 +590,7 @@ static inline void RTC_HAL_SetOscillatorCmd(RTC_Type *base, bool enable)
  */
 static inline bool RTC_HAL_IsOscillatorEnabled(RTC_Type *base)
 {
-    return (bool)RTC_BRD_CR_OSCE(base);
+	return (bool)RTC_BRD_CR_OSCE(base);
 }
 
 /*!
@@ -606,7 +606,7 @@ static inline bool RTC_HAL_IsOscillatorEnabled(RTC_Type *base)
  */
 static inline void RTC_HAL_SoftwareReset(RTC_Type *base)
 {
-    RTC_BWR_CR_SWR(base, 1u);
+	RTC_BWR_CR_SWR(base, 1u);
 }
 
 /*!
@@ -616,7 +616,7 @@ static inline void RTC_HAL_SoftwareReset(RTC_Type *base)
  */
 static inline void RTC_HAL_SoftwareResetFlagClear(RTC_Type *base)
 {
-    RTC_BWR_CR_SWR(base, 0u);
+	RTC_BWR_CR_SWR(base, 0u);
 }
 
 /*!
@@ -629,7 +629,7 @@ static inline void RTC_HAL_SoftwareResetFlagClear(RTC_Type *base)
  */
 static inline bool RTC_HAL_ReadSoftwareResetStatus(RTC_Type *base)
 {
-    return (bool)RTC_BRD_CR_SWR(base);
+	return (bool)RTC_BRD_CR_SWR(base);
 }
 
 /*-------------------------------------------------------------------------------------------*/
@@ -648,7 +648,7 @@ static inline bool RTC_HAL_ReadSoftwareResetStatus(RTC_Type *base)
  */
 static inline bool RTC_HAL_IsCounterEnabled(RTC_Type *base)
 {
-    return (bool)RTC_BRD_SR_TCE(base);
+	return (bool)RTC_BRD_SR_TCE(base);
 }
 
 /*!
@@ -661,7 +661,7 @@ static inline bool RTC_HAL_IsCounterEnabled(RTC_Type *base)
  */
 static inline void RTC_HAL_EnableCounter(RTC_Type *base, bool enable)
 {
-    RTC_BWR_SR_TCE(base, enable);
+	RTC_BWR_SR_TCE(base, enable);
 }
 
 #if FSL_FEATURE_RTC_HAS_MONOTONIC
@@ -681,7 +681,7 @@ static inline void RTC_HAL_EnableCounter(RTC_Type *base, bool enable)
  */
 static inline bool RTC_HAL_IsMonotonicCounterOverflow(RTC_Type *base)
 {
-    return (bool)RTC_BRD_SR_MOF(base);
+	return (bool)RTC_BRD_SR_MOF(base);
 }
 #endif
 
@@ -699,7 +699,7 @@ static inline bool RTC_HAL_IsMonotonicCounterOverflow(RTC_Type *base)
  */
 static inline bool RTC_HAL_HasAlarmOccured(RTC_Type *base)
 {
-    return (bool)RTC_BRD_SR_TAF(base);
+	return (bool)RTC_BRD_SR_TAF(base);
 }
 
 /*!
@@ -718,7 +718,7 @@ static inline bool RTC_HAL_HasAlarmOccured(RTC_Type *base)
  */
 static inline bool RTC_HAL_IsTimeInvalid(RTC_Type *base)
 {
-    return (bool)RTC_BRD_SR_TIF(base);
+	return (bool)RTC_BRD_SR_TIF(base);
 }
 
 /*-------------------------------------------------------------------------------------------*/
@@ -741,7 +741,7 @@ static inline bool RTC_HAL_IsTimeInvalid(RTC_Type *base)
  */
 static inline bool RTC_HAL_IsSecsIntEnabled(RTC_Type *base)
 {
-    return (bool)RTC_BRD_IER_TSIE(base);
+	return (bool)RTC_BRD_IER_TSIE(base);
 }
 
 /*!
@@ -761,7 +761,7 @@ static inline bool RTC_HAL_IsSecsIntEnabled(RTC_Type *base)
  */
 static inline void RTC_HAL_SetSecsIntCmd(RTC_Type *base, bool enable)
 {
-    RTC_BWR_IER_TSIE(base, (uint32_t) enable);
+	RTC_BWR_IER_TSIE(base, (uint32_t) enable);
 }
 
 /*!
@@ -776,7 +776,7 @@ static inline void RTC_HAL_SetSecsIntCmd(RTC_Type *base, bool enable)
  */
 static inline bool RTC_HAL_ReadAlarmInt(RTC_Type *base)
 {
-    return (bool)RTC_BRD_IER_TAIE(base);
+	return (bool)RTC_BRD_IER_TAIE(base);
 }
 
 /*!
@@ -792,7 +792,7 @@ static inline bool RTC_HAL_ReadAlarmInt(RTC_Type *base)
  */
 static inline void RTC_HAL_SetAlarmIntCmd(RTC_Type *base, bool enable)
 {
-    RTC_BWR_IER_TAIE(base, (uint32_t) enable);
+	RTC_BWR_IER_TAIE(base, (uint32_t) enable);
 }
 
 /*!
@@ -807,7 +807,7 @@ static inline void RTC_HAL_SetAlarmIntCmd(RTC_Type *base, bool enable)
  */
 static inline void RTC_HAL_SetTimeOverflowIntCmd(RTC_Type *base, bool enable)
 {
-    RTC_BWR_IER_TOIE(base, (uint32_t) enable);
+	RTC_BWR_IER_TOIE(base, (uint32_t) enable);
 }
 
 /*!
@@ -823,7 +823,7 @@ static inline void RTC_HAL_SetTimeOverflowIntCmd(RTC_Type *base, bool enable)
  */
 static inline void RTC_HAL_SetTimeInvalidIntCmd(RTC_Type *base, bool enable)
 {
-    RTC_BWR_IER_TIIE(base, (uint32_t) enable);
+	RTC_BWR_IER_TIIE(base, (uint32_t) enable);
 }
 
 #if FSL_FEATURE_RTC_HAS_MONOTONIC
@@ -844,8 +844,8 @@ static inline void RTC_HAL_SetTimeInvalidIntCmd(RTC_Type *base, bool enable)
  */
 static inline bool RTC_HAL_ReadMonotonicEnable(RTC_Type *base)
 {
-    /* Reads value of the RTC_MER register, field Monotonic Counter Enable (MCE). */
-    return (bool)RTC_BRD_MER_MCE(base);
+	/* Reads value of the RTC_MER register, field Monotonic Counter Enable (MCE). */
+	return (bool)RTC_BRD_MER_MCE(base);
 }
 
 /*!
@@ -860,8 +860,8 @@ static inline bool RTC_HAL_ReadMonotonicEnable(RTC_Type *base)
  */
 static inline void RTC_HAL_SetMonotonicEnableCmd(RTC_Type *base, bool enable)
 {
-    /* Writes to the RTC_MER registers Monotonic Counter Enable (MCE) bit.*/
-    RTC_BWR_MER_MCE(base, (uint32_t)enable);
+	/* Writes to the RTC_MER registers Monotonic Counter Enable (MCE) bit.*/
+	RTC_BWR_MER_MCE(base, (uint32_t)enable);
 }
 
 /*!
@@ -873,7 +873,7 @@ static inline void RTC_HAL_SetMonotonicEnableCmd(RTC_Type *base, bool enable)
  */
 static inline uint32_t RTC_HAL_GetMonotonicCounterLow(RTC_Type *base)
 {
-    return RTC_RD_MCLR(base);
+	return RTC_RD_MCLR(base);
 }
 
 /*!
@@ -885,7 +885,7 @@ static inline uint32_t RTC_HAL_GetMonotonicCounterLow(RTC_Type *base)
  */
 static inline uint32_t RTC_HAL_GetMonotonicCounterHigh(RTC_Type *base)
 {
-    return RTC_RD_MCHR(base);
+	return RTC_RD_MCHR(base);
 }
 
 /*!
@@ -896,9 +896,9 @@ static inline uint32_t RTC_HAL_GetMonotonicCounterHigh(RTC_Type *base)
  */
 static inline void RTC_HAL_SetMonotonicCounterLow(RTC_Type *base, const uint32_t counter)
 {
-    /* enable writing to the counter*/
-    RTC_BWR_MER_MCE(base, 0U);
-    RTC_WR_MCLR(base, counter);
+	/* enable writing to the counter*/
+	RTC_BWR_MER_MCE(base, 0U);
+	RTC_WR_MCLR(base, counter);
 }
 
 /*!
@@ -909,9 +909,9 @@ static inline void RTC_HAL_SetMonotonicCounterLow(RTC_Type *base, const uint32_t
  */
 static inline void RTC_HAL_SetMonotonicCounterHigh(RTC_Type *base, const uint32_t counter)
 {
-    /* enable writing to the counter*/
-    RTC_BWR_MER_MCE(base, 0U);
-    RTC_WR_MCHR(base, counter);
+	/* enable writing to the counter*/
+	RTC_BWR_MER_MCE(base, 0U);
+	RTC_WR_MCHR(base, counter);
 }
 
 #endif /* FSL_FEATURE_RTC_HAS_MONOTONIC */
@@ -932,4 +932,3 @@ static inline void RTC_HAL_SetMonotonicCounterHigh(RTC_Type *base, const uint32_
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

@@ -64,95 +64,95 @@ int32_t  Shell_read(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if ((argc < 2) || (argc > 5)) {
-         fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage=TRUE;
-      }
-      /* check if filesystem is mounted */
-      else if (0 > Shell_get_current_filesystem(argv))
-      {
-         fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n");
-         return_code = SHELL_EXIT_ERROR;
-      } else {
-         count = 0;
-         offset = 0;
-         seek_mode = SEEK_CUR;
-         if (argc >= 3)  {
-            if ( !Shell_parse_uint_32(argv[2], &count ))  {
-               fprintf(shell_ptr->STDOUT, "Error, invalid length\n");
-               return_code = SHELL_EXIT_ERROR;
-               print_usage=TRUE;
-            }
-            else  {
-               if (argc >= 5)  {
-                  if (strcmp(argv[3], "begin") == 0) {
-                     seek_mode = SEEK_SET;
-                  } else if (strcmp(argv[3], "end") == 0) {
-                     seek_mode = SEEK_END;
-                  } else if (strcmp(argv[3], "current") == 0) {
-                     seek_mode = SEEK_CUR;
-                  } else {
-                     fprintf(shell_ptr->STDOUT, "Error, invalid seek type\n");
-                     return_code = SHELL_EXIT_ERROR;
-                     print_usage=TRUE;
-                  }
+	  if ((argc < 2) || (argc > 5)) {
+		 fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage=TRUE;
+	  }
+	  /* check if filesystem is mounted */
+	  else if (0 > Shell_get_current_filesystem(argv))
+	  {
+		 fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n");
+		 return_code = SHELL_EXIT_ERROR;
+	  } else {
+		 count = 0;
+		 offset = 0;
+		 seek_mode = SEEK_CUR;
+		 if (argc >= 3)  {
+			if ( !Shell_parse_uint_32(argv[2], &count ))  {
+			   fprintf(shell_ptr->STDOUT, "Error, invalid length\n");
+			   return_code = SHELL_EXIT_ERROR;
+			   print_usage=TRUE;
+			}
+			else  {
+			   if (argc >= 5)  {
+				  if (strcmp(argv[3], "begin") == 0) {
+					 seek_mode = SEEK_SET;
+				  } else if (strcmp(argv[3], "end") == 0) {
+					 seek_mode = SEEK_END;
+				  } else if (strcmp(argv[3], "current") == 0) {
+					 seek_mode = SEEK_CUR;
+				  } else {
+					 fprintf(shell_ptr->STDOUT, "Error, invalid seek type\n");
+					 return_code = SHELL_EXIT_ERROR;
+					 print_usage=TRUE;
+				  }
 
-                  if (return_code == SHELL_EXIT_SUCCESS)  {
-                     if (! Shell_parse_int_32(argv[4], &offset ))  {
-                        fprintf(shell_ptr->STDOUT, "Error, invalid seek value\n");
-                        return_code = SHELL_EXIT_ERROR;
-                        print_usage=TRUE;
-                     }
-                  }
-               }
-            }
-         }
+				  if (return_code == SHELL_EXIT_SUCCESS)  {
+					 if (! Shell_parse_int_32(argv[4], &offset ))  {
+						fprintf(shell_ptr->STDOUT, "Error, invalid seek value\n");
+						return_code = SHELL_EXIT_ERROR;
+						print_usage=TRUE;
+					 }
+				  }
+			   }
+			}
+		 }
 
-         if (return_code == SHELL_EXIT_SUCCESS)  {
-            if (MFS_alloc_path(&abs_path) != MFS_NO_ERROR) {
-               fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
-               return_code = SHELL_EXIT_ERROR;
-            } else {
-               error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[1],PATHNAME_SIZE,shell_ptr->CURRENT_DEVICE_NAME);
-               if(!error)
-               {
-                  fd = open(abs_path, O_RDONLY);
-               }
-               MFS_free_path(abs_path);
-               if (0 <= fd)  {
-                  bytes = 0;
-                  if (0 <= lseek(fd, offset, seek_mode))  {
-                     fprintf(shell_ptr->STDOUT, "Reading from %s:\n", argv[1]);
-                     while (0 < read(fd, &c, 1)) {
-                        fputc(c, shell_ptr->STDOUT);
-                        if (++bytes == count) break;
-                     }
-                     fprintf(shell_ptr->STDOUT, "\nDone.\n");
-                     close(fd);
-                  } else  {
-                     fprintf(shell_ptr->STDOUT, "Error, unable to seek file %s.\n", argv[1] );
-                     return_code = SHELL_EXIT_ERROR;
-                  }
-               } else  {
-                  fprintf(shell_ptr->STDOUT, "Error, unable to open file %s.\n", argv[1] );
-                  return_code = SHELL_EXIT_ERROR;
-               }
-            }
-         }
-      }
+		 if (return_code == SHELL_EXIT_SUCCESS)  {
+			if (MFS_alloc_path(&abs_path) != MFS_NO_ERROR) {
+			   fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
+			   return_code = SHELL_EXIT_ERROR;
+			} else {
+			   error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[1],PATHNAME_SIZE,shell_ptr->CURRENT_DEVICE_NAME);
+			   if(!error)
+			   {
+				  fd = open(abs_path, O_RDONLY);
+			   }
+			   MFS_free_path(abs_path);
+			   if (0 <= fd)  {
+				  bytes = 0;
+				  if (0 <= lseek(fd, offset, seek_mode))  {
+					 fprintf(shell_ptr->STDOUT, "Reading from %s:\n", argv[1]);
+					 while (0 < read(fd, &c, 1)) {
+						fputc(c, shell_ptr->STDOUT);
+						if (++bytes == count) break;
+					 }
+					 fprintf(shell_ptr->STDOUT, "\nDone.\n");
+					 close(fd);
+				  } else  {
+					 fprintf(shell_ptr->STDOUT, "Error, unable to seek file %s.\n", argv[1] );
+					 return_code = SHELL_EXIT_ERROR;
+				  }
+			   } else  {
+				  fprintf(shell_ptr->STDOUT, "Error, unable to open file %s.\n", argv[1] );
+				  return_code = SHELL_EXIT_ERROR;
+			   }
+			}
+		 }
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <filename> <bytes> [<seek_mode>] [<offset>]\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <filename> <bytes> [<seek_mode>] [<offset>]\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <filename>   = filename to display\n");
-         fprintf(shell_ptr->STDOUT, "   <bytes>      = number of bytes to read\n");
-         fprintf(shell_ptr->STDOUT, "   <seek_mode>  = one of: begin, end or current\n");
-         fprintf(shell_ptr->STDOUT, "   <offset>     = seek offset\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <filename> <bytes> [<seek_mode>] [<offset>]\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <filename> <bytes> [<seek_mode>] [<offset>]\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <filename>   = filename to display\n");
+		 fprintf(shell_ptr->STDOUT, "   <bytes>      = number of bytes to read\n");
+		 fprintf(shell_ptr->STDOUT, "   <seek_mode>  = one of: begin, end or current\n");
+		 fprintf(shell_ptr->STDOUT, "   <offset>     = seek offset\n");
+	  }
    }
    return return_code;
 } /* Endbody */

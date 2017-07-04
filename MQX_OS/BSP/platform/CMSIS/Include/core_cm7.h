@@ -13,13 +13,13 @@
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are met:
    - Redistributions of source code must retain the above copyright
-     notice, this list of conditions and the following disclaimer.
+	 notice, this list of conditions and the following disclaimer.
    - Redistributions in binary form must reproduce the above copyright
-     notice, this list of conditions and the following disclaimer in the
-     documentation and/or other materials provided with the distribution.
+	 notice, this list of conditions and the following disclaimer in the
+	 documentation and/or other materials provided with the distribution.
    - Neither the name of ARM nor the names of its contributors may be used
-     to endorse or promote products derived from this software without
-     specific prior written permission.
+	 to endorse or promote products derived from this software without
+	 specific prior written permission.
    *
    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -50,13 +50,13 @@
   CMSIS violates the following MISRA-C:2004 rules:
 
    \li Required Rule 8.5, object/function definition in header file.<br>
-     Function definitions in header files are used to allow 'inlining'.
+	 Function definitions in header files are used to allow 'inlining'.
 
    \li Required Rule 18.4, declaration of union type or object of union type: '{...}'.<br>
-     Unions are used for effective representation of core registers.
+	 Unions are used for effective representation of core registers.
 
    \li Advisory Rule 19.7, Function-like macro defined.<br>
-     Function-like macros are used to allow more efficient code.
+	 Function-like macros are used to allow more efficient code.
  */
 
 
@@ -71,7 +71,7 @@
 #define __CM7_CMSIS_VERSION_MAIN  (0x04)                                   /*!< [31:16] CMSIS HAL main version   */
 #define __CM7_CMSIS_VERSION_SUB   (0x00)                                   /*!< [15:0]  CMSIS HAL sub version    */
 #define __CM7_CMSIS_VERSION       ((__CM7_CMSIS_VERSION_MAIN << 16) | \
-                                    __CM7_CMSIS_VERSION_SUB          )     /*!< CMSIS HAL version number         */
+									__CM7_CMSIS_VERSION_SUB          )     /*!< CMSIS HAL version number         */
 
 #define __CORTEX_M                (0x07)                                   /*!< Cortex-M Core                    */
 
@@ -109,78 +109,78 @@
 #endif
 
 /** __FPU_USED indicates whether an FPU is used or not.
-    For this, __FPU_PRESENT has to be checked prior to making use of FPU specific registers and functions.
+	For this, __FPU_PRESENT has to be checked prior to making use of FPU specific registers and functions.
 */
 #if defined ( __CC_ARM )
   #if defined __TARGET_FPU_VFP
-    #if (__FPU_PRESENT == 1)
-      #define __FPU_USED       1
-    #else
-      #warning "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
-      #define __FPU_USED       0
-    #endif
+	#if (__FPU_PRESENT == 1)
+	  #define __FPU_USED       1
+	#else
+	  #warning "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+	  #define __FPU_USED       0
+	#endif
   #else
-    #define __FPU_USED         0
+	#define __FPU_USED         0
   #endif
 
 #elif defined ( __GNUC__ )
   #if defined (__VFP_FP__) && !defined(__SOFTFP__)
-    #if (__FPU_PRESENT == 1)
-      #define __FPU_USED       1
-    #else
-      #warning "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
-      #define __FPU_USED       0
-    #endif
+	#if (__FPU_PRESENT == 1)
+	  #define __FPU_USED       1
+	#else
+	  #warning "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+	  #define __FPU_USED       0
+	#endif
   #else
-    #define __FPU_USED         0
+	#define __FPU_USED         0
   #endif
 
 #elif defined ( __ICCARM__ )
   #if defined __ARMVFP__
-    #if (__FPU_PRESENT == 1)
-      #define __FPU_USED       1
-    #else
-      #warning "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
-      #define __FPU_USED       0
-    #endif
+	#if (__FPU_PRESENT == 1)
+	  #define __FPU_USED       1
+	#else
+	  #warning "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+	  #define __FPU_USED       0
+	#endif
   #else
-    #define __FPU_USED         0
+	#define __FPU_USED         0
   #endif
 
 #elif defined ( __TMS470__ )
   #if defined __TI_VFP_SUPPORT__
-    #if (__FPU_PRESENT == 1)
-      #define __FPU_USED       1
-    #else
-      #warning "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
-      #define __FPU_USED       0
-    #endif
+	#if (__FPU_PRESENT == 1)
+	  #define __FPU_USED       1
+	#else
+	  #warning "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+	  #define __FPU_USED       0
+	#endif
   #else
-    #define __FPU_USED         0
+	#define __FPU_USED         0
   #endif
 
 #elif defined ( __TASKING__ )
   #if defined __FPU_VFP__
-    #if (__FPU_PRESENT == 1)
-      #define __FPU_USED       1
-    #else
-      #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
-      #define __FPU_USED       0
-    #endif
+	#if (__FPU_PRESENT == 1)
+	  #define __FPU_USED       1
+	#else
+	  #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+	  #define __FPU_USED       0
+	#endif
   #else
-    #define __FPU_USED         0
+	#define __FPU_USED         0
   #endif
 
 #elif defined ( __CSMC__ )		/* Cosmic */
   #if ( __CSMC__ & 0x400)		// FPU present for parser
-    #if (__FPU_PRESENT == 1)
-      #define __FPU_USED       1
-    #else
-      #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
-      #define __FPU_USED       0
-    #endif
+	#if (__FPU_PRESENT == 1)
+	  #define __FPU_USED       1
+	#else
+	  #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+	  #define __FPU_USED       0
+	#endif
   #else
-    #define __FPU_USED         0
+	#define __FPU_USED         0
   #endif
 #endif
 
@@ -207,53 +207,53 @@
 /* check device defines and use defaults */
 #if defined __CHECK_DEVICE_DEFINES
   #ifndef __CM7_REV
-    #define __CM7_REV               0x0000
-    #warning "__CM7_REV not defined in device header file; using default!"
+	#define __CM7_REV               0x0000
+	#warning "__CM7_REV not defined in device header file; using default!"
   #endif
 
   #ifndef __FPU_PRESENT
-    #define __FPU_PRESENT             0
-    #warning "__FPU_PRESENT not defined in device header file; using default!"
+	#define __FPU_PRESENT             0
+	#warning "__FPU_PRESENT not defined in device header file; using default!"
   #endif
 
   #ifndef __MPU_PRESENT
-    #define __MPU_PRESENT             0
-    #warning "__MPU_PRESENT not defined in device header file; using default!"
+	#define __MPU_PRESENT             0
+	#warning "__MPU_PRESENT not defined in device header file; using default!"
   #endif
 
   #ifndef __ICACHE_PRESENT
-    #define __ICACHE_PRESENT          0
-    #warning "__ICACHE_PRESENT not defined in device header file; using default!"
+	#define __ICACHE_PRESENT          0
+	#warning "__ICACHE_PRESENT not defined in device header file; using default!"
   #endif
 
   #ifndef __DCACHE_PRESENT
-    #define __DCACHE_PRESENT          0
-    #warning "__DCACHE_PRESENT not defined in device header file; using default!"
+	#define __DCACHE_PRESENT          0
+	#warning "__DCACHE_PRESENT not defined in device header file; using default!"
   #endif
 
   #ifndef __DTCM_PRESENT
-    #define __DTCM_PRESENT            0
-    #warning "__DTCM_PRESENT        not defined in device header file; using default!"
+	#define __DTCM_PRESENT            0
+	#warning "__DTCM_PRESENT        not defined in device header file; using default!"
   #endif
 
   #ifndef __NVIC_PRIO_BITS
-    #define __NVIC_PRIO_BITS          3
-    #warning "__NVIC_PRIO_BITS not defined in device header file; using default!"
+	#define __NVIC_PRIO_BITS          3
+	#warning "__NVIC_PRIO_BITS not defined in device header file; using default!"
   #endif
 
   #ifndef __Vendor_SysTickConfig
-    #define __Vendor_SysTickConfig    0
-    #warning "__Vendor_SysTickConfig not defined in device header file; using default!"
+	#define __Vendor_SysTickConfig    0
+	#warning "__Vendor_SysTickConfig not defined in device header file; using default!"
   #endif
 #endif
 
 /* IO definitions (access restrictions to peripheral registers) */
 /**
-    \defgroup CMSIS_glob_defs CMSIS Global Defines
+	\defgroup CMSIS_glob_defs CMSIS Global Defines
 
-    <strong>IO Type Qualifiers</strong> are used
-    \li to specify the access to peripheral variables.
-    \li for automatic generation of peripheral register debug information.
+	<strong>IO Type Qualifiers</strong> are used
+	\li to specify the access to peripheral variables.
+	\li for automatic generation of peripheral register debug information.
 */
 #ifdef __cplusplus
   #define   __I     volatile             /*!< Defines 'read only' permissions                 */
@@ -279,12 +279,12 @@
   - Core FPU Register
  ******************************************************************************/
 /** \defgroup CMSIS_core_register Defines and Type Definitions
-    \brief Type definitions and defines for Cortex-M processor based devices.
+	\brief Type definitions and defines for Cortex-M processor based devices.
 */
 
 /** \ingroup    CMSIS_core_register
-    \defgroup   CMSIS_CORE  Status and Control Registers
-    \brief  Core Register type definitions.
+	\defgroup   CMSIS_CORE  Status and Control Registers
+	\brief  Core Register type definitions.
   @{
  */
 
@@ -294,14 +294,14 @@ typedef union
 {
   struct
   {
-    uint32_t _reserved0:16;              /*!< bit:  0..15  Reserved                           */
-    uint32_t GE:4;                       /*!< bit: 16..19  Greater than or Equal flags        */
-    uint32_t _reserved1:7;               /*!< bit: 20..26  Reserved                           */
-    uint32_t Q:1;                        /*!< bit:     27  Saturation condition flag          */
-    uint32_t V:1;                        /*!< bit:     28  Overflow condition code flag       */
-    uint32_t C:1;                        /*!< bit:     29  Carry condition code flag          */
-    uint32_t Z:1;                        /*!< bit:     30  Zero condition code flag           */
-    uint32_t N:1;                        /*!< bit:     31  Negative condition code flag       */
+	uint32_t _reserved0:16;              /*!< bit:  0..15  Reserved                           */
+	uint32_t GE:4;                       /*!< bit: 16..19  Greater than or Equal flags        */
+	uint32_t _reserved1:7;               /*!< bit: 20..26  Reserved                           */
+	uint32_t Q:1;                        /*!< bit:     27  Saturation condition flag          */
+	uint32_t V:1;                        /*!< bit:     28  Overflow condition code flag       */
+	uint32_t C:1;                        /*!< bit:     29  Carry condition code flag          */
+	uint32_t Z:1;                        /*!< bit:     30  Zero condition code flag           */
+	uint32_t N:1;                        /*!< bit:     31  Negative condition code flag       */
   } b;                                   /*!< Structure used for bit  access                  */
   uint32_t w;                            /*!< Type      used for word access                  */
 } APSR_Type;
@@ -332,8 +332,8 @@ typedef union
 {
   struct
   {
-    uint32_t ISR:9;                      /*!< bit:  0.. 8  Exception number                   */
-    uint32_t _reserved0:23;              /*!< bit:  9..31  Reserved                           */
+	uint32_t ISR:9;                      /*!< bit:  0.. 8  Exception number                   */
+	uint32_t _reserved0:23;              /*!< bit:  9..31  Reserved                           */
   } b;                                   /*!< Structure used for bit  access                  */
   uint32_t w;                            /*!< Type      used for word access                  */
 } IPSR_Type;
@@ -349,17 +349,17 @@ typedef union
 {
   struct
   {
-    uint32_t ISR:9;                      /*!< bit:  0.. 8  Exception number                   */
-    uint32_t _reserved0:7;               /*!< bit:  9..15  Reserved                           */
-    uint32_t GE:4;                       /*!< bit: 16..19  Greater than or Equal flags        */
-    uint32_t _reserved1:4;               /*!< bit: 20..23  Reserved                           */
-    uint32_t T:1;                        /*!< bit:     24  Thumb bit        (read 0)          */
-    uint32_t IT:2;                       /*!< bit: 25..26  saved IT state   (read 0)          */
-    uint32_t Q:1;                        /*!< bit:     27  Saturation condition flag          */
-    uint32_t V:1;                        /*!< bit:     28  Overflow condition code flag       */
-    uint32_t C:1;                        /*!< bit:     29  Carry condition code flag          */
-    uint32_t Z:1;                        /*!< bit:     30  Zero condition code flag           */
-    uint32_t N:1;                        /*!< bit:     31  Negative condition code flag       */
+	uint32_t ISR:9;                      /*!< bit:  0.. 8  Exception number                   */
+	uint32_t _reserved0:7;               /*!< bit:  9..15  Reserved                           */
+	uint32_t GE:4;                       /*!< bit: 16..19  Greater than or Equal flags        */
+	uint32_t _reserved1:4;               /*!< bit: 20..23  Reserved                           */
+	uint32_t T:1;                        /*!< bit:     24  Thumb bit        (read 0)          */
+	uint32_t IT:2;                       /*!< bit: 25..26  saved IT state   (read 0)          */
+	uint32_t Q:1;                        /*!< bit:     27  Saturation condition flag          */
+	uint32_t V:1;                        /*!< bit:     28  Overflow condition code flag       */
+	uint32_t C:1;                        /*!< bit:     29  Carry condition code flag          */
+	uint32_t Z:1;                        /*!< bit:     30  Zero condition code flag           */
+	uint32_t N:1;                        /*!< bit:     31  Negative condition code flag       */
   } b;                                   /*!< Structure used for bit  access                  */
   uint32_t w;                            /*!< Type      used for word access                  */
 } xPSR_Type;
@@ -399,10 +399,10 @@ typedef union
 {
   struct
   {
-    uint32_t nPRIV:1;                    /*!< bit:      0  Execution privilege in Thread mode */
-    uint32_t SPSEL:1;                    /*!< bit:      1  Stack to be used                   */
-    uint32_t FPCA:1;                     /*!< bit:      2  FP extension active flag           */
-    uint32_t _reserved0:29;              /*!< bit:  3..31  Reserved                           */
+	uint32_t nPRIV:1;                    /*!< bit:      0  Execution privilege in Thread mode */
+	uint32_t SPSEL:1;                    /*!< bit:      1  Stack to be used                   */
+	uint32_t FPCA:1;                     /*!< bit:      2  FP extension active flag           */
+	uint32_t _reserved0:29;              /*!< bit:  3..31  Reserved                           */
   } b;                                   /*!< Structure used for bit  access                  */
   uint32_t w;                            /*!< Type      used for word access                  */
 } CONTROL_Type;
@@ -421,8 +421,8 @@ typedef union
 
 
 /** \ingroup    CMSIS_core_register
-    \defgroup   CMSIS_NVIC  Nested Vectored Interrupt Controller (NVIC)
-    \brief      Type definitions for the NVIC Registers
+	\defgroup   CMSIS_NVIC  Nested Vectored Interrupt Controller (NVIC)
+	\brief      Type definitions for the NVIC Registers
   @{
  */
 
@@ -431,17 +431,17 @@ typedef union
 typedef struct
 {
   __IO uint32_t ISER[8];                 /*!< Offset: 0x000 (R/W)  Interrupt Set Enable Register           */
-       uint32_t RESERVED0[24];
+	   uint32_t RESERVED0[24];
   __IO uint32_t ICER[8];                 /*!< Offset: 0x080 (R/W)  Interrupt Clear Enable Register         */
-       uint32_t RSERVED1[24];
+	   uint32_t RSERVED1[24];
   __IO uint32_t ISPR[8];                 /*!< Offset: 0x100 (R/W)  Interrupt Set Pending Register          */
-       uint32_t RESERVED2[24];
+	   uint32_t RESERVED2[24];
   __IO uint32_t ICPR[8];                 /*!< Offset: 0x180 (R/W)  Interrupt Clear Pending Register        */
-       uint32_t RESERVED3[24];
+	   uint32_t RESERVED3[24];
   __IO uint32_t IABR[8];                 /*!< Offset: 0x200 (R/W)  Interrupt Active bit Register           */
-       uint32_t RESERVED4[56];
+	   uint32_t RESERVED4[56];
   __IO uint8_t  IP[240];                 /*!< Offset: 0x300 (R/W)  Interrupt Priority Register (8Bit wide) */
-       uint32_t RESERVED5[644];
+	   uint32_t RESERVED5[644];
   __O  uint32_t STIR;                    /*!< Offset: 0xE00 ( /W)  Software Trigger Interrupt Register     */
 }  NVIC_Type;
 
@@ -453,8 +453,8 @@ typedef struct
 
 
 /** \ingroup  CMSIS_core_register
-    \defgroup CMSIS_SCB     System Control Block (SCB)
-    \brief      Type definitions for the System Control Block Registers
+	\defgroup CMSIS_SCB     System Control Block (SCB)
+	\brief      Type definitions for the System Control Block Registers
   @{
  */
 
@@ -481,21 +481,21 @@ typedef struct
   __I  uint32_t ID_AFR;                  /*!< Offset: 0x04C (R/ )  Auxiliary Feature Register                            */
   __I  uint32_t ID_MFR[4];               /*!< Offset: 0x050 (R/ )  Memory Model Feature Register                         */
   __I  uint32_t ID_ISAR[5];              /*!< Offset: 0x060 (R/ )  Instruction Set Attributes Register                   */
-       uint32_t RESERVED0[1];
+	   uint32_t RESERVED0[1];
   __I  uint32_t CLIDR;                   /*!< Offset: 0x078 (R/ )  Cache Level ID register                               */
   __I  uint32_t CTR;                     /*!< Offset: 0x07C (R/ )  Cache Type register                                   */
   __I  uint32_t CCSIDR;                  /*!< Offset: 0x080 (R/ )  Cache Size ID Register                                */
   __IO uint32_t CSSELR;                  /*!< Offset: 0x084 (R/W)  Cache Size Selection Register                         */
   __IO uint32_t CPACR;                   /*!< Offset: 0x088 (R/W)  Coprocessor Access Control Register                   */
-       uint32_t RESERVED3[93];
+	   uint32_t RESERVED3[93];
   __O  uint32_t STIR;                    /*!< Offset: 0x200 ( /W)  Software Triggered Interrupt Register                 */
-       uint32_t RESERVED4[15];
+	   uint32_t RESERVED4[15];
   __I  uint32_t MVFR0;                   /*!< Offset: 0x240 (R/ )  Media and VFP Feature Register 0                      */
   __I  uint32_t MVFR1;                   /*!< Offset: 0x244 (R/ )  Media and VFP Feature Register 1                      */
   __I  uint32_t MVFR2;                   /*!< Offset: 0x248 (R/ )  Media and VFP Feature Register 1                      */
-       uint32_t RESERVED5[1];
+	   uint32_t RESERVED5[1];
   __O  uint32_t ICIALLU;                 /*!< Offset: 0x250 ( /W)  I-Cache Invalidate All to PoU                         */
-       uint32_t RESERVED6[1];
+	   uint32_t RESERVED6[1];
   __O  uint32_t ICIMVAU;                 /*!< Offset: 0x258 ( /W)  I-Cache Invalidate by MVA to PoU                      */
   __O  uint32_t DCIMVAC;                 /*!< Offset: 0x25C ( /W)  D-Cache Invalidate by MVA to PoC                      */
   __O  uint32_t DCISW;                   /*!< Offset: 0x260 ( /W)  D-Cache Invalidate by Set-way                         */
@@ -504,13 +504,13 @@ typedef struct
   __O  uint32_t DCCSW;                   /*!< Offset: 0x26C ( /W)  D-Cache Clean by Set-way                              */
   __O  uint32_t DCCIMVAC;                /*!< Offset: 0x270 ( /W)  D-Cache Clean and Invalidate by MVA to PoC            */
   __O  uint32_t DCCISW;                  /*!< Offset: 0x274 ( /W)  D-Cache Clean and Invalidate by Set-way               */
-       uint32_t RESERVED7[6];
+	   uint32_t RESERVED7[6];
   __IO uint32_t ITCMCR;                  /*!< Offset: 0x290 (R/W)  Instruction Tightly-Coupled Memory Control Register   */
   __IO uint32_t DTCMCR;                  /*!< Offset: 0x294 (R/W)  Data Tightly-Coupled Memory Control Registers         */
   __IO uint32_t AHBPCR;                  /*!< Offset: 0x298 (R/W)  AHBP Control Register                                 */
   __IO uint32_t CACR;                    /*!< Offset: 0x29C (R/W)  L1 Cache Control Register                             */
   __IO uint32_t AHBSCR;                  /*!< Offset: 0x2A0 (R/W)  AHB Slave Control Register                            */
-       uint32_t RESERVED8[1];
+	   uint32_t RESERVED8[1];
   __IO uint32_t ABFSR;                   /*!< Offset: 0x2A8 (R/W)  Auxiliary Bus Fault Status Register                   */
 } SCB_Type;
 
@@ -836,8 +836,8 @@ typedef struct
 
 
 /** \ingroup  CMSIS_core_register
-    \defgroup CMSIS_SCnSCB System Controls not in SCB (SCnSCB)
-    \brief      Type definitions for the System Control and ID Register not in the SCB
+	\defgroup CMSIS_SCnSCB System Controls not in SCB (SCnSCB)
+	\brief      Type definitions for the System Control and ID Register not in the SCB
   @{
  */
 
@@ -845,7 +845,7 @@ typedef struct
  */
 typedef struct
 {
-       uint32_t RESERVED0[1];
+	   uint32_t RESERVED0[1];
   __I  uint32_t ICTR;                    /*!< Offset: 0x004 (R/ )  Interrupt Controller Type Register      */
   __IO uint32_t ACTLR;                   /*!< Offset: 0x008 (R/W)  Auxiliary Control Register              */
 } SCnSCB_Type;
@@ -874,8 +874,8 @@ typedef struct
 
 
 /** \ingroup  CMSIS_core_register
-    \defgroup CMSIS_SysTick     System Tick Timer (SysTick)
-    \brief      Type definitions for the System Timer Registers.
+	\defgroup CMSIS_SysTick     System Tick Timer (SysTick)
+	\brief      Type definitions for the System Timer Registers.
   @{
  */
 
@@ -924,8 +924,8 @@ typedef struct
 
 
 /** \ingroup  CMSIS_core_register
-    \defgroup CMSIS_ITM     Instrumentation Trace Macrocell (ITM)
-    \brief      Type definitions for the Instrumentation Trace Macrocell (ITM)
+	\defgroup CMSIS_ITM     Instrumentation Trace Macrocell (ITM)
+	\brief      Type definitions for the Instrumentation Trace Macrocell (ITM)
   @{
  */
 
@@ -935,24 +935,24 @@ typedef struct
 {
   __O  union
   {
-    __O  uint8_t    u8;                  /*!< Offset: 0x000 ( /W)  ITM Stimulus Port 8-bit                   */
-    __O  uint16_t   u16;                 /*!< Offset: 0x000 ( /W)  ITM Stimulus Port 16-bit                  */
-    __O  uint32_t   u32;                 /*!< Offset: 0x000 ( /W)  ITM Stimulus Port 32-bit                  */
+	__O  uint8_t    u8;                  /*!< Offset: 0x000 ( /W)  ITM Stimulus Port 8-bit                   */
+	__O  uint16_t   u16;                 /*!< Offset: 0x000 ( /W)  ITM Stimulus Port 16-bit                  */
+	__O  uint32_t   u32;                 /*!< Offset: 0x000 ( /W)  ITM Stimulus Port 32-bit                  */
   }  PORT [32];                          /*!< Offset: 0x000 ( /W)  ITM Stimulus Port Registers               */
-       uint32_t RESERVED0[864];
+	   uint32_t RESERVED0[864];
   __IO uint32_t TER;                     /*!< Offset: 0xE00 (R/W)  ITM Trace Enable Register                 */
-       uint32_t RESERVED1[15];
+	   uint32_t RESERVED1[15];
   __IO uint32_t TPR;                     /*!< Offset: 0xE40 (R/W)  ITM Trace Privilege Register              */
-       uint32_t RESERVED2[15];
+	   uint32_t RESERVED2[15];
   __IO uint32_t TCR;                     /*!< Offset: 0xE80 (R/W)  ITM Trace Control Register                */
-       uint32_t RESERVED3[29];
+	   uint32_t RESERVED3[29];
   __O  uint32_t IWR;                     /*!< Offset: 0xEF8 ( /W)  ITM Integration Write Register            */
   __I  uint32_t IRR;                     /*!< Offset: 0xEFC (R/ )  ITM Integration Read Register             */
   __IO uint32_t IMCR;                    /*!< Offset: 0xF00 (R/W)  ITM Integration Mode Control Register     */
-       uint32_t RESERVED4[43];
+	   uint32_t RESERVED4[43];
   __O  uint32_t LAR;                     /*!< Offset: 0xFB0 ( /W)  ITM Lock Access Register                  */
   __I  uint32_t LSR;                     /*!< Offset: 0xFB4 (R/ )  ITM Lock Status Register                  */
-       uint32_t RESERVED5[6];
+	   uint32_t RESERVED5[6];
   __I  uint32_t PID4;                    /*!< Offset: 0xFD0 (R/ )  ITM Peripheral Identification Register #4 */
   __I  uint32_t PID5;                    /*!< Offset: 0xFD4 (R/ )  ITM Peripheral Identification Register #5 */
   __I  uint32_t PID6;                    /*!< Offset: 0xFD8 (R/ )  ITM Peripheral Identification Register #6 */
@@ -1025,8 +1025,8 @@ typedef struct
 
 
 /** \ingroup  CMSIS_core_register
-    \defgroup CMSIS_DWT     Data Watchpoint and Trace (DWT)
-    \brief      Type definitions for the Data Watchpoint and Trace (DWT)
+	\defgroup CMSIS_DWT     Data Watchpoint and Trace (DWT)
+	\brief      Type definitions for the Data Watchpoint and Trace (DWT)
   @{
  */
 
@@ -1045,19 +1045,19 @@ typedef struct
   __IO uint32_t COMP0;                   /*!< Offset: 0x020 (R/W)  Comparator Register 0                     */
   __IO uint32_t MASK0;                   /*!< Offset: 0x024 (R/W)  Mask Register 0                           */
   __IO uint32_t FUNCTION0;               /*!< Offset: 0x028 (R/W)  Function Register 0                       */
-       uint32_t RESERVED0[1];
+	   uint32_t RESERVED0[1];
   __IO uint32_t COMP1;                   /*!< Offset: 0x030 (R/W)  Comparator Register 1                     */
   __IO uint32_t MASK1;                   /*!< Offset: 0x034 (R/W)  Mask Register 1                           */
   __IO uint32_t FUNCTION1;               /*!< Offset: 0x038 (R/W)  Function Register 1                       */
-       uint32_t RESERVED1[1];
+	   uint32_t RESERVED1[1];
   __IO uint32_t COMP2;                   /*!< Offset: 0x040 (R/W)  Comparator Register 2                     */
   __IO uint32_t MASK2;                   /*!< Offset: 0x044 (R/W)  Mask Register 2                           */
   __IO uint32_t FUNCTION2;               /*!< Offset: 0x048 (R/W)  Function Register 2                       */
-       uint32_t RESERVED2[1];
+	   uint32_t RESERVED2[1];
   __IO uint32_t COMP3;                   /*!< Offset: 0x050 (R/W)  Comparator Register 3                     */
   __IO uint32_t MASK3;                   /*!< Offset: 0x054 (R/W)  Mask Register 3                           */
   __IO uint32_t FUNCTION3;               /*!< Offset: 0x058 (R/W)  Function Register 3                       */
-       uint32_t RESERVED3[981];
+	   uint32_t RESERVED3[981];
   __O  uint32_t LAR;                     /*!< Offset: 0xFB0 (  W)  Lock Access Register                      */
   __I  uint32_t LSR;                     /*!< Offset: 0xFB4 (R  )  Lock Status Register                      */
 } DWT_Type;
@@ -1173,8 +1173,8 @@ typedef struct
 
 
 /** \ingroup  CMSIS_core_register
-    \defgroup CMSIS_TPI     Trace Port Interface (TPI)
-    \brief      Type definitions for the Trace Port Interface (TPI)
+	\defgroup CMSIS_TPI     Trace Port Interface (TPI)
+	\brief      Type definitions for the Trace Port Interface (TPI)
   @{
  */
 
@@ -1184,26 +1184,26 @@ typedef struct
 {
   __IO uint32_t SSPSR;                   /*!< Offset: 0x000 (R/ )  Supported Parallel Port Size Register     */
   __IO uint32_t CSPSR;                   /*!< Offset: 0x004 (R/W)  Current Parallel Port Size Register */
-       uint32_t RESERVED0[2];
+	   uint32_t RESERVED0[2];
   __IO uint32_t ACPR;                    /*!< Offset: 0x010 (R/W)  Asynchronous Clock Prescaler Register */
-       uint32_t RESERVED1[55];
+	   uint32_t RESERVED1[55];
   __IO uint32_t SPPR;                    /*!< Offset: 0x0F0 (R/W)  Selected Pin Protocol Register */
-       uint32_t RESERVED2[131];
+	   uint32_t RESERVED2[131];
   __I  uint32_t FFSR;                    /*!< Offset: 0x300 (R/ )  Formatter and Flush Status Register */
   __IO uint32_t FFCR;                    /*!< Offset: 0x304 (R/W)  Formatter and Flush Control Register */
   __I  uint32_t FSCR;                    /*!< Offset: 0x308 (R/ )  Formatter Synchronization Counter Register */
-       uint32_t RESERVED3[759];
+	   uint32_t RESERVED3[759];
   __I  uint32_t TRIGGER;                 /*!< Offset: 0xEE8 (R/ )  TRIGGER */
   __I  uint32_t FIFO0;                   /*!< Offset: 0xEEC (R/ )  Integration ETM Data */
   __I  uint32_t ITATBCTR2;               /*!< Offset: 0xEF0 (R/ )  ITATBCTR2 */
-       uint32_t RESERVED4[1];
+	   uint32_t RESERVED4[1];
   __I  uint32_t ITATBCTR0;               /*!< Offset: 0xEF8 (R/ )  ITATBCTR0 */
   __I  uint32_t FIFO1;                   /*!< Offset: 0xEFC (R/ )  Integration ITM Data */
   __IO uint32_t ITCTRL;                  /*!< Offset: 0xF00 (R/W)  Integration Mode Control */
-       uint32_t RESERVED5[39];
+	   uint32_t RESERVED5[39];
   __IO uint32_t CLAIMSET;                /*!< Offset: 0xFA0 (R/W)  Claim tag set */
   __IO uint32_t CLAIMCLR;                /*!< Offset: 0xFA4 (R/W)  Claim tag clear */
-       uint32_t RESERVED7[8];
+	   uint32_t RESERVED7[8];
   __I  uint32_t DEVID;                   /*!< Offset: 0xFC8 (R/ )  TPIU_DEVID */
   __I  uint32_t DEVTYPE;                 /*!< Offset: 0xFCC (R/ )  TPIU_DEVTYPE */
 } TPI_Type;
@@ -1327,8 +1327,8 @@ typedef struct
 
 #if (__MPU_PRESENT == 1)
 /** \ingroup  CMSIS_core_register
-    \defgroup CMSIS_MPU     Memory Protection Unit (MPU)
-    \brief      Type definitions for the Memory Protection Unit (MPU)
+	\defgroup CMSIS_MPU     Memory Protection Unit (MPU)
+	\brief      Type definitions for the Memory Protection Unit (MPU)
   @{
  */
 
@@ -1420,8 +1420,8 @@ typedef struct
 
 #if (__FPU_PRESENT == 1)
 /** \ingroup  CMSIS_core_register
-    \defgroup CMSIS_FPU     Floating Point Unit (FPU)
-    \brief      Type definitions for the Floating Point Unit (FPU)
+	\defgroup CMSIS_FPU     Floating Point Unit (FPU)
+	\brief      Type definitions for the Floating Point Unit (FPU)
   @{
  */
 
@@ -1429,7 +1429,7 @@ typedef struct
  */
 typedef struct
 {
-       uint32_t RESERVED0[1];
+	   uint32_t RESERVED0[1];
   __IO uint32_t FPCCR;                   /*!< Offset: 0x004 (R/W)  Floating-Point Context Control Register               */
   __IO uint32_t FPCAR;                   /*!< Offset: 0x008 (R/W)  Floating-Point Context Address Register               */
   __IO uint32_t FPDSCR;                  /*!< Offset: 0x00C (R/W)  Floating-Point Default Status Control Register        */
@@ -1528,8 +1528,8 @@ typedef struct
 
 
 /** \ingroup  CMSIS_core_register
-    \defgroup CMSIS_CoreDebug       Core Debug Registers (CoreDebug)
-    \brief      Type definitions for the Core Debug Registers
+	\defgroup CMSIS_CoreDebug       Core Debug Registers (CoreDebug)
+	\brief      Type definitions for the Core Debug Registers
   @{
  */
 
@@ -1631,8 +1631,8 @@ typedef struct
 
 
 /** \ingroup    CMSIS_core_register
-    \defgroup   CMSIS_core_base     Core Definitions
-    \brief      Definitions for base addresses, unions, and structures.
+	\defgroup   CMSIS_core_base     Core Definitions
+	\brief      Definitions for base addresses, unions, and structures.
   @{
  */
 
@@ -1684,9 +1684,9 @@ typedef struct
 
 /* ##########################   NVIC functions  #################################### */
 /** \ingroup  CMSIS_Core_FunctionInterface
-    \defgroup CMSIS_Core_NVICFunctions NVIC Functions
-    \brief      Functions that manage interrupts and exceptions via the NVIC.
-    @{
+	\defgroup CMSIS_Core_NVICFunctions NVIC Functions
+	\brief      Functions that manage interrupts and exceptions via the NVIC.
+	@{
  */
 
 /** \brief  Set Priority Grouping
@@ -1697,7 +1697,7 @@ typedef struct
   In case of a conflict between priority grouping and available
   priority bits (__NVIC_PRIO_BITS), the smallest possible priority group is set.
 
-    \param [in]      PriorityGroup  Priority grouping field.
+	\param [in]      PriorityGroup  Priority grouping field.
  */
 __STATIC_INLINE void NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
 {
@@ -1707,8 +1707,8 @@ __STATIC_INLINE void NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
   reg_value  =  SCB->AIRCR;                                                   /* read old register configuration    */
   reg_value &= ~((uint32_t)(SCB_AIRCR_VECTKEY_Msk | SCB_AIRCR_PRIGROUP_Msk));             /* clear bits to change               */
   reg_value  =  (reg_value                                   |
-                ((uint32_t)0x5FAUL << SCB_AIRCR_VECTKEY_Pos) |
-                (PriorityGroupTmp << 8)                       );              /* Insert write key and priorty group */
+				((uint32_t)0x5FAUL << SCB_AIRCR_VECTKEY_Pos) |
+				(PriorityGroupTmp << 8)                       );              /* Insert write key and priorty group */
   SCB->AIRCR =  reg_value;
 }
 
@@ -1717,7 +1717,7 @@ __STATIC_INLINE void NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
 
   The function reads the priority grouping field from the NVIC Interrupt Controller.
 
-    \return                Priority grouping field (SCB->AIRCR [10:8] PRIGROUP field).
+	\return                Priority grouping field (SCB->AIRCR [10:8] PRIGROUP field).
  */
 __STATIC_INLINE uint32_t NVIC_GetPriorityGrouping(void)
 {
@@ -1727,9 +1727,9 @@ __STATIC_INLINE uint32_t NVIC_GetPriorityGrouping(void)
 
 /** \brief  Enable External Interrupt
 
-    The function enables a device-specific interrupt in the NVIC interrupt controller.
+	The function enables a device-specific interrupt in the NVIC interrupt controller.
 
-    \param [in]      IRQn  External interrupt number. Value cannot be negative.
+	\param [in]      IRQn  External interrupt number. Value cannot be negative.
  */
 __STATIC_INLINE void NVIC_EnableIRQ(IRQn_Type IRQn)
 {
@@ -1739,9 +1739,9 @@ __STATIC_INLINE void NVIC_EnableIRQ(IRQn_Type IRQn)
 
 /** \brief  Disable External Interrupt
 
-    The function disables a device-specific interrupt in the NVIC interrupt controller.
+	The function disables a device-specific interrupt in the NVIC interrupt controller.
 
-    \param [in]      IRQn  External interrupt number. Value cannot be negative.
+	\param [in]      IRQn  External interrupt number. Value cannot be negative.
  */
 __STATIC_INLINE void NVIC_DisableIRQ(IRQn_Type IRQn)
 {
@@ -1751,13 +1751,13 @@ __STATIC_INLINE void NVIC_DisableIRQ(IRQn_Type IRQn)
 
 /** \brief  Get Pending Interrupt
 
-    The function reads the pending register in the NVIC and returns the pending bit
-    for the specified interrupt.
+	The function reads the pending register in the NVIC and returns the pending bit
+	for the specified interrupt.
 
-    \param [in]      IRQn  Interrupt number.
+	\param [in]      IRQn  Interrupt number.
 
-    \return             0  Interrupt status is not pending.
-    \return             1  Interrupt status is pending.
+	\return             0  Interrupt status is not pending.
+	\return             1  Interrupt status is pending.
  */
 __STATIC_INLINE uint32_t NVIC_GetPendingIRQ(IRQn_Type IRQn)
 {
@@ -1767,9 +1767,9 @@ __STATIC_INLINE uint32_t NVIC_GetPendingIRQ(IRQn_Type IRQn)
 
 /** \brief  Set Pending Interrupt
 
-    The function sets the pending bit of an external interrupt.
+	The function sets the pending bit of an external interrupt.
 
-    \param [in]      IRQn  Interrupt number. Value cannot be negative.
+	\param [in]      IRQn  Interrupt number. Value cannot be negative.
  */
 __STATIC_INLINE void NVIC_SetPendingIRQ(IRQn_Type IRQn)
 {
@@ -1779,9 +1779,9 @@ __STATIC_INLINE void NVIC_SetPendingIRQ(IRQn_Type IRQn)
 
 /** \brief  Clear Pending Interrupt
 
-    The function clears the pending bit of an external interrupt.
+	The function clears the pending bit of an external interrupt.
 
-    \param [in]      IRQn  External interrupt number. Value cannot be negative.
+	\param [in]      IRQn  External interrupt number. Value cannot be negative.
  */
 __STATIC_INLINE void NVIC_ClearPendingIRQ(IRQn_Type IRQn)
 {
@@ -1791,12 +1791,12 @@ __STATIC_INLINE void NVIC_ClearPendingIRQ(IRQn_Type IRQn)
 
 /** \brief  Get Active Interrupt
 
-    The function reads the active register in NVIC and returns the active bit.
+	The function reads the active register in NVIC and returns the active bit.
 
-    \param [in]      IRQn  Interrupt number.
+	\param [in]      IRQn  Interrupt number.
 
-    \return             0  Interrupt status is not active.
-    \return             1  Interrupt status is active.
+	\return             0  Interrupt status is not active.
+	\return             1  Interrupt status is active.
  */
 __STATIC_INLINE uint32_t NVIC_GetActive(IRQn_Type IRQn)
 {
@@ -1806,58 +1806,58 @@ __STATIC_INLINE uint32_t NVIC_GetActive(IRQn_Type IRQn)
 
 /** \brief  Set Interrupt Priority
 
-    The function sets the priority of an interrupt.
+	The function sets the priority of an interrupt.
 
-    \note The priority cannot be set for every core interrupt.
+	\note The priority cannot be set for every core interrupt.
 
-    \param [in]      IRQn  Interrupt number.
-    \param [in]  priority  Priority to set.
+	\param [in]      IRQn  Interrupt number.
+	\param [in]  priority  Priority to set.
  */
 __STATIC_INLINE void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
 {
   if((int32_t)IRQn < 0) {
-    SCB->SHPR[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8 - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+	SCB->SHPR[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8 - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
   }
   else {
-    NVIC->IP[((uint32_t)(int32_t)IRQn)]                = (uint8_t)((priority << (8 - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+	NVIC->IP[((uint32_t)(int32_t)IRQn)]                = (uint8_t)((priority << (8 - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
   }
 }
 
 
 /** \brief  Get Interrupt Priority
 
-    The function reads the priority of an interrupt. The interrupt
-    number can be positive to specify an external (device specific)
-    interrupt, or negative to specify an internal (core) interrupt.
+	The function reads the priority of an interrupt. The interrupt
+	number can be positive to specify an external (device specific)
+	interrupt, or negative to specify an internal (core) interrupt.
 
 
-    \param [in]   IRQn  Interrupt number.
-    \return             Interrupt Priority. Value is aligned automatically to the implemented
-                        priority bits of the microcontroller.
+	\param [in]   IRQn  Interrupt number.
+	\return             Interrupt Priority. Value is aligned automatically to the implemented
+						priority bits of the microcontroller.
  */
 __STATIC_INLINE uint32_t NVIC_GetPriority(IRQn_Type IRQn)
 {
 
   if((int32_t)IRQn < 0) {
-    return(((uint32_t)SCB->SHPR[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] >> (8 - __NVIC_PRIO_BITS)));
+	return(((uint32_t)SCB->SHPR[(((uint32_t)(int32_t)IRQn) & 0xFUL)-4UL] >> (8 - __NVIC_PRIO_BITS)));
   }
   else {
-    return(((uint32_t)NVIC->IP[((uint32_t)(int32_t)IRQn)]               >> (8 - __NVIC_PRIO_BITS)));
+	return(((uint32_t)NVIC->IP[((uint32_t)(int32_t)IRQn)]               >> (8 - __NVIC_PRIO_BITS)));
   }
 }
 
 
 /** \brief  Encode Priority
 
-    The function encodes the priority for an interrupt with the given priority group,
-    preemptive priority value, and subpriority value.
-    In case of a conflict between priority grouping and available
-    priority bits (__NVIC_PRIO_BITS), the smallest possible priority group is set.
+	The function encodes the priority for an interrupt with the given priority group,
+	preemptive priority value, and subpriority value.
+	In case of a conflict between priority grouping and available
+	priority bits (__NVIC_PRIO_BITS), the smallest possible priority group is set.
 
-    \param [in]     PriorityGroup  Used priority group.
-    \param [in]   PreemptPriority  Preemptive priority value (starting from 0).
-    \param [in]       SubPriority  Subpriority value (starting from 0).
-    \return                        Encoded priority. Value can be used in the function \ref NVIC_SetPriority().
+	\param [in]     PriorityGroup  Used priority group.
+	\param [in]   PreemptPriority  Preemptive priority value (starting from 0).
+	\param [in]       SubPriority  Subpriority value (starting from 0).
+	\return                        Encoded priority. Value can be used in the function \ref NVIC_SetPriority().
  */
 __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t PreemptPriority, uint32_t SubPriority)
 {
@@ -1869,23 +1869,23 @@ __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t P
   SubPriorityBits     = ((PriorityGroupTmp + (uint32_t)(__NVIC_PRIO_BITS)) < (uint32_t)7UL) ? (uint32_t)0UL : (uint32_t)((PriorityGroupTmp - 7UL) + (uint32_t)(__NVIC_PRIO_BITS));
 
   return (
-           ((PreemptPriority & (uint32_t)((1UL << (PreemptPriorityBits)) - 1UL)) << SubPriorityBits) |
-           ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
-         );
+		   ((PreemptPriority & (uint32_t)((1UL << (PreemptPriorityBits)) - 1UL)) << SubPriorityBits) |
+		   ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
+		 );
 }
 
 
 /** \brief  Decode Priority
 
-    The function decodes an interrupt priority value with a given priority group to
-    preemptive priority value and subpriority value.
-    In case of a conflict between priority grouping and available
-    priority bits (__NVIC_PRIO_BITS) the smallest possible priority group is set.
+	The function decodes an interrupt priority value with a given priority group to
+	preemptive priority value and subpriority value.
+	In case of a conflict between priority grouping and available
+	priority bits (__NVIC_PRIO_BITS) the smallest possible priority group is set.
 
-    \param [in]         Priority   Priority value, which can be retrieved with the function \ref NVIC_GetPriority().
-    \param [in]     PriorityGroup  Used priority group.
-    \param [out] pPreemptPriority  Preemptive priority value (starting from 0).
-    \param [out]     pSubPriority  Subpriority value (starting from 0).
+	\param [in]         Priority   Priority value, which can be retrieved with the function \ref NVIC_GetPriority().
+	\param [in]     PriorityGroup  Used priority group.
+	\param [out] pPreemptPriority  Preemptive priority value (starting from 0).
+	\param [out]     pSubPriority  Subpriority value (starting from 0).
  */
 __STATIC_INLINE void NVIC_DecodePriority (uint32_t Priority, uint32_t PriorityGroup, uint32_t* pPreemptPriority, uint32_t* pSubPriority)
 {
@@ -1903,15 +1903,15 @@ __STATIC_INLINE void NVIC_DecodePriority (uint32_t Priority, uint32_t PriorityGr
 
 /** \brief  System Reset
 
-    The function initiates a system reset request to reset the MCU.
+	The function initiates a system reset request to reset the MCU.
  */
 __STATIC_INLINE void NVIC_SystemReset(void)
 {
   __DSB();                                                          /* Ensure all outstanding memory accesses included
-                                                                       buffered write are completed before reset */
+																	   buffered write are completed before reset */
   SCB->AIRCR  = (uint32_t)((0x5FAUL << SCB_AIRCR_VECTKEY_Pos)    |
-                           (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
-                            SCB_AIRCR_SYSRESETREQ_Msk    );         /* Keep priority group unchanged */
+						   (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
+							SCB_AIRCR_SYSRESETREQ_Msk    );         /* Keep priority group unchanged */
   __DSB();                                                          /* Ensure completion of memory access */
   while(1) { __NOP(); }                                             /* wait until reset */
 }
@@ -1921,9 +1921,9 @@ __STATIC_INLINE void NVIC_SystemReset(void)
 
 /* ##########################  FPU functions  #################################### */
 /** \ingroup  CMSIS_Core_FunctionInterface
-    \defgroup CMSIS_Core_FpuFunctions FPU Functions
-    \brief      Function that provides FPU type.
-    @{
+	\defgroup CMSIS_Core_FpuFunctions FPU Functions
+	\brief      Function that provides FPU type.
+	@{
  */
 
 /**
@@ -1940,11 +1940,11 @@ __STATIC_INLINE uint32_t SCB_GetFPUType(void)
 
   mvfr0 = SCB->MVFR0;
   if        ((mvfr0 & 0x00000FF0UL) == 0x220UL) {
-    return 2UL;           // Double + Single precision FPU
+	return 2UL;           // Double + Single precision FPU
   } else if ((mvfr0 & 0x00000FF0UL) == 0x020UL) {
-    return 1UL;           // Single precision FPU
+	return 1UL;           // Single precision FPU
   } else {
-    return 0UL;           // No FPU
+	return 0UL;           // No FPU
   }
 }
 
@@ -1955,9 +1955,9 @@ __STATIC_INLINE uint32_t SCB_GetFPUType(void)
 
 /* ##########################  Cache functions  #################################### */
 /** \ingroup  CMSIS_Core_FunctionInterface
-    \defgroup CMSIS_Core_CacheFunctions Cache Functions
-    \brief      Functions that configure Instruction and Data cache.
-    @{
+	\defgroup CMSIS_Core_CacheFunctions Cache Functions
+	\brief      Functions that configure Instruction and Data cache.
+	@{
  */
 
 /* Cache Size ID Register Macros */
@@ -1968,221 +1968,221 @@ __STATIC_INLINE uint32_t SCB_GetFPUType(void)
 
 /** \brief Enable I-Cache
 
-    The function turns on I-Cache
+	The function turns on I-Cache
   */
 __STATIC_INLINE void SCB_EnableICache (void)
 {
   #if (__ICACHE_PRESENT == 1)
-    __DSB();
-    __ISB();
-    SCB->ICIALLU = 0UL;                     // invalidate I-Cache
-    SCB->CCR |=  (uint32_t)SCB_CCR_IC_Msk;  // enable I-Cache
-    __DSB();
-    __ISB();
+	__DSB();
+	__ISB();
+	SCB->ICIALLU = 0UL;                     // invalidate I-Cache
+	SCB->CCR |=  (uint32_t)SCB_CCR_IC_Msk;  // enable I-Cache
+	__DSB();
+	__ISB();
   #endif
 }
 
 
 /** \brief Disable I-Cache
 
-    The function turns off I-Cache
+	The function turns off I-Cache
   */
 __STATIC_INLINE void SCB_DisableICache (void)
 {
   #if (__ICACHE_PRESENT == 1)
-    __DSB();
-    __ISB();
-    SCB->CCR &= ~(uint32_t)SCB_CCR_IC_Msk;  // disable I-Cache
-    SCB->ICIALLU = 0UL;                     // invalidate I-Cache
-    __DSB();
-    __ISB();
+	__DSB();
+	__ISB();
+	SCB->CCR &= ~(uint32_t)SCB_CCR_IC_Msk;  // disable I-Cache
+	SCB->ICIALLU = 0UL;                     // invalidate I-Cache
+	__DSB();
+	__ISB();
   #endif
 }
 
 
 /** \brief Invalidate I-Cache
 
-    The function invalidates I-Cache
+	The function invalidates I-Cache
   */
 __STATIC_INLINE void SCB_InvalidateICache (void)
 {
   #if (__ICACHE_PRESENT == 1)
-    __DSB();
-    __ISB();
-    SCB->ICIALLU = 0UL;
-    __DSB();
-    __ISB();
+	__DSB();
+	__ISB();
+	SCB->ICIALLU = 0UL;
+	__DSB();
+	__ISB();
   #endif
 }
 
 
 /** \brief Enable D-Cache
 
-    The function turns on D-Cache
+	The function turns on D-Cache
   */
 __STATIC_INLINE void SCB_EnableDCache (void)
 {
   #if (__DCACHE_PRESENT == 1)
-    uint32_t ccsidr, sshift, wshift, sw;
-    uint32_t sets, ways;
+	uint32_t ccsidr, sshift, wshift, sw;
+	uint32_t sets, ways;
 
-    SCB->CSSELR = (0UL << 1) | 0UL;         // Level 1 data cache
-    ccsidr  = SCB->CCSIDR;
-    sets    = (uint32_t)(CCSIDR_SETS(ccsidr));
-    sshift  = (uint32_t)(CCSIDR_LSSHIFT(ccsidr) + 4UL);
-    ways    = (uint32_t)(CCSIDR_WAYS(ccsidr));
-    wshift  = (uint32_t)((uint32_t)__CLZ(ways) & 0x1FUL);
+	SCB->CSSELR = (0UL << 1) | 0UL;         // Level 1 data cache
+	ccsidr  = SCB->CCSIDR;
+	sets    = (uint32_t)(CCSIDR_SETS(ccsidr));
+	sshift  = (uint32_t)(CCSIDR_LSSHIFT(ccsidr) + 4UL);
+	ways    = (uint32_t)(CCSIDR_WAYS(ccsidr));
+	wshift  = (uint32_t)((uint32_t)__CLZ(ways) & 0x1FUL);
 
-    __DSB();
+	__DSB();
 
-    do {                                   // invalidate D-Cache
-         uint32_t tmpways = ways;
-         do {
-              sw = ((tmpways << wshift) | (sets << sshift));
-              SCB->DCISW = sw;
-            } while(tmpways--);
-        } while(sets--);
-    __DSB();
+	do {                                   // invalidate D-Cache
+		 uint32_t tmpways = ways;
+		 do {
+			  sw = ((tmpways << wshift) | (sets << sshift));
+			  SCB->DCISW = sw;
+			} while(tmpways--);
+		} while(sets--);
+	__DSB();
 
-    SCB->CCR |=  (uint32_t)SCB_CCR_DC_Msk;   // enable D-Cache
+	SCB->CCR |=  (uint32_t)SCB_CCR_DC_Msk;   // enable D-Cache
 
-    __DSB();
-    __ISB();
+	__DSB();
+	__ISB();
   #endif
 }
 
 
 /** \brief Disable D-Cache
 
-    The function turns off D-Cache
+	The function turns off D-Cache
   */
 __STATIC_INLINE void SCB_DisableDCache (void)
 {
   #if (__DCACHE_PRESENT == 1)
-    uint32_t ccsidr, sshift, wshift, sw;
-    uint32_t sets, ways;
+	uint32_t ccsidr, sshift, wshift, sw;
+	uint32_t sets, ways;
 
-    SCB->CSSELR = (0UL << 1) | 0UL;         // Level 1 data cache
-    ccsidr  = SCB->CCSIDR;
-    sets    = (uint32_t)(CCSIDR_SETS(ccsidr));
-    sshift  = (uint32_t)(CCSIDR_LSSHIFT(ccsidr) + 4UL);
-    ways    = (uint32_t)(CCSIDR_WAYS(ccsidr));
-    wshift  = (uint32_t)((uint32_t)__CLZ(ways) & 0x1FUL);
+	SCB->CSSELR = (0UL << 1) | 0UL;         // Level 1 data cache
+	ccsidr  = SCB->CCSIDR;
+	sets    = (uint32_t)(CCSIDR_SETS(ccsidr));
+	sshift  = (uint32_t)(CCSIDR_LSSHIFT(ccsidr) + 4UL);
+	ways    = (uint32_t)(CCSIDR_WAYS(ccsidr));
+	wshift  = (uint32_t)((uint32_t)__CLZ(ways) & 0x1FUL);
 
-    __DSB();
+	__DSB();
 
-    SCB->CCR &= ~(uint32_t)SCB_CCR_DC_Msk;  // disable D-Cache
+	SCB->CCR &= ~(uint32_t)SCB_CCR_DC_Msk;  // disable D-Cache
 
-    do {                                    // clean & invalidate D-Cache
-         uint32_t tmpways = ways;
-         do {
-              sw = ((tmpways << wshift) | (sets << sshift));
-              SCB->DCCISW = sw;
-            } while(tmpways--);
-        } while(sets--);
+	do {                                    // clean & invalidate D-Cache
+		 uint32_t tmpways = ways;
+		 do {
+			  sw = ((tmpways << wshift) | (sets << sshift));
+			  SCB->DCCISW = sw;
+			} while(tmpways--);
+		} while(sets--);
 
 
-    __DSB();
-    __ISB();
+	__DSB();
+	__ISB();
   #endif
 }
 
 
 /** \brief Invalidate D-Cache
 
-    The function invalidates D-Cache
+	The function invalidates D-Cache
   */
 __STATIC_INLINE void SCB_InvalidateDCache (void)
 {
   #if (__DCACHE_PRESENT == 1)
-    uint32_t ccsidr, sshift, wshift, sw;
-    uint32_t sets, ways;
+	uint32_t ccsidr, sshift, wshift, sw;
+	uint32_t sets, ways;
 
-    SCB->CSSELR = (0UL << 1) | 0UL;         // Level 1 data cache
-    ccsidr  = SCB->CCSIDR;
-    sets    = (uint32_t)(CCSIDR_SETS(ccsidr));
-    sshift  = (uint32_t)(CCSIDR_LSSHIFT(ccsidr) + 4UL);
-    ways    = (uint32_t)(CCSIDR_WAYS(ccsidr));
-    wshift  = (uint32_t)((uint32_t)__CLZ(ways) & 0x1FUL);
+	SCB->CSSELR = (0UL << 1) | 0UL;         // Level 1 data cache
+	ccsidr  = SCB->CCSIDR;
+	sets    = (uint32_t)(CCSIDR_SETS(ccsidr));
+	sshift  = (uint32_t)(CCSIDR_LSSHIFT(ccsidr) + 4UL);
+	ways    = (uint32_t)(CCSIDR_WAYS(ccsidr));
+	wshift  = (uint32_t)((uint32_t)__CLZ(ways) & 0x1FUL);
 
-    __DSB();
+	__DSB();
 
-    do {                                    // invalidate D-Cache
-         uint32_t tmpways = ways;
-         do {
-              sw = ((tmpways << wshift) | (sets << sshift));
-              SCB->DCISW = sw;
-            } while(tmpways--);
-        } while(sets--);
+	do {                                    // invalidate D-Cache
+		 uint32_t tmpways = ways;
+		 do {
+			  sw = ((tmpways << wshift) | (sets << sshift));
+			  SCB->DCISW = sw;
+			} while(tmpways--);
+		} while(sets--);
 
-    __DSB();
-    __ISB();
+	__DSB();
+	__ISB();
   #endif
 }
 
 
 /** \brief Clean D-Cache
 
-    The function cleans D-Cache
+	The function cleans D-Cache
   */
 __STATIC_INLINE void SCB_CleanDCache (void)
 {
   #if (__DCACHE_PRESENT == 1)
-    uint32_t ccsidr, sshift, wshift, sw;
-    uint32_t sets, ways;
+	uint32_t ccsidr, sshift, wshift, sw;
+	uint32_t sets, ways;
 
-    SCB->CSSELR = (0UL << 1) | 0UL;         // Level 1 data cache
-    ccsidr  = SCB->CCSIDR;
-    sets    = (uint32_t)(CCSIDR_SETS(ccsidr));
-    sshift  = (uint32_t)(CCSIDR_LSSHIFT(ccsidr) + 4UL);
-    ways    = (uint32_t)(CCSIDR_WAYS(ccsidr));
-    wshift  = (uint32_t)((uint32_t)__CLZ(ways) & 0x1FUL);
+	SCB->CSSELR = (0UL << 1) | 0UL;         // Level 1 data cache
+	ccsidr  = SCB->CCSIDR;
+	sets    = (uint32_t)(CCSIDR_SETS(ccsidr));
+	sshift  = (uint32_t)(CCSIDR_LSSHIFT(ccsidr) + 4UL);
+	ways    = (uint32_t)(CCSIDR_WAYS(ccsidr));
+	wshift  = (uint32_t)((uint32_t)__CLZ(ways) & 0x1FUL);
 
-    __DSB();
+	__DSB();
 
-    do {                                    // clean D-Cache
-         uint32_t tmpways = ways;
-         do {
-              sw = ((tmpways << wshift) | (sets << sshift));
-              SCB->DCCSW = sw;
-            } while(tmpways--);
-        } while(sets--);
+	do {                                    // clean D-Cache
+		 uint32_t tmpways = ways;
+		 do {
+			  sw = ((tmpways << wshift) | (sets << sshift));
+			  SCB->DCCSW = sw;
+			} while(tmpways--);
+		} while(sets--);
 
-    __DSB();
-    __ISB();
+	__DSB();
+	__ISB();
   #endif
 }
 
 
 /** \brief Clean & Invalidate D-Cache
 
-    The function cleans and Invalidates D-Cache
+	The function cleans and Invalidates D-Cache
   */
 __STATIC_INLINE void SCB_CleanInvalidateDCache (void)
 {
   #if (__DCACHE_PRESENT == 1)
-    uint32_t ccsidr, sshift, wshift, sw;
-    uint32_t sets, ways;
+	uint32_t ccsidr, sshift, wshift, sw;
+	uint32_t sets, ways;
 
-    SCB->CSSELR = (0UL << 1) | 0UL;         // Level 1 data cache
-    ccsidr  = SCB->CCSIDR;
-    sets    = (uint32_t)(CCSIDR_SETS(ccsidr));
-    sshift  = (uint32_t)(CCSIDR_LSSHIFT(ccsidr) + 4UL);
-    ways    = (uint32_t)(CCSIDR_WAYS(ccsidr));
-    wshift  = (uint32_t)((uint32_t)__CLZ(ways) & 0x1FUL);
+	SCB->CSSELR = (0UL << 1) | 0UL;         // Level 1 data cache
+	ccsidr  = SCB->CCSIDR;
+	sets    = (uint32_t)(CCSIDR_SETS(ccsidr));
+	sshift  = (uint32_t)(CCSIDR_LSSHIFT(ccsidr) + 4UL);
+	ways    = (uint32_t)(CCSIDR_WAYS(ccsidr));
+	wshift  = (uint32_t)((uint32_t)__CLZ(ways) & 0x1FUL);
 
-    __DSB();
+	__DSB();
 
-    do {                                    // clean & invalidate D-Cache
-         uint32_t tmpways = ways;
-         do {
-              sw = ((tmpways << wshift) | (sets << sshift));
-              SCB->DCCISW = sw;
-            } while(tmpways--);
-        } while(sets--);
+	do {                                    // clean & invalidate D-Cache
+		 uint32_t tmpways = ways;
+		 do {
+			  sw = ((tmpways << wshift) | (sets << sshift));
+			  SCB->DCCISW = sw;
+			} while(tmpways--);
+		} while(sets--);
 
-    __DSB();
-    __ISB();
+	__DSB();
+	__ISB();
   #endif
 }
 
@@ -2196,20 +2196,20 @@ __STATIC_INLINE void SCB_CleanInvalidateDCache (void)
 __STATIC_INLINE void SCB_InvalidateDCache_by_Addr (uint32_t *addr, int32_t dsize)
 {
   #if (__DCACHE_PRESENT == 1)
-    int32_t  op_size = dsize;
-    uint32_t op_addr = (uint32_t)addr;
-    uint32_t linesize = 32UL;               // in Cortex-M7 size of cache line is fixed to 8 words (32 bytes)
+	int32_t  op_size = dsize;
+	uint32_t op_addr = (uint32_t)addr;
+	uint32_t linesize = 32UL;               // in Cortex-M7 size of cache line is fixed to 8 words (32 bytes)
 
-    __DSB();
+	__DSB();
 
-    while (op_size > 0) {
-      SCB->DCIMVAC = op_addr;
-      op_addr +=          linesize;
-      op_size -= (int32_t)linesize;
-    }
+	while (op_size > 0) {
+	  SCB->DCIMVAC = op_addr;
+	  op_addr +=          linesize;
+	  op_size -= (int32_t)linesize;
+	}
 
-    __DSB();
-    __ISB();
+	__DSB();
+	__ISB();
   #endif
 }
 
@@ -2223,20 +2223,20 @@ __STATIC_INLINE void SCB_InvalidateDCache_by_Addr (uint32_t *addr, int32_t dsize
 __STATIC_INLINE void SCB_CleanDCache_by_Addr (uint32_t *addr, int32_t dsize)
 {
   #if (__DCACHE_PRESENT == 1)
-    int32_t  op_size = dsize;
-    uint32_t op_addr = (uint32_t) addr;
-    uint32_t linesize = 32UL;               // in Cortex-M7 size of cache line is fixed to 8 words (32 bytes)
+	int32_t  op_size = dsize;
+	uint32_t op_addr = (uint32_t) addr;
+	uint32_t linesize = 32UL;               // in Cortex-M7 size of cache line is fixed to 8 words (32 bytes)
 
-    __DSB();
+	__DSB();
 
-    while (op_size > 0) {
-      SCB->DCCMVAC = op_addr;
-      op_addr +=          linesize;
-      op_size -= (int32_t)linesize;
-    }
+	while (op_size > 0) {
+	  SCB->DCCMVAC = op_addr;
+	  op_addr +=          linesize;
+	  op_size -= (int32_t)linesize;
+	}
 
-    __DSB();
-    __ISB();
+	__DSB();
+	__ISB();
   #endif
 }
 
@@ -2250,20 +2250,20 @@ __STATIC_INLINE void SCB_CleanDCache_by_Addr (uint32_t *addr, int32_t dsize)
 __STATIC_INLINE void SCB_CleanInvalidateDCache_by_Addr (uint32_t *addr, int32_t dsize)
 {
   #if (__DCACHE_PRESENT == 1)
-    int32_t  op_size = dsize;
-    uint32_t op_addr = (uint32_t) addr;
-    uint32_t linesize = 32UL;               // in Cortex-M7 size of cache line is fixed to 8 words (32 bytes)
+	int32_t  op_size = dsize;
+	uint32_t op_addr = (uint32_t) addr;
+	uint32_t linesize = 32UL;               // in Cortex-M7 size of cache line is fixed to 8 words (32 bytes)
 
-    __DSB();
+	__DSB();
 
-    while (op_size > 0) {
-      SCB->DCCIMVAC = op_addr;
-      op_addr +=          linesize;
-      op_size -= (int32_t)linesize;
-    }
+	while (op_size > 0) {
+	  SCB->DCCIMVAC = op_addr;
+	  op_addr +=          linesize;
+	  op_size -= (int32_t)linesize;
+	}
 
-    __DSB();
-    __ISB();
+	__DSB();
+	__ISB();
   #endif
 }
 
@@ -2274,8 +2274,8 @@ __STATIC_INLINE void SCB_CleanInvalidateDCache_by_Addr (uint32_t *addr, int32_t 
 
 /* ##################################    SysTick function  ############################################ */
 /** \ingroup  CMSIS_Core_FunctionInterface
-    \defgroup CMSIS_Core_SysTickFunctions SysTick Functions
-    \brief      Functions that configure the System.
+	\defgroup CMSIS_Core_SysTickFunctions SysTick Functions
+	\brief      Functions that configure the System.
   @{
  */
 
@@ -2283,17 +2283,17 @@ __STATIC_INLINE void SCB_CleanInvalidateDCache_by_Addr (uint32_t *addr, int32_t 
 
 /** \brief  System Tick Configuration
 
-    The function initializes the System Timer and its interrupt, and starts the System Tick Timer.
-    Counter is in free running mode to generate periodic interrupts.
+	The function initializes the System Timer and its interrupt, and starts the System Tick Timer.
+	Counter is in free running mode to generate periodic interrupts.
 
-    \param [in]  ticks  Number of ticks between two interrupts.
+	\param [in]  ticks  Number of ticks between two interrupts.
 
-    \return          0  Function succeeded.
-    \return          1  Function failed.
+	\return          0  Function succeeded.
+	\return          1  Function failed.
 
-    \note     When the variable <b>__Vendor_SysTickConfig</b> is set to 1, then the
-    function <b>SysTick_Config</b> is not included. In this case, the file <b><i>device</i>.h</b>
-    must contain a vendor-specific implementation of this function.
+	\note     When the variable <b>__Vendor_SysTickConfig</b> is set to 1, then the
+	function <b>SysTick_Config</b> is not included. In this case, the file <b><i>device</i>.h</b>
+	must contain a vendor-specific implementation of this function.
 
  */
 __STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
@@ -2304,8 +2304,8 @@ __STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
   NVIC_SetPriority (SysTick_IRQn, (1UL << __NVIC_PRIO_BITS) - 1UL); /* set Priority for Systick Interrupt */
   SysTick->VAL   = 0UL;                                             /* Load the SysTick Counter Value */
   SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
-                   SysTick_CTRL_TICKINT_Msk   |
-                   SysTick_CTRL_ENABLE_Msk;                         /* Enable SysTick IRQ and SysTick Timer */
+				   SysTick_CTRL_TICKINT_Msk   |
+				   SysTick_CTRL_ENABLE_Msk;                         /* Enable SysTick IRQ and SysTick Timer */
   return (0UL);                                                     /* Function successful */
 }
 
@@ -2317,8 +2317,8 @@ __STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
 
 /* ##################################### Debug In/Output function ########################################### */
 /** \ingroup  CMSIS_Core_FunctionInterface
-    \defgroup CMSIS_core_DebugFunctions ITM Functions
-    \brief   Functions that access the ITM debug interface.
+	\defgroup CMSIS_core_DebugFunctions ITM Functions
+	\brief   Functions that access the ITM debug interface.
   @{
  */
 
@@ -2328,21 +2328,21 @@ extern volatile int32_t ITM_RxBuffer;                    /*!< External variable 
 
 /** \brief  ITM Send Character
 
-    The function transmits a character via the ITM channel 0, and
-    \li Just returns when no debugger is connected that has booked the output.
-    \li Is blocking when a debugger is connected, but the previous character sent has not been transmitted.
+	The function transmits a character via the ITM channel 0, and
+	\li Just returns when no debugger is connected that has booked the output.
+	\li Is blocking when a debugger is connected, but the previous character sent has not been transmitted.
 
-    \param [in]     ch  Character to transmit.
+	\param [in]     ch  Character to transmit.
 
-    \returns            Character to transmit.
+	\returns            Character to transmit.
  */
 __STATIC_INLINE uint32_t ITM_SendChar (uint32_t ch)
 {
   if (((ITM->TCR & ITM_TCR_ITMENA_Msk) != 0UL) &&      /* ITM enabled */
-      ((ITM->TER & 1UL               ) != 0UL)   )     /* ITM Port #0 enabled */
+	  ((ITM->TER & 1UL               ) != 0UL)   )     /* ITM Port #0 enabled */
   {
-    while (ITM->PORT[0].u32 == 0UL) { __NOP(); }
-    ITM->PORT[0].u8 = (uint8_t)ch;
+	while (ITM->PORT[0].u32 == 0UL) { __NOP(); }
+	ITM->PORT[0].u8 = (uint8_t)ch;
   }
   return (ch);
 }
@@ -2350,17 +2350,17 @@ __STATIC_INLINE uint32_t ITM_SendChar (uint32_t ch)
 
 /** \brief  ITM Receive Character
 
-    The function inputs a character via the external variable \ref ITM_RxBuffer.
+	The function inputs a character via the external variable \ref ITM_RxBuffer.
 
-    \return             Received character.
-    \return         -1  No character pending.
+	\return             Received character.
+	\return         -1  No character pending.
  */
 __STATIC_INLINE int32_t ITM_ReceiveChar (void) {
   int32_t ch = -1;                           /* no character available */
 
   if (ITM_RxBuffer != ITM_RXBUFFER_EMPTY) {
-    ch = ITM_RxBuffer;
-    ITM_RxBuffer = ITM_RXBUFFER_EMPTY;       /* ready for next character */
+	ch = ITM_RxBuffer;
+	ITM_RxBuffer = ITM_RXBUFFER_EMPTY;       /* ready for next character */
   }
 
   return (ch);
@@ -2369,17 +2369,17 @@ __STATIC_INLINE int32_t ITM_ReceiveChar (void) {
 
 /** \brief  ITM Check Character
 
-    The function checks whether a character is pending for reading in the variable \ref ITM_RxBuffer.
+	The function checks whether a character is pending for reading in the variable \ref ITM_RxBuffer.
 
-    \return          0  No character available.
-    \return          1  Character available.
+	\return          0  No character available.
+	\return          1  Character available.
  */
 __STATIC_INLINE int32_t ITM_CheckChar (void) {
 
   if (ITM_RxBuffer == ITM_RXBUFFER_EMPTY) {
-    return (0);                                 /* no character available */
+	return (0);                                 /* no character available */
   } else {
-    return (1);                                 /*    character available */
+	return (1);                                 /*    character available */
   }
 }
 

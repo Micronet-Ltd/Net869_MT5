@@ -56,7 +56,7 @@ extern const IRQn_Type g_mmauIrqId[];
 #if defined(__cplusplus)
 extern "C" {
 #endif
-  
+
 /*!
  * @brief Initializes the MMAU module.
  *
@@ -64,14 +64,14 @@ extern "C" {
  *
  * @param userConfigPtr Pointer to structure of "mmau_config_t".
  * @return Execution status.
- */  
+ */
 mmau_status_t MMAU_DRV_Init(mmau_user_config_t * userConfigPtr);
 
 /*!
  * @brief Deinitializes the MMAU module.
  *
  * This function deinitializes the MMAU module.
- * 
+ *
  * @return Execution status.
  */
 mmau_status_t MMAU_DRV_Deinit(void);

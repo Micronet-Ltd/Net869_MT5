@@ -3,13 +3,14 @@
 #include "command.h"
 #include "control_task.h"
 #include "EXT_GPIOS.h"
+#include "watchdog_mgmt.h"
 
 frame_t g_control_frame;
 frame_t g_j1708_frame;
 
 uint8_t control_data_buffer[32];
 uint8_t j1708_data_buffer[128]; // Maybe overkill 21+checksum is max only while engine is running otherwise it can be bigger.
-
+extern void * a8_watchdog_event_g;
 
 // TODO: required stub functions
 void j1708_xmit(uint8_t * data, uint32_t size)
@@ -45,7 +46,7 @@ int process_receive_slcan(int contex, uint8_t * data, uint32_t size)
 
 
 
-/// BEGIN 
+/// BEGIN
 
 void protocol_init_data()
 {
@@ -113,6 +114,7 @@ static int packet_receive(int context, uint8_t * data, uint32_t size)
 			case PING_REQ:
 				resp.seq = req.seq;
 				resp.pkt_type = PING_RESP;
+				_event_set(a8_watchdog_event_g, WATCHDOG_A8_USB_PINGING_BIT); 
 				send_control_msg(&resp, resp_size);
 				break;
 			case PING_RESP: break;
@@ -191,8 +193,8 @@ int8_t protocol_process_receive_data(uint8_t context, uint8_t * data, uint32_t s
 			frame_reset(frame);
 		}
 	}
-        
-    frame_reset(frame);
+
+	frame_reset(frame);
 
 	// TODO: status return here
 	return 0;

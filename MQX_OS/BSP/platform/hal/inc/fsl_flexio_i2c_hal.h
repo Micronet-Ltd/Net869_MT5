@@ -43,27 +43,27 @@
  */
 
 /*!
- * @brief Define structure of configuring the flexio i2c device. 
+ * @brief Define structure of configuring the flexio i2c device.
  */
 typedef struct FlexioI2cDev
 {
-    FLEXIO_Type * flexioBase; /*!< FlexIO module base pointer. */
-    
-    uint32_t sdaPinIdx;       /*!< Pin index for I2C SDA in FlexIO. */
-    uint32_t sckPinIdx;       /*!< Pin index for I2C SCK in FlexIO. */
+	FLEXIO_Type * flexioBase; /*!< FlexIO module base pointer. */
 
-    uint32_t shifterIdx[2];   /*!< Shifter index used for I2C in FlexIO. */
-    uint32_t timerIdx[2];     /*!< Timer index used for I2C in FlexIO. */
+	uint32_t sdaPinIdx;       /*!< Pin index for I2C SDA in FlexIO. */
+	uint32_t sckPinIdx;       /*!< Pin index for I2C SCK in FlexIO. */
+
+	uint32_t shifterIdx[2];   /*!< Shifter index used for I2C in FlexIO. */
+	uint32_t timerIdx[2];     /*!< Timer index used for I2C in FlexIO. */
 } flexio_i2c_dev_t;
 
 /*!
- * @brief Define structure of configuring the flexio i2c bus for master. 
+ * @brief Define structure of configuring the flexio i2c bus for master.
  */
 typedef struct FlexioI2cMasterConfig
 {
-    uint32_t flexioBusClk;  /*!< FlexIO bus clock frequency in Hz. */
-    uint32_t baudrate;		/*!< I2C xfer bandrate in bps. */
-    uint32_t xferWordCount; /*!< Word count for one transfer frame. */
+	uint32_t flexioBusClk;  /*!< FlexIO bus clock frequency in Hz. */
+	uint32_t baudrate;		/*!< I2C xfer bandrate in bps. */
+	uint32_t xferWordCount; /*!< Word count for one transfer frame. */
 } flexio_i2c_master_config_t;
 
 #if defined(__cplusplus)
@@ -283,4 +283,3 @@ void FLEXIO_I2C_HAL_ConfigSendAck(flexio_i2c_dev_t *devPtr);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

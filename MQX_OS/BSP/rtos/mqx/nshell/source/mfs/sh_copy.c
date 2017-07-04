@@ -67,90 +67,90 @@ int32_t  Shell_copy(int32_t argc, char *argv[] )
 
    if (!print_usage)
    {
-      if (argc != 3)
-      {
-         fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage=TRUE;
-      }
-      /* check if filesystem is mounted */
-      else if (0 > Shell_get_current_filesystem(argv))
-      {
-         fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n");
-         return_code = SHELL_EXIT_ERROR;
-      }
-      else if (MFS_alloc_path(&abs_path) != MFS_NO_ERROR)
-      {
-         fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
-         return_code = SHELL_EXIT_ERROR;
-      }
-      else
-      {
-         error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[1],PATHNAME_SIZE,shell_ptr->CURRENT_DEVICE_NAME);
-         if(!error)
-         {
-             in_fd = open(abs_path, O_RDONLY);
-         }
+	  if (argc != 3)
+	  {
+		 fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage=TRUE;
+	  }
+	  /* check if filesystem is mounted */
+	  else if (0 > Shell_get_current_filesystem(argv))
+	  {
+		 fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n");
+		 return_code = SHELL_EXIT_ERROR;
+	  }
+	  else if (MFS_alloc_path(&abs_path) != MFS_NO_ERROR)
+	  {
+		 fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
+		 return_code = SHELL_EXIT_ERROR;
+	  }
+	  else
+	  {
+		 error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[1],PATHNAME_SIZE,shell_ptr->CURRENT_DEVICE_NAME);
+		 if(!error)
+		 {
+			 in_fd = open(abs_path, O_RDONLY);
+		 }
 
-         if (0 > in_fd || error)  {
-             fprintf(shell_ptr->STDOUT, "Error, unable to open source file\n" );
-             return_code = SHELL_EXIT_ERROR;
-         } else {
-            error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[2],PATHNAME_SIZE,shell_ptr->CURRENT_DEVICE_NAME);
-            if(!error)
-            {
-                out_fd = open(abs_path, O_WRONLY | O_CREAT);
-            }
-            if (0 > out_fd || error)  {
-               fprintf(shell_ptr->STDOUT, "Error, unable to create destination file\n" );
-               return_code = SHELL_EXIT_ERROR;
-            } else {
-               MFS_free_path(abs_path);
-               abs_path = NULL;
+		 if (0 > in_fd || error)  {
+			 fprintf(shell_ptr->STDOUT, "Error, unable to open source file\n" );
+			 return_code = SHELL_EXIT_ERROR;
+		 } else {
+			error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[2],PATHNAME_SIZE,shell_ptr->CURRENT_DEVICE_NAME);
+			if(!error)
+			{
+				out_fd = open(abs_path, O_WRONLY | O_CREAT);
+			}
+			if (0 > out_fd || error)  {
+			   fprintf(shell_ptr->STDOUT, "Error, unable to create destination file\n" );
+			   return_code = SHELL_EXIT_ERROR;
+			} else {
+			   MFS_free_path(abs_path);
+			   abs_path = NULL;
 
-               do {
-                  copybuffer = _mem_alloc(copysize);
-                  if (copybuffer != NULL) break;
-                  else copysize >>= 1;
-               } while (copysize >= MIN_COPY_BLOCK_SIZE);
+			   do {
+				  copybuffer = _mem_alloc(copysize);
+				  if (copybuffer != NULL) break;
+				  else copysize >>= 1;
+			   } while (copysize >= MIN_COPY_BLOCK_SIZE);
 
-               if (copybuffer == NULL)
-               {
-                   char ch;
-                   fprintf(shell_ptr->STDOUT, "Warning, unable to allocate copy buffer, copy will be slower\n" );
+			   if (copybuffer == NULL)
+			   {
+				   char ch;
+				   fprintf(shell_ptr->STDOUT, "Warning, unable to allocate copy buffer, copy will be slower\n" );
 
-                   while (0 < read(in_fd, &ch, sizeof(ch))) {
-                       write(out_fd, &ch, sizeof(ch));
-                   }
-               }
-               else {
-                  do {
-                     size = read(in_fd, copybuffer, copysize);
-                     if (size > 0) {
-                        wsize = write(out_fd, copybuffer, size);
-                     }
-                     else
-                        break;
-                  } while (wsize == size);
-               }
-            }
-         }
-         if (abs_path) MFS_free_path(abs_path);
-         if (copybuffer) _mem_free(copybuffer);
-         if (0 <= in_fd) close(in_fd);
-         if (0 <= out_fd) close(out_fd);
-      }
+				   while (0 < read(in_fd, &ch, sizeof(ch))) {
+					   write(out_fd, &ch, sizeof(ch));
+				   }
+			   }
+			   else {
+				  do {
+					 size = read(in_fd, copybuffer, copysize);
+					 if (size > 0) {
+						wsize = write(out_fd, copybuffer, size);
+					 }
+					 else
+						break;
+				  } while (wsize == size);
+			   }
+			}
+		 }
+		 if (abs_path) MFS_free_path(abs_path);
+		 if (copybuffer) _mem_free(copybuffer);
+		 if (0 <= in_fd) close(in_fd);
+		 if (0 <= out_fd) close(out_fd);
+	  }
    }
 
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <source> <dest> \n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <source> <dest>\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <source> = source file to copy\n");
-         fprintf(shell_ptr->STDOUT, "   <dest>   = name of new file\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <source> <dest> \n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <source> <dest>\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <source> = source file to copy\n");
+		 fprintf(shell_ptr->STDOUT, "   <dest>   = name of new file\n");
+	  }
    }
    return return_code;
 } /* Endbody */

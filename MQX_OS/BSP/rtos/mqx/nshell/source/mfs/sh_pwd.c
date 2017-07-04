@@ -50,34 +50,34 @@ int32_t  Shell_pwd(int32_t argc, char *argv[] )
    bool                    print_usage, shorthelp = FALSE;
    int32_t                 error = 0, return_code = SHELL_EXIT_SUCCESS;
    int fs;
-   SHELL_CONTEXT_PTR          shell_ptr = Shell_get_context( argv );    
+   SHELL_CONTEXT_PTR          shell_ptr = Shell_get_context( argv );
 
-   
+
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc >  1) {
-         fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage=TRUE;
-      } else   {
-         fs = Shell_get_current_filesystem(argv);
-         if (0 > fs)  {
-            fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n" );
-            return_code = SHELL_EXIT_ERROR;
-         } else  {
-            fprintf(shell_ptr->STDOUT, "%s%s\n", shell_ptr->CURRENT_DEVICE_NAME, shell_ptr->CURRENT_DIR);
-         }
-      }
+	  if (argc >  1) {
+		 fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage=TRUE;
+	  } else   {
+		 fs = Shell_get_current_filesystem(argv);
+		 if (0 > fs)  {
+			fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n" );
+			return_code = SHELL_EXIT_ERROR;
+		 } else  {
+			fprintf(shell_ptr->STDOUT, "%s%s\n", shell_ptr->CURRENT_DEVICE_NAME, shell_ptr->CURRENT_DIR);
+		 }
+	  }
    }
-      
-      
+
+
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s \n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s \n", argv[0]);
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s \n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s \n", argv[0]);
+	  }
    }
    return return_code;
 }

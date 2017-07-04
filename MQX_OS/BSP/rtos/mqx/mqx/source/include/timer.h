@@ -37,13 +37,13 @@
 /*--------------------------------------------------------------------------*/
 /*                        CONSTANT DEFINITIONS                              */
 
-/* 
- * This mode tells the timer to use the elapsed time when calculating time 
+/*
+ * This mode tells the timer to use the elapsed time when calculating time
  * (_time_get_elapsed)
  */
 #define TIMER_ELAPSED_TIME_MODE       (1)
 
-/* 
+/*
  * This mode tells the timer to use the actual time when calculating time
  * (_time_get)  Note that the time returned by _time_get can be modified
  * by _time_set.
@@ -87,19 +87,19 @@ extern _mqx_uint  _timer_cancel(_timer_id);
 extern _mqx_uint  _timer_create_component(_mqx_uint, _mqx_uint);
 extern _timer_id  _timer_start_oneshot_after(
    TIMER_NOTIFICATION_TIME_FPTR, void *, _mqx_uint, uint32_t);
-extern _timer_id  _timer_start_oneshot_at( 
-   TIMER_NOTIFICATION_TIME_FPTR, void *, _mqx_uint, TIME_STRUCT_PTR);        
-extern _timer_id  _timer_start_periodic_every( 
-   TIMER_NOTIFICATION_TIME_FPTR, void *, _mqx_uint, uint32_t);        
-extern _timer_id  _timer_start_periodic_at( 
+extern _timer_id  _timer_start_oneshot_at(
+   TIMER_NOTIFICATION_TIME_FPTR, void *, _mqx_uint, TIME_STRUCT_PTR);
+extern _timer_id  _timer_start_periodic_every(
+   TIMER_NOTIFICATION_TIME_FPTR, void *, _mqx_uint, uint32_t);
+extern _timer_id  _timer_start_periodic_at(
    TIMER_NOTIFICATION_TIME_FPTR, void *, _mqx_uint, TIME_STRUCT_PTR, uint32_t);
 extern _timer_id  _timer_start_oneshot_after_ticks(
    TIMER_NOTIFICATION_TICK_FPTR, void *, _mqx_uint, MQX_TICK_STRUCT_PTR);
-extern _timer_id  _timer_start_oneshot_at_ticks( 
-   TIMER_NOTIFICATION_TICK_FPTR, void *, _mqx_uint, MQX_TICK_STRUCT_PTR);        
-extern _timer_id  _timer_start_periodic_every_ticks( 
-   TIMER_NOTIFICATION_TICK_FPTR, void *, _mqx_uint, MQX_TICK_STRUCT_PTR);        
-extern _timer_id  _timer_start_periodic_at_ticks( 
+extern _timer_id  _timer_start_oneshot_at_ticks(
+   TIMER_NOTIFICATION_TICK_FPTR, void *, _mqx_uint, MQX_TICK_STRUCT_PTR);
+extern _timer_id  _timer_start_periodic_every_ticks(
+   TIMER_NOTIFICATION_TICK_FPTR, void *, _mqx_uint, MQX_TICK_STRUCT_PTR);
+extern _timer_id  _timer_start_periodic_at_ticks(
    TIMER_NOTIFICATION_TICK_FPTR, void *, _mqx_uint,
    MQX_TICK_STRUCT_PTR, MQX_TICK_STRUCT_PTR);
 extern _mqx_uint  _timer_test(void **);

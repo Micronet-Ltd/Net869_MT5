@@ -27,17 +27,17 @@
 
 /*!
  * \brief This function converts milliseconds into ticks
- * 
+ *
  * \param[in] msecs The number of milliseconds to convert
  * \param[out] tick_ptr Pointer to tick structure where the result will be stored
  */
 void _psp_msecs_to_ticks
    (
-       /* [IN] The number of milliseconds to convert */
-       _mqx_uint           msecs,
+	   /* [IN] The number of milliseconds to convert */
+	   _mqx_uint           msecs,
 
-       /* [OUT] Pointer to tick structure where the result will be stored */
-       PSP_TICK_STRUCT_PTR tick_ptr
+	   /* [OUT] Pointer to tick structure where the result will be stored */
+	   PSP_TICK_STRUCT_PTR tick_ptr
    )
 { /* Body */
    uint64_t                tmp;
@@ -59,4 +59,3 @@ void _psp_msecs_to_ticks
 } /* Endbody */
 
 /* EOF */
-

@@ -4,14 +4,14 @@
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the <organization> nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -39,8 +39,8 @@
 
 /************************** CHANGES *************************************
 1.1.GA      09.25.2014      FPT Team      First version of SDK C90TFS flash driver
-                                          inherited from BM C90TFS flash driver v1.02
-                                          (08.04.2014, FPT Team)
+										  inherited from BM C90TFS flash driver v1.02
+										  (08.04.2014, FPT Team)
 *************************************************************************/
 /* include the header files */
 #include "SSD_FTFx.h"
@@ -58,7 +58,7 @@
 
 /* declare prototype */
 uint32_t WaitEEWriteToFinish(PFLASH_SSD_CONFIG pSSDConfig, uint32_t* dest,\
-                             uint32_t* size, uint8_t** pData, uint8_t step);
+							 uint32_t* size, uint8_t** pData, uint8_t step);
 
 /* Enable size optimization */
 #if(ARM_CORTEX_M != CPU_CORE)
@@ -67,109 +67,109 @@ uint32_t WaitEEWriteToFinish(PFLASH_SSD_CONFIG pSSDConfig, uint32_t* dest,\
 #endif /* End of CPU_CORE */
 
 uint32_t SIZE_OPTIMIZATION WaitEEWriteToFinish(PFLASH_SSD_CONFIG pSSDConfig, uint32_t* dest,\
-                             uint32_t* size, uint8_t** pData, uint8_t step)
+							 uint32_t* size, uint8_t** pData, uint8_t step)
 {
-    uint32_t ret;           /* return code variable */
-    uint32_t temp;          /* temporary variable */
+	uint32_t ret;           /* return code variable */
+	uint32_t temp;          /* temporary variable */
 
-    if (0x01U == step)
-    {
-        WRITE8(*dest, READ8(*pData));
-    }
-    if (0x02U == step)
-    {
+	if (0x01U == step)
+	{
+		WRITE8(*dest, READ8(*pData));
+	}
+	if (0x02U == step)
+	{
 #if(BIG_ENDIAN == ENDIANNESS)
-        temp = (uint32_t)READ8(*pData) << 8;
-        temp |= (uint32_t)(READ8(*pData + 1));
+		temp = (uint32_t)READ8(*pData) << 8;
+		temp |= (uint32_t)(READ8(*pData + 1));
 #else
-        temp = (uint32_t)READ8(*pData + 1) << 8;
-        temp |= (uint32_t)(READ8(*pData));
+		temp = (uint32_t)READ8(*pData + 1) << 8;
+		temp |= (uint32_t)(READ8(*pData));
 #endif
-        WRITE16(BYTE2WORD(*dest), (uint16_t)temp);
-    }
-    if (0x04U == step)
-    {
+		WRITE16(BYTE2WORD(*dest), (uint16_t)temp);
+	}
+	if (0x04U == step)
+	{
 #if(BIG_ENDIAN == ENDIANNESS)
-        temp = (uint32_t)READ8(*pData) << 24;
-        temp |= (uint32_t)(READ8(*pData + 1)) << 16;
-        temp |= (uint32_t)(READ8(*pData + 2)) << 8;
-        temp |= (uint32_t)(READ8(*pData + 3));
+		temp = (uint32_t)READ8(*pData) << 24;
+		temp |= (uint32_t)(READ8(*pData + 1)) << 16;
+		temp |= (uint32_t)(READ8(*pData + 2)) << 8;
+		temp |= (uint32_t)(READ8(*pData + 3));
 #else
-        temp = (uint32_t)READ8(*pData + 3) << 24;
-        temp |= (uint32_t)(READ8(*pData + 2)) << 16;
-        temp |= (uint32_t)(READ8(*pData + 1)) << 8;
-        temp |= (uint32_t)READ8(*pData);
+		temp = (uint32_t)READ8(*pData + 3) << 24;
+		temp |= (uint32_t)(READ8(*pData + 2)) << 16;
+		temp |= (uint32_t)(READ8(*pData + 1)) << 8;
+		temp |= (uint32_t)READ8(*pData);
 #endif
-        WRITE32(BYTE2WORD(*dest), (uint32_t)temp);
-    }
+		WRITE32(BYTE2WORD(*dest), (uint32_t)temp);
+	}
 
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FCNFG_OFFSET;
-    while(0x0U == REG_BIT_GET(temp, FTFx_SSD_FCNFG_EEERDY))
-    {
-       /* wait till EEERDY bit is set */
-    }
-    /* Check for protection violation error */
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FSTAT_OFFSET;
-    ret = (uint32_t)REG_READ(temp) & FTFx_SSD_FSTAT_FPVIOL;
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FCNFG_OFFSET;
+	while(0x0U == REG_BIT_GET(temp, FTFx_SSD_FCNFG_EEERDY))
+	{
+	   /* wait till EEERDY bit is set */
+	}
+	/* Check for protection violation error */
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FSTAT_OFFSET;
+	ret = (uint32_t)REG_READ(temp) & FTFx_SSD_FSTAT_FPVIOL;
 
-    *dest += step;
-    *size -= step;
-    *pData += step;
+	*dest += step;
+	*size -= step;
+	*pData += step;
 
-    return ret;
+	return ret;
 }
 
 uint32_t SIZE_OPTIMIZATION EEEWrite(PFLASH_SSD_CONFIG pSSDConfig, \
-                           uint32_t dest, \
-                           uint32_t size, \
-                           uint8_t* pData)
+						   uint32_t dest, \
+						   uint32_t size, \
+						   uint8_t* pData)
 {
-    uint32_t ret = FTFx_OK;           /* Return code variable */
-    uint32_t temp;                    /* variable temp */
-    /* convert to byte address */
-    dest = WORD2BYTE(dest);
-    /* Check if EEE is enabled */
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FCNFG_OFFSET;
-    if(REG_READ(temp) & FTFx_SSD_FCNFG_EEERDY)
-    {
-        /* check range */
-       if((dest < WORD2BYTE(pSSDConfig->EERAMBase)) || \
-          ((dest + size) > (WORD2BYTE(pSSDConfig->EERAMBase) + pSSDConfig->EEESize)))
-        {
-            ret = FTFx_ERR_RANGE;
-        }
+	uint32_t ret = FTFx_OK;           /* Return code variable */
+	uint32_t temp;                    /* variable temp */
+	/* convert to byte address */
+	dest = WORD2BYTE(dest);
+	/* Check if EEE is enabled */
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FCNFG_OFFSET;
+	if(REG_READ(temp) & FTFx_SSD_FCNFG_EEERDY)
+	{
+		/* check range */
+	   if((dest < WORD2BYTE(pSSDConfig->EERAMBase)) || \
+		  ((dest + size) > (WORD2BYTE(pSSDConfig->EERAMBase) + pSSDConfig->EEESize)))
+		{
+			ret = FTFx_ERR_RANGE;
+		}
 
-        while ((size > 0x0U) && (ret == FTFx_OK))
-        {
+		while ((size > 0x0U) && (ret == FTFx_OK))
+		{
 
-            /* dest is 32bit-aligned and size is not less than 4 */
-            if ((!(dest & 0x03U)) && (size >= 0x04U))
-            {
-                ret = WaitEEWriteToFinish(pSSDConfig, &dest, &size, &pData, 0x04U);
-            }
-            else  if ((!(dest & 0x1U)) && (size >= 0x02U))
-            {
-                ret = WaitEEWriteToFinish(pSSDConfig, &dest, &size, &pData, 0x02U);
-            }
-            else
-            {
-                ret = WaitEEWriteToFinish(pSSDConfig, &dest, &size, &pData, 0x01U);
-            }
-        }
-    }
-    else
-    {
-        ret = FTFx_ERR_NOEEE;
-    }
+			/* dest is 32bit-aligned and size is not less than 4 */
+			if ((!(dest & 0x03U)) && (size >= 0x04U))
+			{
+				ret = WaitEEWriteToFinish(pSSDConfig, &dest, &size, &pData, 0x04U);
+			}
+			else  if ((!(dest & 0x1U)) && (size >= 0x02U))
+			{
+				ret = WaitEEWriteToFinish(pSSDConfig, &dest, &size, &pData, 0x02U);
+			}
+			else
+			{
+				ret = WaitEEWriteToFinish(pSSDConfig, &dest, &size, &pData, 0x01U);
+			}
+		}
+	}
+	else
+	{
+		ret = FTFx_ERR_NOEEE;
+	}
 
 #if C90TFS_ENABLE_DEBUG
-    /* Enter Debug state if enabled */
-    if (TRUE == (pSSDConfig->DebugEnable))
-    {
-        ENTER_DEBUG_MODE;
-    }
+	/* Enter Debug state if enabled */
+	if (TRUE == (pSSDConfig->DebugEnable))
+	{
+		ENTER_DEBUG_MODE;
+	}
 #endif
-    return(ret);
+	return(ret);
 }
 #endif /* of DEBLOCK_SIZE */
 /* end of file */

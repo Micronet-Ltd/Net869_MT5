@@ -38,10 +38,10 @@
 
 int _buf_write(const unsigned char *s, int count, FILE* stream)
 {
-    int result;
-    result = _WRITE(stream->_FD, s, count);
+	int result;
+	result = _WRITE(stream->_FD, s, count);
 
-    return result;
+	return result;
 }
 /*!
  * \brief This function read from a stream.
@@ -53,48 +53,48 @@ int _buf_write(const unsigned char *s, int count, FILE* stream)
  */
 int _buf_read(unsigned char *s, int count, FILE* stream)
 {
-    int result = 0, rv;
+	int result = 0, rv;
 
-    /* If byte in buffer is valid for read */
-    if (stream->_MODE & _MODE_UC)
-    {
-        stream->_MODE &= ~_MODE_UC;
-        *s = *stream->_BUF;
-        s++;
-        result++;
-        count--;
-    }
-    /* Check if cr flag is set. */
-    if (count && ( stream->_MODE & _MODE_LASTCR))
-    {
-        /* Clear flag */
-        stream->_MODE &= ~_MODE_LASTCR;
-        /* read next byte if it is not \n (lf) */
-        rv = _READ(stream->_FD, s, 1);
-        if (0 > rv)
-        {
-            return rv;
-        }
-        /* If read char is not LF than accept this character */
-        if ('\n' != s[0])
-        {
-            s++;
-            result++;
-            count--;
-        }
-    }
-    /* read count characters */
-    if (count)
-    {
-        rv = _READ(stream->_FD, s, count);
-        if (0 > rv)
-        {
-            return rv;
-        }
-        result += rv;
-    }
+	/* If byte in buffer is valid for read */
+	if (stream->_MODE & _MODE_UC)
+	{
+		stream->_MODE &= ~_MODE_UC;
+		*s = *stream->_BUF;
+		s++;
+		result++;
+		count--;
+	}
+	/* Check if cr flag is set. */
+	if (count && ( stream->_MODE & _MODE_LASTCR))
+	{
+		/* Clear flag */
+		stream->_MODE &= ~_MODE_LASTCR;
+		/* read next byte if it is not \n (lf) */
+		rv = _READ(stream->_FD, s, 1);
+		if (0 > rv)
+		{
+			return rv;
+		}
+		/* If read char is not LF than accept this character */
+		if ('\n' != s[0])
+		{
+			s++;
+			result++;
+			count--;
+		}
+	}
+	/* read count characters */
+	if (count)
+	{
+		rv = _READ(stream->_FD, s, count);
+		if (0 > rv)
+		{
+			return rv;
+		}
+		result += rv;
+	}
 
-    return result;
+	return result;
 }
 
 /*!
@@ -107,9 +107,9 @@ int _buf_read(unsigned char *s, int count, FILE* stream)
  */
 int _buf_flush(FILE* stream)
 {
-    /* flush can be implemented in ioctl or writte zero bytes from NULL buffer. we deal to implement write method because ioctl functionality is not available on all drivers */
-    _WRITE(stream->_FD, NULL, 0);
-    return 0;
+	/* flush can be implemented in ioctl or writte zero bytes from NULL buffer. we deal to implement write method because ioctl functionality is not available on all drivers */
+	_WRITE(stream->_FD, NULL, 0);
+	return 0;
 }
 
 /*!
@@ -122,16 +122,16 @@ int _buf_flush(FILE* stream)
  */
 int _buf_unget_byte(unsigned char c, FILE* stream)
 {
-    /* If byte in buffer is valid */
-    if (stream->_MODE & _MODE_UC)
-    {
-        return EOF;
-    }
-    /* If buffer is empty */
-    *stream->_BUF = c;
-    // stream->_MODE |= _MODE_CWVAL;
-    stream->_MODE |= _MODE_UC;
-    return 0;
+	/* If byte in buffer is valid */
+	if (stream->_MODE & _MODE_UC)
+	{
+		return EOF;
+	}
+	/* If buffer is empty */
+	*stream->_BUF = c;
+	// stream->_MODE |= _MODE_CWVAL;
+	stream->_MODE |= _MODE_UC;
+	return 0;
 }
 
 /*!
@@ -145,16 +145,16 @@ int _buf_unget_byte(unsigned char c, FILE* stream)
 int _buf_set_pos(FILE *stream, long int offset, int whence)
 {
 
-    if ((SEEK_CUR == whence) && (stream->_MODE & _MODE_UC))
-    {
-        offset--;
-    }
-    if (0 > _LSEEK(stream->_FD, (_nio_off_t)offset, whence))
-    {
-        return -1;
-    }
+	if ((SEEK_CUR == whence) && (stream->_MODE & _MODE_UC))
+	{
+		offset--;
+	}
+	if (0 > _LSEEK(stream->_FD, (_nio_off_t)offset, whence))
+	{
+		return -1;
+	}
 
-    return 0;
+	return 0;
 }
 /*!
  * \brief
@@ -166,13 +166,13 @@ int _buf_set_pos(FILE *stream, long int offset, int whence)
  */
 long _buf_get_pos(FILE *stream)
 {
-    long offset;
+	long offset;
 
-    offset = (long) _LSEEK(stream->_FD, 0, SEEK_CUR);
-    if (-1 == offset)
-    {
-        return offset;
-    }
+	offset = (long) _LSEEK(stream->_FD, 0, SEEK_CUR);
+	if (-1 == offset)
+	{
+		return offset;
+	}
 
-    return (stream->_MODE & _MODE_UC)? (offset - 1): offset;
+	return (stream->_MODE & _MODE_UC)? (offset - 1): offset;
 }

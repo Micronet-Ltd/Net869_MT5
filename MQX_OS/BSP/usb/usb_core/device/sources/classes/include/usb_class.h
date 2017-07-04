@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2008, 2013 - 2015 Freescale Semiconductor;
 * All Rights Reserved
 *
 * Copyright (c) 1989-2008 ARC International;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
 *
 * $FileName: usb_class.h$
-* $Version : 
-* $Date    : 
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -48,22 +48,22 @@
 /******************************************************************************
  * Macro's
  *****************************************************************************/
- /*#define DELAYED_PROCESSING  1 This define is used to delay the control 
-                                processing and not have it executed as part
-                                of the interrupt routine */
+ /*#define DELAYED_PROCESSING  1 This define is used to delay the control
+								processing and not have it executed as part
+								of the interrupt routine */
 
-//#define UNINITIALISED_VAL        (0xffffffff)  
+//#define UNINITIALISED_VAL        (0xffffffff)
 /* Events to the Application */
 /*
 #define USB_APP_BUS_RESET           (0)
 #define USB_APP_CONFIG_CHANGED      (1)
 #define USB_APP_ENUM_COMPLETE       (2)
 #define USB_APP_SEND_COMPLETE       (3)
-#define USB_APP_DATA_RECEIVED       (4) 
+#define USB_APP_DATA_RECEIVED       (4)
 #define USB_APP_ERROR               (5)
 #define USB_APP_GET_DATA_BUFF       (6)
 #define USB_APP_EP_STALLED          (7)
-#define USB_APP_EP_UNSTALLED        (8) 
+#define USB_APP_EP_UNSTALLED        (8)
 #define USB_APP_GET_TRANSFER_SIZE   (9)
 */
 
@@ -74,17 +74,17 @@ typedef uint32_t class_handle_t;
 
 /*callback function pointer structure for application to provide class params*/
 typedef uint8_t (_CODE_PTR_ usb_class_specific_handler_func)(
-                           uint8_t event,
-                           uint16_t value, 
-                           uint8_t **data,
-                           uint32_t* size,
-                           void* arg);
+						   uint8_t event,
+						   uint16_t value,
+						   uint8_t **data,
+						   uint32_t* size,
+						   void* arg);
 
 
 typedef struct usb_class_specific_handler_callback_struct
 {
-    usb_class_specific_handler_func  callback;
-    void*                            arg;
+	usb_class_specific_handler_func  callback;
+	void*                            arg;
 }usb_class_specific_callback_struct_t;
 
 /* Define function type for class device instance initialization */
@@ -101,7 +101,7 @@ typedef usb_status (_CODE_PTR_ device_class_request_callback) (usb_setup_struct_
  * Global Functions
  *****************************************************************************/
 #if defined(__cplusplus)
-    extern "C" {
+	extern "C" {
 #endif
 /**************************************************************************//*!
  *
@@ -117,7 +117,7 @@ typedef usb_status (_CODE_PTR_ device_class_request_callback) (usb_setup_struct_
 extern void USB_Class_Periodic_Task(void);
 
 #if defined(__cplusplus)
-    }
+	}
 #endif
 
 #endif

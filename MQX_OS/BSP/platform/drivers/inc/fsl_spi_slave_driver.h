@@ -57,14 +57,14 @@ extern const IRQn_Type g_spiIrqId[SPI_INSTANCE_COUNT];
  *  @internal gui name="Slave configuration" id="spiSlaveCfg"
  */
 typedef struct SPISlaveUserConfig {
-    spi_clock_phase_t phase;                    /*!< Clock phase setting. @internal gui name="Phase" id="SlavePhase" */
-    spi_clock_polarity_t polarity;              /*!< Clock polarity setting. @internal gui name="Polarity" id="SlavePolarity" */
-    spi_shift_direction_t direction;            /*!< Either LSB or MSB first.@internal gui name="Direction" id="SlaveDirection" */
-    /* 16-bit support related members */
+	spi_clock_phase_t phase;                    /*!< Clock phase setting. @internal gui name="Phase" id="SlavePhase" */
+	spi_clock_polarity_t polarity;              /*!< Clock polarity setting. @internal gui name="Polarity" id="SlavePolarity" */
+	spi_shift_direction_t direction;            /*!< Either LSB or MSB first.@internal gui name="Direction" id="SlaveDirection" */
+	/* 16-bit support related members */
 #if FSL_FEATURE_SPI_16BIT_TRANSFERS
-    spi_data_bitcount_mode_t bitCount;          /*!< Number of bits (8 or 16) in a transfer @internal gui name="Bit count" id="SlaveBitCount" */
+	spi_data_bitcount_mode_t bitCount;          /*!< Number of bits (8 or 16) in a transfer @internal gui name="Bit count" id="SlaveBitCount" */
 #endif
-    uint16_t dummyPattern;                      /*!< Dummy data value @internal gui name="Data pattern" id="dummyValue" */
+	uint16_t dummyPattern;                      /*!< Dummy data value @internal gui name="Data pattern" id="dummyValue" */
 } spi_slave_user_config_t;
 
 /*!
@@ -76,17 +76,17 @@ typedef struct SPISlaveUserConfig {
  * the members.
  */
 typedef struct SPISlaveState {
-    spi_status_t status;                        /*!< Current state of slave */
-    event_t event;                              /*!< Event to notify waiting task */
-    uint16_t errorCount;                        /*!< Driver error count */
-    uint32_t dummyPattern;                      /*!< Dummy data is sent when there is no data in the transmit buffer */
-    volatile bool isTransferInProgress;         /*!< True if there is an active transfer.*/
-    const uint8_t * sendBuffer;        /*!< Pointer to transmit buffer */
-    uint8_t * receiveBuffer;           /*!< Pointer to receive buffer */
-    volatile int32_t remainingSendByteCount;    /*!< Number of bytes remaining to send.*/
-    volatile int32_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
-    volatile int32_t transferredByteCount;      /*!< Number of bytes transferred so far.*/
-    bool isSync;                                /*!< Indicates the function call is sync or a-sync */
+	spi_status_t status;                        /*!< Current state of slave */
+	event_t event;                              /*!< Event to notify waiting task */
+	uint16_t errorCount;                        /*!< Driver error count */
+	uint32_t dummyPattern;                      /*!< Dummy data is sent when there is no data in the transmit buffer */
+	volatile bool isTransferInProgress;         /*!< True if there is an active transfer.*/
+	const uint8_t * sendBuffer;        /*!< Pointer to transmit buffer */
+	uint8_t * receiveBuffer;           /*!< Pointer to receive buffer */
+	volatile int32_t remainingSendByteCount;    /*!< Number of bytes remaining to send.*/
+	volatile int32_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
+	volatile int32_t transferredByteCount;      /*!< Number of bytes transferred so far.*/
+	bool isSync;                                /*!< Indicates the function call is sync or a-sync */
 } spi_slave_state_t;
 
 /*******************************************************************************
@@ -119,8 +119,8 @@ extern "C" {
  */
 
 spi_status_t SPI_DRV_SlaveInit(uint32_t instance,
-                               spi_slave_state_t * spiState,
-                               const spi_slave_user_config_t * slaveConfig);
+							   spi_slave_state_t * spiState,
+							   const spi_slave_user_config_t * slaveConfig);
 
 /*!
  * @brief Shuts down an SPI instance interrupt mechanism.
@@ -164,10 +164,10 @@ spi_status_t SPI_DRV_SlaveDeinit(uint32_t instance);
  *          kStatus_SPI_Timeout if time out reached while transferring is in progress.
  */
 spi_status_t SPI_DRV_SlaveTransferBlocking(uint32_t instance,
-                                           const uint8_t *sendBuffer,
-                                           uint8_t *receiveBuffer,
-                                           uint32_t transferByteCount,
-                                           uint32_t timeout);
+										   const uint8_t *sendBuffer,
+										   uint8_t *receiveBuffer,
+										   uint32_t transferByteCount,
+										   uint32_t timeout);
 
 /*@}*/
 
@@ -197,9 +197,9 @@ spi_status_t SPI_DRV_SlaveTransferBlocking(uint32_t instance,
  *                  available.
  */
 spi_status_t SPI_DRV_SlaveTransfer(uint32_t instance,
-                                   const uint8_t *sendBuffer,
-                                   uint8_t *receiveBuffer,
-                                   uint32_t transferByteCount);
+								   const uint8_t *sendBuffer,
+								   uint8_t *receiveBuffer,
+								   uint32_t transferByteCount);
 
 /*!
  * @brief Aborts the transfer that started by a non-blocking call transfer function.
@@ -232,7 +232,7 @@ spi_status_t SPI_DRV_SlaveAbortTransfer(uint32_t instance);
  *         is filled with the number of words that have been transferred so far.
  */
 spi_status_t SPI_DRV_SlaveGetTransferStatus(uint32_t instance,
-                                            uint32_t * framesTransferred);
+											uint32_t * framesTransferred);
 
 /*!
  * @brief SPI Slave Generic IRQ handler.
@@ -254,4 +254,3 @@ void SPI_DRV_SlaveIRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

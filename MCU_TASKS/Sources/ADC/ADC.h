@@ -18,8 +18,8 @@ typedef enum {
 	kADC_POWER_VCAP	   ,
 	kADC_TEMPERATURE   ,
 	kADC_CABLE_TYPE	   ,
-    
-    kADC_POWER_IN_ISR   ,
+
+	kADC_POWER_IN_ISR   ,
 	kADC_CHANNELS
 } KADC_CHANNELS_t;
 
@@ -45,4 +45,3 @@ extern "C"
 #endif
 
 #endif /* _OBC_ADC_H */
-	

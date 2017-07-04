@@ -41,7 +41,7 @@ static cmp_state_t * volatile g_cmpStatePtr[CMP_INSTANCE_COUNT];
 /*FUNCTION*********************************************************************
  *
  * Function Name : CMP_DRV_StructInitUserConfigDefault
- * Description   :  Fill initial user configuration for default setting. 
+ * Description   :  Fill initial user configuration for default setting.
  * The default setting will make the CMP module at least to be an comparator.
  * It includes the setting of :
  *     .hystersisMode = kCmpHystersisOfLevel0
@@ -59,30 +59,30 @@ static cmp_state_t * volatile g_cmpStatePtr[CMP_INSTANCE_COUNT];
  *
  *END*************************************************************************/
 cmp_status_t CMP_DRV_StructInitUserConfigDefault(cmp_comparator_config_t *userConfigPtr,
-    cmp_chn_mux_mode_t plusInput, cmp_chn_mux_mode_t minusInput)
+	cmp_chn_mux_mode_t plusInput, cmp_chn_mux_mode_t minusInput)
 {
-    if (!userConfigPtr)
-    {
-        return kStatus_CMP_InvalidArgument;
-    }
+	if (!userConfigPtr)
+	{
+		return kStatus_CMP_InvalidArgument;
+	}
 
-    userConfigPtr->hystersisMode = kCmpHystersisOfLevel0;
-    userConfigPtr->pinoutEnable = true;
-    userConfigPtr->pinoutUnfilteredEnable = false;
-    userConfigPtr->invertEnable = false;
-    userConfigPtr->highSpeedEnable = false;
+	userConfigPtr->hystersisMode = kCmpHystersisOfLevel0;
+	userConfigPtr->pinoutEnable = true;
+	userConfigPtr->pinoutUnfilteredEnable = false;
+	userConfigPtr->invertEnable = false;
+	userConfigPtr->highSpeedEnable = false;
 #if FSL_FEATURE_CMP_HAS_DMA
-    userConfigPtr->dmaEnable = false;
+	userConfigPtr->dmaEnable = false;
 #endif /* FSL_FEATURE_CMP_HAS_DMA */
-    userConfigPtr->risingIntEnable = false;
-    userConfigPtr->fallingIntEnable = false;
-    userConfigPtr->plusChnMux = plusInput;
-    userConfigPtr->minusChnMux = minusInput;
+	userConfigPtr->risingIntEnable = false;
+	userConfigPtr->fallingIntEnable = false;
+	userConfigPtr->plusChnMux = plusInput;
+	userConfigPtr->minusChnMux = minusInput;
 #if FSL_FEATURE_CMP_HAS_TRIGGER_MODE
-    userConfigPtr->triggerEnable = false;
+	userConfigPtr->triggerEnable = false;
 #endif /* FSL_FEATURE_CMP_HAS_TRIGGER_MODE */
 
-    return kStatus_CMP_Success;
+	return kStatus_CMP_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -94,43 +94,43 @@ cmp_status_t CMP_DRV_StructInitUserConfigDefault(cmp_comparator_config_t *userCo
  *
  *END*************************************************************************/
 cmp_status_t CMP_DRV_Init(uint32_t instance, cmp_state_t *userStatePtr,
-    const cmp_comparator_config_t *userConfigPtr)
+	const cmp_comparator_config_t *userConfigPtr)
 {
 
-    assert(instance < CMP_INSTANCE_COUNT);
-    CMP_Type * base = g_cmpBase[instance];
+	assert(instance < CMP_INSTANCE_COUNT);
+	CMP_Type * base = g_cmpBase[instance];
 
-    if ( (!userConfigPtr) || (!userStatePtr) )
-    {
-        return kStatus_CMP_InvalidArgument;
-    }
+	if ( (!userConfigPtr) || (!userStatePtr) )
+	{
+		return kStatus_CMP_InvalidArgument;
+	}
 
-    /* Enable clock for CMP. */
-    if (!CLOCK_SYS_GetCmpGateCmd(instance) )
-    {
-        CLOCK_SYS_EnableCmpClock(instance);
-    }
+	/* Enable clock for CMP. */
+	if (!CLOCK_SYS_GetCmpGateCmd(instance) )
+	{
+		CLOCK_SYS_EnableCmpClock(instance);
+	}
 
-    /* Reset all the registers. */
-    CMP_HAL_Init(base);
-    CMP_HAL_ConfigComparator(base, userConfigPtr);
+	/* Reset all the registers. */
+	CMP_HAL_Init(base);
+	CMP_HAL_ConfigComparator(base, userConfigPtr);
 
-    /* Configure the NVIC. */
-    if ( (userConfigPtr->risingIntEnable) || (userConfigPtr->fallingIntEnable) )
-    {
-        /* Enable the CMP interrupt in NVIC. */
-        INT_SYS_EnableIRQ(g_cmpIrqId[instance] );
-    }
-    else
-    {
-        /* Disable the CMP interrupt in NVIC. */
-        INT_SYS_DisableIRQ(g_cmpIrqId[instance] );
-    }
+	/* Configure the NVIC. */
+	if ( (userConfigPtr->risingIntEnable) || (userConfigPtr->fallingIntEnable) )
+	{
+		/* Enable the CMP interrupt in NVIC. */
+		INT_SYS_EnableIRQ(g_cmpIrqId[instance] );
+	}
+	else
+	{
+		/* Disable the CMP interrupt in NVIC. */
+		INT_SYS_DisableIRQ(g_cmpIrqId[instance] );
+	}
 
-    userStatePtr->isInUsed = true; /* Mark it as in used. */
-    g_cmpStatePtr[instance] = userStatePtr; /* Linked the user-provided memory into context record. */
+	userStatePtr->isInUsed = true; /* Mark it as in used. */
+	g_cmpStatePtr[instance] = userStatePtr; /* Linked the user-provided memory into context record. */
 
-    return kStatus_CMP_Success;
+	return kStatus_CMP_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -143,39 +143,39 @@ cmp_status_t CMP_DRV_Init(uint32_t instance, cmp_state_t *userStatePtr,
  *END*************************************************************************/
 cmp_status_t CMP_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < CMP_INSTANCE_COUNT);
+	assert(instance < CMP_INSTANCE_COUNT);
 
-    uint32_t i;
-    CMP_Type * base = g_cmpBase[instance];
+	uint32_t i;
+	CMP_Type * base = g_cmpBase[instance];
 
-    /* Be sure to disable the CMP module. */
-    CMP_HAL_Disable(base);
-    CMP_HAL_Init(base);
+	/* Be sure to disable the CMP module. */
+	CMP_HAL_Disable(base);
+	CMP_HAL_Init(base);
 
-    /* Disable the CMP interrupt in NVIC. */
-    INT_SYS_DisableIRQ(g_cmpIrqId[instance] );
+	/* Disable the CMP interrupt in NVIC. */
+	INT_SYS_DisableIRQ(g_cmpIrqId[instance] );
 
-    /* Unmask the CMP not in use. */
-    g_cmpStatePtr[instance]->isInUsed = false;
+	/* Unmask the CMP not in use. */
+	g_cmpStatePtr[instance]->isInUsed = false;
 
-    /* Disable the clock if necessary. */
-    for (i = 0U; i < CMP_INSTANCE_COUNT; i++)
-    {
-        if ( (g_cmpStatePtr[i]) && (g_cmpStatePtr[i]->isInUsed) )
-        {
-            /* There are still some CMP instances in used. */
-            break;
-        }
-    }
-    if (i == CMP_INSTANCE_COUNT)
-    {
-        /* Disable the shared clock. */
-        CLOCK_SYS_DisableCmpClock(instance);
-    }
-    
-    g_cmpStatePtr[instance] = NULL;
+	/* Disable the clock if necessary. */
+	for (i = 0U; i < CMP_INSTANCE_COUNT; i++)
+	{
+		if ( (g_cmpStatePtr[i]) && (g_cmpStatePtr[i]->isInUsed) )
+		{
+			/* There are still some CMP instances in used. */
+			break;
+		}
+	}
+	if (i == CMP_INSTANCE_COUNT)
+	{
+		/* Disable the shared clock. */
+		CLOCK_SYS_DisableCmpClock(instance);
+	}
 
-    return kStatus_CMP_Success;
+	g_cmpStatePtr[instance] = NULL;
+
+	return kStatus_CMP_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -187,10 +187,10 @@ cmp_status_t CMP_DRV_Deinit(uint32_t instance)
  *END*************************************************************************/
 void CMP_DRV_Start(uint32_t instance)
 {
-    assert(instance < CMP_INSTANCE_COUNT);
-    
-    CMP_Type * base = g_cmpBase[instance];
-    CMP_HAL_Enable(base);
+	assert(instance < CMP_INSTANCE_COUNT);
+
+	CMP_Type * base = g_cmpBase[instance];
+	CMP_HAL_Enable(base);
 }
 
 /*FUNCTION*********************************************************************
@@ -202,10 +202,10 @@ void CMP_DRV_Start(uint32_t instance)
  *END*************************************************************************/
 void CMP_DRV_Stop(uint32_t instance)
 {
-    assert(instance < CMP_INSTANCE_COUNT);
-    
-    CMP_Type * base = g_cmpBase[instance];
-    CMP_HAL_Disable(base);
+	assert(instance < CMP_INSTANCE_COUNT);
+
+	CMP_Type * base = g_cmpBase[instance];
+	CMP_HAL_Disable(base);
 }
 
 /*FUNCTION*********************************************************************
@@ -219,17 +219,17 @@ void CMP_DRV_Stop(uint32_t instance)
  *END*************************************************************************/
 cmp_status_t CMP_DRV_ConfigDacChn(uint32_t instance, const cmp_dac_config_t *dacConfigPtr)
 {
-    assert(instance < CMP_INSTANCE_COUNT);
-    CMP_Type * base = g_cmpBase[instance];
+	assert(instance < CMP_INSTANCE_COUNT);
+	CMP_Type * base = g_cmpBase[instance];
 
-    if (!dacConfigPtr)
-    {
-        return kStatus_CMP_InvalidArgument;
-    }
-    /* Configure the DAC Control Register. */
-    CMP_HAL_ConfigDacChn(base, dacConfigPtr);
+	if (!dacConfigPtr)
+	{
+		return kStatus_CMP_InvalidArgument;
+	}
+	/* Configure the DAC Control Register. */
+	CMP_HAL_ConfigDacChn(base, dacConfigPtr);
 
-    return kStatus_CMP_Success;
+	return kStatus_CMP_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -237,22 +237,22 @@ cmp_status_t CMP_DRV_ConfigDacChn(uint32_t instance, const cmp_dac_config_t *dac
  * Function Name : CMP_DRV_ConfigSampleFilter
  * Description   : Configure the CMP working in Sample\Filter modes. These
  * modes are some advanced features beside the basic comparator. They may
- * be about Windowed Mode, Filter Mode and so on. See to 
+ * be about Windowed Mode, Filter Mode and so on. See to
  * "cmp_sample_filter_config_t" for detailed description.
  *
  *END*************************************************************************/
 cmp_status_t CMP_DRV_ConfigSampleFilter(uint32_t instance, const cmp_sample_filter_config_t *configPtr)
 {
-    assert(instance < CMP_INSTANCE_COUNT);
-    CMP_Type * base = g_cmpBase[instance];
-    
-    if (!configPtr)
-    {
-        return kStatus_CMP_InvalidArgument;
-    }
-    CMP_HAL_ConfigSampleFilter(base, configPtr);
+	assert(instance < CMP_INSTANCE_COUNT);
+	CMP_Type * base = g_cmpBase[instance];
 
-    return kStatus_CMP_Success;
+	if (!configPtr)
+	{
+		return kStatus_CMP_InvalidArgument;
+	}
+	CMP_HAL_ConfigSampleFilter(base, configPtr);
+
+	return kStatus_CMP_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -267,10 +267,10 @@ cmp_status_t CMP_DRV_ConfigSampleFilter(uint32_t instance, const cmp_sample_filt
  *END*************************************************************************/
 bool CMP_DRV_GetOutputLogic(uint32_t instance)
 {
-    assert(instance < CMP_INSTANCE_COUNT);
-    CMP_Type * base = g_cmpBase[instance];
-    
-    return CMP_HAL_GetOutputLogic(base);
+	assert(instance < CMP_INSTANCE_COUNT);
+	CMP_Type * base = g_cmpBase[instance];
+
+	return CMP_HAL_GetOutputLogic(base);
 }
 
 /*FUNCTION*********************************************************************
@@ -282,53 +282,52 @@ bool CMP_DRV_GetOutputLogic(uint32_t instance)
  *END*************************************************************************/
 bool CMP_DRV_GetFlag(uint32_t instance, cmp_flag_t flag)
 {
-    assert(instance < CMP_INSTANCE_COUNT);
+	assert(instance < CMP_INSTANCE_COUNT);
 
-    bool bRet;
-    CMP_Type * base = g_cmpBase[instance];
+	bool bRet;
+	CMP_Type * base = g_cmpBase[instance];
 
-    switch(flag)
-    {
-    case kCmpFlagOfCoutRising:
-        bRet = CMP_HAL_GetOutputRisingFlag(base);
-        break;
-    case kCmpFlagOfCoutFalling:
-        bRet = CMP_HAL_GetOutputFallingFlag(base);
-        break;
-    default:
-        bRet = false;
-        break;
-    }
-    return bRet;
+	switch(flag)
+	{
+	case kCmpFlagOfCoutRising:
+		bRet = CMP_HAL_GetOutputRisingFlag(base);
+		break;
+	case kCmpFlagOfCoutFalling:
+		bRet = CMP_HAL_GetOutputFallingFlag(base);
+		break;
+	default:
+		bRet = false;
+		break;
+	}
+	return bRet;
 }
 
 /*FUNCTION*********************************************************************
  *
  * Function Name : CMP_DRV_ClearFlag
- * Description   : Clear event record of CMP module. 
+ * Description   : Clear event record of CMP module.
  *
  *END*************************************************************************/
 void CMP_DRV_ClearFlag(uint32_t instance, cmp_flag_t flag)
 {
-    assert(instance < CMP_INSTANCE_COUNT);
+	assert(instance < CMP_INSTANCE_COUNT);
 
-    CMP_Type * base = g_cmpBase[instance];
+	CMP_Type * base = g_cmpBase[instance];
 
-    switch(flag)
-    {
-    case kCmpFlagOfCoutRising:
-        CMP_HAL_ClearOutputRisingFlag(base);
-        break;
-    case kCmpFlagOfCoutFalling:
-        CMP_HAL_ClearOutputFallingFlag(base);
-        break;
-    default:
-        break;
-    }
+	switch(flag)
+	{
+	case kCmpFlagOfCoutRising:
+		CMP_HAL_ClearOutputRisingFlag(base);
+		break;
+	case kCmpFlagOfCoutFalling:
+		CMP_HAL_ClearOutputFallingFlag(base);
+		break;
+	default:
+		break;
+	}
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

@@ -1,34 +1,34 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2008, 2013 - 2015 Freescale Semiconductor;
  * All Rights Reserved
  *
  * Copyright (c) 1989-2008 ARC International;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
  *
  * $FileName: usb_device_stack_interface.h$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
- * 
+ *
  *
  *END************************************************************************/
 /* Prototypes */
@@ -96,49 +96,49 @@
 /* Macros for description of class, configuration, interface */
 #define  USB_DESC_INTERFACE(index, ep_cnt, ep) \
 { \
-    index, \
-    { \
-        ep_cnt, \
-        ep \
-    } \
+	index, \
+	{ \
+		ep_cnt, \
+		ep \
+	} \
 }
 #define  USB_DESC_CONFIGURATION(intf_cnt, intf) \
 { \
-    intf_cnt, \
-    intf \
+	intf_cnt, \
+	intf \
 }
 #define  USB_DESC_CLASS(type, config) \
 { \
-    type, \
-    config, \
+	type, \
+	config, \
 }
 
 typedef enum
 {
-    USB_CLASS_INFO = 0,
-    USB_COMPOSITE_INFO,
-    USB_AUDIO_UNITS,
-    USB_RNDIS_INFO,
-    USB_PHDC_QOS_INFO,
-    USB_MSC_LBA_INFO,
-    USB_CLASS_INTERFACE_INDEX_INFO,
-    USB_VIDEO_UNITS,
-    USB_VIDEO_CTL_IF_INDEX_INFO,
-    USB_VIDEO_STREAM_IF_INDEX_INFO,
+	USB_CLASS_INFO = 0,
+	USB_COMPOSITE_INFO,
+	USB_AUDIO_UNITS,
+	USB_RNDIS_INFO,
+	USB_PHDC_QOS_INFO,
+	USB_MSC_LBA_INFO,
+	USB_CLASS_INTERFACE_INDEX_INFO,
+	USB_VIDEO_UNITS,
+	USB_VIDEO_CTL_IF_INDEX_INFO,
+	USB_VIDEO_STREAM_IF_INDEX_INFO,
 } entity_type;
 
 /*!
  * @brief Obtains the endpoint data structure.
  *
- * Define the endpoint data structure. 
+ * Define the endpoint data structure.
  *
  */
 typedef struct _usb_ep_struct
 {
-    uint8_t               ep_num;      /*!< endpoint number*/
-    uint8_t               type;        /*!< type of endpoint*/
-    uint8_t               direction;   /*!< direction of endpoint*/
-    uint32_t              size;        /*!< maximum packet size of endpoint*/
+	uint8_t               ep_num;      /*!< endpoint number*/
+	uint8_t               type;        /*!< type of endpoint*/
+	uint8_t               direction;   /*!< direction of endpoint*/
+	uint32_t              size;        /*!< maximum packet size of endpoint*/
 } usb_ep_struct_t;
 
 /*!
@@ -149,8 +149,8 @@ typedef struct _usb_ep_struct
  */
 typedef struct _usb_endpoints
 {
-    uint8_t               count;    /*!< how many endpoints are described*/
-    usb_ep_struct_t*      ep;       /*!< detailed information of each endpoint*/
+	uint8_t               count;    /*!< how many endpoints are described*/
+	usb_ep_struct_t*      ep;       /*!< detailed information of each endpoint*/
 } usb_endpoints_t;
 
 /*!
@@ -161,9 +161,9 @@ typedef struct _usb_endpoints
  */
 typedef struct _usb_if_struct
 {
-    uint8_t               index;             /*!< interface index*/
-    usb_endpoints_t       endpoints;         /*!< endpoints in this interface*/
-    uint8_t               alternate_setting; /*!< interface alternate value*/
+	uint8_t               index;             /*!< interface index*/
+	usb_endpoints_t       endpoints;         /*!< endpoints in this interface*/
+	uint8_t               alternate_setting; /*!< interface alternate value*/
 } usb_if_struct_t;
 
 /*!
@@ -174,8 +174,8 @@ typedef struct _usb_if_struct
  */
 typedef struct _usb_interfaces_struct
 {
-    uint8_t               count;        /*!< how many interfaces are described*/
-    usb_if_struct_t*      interface;    /*!< detailed information of each interface*/
+	uint8_t               count;        /*!< how many interfaces are described*/
+	usb_if_struct_t*      interface;    /*!< detailed information of each interface*/
 } usb_interfaces_struct_t;
 
 /*!
@@ -186,8 +186,8 @@ typedef struct _usb_interfaces_struct
  */
 typedef struct _usb_class_struct
 {
-    uint8_t              type;          /*!< class type*/
-    usb_interfaces_struct_t interfaces;    /*!< interfaces in this class*/
+	uint8_t              type;          /*!< class type*/
+	usb_interfaces_struct_t interfaces;    /*!< interfaces in this class*/
 } usb_class_struct_t;
 
 /*!
@@ -198,8 +198,8 @@ typedef struct _usb_class_struct
  */
 typedef struct _usb_composite_info_struct
 {
-    uint8_t               count;    /*!< how many classes in the composite device*/
-    usb_class_struct_t *  class_handle;    /*!< detailed information of each class*/
+	uint8_t               count;    /*!< how many classes in the composite device*/
+	usb_class_struct_t *  class_handle;    /*!< detailed information of each class*/
 } usb_composite_info_struct_t;
 
 /*!
@@ -210,11 +210,11 @@ typedef struct _usb_composite_info_struct
  */
 typedef struct _usb_setup_struct
 {
-    uint8_t               request_type;    /*!< type of request*/
-    uint8_t               request;         /*!< id of request*/
-    uint16_t              value;           /*!< value of request*/
-    uint16_t              index;           /*!< interface index*/
-    uint16_t              length;          /*!< data length of request*/
+	uint8_t               request_type;    /*!< type of request*/
+	uint8_t               request;         /*!< id of request*/
+	uint16_t              value;           /*!< value of request*/
+	uint16_t              index;           /*!< interface index*/
+	uint16_t              length;          /*!< data length of request*/
 } usb_setup_struct_t;
 
 /* USB Specs define CONTROL_MAX_PACKET_SIZE for High Speed device as only 64,
@@ -233,15 +233,15 @@ typedef struct _usb_setup_struct
  */
 typedef struct _usb_event_struct
 {
-    usb_device_handle     handle;             /* controller device handle*/
-    uint8_t*              buffer_ptr;         /* void* to buffer       */
-    uint32_t              len;                /* the buffer len had been done
-                                                                              * special case: 0xFFFFFFFF means transfer cancel
-                                                                              * 0xFFFFFFFE means tansfer error */
-    uint8_t               ep_num;             /* endpoint number */
-    uint8_t               type;
-    bool                  setup;              /* is setup packet         */
-    bool                  direction;          /* direction of endpoint   */
+	usb_device_handle     handle;             /* controller device handle*/
+	uint8_t*              buffer_ptr;         /* void* to buffer       */
+	uint32_t              len;                /* the buffer len had been done
+																			  * special case: 0xFFFFFFFF means transfer cancel
+																			  * 0xFFFFFFFE means tansfer error */
+	uint8_t               ep_num;             /* endpoint number */
+	uint8_t               type;
+	bool                  setup;              /* is setup packet         */
+	bool                  direction;          /* direction of endpoint   */
 } usb_event_struct_t;
 
 /* callback function pointer structure for Application to handle events */
@@ -263,16 +263,16 @@ typedef void(_CODE_PTR_ usb_event_service_t)(usb_event_struct_t* event, void* ar
 typedef struct _usb_desc_request_notify_struct
 {
 #ifdef USBCFG_OTG
-    uint32_t handle;
+	uint32_t handle;
 #endif
-    uint8_t (_CODE_PTR_ get_desc)(uint32_t class_handle,uint8_t type,uint8_t desc_index,
-    uint16_t index,uint8_t * *descriptor,uint32_t *size); /*!< to get the descriptor whose type is specified by the type*/
-    uint8_t (_CODE_PTR_ get_desc_interface)(uint32_t class_handle,uint8_t interface,
-    uint8_t * alt_interface); /*!< to get the interface's alternate setting*/
-    uint8_t (_CODE_PTR_ set_desc_interface)(uint32_t class_handle,uint8_t interface,
-    uint8_t alt_interface); /*!< to set the interface's alternate setting*/
-    uint8_t (_CODE_PTR_ set_configuration)(uint32_t class_handle, uint8_t config); /*!< to inform the application whose configuration is active */
-    uint8_t (_CODE_PTR_ get_desc_entity)(uint32_t class_handle, entity_type type, uint32_t * object);    /*!< to get the descriptor/device related information*/
+	uint8_t (_CODE_PTR_ get_desc)(uint32_t class_handle,uint8_t type,uint8_t desc_index,
+	uint16_t index,uint8_t * *descriptor,uint32_t *size); /*!< to get the descriptor whose type is specified by the type*/
+	uint8_t (_CODE_PTR_ get_desc_interface)(uint32_t class_handle,uint8_t interface,
+	uint8_t * alt_interface); /*!< to get the interface's alternate setting*/
+	uint8_t (_CODE_PTR_ set_desc_interface)(uint32_t class_handle,uint8_t interface,
+	uint8_t alt_interface); /*!< to set the interface's alternate setting*/
+	uint8_t (_CODE_PTR_ set_configuration)(uint32_t class_handle, uint8_t config); /*!< to inform the application whose configuration is active */
+	uint8_t (_CODE_PTR_ get_desc_entity)(uint32_t class_handle, entity_type type, uint32_t * object);    /*!< to get the descriptor/device related information*/
 } usb_desc_request_notify_struct_t;
 
 /*!
@@ -283,8 +283,8 @@ typedef struct _usb_desc_request_notify_struct
  */
 typedef struct usb_application_callback_struct
 {
-    usb_device_notify_t     callback;    /*!< application callback function*/
-    void*                 arg;           /*!< parameter for callback function*/
+	usb_device_notify_t     callback;    /*!< application callback function*/
+	void*                 arg;           /*!< parameter for callback function*/
 }usb_application_callback_struct_t;
 
 /*!
@@ -295,8 +295,8 @@ typedef struct usb_application_callback_struct
  */
 typedef struct usb_vendor_req_callback_struct
 {
-    usb_request_notify_t  callback;    /*!< vendor request callback function*/
-    void*                 arg;         /*!< parameter for callback function*/
+	usb_request_notify_t  callback;    /*!< vendor request callback function*/
+	void*                 arg;         /*!< parameter for callback function*/
 }usb_vendor_req_callback_struct_t;
 
 /* callback function pointer structure to handle USB application board initialization request */
@@ -309,8 +309,8 @@ typedef uint8_t(_CODE_PTR_ usb_board)(uint8_t controller_id);
  */
 typedef struct usb_board_init_callback_struct
 {
-    usb_board             callback;    /*!< application callback function*/
-    uint8_t               arg;         /*!< parameter for callback function*/
+	usb_board             callback;    /*!< application callback function*/
+	uint8_t               arg;         /*!< parameter for callback function*/
 }usb_board_init_callback_struct_t;
 
 #ifdef __cplusplus
@@ -491,7 +491,7 @@ extern usb_status usb_device_register_application_notify(usb_device_handle handl
  * The function is used to register a callback function for the vendor class request related event.
  * Currently the vendor class is not implemented, so both the request_notify_callback and
  * request_notify_param can be set to NULL.
- * 
+ *
  * @param handle USB Device handle
  * @param request_notify_callback callback function
  * @param request_notify_param parameter for the callback function
@@ -519,7 +519,7 @@ extern usb_status usb_device_register_desc_request_notify(usb_device_handle hand
  *      USB_STATUS_OTG
  *      USB_STATUS_DEVICE
  *      USB_STATUS_ENDPOINT, the LSB nibble carries the endpoint number
- * 
+ *
  * @param handle USB Device handle
  * @param component callback function
  * @param status requested status

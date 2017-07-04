@@ -40,29 +40,29 @@
  * \param[in] parameter Parameter passed to the task when created.
  */
 void _mqx_idle_task
-    (
-        uint32_t parameter
-    )
+	(
+		uint32_t parameter
+	)
 {
-    volatile KERNEL_DATA_STRUCT_PTR kernel_data;
-    _GET_KERNEL_DATA(kernel_data);
+	volatile KERNEL_DATA_STRUCT_PTR kernel_data;
+	_GET_KERNEL_DATA(kernel_data);
 
-    while (1) {
+	while (1) {
 #if !defined(MQX_ENABLE_IDLE_LOOP) || MQX_ENABLE_IDLE_LOOP
-        if (++kernel_data->IDLE_LOOP.IDLE_LOOP1 == 0) {
-            if (++kernel_data->IDLE_LOOP.IDLE_LOOP2 == 0) {
-                if (++kernel_data->IDLE_LOOP.IDLE_LOOP3 == 0) {
-                ++kernel_data->IDLE_LOOP.IDLE_LOOP4;
-                }
-            }
-        }
+		if (++kernel_data->IDLE_LOOP.IDLE_LOOP1 == 0) {
+			if (++kernel_data->IDLE_LOOP.IDLE_LOOP2 == 0) {
+				if (++kernel_data->IDLE_LOOP.IDLE_LOOP3 == 0) {
+				++kernel_data->IDLE_LOOP.IDLE_LOOP4;
+				}
+			}
+		}
 #endif /* !defined(MQX_ENABLE_IDLE_LOOP) || MQX_ENABLE_IDLE_LOOP */
 #if MQX_ENABLE_LOW_POWER
-        if (parameter)
-        {
-            _ASM_SLEEP(&parameter);
-        }
+		if (parameter)
+		{
+			_ASM_SLEEP(&parameter);
+		}
 #endif /* MQX_ENABLE_LOW_POWER */
-    }
+	}
 }
 #endif /* MQX_USE_IDLE_TASK */

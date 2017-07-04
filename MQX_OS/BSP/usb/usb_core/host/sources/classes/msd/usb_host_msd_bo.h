@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
 * All Rights Reserved
 *
 * Copyright (c) 1989-2008 ARC International;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
 *
 * $FileName: usb_host_msd_bo.h$
-* $Version : 
-* $Date    : 
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -108,31 +108,31 @@
 */
 
 /* UFI Typical Command Block Wrapper for Most commands */
-PACKED_STRUCT_BEGIN 
+PACKED_STRUCT_BEGIN
 struct _ufi_cbwcb
 {
-    uint8_t      BUFIOPCODE;                 /* 0 */
-    uint8_t      BUFILUN;                    /* 1 */
-    uint8_t      BUFILOGICALBLOCKADDRESS[4]; /* 2,3,4,5 */
-    uint8_t      RESERVED6;                  /* 6 Reserved */
-    uint8_t      BLENGTH[2];                 /* 7,8 length of the data block */
-    uint8_t      RESERVED9;                  /* 9 Reserved */
-    uint8_t      RESERVED10;                 /* 10 Reserved */
-    uint8_t      RESERVED11;                 /* 11 Reserved */
+	uint8_t      BUFIOPCODE;                 /* 0 */
+	uint8_t      BUFILUN;                    /* 1 */
+	uint8_t      BUFILOGICALBLOCKADDRESS[4]; /* 2,3,4,5 */
+	uint8_t      RESERVED6;                  /* 6 Reserved */
+	uint8_t      BLENGTH[2];                 /* 7,8 length of the data block */
+	uint8_t      RESERVED9;                  /* 9 Reserved */
+	uint8_t      RESERVED10;                 /* 10 Reserved */
+	uint8_t      RESERVED11;                 /* 11 Reserved */
 } PACKED_STRUCT_END;
 
 typedef struct _ufi_cbwcb ufi_cbwcb_struct_t;
 
 /* UFI Typical Command Block Wrapper for Extended commands */
-PACKED_STRUCT_BEGIN 
+PACKED_STRUCT_BEGIN
 struct _ufi_cbwcb_extended
 {
-    uint8_t      BUFIOPCODE;                 /* 0 */
-    uint8_t      BUFILUN;                    /* 1 */
-    uint8_t      BUFILOGICALBLOCKADDRESS[4]; /* 2,3,4,5 */
-    uint8_t      BLENGTH[4];                 /* 6,7,8,9 length of the data block */
-    uint8_t      RESERVED10;                 /* 10 Reserved */
-    uint8_t      RESERVED11;                 /* 11 Reserved */
+	uint8_t      BUFIOPCODE;                 /* 0 */
+	uint8_t      BUFILUN;                    /* 1 */
+	uint8_t      BUFILOGICALBLOCKADDRESS[4]; /* 2,3,4,5 */
+	uint8_t      BLENGTH[4];                 /* 6,7,8,9 length of the data block */
+	uint8_t      RESERVED10;                 /* 10 Reserved */
+	uint8_t      RESERVED11;                 /* 11 Reserved */
 } PACKED_STRUCT_END;
 
 typedef struct _ufi_cbwcb_extended ufi_cbwcb_extended_struct_t;
@@ -140,8 +140,8 @@ typedef struct _ufi_cbwcb_extended ufi_cbwcb_extended_struct_t;
 
 /* define a union that covers all supported protocols.  */
 
-PACKED_UNION_BEGIN 
-union _cbwcb 
+PACKED_UNION_BEGIN
+union _cbwcb
 {
    ufi_cbwcb_struct_t            UFI_CBWCB;
    ufi_cbwcb_extended_struct_t   UFI_CBWCB_EXT;
@@ -205,10 +205,10 @@ typedef struct _cbw_struct cbw_struct_t;
 /* Command Status Wrapper   (see USB Mass Storage specs) */
 typedef struct _csw_struct
 {
-    uint8_t             DCSWSIGNATURE[4];         /* 0-3    */
-    uint8_t             DCSWTAG[4];               /* 4-7    */
-    uint8_t             DCSWDATARESIDUE[4];       /* 8-11   */
-    uint8_t             BCSWSTATUS;               /* 12     */
+	uint8_t             DCSWSIGNATURE[4];         /* 0-3    */
+	uint8_t             DCSWTAG[4];               /* 4-7    */
+	uint8_t             DCSWDATARESIDUE[4];       /* 8-11   */
+	uint8_t             BCSWSTATUS;               /* 12     */
 } csw_struct_t;
 
 /* USB Mass Class  One Single Command Object for all protocols */
@@ -219,11 +219,11 @@ typedef struct
    cbw_struct_t *                     CBW_PTR;       /* current CBW being constructed      */
    csw_struct_t *                     CSW_PTR;       /* CSW for this command               */
    void (_CODE_PTR_                   CALLBACK)
-      (usb_status status,                            /* status of this command                       */
-       void* p1,                                     /* pointer to USB_MASS_BULK_ONLY_REQUEST_STRUCT */
-       void* p2,                                     /* pointer to the command object                */
-       uint32_t buffer_length                        /* length of the data transfered if any         */
-      );
+	  (usb_status status,                            /* status of this command                       */
+	   void* p1,                                     /* pointer to USB_MASS_BULK_ONLY_REQUEST_STRUCT */
+	   void* p2,                                     /* pointer to the command object                */
+	   uint32_t buffer_length                        /* length of the data transfered if any         */
+	  );
 
    void*                              DATA_BUFFER;   /* buffer for IN/OUT for the command  */
    uint32_t                           BUFFER_LEN;    /* length of data buffer              */
@@ -231,7 +231,7 @@ typedef struct
    usb_class_mass_command_status      STATUS;        /* current status of this command     */
    usb_class_mass_command_status      PREV_STATUS;   /* previous status of this command    */
    uint32_t                           TR_BUF_LEN;    /* length of the buffer received in
-                                                       currently executed TR              */
+													   currently executed TR              */
    uint8_t                            RETRY_COUNT;   /* Number of times this command tried  */
    uint8_t                            CBW_RETRY_COUNT;   /* Number of times this command tried  */
    uint8_t                            DPHASE_RETRY_COUNT;   /* Number of times this command tried  */
@@ -249,14 +249,14 @@ typedef struct
 
 typedef struct
 {
-   usb_host_handle                    host_handle; 
+   usb_host_handle                    host_handle;
    usb_device_instance_handle         dev_handle;
    usb_interface_descriptor_handle    intf_handle;
 
    usb_pipe_handle                    control_pipe;      /* control pipe handle*/
    usb_pipe_handle                    bulk_in_pipe;      /* Bulk in pipe handle*/
    usb_pipe_handle                    bulk_out_pipe;     /* Bulk out pipe handle*/
-   mass_queue_struct_t                queue;             /* structure that queues requests*/                   
+   mass_queue_struct_t                queue;             /* structure that queues requests*/
    uint8_t                            interface_num;     /* interface number*/
    uint8_t                            alternate_setting; /* Alternate setting*/
    /* Here we store callback and parameter from higher level */

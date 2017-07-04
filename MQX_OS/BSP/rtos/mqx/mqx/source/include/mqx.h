@@ -142,8 +142,8 @@ typedef uint32_t _task_id;           /* what a task_id looks like */
 #endif
 
 #if MQXCFG_INIT_TASK
-    #define MQX_INIT_TASK_NAME      "_mqx_init_task"
-    #define MQX_INIT_TASK_PARAMETER 0
+	#define MQX_INIT_TASK_NAME      "_mqx_init_task"
+	#define MQX_INIT_TASK_PARAMETER 0
 #endif /* MQXCFG_INIT_TASK */
 
 typedef uint16_t _processor_number;  /* what a processor number is */
@@ -852,14 +852,14 @@ typedef void (_CODE_PTR_ TASK_EXIT_FPTR)(void);
  */
 typedef struct idle_loop_struct
 {
-    /*! brief Idle loop. */
-    _mqx_uint                   IDLE_LOOP1;
-    /*! brief Idle loop. */
-    _mqx_uint                   IDLE_LOOP2;
-    /*! brief Idle loop. */
-    _mqx_uint                   IDLE_LOOP3;
-    /*! brief Idle loop. */
-    _mqx_uint                   IDLE_LOOP4;
+	/*! brief Idle loop. */
+	_mqx_uint                   IDLE_LOOP1;
+	/*! brief Idle loop. */
+	_mqx_uint                   IDLE_LOOP2;
+	/*! brief Idle loop. */
+	_mqx_uint                   IDLE_LOOP3;
+	/*! brief Idle loop. */
+	_mqx_uint                   IDLE_LOOP4;
 
 } IDLE_LOOP_STRUCT, * IDLE_LOOP_STRUCT_PTR;
 
@@ -897,34 +897,34 @@ typedef uint32_t    time_t;
  */
 struct tm {
 
-    /*! \brief Range from 0 to 59. */
-    int32_t         tm_sec;
+	/*! \brief Range from 0 to 59. */
+	int32_t         tm_sec;
 
-    /*! \brief Range from 0 to 59. */
-    int32_t         tm_min;
+	/*! \brief Range from 0 to 59. */
+	int32_t         tm_min;
 
-    /*! \brief Range from 0 to 23. */
-    int32_t         tm_hour;
+	/*! \brief Range from 0 to 23. */
+	int32_t         tm_hour;
 
-    /*! \brief Range from 0 to 30, depend on month. */
-    int32_t         tm_mday;
+	/*! \brief Range from 0 to 30, depend on month. */
+	int32_t         tm_mday;
 
-    /*! \brief Range from 0 to 11. */
-    int32_t         tm_mon;
+	/*! \brief Range from 0 to 11. */
+	int32_t         tm_mon;
 
-    /*! \brief Range from 0, since 1900. */
-    int32_t         tm_year;
+	/*! \brief Range from 0, since 1900. */
+	int32_t         tm_year;
 
-    /*! \brief Range from 0 to 6. */
-    int32_t         tm_wday;
+	/*! \brief Range from 0 to 6. */
+	int32_t         tm_wday;
 
-    /*! \brief Range from 0 to 365. */
-    int32_t         tm_yday;
+	/*! \brief Range from 0 to 365. */
+	int32_t         tm_yday;
 
-    /*! \brief A flag that indicates whether daylight saving
-    *  time is in effect at the time described
-    */
-    int32_t         tm_isdst;
+	/*! \brief A flag that indicates whether daylight saving
+	*  time is in effect at the time described
+	*/
+	int32_t         tm_isdst;
 };
 
 #endif /* MQX_STD_TIME_API */
@@ -1013,19 +1013,19 @@ typedef struct date_struct
  */
 typedef struct mqx_tick_struct
 {
-    /*!
-     * \brief Ticks since MQX started.
-     *
-     * The field is a minimum of 64 bits; the exact size depends on the PSP.
-     */
-    _mqx_uint TICKS[MQX_NUM_TICK_FIELDS];
+	/*!
+	 * \brief Ticks since MQX started.
+	 *
+	 * The field is a minimum of 64 bits; the exact size depends on the PSP.
+	 */
+	_mqx_uint TICKS[MQX_NUM_TICK_FIELDS];
 
-    /*!
-     * \brief Hardware ticks (timer counter increments) between ticks.
-     *
-     * The field increases the accuracy over counting the time simply in ticks.
-     */
-    uint32_t   HW_TICKS;
+	/*!
+	 * \brief Hardware ticks (timer counter increments) between ticks.
+	 *
+	 * The field increases the accuracy over counting the time simply in ticks.
+	 */
+	uint32_t   HW_TICKS;
 } MQX_TICK_STRUCT, * MQX_TICK_STRUCT_PTR;
 
 
@@ -1048,59 +1048,59 @@ typedef struct mqx_tick_struct
 typedef struct   task_template_struct
 {
    /*!
-    * \brief Application-unique number that identifies the task template.
-    *
-    * The minimum value is 1, maximum is MAX_MQX_UINT. The field is ignored if you
-    * call _task_create() or _task_create_blocked() or _task_create_at() with a
-    * template index equal to 0 and a creation parameter set to a pointer to a task
-    * template.
-    */
+	* \brief Application-unique number that identifies the task template.
+	*
+	* The minimum value is 1, maximum is MAX_MQX_UINT. The field is ignored if you
+	* call _task_create() or _task_create_blocked() or _task_create_at() with a
+	* template index equal to 0 and a creation parameter set to a pointer to a task
+	* template.
+	*/
    _mqx_uint            TASK_TEMPLATE_INDEX;
 
    /*!
-    * \brief Pointer to the root function for the task.
-    *
-    * This function will be called when a task is created with the task template
-    * index above. The task is deleted when this function returns.
-    */
+	* \brief Pointer to the root function for the task.
+	*
+	* This function will be called when a task is created with the task template
+	* index above. The task is deleted when this function returns.
+	*/
    TASK_FPTR            TASK_ADDRESS;
 
    /*! \brief The amount of stack space required by this task. */
    _mem_size            TASK_STACKSIZE;
 
    /*!
-    * \brief Software priority of the task.
-    *
-    * Priorities start at 0, which is the highest priority. 1, 2, 3, and so on
-    * are progressively lower priorities.
-    */
+	* \brief Software priority of the task.
+	*
+	* Priorities start at 0, which is the highest priority. 1, 2, 3, and so on
+	* are progressively lower priorities.
+	*/
    _mqx_uint            TASK_PRIORITY;
 
    /*! \brief Pointer to a string name for tasks that MQX creates from the template. */
    char                *TASK_NAME;
 
    /*!
-    * \brief Possible attributes for the task.
-    *
-    * Possible bit values are:
-    * \li MQX_AUTO_START_TASK (When MQX starts, it creates one instance of the task.)
-    * \li MQX_FLOATING_POINT_TASK (Task uses the floating point co-processor. MQX
-    * also saves floating-point registers as part of the task's context.)
-    * \li MQX_TIME_SLICE_TASK (MQX uses round robin scheduling for the task (the
-    * default is FIFO scheduling).)
-    * \li MQX_TASK_CREATE_BLOCKED (MQX creates the task in the blocked state.)
-    */
+	* \brief Possible attributes for the task.
+	*
+	* Possible bit values are:
+	* \li MQX_AUTO_START_TASK (When MQX starts, it creates one instance of the task.)
+	* \li MQX_FLOATING_POINT_TASK (Task uses the floating point co-processor. MQX
+	* also saves floating-point registers as part of the task's context.)
+	* \li MQX_TIME_SLICE_TASK (MQX uses round robin scheduling for the task (the
+	* default is FIFO scheduling).)
+	* \li MQX_TASK_CREATE_BLOCKED (MQX creates the task in the blocked state.)
+	*/
    _mqx_uint              TASK_ATTRIBUTES;
 
    /*! \brief Parameter passed to tasks that MQX creates from the template. */
    uint32_t               CREATION_PARAMETER;
 
    /*!
-    * \brief This field is the default time slice to use for the task.
-    *
-    * Time slice in ticks or milliseconds depending on configuration bit in
-    * mqx_cnfg.h
-    */
+	* \brief This field is the default time slice to use for the task.
+	*
+	* Time slice in ticks or milliseconds depending on configuration bit in
+	* mqx_cnfg.h
+	*/
    _mqx_uint             DEFAULT_TIME_SLICE;
 } TASK_TEMPLATE_STRUCT, * TASK_TEMPLATE_STRUCT_PTR;
 
@@ -1123,11 +1123,11 @@ typedef struct   task_template_struct
 typedef  struct mqx_initialization_struct
 {
    /*!
-    * \brief Application-unique processor number of the processor.
-    *
-    * Minimum is 1, maximum is 255. (Processor number 0 is reserved and is used
-    * by tasks to indicate their local processor.)
-    */
+	* \brief Application-unique processor number of the processor.
+	*
+	* Minimum is 1, maximum is 255. (Processor number 0 is reserved and is used
+	* by tasks to indicate their local processor.)
+	*/
    _mqx_uint       PROCESSOR_NUMBER;
 
    /*! \brief Fake variable for TAD. Will be removed with new version of TAD.  [KPSDK-2559]  */
@@ -1137,40 +1137,40 @@ typedef  struct mqx_initialization_struct
    void          *END_OF_KERNEL_MEMORY;
 
    /*!
-    * \brief The size of the interrupt stack.
-    *
-    * This is the maximum amount of stack space used by all interrupt handlers.
-    *
-    */
+	* \brief The size of the interrupt stack.
+	*
+	* This is the maximum amount of stack space used by all interrupt handlers.
+	*
+	*/
    _mqx_uint       INTERRUPT_STACK_SIZE;
 
    /*! \brief Pointer to the task template list for the processor.
-    *
-    * The default name for the list is MQX_template_list[].
-    */
+	*
+	* The default name for the list is MQX_template_list[].
+	*/
    TASK_TEMPLATE_STRUCT_PTR TASK_TEMPLATE_LIST;
 
    /*!
-    * \brief The maximum hardware interrupt priority level of MQX.
-    *
-    * All tasks and interrupts run at lower priority (Applicable to CPUs with
-    * multiple interrupt levels only).
-    */
+	* \brief The maximum hardware interrupt priority level of MQX.
+	*
+	* All tasks and interrupts run at lower priority (Applicable to CPUs with
+	* multiple interrupt levels only).
+	*/
    _mqx_uint       MQX_HARDWARE_INTERRUPT_LEVEL_MAX;
 
    /*! \brief Maximum number of message pools. */
    _mqx_uint       MAX_MSGPOOLS;
 
    /*!
-    * \brief Maximum number of message queues. Minimum is MSGQ_FIRST_USER_QUEUE,
-    * maximum is 255.
-    */
+	* \brief Maximum number of message queues. Minimum is MSGQ_FIRST_USER_QUEUE,
+	* maximum is 255.
+	*/
    _mqx_uint       MAX_MSGQS;
 
    /*!
-    * \brief A string indicating which device is to be used as
-    * the default (console) I/O for the processor.
-    */
+	* \brief A string indicating which device is to be used as
+	* the default (console) I/O for the processor.
+	*/
    char          *IO_CHANNEL;
 
    /*! \brief The open flags to pass to the default I/O device */
@@ -1179,11 +1179,11 @@ typedef  struct mqx_initialization_struct
    /*! \brief Lowest address from which MQX allocates dynamic memory and task stacks. */
    void          *START_OF_HEAP;
    /*!
-    * \brief Highest address from which MQX allocates dynamic memory and task stacks.
-    *
-    * It is the application's responsibility to allocate enough memory for all
-    * tasks.
-    */
+	* \brief Highest address from which MQX allocates dynamic memory and task stacks.
+	*
+	* It is the application's responsibility to allocate enough memory for all
+	* tasks.
+	*/
    void          *END_OF_HEAP;
 
 #if MQX_ENABLE_USER_MODE
@@ -1244,17 +1244,17 @@ typedef  struct mqx_initialization_struct
 typedef struct   td_struct
 {
    /*!
-    * \brief A pointer to the next TD in the queue (for whatever queue this
-    * task is currently in).
-    *
-    * This field MUST be the first field in the TD.
-    */
+	* \brief A pointer to the next TD in the queue (for whatever queue this
+	* task is currently in).
+	*
+	* This field MUST be the first field in the TD.
+	*/
    struct td_struct                 *TD_NEXT;
 
    /*!
-    * \brief A pointer to the previous TD in the queue (for whatever queue this
-    * task is currently in).
-    */
+	* \brief A pointer to the previous TD in the queue (for whatever queue this
+	* task is currently in).
+	*/
    struct td_struct                 *TD_PREV;
 
    /*! \brief The current state that this task is in. */
@@ -1267,10 +1267,10 @@ typedef struct   td_struct
    void                             *STACK_BASE;
 
    /*!
-    * \brief If the task is blocked, then this is a pointer to the task's current
-    * stack value, otherwise it is a pointer to the task's stack at the time of
-    * the last block.
-    */
+	* \brief If the task is blocked, then this is a pointer to the task's current
+	* stack value, otherwise it is a pointer to the task's stack at the time of
+	* the last block.
+	*/
    void                             *STACK_PTR;
 
    /*! \brief The other end of the Stack. */
@@ -1280,30 +1280,30 @@ typedef struct   td_struct
    struct ready_q_struct            *MY_QUEUE;
 
    /*!
-    * \brief The home priority Queue of the task where the task is returned to
-    * when it's boosted period has expired.
-    */
+	* \brief The home priority Queue of the task where the task is returned to
+	* when it's boosted period has expired.
+	*/
    struct ready_q_struct            *HOME_QUEUE;
 
    /*!
-    * \brief The Hardware Flags of this task.
-    *
-    * This is set equivalent to the ENABLE_SR field of the current ready queue
-    * that this task resides on.
-    * \n This field is copied to the kernel data ACTIVE_SR field when this task
-    * becomes the ACTIVE task.
-    * \n The ACTIVE_SR field in the kernel data is used by _int_enable, to set
-    * the correct hardware interrupt level for this task.
-    */
+	* \brief The Hardware Flags of this task.
+	*
+	* This is set equivalent to the ENABLE_SR field of the current ready queue
+	* that this task resides on.
+	* \n This field is copied to the kernel data ACTIVE_SR field when this task
+	* becomes the ACTIVE task.
+	* \n The ACTIVE_SR field in the kernel data is used by _int_enable, to set
+	* the correct hardware interrupt level for this task.
+	*/
    uint16_t                           TASK_SR;
    /*! \brief Reserved for future use. */
    uint16_t                           RESERVED1;
 
    /*!
-    * \brief Bit flags for controlling special features.
-    *
-    * See INTERNAL TASK FLAGS, and TASK TEMPLATE ATTRIBUTES FLAGS.
-    */
+	* \brief Bit flags for controlling special features.
+	*
+	* See INTERNAL TASK FLAGS, and TASK TEMPLATE ATTRIBUTES FLAGS.
+	*/
    _mqx_uint                         FLAGS;
 
    /*! \brief The address of the virtual context for this task (if it exists). */
@@ -1316,12 +1316,12 @@ typedef struct   td_struct
    void                             *FLOAT_CONTEXT_PTR;
 
    /*!
-    * \brief A field used by components to store information.
-    *
-    * Also, when a task is put onto a queue (the state of the task has the
-    * TD_IS_ON_QUEUE set), then this field contains the address of the queue it
-    * is on.
-    */
+	* \brief A field used by components to store information.
+	*
+	* Also, when a task is put onto a queue (the state of the task has the
+	* TD_IS_ON_QUEUE set), then this field contains the address of the queue it
+	* is on.
+	*/
    _mqx_uint                         INFO;
 
    /*! \brief Extra link list pointer for future development. */
@@ -1338,9 +1338,9 @@ typedef struct   td_struct
 
 
    /*!
-    * \brief This field points to a linked list of memory pool blocks obtained
-    * via calls to _mem_alloc().
-    */
+	* \brief This field points to a linked list of memory pool blocks obtained
+	* via calls to _mem_alloc().
+	*/
    void                             *MEMORY_RESOURCE_LIST;
 
    /*! \brief The errno for this task. */
@@ -1385,15 +1385,15 @@ typedef struct   td_struct
 
 #if MQX_USE_MESSAGES
    /*!
-    * \brief Pointer to the first entry in the linked list of message queues owned
-    * by this task.
-    */
+	* \brief Pointer to the first entry in the linked list of message queues owned
+	* by this task.
+	*/
    void                             *MSG_QUEUE_HEAD;
 
    /*!
-    * \brief pointer to the last entry in the linked list of message queues owned
-    * by this task.
-    */
+	* \brief pointer to the last entry in the linked list of message queues owned
+	* by this task.
+	*/
    void                             *MSG_QUEUE_TAIL;
 
    /*! \brief Number of messages currently available on all queues. */
@@ -1410,17 +1410,17 @@ typedef struct   td_struct
 
 #if MQX_HAS_TIME_SLICE
    /*!
-    * \brief The amount of time (ticks) the task should be allowed to run before
-    * being put at the end of it's ready queue.
-    *
-    * This is only used when time slicing has been enabled.
-    */
+	* \brief The amount of time (ticks) the task should be allowed to run before
+	* being put at the end of it's ready queue.
+	*
+	* This is only used when time slicing has been enabled.
+	*/
    MQX_TICK_STRUCT                   TIME_SLICE;
    /*!
-    * \brief Current time slice.
-    *
-    * This is used only when time slicing has been enabled.
-    */
+	* \brief Current time slice.
+	*
+	* This is used only when time slicing has been enabled.
+	*/
    MQX_TICK_STRUCT                   CURRENT_TIME_SLICE;
 #endif
 
@@ -1436,9 +1436,9 @@ typedef struct   td_struct
 
 #if MQX_PROFILING_ENABLE
    /*!
-    * \brief This field is used for external profiling and runtime error checking
-    * components.
-    */
+	* \brief This field is used for external profiling and runtime error checking
+	* components.
+	*/
    void                             *PROFILER_CONTEXT_PTR;
 #endif
 
@@ -1614,7 +1614,7 @@ extern _mem_type        _mem_get_type(void *);
 extern void              _mem_swap_endian(unsigned char *, void *);
 extern void              _mem_swap_endian_len(unsigned char *, void *, _mqx_uint);
 extern _mqx_uint         _mem_test_and_set(unsigned char *);
-extern uint32_t          _mem_sum_ip(uint32_t, _mem_size, void *); 
+extern uint32_t          _mem_sum_ip(uint32_t, _mem_size, void *);
 extern _mqx_uint         _mem_verify(void *base, void *extent);
 
 #if MQX_CUSTOM_MAIN
@@ -1811,89 +1811,89 @@ void _mqx_init_task(uint32_t);
 #define _PSP_SWAP4BYTE_CONST(n) ((((n) & 0x000000FF) << 24) | (((n) & 0x0000FF00) << 8) | (((n) & 0x00FF0000) >> 8) | (((n) & 0xFF000000) >> 24))
 
 #if (PSP_ENDIAN == MQX_BIG_ENDIAN)
-    #define HOST_TO_BE_SHORT(n)           (n)
-    #define HOST_TO_BE_SHORT_CONST(n)     (n)
-    #define HOST_TO_LE_SHORT(n)           _PSP_SWAP2BYTE(n)
-    #define HOST_TO_LE_SHORT_CONST(n)     _PSP_SWAP2BYTE_CONST(n)
-    #define SHORT_BE_TO_HOST(n)           (n)
-    #define SHORT_BE_TO_HOST_CONST(n)     (n)
-    #define SHORT_LE_TO_HOST(n)           _PSP_SWAP2BYTE(n)
-    #define SHORT_LE_TO_HOST_CONST(n)     _PSP_SWAP2BYTE_CONST(n)
+	#define HOST_TO_BE_SHORT(n)           (n)
+	#define HOST_TO_BE_SHORT_CONST(n)     (n)
+	#define HOST_TO_LE_SHORT(n)           _PSP_SWAP2BYTE(n)
+	#define HOST_TO_LE_SHORT_CONST(n)     _PSP_SWAP2BYTE_CONST(n)
+	#define SHORT_BE_TO_HOST(n)           (n)
+	#define SHORT_BE_TO_HOST_CONST(n)     (n)
+	#define SHORT_LE_TO_HOST(n)           _PSP_SWAP2BYTE(n)
+	#define SHORT_LE_TO_HOST_CONST(n)     _PSP_SWAP2BYTE_CONST(n)
 
-    #define HOST_TO_BE_LONG(n)            (n)
-    #define HOST_TO_BE_LONG_CONST(n)      (n)
-    #define HOST_TO_LE_LONG(n)            _PSP_SWAP4BYTE(n)
-    #define HOST_TO_LE_LONG_CONST(n)      _PSP_SWAP4BYTE_CONST(n)
-    #define LONG_BE_TO_HOST(n)            (n)
-    #define LONG_BE_TO_HOST_CONST(n)      (n)
-    #define LONG_LE_TO_HOST(n)            _PSP_SWAP4BYTE(n)
-    #define LONG_LE_TO_HOST_CONST(n)      _PSP_SWAP4BYTE_CONST(n)
+	#define HOST_TO_BE_LONG(n)            (n)
+	#define HOST_TO_BE_LONG_CONST(n)      (n)
+	#define HOST_TO_LE_LONG(n)            _PSP_SWAP4BYTE(n)
+	#define HOST_TO_LE_LONG_CONST(n)      _PSP_SWAP4BYTE_CONST(n)
+	#define LONG_BE_TO_HOST(n)            (n)
+	#define LONG_BE_TO_HOST_CONST(n)      (n)
+	#define LONG_LE_TO_HOST(n)            _PSP_SWAP4BYTE(n)
+	#define LONG_LE_TO_HOST_CONST(n)      _PSP_SWAP4BYTE_CONST(n)
 
 #else /* (PSP_ENDIAN == MQX_BIG_ENDIAN) */
 
-    #define HOST_TO_BE_SHORT(n)           _PSP_SWAP2BYTE(n)
-    #define HOST_TO_BE_SHORT_CONST(n)     _PSP_SWAP2BYTE_CONST(n)
-    #define HOST_TO_LE_SHORT(n)           (n)
-    #define HOST_TO_LE_SHORT_CONST(n)     (n)
-    #define SHORT_BE_TO_HOST(n)           _PSP_SWAP2BYTE(n)
-    #define SHORT_BE_TO_HOST_CONST(n)     _PSP_SWAP2BYTE_CONST(n)
-    #define SHORT_LE_TO_HOST(n)           (n)
-    #define SHORT_LE_TO_HOST_CONST(n)     (n)
+	#define HOST_TO_BE_SHORT(n)           _PSP_SWAP2BYTE(n)
+	#define HOST_TO_BE_SHORT_CONST(n)     _PSP_SWAP2BYTE_CONST(n)
+	#define HOST_TO_LE_SHORT(n)           (n)
+	#define HOST_TO_LE_SHORT_CONST(n)     (n)
+	#define SHORT_BE_TO_HOST(n)           _PSP_SWAP2BYTE(n)
+	#define SHORT_BE_TO_HOST_CONST(n)     _PSP_SWAP2BYTE_CONST(n)
+	#define SHORT_LE_TO_HOST(n)           (n)
+	#define SHORT_LE_TO_HOST_CONST(n)     (n)
 
-    #define HOST_TO_BE_LONG(n)            _PSP_SWAP4BYTE(n)
-    #define HOST_TO_BE_LONG_CONST(n)      _PSP_SWAP4BYTE_CONST(n)
-    #define HOST_TO_LE_LONG(n)            (n)
-    #define HOST_TO_LE_LONG_CONST(n)      (n)
-    #define LONG_BE_TO_HOST(n)            _PSP_SWAP4BYTE(n)
-    #define LONG_BE_TO_HOST_CONST(n)      _PSP_SWAP4BYTE_CONST(n)
-    #define LONG_LE_TO_HOST(n)            (n)
-    #define LONG_LE_TO_HOST_CONST(n)      (n)
+	#define HOST_TO_BE_LONG(n)            _PSP_SWAP4BYTE(n)
+	#define HOST_TO_BE_LONG_CONST(n)      _PSP_SWAP4BYTE_CONST(n)
+	#define HOST_TO_LE_LONG(n)            (n)
+	#define HOST_TO_LE_LONG_CONST(n)      (n)
+	#define LONG_BE_TO_HOST(n)            _PSP_SWAP4BYTE(n)
+	#define LONG_BE_TO_HOST_CONST(n)      _PSP_SWAP4BYTE_CONST(n)
+	#define LONG_LE_TO_HOST(n)            (n)
+	#define LONG_LE_TO_HOST_CONST(n)      (n)
 
 #endif /* (PSP_ENDIAN == MQX_BIG_ENDIAN) */
 
-    #define HOST_TO_BE_UNALIGNED_SHORT(n, m) (((uint8_t *)(m))[0] = ((n) >>  8) & 0xFF, \
-                                              ((uint8_t *)(m))[1] =  (n)        & 0xFF, \
-                                              (n))
+	#define HOST_TO_BE_UNALIGNED_SHORT(n, m) (((uint8_t *)(m))[0] = ((n) >>  8) & 0xFF, \
+											  ((uint8_t *)(m))[1] =  (n)        & 0xFF, \
+											  (n))
 
-    #define HOST_TO_BE_UNALIGNED_LONG(n, m)  (((uint8_t *)(m))[0] = ((n) >> 24) & 0xFF, \
-                                              ((uint8_t *)(m))[1] = ((n) >> 16) & 0xFF, \
-                                              ((uint8_t *)(m))[2] = ((n) >>  8) & 0xFF, \
-                                              ((uint8_t *)(m))[3] =  (n)        & 0xFF, \
-                                              (n))
+	#define HOST_TO_BE_UNALIGNED_LONG(n, m)  (((uint8_t *)(m))[0] = ((n) >> 24) & 0xFF, \
+											  ((uint8_t *)(m))[1] = ((n) >> 16) & 0xFF, \
+											  ((uint8_t *)(m))[2] = ((n) >>  8) & 0xFF, \
+											  ((uint8_t *)(m))[3] =  (n)        & 0xFF, \
+											  (n))
 
-    #define HOST_TO_LE_UNALIGNED_SHORT(n, m) (((uint8_t *)(m))[1] = ((n) >>  8) & 0xFF, \
-                                              ((uint8_t *)(m))[0] =  (n)        & 0xFF, \
-                                              (n))
+	#define HOST_TO_LE_UNALIGNED_SHORT(n, m) (((uint8_t *)(m))[1] = ((n) >>  8) & 0xFF, \
+											  ((uint8_t *)(m))[0] =  (n)        & 0xFF, \
+											  (n))
 
-    #define HOST_TO_LE_UNALIGNED_LONG(n, m)  (((uint8_t *)(m))[3] = ((n) >> 24) & 0xFF, \
-                                              ((uint8_t *)(m))[2] = ((n) >> 16) & 0xFF, \
-                                              ((uint8_t *)(m))[1] = ((n) >>  8) & 0xFF, \
-                                              ((uint8_t *)(m))[0] =  (n)        & 0xFF, \
-                                              (n))
+	#define HOST_TO_LE_UNALIGNED_LONG(n, m)  (((uint8_t *)(m))[3] = ((n) >> 24) & 0xFF, \
+											  ((uint8_t *)(m))[2] = ((n) >> 16) & 0xFF, \
+											  ((uint8_t *)(m))[1] = ((n) >>  8) & 0xFF, \
+											  ((uint8_t *)(m))[0] =  (n)        & 0xFF, \
+											  (n))
 
-    #define SHORT_UNALIGNED_BE_TO_HOST(n) (\
-                                           (((uint16_t)(((uint8_t *)(n))[0])) << 8) | \
-                                           ( (uint16_t)(((uint8_t *)(n))[1])) \
-                                           )
+	#define SHORT_UNALIGNED_BE_TO_HOST(n) (\
+										   (((uint16_t)(((uint8_t *)(n))[0])) << 8) | \
+										   ( (uint16_t)(((uint8_t *)(n))[1])) \
+										   )
 
-    #define LONG_UNALIGNED_BE_TO_HOST(n)  (\
-                                           (((uint32_t)(((uint8_t *)(n))[0])) << 24) | \
-                                           (((uint32_t)(((uint8_t *)(n))[1])) << 16) | \
-                                           (((uint32_t)(((uint8_t *)(n))[2])) << 8) | \
-                                           ( (uint32_t)(((uint8_t *)(n))[3])) \
-                                           )
+	#define LONG_UNALIGNED_BE_TO_HOST(n)  (\
+										   (((uint32_t)(((uint8_t *)(n))[0])) << 24) | \
+										   (((uint32_t)(((uint8_t *)(n))[1])) << 16) | \
+										   (((uint32_t)(((uint8_t *)(n))[2])) << 8) | \
+										   ( (uint32_t)(((uint8_t *)(n))[3])) \
+										   )
 
-    #define SHORT_UNALIGNED_LE_TO_HOST(n) (\
-                                           (((uint16_t)(((uint8_t *)(n))[1])) << 8) | \
-                                           ( (uint16_t)(((uint8_t *)(n))[0])) \
-                                           )
+	#define SHORT_UNALIGNED_LE_TO_HOST(n) (\
+										   (((uint16_t)(((uint8_t *)(n))[1])) << 8) | \
+										   ( (uint16_t)(((uint8_t *)(n))[0])) \
+										   )
 
-    #define LONG_UNALIGNED_LE_TO_HOST(n)  (\
-                                           (((uint32_t)(((uint8_t *)(n))[3])) << 24) | \
-                                           (((uint32_t)(((uint8_t *)(n))[2])) << 16) | \
-                                           (((uint32_t)(((uint8_t *)(n))[1])) << 8) | \
-                                           ( (uint32_t)(((uint8_t *)(n))[0])) \
-                                           )
+	#define LONG_UNALIGNED_LE_TO_HOST(n)  (\
+										   (((uint32_t)(((uint8_t *)(n))[3])) << 24) | \
+										   (((uint32_t)(((uint8_t *)(n))[2])) << 16) | \
+										   (((uint32_t)(((uint8_t *)(n))[1])) << 8) | \
+										   ( (uint32_t)(((uint8_t *)(n))[0])) \
+										   )
 
 /* Host to network / network to host conversion functions conforming to POSIX API */
 #define htons(x)       HOST_TO_BE_SHORT(x)
@@ -1909,7 +1909,7 @@ void _mqx_init_task(uint32_t);
 #define mqx_htons(p,x) HOST_TO_BE_UNALIGNED_SHORT(x,p)
 
 #define mqx_htonc(p,x) (((uint8_t *)(p))[0] = (x) & 0xFF, \
-                        (x))
+						(x))
 
 #define mqx_ntohl(p)   LONG_UNALIGNED_BE_TO_HOST(p)
 
@@ -1924,7 +1924,7 @@ void _mqx_init_task(uint32_t);
 #define mqx_htods(p,x) HOST_TO_LE_UNALIGNED_SHORT(x,p)
 
 #define mqx_htodc(p,x) (((uint8_t *)(p))[0] = (x) & 0xFF, \
-                        (x))
+						(x))
 
 #define mqx_dtohl(p)   LONG_UNALIGNED_LE_TO_HOST(p)
 

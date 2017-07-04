@@ -16,14 +16,14 @@
 `define PWM(signal, cnt, value)			signal <= (cnt == value) ? 0 : (cnt == 0) ? 1 : signal
 
 module LEDS (
-	output reg    led2_red         , led3_red         ,
-	output reg    led2_green       , led3_green       ,
-	output reg    led2_blue        , led3_blue        ,
+	output reg    led1_red         , led2_red         , led3_red         ,
+	output reg    led1_green       , led2_green       , led3_green       ,
+	output reg    led1_blue        , led2_blue        , led3_blue        ,
 	
-	input  [7:0]  led2_red_value   , led3_red_value   ,
-	input  [7:0]  led2_green_value , led3_green_value ,
-	input  [7:0]  led2_blue_value  , led3_blue_value  ,
-	input  [7:0]  led2_DC_value    , led3_DC_value    ,
+	input  [7:0]  led1_red_value   , led2_red_value   , led3_red_value   ,
+	input  [7:0]  led1_green_value , led2_green_value , led3_green_value ,
+	input  [7:0]  led1_blue_value  , led2_blue_value  , led3_blue_value  ,
+	input  [7:0]  led1_DC_value    , led2_DC_value    , led3_DC_value    ,
 	
 	input         rst              ,
 	input         clk
@@ -37,6 +37,11 @@ localparam	CLK_FRQ_MHZ                = 24  ,
 
 reg  [31:0] cnt_time       = 0;
 reg  [ 7:0] cnt_color     = 0;
+
+reg         led1_red_int   = 0;
+reg         led1_green_int = 0;
+reg         led1_blue_int  = 0;
+reg         led1_dc_int    = 0;
 
 reg         led2_red_int   = 0;
 reg         led2_green_int = 0;
@@ -67,19 +72,24 @@ end
 always @(posedge clk or posedge rst)
 begin
 	if (rst) begin
+		{led1_red_int, led1_green_int, led1_blue_int, led1_dc_int} <= 0;
 		{led2_red_int, led2_green_int, led2_blue_int, led2_dc_int} <= 0;
 		{led3_red_int, led3_green_int, led3_blue_int, led3_dc_int} <= 0;
 	end else begin		
+		`PWM(led1_red_int  , cnt_color,  led1_red_value   );
+		`PWM(led1_green_int, cnt_color,  led1_green_value );
+		`PWM(led1_blue_int , cnt_color,  led1_blue_value  );
+		`PWM(led1_dc_int   , cnt_time  , led1_DC_value * (BRIGHTNESS_TIME_RESOLUTION / 256));		// DC = (value / 256) * TIME_RESOLUTION
+
 		`PWM(led2_red_int  , cnt_color,  led2_red_value   );
 		`PWM(led2_green_int, cnt_color,  led2_green_value );
 		`PWM(led2_blue_int , cnt_color,  led2_blue_value  );
-		`PWM(led2_dc_int   , cnt_time  ,  led2_DC_value * (BRIGHTNESS_TIME_RESOLUTION / 256));		// DC = (value / 256) * TIME_RESOLUTION
+		`PWM(led2_dc_int   , cnt_time  , led2_DC_value * (BRIGHTNESS_TIME_RESOLUTION / 256));		// DC = (value / 256) * TIME_RESOLUTION
 
 		`PWM(led3_red_int  , cnt_color,  led3_red_value   );
 		`PWM(led3_green_int, cnt_color,  led3_green_value );
 		`PWM(led3_blue_int , cnt_color,  led3_blue_value  );
-
-		`PWM(led3_dc_int   , cnt_time  ,  led3_DC_value * (BRIGHTNESS_TIME_RESOLUTION / 256));		// DC = (value / 256) * TIME_RESOLUTION		
+		`PWM(led3_dc_int   , cnt_time  , led3_DC_value * (BRIGHTNESS_TIME_RESOLUTION / 256));		// DC = (value / 256) * TIME_RESOLUTION		
 	end
 end
 
@@ -87,9 +97,14 @@ end
 always @(posedge clk or posedge rst)
 begin
 	if (rst) begin
+		{led1_red, led1_green, led1_blue } <= 0;
 		{led2_red, led2_green, led2_blue } <= 0;
 		{led3_red, led3_green, led3_blue } <= 0;
 	end else begin
+		led1_red   <= led1_dc_int & led1_red_int    ;
+		led1_green <= led1_dc_int & led1_green_int  ;
+		led1_blue  <= led1_dc_int & led1_blue_int   ;
+
 		led2_red   <= led2_dc_int & led2_red_int    ;
 		led2_green <= led2_dc_int & led2_green_int  ;
 		led2_blue  <= led2_dc_int & led2_blue_int   ;

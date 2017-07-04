@@ -30,47 +30,47 @@
 
 
 static int nio_null_open(void *dev_context, const char *dev_name, int flags, void **fp_context, int *error) {
-    return 0;
+	return 0;
 }
 
 static int nio_null_read(void *dev_context, void *fp_context, void *buf, size_t nbytes, int *error) {
-    return 0;
+	return 0;
 }
 
 static int nio_null_write(void *dev_context, void *fp_context, const void *buf, size_t nbytes, int *error) {
-    return nbytes;
+	return nbytes;
 }
 
 static _nio_off_t nio_null_lseek(void *dev_context, void *fp_context, _nio_off_t offset, int whence, int *error) {
-    return 0;
+	return 0;
 }
 
 static int nio_null_ioctl(void *dev_context, void *fp_context, int *error, unsigned long int request, va_list ap) {
-    if (error) {
-        *error = NIO_ENOTTY;
-    }
-    return -1;
+	if (error) {
+		*error = NIO_ENOTTY;
+	}
+	return -1;
 }
 
 static int nio_null_close(void *dev_context, void *fp_context, int *error) {
-    return 0;
+	return 0;
 }
 
 static int nio_null_init(void *init_data, void **dev_context, int *error) {
-    return 0;
+	return 0;
 }
 
 static int nio_null_deinit(void *dev_context, int *error) {
-    return 0;
+	return 0;
 }
 
 const NIO_DEV_FN_STRUCT nio_null_dev_fn = {
-    .OPEN = nio_null_open,
-    .READ = nio_null_read,
-    .WRITE = nio_null_write,
-    .LSEEK = nio_null_lseek,
-    .IOCTL = nio_null_ioctl,
-    .CLOSE = nio_null_close,
-    .INIT = nio_null_init,
-    .DEINIT = nio_null_deinit,
+	.OPEN = nio_null_open,
+	.READ = nio_null_read,
+	.WRITE = nio_null_write,
+	.LSEEK = nio_null_lseek,
+	.IOCTL = nio_null_ioctl,
+	.CLOSE = nio_null_close,
+	.INIT = nio_null_init,
+	.DEINIT = nio_null_deinit,
 };

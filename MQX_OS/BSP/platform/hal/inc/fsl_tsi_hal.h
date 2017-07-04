@@ -73,38 +73,38 @@ typedef enum _tsi_status
  * These constants define the tsi number of consecutive scans in a TSI instance for each electrode.
  */
 typedef enum _tsi_n_consecutive_scans {
-    kTsiConsecutiveScansNumber_1time = 0,       /*!< once per electrode */
-    kTsiConsecutiveScansNumber_2time = 1,       /*!< twice per electrode */
-    kTsiConsecutiveScansNumber_3time = 2,       /*!< 3 times consecutive scan */
-    kTsiConsecutiveScansNumber_4time = 3,       /*!< 4 times consecutive scan */
-    kTsiConsecutiveScansNumber_5time = 4,       /*!< 5 times consecutive scan */
-    kTsiConsecutiveScansNumber_6time = 5,       /*!< 6 times consecutive scan */
-    kTsiConsecutiveScansNumber_7time = 6,       /*!< 7 times consecutive scan */
-    kTsiConsecutiveScansNumber_8time = 7,       /*!< 8 times consecutive scan */
-    kTsiConsecutiveScansNumber_9time = 8,       /*!< 9 times consecutive scan */
-    kTsiConsecutiveScansNumber_10time = 9,      /*!< 10 times consecutive scan */
-    kTsiConsecutiveScansNumber_11time = 10,     /*!< 11 times consecutive scan */
-    kTsiConsecutiveScansNumber_12time = 11,     /*!< 12 times consecutive scan */
-    kTsiConsecutiveScansNumber_13time = 12,     /*!< 13 times consecutive scan */
-    kTsiConsecutiveScansNumber_14time = 13,     /*!< 14 times consecutive scan */
-    kTsiConsecutiveScansNumber_15time = 14,     /*!< 15 times consecutive scan */
-    kTsiConsecutiveScansNumber_16time = 15,     /*!< 16 times consecutive scan */
-    kTsiConsecutiveScansNumber_17time = 16,     /*!< 17 times consecutive scan */
-    kTsiConsecutiveScansNumber_18time = 17,     /*!< 18 times consecutive scan */
-    kTsiConsecutiveScansNumber_19time = 18,     /*!< 19 times consecutive scan */
-    kTsiConsecutiveScansNumber_20time = 19,     /*!< 20 times consecutive scan */
-    kTsiConsecutiveScansNumber_21time = 20,     /*!< 21 times consecutive scan */
-    kTsiConsecutiveScansNumber_22time = 21,     /*!< 22 times consecutive scan */
-    kTsiConsecutiveScansNumber_23time = 22,     /*!< 23 times consecutive scan */
-    kTsiConsecutiveScansNumber_24time = 23,     /*!< 24 times consecutive scan */
-    kTsiConsecutiveScansNumber_25time = 24,     /*!< 25 times consecutive scan */
-    kTsiConsecutiveScansNumber_26time = 25,     /*!< 26 times consecutive scan */
-    kTsiConsecutiveScansNumber_27time = 26,     /*!< 27 times consecutive scan */
-    kTsiConsecutiveScansNumber_28time = 27,     /*!< 28 times consecutive scan */
-    kTsiConsecutiveScansNumber_29time = 28,     /*!< 29 times consecutive scan */
-    kTsiConsecutiveScansNumber_30time = 29,     /*!< 30 times consecutive scan */
-    kTsiConsecutiveScansNumber_31time = 30,     /*!< 31 times consecutive scan */
-    kTsiConsecutiveScansNumber_32time = 31,     /*!< 32 times consecutive scan */
+	kTsiConsecutiveScansNumber_1time = 0,       /*!< once per electrode */
+	kTsiConsecutiveScansNumber_2time = 1,       /*!< twice per electrode */
+	kTsiConsecutiveScansNumber_3time = 2,       /*!< 3 times consecutive scan */
+	kTsiConsecutiveScansNumber_4time = 3,       /*!< 4 times consecutive scan */
+	kTsiConsecutiveScansNumber_5time = 4,       /*!< 5 times consecutive scan */
+	kTsiConsecutiveScansNumber_6time = 5,       /*!< 6 times consecutive scan */
+	kTsiConsecutiveScansNumber_7time = 6,       /*!< 7 times consecutive scan */
+	kTsiConsecutiveScansNumber_8time = 7,       /*!< 8 times consecutive scan */
+	kTsiConsecutiveScansNumber_9time = 8,       /*!< 9 times consecutive scan */
+	kTsiConsecutiveScansNumber_10time = 9,      /*!< 10 times consecutive scan */
+	kTsiConsecutiveScansNumber_11time = 10,     /*!< 11 times consecutive scan */
+	kTsiConsecutiveScansNumber_12time = 11,     /*!< 12 times consecutive scan */
+	kTsiConsecutiveScansNumber_13time = 12,     /*!< 13 times consecutive scan */
+	kTsiConsecutiveScansNumber_14time = 13,     /*!< 14 times consecutive scan */
+	kTsiConsecutiveScansNumber_15time = 14,     /*!< 15 times consecutive scan */
+	kTsiConsecutiveScansNumber_16time = 15,     /*!< 16 times consecutive scan */
+	kTsiConsecutiveScansNumber_17time = 16,     /*!< 17 times consecutive scan */
+	kTsiConsecutiveScansNumber_18time = 17,     /*!< 18 times consecutive scan */
+	kTsiConsecutiveScansNumber_19time = 18,     /*!< 19 times consecutive scan */
+	kTsiConsecutiveScansNumber_20time = 19,     /*!< 20 times consecutive scan */
+	kTsiConsecutiveScansNumber_21time = 20,     /*!< 21 times consecutive scan */
+	kTsiConsecutiveScansNumber_22time = 21,     /*!< 22 times consecutive scan */
+	kTsiConsecutiveScansNumber_23time = 22,     /*!< 23 times consecutive scan */
+	kTsiConsecutiveScansNumber_24time = 23,     /*!< 24 times consecutive scan */
+	kTsiConsecutiveScansNumber_25time = 24,     /*!< 25 times consecutive scan */
+	kTsiConsecutiveScansNumber_26time = 25,     /*!< 26 times consecutive scan */
+	kTsiConsecutiveScansNumber_27time = 26,     /*!< 27 times consecutive scan */
+	kTsiConsecutiveScansNumber_28time = 27,     /*!< 28 times consecutive scan */
+	kTsiConsecutiveScansNumber_29time = 28,     /*!< 29 times consecutive scan */
+	kTsiConsecutiveScansNumber_30time = 29,     /*!< 30 times consecutive scan */
+	kTsiConsecutiveScansNumber_31time = 30,     /*!< 31 times consecutive scan */
+	kTsiConsecutiveScansNumber_32time = 31,     /*!< 32 times consecutive scan */
 } tsi_n_consecutive_scans_t;
 
 /*!
@@ -125,14 +125,14 @@ typedef struct _tsi_n_consecutive_scans_limits
  * These constants define the tsi electrode oscillator prescaler in a TSI instance.
  */
 typedef enum _tsi_electrode_osc_prescaler {
-    kTsiElecOscPrescaler_1div = 0,          /*!< Electrode oscillator frequency divided by 1 */
-    kTsiElecOscPrescaler_2div = 1,          /*!< Electrode oscillator frequency divided by 2 */
-    kTsiElecOscPrescaler_4div = 2,          /*!< Electrode oscillator frequency divided by 4 */
-    kTsiElecOscPrescaler_8div = 3,          /*!< Electrode oscillator frequency divided by 8 */
-    kTsiElecOscPrescaler_16div = 4,         /*!< Electrode oscillator frequency divided by 16 */
-    kTsiElecOscPrescaler_32div = 5,         /*!< Electrode oscillator frequency divided by 32 */
-    kTsiElecOscPrescaler_64div = 6,         /*!< Electrode oscillator frequency divided by 64 */
-    kTsiElecOscPrescaler_128div = 7,        /*!< Electrode oscillator frequency divided by 128 */
+	kTsiElecOscPrescaler_1div = 0,          /*!< Electrode oscillator frequency divided by 1 */
+	kTsiElecOscPrescaler_2div = 1,          /*!< Electrode oscillator frequency divided by 2 */
+	kTsiElecOscPrescaler_4div = 2,          /*!< Electrode oscillator frequency divided by 4 */
+	kTsiElecOscPrescaler_8div = 3,          /*!< Electrode oscillator frequency divided by 8 */
+	kTsiElecOscPrescaler_16div = 4,         /*!< Electrode oscillator frequency divided by 16 */
+	kTsiElecOscPrescaler_32div = 5,         /*!< Electrode oscillator frequency divided by 32 */
+	kTsiElecOscPrescaler_64div = 6,         /*!< Electrode oscillator frequency divided by 64 */
+	kTsiElecOscPrescaler_128div = 7,        /*!< Electrode oscillator frequency divided by 128 */
 } tsi_electrode_osc_prescaler_t;
 
 
@@ -221,7 +221,7 @@ void TSI_HAL_DisableLowPower(TSI_Type * base);
 */
 static inline uint32_t TSI_HAL_IsModuleEnabled(TSI_Type * base)
 {
-    return TSI_BRD_GENCS_TSIEN(base);
+	return TSI_BRD_GENCS_TSIEN(base);
 }
 
 /*!
@@ -232,7 +232,7 @@ static inline uint32_t TSI_HAL_IsModuleEnabled(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_GetScanTriggerMode(TSI_Type * base)
 {
-    return (uint32_t)TSI_BRD_GENCS_STM(base);
+	return (uint32_t)TSI_BRD_GENCS_STM(base);
 }
 
 /*!
@@ -243,7 +243,7 @@ static inline uint32_t TSI_HAL_GetScanTriggerMode(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_IsScanInProgress(TSI_Type * base)
 {
-    return (uint32_t)TSI_BRD_GENCS_SCNIP(base);
+	return (uint32_t)TSI_BRD_GENCS_SCNIP(base);
 }
 
 /*!
@@ -254,7 +254,7 @@ static inline uint32_t TSI_HAL_IsScanInProgress(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_GetEndOfScanFlag(TSI_Type * base)
 {
-    return (uint32_t)TSI_BRD_GENCS_EOSF(base);
+	return (uint32_t)TSI_BRD_GENCS_EOSF(base);
 }
 
 /*!
@@ -265,7 +265,7 @@ static inline uint32_t TSI_HAL_GetEndOfScanFlag(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_GetOutOfRangeFlag(TSI_Type * base)
 {
-    return (uint32_t)TSI_BRD_GENCS_OUTRGF(base);
+	return (uint32_t)TSI_BRD_GENCS_OUTRGF(base);
 }
 
 /*!
@@ -276,7 +276,7 @@ static inline uint32_t TSI_HAL_GetOutOfRangeFlag(TSI_Type * base)
 */
 static inline tsi_electrode_osc_prescaler_t TSI_HAL_GetPrescaler(TSI_Type * base)
 {
-    return (tsi_electrode_osc_prescaler_t)TSI_BRD_GENCS_PS(base);
+	return (tsi_electrode_osc_prescaler_t)TSI_BRD_GENCS_PS(base);
 }
 
 /*!
@@ -287,7 +287,7 @@ static inline tsi_electrode_osc_prescaler_t TSI_HAL_GetPrescaler(TSI_Type * base
 */
 static inline tsi_n_consecutive_scans_t TSI_HAL_GetNumberOfScans(TSI_Type * base)
 {
-    return (tsi_n_consecutive_scans_t)TSI_BRD_GENCS_NSCN(base);
+	return (tsi_n_consecutive_scans_t)TSI_BRD_GENCS_NSCN(base);
 }
 
 #ifdef __cplusplus
@@ -300,4 +300,3 @@ static inline tsi_n_consecutive_scans_t TSI_HAL_GetNumberOfScans(TSI_Type * base
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

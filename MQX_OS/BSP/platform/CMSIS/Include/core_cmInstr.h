@@ -13,13 +13,13 @@
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are met:
    - Redistributions of source code must retain the above copyright
-     notice, this list of conditions and the following disclaimer.
+	 notice, this list of conditions and the following disclaimer.
    - Redistributions in binary form must reproduce the above copyright
-     notice, this list of conditions and the following disclaimer in the
-     documentation and/or other materials provided with the distribution.
+	 notice, this list of conditions and the following disclaimer in the
+	 documentation and/or other materials provided with the distribution.
    - Neither the name of ARM nor the names of its contributors may be used
-     to endorse or promote products derived from this software without
-     specific prior written permission.
+	 to endorse or promote products derived from this software without
+	 specific prior written permission.
    *
    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -55,84 +55,84 @@
 
 /** \brief  No Operation
 
-    No Operation does nothing. This instruction can be used for code alignment purposes.
+	No Operation does nothing. This instruction can be used for code alignment purposes.
  */
 #define __NOP                             __nop
 
 
 /** \brief  Wait For Interrupt
 
-    Wait For Interrupt is a hint instruction that suspends execution
-    until one of a number of events occurs.
+	Wait For Interrupt is a hint instruction that suspends execution
+	until one of a number of events occurs.
  */
 #define __WFI                             __wfi
 
 
 /** \brief  Wait For Event
 
-    Wait For Event is a hint instruction that permits the processor to enter
-    a low-power state until one of a number of events occurs.
+	Wait For Event is a hint instruction that permits the processor to enter
+	a low-power state until one of a number of events occurs.
  */
 #define __WFE                             __wfe
 
 
 /** \brief  Send Event
 
-    Send Event is a hint instruction. It causes an event to be signaled to the CPU.
+	Send Event is a hint instruction. It causes an event to be signaled to the CPU.
  */
 #define __SEV                             __sev
 
 
 /** \brief  Instruction Synchronization Barrier
 
-    Instruction Synchronization Barrier flushes the pipeline in the processor,
-    so that all instructions following the ISB are fetched from cache or
-    memory, after the instruction has been completed.
+	Instruction Synchronization Barrier flushes the pipeline in the processor,
+	so that all instructions following the ISB are fetched from cache or
+	memory, after the instruction has been completed.
  */
 #define __ISB() do {\
-                   __schedule_barrier();\
-                   __isb(0xF);\
-                   __schedule_barrier();\
-                } while (0)
+				   __schedule_barrier();\
+				   __isb(0xF);\
+				   __schedule_barrier();\
+				} while (0)
 
 /** \brief  Data Synchronization Barrier
 
-    This function acts as a special kind of Data Memory Barrier.
-    It completes when all explicit memory accesses before this instruction complete.
+	This function acts as a special kind of Data Memory Barrier.
+	It completes when all explicit memory accesses before this instruction complete.
  */
 #define __DSB() do {\
-                   __schedule_barrier();\
-                   __dsb(0xF);\
-                   __schedule_barrier();\
-                } while (0)
+				   __schedule_barrier();\
+				   __dsb(0xF);\
+				   __schedule_barrier();\
+				} while (0)
 
 /** \brief  Data Memory Barrier
 
-    This function ensures the apparent order of the explicit memory operations before
-    and after the instruction, without ensuring their completion.
+	This function ensures the apparent order of the explicit memory operations before
+	and after the instruction, without ensuring their completion.
  */
 #define __DMB() do {\
-                   __schedule_barrier();\
-                   __dmb(0xF);\
-                   __schedule_barrier();\
-                } while (0)
+				   __schedule_barrier();\
+				   __dmb(0xF);\
+				   __schedule_barrier();\
+				} while (0)
 
 /** \brief  Reverse byte order (32 bit)
 
-    This function reverses the byte order in integer value.
+	This function reverses the byte order in integer value.
 
-    \param [in]    value  Value to reverse
-    \return               Reversed value
+	\param [in]    value  Value to reverse
+	\return               Reversed value
  */
 #define __REV                             __rev
 
 
 /** \brief  Reverse byte order (16 bit)
 
-    This function reverses the byte order in two unsigned short values.
+	This function reverses the byte order in two unsigned short values.
 
-    \param [in]    value  Value to reverse
-    \return               Reversed value
+	\param [in]    value  Value to reverse
+	\return               Reversed value
  */
 #ifndef __NO_EMBEDDED_ASM
 __attribute__((section(".rev16_text"))) __STATIC_INLINE __ASM uint32_t __REV16(uint32_t value)
@@ -144,10 +144,10 @@ __attribute__((section(".rev16_text"))) __STATIC_INLINE __ASM uint32_t __REV16(u
 
 /** \brief  Reverse byte order in signed short value
 
-    This function reverses the byte order in a signed short value with sign extension to integer.
+	This function reverses the byte order in a signed short value with sign extension to integer.
 
-    \param [in]    value  Value to reverse
-    \return               Reversed value
+	\param [in]    value  Value to reverse
+	\return               Reversed value
  */
 #ifndef __NO_EMBEDDED_ASM
 __attribute__((section(".revsh_text"))) __STATIC_INLINE __ASM int32_t __REVSH(int32_t value)
@@ -160,32 +160,32 @@ __attribute__((section(".revsh_text"))) __STATIC_INLINE __ASM int32_t __REVSH(in
 
 /** \brief  Rotate Right in unsigned value (32 bit)
 
-    This function Rotate Right (immediate) provides the value of the contents of a register rotated by a variable number of bits.
+	This function Rotate Right (immediate) provides the value of the contents of a register rotated by a variable number of bits.
 
-    \param [in]    value  Value to rotate
-    \param [in]    value  Number of Bits to rotate
-    \return               Rotated value
+	\param [in]    value  Value to rotate
+	\param [in]    value  Number of Bits to rotate
+	\return               Rotated value
  */
 #define __ROR                             __ror
 
 
 /** \brief  Breakpoint
 
-    This function causes the processor to enter Debug state.
-    Debug tools can use this to investigate system state when the instruction at a particular address is reached.
+	This function causes the processor to enter Debug state.
+	Debug tools can use this to investigate system state when the instruction at a particular address is reached.
 
-    \param [in]    value  is ignored by the processor.
-                   If required, a debugger can use it to store additional information about the breakpoint.
+	\param [in]    value  is ignored by the processor.
+				   If required, a debugger can use it to store additional information about the breakpoint.
  */
 #define __BKPT(value)                       __breakpoint(value)
 
 
 /** \brief  Reverse bit order of value
 
-    This function reverses the bit order of the given value.
+	This function reverses the bit order of the given value.
 
-    \param [in]    value  Value to reverse
-    \return               Reversed value
+	\param [in]    value  Value to reverse
+	\return               Reversed value
  */
 #if       (__CORTEX_M >= 0x03) || (__CORTEX_SC >= 300)
   #define __RBIT                          __rbit
@@ -198,9 +198,9 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __RBIT(uint32_t value)
   result = value;                      // r will be reversed bits of v; first get LSB of v
   for (value >>= 1; value; value >>= 1)
   {
-    result <<= 1;
-    result |= value & 1;
-    s--;
+	result <<= 1;
+	result |= value & 1;
+	s--;
   }
   result <<= s;                       // shift when v's highest bits are zero
   return(result);
@@ -210,10 +210,10 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __RBIT(uint32_t value)
 
 /** \brief  Count leading zeros
 
-    This function counts the number of leading zeros of a data value.
+	This function counts the number of leading zeros of a data value.
 
-    \param [in]  value  Value to count the leading zeros
-    \return             number of leading zeros in value
+	\param [in]  value  Value to count the leading zeros
+	\return             number of leading zeros in value
  */
 #define __CLZ                             __clz
 
@@ -222,73 +222,73 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __RBIT(uint32_t value)
 
 /** \brief  LDR Exclusive (8 bit)
 
-    This function executes a exclusive LDR instruction for 8 bit value.
+	This function executes a exclusive LDR instruction for 8 bit value.
 
-    \param [in]    ptr  Pointer to data
-    \return             value of type uint8_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return             value of type uint8_t at (*ptr)
  */
 #define __LDREXB(ptr)                     ((uint8_t ) __ldrex(ptr))
 
 
 /** \brief  LDR Exclusive (16 bit)
 
-    This function executes a exclusive LDR instruction for 16 bit values.
+	This function executes a exclusive LDR instruction for 16 bit values.
 
-    \param [in]    ptr  Pointer to data
-    \return        value of type uint16_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return        value of type uint16_t at (*ptr)
  */
 #define __LDREXH(ptr)                     ((uint16_t) __ldrex(ptr))
 
 
 /** \brief  LDR Exclusive (32 bit)
 
-    This function executes a exclusive LDR instruction for 32 bit values.
+	This function executes a exclusive LDR instruction for 32 bit values.
 
-    \param [in]    ptr  Pointer to data
-    \return        value of type uint32_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return        value of type uint32_t at (*ptr)
  */
 #define __LDREXW(ptr)                     ((uint32_t ) __ldrex(ptr))
 
 
 /** \brief  STR Exclusive (8 bit)
 
-    This function executes a exclusive STR instruction for 8 bit values.
+	This function executes a exclusive STR instruction for 8 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
-    \return          0  Function succeeded
-    \return          1  Function failed
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
+	\return          0  Function succeeded
+	\return          1  Function failed
  */
 #define __STREXB(value, ptr)              __strex(value, ptr)
 
 
 /** \brief  STR Exclusive (16 bit)
 
-    This function executes a exclusive STR instruction for 16 bit values.
+	This function executes a exclusive STR instruction for 16 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
-    \return          0  Function succeeded
-    \return          1  Function failed
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
+	\return          0  Function succeeded
+	\return          1  Function failed
  */
 #define __STREXH(value, ptr)              __strex(value, ptr)
 
 
 /** \brief  STR Exclusive (32 bit)
 
-    This function executes a exclusive STR instruction for 32 bit values.
+	This function executes a exclusive STR instruction for 32 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
-    \return          0  Function succeeded
-    \return          1  Function failed
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
+	\return          0  Function succeeded
+	\return          1  Function failed
  */
 #define __STREXW(value, ptr)              __strex(value, ptr)
 
 
 /** \brief  Remove the exclusive lock
 
-    This function removes the exclusive lock which is created by LDREX.
+	This function removes the exclusive lock which is created by LDREX.
 
  */
 #define __CLREX                           __clrex
@@ -296,33 +296,33 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __RBIT(uint32_t value)
 
 /** \brief  Signed Saturate
 
-    This function saturates a signed value.
+	This function saturates a signed value.
 
-    \param [in]  value  Value to be saturated
-    \param [in]    sat  Bit position to saturate to (1..32)
-    \return             Saturated value
+	\param [in]  value  Value to be saturated
+	\param [in]    sat  Bit position to saturate to (1..32)
+	\return             Saturated value
  */
 #define __SSAT                            __ssat
 
 
 /** \brief  Unsigned Saturate
 
-    This function saturates an unsigned value.
+	This function saturates an unsigned value.
 
-    \param [in]  value  Value to be saturated
-    \param [in]    sat  Bit position to saturate to (0..31)
-    \return             Saturated value
+	\param [in]  value  Value to be saturated
+	\param [in]    sat  Bit position to saturate to (0..31)
+	\return             Saturated value
  */
 #define __USAT                            __usat
 
 
 /** \brief  Rotate Right with Extend (32 bit)
 
-    This function moves each bit of a bitstring right by one bit.
-    The carry input is shifted in at the left end of the bitstring.
+	This function moves each bit of a bitstring right by one bit.
+	The carry input is shifted in at the left end of the bitstring.
 
-    \param [in]    value  Value to rotate
-    \return               Rotated value
+	\param [in]    value  Value to rotate
+	\return               Rotated value
  */
 #ifndef __NO_EMBEDDED_ASM
 __attribute__((section(".rrx_text"))) __STATIC_INLINE __ASM uint32_t __RRX(uint32_t value)
@@ -335,60 +335,60 @@ __attribute__((section(".rrx_text"))) __STATIC_INLINE __ASM uint32_t __RRX(uint3
 
 /** \brief  LDRT Unprivileged (8 bit)
 
-    This function executes a Unprivileged LDRT instruction for 8 bit value.
+	This function executes a Unprivileged LDRT instruction for 8 bit value.
 
-    \param [in]    ptr  Pointer to data
-    \return             value of type uint8_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return             value of type uint8_t at (*ptr)
  */
 #define __LDRBT(ptr)                      ((uint8_t )  __ldrt(ptr))
 
 
 /** \brief  LDRT Unprivileged (16 bit)
 
-    This function executes a Unprivileged LDRT instruction for 16 bit values.
+	This function executes a Unprivileged LDRT instruction for 16 bit values.
 
-    \param [in]    ptr  Pointer to data
-    \return        value of type uint16_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return        value of type uint16_t at (*ptr)
  */
 #define __LDRHT(ptr)                      ((uint16_t)  __ldrt(ptr))
 
 
 /** \brief  LDRT Unprivileged (32 bit)
 
-    This function executes a Unprivileged LDRT instruction for 32 bit values.
+	This function executes a Unprivileged LDRT instruction for 32 bit values.
 
-    \param [in]    ptr  Pointer to data
-    \return        value of type uint32_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return        value of type uint32_t at (*ptr)
  */
 #define __LDRT(ptr)                       ((uint32_t ) __ldrt(ptr))
 
 
 /** \brief  STRT Unprivileged (8 bit)
 
-    This function executes a Unprivileged STRT instruction for 8 bit values.
+	This function executes a Unprivileged STRT instruction for 8 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
  */
 #define __STRBT(value, ptr)               __strt(value, ptr)
 
 
 /** \brief  STRT Unprivileged (16 bit)
 
-    This function executes a Unprivileged STRT instruction for 16 bit values.
+	This function executes a Unprivileged STRT instruction for 16 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
  */
 #define __STRHT(value, ptr)               __strt(value, ptr)
 
 
 /** \brief  STRT Unprivileged (32 bit)
 
-    This function executes a Unprivileged STRT instruction for 32 bit values.
+	This function executes a Unprivileged STRT instruction for 32 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
  */
 #define __STRT(value, ptr)                __strt(value, ptr)
 
@@ -411,7 +411,7 @@ __attribute__((section(".rrx_text"))) __STATIC_INLINE __ASM uint32_t __RRX(uint3
 
 /** \brief  No Operation
 
-    No Operation does nothing. This instruction can be used for code alignment purposes.
+	No Operation does nothing. This instruction can be used for code alignment purposes.
  */
 __attribute__((always_inline)) __STATIC_INLINE void __NOP(void)
 {
@@ -421,8 +421,8 @@ __attribute__((always_inline)) __STATIC_INLINE void __NOP(void)
 
 /** \brief  Wait For Interrupt
 
-    Wait For Interrupt is a hint instruction that suspends execution
-    until one of a number of events occurs.
+	Wait For Interrupt is a hint instruction that suspends execution
+	until one of a number of events occurs.
  */
 __attribute__((always_inline)) __STATIC_INLINE void __WFI(void)
 {
@@ -432,8 +432,8 @@ __attribute__((always_inline)) __STATIC_INLINE void __WFI(void)
 
 /** \brief  Wait For Event
 
-    Wait For Event is a hint instruction that permits the processor to enter
-    a low-power state until one of a number of events occurs.
+	Wait For Event is a hint instruction that permits the processor to enter
+	a low-power state until one of a number of events occurs.
  */
 __attribute__((always_inline)) __STATIC_INLINE void __WFE(void)
 {
@@ -443,7 +443,7 @@ __attribute__((always_inline)) __STATIC_INLINE void __WFE(void)
 
 /** \brief  Send Event
 
-    Send Event is a hint instruction. It causes an event to be signaled to the CPU.
+	Send Event is a hint instruction. It causes an event to be signaled to the CPU.
  */
 __attribute__((always_inline)) __STATIC_INLINE void __SEV(void)
 {
@@ -453,9 +453,9 @@ __attribute__((always_inline)) __STATIC_INLINE void __SEV(void)
 
 /** \brief  Instruction Synchronization Barrier
 
-    Instruction Synchronization Barrier flushes the pipeline in the processor,
-    so that all instructions following the ISB are fetched from cache or
-    memory, after the instruction has been completed.
+	Instruction Synchronization Barrier flushes the pipeline in the processor,
+	so that all instructions following the ISB are fetched from cache or
+	memory, after the instruction has been completed.
  */
 __attribute__((always_inline)) __STATIC_INLINE void __ISB(void)
 {
@@ -465,8 +465,8 @@ __attribute__((always_inline)) __STATIC_INLINE void __ISB(void)
 
 /** \brief  Data Synchronization Barrier
 
-    This function acts as a special kind of Data Memory Barrier.
-    It completes when all explicit memory accesses before this instruction complete.
+	This function acts as a special kind of Data Memory Barrier.
+	It completes when all explicit memory accesses before this instruction complete.
  */
 __attribute__((always_inline)) __STATIC_INLINE void __DSB(void)
 {
@@ -476,8 +476,8 @@ __attribute__((always_inline)) __STATIC_INLINE void __DSB(void)
 
 /** \brief  Data Memory Barrier
 
-    This function ensures the apparent order of the explicit memory operations before
-    and after the instruction, without ensuring their completion.
+	This function ensures the apparent order of the explicit memory operations before
+	and after the instruction, without ensuring their completion.
  */
 __attribute__((always_inline)) __STATIC_INLINE void __DMB(void)
 {
@@ -487,10 +487,10 @@ __attribute__((always_inline)) __STATIC_INLINE void __DMB(void)
 
 /** \brief  Reverse byte order (32 bit)
 
-    This function reverses the byte order in integer value.
+	This function reverses the byte order in integer value.
 
-    \param [in]    value  Value to reverse
-    \return               Reversed value
+	\param [in]    value  Value to reverse
+	\return               Reversed value
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __REV(uint32_t value)
 {
@@ -507,10 +507,10 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __REV(uint32_t value)
 
 /** \brief  Reverse byte order (16 bit)
 
-    This function reverses the byte order in two unsigned short values.
+	This function reverses the byte order in two unsigned short values.
 
-    \param [in]    value  Value to reverse
-    \return               Reversed value
+	\param [in]    value  Value to reverse
+	\return               Reversed value
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __REV16(uint32_t value)
 {
@@ -523,10 +523,10 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __REV16(uint32_t value)
 
 /** \brief  Reverse byte order in signed short value
 
-    This function reverses the byte order in a signed short value with sign extension to integer.
+	This function reverses the byte order in a signed short value with sign extension to integer.
 
-    \param [in]    value  Value to reverse
-    \return               Reversed value
+	\param [in]    value  Value to reverse
+	\return               Reversed value
  */
 __attribute__((always_inline)) __STATIC_INLINE int32_t __REVSH(int32_t value)
 {
@@ -543,11 +543,11 @@ __attribute__((always_inline)) __STATIC_INLINE int32_t __REVSH(int32_t value)
 
 /** \brief  Rotate Right in unsigned value (32 bit)
 
-    This function Rotate Right (immediate) provides the value of the contents of a register rotated by a variable number of bits.
+	This function Rotate Right (immediate) provides the value of the contents of a register rotated by a variable number of bits.
 
-    \param [in]    value  Value to rotate
-    \param [in]    value  Number of Bits to rotate
-    \return               Rotated value
+	\param [in]    value  Value to rotate
+	\param [in]    value  Number of Bits to rotate
+	\return               Rotated value
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __ROR(uint32_t op1, uint32_t op2)
 {
@@ -557,21 +557,21 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __ROR(uint32_t op1, uint
 
 /** \brief  Breakpoint
 
-    This function causes the processor to enter Debug state.
-    Debug tools can use this to investigate system state when the instruction at a particular address is reached.
+	This function causes the processor to enter Debug state.
+	Debug tools can use this to investigate system state when the instruction at a particular address is reached.
 
-    \param [in]    value  is ignored by the processor.
-                   If required, a debugger can use it to store additional information about the breakpoint.
+	\param [in]    value  is ignored by the processor.
+				   If required, a debugger can use it to store additional information about the breakpoint.
  */
 #define __BKPT(value)                       __ASM volatile ("bkpt "#value)
 
 
 /** \brief  Reverse bit order of value
 
-    This function reverses the bit order of the given value.
+	This function reverses the bit order of the given value.
 
-    \param [in]    value  Value to reverse
-    \return               Reversed value
+	\param [in]    value  Value to reverse
+	\return               Reversed value
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __RBIT(uint32_t value)
 {
@@ -585,9 +585,9 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __RBIT(uint32_t value)
   result = value;                      // r will be reversed bits of v; first get LSB of v
   for (value >>= 1; value; value >>= 1)
   {
-    result <<= 1;
-    result |= value & 1;
-    s--;
+	result <<= 1;
+	result |= value & 1;
+	s--;
   }
   result <<= s;                       // shift when v's highest bits are zero
 #endif
@@ -597,10 +597,10 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __RBIT(uint32_t value)
 
 /** \brief  Count leading zeros
 
-    This function counts the number of leading zeros of a data value.
+	This function counts the number of leading zeros of a data value.
 
-    \param [in]  value  Value to count the leading zeros
-    \return             number of leading zeros in value
+	\param [in]  value  Value to count the leading zeros
+	\return             number of leading zeros in value
  */
 #define __CLZ             __builtin_clz
 
@@ -609,21 +609,21 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __RBIT(uint32_t value)
 
 /** \brief  LDR Exclusive (8 bit)
 
-    This function executes a exclusive LDR instruction for 8 bit value.
+	This function executes a exclusive LDR instruction for 8 bit value.
 
-    \param [in]    ptr  Pointer to data
-    \return             value of type uint8_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return             value of type uint8_t at (*ptr)
  */
 __attribute__((always_inline)) __STATIC_INLINE uint8_t __LDREXB(volatile uint8_t *addr)
 {
-    uint32_t result;
+	uint32_t result;
 
 #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
    __ASM volatile ("ldrexb %0, %1" : "=r" (result) : "Q" (*addr) );
 #else
-    /* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
-       accepted by assembler. So has to use following less efficient pattern.
-    */
+	/* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
+	   accepted by assembler. So has to use following less efficient pattern.
+	*/
    __ASM volatile ("ldrexb %0, [%1]" : "=r" (result) : "r" (addr) : "memory" );
 #endif
    return ((uint8_t) result);    /* Add explicit type cast here */
@@ -632,21 +632,21 @@ __attribute__((always_inline)) __STATIC_INLINE uint8_t __LDREXB(volatile uint8_t
 
 /** \brief  LDR Exclusive (16 bit)
 
-    This function executes a exclusive LDR instruction for 16 bit values.
+	This function executes a exclusive LDR instruction for 16 bit values.
 
-    \param [in]    ptr  Pointer to data
-    \return        value of type uint16_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return        value of type uint16_t at (*ptr)
  */
 __attribute__((always_inline)) __STATIC_INLINE uint16_t __LDREXH(volatile uint16_t *addr)
 {
-    uint32_t result;
+	uint32_t result;
 
 #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
    __ASM volatile ("ldrexh %0, %1" : "=r" (result) : "Q" (*addr) );
 #else
-    /* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
-       accepted by assembler. So has to use following less efficient pattern.
-    */
+	/* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
+	   accepted by assembler. So has to use following less efficient pattern.
+	*/
    __ASM volatile ("ldrexh %0, [%1]" : "=r" (result) : "r" (addr) : "memory" );
 #endif
    return ((uint16_t) result);    /* Add explicit type cast here */
@@ -655,14 +655,14 @@ __attribute__((always_inline)) __STATIC_INLINE uint16_t __LDREXH(volatile uint16
 
 /** \brief  LDR Exclusive (32 bit)
 
-    This function executes a exclusive LDR instruction for 32 bit values.
+	This function executes a exclusive LDR instruction for 32 bit values.
 
-    \param [in]    ptr  Pointer to data
-    \return        value of type uint32_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return        value of type uint32_t at (*ptr)
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __LDREXW(volatile uint32_t *addr)
 {
-    uint32_t result;
+	uint32_t result;
 
    __ASM volatile ("ldrex %0, %1" : "=r" (result) : "Q" (*addr) );
    return(result);
@@ -671,12 +671,12 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __LDREXW(volatile uint32
 
 /** \brief  STR Exclusive (8 bit)
 
-    This function executes a exclusive STR instruction for 8 bit values.
+	This function executes a exclusive STR instruction for 8 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
-    \return          0  Function succeeded
-    \return          1  Function failed
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
+	\return          0  Function succeeded
+	\return          1  Function failed
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __STREXB(uint8_t value, volatile uint8_t *addr)
 {
@@ -689,12 +689,12 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __STREXB(uint8_t value, 
 
 /** \brief  STR Exclusive (16 bit)
 
-    This function executes a exclusive STR instruction for 16 bit values.
+	This function executes a exclusive STR instruction for 16 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
-    \return          0  Function succeeded
-    \return          1  Function failed
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
+	\return          0  Function succeeded
+	\return          1  Function failed
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __STREXH(uint16_t value, volatile uint16_t *addr)
 {
@@ -707,12 +707,12 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __STREXH(uint16_t value,
 
 /** \brief  STR Exclusive (32 bit)
 
-    This function executes a exclusive STR instruction for 32 bit values.
+	This function executes a exclusive STR instruction for 32 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
-    \return          0  Function succeeded
-    \return          1  Function failed
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
+	\return          0  Function succeeded
+	\return          1  Function failed
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __STREXW(uint32_t value, volatile uint32_t *addr)
 {
@@ -725,7 +725,7 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __STREXW(uint32_t value,
 
 /** \brief  Remove the exclusive lock
 
-    This function removes the exclusive lock which is created by LDREX.
+	This function removes the exclusive lock which is created by LDREX.
 
  */
 __attribute__((always_inline)) __STATIC_INLINE void __CLREX(void)
@@ -736,11 +736,11 @@ __attribute__((always_inline)) __STATIC_INLINE void __CLREX(void)
 
 /** \brief  Signed Saturate
 
-    This function saturates a signed value.
+	This function saturates a signed value.
 
-    \param [in]  value  Value to be saturated
-    \param [in]    sat  Bit position to saturate to (1..32)
-    \return             Saturated value
+	\param [in]  value  Value to be saturated
+	\param [in]    sat  Bit position to saturate to (1..32)
+	\return             Saturated value
  */
 #define __SSAT(ARG1,ARG2) \
 ({                          \
@@ -752,11 +752,11 @@ __attribute__((always_inline)) __STATIC_INLINE void __CLREX(void)
 
 /** \brief  Unsigned Saturate
 
-    This function saturates an unsigned value.
+	This function saturates an unsigned value.
 
-    \param [in]  value  Value to be saturated
-    \param [in]    sat  Bit position to saturate to (0..31)
-    \return             Saturated value
+	\param [in]  value  Value to be saturated
+	\param [in]    sat  Bit position to saturate to (0..31)
+	\return             Saturated value
  */
 #define __USAT(ARG1,ARG2) \
 ({                          \
@@ -768,11 +768,11 @@ __attribute__((always_inline)) __STATIC_INLINE void __CLREX(void)
 
 /** \brief  Rotate Right with Extend (32 bit)
 
-    This function moves each bit of a bitstring right by one bit.
-    The carry input is shifted in at the left end of the bitstring.
+	This function moves each bit of a bitstring right by one bit.
+	The carry input is shifted in at the left end of the bitstring.
 
-    \param [in]    value  Value to rotate
-    \return               Rotated value
+	\param [in]    value  Value to rotate
+	\return               Rotated value
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __RRX(uint32_t value)
 {
@@ -785,21 +785,21 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __RRX(uint32_t value)
 
 /** \brief  LDRT Unprivileged (8 bit)
 
-    This function executes a Unprivileged LDRT instruction for 8 bit value.
+	This function executes a Unprivileged LDRT instruction for 8 bit value.
 
-    \param [in]    ptr  Pointer to data
-    \return             value of type uint8_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return             value of type uint8_t at (*ptr)
  */
 __attribute__((always_inline)) __STATIC_INLINE uint8_t __LDRBT(volatile uint8_t *addr)
 {
-    uint32_t result;
+	uint32_t result;
 
 #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
    __ASM volatile ("ldrbt %0, %1" : "=r" (result) : "Q" (*addr) );
 #else
-    /* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
-       accepted by assembler. So has to use following less efficient pattern.
-    */
+	/* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
+	   accepted by assembler. So has to use following less efficient pattern.
+	*/
    __ASM volatile ("ldrbt %0, [%1]" : "=r" (result) : "r" (addr) : "memory" );
 #endif
    return ((uint8_t) result);    /* Add explicit type cast here */
@@ -808,21 +808,21 @@ __attribute__((always_inline)) __STATIC_INLINE uint8_t __LDRBT(volatile uint8_t 
 
 /** \brief  LDRT Unprivileged (16 bit)
 
-    This function executes a Unprivileged LDRT instruction for 16 bit values.
+	This function executes a Unprivileged LDRT instruction for 16 bit values.
 
-    \param [in]    ptr  Pointer to data
-    \return        value of type uint16_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return        value of type uint16_t at (*ptr)
  */
 __attribute__((always_inline)) __STATIC_INLINE uint16_t __LDRHT(volatile uint16_t *addr)
 {
-    uint32_t result;
+	uint32_t result;
 
 #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
    __ASM volatile ("ldrht %0, %1" : "=r" (result) : "Q" (*addr) );
 #else
-    /* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
-       accepted by assembler. So has to use following less efficient pattern.
-    */
+	/* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
+	   accepted by assembler. So has to use following less efficient pattern.
+	*/
    __ASM volatile ("ldrht %0, [%1]" : "=r" (result) : "r" (addr) : "memory" );
 #endif
    return ((uint16_t) result);    /* Add explicit type cast here */
@@ -831,14 +831,14 @@ __attribute__((always_inline)) __STATIC_INLINE uint16_t __LDRHT(volatile uint16_
 
 /** \brief  LDRT Unprivileged (32 bit)
 
-    This function executes a Unprivileged LDRT instruction for 32 bit values.
+	This function executes a Unprivileged LDRT instruction for 32 bit values.
 
-    \param [in]    ptr  Pointer to data
-    \return        value of type uint32_t at (*ptr)
+	\param [in]    ptr  Pointer to data
+	\return        value of type uint32_t at (*ptr)
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __LDRT(volatile uint32_t *addr)
 {
-    uint32_t result;
+	uint32_t result;
 
    __ASM volatile ("ldrt %0, %1" : "=r" (result) : "Q" (*addr) );
    return(result);
@@ -847,10 +847,10 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __LDRT(volatile uint32_t
 
 /** \brief  STRT Unprivileged (8 bit)
 
-    This function executes a Unprivileged STRT instruction for 8 bit values.
+	This function executes a Unprivileged STRT instruction for 8 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
  */
 __attribute__((always_inline)) __STATIC_INLINE void __STRBT(uint8_t value, volatile uint8_t *addr)
 {
@@ -860,10 +860,10 @@ __attribute__((always_inline)) __STATIC_INLINE void __STRBT(uint8_t value, volat
 
 /** \brief  STRT Unprivileged (16 bit)
 
-    This function executes a Unprivileged STRT instruction for 16 bit values.
+	This function executes a Unprivileged STRT instruction for 16 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
  */
 __attribute__((always_inline)) __STATIC_INLINE void __STRHT(uint16_t value, volatile uint16_t *addr)
 {
@@ -873,10 +873,10 @@ __attribute__((always_inline)) __STATIC_INLINE void __STRHT(uint16_t value, vola
 
 /** \brief  STRT Unprivileged (32 bit)
 
-    This function executes a Unprivileged STRT instruction for 32 bit values.
+	This function executes a Unprivileged STRT instruction for 32 bit values.
 
-    \param [in]  value  Value to store
-    \param [in]    ptr  Pointer to location
+	\param [in]  value  Value to store
+	\param [in]    ptr  Pointer to location
  */
 __attribute__((always_inline)) __STATIC_INLINE void __STRT(uint32_t value, volatile uint32_t *addr)
 {

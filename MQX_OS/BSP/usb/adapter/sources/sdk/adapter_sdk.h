@@ -76,8 +76,8 @@
 #define OS_install_isr(num, isr, data)   OSA_InstallIntHandler(num, isr)
 #define OS_intr_init(num, prior, subprior, enable)         \
 do { \
-    NVIC_SetPriority(num, prior); \
-    NVIC_EnableIRQ(num); \
+	NVIC_SetPriority(num, prior); \
+	NVIC_EnableIRQ(num); \
 }while(0)
 
 #define TICKS_PER_SEC 1000
@@ -118,5 +118,3 @@ extern uint32_t OS_MsgQ_Is_Empty(os_msgq_handle msgq, void* msg);
 #define OS_Time_delay                     OSA_TimeDelay
 
 #endif
-
-

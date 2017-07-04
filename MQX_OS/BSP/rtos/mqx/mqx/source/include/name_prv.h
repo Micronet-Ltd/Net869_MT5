@@ -43,7 +43,7 @@
 /* NAME STRUCT */
 /*!
  * \cond DOXYGEN_PRIVATE
- *   
+ *
  * \brief An individual pair of name/number.
  */
 typedef struct name_struct
@@ -59,11 +59,11 @@ typedef struct name_struct
 
 /* NAME COMPONENT STRUCT */
 /*!
- *\cond DOXYGEN_PRIVATE 
- * 
+ *\cond DOXYGEN_PRIVATE
+ *
  * \brief This structure is used to store information required for name retrieval.
- * 
- * An initial structure is created and when pool growth is required, duplicate 
+ *
+ * An initial structure is created and when pool growth is required, duplicate
  * copies of this structure are created and linked via the NEXT_TABLE field.
  */
 typedef struct name_component_struct
@@ -75,7 +75,7 @@ typedef struct name_component_struct
    /*! \brief The total number of names allocated in the entire pool so far. */
    _mqx_uint      TOTAL_NUMBER;
 
-   /*! \brief The number of names allowed in this block. */   
+   /*! \brief The number of names allowed in this block. */
    _mqx_uint      NUMBER_IN_BLOCK;
 
    /*! \brief The number of names allowed to be created in the next block. */
@@ -95,7 +95,7 @@ typedef struct name_component_struct
 
    /*! \brief A variable sized array of name/number pairs. */
    NAME_STRUCT    NAMES[1];
-   
+
 } NAME_COMPONENT_STRUCT, * NAME_COMPONENT_STRUCT_PTR;
 /*! \endcond */
 
@@ -112,9 +112,9 @@ extern "C" {
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _name_add_internal(
-    void* name_handle,
-    char* name,
-    _mqx_max_type number
+	void* name_handle,
+	char* name,
+	_mqx_max_type number
 );
 /*! \endcond */
 
@@ -122,10 +122,10 @@ extern _mqx_uint _name_add_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _name_add_internal_by_index(
-    void* name_handle,
-    char* name,
-    _mqx_max_type number,
-    _mqx_uint index
+	void* name_handle,
+	char* name,
+	_mqx_max_type number,
+	_mqx_uint index
 );
 /*! \endcond */
 
@@ -133,11 +133,11 @@ extern _mqx_uint _name_add_internal_by_index(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _name_create_handle_internal(
-    void **name_handle,
-    _mqx_uint initial_number,
-    _mqx_uint grow_number,
-    _mqx_uint maximum_number,
-    _mqx_uint total_so_far
+	void **name_handle,
+	_mqx_uint initial_number,
+	_mqx_uint grow_number,
+	_mqx_uint maximum_number,
+	_mqx_uint total_so_far
 );
 /*! \endcond */
 
@@ -151,8 +151,8 @@ extern _mqx_uint _name_destroy_handle_internal(void *);
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _name_delete_internal(
-    void *name_handle,
-    char *name
+	void *name_handle,
+	char *name
 );
 /*! \endcond */
 
@@ -160,8 +160,8 @@ extern _mqx_uint _name_delete_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _name_delete_internal_by_index(
-    void *name_handle,
-    _mqx_uint index
+	void *name_handle,
+	_mqx_uint index
 );
 /*! \endcond */
 
@@ -169,9 +169,9 @@ extern _mqx_uint _name_delete_internal_by_index(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _name_find_internal(
-    void *name_handle,
-    char *name,
-    _mqx_max_type_ptr number_ptr
+	void *name_handle,
+	char *name,
+	_mqx_max_type_ptr number_ptr
 );
 /*! \endcond */
 
@@ -179,9 +179,9 @@ extern _mqx_uint _name_find_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _name_find_name_internal(
-    void *name_handle,
-    _mqx_max_type number,
-    char *name_string_ptr
+	void *name_handle,
+	_mqx_max_type number,
+	char *name_string_ptr
 );
 /*! \endcond */
 
@@ -189,9 +189,9 @@ extern _mqx_uint _name_find_name_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _name_find_internal_by_index(
-    void *name_handle,
-    _mqx_uint index,
-    _mqx_max_type_ptr number_ptr
+	void *name_handle,
+	_mqx_uint index,
+	_mqx_max_type_ptr number_ptr
 );
 /*! \endcond */
 
@@ -199,9 +199,9 @@ extern _mqx_uint _name_find_internal_by_index(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _name_test_internal(
-    NAME_COMPONENT_STRUCT_PTR base_name_manager_ptr,
-    void **name_error_ptr,
-    void **name_extension_error_ptr
+	NAME_COMPONENT_STRUCT_PTR base_name_manager_ptr,
+	void **name_error_ptr,
+	void **name_extension_error_ptr
 );
 /*! \endcond */
 

@@ -50,22 +50,22 @@
 /*! @brief Error codes for the LPSCI driver. */
 typedef enum _lpsci_status
 {
-    kStatus_LPSCI_Success                  = 0x00U,
-    kStatus_LPSCI_Fail                     = 0x01U,
-    kStatus_LPSCI_BaudRateCalculationError = 0x02U,
-    kStatus_LPSCI_RxStandbyModeError       = 0x03U,
-    kStatus_LPSCI_ClearStatusFlagError     = 0x04U,
-    kStatus_LPSCI_TxNotDisabled            = 0x05U,
-    kStatus_LPSCI_RxNotDisabled            = 0x06U,
-    kStatus_LPSCI_TxOrRxNotDisabled        = 0x07U,
-    kStatus_LPSCI_TxBusy                   = 0x08U,
-    kStatus_LPSCI_RxBusy                   = 0x09U,
-    kStatus_LPSCI_NoTransmitInProgress     = 0x0AU,
-    kStatus_LPSCI_NoReceiveInProgress      = 0x0BU,
-    kStatus_LPSCI_Timeout                  = 0x0CU,
-    kStatus_LPSCI_Initialized              = 0x0DU,
-    kStatus_LPSCI_NoDataToDeal             = 0x0EU,
-    kStatus_LPSCI_RxOverRun                = 0x0FU
+	kStatus_LPSCI_Success                  = 0x00U,
+	kStatus_LPSCI_Fail                     = 0x01U,
+	kStatus_LPSCI_BaudRateCalculationError = 0x02U,
+	kStatus_LPSCI_RxStandbyModeError       = 0x03U,
+	kStatus_LPSCI_ClearStatusFlagError     = 0x04U,
+	kStatus_LPSCI_TxNotDisabled            = 0x05U,
+	kStatus_LPSCI_RxNotDisabled            = 0x06U,
+	kStatus_LPSCI_TxOrRxNotDisabled        = 0x07U,
+	kStatus_LPSCI_TxBusy                   = 0x08U,
+	kStatus_LPSCI_RxBusy                   = 0x09U,
+	kStatus_LPSCI_NoTransmitInProgress     = 0x0AU,
+	kStatus_LPSCI_NoReceiveInProgress      = 0x0BU,
+	kStatus_LPSCI_Timeout                  = 0x0CU,
+	kStatus_LPSCI_Initialized              = 0x0DU,
+	kStatus_LPSCI_NoDataToDeal             = 0x0EU,
+	kStatus_LPSCI_RxOverRun                = 0x0FU
 } lpsci_status_t;
 
 /*!
@@ -74,8 +74,8 @@ typedef enum _lpsci_status
  * These constants define the number of allowable stop bits to configure in a LPSCI base.
  */
 typedef enum _lpsci_stop_bit_count {
-    kLpsciOneStopBit = 0U,  /*!< one stop bit */
-    kLpsciTwoStopBit = 1U,  /*!< two stop bits */
+	kLpsciOneStopBit = 0U,  /*!< one stop bit */
+	kLpsciTwoStopBit = 1U,  /*!< two stop bits */
 } lpsci_stop_bit_count_t;
 
 /*!
@@ -84,9 +84,9 @@ typedef enum _lpsci_stop_bit_count {
  * These constants define the LPSCI parity mode options: disabled or enabled of type even or odd.
  */
 typedef enum _lpsci_parity_mode {
-    kLpsciParityDisabled = 0x0U,  /*!< parity disabled */
-    kLpsciParityEven     = 0x2U,  /*!< parity enabled, type even, bit setting: PE|PT = 10 */
-    kLpsciParityOdd      = 0x3U,  /*!< parity enabled, type odd,  bit setting: PE|PT = 11 */
+	kLpsciParityDisabled = 0x0U,  /*!< parity disabled */
+	kLpsciParityEven     = 0x2U,  /*!< parity enabled, type even, bit setting: PE|PT = 10 */
+	kLpsciParityOdd      = 0x3U,  /*!< parity enabled, type odd,  bit setting: PE|PT = 11 */
 } lpsci_parity_mode_t;
 
 /*!
@@ -97,8 +97,8 @@ typedef enum _lpsci_parity_mode {
  * of data bits per LPSCI character.
  */
 typedef enum  _lpsci_bit_count_per_char {
-    kLpsci8BitsPerChar = 0U,   /*!< 8-bit data characters */
-    kLpsci9BitsPerChar = 1U,   /*!< 9-bit data characters */
+	kLpsci8BitsPerChar = 0U,   /*!< 8-bit data characters */
+	kLpsci9BitsPerChar = 1U,   /*!< 9-bit data characters */
 } lpsci_bit_count_per_char_t;
 
 /*!
@@ -108,14 +108,14 @@ typedef enum  _lpsci_bit_count_per_char {
  * or "stops/ceases operation"
  */
 typedef enum _lpsci_operation_config {
-    kLpsciOperates = 0U,  /*!< LPSCI continues to operate normally */
-    kLpsciStops = 1U,     /*!< LPSCI ceases operation */
+	kLpsciOperates = 0U,  /*!< LPSCI continues to operate normally */
+	kLpsciStops = 1U,     /*!< LPSCI ceases operation */
 } lpsci_operation_config_t;
 
 /*! @brief LPSCI receiver source select mode. */
 typedef enum _lpsci_receiver_source {
-    kLpsciLoopBack = 0U,  /*!< Internal loop back mode. */
-    kLpsciSingleWire = 1U,/*!< Single wire mode. */
+	kLpsciLoopBack = 0U,  /*!< Internal loop back mode. */
+	kLpsciSingleWire = 1U,/*!< Single wire mode. */
 } lpsci_receiver_source_t ;
 
 /*!
@@ -124,8 +124,8 @@ typedef enum _lpsci_receiver_source {
  * This provides constants for the two LPSCI wakeup methods: idle-line or address-mark.
  */
 typedef enum _lpsci_wakeup_method {
-    kLpsciIdleLineWake = 0U,  /*!< The idle-line wakes LPSCI receiver from standby */
-    kLpsciAddrMarkWake = 1U,  /*!< The address-mark wakes LPSCI receiver from standby */
+	kLpsciIdleLineWake = 0U,  /*!< The idle-line wakes LPSCI receiver from standby */
+	kLpsciAddrMarkWake = 1U,  /*!< The address-mark wakes LPSCI receiver from standby */
 } lpsci_wakeup_method_t;
 
 /*!
@@ -135,8 +135,8 @@ typedef enum _lpsci_wakeup_method {
  * stop bit.
  */
 typedef enum _lpsci_idle_line_select {
-    kLpsciIdleLineAfterStartBit = 0U,  /*!< LPSCI idle character bit count start after start bit */
-    kLpsciIdleLineAfterStopBit = 1U,   /*!< LPSCI idle character bit count start after stop bit */
+	kLpsciIdleLineAfterStartBit = 0U,  /*!< LPSCI idle character bit count start after start bit */
+	kLpsciIdleLineAfterStopBit = 1U,   /*!< LPSCI idle character bit count start after stop bit */
 } lpsci_idle_line_select_t;
 
 /*!
@@ -146,12 +146,12 @@ typedef enum _lpsci_idle_line_select {
  * purposes. Note that the actual maximum bit times may vary depending on the LPSCI base.
  */
 typedef enum _lpsci_break_char_length {
-    kLpsciBreakChar10BitMinimum = 0U, /*!< LPSCI break char length 10 bit times (if M = 0, SBNS = 0) or
-                                     11 (if M = 1, SBNS = 0 or M = 0, SBNS = 1) or 12 (if M = 1,
-                                     SBNS = 1 or M10 = 1, SNBS = 0) or 13 (if M10 = 1, SNBS = 1) */
-    kLpsciBreakChar13BitMinimum = 1U, /*!< LPSCI break char length 13 bit times (if M = 0, SBNS = 0) or
-                                     14 (if M = 1, SBNS = 0 or M = 0, SBNS = 1) or 15 (if M = 1,
-                                     SBNS = 1 or M10 = 1, SNBS = 0) or 16 (if M10 = 1, SNBS = 1) */
+	kLpsciBreakChar10BitMinimum = 0U, /*!< LPSCI break char length 10 bit times (if M = 0, SBNS = 0) or
+									 11 (if M = 1, SBNS = 0 or M = 0, SBNS = 1) or 12 (if M = 1,
+									 SBNS = 1 or M10 = 1, SNBS = 0) or 13 (if M10 = 1, SNBS = 1) */
+	kLpsciBreakChar13BitMinimum = 1U, /*!< LPSCI break char length 13 bit times (if M = 0, SBNS = 0) or
+									 14 (if M = 1, SBNS = 0 or M = 0, SBNS = 1) or 15 (if M = 1,
+									 SBNS = 1 or M10 = 1, SNBS = 0) or 16 (if M10 = 1, SNBS = 1) */
 } lpsci_break_char_length_t;
 
 /*!
@@ -161,8 +161,8 @@ typedef enum _lpsci_break_char_length {
  *  The transmit line TXDIR is either an input or output.
  */
 typedef enum _lpsci_singlewire_txdir {
-    kLpsciSinglewireTxdirIn = 0U,  /*!< LPSCI Single-Wire mode TXDIR input */
-    kLpsciSinglewireTxdirOut = 1U, /*!< LPSCI Single-Wire mode TXDIR output */
+	kLpsciSinglewireTxdirIn = 0U,  /*!< LPSCI Single-Wire mode TXDIR input */
+	kLpsciSinglewireTxdirOut = 1U, /*!< LPSCI Single-Wire mode TXDIR output */
 } lpsci_singlewire_txdir_t;
 
 /*!
@@ -172,10 +172,10 @@ typedef enum _lpsci_singlewire_txdir {
  * 1/32, and 1/4 pulse widths.
  */
 typedef enum _lpsci_ir_tx_pulsewidth {
-    kLpsciIrThreeSixteenthsWidth = 0U,   /*!< 3/16 pulse */
-    kLpsciIrOneSixteenthWidth = 1U,      /*!< 1/16 pulse */
-    kLpsciIrOneThirtysecondsWidth = 2U,  /*!< 1/32 pulse */
-    kLpsciIrOneFourthWidth = 3U,         /*!< 1/4 pulse */
+	kLpsciIrThreeSixteenthsWidth = 0U,   /*!< 3/16 pulse */
+	kLpsciIrOneSixteenthWidth = 1U,      /*!< 1/16 pulse */
+	kLpsciIrOneThirtysecondsWidth = 2U,  /*!< 1/32 pulse */
+	kLpsciIrOneFourthWidth = 3U,         /*!< 1/4 pulse */
 } lpsci_ir_tx_pulsewidth_t;
 
 /*!
@@ -184,20 +184,20 @@ typedef enum _lpsci_ir_tx_pulsewidth {
  * This provides constants for the LPSCI status flags for use in the LPSCI functions.
  */
 typedef enum _lpsci_status_flag {
-    kLpsciTxDataRegEmpty = 0U << LPSCI_SHIFT | UART0_S1_TDRE_SHIFT, /*!< Transmit data register empty flag, sets when Tx buffer is empty */
-    kLpsciTxComplete     = 0U << LPSCI_SHIFT | UART0_S1_TC_SHIFT,   /*!< Transmission complete flag, sets when transmission activity complete */
-    kLpsciRxDataRegFull  = 0U << LPSCI_SHIFT | UART0_S1_RDRF_SHIFT, /*!< Receive data register full flag, sets when the receive data buffer is full */
-    kLpsciIdleLineDetect = 0U << LPSCI_SHIFT | UART0_S1_IDLE_SHIFT, /*!< Idle line detect flag, sets when idle line detected */
-    kLpsciRxOverrun      = 0U << LPSCI_SHIFT | UART0_S1_OR_SHIFT,   /*!< Rxr Overrun, sets when new data is received before data is read from receive register */
-    kLpsciNoiseDetect    = 0U << LPSCI_SHIFT | UART0_S1_NF_SHIFT,   /*!< Rxr takes 3 samples of each received bit.  If any of these samples differ, noise flag sets */
-    kLpsciFrameErr       = 0U << LPSCI_SHIFT | UART0_S1_FE_SHIFT,   /*!< Frame error flag, sets if logic 0 was detected where stop bit expected */
-    kLpsciParityErr      = 0U << LPSCI_SHIFT | UART0_S1_PF_SHIFT,   /*!< If parity enabled, sets upon parity error detection */
-    kLpsciLineBreakDetect    = 1U << LPSCI_SHIFT | UART0_S2_LBKDIF_SHIFT,  /*!< LIN break detect interrupt flag, sets when LIN break char detected and LIN circuit enabled */
-    kLpsciRxActiveEdgeDetect = 1U << LPSCI_SHIFT | UART0_S2_RXEDGIF_SHIFT, /*!< Receive pin active edge interrupt flag, sets when active edge detected */
-    kLpsciRxActive           = 1U << LPSCI_SHIFT | UART0_S2_RAF_SHIFT,     /*!< Receiver Active Flag (RAF), sets at beginning of valid start bit */
+	kLpsciTxDataRegEmpty = 0U << LPSCI_SHIFT | UART0_S1_TDRE_SHIFT, /*!< Transmit data register empty flag, sets when Tx buffer is empty */
+	kLpsciTxComplete     = 0U << LPSCI_SHIFT | UART0_S1_TC_SHIFT,   /*!< Transmission complete flag, sets when transmission activity complete */
+	kLpsciRxDataRegFull  = 0U << LPSCI_SHIFT | UART0_S1_RDRF_SHIFT, /*!< Receive data register full flag, sets when the receive data buffer is full */
+	kLpsciIdleLineDetect = 0U << LPSCI_SHIFT | UART0_S1_IDLE_SHIFT, /*!< Idle line detect flag, sets when idle line detected */
+	kLpsciRxOverrun      = 0U << LPSCI_SHIFT | UART0_S1_OR_SHIFT,   /*!< Rxr Overrun, sets when new data is received before data is read from receive register */
+	kLpsciNoiseDetect    = 0U << LPSCI_SHIFT | UART0_S1_NF_SHIFT,   /*!< Rxr takes 3 samples of each received bit.  If any of these samples differ, noise flag sets */
+	kLpsciFrameErr       = 0U << LPSCI_SHIFT | UART0_S1_FE_SHIFT,   /*!< Frame error flag, sets if logic 0 was detected where stop bit expected */
+	kLpsciParityErr      = 0U << LPSCI_SHIFT | UART0_S1_PF_SHIFT,   /*!< If parity enabled, sets upon parity error detection */
+	kLpsciLineBreakDetect    = 1U << LPSCI_SHIFT | UART0_S2_LBKDIF_SHIFT,  /*!< LIN break detect interrupt flag, sets when LIN break char detected and LIN circuit enabled */
+	kLpsciRxActiveEdgeDetect = 1U << LPSCI_SHIFT | UART0_S2_RXEDGIF_SHIFT, /*!< Receive pin active edge interrupt flag, sets when active edge detected */
+	kLpsciRxActive           = 1U << LPSCI_SHIFT | UART0_S2_RAF_SHIFT,     /*!< Receiver Active Flag (RAF), sets at beginning of valid start bit */
 #if FSL_FEATURE_LPSCI_HAS_EXTENDED_DATA_REGISTER_FLAGS
-    kLpsciNoiseInCurrentWord     = 2U << LPSCI_SHIFT | UART0_ED_NOISY_SHIFT,   /*!< NOISY bit, sets if noise detected in current data word */
-    kLpsciParityErrInCurrentWord = 2U << LPSCI_SHIFT | UART0_ED_PARITYE_SHIFT, /*!< PARITYE bit, sets if noise detected in current data word */
+	kLpsciNoiseInCurrentWord     = 2U << LPSCI_SHIFT | UART0_ED_NOISY_SHIFT,   /*!< NOISY bit, sets if noise detected in current data word */
+	kLpsciParityErrInCurrentWord = 2U << LPSCI_SHIFT | UART0_ED_PARITYE_SHIFT, /*!< PARITYE bit, sets if noise detected in current data word */
 #endif
 } lpsci_status_flag_t;
 
@@ -207,16 +207,16 @@ typedef enum _lpsci_status_flag {
  * This structure contains the settings for all LPSCI interrupt configurations.
  */
 typedef enum _lpsci_interrupt {
-    kLpsciIntLinBreakDetect  = 0U << LPSCI_SHIFT | UART0_BDH_LBKDIE_SHIFT,  /*!< LIN break detect. */
-    kLpsciIntRxActiveEdge    = 0U << LPSCI_SHIFT | UART0_BDH_RXEDGIE_SHIFT, /*!< Receive Active Edge. */
-    kLpsciIntTxDataRegEmpty  = 1U << LPSCI_SHIFT | UART0_C2_TIE_SHIFT,      /*!< Transmit data register empty. */
-    kLpsciIntTxComplete      = 1U << LPSCI_SHIFT | UART0_C2_TCIE_SHIFT,     /*!< Transmission complete. */
-    kLpsciIntRxDataRegFull   = 1U << LPSCI_SHIFT | UART0_C2_RIE_SHIFT,     /*!< Receiver data register full. */
-    kLpsciIntIdleLine        = 1U << LPSCI_SHIFT | UART0_C2_ILIE_SHIFT,     /*!< Idle line. */
-    kLpsciIntRxOverrun       = 2U << LPSCI_SHIFT | UART0_C3_ORIE_SHIFT,     /*!< Receiver Overrun. */
-    kLpsciIntNoiseErrFlag    = 2U << LPSCI_SHIFT | UART0_C3_NEIE_SHIFT,     /*!< Noise error flag. */
-    kLpsciIntFrameErrFlag    = 2U << LPSCI_SHIFT | UART0_C3_FEIE_SHIFT,     /*!< Framing error flag. */
-    kLpsciIntParityErrFlag   = 2U << LPSCI_SHIFT | UART0_C3_PEIE_SHIFT,     /*!< Parity error flag. */
+	kLpsciIntLinBreakDetect  = 0U << LPSCI_SHIFT | UART0_BDH_LBKDIE_SHIFT,  /*!< LIN break detect. */
+	kLpsciIntRxActiveEdge    = 0U << LPSCI_SHIFT | UART0_BDH_RXEDGIE_SHIFT, /*!< Receive Active Edge. */
+	kLpsciIntTxDataRegEmpty  = 1U << LPSCI_SHIFT | UART0_C2_TIE_SHIFT,      /*!< Transmit data register empty. */
+	kLpsciIntTxComplete      = 1U << LPSCI_SHIFT | UART0_C2_TCIE_SHIFT,     /*!< Transmission complete. */
+	kLpsciIntRxDataRegFull   = 1U << LPSCI_SHIFT | UART0_C2_RIE_SHIFT,     /*!< Receiver data register full. */
+	kLpsciIntIdleLine        = 1U << LPSCI_SHIFT | UART0_C2_ILIE_SHIFT,     /*!< Idle line. */
+	kLpsciIntRxOverrun       = 2U << LPSCI_SHIFT | UART0_C3_ORIE_SHIFT,     /*!< Receiver Overrun. */
+	kLpsciIntNoiseErrFlag    = 2U << LPSCI_SHIFT | UART0_C3_NEIE_SHIFT,     /*!< Noise error flag. */
+	kLpsciIntFrameErrFlag    = 2U << LPSCI_SHIFT | UART0_C3_FEIE_SHIFT,     /*!< Framing error flag. */
+	kLpsciIntParityErrFlag   = 2U << LPSCI_SHIFT | UART0_C3_PEIE_SHIFT,     /*!< Parity error flag. */
 } lpsci_interrupt_t;
 
 /*******************************************************************************
@@ -250,7 +250,7 @@ void LPSCI_HAL_Init(UART0_Type * base);
  */
 static inline void LPSCI_HAL_EnableTransmitter(UART0_Type * base)
 {
-    UART0_BWR_C2_TE(base, 1U);
+	UART0_BWR_C2_TE(base, 1U);
 }
 
 /*!
@@ -262,7 +262,7 @@ static inline void LPSCI_HAL_EnableTransmitter(UART0_Type * base)
  */
 static inline void LPSCI_HAL_DisableTransmitter(UART0_Type * base)
 {
-    UART0_BWR_C2_TE(base, 0U);
+	UART0_BWR_C2_TE(base, 0U);
 }
 
 /*!
@@ -275,7 +275,7 @@ static inline void LPSCI_HAL_DisableTransmitter(UART0_Type * base)
  */
 static inline bool LPSCI_HAL_IsTransmitterEnabled(UART0_Type * base)
 {
-    return (bool)UART0_BRD_C2_TE(base);
+	return (bool)UART0_BRD_C2_TE(base);
 }
 
 /*!
@@ -287,7 +287,7 @@ static inline bool LPSCI_HAL_IsTransmitterEnabled(UART0_Type * base)
  */
 static inline void LPSCI_HAL_EnableReceiver(UART0_Type * base)
 {
-    UART0_BWR_C2_RE(base, 1U);
+	UART0_BWR_C2_RE(base, 1U);
 }
 
 /*!
@@ -299,7 +299,7 @@ static inline void LPSCI_HAL_EnableReceiver(UART0_Type * base)
  */
 static inline void LPSCI_HAL_DisableReceiver(UART0_Type * base)
 {
-    UART0_BWR_C2_RE(base, 0U);
+	UART0_BWR_C2_RE(base, 0U);
 }
 
 /*!
@@ -312,7 +312,7 @@ static inline void LPSCI_HAL_DisableReceiver(UART0_Type * base)
  */
 static inline bool LPSCI_HAL_IsReceiverEnabled(UART0_Type * base)
 {
-    return (bool)UART0_BRD_C2_RE(base);
+	return (bool)UART0_BRD_C2_RE(base);
 }
 
 /*!
@@ -360,8 +360,8 @@ void LPSCI_HAL_SetBaudRateDivisor(UART0_Type * base, uint16_t baudRateDivisor);
  */
 static inline void LPSCI_HAL_SetBaudRateFineAdjust(UART0_Type * base, uint8_t baudFineAdjust)
 {
-    assert(baudFineAdjust < 0x1F);
-    UART0_BWR_C4_BRFA(base, baudFineAdjust);
+	assert(baudFineAdjust < 0x1F);
+	UART0_BWR_C4_BRFA(base, baudFineAdjust);
 }
 #endif
 
@@ -375,10 +375,10 @@ static inline void LPSCI_HAL_SetBaudRateFineAdjust(UART0_Type * base, uint8_t ba
  * @param   bitCountPerChar Number of bits per char (8, 9, or 10, depending on the LPSCI base).
  */
 static inline void LPSCI_HAL_SetBitCountPerChar(UART0_Type * base,
-                                          lpsci_bit_count_per_char_t bitCountPerChar)
+										  lpsci_bit_count_per_char_t bitCountPerChar)
 {
-    /* config 8- (M=0) or 9-bits (M=1) */
-    UART0_BWR_C1_M(base, bitCountPerChar);
+	/* config 8- (M=0) or 9-bits (M=1) */
+	UART0_BWR_C1_M(base, bitCountPerChar);
 }
 
 /*!
@@ -406,7 +406,7 @@ void LPSCI_HAL_SetParityMode(UART0_Type * base, lpsci_parity_mode_t parityMode);
  */
 static inline void LPSCI_HAL_SetStopBitCount(UART0_Type * base, lpsci_stop_bit_count_t stopBitCount)
 {
-    UART0_BWR_BDH_SBNS(base, stopBitCount);
+	UART0_BWR_BDH_SBNS(base, stopBitCount);
 }
 #endif
 
@@ -468,7 +468,7 @@ void LPSCI_HAL_SetRxDmaCmd(UART0_Type * base, bool enable);
  */
 static inline bool LPSCI_HAL_GetTxDmaCmd(UART0_Type * base)
 {
-    return UART0_BRD_C5_TDMAE(base);
+	return UART0_BRD_C5_TDMAE(base);
 }
 
 /*!
@@ -481,7 +481,7 @@ static inline bool LPSCI_HAL_GetTxDmaCmd(UART0_Type * base)
  */
 static inline bool LPSCI_HAL_GetRxDmaCmd(UART0_Type * base)
 {
-    return UART0_BRD_C5_RDMAE(base);
+	return UART0_BRD_C5_RDMAE(base);
 }
 #endif /* FSL_FEATURE_LPSCI_HAS_DMA_ENABLE */
 
@@ -490,12 +490,12 @@ static inline bool LPSCI_HAL_GetRxDmaCmd(UART0_Type * base)
  *
  * This function is used for DMA transfer.
  *
- * @param   base LPSCI module base address. 
+ * @param   base LPSCI module base address.
  * @return  LPSCI tx/rx data register address.
  */
 static inline uint32_t LPSCI_HAL_GetDataRegAddr(UART0_Type * base)
 {
-    return (uint32_t)(&UART0_D_REG(base));
+	return (uint32_t)(&UART0_D_REG(base));
 }
 
 /*@}*/
@@ -513,7 +513,7 @@ static inline uint32_t LPSCI_HAL_GetDataRegAddr(UART0_Type * base)
  */
 static inline void LPSCI_HAL_Putchar(UART0_Type * base, uint8_t data)
 {
-    UART0_WR_D(base, data);
+	UART0_WR_D(base, data);
 }
 
 /*!
@@ -540,7 +540,7 @@ void LPSCI_HAL_Putchar10(UART0_Type * base, uint16_t data);
  */
 static inline void LPSCI_HAL_Getchar(UART0_Type * base, uint8_t *readData)
 {
-    *readData = UART0_RD_D(base);
+	*readData = UART0_RD_D(base);
 }
 
 /*!
@@ -596,10 +596,10 @@ lpsci_status_t LPSCI_HAL_ReceiveDataPolling(UART0_Type * base, uint8_t *rxBuff, 
  */
 static inline void LPSCI_HAL_SetBit10AsParitybit(UART0_Type * base, bool enable)
 {
-    /* to enable the parity bit as the tenth data bit, along with enabling LPSCIx_C4[M10]
-     * need to also enable parity and set LPSCIx_C1[M] bit
-     * assumed that the user has already set the appropriate bits */
-    UART0_BWR_C4_M10(base, enable);
+	/* to enable the parity bit as the tenth data bit, along with enabling LPSCIx_C4[M10]
+	 * need to also enable parity and set LPSCIx_C1[M] bit
+	 * assumed that the user has already set the appropriate bits */
+	UART0_BWR_C4_M10(base, enable);
 }
 
 /*!
@@ -615,9 +615,9 @@ static inline void LPSCI_HAL_SetBit10AsParitybit(UART0_Type * base, bool enable)
  */
 static inline bool LPSCI_HAL_IsBit10SetAsParitybit(UART0_Type * base)
 {
-    /* to see if the parity bit is set as the tenth data bit,
-     * return value of LPSCIx_C4[M10] */
-    return UART0_BRD_C4_M10(base);
+	/* to see if the parity bit is set as the tenth data bit,
+	 * return value of LPSCIx_C4[M10] */
+	return UART0_BRD_C4_M10(base);
 }
 
 /*!
@@ -631,7 +631,7 @@ static inline bool LPSCI_HAL_IsBit10SetAsParitybit(UART0_Type * base)
  */
 static inline bool LPSCI_HAL_IsCurrentDataWithNoise(UART0_Type * base)
 {
-    return UART0_BRD_ED_NOISY(base);
+	return UART0_BRD_ED_NOISY(base);
 }
 
 /*!
@@ -645,7 +645,7 @@ static inline bool LPSCI_HAL_IsCurrentDataWithNoise(UART0_Type * base)
  */
 static inline bool LPSCI_HAL_IsCurrentDataWithParityError(UART0_Type * base)
 {
-    return UART0_BRD_ED_PARITYE(base);
+	return UART0_BRD_ED_PARITYE(base);
 }
 
 #endif  /* FSL_FEATURE_LPSCI_HAS_EXTENDED_DATA_REGISTER_FLAGS*/
@@ -711,8 +711,8 @@ static inline void LPSCI_HAL_SetWaitModeOperation(UART0_Type * base, lpsci_opera
  */
 static inline lpsci_operation_config_t LPSCI_HAL_GetWaitModeOperation(UART0_Type * base)
 {
-    /*In CPU wait mode: 0 - LPSCI is enabled; 1 - LPSCI is disabled */
-    return (lpsci_operation_config_t)UART0_BRD_C1_DOZEEN(base);
+	/*In CPU wait mode: 0 - LPSCI is enabled; 1 - LPSCI is disabled */
+	return (lpsci_operation_config_t)UART0_BRD_C1_DOZEEN(base);
 }
 
 /*!
@@ -725,7 +725,7 @@ static inline lpsci_operation_config_t LPSCI_HAL_GetWaitModeOperation(UART0_Type
  */
 static inline void LPSCI_HAL_SetLoopCmd(UART0_Type * base, bool enable)
 {
-    UART0_BWR_C1_LOOPS(base, enable);
+	UART0_BWR_C1_LOOPS(base, enable);
 }
 
 /*!
@@ -741,7 +741,7 @@ static inline void LPSCI_HAL_SetLoopCmd(UART0_Type * base, bool enable)
  */
 static inline void LPSCI_HAL_SetReceiverSource(UART0_Type * base, lpsci_receiver_source_t source)
 {
-    UART0_BWR_C1_RSRC(base, source);
+	UART0_BWR_C1_RSRC(base, source);
 }
 /*!
  * @brief Configures the LPSCI transmit direction while in single-wire mode.
@@ -756,9 +756,9 @@ static inline void LPSCI_HAL_SetReceiverSource(UART0_Type * base, lpsci_receiver
  */
 static inline void LPSCI_HAL_SetTransmitterDir(UART0_Type * base, lpsci_singlewire_txdir_t direction)
 {
-    /* configure LPSCI transmit direction (input or output) when in single-wire mode
-     * it is assumed LPSCI is in single-wire mode */
-    UART0_BWR_C3_TXDIR(base, direction);
+	/* configure LPSCI transmit direction (input or output) when in single-wire mode
+	 * it is assumed LPSCI is in single-wire mode */
+	UART0_BWR_C3_TXDIR(base, direction);
 }
 
 /*!
@@ -789,7 +789,7 @@ lpsci_status_t LPSCI_HAL_PutReceiverInStandbyMode(UART0_Type * base);
  */
 static inline void LPSCI_HAL_PutReceiverInNormalMode(UART0_Type * base)
 {
-    UART0_CLR_C2(base, UART0_C2_RWU_MASK);
+	UART0_CLR_C2(base, UART0_C2_RWU_MASK);
 }
 
 /*!
@@ -804,7 +804,7 @@ static inline void LPSCI_HAL_PutReceiverInNormalMode(UART0_Type * base)
  */
 static inline bool LPSCI_HAL_IsReceiverInStandby(UART0_Type * base)
 {
-    return UART0_BRD_C2_RWU(base);
+	return UART0_BRD_C2_RWU(base);
 }
 
 /*!
@@ -819,7 +819,7 @@ static inline bool LPSCI_HAL_IsReceiverInStandby(UART0_Type * base)
  */
 static inline void LPSCI_HAL_SetReceiverWakeupMethod(UART0_Type * base, lpsci_wakeup_method_t method)
 {
-    UART0_BWR_C1_WAKE(base, method);
+	UART0_BWR_C1_WAKE(base, method);
 }
 
 /*!
@@ -834,7 +834,7 @@ static inline void LPSCI_HAL_SetReceiverWakeupMethod(UART0_Type * base, lpsci_wa
  */
 static inline lpsci_wakeup_method_t LPSCI_HAL_GetReceiverWakeupMethod(UART0_Type * base)
 {
-    return (lpsci_wakeup_method_t)UART0_BRD_C1_WAKE(base);
+	return (lpsci_wakeup_method_t)UART0_BRD_C1_WAKE(base);
 }
 
 /*!
@@ -866,13 +866,13 @@ void LPSCI_HAL_ConfigIdleLineDetect(UART0_Type * base, uint8_t idleLine, uint8_t
  *               minimum 10-bit times or a minimum 13-bit times.
  */
 static inline void LPSCI_HAL_SetBreakCharTransmitLength(UART0_Type * base,
-                                                        lpsci_break_char_length_t length)
+														lpsci_break_char_length_t length)
 {
-    /* Configure BRK13 - Break Character transmit length configuration
-     * LPSCI break character length setting:
-     * 0 - minimum 10-bit times (default),
-     * 1 - minimum 13-bit times */
-    UART0_BWR_S2_BRK13(base, length);
+	/* Configure BRK13 - Break Character transmit length configuration
+	 * LPSCI break character length setting:
+	 * 0 - minimum 10-bit times (default),
+	 * 1 - minimum 13-bit times */
+	UART0_BWR_S2_BRK13(base, length);
 }
 
 /*!
@@ -886,13 +886,13 @@ static inline void LPSCI_HAL_SetBreakCharTransmitLength(UART0_Type * base,
  *               minimum 10-bit times or a minimum 13-bit times.
  */
 static inline void LPSCI_HAL_SetBreakCharDetectLength(UART0_Type * base,
-                                                      lpsci_break_char_length_t length)
+													  lpsci_break_char_length_t length)
 {
-    /* Configure LBKDE - Break Character detect length configuration
-     * LPSCI break character length setting:
-     * 0 - minimum 10-bit times (default),
-     * 1 - minimum 13-bit times */
-    UART0_BWR_S2_LBKDE(base, length);
+	/* Configure LBKDE - Break Character detect length configuration
+	 * LPSCI break character length setting:
+	 * 0 - minimum 10-bit times (default),
+	 * 1 - minimum 13-bit times */
+	UART0_BWR_S2_LBKDE(base, length);
 }
 
 /*!
@@ -910,7 +910,7 @@ static inline void LPSCI_HAL_SetBreakCharDetectLength(UART0_Type * base,
  */
 static inline void LPSCI_HAL_SetBreakCharCmd(UART0_Type * base, bool enable)
 {
-    UART0_BWR_C2_SBK(base, enable);
+	UART0_BWR_C2_SBK(base, enable);
 }
 
 /*!
@@ -928,7 +928,7 @@ static inline void LPSCI_HAL_SetBreakCharCmd(UART0_Type * base, bool enable)
  * @param  matchAddrValue2 The match address value to program for match address mode 2.
  */
 void LPSCI_HAL_SetMatchAddress(UART0_Type * base, bool matchAddrMode1, bool matchAddrMode2,
-                              uint8_t matchAddrValue1, uint8_t matchAddrValue2);
+							  uint8_t matchAddrValue1, uint8_t matchAddrValue2);
 
 #if FSL_FEATURE_LPSCI_HAS_BIT_ORDER_SELECT
 /*!
@@ -946,7 +946,7 @@ void LPSCI_HAL_SetMatchAddress(UART0_Type * base, bool matchAddrMode1, bool matc
  */
 static inline void LPSCI_HAL_SetSendMsbFirstCmd(UART0_Type * base, bool enable)
 {
-    UART0_BWR_S2_MSBF(base, enable);
+	UART0_BWR_S2_MSBF(base, enable);
 }
 #endif
 
@@ -966,7 +966,7 @@ static inline void LPSCI_HAL_SetSendMsbFirstCmd(UART0_Type * base, bool enable)
  */
 static inline void LPSCI_HAL_SetReceiverRtsCmd(UART0_Type * base, bool enable)
 {
-    UART0_BWR_MODEM_RXRTSE(base, enable);
+	UART0_BWR_MODEM_RXRTSE(base, enable);
 }
 
 /*!
@@ -984,7 +984,7 @@ static inline void LPSCI_HAL_SetReceiverRtsCmd(UART0_Type * base, bool enable)
  */
 static inline void LPSCI_HAL_SetTransmitterRtsCmd(UART0_Type * base, bool enable)
 {
-    UART0_BWR_MODEM_TXRTSE(base, enable);
+	UART0_BWR_MODEM_TXRTSE(base, enable);
 }
 
 /*!
@@ -999,7 +999,7 @@ static inline void LPSCI_HAL_SetTransmitterRtsCmd(UART0_Type * base, bool enable
  */
 static inline void LPSCI_HAL_SetTransmitterRtsPolarityMode(UART0_Type * base, bool polarity)
 {
-    UART0_BWR_MODEM_TXRTSPOL(base, polarity);
+	UART0_BWR_MODEM_TXRTSPOL(base, polarity);
 }
 
 /*!
@@ -1016,7 +1016,7 @@ static inline void LPSCI_HAL_SetTransmitterRtsPolarityMode(UART0_Type * base, bo
  */
 static inline void LPSCI_HAL_SetTransmitterCtsCmd(UART0_Type * base, bool enable)
 {
-    UART0_BWR_MODEM_TXCTSE(base, enable);
+	UART0_BWR_MODEM_TXCTSE(base, enable);
 }
 
 #endif  /* FSL_FEATURE_LPSCI_HAS_MODEM_SUPPORT*/
@@ -1033,8 +1033,8 @@ static inline void LPSCI_HAL_SetTransmitterCtsCmd(UART0_Type * base, bool enable
  * @param   pulseWidth The LPSCI transmit narrow pulse width setting of type lpsci_ir_tx_pulsewidth_t.
  */
 void LPSCI_HAL_SetInfraredOperation(UART0_Type * base,
-                                    bool enable,
-                                    lpsci_ir_tx_pulsewidth_t pulseWidth);
+									bool enable,
+									lpsci_ir_tx_pulsewidth_t pulseWidth);
 #endif  /* FSL_FEATURE_LPSCI_HAS_IR_SUPPORT*/
 
 /*@}*/
@@ -1049,4 +1049,3 @@ void LPSCI_HAL_SetInfraredOperation(UART0_Type * base,
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

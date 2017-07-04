@@ -60,7 +60,7 @@ void MQX_EMVSIM0_IRQHandler(void)
 void EMVSIM0_IRQHandler(void)
 #endif
 {
-    SMARTCARD_EMVSIM_DRV_IRQHandler(0);
+	SMARTCARD_EMVSIM_DRV_IRQHandler(0);
 }
 
 #if (EMVSIM_INSTANCE_COUNT > 1)
@@ -71,7 +71,7 @@ void MQX_EMVSIM1_IRQHandler(void)
 void EMVSIM1_IRQHandler(void)
 #endif
 {
-    SMARTCARD_EMVSIM_DRV_IRQHandler(1);
+	SMARTCARD_EMVSIM_DRV_IRQHandler(1);
 }
 #endif
 #endif /* FSL_FEATURE_SOC_EMVSIM_COUNT > 0 */
@@ -85,11 +85,11 @@ void MQX_PORTA_IRQHandler(void)
 void PORTA_IRQHandler(void)
 #endif
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTA_BASE_PTR);
-    
-    /* Invoke PHY IRQ handler specific function */
-    SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTA_BASE_PTR);
+
+	/* Invoke PHY IRQ handler specific function */
+	SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
 }
 
 /* gpio IRQ handler with the same name in startup code. */
@@ -99,11 +99,11 @@ void MQX_PORTB_IRQHandler(void)
 void PORTB_IRQHandler(void)
 #endif
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTB_BASE_PTR);
-    
-    /* Invoke PHY IRQ handler specific function */
-    SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTB_BASE_PTR);
+
+	/* Invoke PHY IRQ handler specific function */
+	SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
 }
 
 /* gpio IRQ handler with the same name in startup code. */
@@ -113,11 +113,11 @@ void MQX_PORTC_IRQHandler(void)
 void PORTC_IRQHandler(void)
 #endif
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTC_BASE_PTR);
-    
-    /* Invoke PHY IRQ handler specific function */
-    SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTC_BASE_PTR);
+
+	/* Invoke PHY IRQ handler specific function */
+	SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
 }
 
 /* gpio IRQ handler with the same name in startup code. */
@@ -127,11 +127,11 @@ void MQX_PORTD_IRQHandler(void)
 void PORTD_IRQHandler(void)
 #endif
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTD_BASE_PTR);
-    
-    /* Invoke PHY IRQ handler specific function */
-    SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTD_BASE_PTR);
+
+	/* Invoke PHY IRQ handler specific function */
+	SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
 }
 
 /* gpio IRQ handler with the same name in startup code. */
@@ -141,15 +141,14 @@ void MQX_PORTE_IRQHandler(void)
 void PORTE_IRQHandler(void)
 #endif
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTE_BASE_PTR);
-    
-    /* Invoke PHY IRQ handler specific function */
-    SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTE_BASE_PTR);
+
+	/* Invoke PHY IRQ handler specific function */
+	SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

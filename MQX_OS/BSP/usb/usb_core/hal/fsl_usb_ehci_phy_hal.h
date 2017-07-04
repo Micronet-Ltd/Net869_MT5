@@ -45,7 +45,7 @@
 /*******************************************************************************
  * API
  ******************************************************************************/
- 
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -65,7 +65,7 @@ extern "C" {
  */
 static void usb_hal_ehci_phy_trim_override_enable(uint32_t instance)
 {
-    USBPHY_TRIM_OVERRIDE_EN = 0x001f;
+	USBPHY_TRIM_OVERRIDE_EN = 0x001f;
 }
 
 /*!
@@ -77,7 +77,7 @@ static void usb_hal_ehci_phy_trim_override_enable(uint32_t instance)
  */
 static void usb_hal_ehci_phy_pll_enalbe_power_up(uint32_t instance)
 {
-    USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_POWER_MASK;    //power up PLL
+	USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_POWER_MASK;    //power up PLL
 }
 
 /*!
@@ -89,7 +89,7 @@ static void usb_hal_ehci_phy_pll_enalbe_power_up(uint32_t instance)
  */
 static inline void usb_hal_ehci_phy_pll_enable_bypass(uint32_t instance)
 {
-    USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_BYPASS_MASK;   
+	USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_BYPASS_MASK;
 }
 
 
@@ -102,7 +102,7 @@ static inline void usb_hal_ehci_phy_pll_enable_bypass(uint32_t instance)
  */
 static void usb_hal_ehci_phy_pll_clear_bypass(uint32_t instance)
 {
-    USBPHY_PLL_SIC &= ~USBPHY_PLL_SIC_PLL_BYPASS_MASK;    //clear bypass bit
+	USBPHY_PLL_SIC &= ~USBPHY_PLL_SIC_PLL_BYPASS_MASK;    //clear bypass bit
 }
 
 /*!
@@ -114,7 +114,7 @@ static void usb_hal_ehci_phy_pll_clear_bypass(uint32_t instance)
  */
 static void usb_hal_ehci_phy_enable_usb_clock(uint32_t instance)
 {
-    USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_EN_USB_CLKS_MASK;    //enable USB clock output from USB PHY PLL
+	USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_EN_USB_CLKS_MASK;    //enable USB clock output from USB PHY PLL
 }
 
 /*!
@@ -127,18 +127,18 @@ static void usb_hal_ehci_phy_enable_usb_clock(uint32_t instance)
  */
 static void usb_hal_ehci_phy_select_pll_reference_clock(uint32_t instance,uint32_t frequency)
 {
-    if(frequency == 24000000) 
-    {
-        USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_DIV_SEL(0);
-    }
-    else if(frequency == 16000000) 
-    {
-        USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_DIV_SEL(1);
-    }
-    else if(frequency == 12000000) 
-    {
-        USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_DIV_SEL(2);
-    }
+	if(frequency == 24000000)
+	{
+		USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_DIV_SEL(0);
+	}
+	else if(frequency == 16000000)
+	{
+		USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_DIV_SEL(1);
+	}
+	else if(frequency == 12000000)
+	{
+		USBPHY_PLL_SIC |= USBPHY_PLL_SIC_PLL_DIV_SEL(2);
+	}
 }
 
 /*!
@@ -150,8 +150,8 @@ static void usb_hal_ehci_phy_select_pll_reference_clock(uint32_t instance,uint32
  */
 static void usb_hal_ehci_phy_wait_pll_lock(uint32_t instance)
 {
-    while (!(USBPHY_PLL_SIC & USBPHY_PLL_SIC_PLL_LOCK_MASK))
-    {}
+	while (!(USBPHY_PLL_SIC & USBPHY_PLL_SIC_PLL_LOCK_MASK))
+	{}
 }
 
 /*!
@@ -163,7 +163,7 @@ static void usb_hal_ehci_phy_wait_pll_lock(uint32_t instance)
  */
 static void usb_hal_ehci_phy_release_from_reset(uint32_t instance)
 {
-    USBPHY_CTRL &= ~USBPHY_CTRL_SFTRST_MASK; 
+	USBPHY_CTRL &= ~USBPHY_CTRL_SFTRST_MASK;
 }
 
 /*!
@@ -175,7 +175,7 @@ static void usb_hal_ehci_phy_release_from_reset(uint32_t instance)
  */
 static void usb_hal_ehci_phy_run_clock(uint32_t instance)
 {
-    USBPHY_CTRL &= ~USBPHY_CTRL_CLKGATE_MASK;
+	USBPHY_CTRL &= ~USBPHY_CTRL_CLKGATE_MASK;
 }
 
 /*!
@@ -187,7 +187,7 @@ static void usb_hal_ehci_phy_run_clock(uint32_t instance)
  */
 static void usb_hal_ehci_phy_enable_utmi_level2(uint32_t instance)
 {
-    USBPHY_CTRL |= USBPHY_CTRL_SET_ENUTMILEVEL2_MASK;
+	USBPHY_CTRL |= USBPHY_CTRL_SET_ENUTMILEVEL2_MASK;
 }
 
 /*!
@@ -199,7 +199,7 @@ static void usb_hal_ehci_phy_enable_utmi_level2(uint32_t instance)
  */
 static void usb_hal_ehci_phy_enable_utmi_level3(uint32_t instance)
 {
-    USBPHY_CTRL |= USBPHY_CTRL_SET_ENUTMILEVEL3_MASK;
+	USBPHY_CTRL |= USBPHY_CTRL_SET_ENUTMILEVEL3_MASK;
 }
 
 /*!
@@ -211,7 +211,7 @@ static void usb_hal_ehci_phy_enable_utmi_level3(uint32_t instance)
  */
 static inline void usb_hal_ehci_phy_enable_disconnect_detect(uint32_t instance)
 {
-    USBPHY_CTRL |= USBPHY_CTRL_SET_ENHOSTDISCONDETECT_MASK;
+	USBPHY_CTRL |= USBPHY_CTRL_SET_ENHOSTDISCONDETECT_MASK;
 }
 
 /*!
@@ -224,7 +224,7 @@ static inline void usb_hal_ehci_phy_enable_disconnect_detect(uint32_t instance)
 
 static inline void usb_hal_ehci_phy_disable_disconnect_detect(uint32_t instance)
 {
-    USBPHY_CTRL &= ~ USBPHY_CTRL_SET_ENHOSTDISCONDETECT_MASK;
+	USBPHY_CTRL &= ~ USBPHY_CTRL_SET_ENHOSTDISCONDETECT_MASK;
 
 }
 
@@ -237,7 +237,7 @@ static inline void usb_hal_ehci_phy_disable_disconnect_detect(uint32_t instance)
  */
 static void usb_hal_ehci_phy_set_power_state_to_normal(uint32_t instance)
 {
-    USBPHY_PWD = 0;
+	USBPHY_PWD = 0;
 }
 
 /*!
@@ -250,7 +250,7 @@ static void usb_hal_ehci_phy_set_power_state_to_normal(uint32_t instance)
  */
 static void usb_hal_ehci_phy_set_pfd_frac_value(uint32_t instance,uint32_t frac_value)
 {
-    USBPHY_ANACTRL |= USBPHY_ANACTRL_PFD_FRAC(frac_value);
+	USBPHY_ANACTRL |= USBPHY_ANACTRL_PFD_FRAC(frac_value);
 }
 
 /*!
@@ -263,7 +263,7 @@ static void usb_hal_ehci_phy_set_pfd_frac_value(uint32_t instance,uint32_t frac_
  */
 static void usb_hal_ehci_phy_select_pfd_clock_divider(uint32_t instance,uint32_t divider)
 {
-    USBPHY_ANACTRL |=USBPHY_ANACTRL_PFD_CLK_SEL(divider);    
+	USBPHY_ANACTRL |=USBPHY_ANACTRL_PFD_CLK_SEL(divider);
 }
 
 /*!
@@ -276,7 +276,7 @@ static void usb_hal_ehci_phy_select_pfd_clock_divider(uint32_t instance,uint32_t
  */
 static void usb_hal_ehci_phy_disable_pulldown_resistor(uint32_t instance)
 {
-    USBPHY_ANACTRL &= ~USBPHY_ANACTRL_DEV_PULLDOWN_MASK;
+	USBPHY_ANACTRL &= ~USBPHY_ANACTRL_DEV_PULLDOWN_MASK;
 }
 
 /*!
@@ -288,7 +288,7 @@ static void usb_hal_ehci_phy_disable_pulldown_resistor(uint32_t instance)
  */
 static void usb_hal_ehci_phy_disable_pfd_clock_gate(uint32_t instance)
 {
-    USBPHY_ANACTRL &= ~USBPHY_ANACTRL_PFD_CLKGATE_MASK;
+	USBPHY_ANACTRL &= ~USBPHY_ANACTRL_PFD_CLKGATE_MASK;
 }
 
 /*!
@@ -300,8 +300,8 @@ static void usb_hal_ehci_phy_disable_pfd_clock_gate(uint32_t instance)
  */
 static void usb_hal_ehci_phy_wait_pfd_stable(uint32_t instance)
 {
-    while (!(USBPHY_ANACTRL & USBPHY_ANACTRL_PFD_STABLE_MASK))
-    {}
+	while (!(USBPHY_ANACTRL & USBPHY_ANACTRL_PFD_STABLE_MASK))
+	{}
 }
 
 /*!
@@ -313,7 +313,7 @@ static void usb_hal_ehci_phy_wait_pfd_stable(uint32_t instance)
  */
 static void usb_hal_ehci_phy_enable_tx_sync_mux(uint32_t instance)
 {
-    USBPHY_TX |= 1<<24;
+	USBPHY_TX |= 1<<24;
 }
 
 /*!
@@ -323,11 +323,11 @@ static void usb_hal_ehci_phy_enable_tx_sync_mux(uint32_t instance)
  *
  * @param instance the instance number.
  * @param cal the cal value.
- */ 
+ */
 static  inline void usb_hal_ehci_phy_set_tx_d_cal(uint32_t instance, uint32_t cal)
 {
-    USBPHY_TX &= ~USBPHY_TX_D_CAL_MASK;
-    USBPHY_TX |= USBPHY_TX_D_CAL(cal);
+	USBPHY_TX &= ~USBPHY_TX_D_CAL_MASK;
+	USBPHY_TX |= USBPHY_TX_D_CAL(cal);
 }
 
 #if defined(__cplusplus)

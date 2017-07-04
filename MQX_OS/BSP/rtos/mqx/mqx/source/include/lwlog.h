@@ -60,43 +60,43 @@ typedef struct lwlog_entry_struct
 {
 
    /*! \brief Sequence number for the entry */
-    _mqx_uint           SEQUENCE_NUMBER;
+	_mqx_uint           SEQUENCE_NUMBER;
 
    /* The time stamp units are configurable */
 /*! \cond */
 #if MQX_LWLOG_TIME_STAMP_IN_TICKS == 0
 /*! \endcond */
    /*!
-    * \brief The time at which the entry was written <b> if MQX is not configured at
-    * compile time to timestamp in ticks. </b>
-    */
-    uint32_t             SECONDS;
+	* \brief The time at which the entry was written <b> if MQX is not configured at
+	* compile time to timestamp in ticks. </b>
+	*/
+	uint32_t             SECONDS;
    /*!
-    * \brief The time at which the entry was written <b> if MQX is not configured at
-    * compile time to timestamp in ticks. </b>
-    */
-    uint32_t             MILLISECONDS;
+	* \brief The time at which the entry was written <b> if MQX is not configured at
+	* compile time to timestamp in ticks. </b>
+	*/
+	uint32_t             MILLISECONDS;
    /*!
-    * \brief The time at which the entry was written <b> if MQX is not configured at
-    * compile time to timestamp in ticks. </b>
-    */
-     uint32_t            MICROSECONDS;
+	* \brief The time at which the entry was written <b> if MQX is not configured at
+	* compile time to timestamp in ticks. </b>
+	*/
+	 uint32_t            MICROSECONDS;
 /*! \cond */
 #else
 /*! \endcond */
    /*!
-    * \brief The time in tick time at which the entry was written <b> if MQX is
-    * configured at compile time to timestamp in ticks. </b>
-    */
-    MQX_TICK_STRUCT     TIMESTAMP;
+	* \brief The time in tick time at which the entry was written <b> if MQX is
+	* configured at compile time to timestamp in ticks. </b>
+	*/
+	MQX_TICK_STRUCT     TIMESTAMP;
 /*! \cond */
 #endif
 /*! \endcond */
-    /*! \brief Data for the entry. */
-    _mqx_max_type       DATA[LWLOG_MAXIMUM_DATA_ENTRIES];
+	/*! \brief Data for the entry. */
+	_mqx_max_type       DATA[LWLOG_MAXIMUM_DATA_ENTRIES];
 
-    /*! \brief Pointer to the next lightweight-log entry.*/
-    struct lwlog_entry_struct      *NEXT_PTR;
+	/*! \brief Pointer to the next lightweight-log entry.*/
+	struct lwlog_entry_struct      *NEXT_PTR;
 
 } LWLOG_ENTRY_STRUCT, * LWLOG_ENTRY_STRUCT_PTR;
 

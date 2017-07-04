@@ -46,14 +46,14 @@ int fscanf(FILE *stream, const char  *fmt_ptr,  ...)
 
    if (NULL == stream)
    {
-      return EOF;
+	  return EOF;
    }
 
    va_start(ap, fmt_ptr);
    /* get a line of input from user */
    if (NULL == fgets(temp_buf, IO_MAXLINE, stream))
    {
-      return EOF;
+	  return EOF;
    }
    result = io_scan_prv(temp_buf, (char *)fmt_ptr, ap);
    va_end(ap);
@@ -80,7 +80,7 @@ int scanf(const char  *fmt_ptr, ...)
 
    if ( NULL == fgets(temp_buf, IO_MAXLINE, stdin))
    {
-      return(EOF);
+	  return(EOF);
    }
    result = io_scan_prv(temp_buf, (char *)fmt_ptr, ap);
    va_end(ap);

@@ -48,57 +48,57 @@
 /*! @brief Quad Timer primary clock source selection*/
 typedef enum _quadtmr_pri_count_source
 {
-    kQuadTmrCntr0InpPin = 0,
-    kQuadTmrCntr1InpPin,
-    kQuadTmrCntr2InpPin,
-    kQuadTmrCntr3InpPin,
-    kQuadTmrCntr0Out,
-    kQuadTmrCntr1Out,
-    kQuadTmrCntr2Out,
-    kQuadTmrCntr3Out,
-    kQuadTmrClkDiv1,
-    kQuadTmrClkDiv2,
-    kQuadTmrClkDiv4,
-    kQuadTmrClkDiv8,
-    kQuadTmrClkDiv16,
-    kQuadTmrClkDiv32,
-    kQuadTmrClkDiv64,
-    kQuadTmrClkDiv128
+	kQuadTmrCntr0InpPin = 0,
+	kQuadTmrCntr1InpPin,
+	kQuadTmrCntr2InpPin,
+	kQuadTmrCntr3InpPin,
+	kQuadTmrCntr0Out,
+	kQuadTmrCntr1Out,
+	kQuadTmrCntr2Out,
+	kQuadTmrCntr3Out,
+	kQuadTmrClkDiv1,
+	kQuadTmrClkDiv2,
+	kQuadTmrClkDiv4,
+	kQuadTmrClkDiv8,
+	kQuadTmrClkDiv16,
+	kQuadTmrClkDiv32,
+	kQuadTmrClkDiv64,
+	kQuadTmrClkDiv128
 }quadtmr_pri_count_source_t;
 
 /*! @brief Quad Timer input sources selection*/
 typedef enum _quadtmr_input_source
 {
-    kQuadTmr0InpPin = 0,
-    kQuadTmr1InpPin,
-    kQuadTmr2InpPin,
-    kQuadTmr3InpPin
+	kQuadTmr0InpPin = 0,
+	kQuadTmr1InpPin,
+	kQuadTmr2InpPin,
+	kQuadTmr3InpPin
 }quadtmr_input_source_t;
 
 /*! @brief Quad Timer counting mode selection */
 typedef enum _quadtmr_counting_mode
 {
-    kQuadTmrCntNoOper = 0,  /*!< No operation */
-    kQuadTmrCntPriSrcRiseEdge, /*!< Count rising edges or primary source */
-    kQuadTmrCntPriSrcRiseAndFallEdge, /*!< Count rising and falling edges of primary source */
-    kQuadTmrCntPriSrcRiseEdgeSecInpHigh, /*!< Count rise edges of pri SRC while sec inp high active */
-    kQuadTmrQuadCntMode, /*!< Quadrature count mode, uses pri and sec sources */
-    kQuadTmrCntPriSrcRiseEdgeSecDir, /*!< Count rising edges of pri SRC; sec SRC specifies dir */
-    kQuadTmrSecSrcTrigPriCnt, /*!< Edge of sec SRC trigger primary count until compare*/
-    kQuadTmrCascadeCnt /*!< Cascaded count mode (up/down) */
+	kQuadTmrCntNoOper = 0,  /*!< No operation */
+	kQuadTmrCntPriSrcRiseEdge, /*!< Count rising edges or primary source */
+	kQuadTmrCntPriSrcRiseAndFallEdge, /*!< Count rising and falling edges of primary source */
+	kQuadTmrCntPriSrcRiseEdgeSecInpHigh, /*!< Count rise edges of pri SRC while sec inp high active */
+	kQuadTmrQuadCntMode, /*!< Quadrature count mode, uses pri and sec sources */
+	kQuadTmrCntPriSrcRiseEdgeSecDir, /*!< Count rising edges of pri SRC; sec SRC specifies dir */
+	kQuadTmrSecSrcTrigPriCnt, /*!< Edge of sec SRC trigger primary count until compare*/
+	kQuadTmrCascadeCnt /*!< Cascaded count mode (up/down) */
 }quadtmr_counting_mode_t;
 
 /*! @brief Quad Timer output mode selection*/
 typedef enum _quadtmr_output_mode
 {
-    kQuadTmrAssertWhenCntActive = 0, /*!< Assert OFLAG while counter is active*/
-    kQuadTmrClearOnCompare, /*!< Clear OFLAG on successful compare */
-    kQuadTmrSetOnCompare, /*!< Set OFLAG on successful compare */
-    kQuadTmrTogOnCompare, /*!< Toggle OFLAG on successful compare */
-    kQuadTmrTogOnAltCompReg, /*!< Toggle OFLAG using alternating compare registers */
-    kQuadTmrSetOnCompareClearOnSecSrcInp, /*!< Set OFLAG on compare, clear on sec SRC input edge */
-    kQuadTmrSetOnCompareClearOnCntRoll, /*!< Set OFLAG on compare, clear on counter roll over */
-    kQuadTmrEnableGateClk /*!< Enable gated clock output while count is active */
+	kQuadTmrAssertWhenCntActive = 0, /*!< Assert OFLAG while counter is active*/
+	kQuadTmrClearOnCompare, /*!< Clear OFLAG on successful compare */
+	kQuadTmrSetOnCompare, /*!< Set OFLAG on successful compare */
+	kQuadTmrTogOnCompare, /*!< Toggle OFLAG on successful compare */
+	kQuadTmrTogOnAltCompReg, /*!< Toggle OFLAG using alternating compare registers */
+	kQuadTmrSetOnCompareClearOnSecSrcInp, /*!< Set OFLAG on compare, clear on sec SRC input edge */
+	kQuadTmrSetOnCompareClearOnCntRoll, /*!< Set OFLAG on compare, clear on counter roll over */
+	kQuadTmrEnableGateClk /*!< Enable gated clock output while count is active */
 }quadtmr_output_mode_t;
 
 /*! @brief Quad Timer input capture edge mode, rising edge, or falling edge */
@@ -121,22 +121,22 @@ typedef enum _quadtmr_preload_control_t
 
 /*! @brief Quad Timers status */
 typedef enum _quadtmr_status {
-    kStatusQuadTmrSuccess = 0U, /*!< Quad Timer success status.*/
-    kStatusQuadTmrError = 1U    /*!< Quad Timer error status.*/
+	kStatusQuadTmrSuccess = 0U, /*!< Quad Timer success status.*/
+	kStatusQuadTmrError = 1U    /*!< Quad Timer error status.*/
 } quadtmr_status_t;
 
 /*! @brief Quad Timer counter parameters*/
 typedef struct QuadTmrCounterParams
 {
-    uint16_t counterVal;     /*!< Value to be written to the counter register */
-    uint16_t counterLoadVal; /*!< Value to be loaded into the counter on compare or overflow */
-    uint16_t countUpCompareVal;  /*!< Value to be written to the count up compare register */
-    uint16_t countDownCompareVal; /*!< Value to be written to the count down compare register */
-    quadtmr_pri_count_source_t primarySrc; /*!< Specify the primary count source */
-    quadtmr_input_source_t secondarySrc; /*!< Specify the secondary count source */
-    bool countOnce; /*!< true: if counter should stop on compare, false: to run repeatedly */
-    bool countLength; /*!< true: re-initialize on compare match, false: count till roll-over */
-    bool countDir; /*!< true: Count down, false: Count up */
+	uint16_t counterVal;     /*!< Value to be written to the counter register */
+	uint16_t counterLoadVal; /*!< Value to be loaded into the counter on compare or overflow */
+	uint16_t countUpCompareVal;  /*!< Value to be written to the count up compare register */
+	uint16_t countDownCompareVal; /*!< Value to be written to the count down compare register */
+	quadtmr_pri_count_source_t primarySrc; /*!< Specify the primary count source */
+	quadtmr_input_source_t secondarySrc; /*!< Specify the secondary count source */
+	bool countOnce; /*!< true: if counter should stop on compare, false: to run repeatedly */
+	bool countLength; /*!< true: re-initialize on compare match, false: count till roll-over */
+	bool countDir; /*!< true: Count down, false: Count up */
 }quadtmr_counter_params_t;
 
 /*******************************************************************************
@@ -203,7 +203,7 @@ void QUADTMR_HAL_OutPulses(TMR_Type *base, uint16_t numOfPulses, quadtmr_pri_cou
  * @param lowPulseCount PulseCount Specify the number of source clock cycles to get the low period
  */
 void QUADTMR_HAL_OutPwmSignal(TMR_Type *base, quadtmr_pri_count_source_t src,
-                                          uint16_t highPulseCount, uint16_t lowPulseCount);
+										  uint16_t highPulseCount, uint16_t lowPulseCount);
 
 /*!
  * @brief Allows the user to count the source clock cycles until a capture event arrives.
@@ -218,8 +218,8 @@ void QUADTMR_HAL_OutPwmSignal(TMR_Type *base, quadtmr_pri_count_source_t src,
  * @param inputPol true: invert polarity of the input signal, false: no inversion
  */
 void QUADTMR_HAL_SetupInputCapture(TMR_Type *base, quadtmr_pri_count_source_t countSrc,
-                                              quadtmr_input_source_t captureSrc, bool reloadCntrOnCap,
-                                              quadtmr_input_capture_edge_mode_t mode, bool inputPol);
+											  quadtmr_input_source_t captureSrc, bool reloadCntrOnCap,
+											  quadtmr_input_capture_edge_mode_t mode, bool inputPol);
 
 /*!
  * @brief Sets up the Quad Timer compare preload feature.
@@ -230,7 +230,7 @@ void QUADTMR_HAL_SetupInputCapture(TMR_Type *base, quadtmr_pri_count_source_t co
  * @param preloadProps Controls when a compare register is preloaded with the value from the preload reg.
  */
 void QUADTMR_HAL_SetupComparePreload(TMR_Type *base, uint8_t compareRegNum, uint16_t preloadVal,
-                                                  quadtmr_preload_control_t preloadProps);
+												  quadtmr_preload_control_t preloadProps);
 
 /*!
  * @brief Sets the Quad Timer current counter value.
@@ -240,7 +240,7 @@ void QUADTMR_HAL_SetupComparePreload(TMR_Type *base, uint8_t compareRegNum, uint
  */
 static inline void  QUADTMR_HAL_SetCounter(TMR_Type *base, uint16_t val)
 {
-    TMR_WR_CNTR(base, val);
+	TMR_WR_CNTR(base, val);
 }
 
 /*!
@@ -251,7 +251,7 @@ static inline void  QUADTMR_HAL_SetCounter(TMR_Type *base, uint16_t val)
  */
 static inline void QUADTMR_HAL_SetComp1Val(TMR_Type *base, uint16_t val)
 {
-    TMR_WR_COMP1(base, val);
+	TMR_WR_COMP1(base, val);
 }
 
 /*!
@@ -262,7 +262,7 @@ static inline void QUADTMR_HAL_SetComp1Val(TMR_Type *base, uint16_t val)
  */
 static inline void QUADTMR_HAL_SetComp1PreloadVal(TMR_Type *base, uint16_t val)
 {
-    TMR_WR_CMPLD1(base, val);
+	TMR_WR_CMPLD1(base, val);
 }
 
 /*!
@@ -273,7 +273,7 @@ static inline void QUADTMR_HAL_SetComp1PreloadVal(TMR_Type *base, uint16_t val)
  */
 static inline void QUADTMR_HAL_SetComp2Val(TMR_Type *base, uint16_t val)
 {
-    TMR_WR_COMP2(base, val);
+	TMR_WR_COMP2(base, val);
 }
 
 /*!
@@ -284,7 +284,7 @@ static inline void QUADTMR_HAL_SetComp2Val(TMR_Type *base, uint16_t val)
  */
 static inline void QUADTMR_HAL_SetComp2PreloadVal(TMR_Type *base, uint16_t val)
 {
-    TMR_WR_CMPLD2(base, val);
+	TMR_WR_CMPLD2(base, val);
 }
 
 /*!
@@ -295,7 +295,7 @@ static inline void QUADTMR_HAL_SetComp2PreloadVal(TMR_Type *base, uint16_t val)
  */
 static inline void QUADTMR_HAL_SetLoadVal(TMR_Type *base, uint16_t val)
 {
-    TMR_WR_LOAD(base, val);
+	TMR_WR_LOAD(base, val);
 }
 
 /*!
@@ -306,7 +306,7 @@ static inline void QUADTMR_HAL_SetLoadVal(TMR_Type *base, uint16_t val)
  */
 static inline uint16_t QUADTMR_HAL_GetHoldVal(TMR_Type *base)
 {
-    return TMR_RD_HOLD(base);
+	return TMR_RD_HOLD(base);
 }
 
 /*!
@@ -317,7 +317,7 @@ static inline uint16_t QUADTMR_HAL_GetHoldVal(TMR_Type *base)
  */
 static inline uint16_t QUADTMR_HAL_GetCaptureVal(TMR_Type *base)
 {
-    return TMR_RD_CAPT(base);
+	return TMR_RD_CAPT(base);
 }
 
 /*!
@@ -328,7 +328,7 @@ static inline uint16_t QUADTMR_HAL_GetCaptureVal(TMR_Type *base)
  */
 static inline uint16_t QUADTMR_HAL_GetCounterVal(TMR_Type *base)
 {
-    return TMR_RD_CNTR(base);
+	return TMR_RD_CNTR(base);
 }
 
 /*!
@@ -339,7 +339,7 @@ static inline uint16_t QUADTMR_HAL_GetCounterVal(TMR_Type *base)
  */
 static inline void QUADTMR_HAL_SetCountMode(TMR_Type *base, quadtmr_counting_mode_t mode)
 {
-    TMR_BWR_CTRL_CM(base, mode);
+	TMR_BWR_CTRL_CM(base, mode);
 }
 
 /*!
@@ -350,7 +350,7 @@ static inline void QUADTMR_HAL_SetCountMode(TMR_Type *base, quadtmr_counting_mod
  */
 static inline void QUADTMR_HAL_SetPriCountSrc(TMR_Type *base, quadtmr_pri_count_source_t src)
 {
-    TMR_BWR_CTRL_PCS(base, src);
+	TMR_BWR_CTRL_PCS(base, src);
 }
 
 /*!
@@ -361,7 +361,7 @@ static inline void QUADTMR_HAL_SetPriCountSrc(TMR_Type *base, quadtmr_pri_count_
  */
 static inline void QUADTMR_HAL_SetSecCountSrc(TMR_Type *base, quadtmr_input_source_t src)
 {
-    TMR_BWR_CTRL_SCS(base, src);
+	TMR_BWR_CTRL_SCS(base, src);
 }
 
 /*!
@@ -372,7 +372,7 @@ static inline void QUADTMR_HAL_SetSecCountSrc(TMR_Type *base, quadtmr_input_sour
  */
 static inline void QUADTMR_HAL_SetCountOnceCmd(TMR_Type *base, bool once)
 {
-    TMR_BWR_CTRL_ONCE(base, once);
+	TMR_BWR_CTRL_ONCE(base, once);
 }
 
 /*!
@@ -383,7 +383,7 @@ static inline void QUADTMR_HAL_SetCountOnceCmd(TMR_Type *base, bool once)
  */
 static inline void QUADTMR_HAL_SetOutputMode(TMR_Type *base, quadtmr_output_mode_t mode)
 {
-    TMR_BWR_CTRL_OUTMODE(base, mode);
+	TMR_BWR_CTRL_OUTMODE(base, mode);
 }
 
 /*!
@@ -394,7 +394,7 @@ static inline void QUADTMR_HAL_SetOutputMode(TMR_Type *base, quadtmr_output_mode
  */
 static inline void QUADTMR_HAL_SetInputPolSelCmd(TMR_Type *base, bool ips)
 {
-    TMR_BWR_SCTRL_IPS(base, ips);
+	TMR_BWR_SCTRL_IPS(base, ips);
 }
 
 /*!
@@ -405,7 +405,7 @@ static inline void QUADTMR_HAL_SetInputPolSelCmd(TMR_Type *base, bool ips)
  */
 static inline bool QUADTMR_HAL_GetExtInputSignal(TMR_Type *base)
 {
-    return TMR_BRD_SCTRL_INPUT(base);
+	return TMR_BRD_SCTRL_INPUT(base);
 }
 
 /*!
@@ -416,7 +416,7 @@ static inline bool QUADTMR_HAL_GetExtInputSignal(TMR_Type *base)
  */
 static inline void QUADTMR_HAL_SetCaptureMode(TMR_Type *base, quadtmr_input_capture_edge_mode_t mode)
 {
-    TMR_BWR_SCTRL_CAPTURE_MODE(base, mode);
+	TMR_BWR_SCTRL_CAPTURE_MODE(base, mode);
 }
 
 /*!
@@ -427,7 +427,7 @@ static inline void QUADTMR_HAL_SetCaptureMode(TMR_Type *base, quadtmr_input_capt
  */
 static inline void QUADTMR_HAL_SetOutEnableCmd(TMR_Type *base, bool enable)
 {
-    TMR_BWR_SCTRL_OEN(base, enable);
+	TMR_BWR_SCTRL_OEN(base, enable);
 }
 
 /*!
@@ -438,7 +438,7 @@ static inline void QUADTMR_HAL_SetOutEnableCmd(TMR_Type *base, bool enable)
  */
 static inline void QUADTMR_HAL_SetInputFilterCnt(TMR_Type *base, uint8_t cnt)
 {
-    TMR_BWR_FILT_FILT_CNT(base, cnt);
+	TMR_BWR_FILT_FILT_CNT(base, cnt);
 }
 
 /*!
@@ -449,7 +449,7 @@ static inline void QUADTMR_HAL_SetInputFilterCnt(TMR_Type *base, uint8_t cnt)
  */
 static inline void QUADTMR_HAL_SetInputFilterPeriod(TMR_Type *base, uint8_t period)
 {
-    TMR_BWR_FILT_FILT_PER(base, period);
+	TMR_BWR_FILT_FILT_PER(base, period);
 }
 
 #if defined(__cplusplus)
@@ -464,4 +464,3 @@ static inline void QUADTMR_HAL_SetInputFilterPeriod(TMR_Type *base, uint8_t peri
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

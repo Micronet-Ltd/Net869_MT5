@@ -58,14 +58,14 @@ extern const IRQn_Type g_lptmrIrqId[LPTMR_INSTANCE_COUNT];
  * @internal gui name="LPTMR configuration" id="lptmrCfg"
  */
 typedef struct LptmrUserConfig {
-    lptmr_timer_mode_t timerMode; /*!< Timer counter mode or pulse counter mode @internal gui name="Timer mode" */
-    lptmr_pin_select_t pinSelect; /*!< LPTMR pulse input pin select @internal gui name="Pin select" */
-    lptmr_pin_polarity_t pinPolarity; /*!< LPTMR pulse input pin polarity @internal gui name="Pin polarity" */
-    bool freeRunningEnable; /*!< Free running configure. True means enable free running @internal gui name="Free running" */
-    bool  prescalerEnable; /*!< Prescaler enable configure. True means enable prescaler @internal gui name="Prescaler" */
-    clock_lptmr_src_t prescalerClockSource; /*!< LPTMR clock source @internal gui name="Prescaler clock source" */
-    lptmr_prescaler_value_t prescalerValue; /*!< Prescaler value @internal gui name="Prescaler value" */
-    bool isInterruptEnabled;  /*!< Timer interrupt 0-disable/1-enable @internal gui name="Interrupt" */
+	lptmr_timer_mode_t timerMode; /*!< Timer counter mode or pulse counter mode @internal gui name="Timer mode" */
+	lptmr_pin_select_t pinSelect; /*!< LPTMR pulse input pin select @internal gui name="Pin select" */
+	lptmr_pin_polarity_t pinPolarity; /*!< LPTMR pulse input pin polarity @internal gui name="Pin polarity" */
+	bool freeRunningEnable; /*!< Free running configure. True means enable free running @internal gui name="Free running" */
+	bool  prescalerEnable; /*!< Prescaler enable configure. True means enable prescaler @internal gui name="Prescaler" */
+	clock_lptmr_src_t prescalerClockSource; /*!< LPTMR clock source @internal gui name="Prescaler clock source" */
+	lptmr_prescaler_value_t prescalerValue; /*!< Prescaler value @internal gui name="Prescaler value" */
+	bool isInterruptEnabled;  /*!< Timer interrupt 0-disable/1-enable @internal gui name="Interrupt" */
 } lptmr_user_config_t;
 
 /*!
@@ -81,8 +81,8 @@ typedef void (*lptmr_callback_t)(void);
  *  future releases.
  */
 typedef struct LptmrState {
-    lptmr_callback_t userCallbackFunc; /*!< Callback function that is executed in ISR. */
-    uint32_t prescalerClockHz;
+	lptmr_callback_t userCallbackFunc; /*!< Callback function that is executed in ISR. */
+	uint32_t prescalerClockHz;
 } lptmr_state_t;
 
 /*! @brief Table to save pointers to context data. */
@@ -235,4 +235,3 @@ void LPTMR_DRV_IRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

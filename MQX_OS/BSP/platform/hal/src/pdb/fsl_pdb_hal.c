@@ -40,42 +40,42 @@
  *END*************************************************************************/
 void PDB_HAL_Init(PDB_Type * base)
 {
-    uint32_t chn, preChn;
+	uint32_t chn, preChn;
 
-    /* Note: The setting would take effect only when the PDBEN bit is set. */
-    PDB_WR_SC(base, PDB_SC_PDBEN_MASK);
+	/* Note: The setting would take effect only when the PDBEN bit is set. */
+	PDB_WR_SC(base, PDB_SC_PDBEN_MASK);
 
-    PDB_WR_MOD(base, 0xFFFFU);
-    PDB_WR_IDLY(base, 0xFFFFU);
-    /* For ADC trigger. */
-    for (chn = 0U; chn < PDB_C1_COUNT; chn++)
-    {
-        PDB_WR_C1(base, chn, 0U);
-        PDB_WR_S(base, chn,0xFU);
-        for (preChn = 0U; preChn < FSL_FEATURE_PDB_ADC_PRE_CHANNEL_COUNT; preChn++)
-        {
-            PDB_HAL_SetAdcPreTriggerDelayValue(base, chn, preChn, 0U);
-        }
-    }
+	PDB_WR_MOD(base, 0xFFFFU);
+	PDB_WR_IDLY(base, 0xFFFFU);
+	/* For ADC trigger. */
+	for (chn = 0U; chn < PDB_C1_COUNT; chn++)
+	{
+		PDB_WR_C1(base, chn, 0U);
+		PDB_WR_S(base, chn,0xFU);
+		for (preChn = 0U; preChn < FSL_FEATURE_PDB_ADC_PRE_CHANNEL_COUNT; preChn++)
+		{
+			PDB_HAL_SetAdcPreTriggerDelayValue(base, chn, preChn, 0U);
+		}
+	}
 
 #if FSL_FEATURE_PDB_HAS_DAC
-    /* For DAC trigger. */
-    for (chn = 0U; chn < PDB_INTC_COUNT; chn++)
-    {
-        PDB_WR_INTC(base, chn, 0U);
-        PDB_WR_INT(base ,chn, 0U);
-    }
+	/* For DAC trigger. */
+	for (chn = 0U; chn < PDB_INTC_COUNT; chn++)
+	{
+		PDB_WR_INTC(base, chn, 0U);
+		PDB_WR_INT(base ,chn, 0U);
+	}
 #endif
 
-    /* For Pulse out trigger. */
-    PDB_WR_POEN(base, 0U);
-    for (chn = 0U; chn < PDB_PODLY_COUNT; chn++)
-    {
-        PDB_WR_PODLY(base, chn, 0U);
-    }
-    /* Load the setting value. */
-    PDB_HAL_SetLoadValuesCmd(base);
-    PDB_HAL_Disable(base);
+	/* For Pulse out trigger. */
+	PDB_WR_POEN(base, 0U);
+	for (chn = 0U; chn < PDB_PODLY_COUNT; chn++)
+	{
+		PDB_WR_PODLY(base, chn, 0U);
+	}
+	/* Load the setting value. */
+	PDB_HAL_SetLoadValuesCmd(base);
+	PDB_HAL_Disable(base);
 }
 
 /*FUNCTION*********************************************************************
@@ -86,47 +86,47 @@ void PDB_HAL_Init(PDB_Type * base)
  *END*************************************************************************/
 pdb_status_t PDB_HAL_ConfigTimer(PDB_Type * base, const pdb_timer_config_t *configPtr)
 {
-    uint32_t sc;
-    
-    if (!configPtr)
-    {
-        return kStatus_PDB_InvalidArgument;
-    }
-    
-    sc = PDB_RD_SC(base);
-    sc &= ~(  PDB_SC_LDMOD_MASK
-            | PDB_SC_PDBEIE_MASK
-            | PDB_SC_PRESCALER_MASK  
-            | PDB_SC_TRGSEL_MASK
-            | PDB_SC_MULT_MASK
-            | PDB_SC_CONT_MASK
-            | PDB_SC_DMAEN_MASK
-            | PDB_SC_PDBIE_MASK
-    );
-    
-    sc |= PDB_SC_LDMOD((uint32_t)(configPtr->loadValueMode));
-    if (configPtr->seqErrIntEnable)
-    {
-        sc |= PDB_SC_PDBEIE_MASK;
-    }
-    sc |= PDB_SC_PRESCALER((uint32_t)(configPtr->clkPreDiv));
-    sc |= PDB_SC_TRGSEL((uint32_t)(configPtr->triggerInput));
-    sc |= PDB_SC_MULT((uint32_t)(configPtr->clkPreMultFactor));
-    if (configPtr->continuousModeEnable)
-    {
-        sc |= PDB_SC_CONT_MASK;
-    }
-    if (configPtr->dmaEnable)
-    {
-        sc |= PDB_SC_DMAEN_MASK;
-    }
-    if (configPtr->intEnable)
-    {
-        sc |= PDB_SC_PDBIE_MASK;
-    }
-    PDB_WR_SC(base, sc);
-    
-    return kStatus_PDB_Success;
+	uint32_t sc;
+
+	if (!configPtr)
+	{
+		return kStatus_PDB_InvalidArgument;
+	}
+
+	sc = PDB_RD_SC(base);
+	sc &= ~(  PDB_SC_LDMOD_MASK
+			| PDB_SC_PDBEIE_MASK
+			| PDB_SC_PRESCALER_MASK
+			| PDB_SC_TRGSEL_MASK
+			| PDB_SC_MULT_MASK
+			| PDB_SC_CONT_MASK
+			| PDB_SC_DMAEN_MASK
+			| PDB_SC_PDBIE_MASK
+	);
+
+	sc |= PDB_SC_LDMOD((uint32_t)(configPtr->loadValueMode));
+	if (configPtr->seqErrIntEnable)
+	{
+		sc |= PDB_SC_PDBEIE_MASK;
+	}
+	sc |= PDB_SC_PRESCALER((uint32_t)(configPtr->clkPreDiv));
+	sc |= PDB_SC_TRGSEL((uint32_t)(configPtr->triggerInput));
+	sc |= PDB_SC_MULT((uint32_t)(configPtr->clkPreMultFactor));
+	if (configPtr->continuousModeEnable)
+	{
+		sc |= PDB_SC_CONT_MASK;
+	}
+	if (configPtr->dmaEnable)
+	{
+		sc |= PDB_SC_DMAEN_MASK;
+	}
+	if (configPtr->intEnable)
+	{
+		sc |= PDB_SC_PDBIE_MASK;
+	}
+	PDB_WR_SC(base, sc);
+
+	return kStatus_PDB_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -137,18 +137,18 @@ pdb_status_t PDB_HAL_ConfigTimer(PDB_Type * base, const pdb_timer_config_t *conf
  *END*************************************************************************/
 void PDB_HAL_SetAdcPreTriggerBackToBackEnable(PDB_Type * base, uint32_t chn, uint32_t preChnMask, bool enable)
 {
-    assert(chn < PDB_C1_COUNT);
-    
-    uint32_t c1 = PDB_RD_C1(base, chn);
-    if (enable)
-    {
-        c1 |= PDB_C1_BB(preChnMask);
-    }
-    else
-    {
-        c1 &= ~PDB_C1_BB(preChnMask);
-    }
-    PDB_WR_C1(base, chn, c1);
+	assert(chn < PDB_C1_COUNT);
+
+	uint32_t c1 = PDB_RD_C1(base, chn);
+	if (enable)
+	{
+		c1 |= PDB_C1_BB(preChnMask);
+	}
+	else
+	{
+		c1 &= ~PDB_C1_BB(preChnMask);
+	}
+	PDB_WR_C1(base, chn, c1);
 }
 
 /*FUNCTION*********************************************************************
@@ -159,18 +159,18 @@ void PDB_HAL_SetAdcPreTriggerBackToBackEnable(PDB_Type * base, uint32_t chn, uin
  *END*************************************************************************/
 void PDB_HAL_SetAdcPreTriggerOutputEnable(PDB_Type * base, uint32_t chn, uint32_t preChnMask, bool enable)
 {
-    assert(chn < PDB_C1_COUNT);
-    
-    uint32_t c1 = PDB_RD_C1(base, chn);
-    if (enable)
-    {
-        c1 |= PDB_C1_TOS(preChnMask);
-    }
-    else
-    {
-        c1 &= ~PDB_C1_TOS(preChnMask);
-    }
-    PDB_WR_C1(base, chn, c1);
+	assert(chn < PDB_C1_COUNT);
+
+	uint32_t c1 = PDB_RD_C1(base, chn);
+	if (enable)
+	{
+		c1 |= PDB_C1_TOS(preChnMask);
+	}
+	else
+	{
+		c1 &= ~PDB_C1_TOS(preChnMask);
+	}
+	PDB_WR_C1(base, chn, c1);
 }
 
 /*FUNCTION*********************************************************************
@@ -181,18 +181,18 @@ void PDB_HAL_SetAdcPreTriggerOutputEnable(PDB_Type * base, uint32_t chn, uint32_
  *END*************************************************************************/
 void PDB_HAL_SetAdcPreTriggerEnable(PDB_Type * base, uint32_t chn, uint32_t preChnMask, bool enable)
 {
-    assert(chn < PDB_C1_COUNT);
-    
-    uint32_t c1 = PDB_RD_C1(base, chn);
-    if (enable)
-    {
-        c1 |= PDB_C1_EN(preChnMask);
-    }
-    else
-    {
-        c1 &= ~PDB_C1_EN(preChnMask);
-    }
-    PDB_WR_C1(base, chn, c1);
+	assert(chn < PDB_C1_COUNT);
+
+	uint32_t c1 = PDB_RD_C1(base, chn);
+	if (enable)
+	{
+		c1 |= PDB_C1_EN(preChnMask);
+	}
+	else
+	{
+		c1 &= ~PDB_C1_EN(preChnMask);
+	}
+	PDB_WR_C1(base, chn, c1);
 }
 
 /*FUNCTION*********************************************************************
@@ -204,13 +204,13 @@ void PDB_HAL_SetAdcPreTriggerEnable(PDB_Type * base, uint32_t chn, uint32_t preC
  *END*************************************************************************/
 void PDB_HAL_ClearAdcPreTriggerFlags(PDB_Type * base, uint32_t chn, uint32_t preChnMask)
 {
-    assert(chn < PDB_S_COUNT);
-    
-    /* Write 0 to clear. */
-    uint32_t s = PDB_RD_S(base, chn); /* Get current value. */
-    s &= ~PDB_S_CF( preChnMask ); /* Update the change. */
-    
-    PDB_WR_S(base, chn, s);
+	assert(chn < PDB_S_COUNT);
+
+	/* Write 0 to clear. */
+	uint32_t s = PDB_RD_S(base, chn); /* Get current value. */
+	s &= ~PDB_S_CF( preChnMask ); /* Update the change. */
+
+	PDB_WR_S(base, chn, s);
 }
 
 /*FUNCTION*********************************************************************
@@ -221,13 +221,13 @@ void PDB_HAL_ClearAdcPreTriggerFlags(PDB_Type * base, uint32_t chn, uint32_t pre
  *END*************************************************************************/
 void PDB_HAL_ClearAdcPreTriggerSeqErrFlags(PDB_Type * base, uint32_t chn, uint32_t preChnMask)
 {
-    assert(chn < PDB_S_COUNT);
-    
-    /* Write 0 to clear. */
-    uint32_t s = PDB_RD_S(base, chn); /* Get current value. */
-    s &= ~PDB_S_ERR( preChnMask );
-    
-    PDB_WR_S(base, chn, s);
+	assert(chn < PDB_S_COUNT);
+
+	/* Write 0 to clear. */
+	uint32_t s = PDB_RD_S(base, chn); /* Get current value. */
+	s &= ~PDB_S_ERR( preChnMask );
+
+	PDB_WR_S(base, chn, s);
 }
 
 /*FUNCTION*********************************************************************
@@ -238,9 +238,9 @@ void PDB_HAL_ClearAdcPreTriggerSeqErrFlags(PDB_Type * base, uint32_t chn, uint32
  *END*************************************************************************/
 void PDB_HAL_SetAdcPreTriggerDelayValue(PDB_Type * base, uint32_t chn, uint32_t preChn, uint32_t value)
 {
-    assert(chn < PDB_DLY_COUNT);
-    assert(preChn < FSL_FEATURE_PDB_ADC_PRE_CHANNEL_COUNT);
-    PDB_WR_DLY(base, chn, preChn, value);
+	assert(chn < PDB_DLY_COUNT);
+	assert(preChn < FSL_FEATURE_PDB_ADC_PRE_CHANNEL_COUNT);
+	PDB_WR_DLY(base, chn, preChn, value);
 }
 
 /*FUNCTION*********************************************************************
@@ -250,18 +250,18 @@ void PDB_HAL_SetAdcPreTriggerDelayValue(PDB_Type * base, uint32_t chn, uint32_t 
  *
  *END*************************************************************************/
 void PDB_HAL_SetCmpPulseOutEnable(PDB_Type * base, uint32_t pulseChnMask, bool enable)
-{   
-    uint32_t poen = PDB_RD_POEN(base);
-    
-    if (enable)
-    {
-        poen |= PDB_POEN_POEN(pulseChnMask);
-    }
-    else
-    {
-        poen &= ~PDB_POEN_POEN(pulseChnMask);
-    }
-    PDB_WR_POEN(base, poen);
+{
+	uint32_t poen = PDB_RD_POEN(base);
+
+	if (enable)
+	{
+		poen |= PDB_POEN_POEN(pulseChnMask);
+	}
+	else
+	{
+		poen &= ~PDB_POEN_POEN(pulseChnMask);
+	}
+	PDB_WR_POEN(base, poen);
 }
 #endif
 

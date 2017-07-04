@@ -20,6 +20,11 @@ typedef enum {
 
 #define POWER_MGM_DEVICE_ON_IGNITION_TRIGGER	(1 << 0)
 #define POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER		(1 << 1)
+#define POWER_MGM_DEVICE_ARM_LOCKUP				(1 << 2)
+#define POWER_MGM_DEVICE_WATCHDOG_RESET			(1 << 3)
+#define POWER_MGM_DEVICE_SW_RESET_REQ			(1 << 4)
+
+#define WDG_RESET_MCU() WDOG_UNLOCK = 0xd928;  WDOG_UNLOCK = 0xc520;
 
 void Device_init         (uint32_t delay_period);
 void Device_update_state (uint32_t * time_diff);
@@ -27,7 +32,9 @@ void Device_turn_on      (void);
 void Device_turn_off     (void);
 void Device_reset        (void);
 void Device_get_turn_on_reason(uint8_t * turn_on_reason);
-void Device_off_req(uint8_t wait_time);
+void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time);
+void Device_reset_req(int32_t wait_time);
+void Device_off_req_immediate(bool clean_reset);
 
 DEVICE_STATE_t Device_get_status   (void);
 void peripherals_enable         (void);

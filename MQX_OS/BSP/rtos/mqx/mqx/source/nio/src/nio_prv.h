@@ -30,23 +30,23 @@
  * Internal structure which represent opened file.
  */
 typedef struct nio_file {
-    NIO_DEV_STRUCT *DEV;            ///< pointer to opened device
-    void *CONTEXT;                  ///< pointer to device data context per fp(allocated by low level driver in open)
-    uint32_t USAGE;                 ///< usage counter, counting actual  running io operation with this fp (read, write, ioctl)
-    semaphore_t LOCK;                ///< file pointer lock – atomic operation
+	NIO_DEV_STRUCT *DEV;            ///< pointer to opened device
+	void *CONTEXT;                  ///< pointer to device data context per fp(allocated by low level driver in open)
+	uint32_t USAGE;                 ///< usage counter, counting actual  running io operation with this fp (read, write, ioctl)
+	semaphore_t LOCK;                ///< file pointer lock – atomic operation
 
-    struct nio_file *NEXT;            ///< pointer to next fp in device fp linked list
-    struct nio_file **PREV_NEXT;      ///< pointer to next pointer in previous fp in device fp linked list
-                                      ///< pointer to pointer to this fp in the linked list (back reference)
+	struct nio_file *NEXT;            ///< pointer to next fp in device fp linked list
+	struct nio_file **PREV_NEXT;      ///< pointer to next pointer in previous fp in device fp linked list
+									  ///< pointer to pointer to this fp in the linked list (back reference)
 } NIO_FILE;
 
 /** File Descriptors table
  * Internal structure which represent file descriptors table - list of opened file descriptors in system.
  */
 typedef struct nio_fd_tbl_struct {
-    size_t MAX_OPEN;    ///< maximum open files
-    semaphore_t LOCK;  ///< file descriptor table lock
-    NIO_FILE *FP[];     ///< file pointer list (must be last item in struct)
+	size_t MAX_OPEN;    ///< maximum open files
+	semaphore_t LOCK;  ///< file descriptor table lock
+	NIO_FILE *FP[];     ///< file pointer list (must be last item in struct)
 } NIO_FD_TBL_STRUCT;
 
 /** File pointer list item.
@@ -55,8 +55,8 @@ typedef struct nio_fd_tbl_struct {
  */
 /*
 struct _fp_list_itm_t {
-    NIO_FILE *fp;                   ///< file pointer
-    struct _fp_list_t *next;    ///< pointer to next item in list
+	NIO_FILE *fp;                   ///< file pointer
+	struct _fp_list_t *next;    ///< pointer to next item in list
 } fp_list_itm_t;
 */
 
@@ -64,10 +64,10 @@ struct _fp_list_itm_t {
  * This is internal structure.
  */
 typedef struct nio_dev_list_itm_struct {
-    char NAME[NIO_DEV_NAME_LEN];        ///< device name
-    NIO_DEV_STRUCT *DEV;                     ///< pointer to installed device structure
+	char NAME[NIO_DEV_NAME_LEN];        ///< device name
+	NIO_DEV_STRUCT *DEV;                     ///< pointer to installed device structure
 //    NIO_FILE *fp_head;                      ///< head of opened fp list for device
-    struct nio_dev_list_itm_struct *NEXT;       ///< next item
+	struct nio_dev_list_itm_struct *NEXT;       ///< next item
 } NIO_DEV_LIST_ITM_STRUCT;
 
 /** Device list.
@@ -75,8 +75,8 @@ typedef struct nio_dev_list_itm_struct {
  * This is internal structure.
  */
 typedef struct nio_dev_list_struct {
-    NIO_DEV_LIST_ITM_STRUCT *ITEM;        ///< first item in list of installed devices
-    semaphore_t LOCK;          ///< device list lock
+	NIO_DEV_LIST_ITM_STRUCT *ITEM;        ///< first item in list of installed devices
+	semaphore_t LOCK;          ///< device list lock
 } NIO_DEV_LIST_STRUCT;
 
 #endif // __nio_prv_h__

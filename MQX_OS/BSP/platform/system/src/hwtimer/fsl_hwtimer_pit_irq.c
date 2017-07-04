@@ -53,12 +53,12 @@ extern void HWTIMER_SYS_PitIsrAction(uint8_t pitChannel);
 #if FSL_FEATURE_PIT_HAS_SHARED_IRQ_HANDLER
 void PIT_IRQHandler(void)
 {
-    uint32_t i;
+	uint32_t i;
 
-    for(i = 0; i < FSL_FEATURE_PIT_TIMER_COUNT; i++)
-    {
-        HWTIMER_SYS_PitIsrAction(i);
-    }
+	for(i = 0; i < FSL_FEATURE_PIT_TIMER_COUNT; i++)
+	{
+		HWTIMER_SYS_PitIsrAction(i);
+	}
 }
 #else
 
@@ -69,7 +69,7 @@ void PIT_IRQHandler(void)
  */
 void PIT0_IRQHandler(void)
 {
-    HWTIMER_SYS_PitIsrAction(0U);
+	HWTIMER_SYS_PitIsrAction(0U);
 }
 #endif
 
@@ -80,7 +80,7 @@ void PIT0_IRQHandler(void)
  */
 void PIT1_IRQHandler(void)
 {
-    HWTIMER_SYS_PitIsrAction(1U);
+	HWTIMER_SYS_PitIsrAction(1U);
 }
 #endif
 
@@ -91,7 +91,7 @@ void PIT1_IRQHandler(void)
  */
 void PIT2_IRQHandler(void)
 {
-    HWTIMER_SYS_PitIsrAction(2U);
+	HWTIMER_SYS_PitIsrAction(2U);
 }
 #endif
 
@@ -102,7 +102,7 @@ void PIT2_IRQHandler(void)
  */
 void PIT3_IRQHandler(void)
 {
-    HWTIMER_SYS_PitIsrAction(3U);
+	HWTIMER_SYS_PitIsrAction(3U);
 }
 #endif
 
@@ -113,4 +113,3 @@ void PIT3_IRQHandler(void)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

@@ -51,11 +51,11 @@
  *
  *END**************************************************************************/
 void CLOCK_HAL_SetUsbfsDiv(SIM_Type * base,
-                           uint8_t usbdiv,
-                           uint8_t usbfrac)
+						   uint8_t usbdiv,
+						   uint8_t usbfrac)
 {
-    SIM_BWR_CLKDIV2_USBDIV(base, usbdiv);
-    SIM_BWR_CLKDIV2_USBFRAC(base, usbfrac);
+	SIM_BWR_CLKDIV2_USBDIV(base, usbdiv);
+	SIM_BWR_CLKDIV2_USBFRAC(base, usbfrac);
 }
 
 /*FUNCTION**********************************************************************
@@ -66,11 +66,11 @@ void CLOCK_HAL_SetUsbfsDiv(SIM_Type * base,
  *
  *END**************************************************************************/
 void CLOCK_HAL_GetUsbfsDiv(SIM_Type * base,
-                           uint8_t *usbdiv,
-                           uint8_t *usbfrac)
+						   uint8_t *usbdiv,
+						   uint8_t *usbfrac)
 {
-    *usbdiv  = SIM_BRD_CLKDIV2_USBDIV(base);
-    *usbfrac = SIM_BRD_CLKDIV2_USBFRAC(base);
+	*usbdiv  = SIM_BRD_CLKDIV2_USBDIV(base);
+	*usbfrac = SIM_BRD_CLKDIV2_USBFRAC(base);
 }
 #endif
 
@@ -82,19 +82,19 @@ void CLOCK_HAL_GetUsbfsDiv(SIM_Type * base,
  *
  *END**************************************************************************/
 void CLOCK_HAL_SetOutDiv(SIM_Type * base,
-                         uint8_t outdiv1,
-                         uint8_t outdiv2,
-                         uint8_t outdiv3,
-                         uint8_t outdiv4)
+						 uint8_t outdiv1,
+						 uint8_t outdiv2,
+						 uint8_t outdiv3,
+						 uint8_t outdiv4)
 {
-    uint32_t clkdiv1 = 0;
+	uint32_t clkdiv1 = 0;
 
-    clkdiv1 |= SIM_CLKDIV1_OUTDIV1(outdiv1);
-    clkdiv1 |= SIM_CLKDIV1_OUTDIV2(outdiv2);
-    clkdiv1 |= SIM_CLKDIV1_OUTDIV3(outdiv3);
-    clkdiv1 |= SIM_CLKDIV1_OUTDIV4(outdiv4);
+	clkdiv1 |= SIM_CLKDIV1_OUTDIV1(outdiv1);
+	clkdiv1 |= SIM_CLKDIV1_OUTDIV2(outdiv2);
+	clkdiv1 |= SIM_CLKDIV1_OUTDIV3(outdiv3);
+	clkdiv1 |= SIM_CLKDIV1_OUTDIV4(outdiv4);
 
-    SIM_WR_CLKDIV1(base, clkdiv1);
+	SIM_WR_CLKDIV1(base, clkdiv1);
 }
 
 /*FUNCTION**********************************************************************
@@ -105,15 +105,15 @@ void CLOCK_HAL_SetOutDiv(SIM_Type * base,
  *
  *END**************************************************************************/
 void CLOCK_HAL_GetOutDiv(SIM_Type * base,
-                         uint8_t *outdiv1,
-                         uint8_t *outdiv2,
-                         uint8_t *outdiv3,
-                         uint8_t *outdiv4)
+						 uint8_t *outdiv1,
+						 uint8_t *outdiv2,
+						 uint8_t *outdiv3,
+						 uint8_t *outdiv4)
 {
-    *outdiv1 = SIM_BRD_CLKDIV1_OUTDIV1(base);
-    *outdiv2 = SIM_BRD_CLKDIV1_OUTDIV2(base);
-    *outdiv3 = SIM_BRD_CLKDIV1_OUTDIV3(base);
-    *outdiv4 = SIM_BRD_CLKDIV1_OUTDIV4(base);
+	*outdiv1 = SIM_BRD_CLKDIV1_OUTDIV1(base);
+	*outdiv2 = SIM_BRD_CLKDIV1_OUTDIV2(base);
+	*outdiv3 = SIM_BRD_CLKDIV1_OUTDIV3(base);
+	*outdiv4 = SIM_BRD_CLKDIV1_OUTDIV4(base);
 }
 
 /*FUNCTION**********************************************************************
@@ -124,22 +124,22 @@ void CLOCK_HAL_GetOutDiv(SIM_Type * base,
  *
  *END**************************************************************************/
 void SIM_HAL_SetAdcAlternativeTriggerCmd(SIM_Type * base,
-                                         uint32_t instance,
-                                         bool enable)
+										 uint32_t instance,
+										 bool enable)
 {
-    assert(instance < ADC_INSTANCE_COUNT);
+	assert(instance < ADC_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        SIM_BWR_SOPT7_ADC0ALTTRGEN(base, enable ? 1 : 0);
-        break;
-    case 1:
-        SIM_BWR_SOPT7_ADC1ALTTRGEN(base, enable ? 1 : 0);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		SIM_BWR_SOPT7_ADC0ALTTRGEN(base, enable ? 1 : 0);
+		break;
+	case 1:
+		SIM_BWR_SOPT7_ADC1ALTTRGEN(base, enable ? 1 : 0);
+		break;
+	default:
+		break;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -151,24 +151,24 @@ void SIM_HAL_SetAdcAlternativeTriggerCmd(SIM_Type * base,
  *END**************************************************************************/
 bool SIM_HAL_GetAdcAlternativeTriggerCmd(SIM_Type * base, uint32_t instance)
 {
-    bool retValue = false;
+	bool retValue = false;
 
-    assert(instance < ADC_INSTANCE_COUNT);
+	assert(instance < ADC_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        retValue = SIM_BRD_SOPT7_ADC0ALTTRGEN(base);
-        break;
-    case 1:
-        retValue = SIM_BRD_SOPT7_ADC1ALTTRGEN(base);
-        break;
-    default:
-        retValue = false;
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		retValue = SIM_BRD_SOPT7_ADC0ALTTRGEN(base);
+		break;
+	case 1:
+		retValue = SIM_BRD_SOPT7_ADC1ALTTRGEN(base);
+		break;
+	default:
+		retValue = false;
+		break;
+	}
 
-    return retValue;
+	return retValue;
 }
 
 /*FUNCTION**********************************************************************
@@ -180,22 +180,22 @@ bool SIM_HAL_GetAdcAlternativeTriggerCmd(SIM_Type * base, uint32_t instance)
  *
  *END**************************************************************************/
 void SIM_HAL_SetAdcPreTriggerMode(SIM_Type * base,
-                                  uint32_t instance,
-                                  sim_adc_pretrg_sel_t select)
+								  uint32_t instance,
+								  sim_adc_pretrg_sel_t select)
 {
-    assert(instance < ADC_INSTANCE_COUNT);
+	assert(instance < ADC_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        SIM_BWR_SOPT7_ADC0PRETRGSEL(base, select);
-        break;
-    case 1:
-        SIM_BWR_SOPT7_ADC1PRETRGSEL(base, select);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		SIM_BWR_SOPT7_ADC0PRETRGSEL(base, select);
+		break;
+	case 1:
+		SIM_BWR_SOPT7_ADC1PRETRGSEL(base, select);
+		break;
+	default:
+		break;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -206,25 +206,25 @@ void SIM_HAL_SetAdcPreTriggerMode(SIM_Type * base,
  *
  *END**************************************************************************/
 sim_adc_pretrg_sel_t SIM_HAL_GetAdcPreTriggerMode(SIM_Type * base,
-                                                  uint32_t instance)
+												  uint32_t instance)
 {
-    sim_adc_pretrg_sel_t retValue = (sim_adc_pretrg_sel_t)0;
+	sim_adc_pretrg_sel_t retValue = (sim_adc_pretrg_sel_t)0;
 
-    assert(instance < ADC_INSTANCE_COUNT);
+	assert(instance < ADC_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        retValue = (sim_adc_pretrg_sel_t)SIM_BRD_SOPT7_ADC0PRETRGSEL(base);
-        break;
-    case 1:
-        retValue = (sim_adc_pretrg_sel_t)SIM_BRD_SOPT7_ADC1PRETRGSEL(base);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		retValue = (sim_adc_pretrg_sel_t)SIM_BRD_SOPT7_ADC0PRETRGSEL(base);
+		break;
+	case 1:
+		retValue = (sim_adc_pretrg_sel_t)SIM_BRD_SOPT7_ADC1PRETRGSEL(base);
+		break;
+	default:
+		break;
+	}
 
-    return retValue;
+	return retValue;
 }
 
 /*FUNCTION**********************************************************************
@@ -236,22 +236,22 @@ sim_adc_pretrg_sel_t SIM_HAL_GetAdcPreTriggerMode(SIM_Type * base,
  *
  *END**************************************************************************/
 void SIM_HAL_SetAdcTriggerMode(SIM_Type * base,
-                               uint32_t instance,
-                               sim_adc_trg_sel_t select)
+							   uint32_t instance,
+							   sim_adc_trg_sel_t select)
 {
-    assert(instance < ADC_INSTANCE_COUNT);
+	assert(instance < ADC_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        SIM_BWR_SOPT7_ADC0TRGSEL(base, select);
-        break;
-    case 1:
-        SIM_BWR_SOPT7_ADC1TRGSEL(base, select);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		SIM_BWR_SOPT7_ADC0TRGSEL(base, select);
+		break;
+	case 1:
+		SIM_BWR_SOPT7_ADC1TRGSEL(base, select);
+		break;
+	default:
+		break;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -263,23 +263,23 @@ void SIM_HAL_SetAdcTriggerMode(SIM_Type * base,
  *END**************************************************************************/
 sim_adc_trg_sel_t SIM_HAL_GetAdcTriggerMode(SIM_Type * base, uint32_t instance)
 {
-    sim_adc_trg_sel_t retValue = (sim_adc_trg_sel_t)0;
+	sim_adc_trg_sel_t retValue = (sim_adc_trg_sel_t)0;
 
-    assert(instance < ADC_INSTANCE_COUNT);
+	assert(instance < ADC_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        retValue = (sim_adc_trg_sel_t)SIM_BRD_SOPT7_ADC0TRGSEL(base);
-        break;
-    case 1:
-        retValue = (sim_adc_trg_sel_t)SIM_BRD_SOPT7_ADC1TRGSEL(base);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		retValue = (sim_adc_trg_sel_t)SIM_BRD_SOPT7_ADC0TRGSEL(base);
+		break;
+	case 1:
+		retValue = (sim_adc_trg_sel_t)SIM_BRD_SOPT7_ADC1TRGSEL(base);
+		break;
+	default:
+		break;
+	}
 
-    return retValue;
+	return retValue;
 }
 
 /*FUNCTION**********************************************************************
@@ -290,41 +290,41 @@ sim_adc_trg_sel_t SIM_HAL_GetAdcTriggerMode(SIM_Type * base, uint32_t instance)
  *
  *END**************************************************************************/
 void SIM_HAL_SetAdcTriggerModeOneStep(SIM_Type * base,
-                                      uint32_t instance,
-                                      bool    altTrigEn,
-                                      sim_adc_pretrg_sel_t preTrigSel,
-                                      sim_adc_trg_sel_t trigSel)
+									  uint32_t instance,
+									  bool    altTrigEn,
+									  sim_adc_pretrg_sel_t preTrigSel,
+									  sim_adc_trg_sel_t trigSel)
 {
-    assert(instance < ADC_INSTANCE_COUNT);
+	assert(instance < ADC_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-        case 0:
-            SIM_BWR_SOPT7_ADC0ALTTRGEN(base, altTrigEn ? 1 : 0);
-            SIM_BWR_SOPT7_ADC0PRETRGSEL(base, preTrigSel);
-            break;
-        case 1:
-            SIM_BWR_SOPT7_ADC1ALTTRGEN(base, altTrigEn ? 1 : 0);
-            SIM_BWR_SOPT7_ADC1PRETRGSEL(base, preTrigSel);
-            break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+		case 0:
+			SIM_BWR_SOPT7_ADC0ALTTRGEN(base, altTrigEn ? 1 : 0);
+			SIM_BWR_SOPT7_ADC0PRETRGSEL(base, preTrigSel);
+			break;
+		case 1:
+			SIM_BWR_SOPT7_ADC1ALTTRGEN(base, altTrigEn ? 1 : 0);
+			SIM_BWR_SOPT7_ADC1PRETRGSEL(base, preTrigSel);
+			break;
+	default:
+		break;
+	}
 
-    if (altTrigEn)
-    {
-        switch (instance)
-        {
-            case 0:
-                SIM_BWR_SOPT7_ADC0TRGSEL(base, trigSel);
-                break;
-            case 1:
-                SIM_BWR_SOPT7_ADC1TRGSEL(base, trigSel);
-                break;
-            default:
-                break;
-        }
-    }
+	if (altTrigEn)
+	{
+		switch (instance)
+		{
+			case 0:
+				SIM_BWR_SOPT7_ADC0TRGSEL(base, trigSel);
+				break;
+			case 1:
+				SIM_BWR_SOPT7_ADC1TRGSEL(base, trigSel);
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -335,22 +335,22 @@ void SIM_HAL_SetAdcTriggerModeOneStep(SIM_Type * base,
  *
  *END**************************************************************************/
 void SIM_HAL_SetUartRxSrcMode(SIM_Type * base,
-                              uint32_t instance,
-                              sim_uart_rxsrc_t select)
+							  uint32_t instance,
+							  sim_uart_rxsrc_t select)
 {
-    assert(instance < FSL_FEATURE_SIM_OPT_UART_COUNT);
+	assert(instance < FSL_FEATURE_SIM_OPT_UART_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        SIM_BWR_SOPT5_UART0RXSRC(base, select);
-        break;
-    case 1:
-        SIM_BWR_SOPT5_UART1RXSRC(base, select);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		SIM_BWR_SOPT5_UART0RXSRC(base, select);
+		break;
+	case 1:
+		SIM_BWR_SOPT5_UART1RXSRC(base, select);
+		break;
+	default:
+		break;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -362,23 +362,23 @@ void SIM_HAL_SetUartRxSrcMode(SIM_Type * base,
  *END**************************************************************************/
 sim_uart_rxsrc_t SIM_HAL_GetUartRxSrcMode(SIM_Type * base, uint32_t instance)
 {
-    sim_uart_rxsrc_t retValue = (sim_uart_rxsrc_t)0;
+	sim_uart_rxsrc_t retValue = (sim_uart_rxsrc_t)0;
 
-    assert(instance < FSL_FEATURE_SIM_OPT_UART_COUNT);
+	assert(instance < FSL_FEATURE_SIM_OPT_UART_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        retValue = (sim_uart_rxsrc_t)SIM_BRD_SOPT5_UART0RXSRC(base);
-        break;
-    case 1:
-        retValue = (sim_uart_rxsrc_t)SIM_BRD_SOPT5_UART1RXSRC(base);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		retValue = (sim_uart_rxsrc_t)SIM_BRD_SOPT5_UART0RXSRC(base);
+		break;
+	case 1:
+		retValue = (sim_uart_rxsrc_t)SIM_BRD_SOPT5_UART1RXSRC(base);
+		break;
+	default:
+		break;
+	}
 
-    return retValue;
+	return retValue;
 }
 
 /*FUNCTION**********************************************************************
@@ -389,22 +389,22 @@ sim_uart_rxsrc_t SIM_HAL_GetUartRxSrcMode(SIM_Type * base, uint32_t instance)
  *
  *END**************************************************************************/
 void SIM_HAL_SetUartTxSrcMode(SIM_Type * base,
-                              uint32_t instance,
-                              sim_uart_txsrc_t select)
+							  uint32_t instance,
+							  sim_uart_txsrc_t select)
 {
-    assert(instance < FSL_FEATURE_SIM_OPT_UART_COUNT);
+	assert(instance < FSL_FEATURE_SIM_OPT_UART_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        SIM_BWR_SOPT5_UART0TXSRC(base, select);
-        break;
-    case 1:
-        SIM_BWR_SOPT5_UART1TXSRC(base, select);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		SIM_BWR_SOPT5_UART0TXSRC(base, select);
+		break;
+	case 1:
+		SIM_BWR_SOPT5_UART1TXSRC(base, select);
+		break;
+	default:
+		break;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -416,23 +416,23 @@ void SIM_HAL_SetUartTxSrcMode(SIM_Type * base,
  *END**************************************************************************/
 sim_uart_txsrc_t SIM_HAL_GetUartTxSrcMode(SIM_Type * base, uint32_t instance)
 {
-    sim_uart_txsrc_t retValue =(sim_uart_txsrc_t)0;
+	sim_uart_txsrc_t retValue =(sim_uart_txsrc_t)0;
 
-    assert(instance < FSL_FEATURE_SIM_OPT_UART_COUNT);
+	assert(instance < FSL_FEATURE_SIM_OPT_UART_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        retValue = (sim_uart_txsrc_t)SIM_BRD_SOPT5_UART0TXSRC(base);
-        break;
-    case 1:
-        retValue = (sim_uart_txsrc_t)SIM_BRD_SOPT5_UART1TXSRC(base);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		retValue = (sim_uart_txsrc_t)SIM_BRD_SOPT5_UART0TXSRC(base);
+		break;
+	case 1:
+		retValue = (sim_uart_txsrc_t)SIM_BRD_SOPT5_UART1TXSRC(base);
+		break;
+	default:
+		break;
+	}
 
-    return retValue;
+	return retValue;
 }
 
 /*FUNCTION**********************************************************************
@@ -443,31 +443,31 @@ sim_uart_txsrc_t SIM_HAL_GetUartTxSrcMode(SIM_Type * base, uint32_t instance)
  *
  *END**************************************************************************/
 void SIM_HAL_SetFtmTriggerSrcMode(SIM_Type * base,
-                                  uint32_t  instance,
-                                  uint8_t  trigger,
-                                  sim_ftm_trg_src_t select)
+								  uint32_t  instance,
+								  uint8_t  trigger,
+								  sim_ftm_trg_src_t select)
 {
-    assert (instance < FTM_INSTANCE_COUNT);
-    assert (trigger < FSL_FEATURE_SIM_OPT_FTM_TRIGGER_COUNT);
+	assert (instance < FTM_INSTANCE_COUNT);
+	assert (trigger < FSL_FEATURE_SIM_OPT_FTM_TRIGGER_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        switch (trigger)
-        {
-        case 0:
-            SIM_BWR_SOPT4_FTM0TRG0SRC(base, select);
-            break;
-        case 1:
-            SIM_BWR_SOPT4_FTM0TRG1SRC(base, select);
-            break;
-        default:
-            break;
-        }
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		switch (trigger)
+		{
+		case 0:
+			SIM_BWR_SOPT4_FTM0TRG0SRC(base, select);
+			break;
+		case 1:
+			SIM_BWR_SOPT4_FTM0TRG1SRC(base, select);
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -478,34 +478,34 @@ void SIM_HAL_SetFtmTriggerSrcMode(SIM_Type * base,
  *
  *END**************************************************************************/
 sim_ftm_trg_src_t SIM_HAL_GetFtmTriggerSrcMode(SIM_Type * base,
-                                               uint32_t instance,
-                                               uint8_t trigger)
+											   uint32_t instance,
+											   uint8_t trigger)
 {
-    sim_ftm_trg_src_t retValue = (sim_ftm_trg_src_t)0;
+	sim_ftm_trg_src_t retValue = (sim_ftm_trg_src_t)0;
 
-    assert (instance < FTM_INSTANCE_COUNT);
-    assert (trigger < FSL_FEATURE_SIM_OPT_FTM_TRIGGER_COUNT);
+	assert (instance < FTM_INSTANCE_COUNT);
+	assert (trigger < FSL_FEATURE_SIM_OPT_FTM_TRIGGER_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        switch (trigger)
-        {
-        case 0:
-            retValue = (sim_ftm_trg_src_t)SIM_BRD_SOPT4_FTM0TRG0SRC(base);
-            break;
-        case 1:
-            retValue = (sim_ftm_trg_src_t)SIM_BRD_SOPT4_FTM0TRG1SRC(base);
-            break;
-        default:
-            break;
-        }
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		switch (trigger)
+		{
+		case 0:
+			retValue = (sim_ftm_trg_src_t)SIM_BRD_SOPT4_FTM0TRG0SRC(base);
+			break;
+		case 1:
+			retValue = (sim_ftm_trg_src_t)SIM_BRD_SOPT4_FTM0TRG1SRC(base);
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
 
-    return retValue;
+	return retValue;
 }
 
 /*FUNCTION**********************************************************************
@@ -516,25 +516,25 @@ sim_ftm_trg_src_t SIM_HAL_GetFtmTriggerSrcMode(SIM_Type * base,
  *
  *END**************************************************************************/
 void SIM_HAL_SetFtmExternalClkPinMode(SIM_Type * base,
-                                      uint32_t instance,
-                                      sim_ftm_clk_sel_t select)
+									  uint32_t instance,
+									  sim_ftm_clk_sel_t select)
 {
-    assert (instance < FTM_INSTANCE_COUNT);
+	assert (instance < FTM_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        SIM_BWR_SOPT4_FTM0CLKSEL(base, select);
-        break;
-    case 1:
-        SIM_BWR_SOPT4_FTM1CLKSEL(base, select);
-        break;
-    case 2:
-        SIM_BWR_SOPT4_FTM2CLKSEL(base, select);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		SIM_BWR_SOPT4_FTM0CLKSEL(base, select);
+		break;
+	case 1:
+		SIM_BWR_SOPT4_FTM1CLKSEL(base, select);
+		break;
+	case 2:
+		SIM_BWR_SOPT4_FTM2CLKSEL(base, select);
+		break;
+	default:
+		break;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -545,28 +545,28 @@ void SIM_HAL_SetFtmExternalClkPinMode(SIM_Type * base,
  *
  *END**************************************************************************/
 sim_ftm_clk_sel_t SIM_HAL_GetFtmExternalClkPinMode(SIM_Type * base,
-                                                   uint32_t instance)
+												   uint32_t instance)
 {
-    sim_ftm_clk_sel_t retValue = (sim_ftm_clk_sel_t)0;
+	sim_ftm_clk_sel_t retValue = (sim_ftm_clk_sel_t)0;
 
-    assert (instance < FTM_INSTANCE_COUNT);
+	assert (instance < FTM_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        retValue = (sim_ftm_clk_sel_t)SIM_BRD_SOPT4_FTM0CLKSEL(base);
-        break;
-    case 1:
-        retValue = (sim_ftm_clk_sel_t)SIM_BRD_SOPT4_FTM1CLKSEL(base);
-        break;
-    case 2:
-        retValue = (sim_ftm_clk_sel_t)SIM_BRD_SOPT4_FTM2CLKSEL(base);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		retValue = (sim_ftm_clk_sel_t)SIM_BRD_SOPT4_FTM0CLKSEL(base);
+		break;
+	case 1:
+		retValue = (sim_ftm_clk_sel_t)SIM_BRD_SOPT4_FTM1CLKSEL(base);
+		break;
+	case 2:
+		retValue = (sim_ftm_clk_sel_t)SIM_BRD_SOPT4_FTM2CLKSEL(base);
+		break;
+	default:
+		break;
+	}
 
-    return retValue;
+	return retValue;
 }
 
 /*FUNCTION**********************************************************************
@@ -577,37 +577,37 @@ sim_ftm_clk_sel_t SIM_HAL_GetFtmExternalClkPinMode(SIM_Type * base,
  *
  *END**************************************************************************/
 void SIM_HAL_SetFtmChSrcMode(SIM_Type * base,
-                             uint32_t  instance,
-                             uint8_t  channel,
-                             sim_ftm_ch_src_t select)
+							 uint32_t  instance,
+							 uint8_t  channel,
+							 sim_ftm_ch_src_t select)
 {
-    assert (instance < FTM_INSTANCE_COUNT);
+	assert (instance < FTM_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 1:
-        switch (channel)
-        {
-        case 0:
-            SIM_BWR_SOPT4_FTM1CH0SRC(base, select);
-            break;
-        default:
-            break;
-        }
-        break;
-    case 2:
-        switch (channel)
-        {
-        case 0:
-            SIM_BWR_SOPT4_FTM2CH0SRC(base, select);
-            break;
-        default:
-            break;
-        }
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 1:
+		switch (channel)
+		{
+		case 0:
+			SIM_BWR_SOPT4_FTM1CH0SRC(base, select);
+			break;
+		default:
+			break;
+		}
+		break;
+	case 2:
+		switch (channel)
+		{
+		case 0:
+			SIM_BWR_SOPT4_FTM2CH0SRC(base, select);
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -619,40 +619,40 @@ void SIM_HAL_SetFtmChSrcMode(SIM_Type * base,
  *
  *END**************************************************************************/
 sim_ftm_ch_src_t SIM_HAL_GetFtmChSrcMode(SIM_Type * base,
-                                         uint32_t instance,
-                                         uint8_t channel)
+										 uint32_t instance,
+										 uint8_t channel)
 {
-    sim_ftm_ch_src_t retValue = (sim_ftm_ch_src_t)0;
+	sim_ftm_ch_src_t retValue = (sim_ftm_ch_src_t)0;
 
-    assert (instance < FTM_INSTANCE_COUNT);
+	assert (instance < FTM_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 1:
-        switch (channel)
-        {
-        case 0:
-            retValue = (sim_ftm_ch_src_t)SIM_BRD_SOPT4_FTM1CH0SRC(base);
-            break;
-        default:
-            break;
-        }
-        break;
-    case 2:
-        switch (channel)
-        {
-        case 0:
-            retValue = (sim_ftm_ch_src_t)SIM_BRD_SOPT4_FTM2CH0SRC(base);
-            break;
-        default:
-            break;
-        }
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 1:
+		switch (channel)
+		{
+		case 0:
+			retValue = (sim_ftm_ch_src_t)SIM_BRD_SOPT4_FTM1CH0SRC(base);
+			break;
+		default:
+			break;
+		}
+		break;
+	case 2:
+		switch (channel)
+		{
+		case 0:
+			retValue = (sim_ftm_ch_src_t)SIM_BRD_SOPT4_FTM2CH0SRC(base);
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
 
-    return retValue;
+	return retValue;
 }
 
 /*FUNCTION**********************************************************************
@@ -663,39 +663,39 @@ sim_ftm_ch_src_t SIM_HAL_GetFtmChSrcMode(SIM_Type * base,
  *
  *END**************************************************************************/
 void SIM_HAL_SetFtmFaultSelMode(SIM_Type * base,
-                                uint32_t  instance,
-                                uint8_t  fault,
-                                sim_ftm_flt_sel_t select)
+								uint32_t  instance,
+								uint8_t  fault,
+								sim_ftm_flt_sel_t select)
 {
-    assert (instance < FTM_INSTANCE_COUNT);
+	assert (instance < FTM_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        switch (fault)
-        {
-        case 0:
-            SIM_BWR_SOPT4_FTM0FLT0(base, select);
-            break;
-        case 1:
-            SIM_BWR_SOPT4_FTM0FLT1(base, select);
-            break;
-        case 2:
-            SIM_BWR_SOPT4_FTM0FLT2(base, select);
-            break;
-        default:
-            break;
-        }
-        break;
-    case 1:
-        SIM_BWR_SOPT4_FTM1FLT0(base, select);
-        break;
-    case 2:
-        SIM_BWR_SOPT4_FTM2FLT0(base, select);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		switch (fault)
+		{
+		case 0:
+			SIM_BWR_SOPT4_FTM0FLT0(base, select);
+			break;
+		case 1:
+			SIM_BWR_SOPT4_FTM0FLT1(base, select);
+			break;
+		case 2:
+			SIM_BWR_SOPT4_FTM0FLT2(base, select);
+			break;
+		default:
+			break;
+		}
+		break;
+	case 1:
+		SIM_BWR_SOPT4_FTM1FLT0(base, select);
+		break;
+	case 2:
+		SIM_BWR_SOPT4_FTM2FLT0(base, select);
+		break;
+	default:
+		break;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -706,45 +706,44 @@ void SIM_HAL_SetFtmFaultSelMode(SIM_Type * base,
  *
  *END**************************************************************************/
 sim_ftm_flt_sel_t SIM_HAL_GetFtmFaultSelMode(SIM_Type * base,
-                                             uint32_t instance,
-                                             uint8_t fault)
+											 uint32_t instance,
+											 uint8_t fault)
 {
-    sim_ftm_flt_sel_t retValue = (sim_ftm_flt_sel_t)0;
+	sim_ftm_flt_sel_t retValue = (sim_ftm_flt_sel_t)0;
 
-    assert (instance < FTM_INSTANCE_COUNT);
+	assert (instance < FTM_INSTANCE_COUNT);
 
-    switch (instance)
-    {
-    case 0:
-        switch (fault)
-        {
-        case 0:
-            retValue = (sim_ftm_flt_sel_t)SIM_BRD_SOPT4_FTM0FLT0(base);
-            break;
-        case 1:
-            retValue = (sim_ftm_flt_sel_t)SIM_BRD_SOPT4_FTM0FLT1(base);
-            break;
-        case 2:
-            retValue = (sim_ftm_flt_sel_t)SIM_BRD_SOPT4_FTM0FLT2(base);
-            break;
-        default:
-            break;
-        }
-        break;
-    case 1:
-        retValue = (sim_ftm_flt_sel_t)SIM_BRD_SOPT4_FTM1FLT0(base);
-        break;
-    case 2:
-        retValue = (sim_ftm_flt_sel_t)SIM_BRD_SOPT4_FTM2FLT0(base);
-        break;
-    default:
-        break;
-    }
+	switch (instance)
+	{
+	case 0:
+		switch (fault)
+		{
+		case 0:
+			retValue = (sim_ftm_flt_sel_t)SIM_BRD_SOPT4_FTM0FLT0(base);
+			break;
+		case 1:
+			retValue = (sim_ftm_flt_sel_t)SIM_BRD_SOPT4_FTM0FLT1(base);
+			break;
+		case 2:
+			retValue = (sim_ftm_flt_sel_t)SIM_BRD_SOPT4_FTM0FLT2(base);
+			break;
+		default:
+			break;
+		}
+		break;
+	case 1:
+		retValue = (sim_ftm_flt_sel_t)SIM_BRD_SOPT4_FTM1FLT0(base);
+		break;
+	case 2:
+		retValue = (sim_ftm_flt_sel_t)SIM_BRD_SOPT4_FTM2FLT0(base);
+		break;
+	default:
+		break;
+	}
 
-    return retValue;
+	return retValue;
 }
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

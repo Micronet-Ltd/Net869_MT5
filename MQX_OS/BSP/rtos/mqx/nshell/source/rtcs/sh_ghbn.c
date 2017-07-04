@@ -50,58 +50,58 @@ int32_t  Shell_get_host_by_name(int32_t argc, char *argv[] )
 
    bool              print_usage, shorthelp = FALSE;
    int32_t               return_code = SHELL_EXIT_SUCCESS;
-   
+
    SHELL_CONTEXT_PTR shell_ptr = Shell_get_context(argv);
 
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
-    if (!print_usage)
-    {
-        if (argc == 2)
-        {
-            struct addrinfo     addrinfo_hints;
-            struct addrinfo     *addrinfo_result;
-            struct addrinfo     *addrinfo_result_first;
-            int32_t             retval = 0;
-            char                addr_str[RTCS_IP6_ADDR_STR_SIZE];
-            _mem_zero(&addrinfo_hints, sizeof(addrinfo_hints));
-            addrinfo_hints.ai_flags = AI_CANONNAME;
-            retval = getaddrinfo(argv[1], NULL, &addrinfo_hints, &addrinfo_result);
-            if (retval == 0) /* OK */
-            {
-                addrinfo_result_first = addrinfo_result;
-                while(addrinfo_result)
-                {
-                    if(inet_ntop(addrinfo_result->ai_family, 
-                                &RTCS_SOCKADDR_ADDR(addrinfo_result->ai_addr), 
-                                addr_str, sizeof(addr_str)) != 0)
-                    {
-                        fprintf(shell_ptr->STDOUT, "%s\t%s\n", addrinfo_result->ai_canonname, addr_str);
-                    }
-                    addrinfo_result = addrinfo_result->ai_next;
-                }
-                freeaddrinfo(addrinfo_result_first);
-            }
-            else
-            {
-                fprintf(shell_ptr->STDOUT, "Unable to resolve host\n");
-            return_code = SHELL_EXIT_ERROR;
-         }
-        }
-        else
-        {
-            fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
-         return_code = SHELL_EXIT_ERROR;
-         print_usage = TRUE;
-      }
+	if (!print_usage)
+	{
+		if (argc == 2)
+		{
+			struct addrinfo     addrinfo_hints;
+			struct addrinfo     *addrinfo_result;
+			struct addrinfo     *addrinfo_result_first;
+			int32_t             retval = 0;
+			char                addr_str[RTCS_IP6_ADDR_STR_SIZE];
+			_mem_zero(&addrinfo_hints, sizeof(addrinfo_hints));
+			addrinfo_hints.ai_flags = AI_CANONNAME;
+			retval = getaddrinfo(argv[1], NULL, &addrinfo_hints, &addrinfo_result);
+			if (retval == 0) /* OK */
+			{
+				addrinfo_result_first = addrinfo_result;
+				while(addrinfo_result)
+				{
+					if(inet_ntop(addrinfo_result->ai_family,
+								&RTCS_SOCKADDR_ADDR(addrinfo_result->ai_addr),
+								addr_str, sizeof(addr_str)) != 0)
+					{
+						fprintf(shell_ptr->STDOUT, "%s\t%s\n", addrinfo_result->ai_canonname, addr_str);
+					}
+					addrinfo_result = addrinfo_result->ai_next;
+				}
+				freeaddrinfo(addrinfo_result_first);
+			}
+			else
+			{
+				fprintf(shell_ptr->STDOUT, "Unable to resolve host\n");
+			return_code = SHELL_EXIT_ERROR;
+		 }
+		}
+		else
+		{
+			fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage = TRUE;
+	  }
    }
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <host>\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <host>\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <host>   = host ip address or name\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <host>\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <host>\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <host>   = host ip address or name\n");
+	  }
    }
    return return_code;
 } /* Endbody */

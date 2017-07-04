@@ -42,7 +42,7 @@
 *  Function Name :  Shell_FTP_client
 *  Returned Value:  none
 *  Comments  :  SHELL utility to TFTP to or from a host
-*  Usage:  tftp host get source [destination] [mode] 
+*  Usage:  tftp host get source [destination] [mode]
 *
 *END*-----------------------------------------------------------------*/
 
@@ -51,27 +51,27 @@ int32_t  Shell_FTP_client(int32_t inargc, char *inargv[] )
    bool              print_usage, shorthelp = FALSE;
    int32_t               return_code = SHELL_EXIT_SUCCESS;
    SHELL_CONTEXT_PTR shell_ptr = Shell_get_context(inargv);
-   
+
 
    print_usage = Shell_check_help_request(inargc, inargv, &shorthelp );
 
    if (!print_usage)  {
 
-      if (inargc > 2)  {
-         fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", inargv[0]);
-         print_usage = TRUE;
-      } else  {
-         FTP_client(inargv[1] );
-      } 
-   } 
+	  if (inargc > 2)  {
+		 fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", inargv[0]);
+		 print_usage = TRUE;
+	  } else  {
+		 FTP_client(inargv[1] );
+	  }
+   }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s [<host>]\n", inargv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s [<host>]\n", inargv[0]);
-         fprintf(shell_ptr->STDOUT, "   <host>   = host ip address or name\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s [<host>]\n", inargv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s [<host>]\n", inargv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <host>   = host ip address or name\n");
+	  }
    }
    return return_code;
 } /* Endbody */

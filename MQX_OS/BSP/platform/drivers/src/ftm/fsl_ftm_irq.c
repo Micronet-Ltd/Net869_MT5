@@ -43,7 +43,7 @@
  */
 void FTM0_IRQHandler(void)
 {
-    FTM_DRV_IRQHandler(0U);
+	FTM_DRV_IRQHandler(0U);
 }
 #endif
 
@@ -55,7 +55,7 @@ void FTM0_IRQHandler(void)
  */
 void FTM1_IRQHandler(void)
 {
-    FTM_DRV_IRQHandler(1U);
+	FTM_DRV_IRQHandler(1U);
 }
 #endif
 
@@ -67,7 +67,7 @@ void FTM1_IRQHandler(void)
  */
 void FTM2_IRQHandler(void)
 {
-    FTM_DRV_IRQHandler(2U);
+	FTM_DRV_IRQHandler(2U);
 }
 #endif
 
@@ -79,11 +79,10 @@ void FTM2_IRQHandler(void)
  */
 void FTM3_IRQHandler(void)
 {
-    FTM_DRV_IRQHandler(3U);
+	FTM_DRV_IRQHandler(3U);
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

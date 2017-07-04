@@ -53,33 +53,33 @@ int32_t  Shell_kill(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc == 2)  {
-         task_id = _task_get_id_from_name( argv[1] );
-         if (task_id == MQX_NULL_TASK_ID)  {
-            fprintf(shell_ptr->STDOUT, "No task named %s running.\n",argv[1]);
-            return_code = SHELL_EXIT_ERROR;
-         } else  {
-            result = _task_destroy(task_id);
-            if (result == MQX_OK)  {
-               fprintf(shell_ptr->STDOUT, "Task %s killed.\n",argv[1]);
-            } else  {
-               fprintf(shell_ptr->STDOUT, "Unable to kill task %s.\n",argv[1]);
-               return_code = SHELL_EXIT_ERROR;
-            }
-         }
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
-         print_usage = TRUE;
-      }
+	  if (argc == 2)  {
+		 task_id = _task_get_id_from_name( argv[1] );
+		 if (task_id == MQX_NULL_TASK_ID)  {
+			fprintf(shell_ptr->STDOUT, "No task named %s running.\n",argv[1]);
+			return_code = SHELL_EXIT_ERROR;
+		 } else  {
+			result = _task_destroy(task_id);
+			if (result == MQX_OK)  {
+			   fprintf(shell_ptr->STDOUT, "Task %s killed.\n",argv[1]);
+			} else  {
+			   fprintf(shell_ptr->STDOUT, "Unable to kill task %s.\n",argv[1]);
+			   return_code = SHELL_EXIT_ERROR;
+			}
+		 }
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
+		 print_usage = TRUE;
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <taskid>\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <taskname>\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <taskname> = MQX Task name\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <taskid>\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <taskname>\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <taskname> = MQX Task name\n");
+	  }
    }
    return return_code;
 } /* Endbody */

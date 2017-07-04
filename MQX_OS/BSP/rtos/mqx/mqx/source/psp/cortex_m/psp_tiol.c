@@ -27,14 +27,14 @@
 
 /*!
  * \brief This function converts the time struct format into ticks
- * 
- * \param time_ptr 
- * \param tick_ptr 
+ *
+ * \param time_ptr
+ * \param tick_ptr
  */
 void _psp_time_to_ticks
    (
-      TIME_STRUCT_PTR     time_ptr,
-      PSP_TICK_STRUCT_PTR tick_ptr
+	  TIME_STRUCT_PTR     time_ptr,
+	  PSP_TICK_STRUCT_PTR tick_ptr
    )
 { /* Body */
    PSP_TICK_STRUCT tick1;

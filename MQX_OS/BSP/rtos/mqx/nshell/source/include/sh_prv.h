@@ -37,23 +37,23 @@
 
 
 typedef struct {
-   char                 *ARGV[SHELL_MAX_ARGS];           // MUST BE FIRST !! 
+   char                 *ARGV[SHELL_MAX_ARGS];           // MUST BE FIRST !!
    int32_t              ARGC;
    char                 CMD_LINE[SHELL_MAX_CMDLEN];
    char                 HISTORY[SHELL_MAX_CMDLEN];
    SHELL_COMMAND_PTR    COMMAND_LIST_PTR;
    FILE *COMMAND_FP;    // must be FILE, because of fgets
    bool              EXIT;
-#if SHELLCFG_USES_MFS   
-   char                 CURRENT_DEVICE_NAME[SHELL_MAX_DEVLEN]; 
-   int CURRENT_DEVICE_FP;  
+#if SHELLCFG_USES_MFS
+   char                 CURRENT_DEVICE_NAME[SHELL_MAX_DEVLEN];
+   int CURRENT_DEVICE_FP;
    char                 CURRENT_DIR[SHELL_PATHNAME_LEN + 1];
 #endif
    FILE *STDOUT, *STDIN, *STDERR;
 } SHELL_CONTEXT, * SHELL_CONTEXT_PTR;
 
 /*
-** Function prototypes 
+** Function prototypes
 */
 #ifdef __cplusplus
 extern "C" {

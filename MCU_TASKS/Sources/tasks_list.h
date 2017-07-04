@@ -16,19 +16,20 @@
 
 typedef enum {
 	//Regular priority tasks
-    USB_TASK_PRIORITY = (START_APPLICATION_PRIORITY + 1),
+	USB_TASK_PRIORITY = (START_APPLICATION_PRIORITY + 1),
 	POWER_MGM_TASK_PRIORITY,
-    CAN_TASK_RX_PRIORITY,
+	CAN_TASK_RX_PRIORITY,
 	UPDATER_EXEC_TASK_PRIORITY,
 	CAN_TASK_TX_PRIORITY,
-    CONTROL_TASK_PRIORITY,
+	CONTROL_TASK_PRIORITY,
 	J1708_TX_TASK_PRIORITY,
 	J1708_RX_TASK_PRIORITY,
 	FPGA_UART_RX_TASK_PRIORITY,
 	ACC_TASK_PRIORITY,
-	VIB_SENSOR_TASK_PRIORITY  ,
-    UPDATER_TASK_PRIORITY,
-	MAIN_TASK_PRIORITY = (VIB_SENSOR_TASK_PRIORITY + START_APPLICATION_PRIORITY),
+	ONE_WIRE_TASK_PRIORITY,
+//	VIB_SENSOR_TASK_PRIORITY  ,
+	UPDATER_TASK_PRIORITY,
+	MAIN_TASK_PRIORITY = (UPDATER_TASK_PRIORITY + START_APPLICATION_PRIORITY),
 }PRIORITY_TASK_INDEX_T;
 
 typedef enum {
@@ -43,9 +44,10 @@ typedef enum {
 	J1708_RX_TASK    ,
 	FPGA_UART_RX_TASK,
 	ACC_TASK         ,
+	ONE_WIRE_TASK    ,
 	CONTROL_TASK	 ,
 	UPDATER_TASK	 ,
-	UPDATER_EXEC_TASK	 ,	
+	UPDATER_EXEC_TASK	 ,
 	NUM_TASKS		 ,
 } TASK_TEMPLATE_INDEX_T;
 
@@ -60,6 +62,7 @@ typedef enum {
 	J1708_RX_QUEUE   ,
 	FPGA_UART_RX_QUEUE,
 	ACC_QUEUE        ,
+	ONE_WIRE_QUEUE   ,
 	POWER_MGM_QUEUE  ,
 	CONTROL_RX_QUEUE ,
 	CONTROL_TX_QUEUE ,
@@ -74,6 +77,8 @@ typedef struct {
 } APPLICATION_MESSAGE_T, *APPLICATION_MESSAGE_PTR_T;
 
 #define APP_MESSAGE_NO_ARRAY_SIZE (sizeof(MESSAGE_HEADER_STRUCT)+sizeof(uint64_t)+sizeof(uint8_t))
+
+extern uint8_t g_flag_Exit; 
 
 extern void Main_task        (uint32_t);
 extern void Power_MGM_task   (uint32_t);
@@ -93,5 +98,6 @@ extern void FLEXCAN_Rx_Task( uint32_t param );
 extern void updater_task (uint32_t );
 extern void upd_exec_task (uint32_t );
 
-#endif /* __tasks_list_h_ */
+extern void one_wire_task (uint32_t);
 
+#endif /* __tasks_list_h_ */

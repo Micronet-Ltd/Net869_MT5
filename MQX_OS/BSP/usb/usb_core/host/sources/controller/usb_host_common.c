@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
  * All Rights Reserved
  *
  * Copyright (c) 1989-2008 ARC International;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
  *
  * $FileName: usb_host_common.c$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
@@ -87,52 +87,52 @@ usb_status usb_hostdev_validate
 usb_device_instance_handle device_handle
 )
 { /* Body */
-    dev_instance_t*           dev_ptr = (dev_instance_t*)device_handle;
-    usb_host_state_struct_t*  usb_host_ptr;
-    dev_instance_t*           test_ptr;
-    usb_status                error;
-    //uint32_t                    i;
+	dev_instance_t*           dev_ptr = (dev_instance_t*)device_handle;
+	usb_host_state_struct_t*  usb_host_ptr;
+	dev_instance_t*           test_ptr;
+	usb_status                error;
+	//uint32_t                    i;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_hostdev_validate");
+	DEBUG_LOG_TRACE("usb_hostdev_validate");
 #endif
 
-    if (device_handle == NULL)
-    {
+	if (device_handle == NULL)
+	{
 #ifdef _HOST_DEBUG_
-        DEBUG_LOG_TRACE("usb_hostdev_validate FAILED, invalid device number");
+		DEBUG_LOG_TRACE("usb_hostdev_validate FAILED, invalid device number");
 #endif
-        return USB_log_error(__FILE__,__LINE__,USBERR_INVALID_DEVICE_NUM);
-    }
-    usb_host_ptr = (usb_host_state_struct_t*)dev_ptr->host;
+		return USB_log_error(__FILE__,__LINE__,USBERR_INVALID_DEVICE_NUM);
+	}
+	usb_host_ptr = (usb_host_state_struct_t*)dev_ptr->host;
 
-    OS_Lock();
-    /* usb_host_ptr is valid host state structure, check for list of attached device instances */
-    test_ptr = (dev_instance_t*)usb_host_ptr->device_list_ptr;
-    while ((test_ptr != dev_ptr) && (test_ptr != NULL))
-    {
-        test_ptr = test_ptr->next;
-    }
-    OS_Unlock();
+	OS_Lock();
+	/* usb_host_ptr is valid host state structure, check for list of attached device instances */
+	test_ptr = (dev_instance_t*)usb_host_ptr->device_list_ptr;
+	while ((test_ptr != dev_ptr) && (test_ptr != NULL))
+	{
+		test_ptr = test_ptr->next;
+	}
+	OS_Unlock();
 
 #ifdef _HOST_DEBUG_
-    if (test_ptr == NULL)
-    {
-        DEBUG_LOG_TRACE("usb_hostdev_validate null device handle");
-    }
-    else
-    {
-        DEBUG_LOG_TRACE("usb_hostdev_validate SUCCESSFUL");
-    }
+	if (test_ptr == NULL)
+	{
+		DEBUG_LOG_TRACE("usb_hostdev_validate null device handle");
+	}
+	else
+	{
+		DEBUG_LOG_TRACE("usb_hostdev_validate SUCCESSFUL");
+	}
 #endif
 
-    error = (test_ptr == NULL) ? USBERR_DEVICE_NOT_FOUND : USB_OK;
+	error = (test_ptr == NULL) ? USBERR_DEVICE_NOT_FOUND : USB_OK;
 
-    if((error == USB_OK) && (dev_ptr->to_be_detached == (uint8_t)TRUE))
-    {
-        error = USBERR_DEVICE_DETACH;
-    }
-    return USB_log_error(__FILE__,__LINE__,error);
+	if((error == USB_OK) && (dev_ptr->to_be_detached == (uint8_t)TRUE))
+	{
+		error = USBERR_DEVICE_DETACH;
+	}
+	return USB_log_error(__FILE__,__LINE__,error);
 } /* EndBody */
 
 
@@ -157,136 +157,136 @@ interface_descriptor_t* intf_ptr,
 usb_host_driver_info_t* info_ptr
 )
 { /* Body */
-    uint16_t info_Vendor, info_Product, dev_Vendor, dev_Product;
+	uint16_t info_Vendor, info_Product, dev_Vendor, dev_Product;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_host_driver_info_match");
+	DEBUG_LOG_TRACE("usb_host_driver_info_match");
 #endif
 
-    info_Vendor = USB_SHORT_UNALIGNED_LE_TO_HOST(info_ptr->idVendor);
-    info_Product = USB_SHORT_UNALIGNED_LE_TO_HOST(info_ptr->idProduct);
+	info_Vendor = USB_SHORT_UNALIGNED_LE_TO_HOST(info_ptr->idVendor);
+	info_Product = USB_SHORT_UNALIGNED_LE_TO_HOST(info_ptr->idProduct);
 
-    dev_Vendor = USB_SHORT_UNALIGNED_LE_TO_HOST(dev_ptr->dev_descriptor.idVendor);
-    dev_Product = USB_SHORT_UNALIGNED_LE_TO_HOST(dev_ptr->dev_descriptor.idProduct);
+	dev_Vendor = USB_SHORT_UNALIGNED_LE_TO_HOST(dev_ptr->dev_descriptor.idVendor);
+	dev_Product = USB_SHORT_UNALIGNED_LE_TO_HOST(dev_ptr->dev_descriptor.idProduct);
 
-    /* If vendor and product are listed in table (non-zero) */
-    if ((info_Vendor | info_Product) != 0)
-    {   
+	/* If vendor and product are listed in table (non-zero) */
+	if ((info_Vendor | info_Product) != 0)
+	{
 #if USBCFG_HOST_COMPLIANCE_TEST
-        if (USBIF_VENDOR == dev_Vendor)
-        {
-            #ifdef _HOST_DEBUG_
-            DEBUG_LOG_TRACE("Test mode certification VID match");
-            #endif
-            return TRUE;
-        } /* Endif */ 
+		if (USBIF_VENDOR == dev_Vendor)
+		{
+			#ifdef _HOST_DEBUG_
+			DEBUG_LOG_TRACE("Test mode certification VID match");
+			#endif
+			return TRUE;
+		} /* Endif */
 #endif
-    }
-    if ((info_Vendor == 0) || (info_Vendor == dev_Vendor))
-    {
-        if((info_Product == 0) || (info_Product == dev_Product))
-        {
-            /* note: zero value class in the device descriptor means
-             ** that the class is defined in interface descriptor
-             */
-            if ((info_ptr->bDeviceClass == 0xFF) || /* if the device class is any OR */
-            ((info_ptr->bDeviceClass == /* or the device class matches */
-            dev_ptr->dev_descriptor.bDeviceClass) &&
-            (dev_ptr->dev_descriptor.bDeviceClass != 0x00))) /* but it is not zero-value match */
-            {
-                if ((info_ptr->bDeviceSubClass ==
-                dev_ptr->dev_descriptor.bDeviceSubClass) &&
-                (info_ptr->bDeviceProtocol ==
-                dev_ptr->dev_descriptor.bDeviceProtocol))
-                {
+	}
+	if ((info_Vendor == 0) || (info_Vendor == dev_Vendor))
+	{
+		if((info_Product == 0) || (info_Product == dev_Product))
+		{
+			/* note: zero value class in the device descriptor means
+			 ** that the class is defined in interface descriptor
+			 */
+			if ((info_ptr->bDeviceClass == 0xFF) || /* if the device class is any OR */
+			((info_ptr->bDeviceClass == /* or the device class matches */
+			dev_ptr->dev_descriptor.bDeviceClass) &&
+			(dev_ptr->dev_descriptor.bDeviceClass != 0x00))) /* but it is not zero-value match */
+			{
+				if ((info_ptr->bDeviceSubClass ==
+				dev_ptr->dev_descriptor.bDeviceSubClass) &&
+				(info_ptr->bDeviceProtocol ==
+				dev_ptr->dev_descriptor.bDeviceProtocol))
+				{
 #ifdef _HOST_DEBUG_
-                    DEBUG_LOG_TRACE("usb_host_driver_info_match class, match subclass, match protocol");
+					DEBUG_LOG_TRACE("usb_host_driver_info_match class, match subclass, match protocol");
 #endif
-                    return TRUE;
-                } /* Endif */
+					return TRUE;
+				} /* Endif */
 
-                if ((info_ptr->bDeviceSubClass ==
-                dev_ptr->dev_descriptor.bDeviceSubClass) &&
-                (info_ptr->bDeviceProtocol == 0xFF))
-                {
+				if ((info_ptr->bDeviceSubClass ==
+				dev_ptr->dev_descriptor.bDeviceSubClass) &&
+				(info_ptr->bDeviceProtocol == 0xFF))
+				{
 #ifdef _HOST_DEBUG_
-                    DEBUG_LOG_TRACE("usb_host_driver_info_match class, match subclass");
+					DEBUG_LOG_TRACE("usb_host_driver_info_match class, match subclass");
 #endif
-                    return TRUE;
-                }
+					return TRUE;
+				}
 
-                if ((info_ptr->bDeviceSubClass == 0xFF) &&
-                (info_ptr->bDeviceProtocol ==
-                dev_ptr->dev_descriptor.bDeviceProtocol))
-                {
+				if ((info_ptr->bDeviceSubClass == 0xFF) &&
+				(info_ptr->bDeviceProtocol ==
+				dev_ptr->dev_descriptor.bDeviceProtocol))
+				{
 #ifdef _HOST_DEBUG_
-                    DEBUG_LOG_TRACE("usb_host_driver_info_match class, match protocol");
+					DEBUG_LOG_TRACE("usb_host_driver_info_match class, match protocol");
 #endif
-                    return TRUE;
-                }
+					return TRUE;
+				}
 
-                if ((info_ptr->bDeviceSubClass == 0xFF) &&
-                (info_ptr->bDeviceProtocol == 0xFF))
-                {
+				if ((info_ptr->bDeviceSubClass == 0xFF) &&
+				(info_ptr->bDeviceProtocol == 0xFF))
+				{
 #ifdef _HOST_DEBUG_
-                    DEBUG_LOG_TRACE("usb_host_driver_info_match class");
+					DEBUG_LOG_TRACE("usb_host_driver_info_match class");
 #endif
-                    return TRUE;
-                }
-            }
+					return TRUE;
+				}
+			}
 
-            /* No Device match, try Interface */
-            if ((info_ptr->bDeviceClass == 0xFF) || /* if the device class is any OR */
-            ((info_ptr->bDeviceClass == /* or the class matches interface class */
-            intf_ptr->bInterfaceClass)))
-            {
-                if ((info_ptr->bDeviceSubClass ==
-                intf_ptr->bInterfaceSubClass) &&
-                (info_ptr->bDeviceProtocol ==
-                intf_ptr->bInterfaceProtocol))
-                {
+			/* No Device match, try Interface */
+			if ((info_ptr->bDeviceClass == 0xFF) || /* if the device class is any OR */
+			((info_ptr->bDeviceClass == /* or the class matches interface class */
+			intf_ptr->bInterfaceClass)))
+			{
+				if ((info_ptr->bDeviceSubClass ==
+				intf_ptr->bInterfaceSubClass) &&
+				(info_ptr->bDeviceProtocol ==
+				intf_ptr->bInterfaceProtocol))
+				{
 #ifdef _HOST_DEBUG_
-                    DEBUG_LOG_TRACE("usb_host_driver_info_match interface class, match interface subclass, match interface protocol");
+					DEBUG_LOG_TRACE("usb_host_driver_info_match interface class, match interface subclass, match interface protocol");
 #endif
-                    return TRUE;
-                } /* Endif */
+					return TRUE;
+				} /* Endif */
 
-                if ((info_ptr->bDeviceSubClass ==
-                intf_ptr->bInterfaceSubClass) &&
-                (info_ptr->bDeviceProtocol == 0xFF))
-                {
+				if ((info_ptr->bDeviceSubClass ==
+				intf_ptr->bInterfaceSubClass) &&
+				(info_ptr->bDeviceProtocol == 0xFF))
+				{
 #ifdef _HOST_DEBUG_
-                    DEBUG_LOG_TRACE("usb_host_driver_info_match interface class, match interface subclass, match interface protocol");
+					DEBUG_LOG_TRACE("usb_host_driver_info_match interface class, match interface subclass, match interface protocol");
 #endif
-                    return TRUE;
-                }
+					return TRUE;
+				}
 
-                if ((info_ptr->bDeviceSubClass == 0xFF) &&
-                (info_ptr->bDeviceProtocol ==
-                intf_ptr->bInterfaceProtocol))
-                {
+				if ((info_ptr->bDeviceSubClass == 0xFF) &&
+				(info_ptr->bDeviceProtocol ==
+				intf_ptr->bInterfaceProtocol))
+				{
 #ifdef _HOST_DEBUG_
-                    DEBUG_LOG_TRACE("usb_host_driver_info_match interface class, match interface protocol");
+					DEBUG_LOG_TRACE("usb_host_driver_info_match interface class, match interface protocol");
 #endif
-                    return TRUE;
-                }
+					return TRUE;
+				}
 
-                if ((info_ptr->bDeviceSubClass == 0xFF) &&
-                (info_ptr->bDeviceProtocol == 0xFF))
-                {
+				if ((info_ptr->bDeviceSubClass == 0xFF) &&
+				(info_ptr->bDeviceProtocol == 0xFF))
+				{
 #ifdef _HOST_DEBUG_
-                    DEBUG_LOG_TRACE("usb_host_driver_info_match interface class");
+					DEBUG_LOG_TRACE("usb_host_driver_info_match interface class");
 #endif
-                    return TRUE;
-                }
-            }
-        }
-    }
+					return TRUE;
+				}
+			}
+		}
+	}
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_host_driver_info_match interface No Match");
+	DEBUG_LOG_TRACE("usb_host_driver_info_match interface No Match");
 #endif
-    return FALSE;
+	return FALSE;
 } /* EndBody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -305,49 +305,49 @@ usb_host_driver_info_t* info_ptr
 )
 {
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_host_driver_info_nonzero");
+	DEBUG_LOG_TRACE("usb_host_driver_info_nonzero");
 #endif
 
-    if (info_ptr->bDeviceClass != 0)
-    {
-        return TRUE;
-    }
+	if (info_ptr->bDeviceClass != 0)
+	{
+		return TRUE;
+	}
 
-    if (info_ptr->bDeviceProtocol != 0)
-    {
-        return TRUE;
-    }
+	if (info_ptr->bDeviceProtocol != 0)
+	{
+		return TRUE;
+	}
 
-    if (info_ptr->bDeviceSubClass != 0)
-    {
-        return TRUE;
-    }
+	if (info_ptr->bDeviceSubClass != 0)
+	{
+		return TRUE;
+	}
 
-    if (info_ptr->idVendor[0] != 0)
-    {
-        return TRUE;
-    }
+	if (info_ptr->idVendor[0] != 0)
+	{
+		return TRUE;
+	}
 
-    if (info_ptr->idVendor[1] != 0)
-    {
-        return TRUE;
-    }
+	if (info_ptr->idVendor[1] != 0)
+	{
+		return TRUE;
+	}
 
-    if (info_ptr->idProduct[0] != 0)
-    {
-        return TRUE;
-    }
+	if (info_ptr->idProduct[0] != 0)
+	{
+		return TRUE;
+	}
 
-    if (info_ptr->idProduct[1] != 0)
-    {
-        return TRUE;
-    }
+	if (info_ptr->idProduct[1] != 0)
+	{
+		return TRUE;
+	}
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_host_driver_info_nonzero FAILURE");
+	DEBUG_LOG_TRACE("usb_host_driver_info_nonzero FAILURE");
 #endif
 
-    return FALSE;
+	return FALSE;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -365,38 +365,38 @@ class_map_t* usb_host_get_class_map
 interface_descriptor_t* interface_desc_ptr
 )
 {
-    class_map_t* map_ptr;
-    uint32_t intf_class, map_class;
+	class_map_t* map_ptr;
+	uint32_t intf_class, map_class;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_host_get_class_map");
+	DEBUG_LOG_TRACE("usb_host_get_class_map");
 #endif
 
-    for (map_ptr = &class_interface_map[0]; map_ptr->class_init != NULL; map_ptr++)
-    {
-        intf_class = usb_hostdev_mask_class_etc(&interface_desc_ptr->bInterfaceClass,
-        &map_ptr->class_code_mask);
-        map_class = usb_hostdev_mask_class_etc(&map_ptr->class_code,
-        &map_ptr->class_code_mask);
+	for (map_ptr = &class_interface_map[0]; map_ptr->class_init != NULL; map_ptr++)
+	{
+		intf_class = usb_hostdev_mask_class_etc(&interface_desc_ptr->bInterfaceClass,
+		&map_ptr->class_code_mask);
+		map_class = usb_hostdev_mask_class_etc(&map_ptr->class_code,
+		&map_ptr->class_code_mask);
 
-        if (intf_class != 0)
-        {
-            if (intf_class == map_class)
-            {
-                break;
-            }
-        }
-    } /* EndFor */
+		if (intf_class != 0)
+		{
+			if (intf_class == map_class)
+			{
+				break;
+			}
+		}
+	} /* EndFor */
 
-    if ((map_ptr == NULL) || (map_ptr->class_init == NULL))
-    {
-        map_ptr = NULL;
-    }
+	if ((map_ptr == NULL) || (map_ptr->class_init == NULL))
+	{
+		map_ptr = NULL;
+	}
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_host_get_class_map SUCCESSFUL");
+	DEBUG_LOG_TRACE("usb_host_get_class_map SUCCESSFUL");
 #endif
-    return map_ptr;
+	return map_ptr;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -418,27 +418,27 @@ uint8_t * csp_ptr,
 uint8_t * msk_ptr
 )
 {
-    uint32_t res;
+	uint32_t res;
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_hostdev_mask_class_etc");
+	DEBUG_LOG_TRACE("usb_hostdev_mask_class_etc");
 #endif
 
-    /* MSB of result = class */
-    res = (uint32_t)((*csp_ptr++) & (*msk_ptr++));
+	/* MSB of result = class */
+	res = (uint32_t)((*csp_ptr++) & (*msk_ptr++));
 
-    /* 2nd byte of result = sub-class */
-    res = (res << 8);
-    res |= (uint32_t) ((*csp_ptr++) & (*msk_ptr++));
+	/* 2nd byte of result = sub-class */
+	res = (res << 8);
+	res |= (uint32_t) ((*csp_ptr++) & (*msk_ptr++));
 
-    /* LSB of result = sub-class */
-    res = (res << 8);
-    res |= (uint32_t) ((*csp_ptr) & (*msk_ptr));
+	/* LSB of result = sub-class */
+	res = (res << 8);
+	res |= (uint32_t) ((*csp_ptr) & (*msk_ptr));
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_hostdev_mask_class_etc SUCCESSFUL");
+	DEBUG_LOG_TRACE("usb_hostdev_mask_class_etc SUCCESSFUL");
 #endif
 
-    return res;
+	return res;
 }
 
 #endif

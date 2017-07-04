@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2008, 2013-2014 Freescale Semiconductor;
 * All Rights Reserved
 *
 * Copyright (c) 1989-2008 ARC International;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
 *
-* $FileName: 
-* $Version : 
-* $Date    : 
+* $FileName:
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -87,8 +87,8 @@ typedef  uint32_t  USB_REGISTER;
 #define  EHCI_INTR_PORT_CHANGE_DETECT_EN           (0x00000004)
 
 #define  EHCI_INTR_ASYNC_ADV_AAE                   (0x00000020)
-         #define  EHCI_INTR_ASYNC_ADV_AAE_ENABLE   (0x00000020) /* | with this to enable */
-         #define  EHCI_INTR_ASYNC_ADV_AAE_DISABLE  (0xFFFFFFDF) /* & with this to disable */
+		 #define  EHCI_INTR_ASYNC_ADV_AAE_ENABLE   (0x00000020) /* | with this to enable */
+		 #define  EHCI_INTR_ASYNC_ADV_AAE_DISABLE  (0xFFFFFFDF) /* & with this to disable */
 
 #define  EHCI_INTR_RESET_EN                        (0x00000040)
 #define  EHCI_INTR_SOF_UFRAME_EN                   (0x00000080)
@@ -246,10 +246,10 @@ Split transatcions specific defines
 #define  EHCI_ITD_DIRECTION_BIT_POS                (11)
 #define  EHCI_ITD_EP_BIT_POS                       (8)
 #define  EHCI_ITD_STATUS                           (0xF0000000)
-        #define  EHCI_ITD_STATUS_ACTIVE            (0x80000000) /*bit 4 = 1000*/
-        #define  EHCI_ITD_STATUS_DATA_BUFFER_ERR   (0x40000000) /*bit 3 = 0100*/
-        #define  EHCI_ITD_STATUS_BABBLE_ERROR      (0x20000000) /*bit 2 = 0010*/
-        #define  EHCI_ITD_STATUS_TRANSACTION_ERR   (0x10000000) /*bit 4 = 0001*/
+		#define  EHCI_ITD_STATUS_ACTIVE            (0x80000000) /*bit 4 = 1000*/
+		#define  EHCI_ITD_STATUS_DATA_BUFFER_ERR   (0x40000000) /*bit 3 = 0100*/
+		#define  EHCI_ITD_STATUS_BABBLE_ERROR      (0x20000000) /*bit 2 = 0010*/
+		#define  EHCI_ITD_STATUS_TRANSACTION_ERR   (0x10000000) /*bit 4 = 0001*/
 
 #define  EHCI_ITD_LENGTH_TRANSMITTED               (0x0FFF0000)
 #define  EHCI_ITD_BUFFER_OFFSET                    (0x00000FFF)
@@ -282,10 +282,10 @@ Split transatcions specific defines
 
 #define  EHCI_SITD_BUFFER_PTR_BIT_POS                 (12)
 #define  EHCI_SITD_TP_BIT_POS                         (3)
-    #define  EHCI_SITD_TP_ALL                         (0)
-    #define  EHCI_SITD_TP_BEGIN                       (1)
-    #define  EHCI_SITD_TP_MID                         (2)
-    #define  EHCI_SITD_TP_END                         (3)
+	#define  EHCI_SITD_TP_ALL                         (0)
+	#define  EHCI_SITD_TP_BEGIN                       (1)
+	#define  EHCI_SITD_TP_MID                         (2)
+	#define  EHCI_SITD_TP_END                         (3)
 
 
 
@@ -351,7 +351,7 @@ Split transatcions specific defines
 
 #define  DEFAULT_MAX_NAK_COUNT                     (15)
 
-#define _PSP_SYNC() 
+#define _PSP_SYNC()
 
 #if (ENDIANNESS == BIG_ENDIAN)
    #define ehci_reg_read(r,n)           USB_LONG_BE_TO_HOST((uint32_t)r)
@@ -388,63 +388,63 @@ Split transatcions specific defines
 /* The VUSB register structure */
 typedef volatile struct {
    union  {
-      struct  {
-         USB_REGISTER   CAPLENGTH_HCIVER;
-         USB_REGISTER   HCS_PARAMS;       /* HC structural parameters */
-         USB_REGISTER   HCC_PARAMS;       /* HC Capability Parameters*/
-         USB_REGISTER   RESERVED1[5];
-         USB_REGISTER   DCI_VERSION;      /* DC version number and reserved 16 bits */
-         USB_REGISTER   DCC_PARAMS;       /* DC Capability Parameters */
-      } CAPABILITY_REGISTERS;
+	  struct  {
+		 USB_REGISTER   CAPLENGTH_HCIVER;
+		 USB_REGISTER   HCS_PARAMS;       /* HC structural parameters */
+		 USB_REGISTER   HCC_PARAMS;       /* HC Capability Parameters*/
+		 USB_REGISTER   RESERVED1[5];
+		 USB_REGISTER   DCI_VERSION;      /* DC version number and reserved 16 bits */
+		 USB_REGISTER   DCC_PARAMS;       /* DC Capability Parameters */
+	  } CAPABILITY_REGISTERS;
 
-      struct  {
-         USB_REGISTER   USB_CMD;                   /* Command register */
-         USB_REGISTER   USB_STS;                   /* Status register */
-         USB_REGISTER   USB_INTR;                  /* Interrupt enable */
-         USB_REGISTER   USB_FRINDEX;               /* Frame index */
-         USB_REGISTER   CTRLDSSEGMENT;             /* 4G segment selector */
-         USB_REGISTER   DEVICE_ADDR;               /* Device Address */
-         USB_REGISTER   EP_LIST_ADDR;              /* Endpoint List Address */
-         USB_REGISTER   RESERVED0[9];
-         USB_REGISTER   CONFIG_FLAG;               /* Configured Flag register */
-         USB_REGISTER   PORTSCX[USBHS_MAX_PORTS]; /* Port Status/Control x, x = 1..8 */
-         USB_REGISTER   OTGSC;
-         USB_REGISTER   USB_MODE;                  /* USB Host/Device mode */
-         USB_REGISTER   ENDPT_SETUP_STAT;          /* Endpoint Setup Status */
-         USB_REGISTER   ENDPTPRIME;                /* Endpoint Initialize */
-         USB_REGISTER   ENDPTFLUSH;                /* Endpoint De-initialize */
-         USB_REGISTER   ENDPTSTATUS;               /* Endpoint Status */
-         USB_REGISTER   ENDPTCOMPLETE;             /* Endpoint Interrupt On Complete */
-         USB_REGISTER   ENDPTCTRLX[16];            /* Endpoint Control, where x = 0.. 15 */
-      } OPERATIONAL_DEVICE_REGISTERS;
+	  struct  {
+		 USB_REGISTER   USB_CMD;                   /* Command register */
+		 USB_REGISTER   USB_STS;                   /* Status register */
+		 USB_REGISTER   USB_INTR;                  /* Interrupt enable */
+		 USB_REGISTER   USB_FRINDEX;               /* Frame index */
+		 USB_REGISTER   CTRLDSSEGMENT;             /* 4G segment selector */
+		 USB_REGISTER   DEVICE_ADDR;               /* Device Address */
+		 USB_REGISTER   EP_LIST_ADDR;              /* Endpoint List Address */
+		 USB_REGISTER   RESERVED0[9];
+		 USB_REGISTER   CONFIG_FLAG;               /* Configured Flag register */
+		 USB_REGISTER   PORTSCX[USBHS_MAX_PORTS]; /* Port Status/Control x, x = 1..8 */
+		 USB_REGISTER   OTGSC;
+		 USB_REGISTER   USB_MODE;                  /* USB Host/Device mode */
+		 USB_REGISTER   ENDPT_SETUP_STAT;          /* Endpoint Setup Status */
+		 USB_REGISTER   ENDPTPRIME;                /* Endpoint Initialize */
+		 USB_REGISTER   ENDPTFLUSH;                /* Endpoint De-initialize */
+		 USB_REGISTER   ENDPTSTATUS;               /* Endpoint Status */
+		 USB_REGISTER   ENDPTCOMPLETE;             /* Endpoint Interrupt On Complete */
+		 USB_REGISTER   ENDPTCTRLX[16];            /* Endpoint Control, where x = 0.. 15 */
+	  } OPERATIONAL_DEVICE_REGISTERS;
 
-      struct  {
-         USB_REGISTER   USB_CMD;                   /* Command register */
-         USB_REGISTER   USB_STS;                   /* Status register */
-         USB_REGISTER   USB_INTR;                  /* Interrupt enable */
-         USB_REGISTER   USB_FRINDEX;               /* Frame index */
-         USB_REGISTER   CTRLDSSEGMENT;             /* 4G segment selector */
-         USB_REGISTER   PERIODIC_LIST_BASE_ADDR;   /* Periodic schedule list */
-         USB_REGISTER   CURR_ASYNC_LIST_ADDR;      /* Current Asynch schedule list */
-         USB_REGISTER   ASYNCTTSTS;                /* Async buffer in embedded TT control */
-         USB_REGISTER   RESERVED0[8];
-         USB_REGISTER   CONFIG_FLAG;               /* Configured Flag register */
-         USB_REGISTER   PORTSCX[USBHS_MAX_PORTS]; /* Port Status/Control x, x = 1..8 */
-         USB_REGISTER   OTGSC;                     /* OTG status and control register */
-         USB_REGISTER   USB_MODE;                  /* USB Host/Device mode */
-      } OPERATIONAL_HOST_REGISTERS;
+	  struct  {
+		 USB_REGISTER   USB_CMD;                   /* Command register */
+		 USB_REGISTER   USB_STS;                   /* Status register */
+		 USB_REGISTER   USB_INTR;                  /* Interrupt enable */
+		 USB_REGISTER   USB_FRINDEX;               /* Frame index */
+		 USB_REGISTER   CTRLDSSEGMENT;             /* 4G segment selector */
+		 USB_REGISTER   PERIODIC_LIST_BASE_ADDR;   /* Periodic schedule list */
+		 USB_REGISTER   CURR_ASYNC_LIST_ADDR;      /* Current Asynch schedule list */
+		 USB_REGISTER   ASYNCTTSTS;                /* Async buffer in embedded TT control */
+		 USB_REGISTER   RESERVED0[8];
+		 USB_REGISTER   CONFIG_FLAG;               /* Configured Flag register */
+		 USB_REGISTER   PORTSCX[USBHS_MAX_PORTS]; /* Port Status/Control x, x = 1..8 */
+		 USB_REGISTER   OTGSC;                     /* OTG status and control register */
+		 USB_REGISTER   USB_MODE;                  /* USB Host/Device mode */
+	  } OPERATIONAL_HOST_REGISTERS;
    } REGISTERS;
 } usb_ehc_dev_reg_struct_t;
 
 typedef volatile struct {
    uint32_t   MAX_PKT_LENGTH;      /* Bits 16..26 Bit 15 is Interrupt
-                                          ** On Setup
-                                          */
+										  ** On Setup
+										  */
    uint32_t   CURR_DTD_PTR;        /* Current dTD Pointer - not used */
    uint32_t   NEXT_DTD_PTR;        /* Next dTD Pointer */
    uint32_t   SIZE_IOC_INT_STS;    /* Total bytes (16..30), IOC (15),
-                                          ** INT (8), STS (0-7)
-                                          */
+										  ** INT (8), STS (0-7)
+										  */
    uint32_t   BUFF_PTR0;           /* Buffer pointer Page 0 (12-31) */
    uint32_t   BUFF_PTR1;           /* Buffer pointer Page 1 (12-31) */
    uint32_t   BUFF_PTR2;           /* Buffer pointer Page 2 (12-31) */
@@ -452,26 +452,26 @@ typedef volatile struct {
    uint32_t   BUFF_PTR4;           /* Buffer pointer Page 4 (12-31) */
    uint32_t   RESERVED1;
    uint8_t    SETUP_BUFFER[8];     /* 8 bytes of setup data that follows
-                                  ** the Setup PID
-                                  */
+								  ** the Setup PID
+								  */
    uint32_t   RESERVED2[4];
 } usb_ehc_dev_qh_struct_t;
 
 
 typedef volatile struct ep_dtd_struct {
    uint32_t      NEXT_TR_ELEM_PTR; /* Memory address of next
-                                          ** dTD to be processed (5-31)
-                                          ** and the T (bit 0) indicating
-                                          ** pointer validity
-                                          */
+										  ** dTD to be processed (5-31)
+										  ** and the T (bit 0) indicating
+										  ** pointer validity
+										  */
    uint32_t      SIZE_IOC_STS;     /* total bytes (16-30),
-                                          ** IOC (15), Status (0-7)
-                                          */
+										  ** IOC (15), Status (0-7)
+										  */
    uint32_t      BUFF_PTR0;        /* Buffer pointer Page 0 */
    uint32_t      BUFF_PTR1;        /* Buffer pointer Page 1 */
    uint32_t      BUFF_PTR2;        /* Buffer pointer Page 2 */
    uint32_t      BUFF_PTR3;        /* Buffer pointer Page 3 */
-   uint32_t      BUFF_PTR4;        /* Buffer pointer Page 4 */ 
+   uint32_t      BUFF_PTR4;        /* Buffer pointer Page 4 */
    void*         xd_for_this_dtd;
 } usb_ehci_dev_dtd_struct_t;
 
@@ -500,60 +500,60 @@ typedef volatile struct ep_dtd_struct {
 /* The VUSB register structure */
 typedef volatile struct {
    union  {
-      struct  {
-         USB_REGISTER   CAPLENGTH_HCIVER;
-         USB_REGISTER   HCS_PARAMS;       /* HC structural parameters */
-         USB_REGISTER   HCC_PARAMS;       /* HC Capability Parameters*/
-         USB_REGISTER   RESERVED1[5];
-         USB_REGISTER   DCI_VERSION;      /* DC version number and reserved 16 bits */
-         USB_REGISTER   DCC_PARAMS;       /* DC Capability Parameters */
-      } CAPABILITY_REGISTERS;
+	  struct  {
+		 USB_REGISTER   CAPLENGTH_HCIVER;
+		 USB_REGISTER   HCS_PARAMS;       /* HC structural parameters */
+		 USB_REGISTER   HCC_PARAMS;       /* HC Capability Parameters*/
+		 USB_REGISTER   RESERVED1[5];
+		 USB_REGISTER   DCI_VERSION;      /* DC version number and reserved 16 bits */
+		 USB_REGISTER   DCC_PARAMS;       /* DC Capability Parameters */
+	  } CAPABILITY_REGISTERS;
 
-      struct  {
-         USB_REGISTER   GPTIMER0LD;
-         USB_REGISTER   GPTIMER0CTL;
-         USB_REGISTER   GPTIMER1LD;
-         USB_REGISTER   GPTIMER1CTL;
-      } TIMER_REGISTERS;
-      
-      struct  {
-         USB_REGISTER   USB_CMD;                   /* Command register */
-         USB_REGISTER   USB_STS;                   /* Status register */
-         USB_REGISTER   USB_INTR;                  /* Interrupt enable */
-         USB_REGISTER   USB_FRINDEX;               /* Frame index */
-         USB_REGISTER   CTRLDSSEGMENT;             /* 4G segment selector */
-         USB_REGISTER   DEVICE_ADDR;               /* Device Address */
-         USB_REGISTER   EP_LIST_ADDR;              /* Endpoint List Address */
-         USB_REGISTER   RESERVED0[9];
-         USB_REGISTER   CONFIG_FLAG;               /* Configured Flag register */
-         USB_REGISTER   PORTSCX[USBHS_MAX_PORTS]; /* Port Status/Control x, x = 1..8 */
-         USB_REGISTER   OTGSC;
-         USB_REGISTER   USB_MODE;                  /* USB Host/Device mode */
-         USB_REGISTER   ENDPT_SETUP_STAT;          /* Endpoint Setup Status */
-         USB_REGISTER   ENDPTPRIME;                /* Endpoint Initialize */
-         USB_REGISTER   ENDPTFLUSH;                /* Endpoint De-initialize */
-         USB_REGISTER   ENDPTSTATUS;               /* Endpoint Status */
-         USB_REGISTER   ENDPTCOMPLETE;             /* Endpoint Interrupt On Complete */
-         USB_REGISTER   ENDPTCTRLX[16];            /* Endpoint Control, where x = 0.. 15 */
-      } OPERATIONAL_DEVICE_REGISTERS;
-      
-      struct  {
-         USB_REGISTER   USB_CMD;                   /* Command register */
-         USB_REGISTER   USB_STS;                   /* Status register */
-         USB_REGISTER   USB_INTR;                  /* Interrupt enable */
-         USB_REGISTER   USB_FRINDEX;               /* Frame index */
-         USB_REGISTER   CTRLDSSEGMENT;             /* 4G segment selector */
-         USB_REGISTER   PERIODIC_LIST_BASE_ADDR;   /* Periodic schedule list */
-         USB_REGISTER   CURR_ASYNC_LIST_ADDR;      /* Current Asynch schedule list */
-         USB_REGISTER   ASYNCTTSTS;                /* Async buffer in embedded TT control */
-         USB_REGISTER   RESERVED0[4];
-         USB_REGISTER   ULPIVIEWPORT;
-         USB_REGISTER   RESERVED1[3];
-         USB_REGISTER   CONFIG_FLAG;               /* Configured Flag register */
-         USB_REGISTER   PORTSCX[USBHS_MAX_PORTS]; /* Port Status/Control x, x = 1..8 */
-         USB_REGISTER   OTGSC;                     /* OTG status and control register */
-         USB_REGISTER   USB_MODE;                  /* USB Host/Device mode */
-      } OPERATIONAL_HOST_REGISTERS;
+	  struct  {
+		 USB_REGISTER   GPTIMER0LD;
+		 USB_REGISTER   GPTIMER0CTL;
+		 USB_REGISTER   GPTIMER1LD;
+		 USB_REGISTER   GPTIMER1CTL;
+	  } TIMER_REGISTERS;
+
+	  struct  {
+		 USB_REGISTER   USB_CMD;                   /* Command register */
+		 USB_REGISTER   USB_STS;                   /* Status register */
+		 USB_REGISTER   USB_INTR;                  /* Interrupt enable */
+		 USB_REGISTER   USB_FRINDEX;               /* Frame index */
+		 USB_REGISTER   CTRLDSSEGMENT;             /* 4G segment selector */
+		 USB_REGISTER   DEVICE_ADDR;               /* Device Address */
+		 USB_REGISTER   EP_LIST_ADDR;              /* Endpoint List Address */
+		 USB_REGISTER   RESERVED0[9];
+		 USB_REGISTER   CONFIG_FLAG;               /* Configured Flag register */
+		 USB_REGISTER   PORTSCX[USBHS_MAX_PORTS]; /* Port Status/Control x, x = 1..8 */
+		 USB_REGISTER   OTGSC;
+		 USB_REGISTER   USB_MODE;                  /* USB Host/Device mode */
+		 USB_REGISTER   ENDPT_SETUP_STAT;          /* Endpoint Setup Status */
+		 USB_REGISTER   ENDPTPRIME;                /* Endpoint Initialize */
+		 USB_REGISTER   ENDPTFLUSH;                /* Endpoint De-initialize */
+		 USB_REGISTER   ENDPTSTATUS;               /* Endpoint Status */
+		 USB_REGISTER   ENDPTCOMPLETE;             /* Endpoint Interrupt On Complete */
+		 USB_REGISTER   ENDPTCTRLX[16];            /* Endpoint Control, where x = 0.. 15 */
+	  } OPERATIONAL_DEVICE_REGISTERS;
+
+	  struct  {
+		 USB_REGISTER   USB_CMD;                   /* Command register */
+		 USB_REGISTER   USB_STS;                   /* Status register */
+		 USB_REGISTER   USB_INTR;                  /* Interrupt enable */
+		 USB_REGISTER   USB_FRINDEX;               /* Frame index */
+		 USB_REGISTER   CTRLDSSEGMENT;             /* 4G segment selector */
+		 USB_REGISTER   PERIODIC_LIST_BASE_ADDR;   /* Periodic schedule list */
+		 USB_REGISTER   CURR_ASYNC_LIST_ADDR;      /* Current Asynch schedule list */
+		 USB_REGISTER   ASYNCTTSTS;                /* Async buffer in embedded TT control */
+		 USB_REGISTER   RESERVED0[4];
+		 USB_REGISTER   ULPIVIEWPORT;
+		 USB_REGISTER   RESERVED1[3];
+		 USB_REGISTER   CONFIG_FLAG;               /* Configured Flag register */
+		 USB_REGISTER   PORTSCX[USBHS_MAX_PORTS]; /* Port Status/Control x, x = 1..8 */
+		 USB_REGISTER   OTGSC;                     /* OTG status and control register */
+		 USB_REGISTER   USB_MODE;                  /* USB Host/Device mode */
+	  } OPERATIONAL_HOST_REGISTERS;
    } REGISTERS;
 } vusb20_reg_struct_t;
 
@@ -561,33 +561,33 @@ typedef volatile struct {
 
 typedef volatile struct
 {
-    uint32_t     next_link_ptr;
+	uint32_t     next_link_ptr;
 }link_obj_t;
 
 typedef struct ehci_itd_struct
 {
    // ehci defined
-   // these should be accessed via macros                                           
-   uint32_t      next_link_ptr;    /* (5-31) memory address of 
-                                          ** next schedule data structure 
-                                          ** item type (1..2 ) and the 
-                                          ** t (bit 0) indicating pointer 
-                                          ** validity
-                                          */
+   // these should be accessed via macros
+   uint32_t      next_link_ptr;    /* (5-31) memory address of
+										  ** next schedule data structure
+										  ** item type (1..2 ) and the
+										  ** t (bit 0) indicating pointer
+										  ** validity
+										  */
    uint32_t      tr_status_ctl_list[8];  /* bits 31-28: status,
-                                                ** bits 27-16: tr x length
-                                                ** bit 15: int on complete
-                                                ** bits 14-12: page select
-                                                ** bits 11-0: tr x offset
-                                                */
-   uint32_t      buffer_page_ptr_list[7];  /* bits 31-12 4k aligned pointer 
-                                                ** to physical memory 
-                                                ** bits 11-8 endpoint no.
-                                                ** bit 7: reserved
-                                                ** bits 6-0 device address*/
-                                                
-   // usb host stack specific extensions (not read by controller)  
-   // these can be accessed directly                                           
+												** bits 27-16: tr x length
+												** bit 15: int on complete
+												** bits 14-12: page select
+												** bits 11-0: tr x offset
+												*/
+   uint32_t      buffer_page_ptr_list[7];  /* bits 31-12 4k aligned pointer
+												** to physical memory
+												** bits 11-8 endpoint no.
+												** bit 7: reserved
+												** bits 6-0 device address*/
+
+   // usb host stack specific extensions (not read by controller)
+   // these can be accessed directly
    struct ehci_itd_struct*      scratch_ptr;
    void*      pipe_descr_for_this_itd;
    void*      pipe_tr_descr_for_this_itd;
@@ -601,51 +601,51 @@ typedef struct ehci_itd_struct
 typedef struct ehci_sitd_struct
 {
    // ehci defined
-   // these should be accessed via macros                                           
-   uint32_t      next_link_ptr;    /* (5-31) memory address of 
-                                          ** next schedule data structure 
-                                          ** item type (1..2 ) and the 
-                                          ** t (bit 0) indicating pointer 
-                                          ** validity
-                                          */
+   // these should be accessed via macros
+   uint32_t      next_link_ptr;    /* (5-31) memory address of
+										  ** next schedule data structure
+										  ** item type (1..2 ) and the
+										  ** t (bit 0) indicating pointer
+										  ** validity
+										  */
    uint32_t      ep_capab_charac;  /* bits 31: direction (i/o),
-                                          ** bits 30-24: port number
-                                          ** bit 23: reserved
-                                          ** bits 22-16: hub address
-                                          ** bits 15-12: reserved
-                                          ** bits 11-8: endpoint number
-                                          ** bit 7: reserved
-                                          ** bits 6-0: device address
-                                          */
-   uint32_t      uframe_sched_ctl; /* bits 31-16: reserved 
-                                          ** bits 15-8: split completion mask
-                                          ** bits 7-0: split start mask
-                                          */
+										  ** bits 30-24: port number
+										  ** bit 23: reserved
+										  ** bits 22-16: hub address
+										  ** bits 15-12: reserved
+										  ** bits 11-8: endpoint number
+										  ** bit 7: reserved
+										  ** bits 6-0: device address
+										  */
+   uint32_t      uframe_sched_ctl; /* bits 31-16: reserved
+										  ** bits 15-8: split completion mask
+										  ** bits 7-0: split start mask
+										  */
    uint32_t      transfer_state;   /* bit 31: int on complete
-                                          ** bit 30: page select
-                                          ** bits 29-26: reserved
-                                          ** bits 25-16: total bytes to 
-                                          ** transfer
-                                          ** bits 15-8: uframe 
-                                          ** complete-split progress mask
-                                          ** bits 7-0: status
-                                          */
-   uint32_t      buffer_ptr_0;     /* bits 31-12: 4k aligned pointer 
-                                          ** to physical memory 
-                                          ** bits 11-0: current offset
-                                          */
-   uint32_t      buffer_ptr_1;     /* bits 31-12: 4k aligned pointer 
-                                          ** to physical memory 
-                                          ** bits 11-5 reserved
-                                          ** bits 4-3 tr position
-                                          ** bits 2-0 tr count
-                                          */
-   uint32_t      back_link_ptr;    /* bits 31-5 back pointer points to sitd 
-                                          ** bits 4-1: reserved
-                                          ** bit 0: terminate
-                                          */
-   // usb host stack specific extensions (not read by controller)  
-   // these can be accessed directly                                           
+										  ** bit 30: page select
+										  ** bits 29-26: reserved
+										  ** bits 25-16: total bytes to
+										  ** transfer
+										  ** bits 15-8: uframe
+										  ** complete-split progress mask
+										  ** bits 7-0: status
+										  */
+   uint32_t      buffer_ptr_0;     /* bits 31-12: 4k aligned pointer
+										  ** to physical memory
+										  ** bits 11-0: current offset
+										  */
+   uint32_t      buffer_ptr_1;     /* bits 31-12: 4k aligned pointer
+										  ** to physical memory
+										  ** bits 11-5 reserved
+										  ** bits 4-3 tr position
+										  ** bits 2-0 tr count
+										  */
+   uint32_t      back_link_ptr;    /* bits 31-5 back pointer points to sitd
+										  ** bits 4-1: reserved
+										  ** bit 0: terminate
+										  */
+   // usb host stack specific extensions (not read by controller)
+   // these can be accessed directly
    struct ehci_sitd_struct*      scratch_ptr;
    void*      pipe_descr_for_this_sitd;
    void*      pipe_tr_descr_for_this_sitd;
@@ -657,140 +657,140 @@ typedef struct ehci_sitd_struct
 } ehci_sitd_struct_t;
 
 typedef struct _ehci_qtd_struct_t{
-    // ehci defined
-    // these should be accessed via macros                                           
-    uint32_t      next_qtd_ptr;     /* (5-31) memory address of 
-                                           ** next qtd to be processed
-                                           ** (4..1) reserved 
-                                           ** t (bit 0) indicating pointer 
-                                           ** validity
-                                           */
-    uint32_t      alt_next_qtd_ptr; /* bits 31-5: alternate next 
-                                           ** qtd if the above one encounters 
-                                           ** a short packet
-                                           ** (4..1) reserved 
-                                           ** t (bit 0) indicating pointer 
-                                           ** validity
-                                           */
-    uint32_t      token;            /* bits 31: data toggle 
-                                           ** bits 30-16: total bytes to transfer
-                                           ** bit 15: interrupt on complete
-                                           ** bits 14-12: current page
-                                           ** bits 11-10: error counter
-                                           ** bits 9-8: pid code
-                                           ** bits 7-0: status
-                                           */
-    uint32_t      buffer_ptr_0;     /* bit 31-12: 4k-page aligned 
-                                           ** physical memory address
-                                           ** bit 11-0: current offset
-                                           */
-    uint32_t      buffer_ptr_1;     /* bit 31-12: 4k-page aligned 
-                                           ** physical memory address
-                                           ** bit 11-0: reserved
-                                           */
-    uint32_t      buffer_ptr_2;     /* bit 31-12: 4k-page aligned 
-                                           ** physical memory address
-                                           ** bit 11-0: reserved
-                                           */
-    uint32_t      buffer_ptr_3;     /* bit 31-12: 4k-page aligned 
-                                           ** physical memory address
-                                           ** bit 11-0: reserved
-                                           */
-    uint32_t      buffer_ptr_4;     /* bit 31-12: 4k-page aligned 
-                                           ** physical memory address
-                                           ** bit 11-0: reserved
-                                          */
+	// ehci defined
+	// these should be accessed via macros
+	uint32_t      next_qtd_ptr;     /* (5-31) memory address of
+										   ** next qtd to be processed
+										   ** (4..1) reserved
+										   ** t (bit 0) indicating pointer
+										   ** validity
+										   */
+	uint32_t      alt_next_qtd_ptr; /* bits 31-5: alternate next
+										   ** qtd if the above one encounters
+										   ** a short packet
+										   ** (4..1) reserved
+										   ** t (bit 0) indicating pointer
+										   ** validity
+										   */
+	uint32_t      token;            /* bits 31: data toggle
+										   ** bits 30-16: total bytes to transfer
+										   ** bit 15: interrupt on complete
+										   ** bits 14-12: current page
+										   ** bits 11-10: error counter
+										   ** bits 9-8: pid code
+										   ** bits 7-0: status
+										   */
+	uint32_t      buffer_ptr_0;     /* bit 31-12: 4k-page aligned
+										   ** physical memory address
+										   ** bit 11-0: current offset
+										   */
+	uint32_t      buffer_ptr_1;     /* bit 31-12: 4k-page aligned
+										   ** physical memory address
+										   ** bit 11-0: reserved
+										   */
+	uint32_t      buffer_ptr_2;     /* bit 31-12: 4k-page aligned
+										   ** physical memory address
+										   ** bit 11-0: reserved
+										   */
+	uint32_t      buffer_ptr_3;     /* bit 31-12: 4k-page aligned
+										   ** physical memory address
+										   ** bit 11-0: reserved
+										   */
+	uint32_t      buffer_ptr_4;     /* bit 31-12: 4k-page aligned
+										   ** physical memory address
+										   ** bit 11-0: reserved
+										  */
 
-    // usb host stack specific extensions (not read by controller)  
-    // these can be accessed directly                                           
-    struct _ehci_qtd_struct_t*         next;
-    void*         pipe;
-    void*         tr;
-    uint32_t      length;
+	// usb host stack specific extensions (not read by controller)
+	// these can be accessed directly
+	struct _ehci_qtd_struct_t*         next;
+	void*         pipe;
+	void*         tr;
+	uint32_t      length;
 	uint32_t      qtd_timer;
-    uint32_t      reserved[3];    
+	uint32_t      reserved[3];
 }ehci_qtd_struct_t;
 
 typedef struct
 {
-    ehci_qtd_struct_t*    qtd;
-    uint32_t            occupied;
+	ehci_qtd_struct_t*    qtd;
+	uint32_t            occupied;
 }qtd_node_link_struct_t;
 
 typedef struct ehci_qh_struct
 {
    // EHCI Defined
-   // These should be accessed via macros                                           
-   uint32_t      horiz_link_ptr;   /* (5-31) memory address of 
-                                          ** next data object to be processed
-                                          ** (4..3) reserved 
-                                          ** (2..1) type of the item
-                                          ** t (bit 0) indicating pointer 
-                                          ** validity
-                                          */
+   // These should be accessed via macros
+   uint32_t      horiz_link_ptr;   /* (5-31) memory address of
+										  ** next data object to be processed
+										  ** (4..3) reserved
+										  ** (2..1) type of the item
+										  ** t (bit 0) indicating pointer
+										  ** validity
+										  */
    uint32_t      ep_capab_charac1; /* bits 31-28: nak count reload,
-                                          ** bit 27: control endpoint flag
-                                          ** bit 26-16: maximum packet length
-                                          ** bit 15: head of reclamation 
-                                          ** list flag
-                                          ** bit 14: data toggle control
-                                          ** bits 13-12: endpoint speed
-                                          ** bit 11-8: endpoint number
-                                          ** bits 7: inactivate on next tr
-                                          ** bits 6-0: device address
-                                          */
-   uint32_t      ep_capab_charac2; /* bits 31-30: high-bw pipe 
-                                          ** multiplier, 
-                                          ** bit 29-23: port number
-                                          ** bit 22-16: hub address
-                                          ** bit 15-8: split completion mask
-                                          ** bit 7-0: interrupt schedule mask
-                                          */
+										  ** bit 27: control endpoint flag
+										  ** bit 26-16: maximum packet length
+										  ** bit 15: head of reclamation
+										  ** list flag
+										  ** bit 14: data toggle control
+										  ** bits 13-12: endpoint speed
+										  ** bit 11-8: endpoint number
+										  ** bits 7: inactivate on next tr
+										  ** bits 6-0: device address
+										  */
+   uint32_t      ep_capab_charac2; /* bits 31-30: high-bw pipe
+										  ** multiplier,
+										  ** bit 29-23: port number
+										  ** bit 22-16: hub address
+										  ** bit 15-8: split completion mask
+										  ** bit 7-0: interrupt schedule mask
+										  */
    uint32_t      curr_qtd_link_ptr;/* bits 31-5: physical memory address
-                                          ** of the current xaction processed
-                                          */
+										  ** of the current xaction processed
+										  */
    uint32_t      next_qtd_link_ptr;/* bits 31-5: physical memory address
-                                          ** of the current xaction processed
-                                          ** bit 0: terminate bit
-                                          */
+										  ** of the current xaction processed
+										  ** bit 0: terminate bit
+										  */
    uint32_t      alt_next_qtd_link_ptr;  /* bits 31-5: physical memory address
-                                                ** of the current xaction processed
-                                                ** bits 4-1: nak counter
-                                                ** bit 0: terminate bit
-                                                */
+												** of the current xaction processed
+												** bits 4-1: nak counter
+												** bit 0: terminate bit
+												*/
    uint32_t      status;           /* bit 31: data-toggle
-                                          ** bits 30-16: total bytes to transfer
-                                          ** bit 15: interrupt on complete
-                                          ** bits 11-10: error counter
-                                          ** bit 0: ping state/err
-                                          ** physical memory address
-                                          ** bit 11-0: reserved
-                                          */
-   uint32_t      buffer_ptr_0;     /* bit 31-12: 4k-page aligned 
-                                          ** physical memory address
-                                          ** bit 11-0: reserved
-                                          */
-   uint32_t      buffer_ptr_1;     /* bit 31-12: 4k-page aligned 
-                                          ** physical memory address
-                                          ** bit 7-0: split-transaction, 
-                                          ** complete-split progress
-                                          */
-   uint32_t      buffer_ptr_2;     /* bits 31-12: 4k-page aligned 
-                                          ** physical memory address
-                                          ** bits 11-5: s-bytes
-                                          ** bits 4-0: split-transaction 
-                                          ** frame tag
-                                          */
-   uint32_t      buffer_ptr_3;     /* bit 31-12: 4k-page aligned 
-                                          ** physical memory address
-                                          ** bit 11-0: reserved
-                                          */
-   uint32_t      buffer_ptr_4;     /* bit 31-12: 4k-page aligned 
-                                          ** physical memory address
-                                          ** bit 11-0: reserved
-                                          */
-   // usb host stack specific extensions (not read by controller)  
-   // these can be accessed directly                                           
+										  ** bits 30-16: total bytes to transfer
+										  ** bit 15: interrupt on complete
+										  ** bits 11-10: error counter
+										  ** bit 0: ping state/err
+										  ** physical memory address
+										  ** bit 11-0: reserved
+										  */
+   uint32_t      buffer_ptr_0;     /* bit 31-12: 4k-page aligned
+										  ** physical memory address
+										  ** bit 11-0: reserved
+										  */
+   uint32_t      buffer_ptr_1;     /* bit 31-12: 4k-page aligned
+										  ** physical memory address
+										  ** bit 7-0: split-transaction,
+										  ** complete-split progress
+										  */
+   uint32_t      buffer_ptr_2;     /* bits 31-12: 4k-page aligned
+										  ** physical memory address
+										  ** bits 11-5: s-bytes
+										  ** bits 4-0: split-transaction
+										  ** frame tag
+										  */
+   uint32_t      buffer_ptr_3;     /* bit 31-12: 4k-page aligned
+										  ** physical memory address
+										  ** bit 11-0: reserved
+										  */
+   uint32_t      buffer_ptr_4;     /* bit 31-12: 4k-page aligned
+										  ** physical memory address
+										  ** bit 11-0: reserved
+										  */
+   // usb host stack specific extensions (not read by controller)
+   // these can be accessed directly
    struct ehci_qh_struct*         next;
    void*                                   pipe;
    ehci_qtd_struct_t*                      qtd_head;
@@ -799,25 +799,25 @@ typedef struct ehci_qh_struct
 
 typedef volatile struct {
    // ehci defined
-   // these should be accessed via macros                                           
-   uint32_t      normal_path_link_ptr;   /* (5-31) memory address of 
-                                                ** next data object to be processed
-                                                ** in the periodic list
-                                                ** bits 4-3: reserved 
-                                                ** (2..1) type of the item
-                                                ** t (bit 0) indicating pointer 
-                                                ** validity
-                                                */
-   uint32_t      back_path_link_ptr;     /* bits 31-5: memory address of 
-                                                ** the queue head,
-                                                ** bit 4-3: reserved
-                                                ** (2..1) type of the item
-                                                ** t (bit 0) indicating pointer 
-                                                ** validity
-                                                */
-   // usb host stack specific extensions (not read by controller)  
-   // these can be accessed directly                                           
-    void*      scratch_ptr;
+   // these should be accessed via macros
+   uint32_t      normal_path_link_ptr;   /* (5-31) memory address of
+												** next data object to be processed
+												** in the periodic list
+												** bits 4-3: reserved
+												** (2..1) type of the item
+												** t (bit 0) indicating pointer
+												** validity
+												*/
+   uint32_t      back_path_link_ptr;     /* bits 31-5: memory address of
+												** the queue head,
+												** bit 4-3: reserved
+												** (2..1) type of the item
+												** t (bit 0) indicating pointer
+												** validity
+												*/
+   // usb host stack specific extensions (not read by controller)
+   // these can be accessed directly
+	void*      scratch_ptr;
    /* 32-bytes aligned */
    uint32_t              reserved[5];
 } ehci_fstn_struct_t;
@@ -826,7 +826,7 @@ typedef uint32_t   ehci_frame_list_element_pointer;
 
 typedef struct {
    // EHCI Defined
-   // This should be accessed via macros                                           
+   // This should be accessed via macros
    uint32_t  allocated_bw;  /* allocated bandwidth for this frame/uframe */
 } frame_bw_struct_t;
 

@@ -50,22 +50,22 @@
 /*! @brief Error codes for the UART driver. */
 typedef enum _uart_status
 {
-    kStatus_UART_Success                  = 0x00U,
-    kStatus_UART_Fail                     = 0x01U,
-    kStatus_UART_BaudRateCalculationError = 0x02U,
-    kStatus_UART_RxStandbyModeError       = 0x03U,
-    kStatus_UART_ClearStatusFlagError     = 0x04U,
-    kStatus_UART_TxNotDisabled            = 0x05U,
-    kStatus_UART_RxNotDisabled            = 0x06U,
-    kStatus_UART_TxOrRxNotDisabled        = 0x07U,
-    kStatus_UART_TxBusy                   = 0x08U,
-    kStatus_UART_RxBusy                   = 0x09U,
-    kStatus_UART_NoTransmitInProgress     = 0x0AU,
-    kStatus_UART_NoReceiveInProgress      = 0x0BU,
-    kStatus_UART_Timeout                  = 0x0CU,
-    kStatus_UART_Initialized              = 0x0DU,
-    kStatus_UART_NoDataToDeal             = 0x0EU,
-    kStatus_UART_RxOverRun                = 0x0FU
+	kStatus_UART_Success                  = 0x00U,
+	kStatus_UART_Fail                     = 0x01U,
+	kStatus_UART_BaudRateCalculationError = 0x02U,
+	kStatus_UART_RxStandbyModeError       = 0x03U,
+	kStatus_UART_ClearStatusFlagError     = 0x04U,
+	kStatus_UART_TxNotDisabled            = 0x05U,
+	kStatus_UART_RxNotDisabled            = 0x06U,
+	kStatus_UART_TxOrRxNotDisabled        = 0x07U,
+	kStatus_UART_TxBusy                   = 0x08U,
+	kStatus_UART_RxBusy                   = 0x09U,
+	kStatus_UART_NoTransmitInProgress     = 0x0AU,
+	kStatus_UART_NoReceiveInProgress      = 0x0BU,
+	kStatus_UART_Timeout                  = 0x0CU,
+	kStatus_UART_Initialized              = 0x0DU,
+	kStatus_UART_NoDataToDeal             = 0x0EU,
+	kStatus_UART_RxOverRun                = 0x0FU
 } uart_status_t;
 
 /*!
@@ -74,8 +74,8 @@ typedef enum _uart_status
  * These constants define the number of allowable stop bits to configure in a UART base.
  */
 typedef enum _uart_stop_bit_count {
-    kUartOneStopBit = 0U,  /*!< one stop bit @internal gui name="1" */
-    kUartTwoStopBit = 1U,  /*!< two stop bits @internal gui name="2" */
+	kUartOneStopBit = 0U,  /*!< one stop bit @internal gui name="1" */
+	kUartTwoStopBit = 1U,  /*!< two stop bits @internal gui name="2" */
 } uart_stop_bit_count_t;
 
 /*!
@@ -84,9 +84,9 @@ typedef enum _uart_stop_bit_count {
  * These constants define the UART parity mode options: disabled or enabled of type even or odd.
  */
 typedef enum _uart_parity_mode {
-    kUartParityDisabled = 0x0U,  /*!< parity disabled @internal gui name="Disabled" */
-    kUartParityEven     = 0x2U,  /*!< parity enabled, type even, bit setting: PE|PT = 10 @internal gui name="Even" */
-    kUartParityOdd      = 0x3U,  /*!< parity enabled, type odd,  bit setting: PE|PT = 11 @internal gui name="Odd" */
+	kUartParityDisabled = 0x0U,  /*!< parity disabled @internal gui name="Disabled" */
+	kUartParityEven     = 0x2U,  /*!< parity enabled, type even, bit setting: PE|PT = 10 @internal gui name="Even" */
+	kUartParityOdd      = 0x3U,  /*!< parity enabled, type odd,  bit setting: PE|PT = 11 @internal gui name="Odd" */
 } uart_parity_mode_t;
 
 /*!
@@ -97,8 +97,8 @@ typedef enum _uart_parity_mode {
  * of data bits per UART character.
  */
 typedef enum  _uart_bit_count_per_char {
-    kUart8BitsPerChar = 0U,   /*!< 8-bit data characters @internal gui name="8" */
-    kUart9BitsPerChar = 1U,   /*!< 9-bit data characters @internal gui name="9" */
+	kUart8BitsPerChar = 0U,   /*!< 8-bit data characters @internal gui name="8" */
+	kUart9BitsPerChar = 1U,   /*!< 9-bit data characters @internal gui name="9" */
 } uart_bit_count_per_char_t;
 
 /*!
@@ -108,14 +108,14 @@ typedef enum  _uart_bit_count_per_char {
  * or "stops/ceases operation"
  */
 typedef enum _uart_operation_config {
-    kUartOperates = 0U,  /*!< UART continues to operate normally */
-    kUartStops = 1U,     /*!< UART ceases operation */
+	kUartOperates = 0U,  /*!< UART continues to operate normally */
+	kUartStops = 1U,     /*!< UART ceases operation */
 } uart_operation_config_t;
 
 /*! @brief UART receiver source select mode. */
 typedef enum _uart_receiver_source {
-    kUartLoopBack = 0U,  /*!< Internal loop back mode. */
-    kUartSingleWire = 1U,/*!< Single wire mode. */
+	kUartLoopBack = 0U,  /*!< Internal loop back mode. */
+	kUartSingleWire = 1U,/*!< Single wire mode. */
 } uart_receiver_source_t ;
 
 /*!
@@ -124,8 +124,8 @@ typedef enum _uart_receiver_source {
  * This provides constants for the two UART wakeup methods: idle-line or address-mark.
  */
 typedef enum _uart_wakeup_method {
-    kUartIdleLineWake = 0U,  /*!< The idle-line wakes UART receiver from standby */
-    kUartAddrMarkWake = 1U,  /*!< The address-mark wakes UART receiver from standby */
+	kUartIdleLineWake = 0U,  /*!< The idle-line wakes UART receiver from standby */
+	kUartAddrMarkWake = 1U,  /*!< The address-mark wakes UART receiver from standby */
 } uart_wakeup_method_t;
 
 /*!
@@ -135,8 +135,8 @@ typedef enum _uart_wakeup_method {
  * stop bit.
  */
 typedef enum _uart_idle_line_select {
-    kUartIdleLineAfterStartBit = 0U,  /*!< UART idle character bit count start after start bit */
-    kUartIdleLineAfterStopBit = 1U,   /*!< UART idle character bit count start after stop bit */
+	kUartIdleLineAfterStartBit = 0U,  /*!< UART idle character bit count start after start bit */
+	kUartIdleLineAfterStopBit = 1U,   /*!< UART idle character bit count start after stop bit */
 } uart_idle_line_select_t;
 
 /*!
@@ -146,12 +146,12 @@ typedef enum _uart_idle_line_select {
  * purposes. Note that the actual maximum bit times may vary depending on the UART base.
  */
 typedef enum _uart_break_char_length {
-    kUartBreakChar10BitMinimum = 0U, /*!< UART break char length 10 bit times (if M = 0, SBNS = 0) or
-                                     11 (if M = 1, SBNS = 0 or M = 0, SBNS = 1) or 12 (if M = 1,
-                                     SBNS = 1 or M10 = 1, SNBS = 0) or 13 (if M10 = 1, SNBS = 1) */
-    kUartBreakChar13BitMinimum = 1U, /*!< UART break char length 13 bit times (if M = 0, SBNS = 0) or
-                                     14 (if M = 1, SBNS = 0 or M = 0, SBNS = 1) or 15 (if M = 1,
-                                     SBNS = 1 or M10 = 1, SNBS = 0) or 16 (if M10 = 1, SNBS = 1) */
+	kUartBreakChar10BitMinimum = 0U, /*!< UART break char length 10 bit times (if M = 0, SBNS = 0) or
+									 11 (if M = 1, SBNS = 0 or M = 0, SBNS = 1) or 12 (if M = 1,
+									 SBNS = 1 or M10 = 1, SNBS = 0) or 13 (if M10 = 1, SNBS = 1) */
+	kUartBreakChar13BitMinimum = 1U, /*!< UART break char length 13 bit times (if M = 0, SBNS = 0) or
+									 14 (if M = 1, SBNS = 0 or M = 0, SBNS = 1) or 15 (if M = 1,
+									 SBNS = 1 or M10 = 1, SNBS = 0) or 16 (if M10 = 1, SNBS = 1) */
 } uart_break_char_length_t;
 
 /*!
@@ -161,8 +161,8 @@ typedef enum _uart_break_char_length {
  *  The transmit line TXDIR is either an input or output.
  */
 typedef enum _uart_singlewire_txdir {
-    kUartSinglewireTxdirIn = 0U,  /*!< UART Single-Wire mode TXDIR input */
-    kUartSinglewireTxdirOut = 1U, /*!< UART Single-Wire mode TXDIR output */
+	kUartSinglewireTxdirIn = 0U,  /*!< UART Single-Wire mode TXDIR input */
+	kUartSinglewireTxdirOut = 1U, /*!< UART Single-Wire mode TXDIR output */
 } uart_singlewire_txdir_t;
 
 /*!
@@ -172,10 +172,10 @@ typedef enum _uart_singlewire_txdir {
  * 1/32, and 1/4 pulse widths.
  */
 typedef enum _uart_ir_tx_pulsewidth {
-    kUartIrThreeSixteenthsWidth = 0U,   /*!< 3/16 pulse */
-    kUartIrOneSixteenthWidth = 1U,      /*!< 1/16 pulse */
-    kUartIrOneThirtysecondsWidth = 2U,  /*!< 1/32 pulse */
-    kUartIrOneFourthWidth = 3U,         /*!< 1/4 pulse */
+	kUartIrThreeSixteenthsWidth = 0U,   /*!< 3/16 pulse */
+	kUartIrOneSixteenthWidth = 1U,      /*!< 1/16 pulse */
+	kUartIrOneThirtysecondsWidth = 2U,  /*!< 1/32 pulse */
+	kUartIrOneFourthWidth = 3U,         /*!< 1/4 pulse */
 } uart_ir_tx_pulsewidth_t;
 
 /*!
@@ -184,8 +184,8 @@ typedef enum _uart_ir_tx_pulsewidth {
  * This provides constants for the UART ISO7816 transport ptotocol types.
  */
 typedef enum _uart_iso7816_tranfer_protocoltype {
-    kUartIso7816TransfertType0 = 0U,   /*!< Transfer type 0 */
-    kUartIso7816TransfertType1 = 1U,   /*!< Transfer type 1 */
+	kUartIso7816TransfertType0 = 0U,   /*!< Transfer type 0 */
+	kUartIso7816TransfertType1 = 1U,   /*!< Transfer type 1 */
 } uart_iso7816_transfer_protocoltype_t;
 
 /*!
@@ -194,8 +194,8 @@ typedef enum _uart_iso7816_tranfer_protocoltype {
  * This provides constants for the UART ISO7816 module ONACK generation.
  */
 typedef enum _uart_iso7816_onack_config{
-    kUartIso7816OnackEnable     = 0U,   /*!< Enable ONACK generation */
-    kUartIso7816OnackDisable    = 1U,   /*!< Disable ONACK generation */
+	kUartIso7816OnackEnable     = 0U,   /*!< Enable ONACK generation */
+	kUartIso7816OnackDisable    = 1U,   /*!< Disable ONACK generation */
 } uart_iso7816_onack_config_t;
 
 /*!
@@ -204,8 +204,8 @@ typedef enum _uart_iso7816_onack_config{
  * This provides constants for the UART ISO7816 module ANACK generation.
  */
 typedef enum _uart_iso7816_anack_config{
-    kUartIso7816AnackDisable    = 0U,   /*!< Disable ANACK generation */
-    kUartIso7816AnackEnable     = 1U,   /*!< Enable ANACK generation */
+	kUartIso7816AnackDisable    = 0U,   /*!< Disable ANACK generation */
+	kUartIso7816AnackEnable     = 1U,   /*!< Enable ANACK generation */
 } uart_iso7816_anack_config_t;
 
 /*!
@@ -214,8 +214,8 @@ typedef enum _uart_iso7816_anack_config{
  * This provides constants for the UART ISO7816 module Initial generation.
  */
 typedef enum _uart_iso7816_initd_config{
-    kUartIso7816InitdDisable     = 0U,   /*!< Disable Initial Character detection */
-    kUartIso7816InitdEnable    = 1U,   /*!< Enable Initial Character detection */
+	kUartIso7816InitdDisable     = 0U,   /*!< Disable Initial Character detection */
+	kUartIso7816InitdEnable    = 1U,   /*!< Enable Initial Character detection */
 } uart_iso7816_initd_config_t;
 
 /*!
@@ -224,28 +224,28 @@ typedef enum _uart_iso7816_initd_config{
  * This provides constants for the UART status flags for use in the UART functions.
  */
 typedef enum _uart_status_flag {
-    kUartTxDataRegEmpty = 0U << UART_SHIFT | UART_S1_TDRE_SHIFT, /*!< Transmit data register empty flag, sets when transmit buffer is empty */
-    kUartTxComplete     = 0U << UART_SHIFT | UART_S1_TC_SHIFT,   /*!< Transmission complete flag, sets when transmission activity complete */
-    kUartRxDataRegFull  = 0U << UART_SHIFT | UART_S1_RDRF_SHIFT, /*!< Receive data register full flag, sets when the receive data buffer is full */
-    kUartIdleLineDetect = 0U << UART_SHIFT | UART_S1_IDLE_SHIFT, /*!< Idle line detect flag, sets when idle line detected */
-    kUartRxOverrun      = 0U << UART_SHIFT | UART_S1_OR_SHIFT,   /*!< Receive Overrun, sets when new data is received before data is read from receive register */
-    kUartNoiseDetect    = 0U << UART_SHIFT | UART_S1_NF_SHIFT,   /*!< Receive takes 3 samples of each received bit. If any of these samples differ, noise flag sets */
-    kUartFrameErr       = 0U << UART_SHIFT | UART_S1_FE_SHIFT,   /*!< Frame error flag, sets if logic 0 was detected where stop bit expected */
-    kUartParityErr      = 0U << UART_SHIFT | UART_S1_PF_SHIFT,   /*!< If parity enabled, sets upon parity error detection */
+	kUartTxDataRegEmpty = 0U << UART_SHIFT | UART_S1_TDRE_SHIFT, /*!< Transmit data register empty flag, sets when transmit buffer is empty */
+	kUartTxComplete     = 0U << UART_SHIFT | UART_S1_TC_SHIFT,   /*!< Transmission complete flag, sets when transmission activity complete */
+	kUartRxDataRegFull  = 0U << UART_SHIFT | UART_S1_RDRF_SHIFT, /*!< Receive data register full flag, sets when the receive data buffer is full */
+	kUartIdleLineDetect = 0U << UART_SHIFT | UART_S1_IDLE_SHIFT, /*!< Idle line detect flag, sets when idle line detected */
+	kUartRxOverrun      = 0U << UART_SHIFT | UART_S1_OR_SHIFT,   /*!< Receive Overrun, sets when new data is received before data is read from receive register */
+	kUartNoiseDetect    = 0U << UART_SHIFT | UART_S1_NF_SHIFT,   /*!< Receive takes 3 samples of each received bit. If any of these samples differ, noise flag sets */
+	kUartFrameErr       = 0U << UART_SHIFT | UART_S1_FE_SHIFT,   /*!< Frame error flag, sets if logic 0 was detected where stop bit expected */
+	kUartParityErr      = 0U << UART_SHIFT | UART_S1_PF_SHIFT,   /*!< If parity enabled, sets upon parity error detection */
 #if FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT
-    kUartLineBreakDetect    = 1U << UART_SHIFT | UART_S2_LBKDIF_SHIFT,  /*!< LIN break detect interrupt flag, sets when LIN break char detected and LIN circuit enabled */
+	kUartLineBreakDetect    = 1U << UART_SHIFT | UART_S2_LBKDIF_SHIFT,  /*!< LIN break detect interrupt flag, sets when LIN break char detected and LIN circuit enabled */
 #endif
-    kUartRxActiveEdgeDetect = 1U << UART_SHIFT | UART_S2_RXEDGIF_SHIFT, /*!< Receive pin active edge interrupt flag, sets when active edge detected */
-    kUartRxActive           = 1U << UART_SHIFT | UART_S2_RAF_SHIFT,     /*!< Receiver Active Flag (RAF), sets at beginning of valid start bit */
+	kUartRxActiveEdgeDetect = 1U << UART_SHIFT | UART_S2_RXEDGIF_SHIFT, /*!< Receive pin active edge interrupt flag, sets when active edge detected */
+	kUartRxActive           = 1U << UART_SHIFT | UART_S2_RAF_SHIFT,     /*!< Receiver Active Flag (RAF), sets at beginning of valid start bit */
 #if FSL_FEATURE_UART_HAS_EXTENDED_DATA_REGISTER_FLAGS
-    kUartNoiseInCurrentWord     = 2U << UART_SHIFT | UART_ED_NOISY_SHIFT,   /*!< NOISY bit, sets if noise detected in current data word */
-    kUartParityErrInCurrentWord = 2U << UART_SHIFT | UART_ED_PARITYE_SHIFT, /*!< PARITYE bit, sets if noise detected in current data word */
+	kUartNoiseInCurrentWord     = 2U << UART_SHIFT | UART_ED_NOISY_SHIFT,   /*!< NOISY bit, sets if noise detected in current data word */
+	kUartParityErrInCurrentWord = 2U << UART_SHIFT | UART_ED_PARITYE_SHIFT, /*!< PARITYE bit, sets if noise detected in current data word */
 #endif
 #if FSL_FEATURE_UART_HAS_FIFO
-    kUartTxBuffEmpty     = 3U << UART_SHIFT | UART_SFIFO_TXEMPT_SHIFT, /*!< TXEMPT bit, sets if transmit buffer is empty */
-    kUartRxBuffEmpty     = 3U << UART_SHIFT | UART_SFIFO_RXEMPT_SHIFT, /*!< RXEMPT bit, sets if receive buffer is empty */
-    kUartTxBuffOverflow  = 3U << UART_SHIFT | UART_SFIFO_TXOF_SHIFT,   /*!< TXOF bit, sets if transmit buffer overflow occurred */
-    kUartRxBuffUnderflow = 3U << UART_SHIFT | UART_SFIFO_RXUF_SHIFT,   /*!< RXUF bit, sets if receive buffer underflow occurred */
+	kUartTxBuffEmpty     = 3U << UART_SHIFT | UART_SFIFO_TXEMPT_SHIFT, /*!< TXEMPT bit, sets if transmit buffer is empty */
+	kUartRxBuffEmpty     = 3U << UART_SHIFT | UART_SFIFO_RXEMPT_SHIFT, /*!< RXEMPT bit, sets if receive buffer is empty */
+	kUartTxBuffOverflow  = 3U << UART_SHIFT | UART_SFIFO_TXOF_SHIFT,   /*!< TXOF bit, sets if transmit buffer overflow occurred */
+	kUartRxBuffUnderflow = 3U << UART_SHIFT | UART_SFIFO_RXUF_SHIFT,   /*!< RXUF bit, sets if receive buffer underflow occurred */
 #endif
 } uart_status_flag_t;
 
@@ -256,20 +256,20 @@ typedef enum _uart_status_flag {
  */
 typedef enum _uart_interrupt {
 #if FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT
-    kUartIntLinBreakDetect  = 0U << UART_SHIFT | UART_BDH_LBKDIE_SHIFT,  /*!< LIN break detect. */
+	kUartIntLinBreakDetect  = 0U << UART_SHIFT | UART_BDH_LBKDIE_SHIFT,  /*!< LIN break detect. */
 #endif
-    kUartIntRxActiveEdge    = 0U << UART_SHIFT | UART_BDH_RXEDGIE_SHIFT, /*!< Receive Active Edge. */
-    kUartIntTxDataRegEmpty  = 1U << UART_SHIFT | UART_C2_TIE_SHIFT,      /*!< Transmit data register empty. */
-    kUartIntTxComplete      = 1U << UART_SHIFT | UART_C2_TCIE_SHIFT,     /*!< Transmission complete. */
-    kUartIntRxDataRegFull   = 1U << UART_SHIFT | UART_C2_RIE_SHIFT,      /*!< Receiver data register full. */
-    kUartIntIdleLine        = 1U << UART_SHIFT | UART_C2_ILIE_SHIFT,     /*!< Idle line. */
-    kUartIntRxOverrun       = 2U << UART_SHIFT | UART_C3_ORIE_SHIFT,     /*!< Receiver Overrun. */
-    kUartIntNoiseErrFlag    = 2U << UART_SHIFT | UART_C3_NEIE_SHIFT,     /*!< Noise error flag. */
-    kUartIntFrameErrFlag    = 2U << UART_SHIFT | UART_C3_FEIE_SHIFT,     /*!< Framing error flag. */
-    kUartIntParityErrFlag   = 2U << UART_SHIFT | UART_C3_PEIE_SHIFT,     /*!< Parity error flag. */
+	kUartIntRxActiveEdge    = 0U << UART_SHIFT | UART_BDH_RXEDGIE_SHIFT, /*!< Receive Active Edge. */
+	kUartIntTxDataRegEmpty  = 1U << UART_SHIFT | UART_C2_TIE_SHIFT,      /*!< Transmit data register empty. */
+	kUartIntTxComplete      = 1U << UART_SHIFT | UART_C2_TCIE_SHIFT,     /*!< Transmission complete. */
+	kUartIntRxDataRegFull   = 1U << UART_SHIFT | UART_C2_RIE_SHIFT,      /*!< Receiver data register full. */
+	kUartIntIdleLine        = 1U << UART_SHIFT | UART_C2_ILIE_SHIFT,     /*!< Idle line. */
+	kUartIntRxOverrun       = 2U << UART_SHIFT | UART_C3_ORIE_SHIFT,     /*!< Receiver Overrun. */
+	kUartIntNoiseErrFlag    = 2U << UART_SHIFT | UART_C3_NEIE_SHIFT,     /*!< Noise error flag. */
+	kUartIntFrameErrFlag    = 2U << UART_SHIFT | UART_C3_FEIE_SHIFT,     /*!< Framing error flag. */
+	kUartIntParityErrFlag   = 2U << UART_SHIFT | UART_C3_PEIE_SHIFT,     /*!< Parity error flag. */
 #if FSL_FEATURE_UART_HAS_FIFO
-    kUartIntTxFifoOverflow  = 3U << UART_SHIFT | UART_CFIFO_TXOFE_SHIFT, /*!< Transmit FIFO Overflow. */
-    kUartIntRxFifoUnderflow = 3U << UART_SHIFT | UART_CFIFO_RXUFE_SHIFT, /*!< Receive FIFO Underflow. */
+	kUartIntTxFifoOverflow  = 3U << UART_SHIFT | UART_CFIFO_TXOFE_SHIFT, /*!< Transmit FIFO Overflow. */
+	kUartIntRxFifoUnderflow = 3U << UART_SHIFT | UART_CFIFO_RXUFE_SHIFT, /*!< Receive FIFO Underflow. */
 #endif
 } uart_interrupt_t;
 
@@ -279,15 +279,15 @@ typedef enum _uart_interrupt {
  * This enumeration contains the settings for all of the UART ISO7816 feature-specific interrupt configurations.
  */
 typedef enum _uart_iso7816_interrupt {
-    kUartIntIso7816RxThreasholdExceeded = 0U,   /*!< Receive Threshold Exceeded. */
-    kUartIntIso7816TxThresholdExceeded  = 1U,   /*!< TransmitThresholdExceeded. */
-    kUartIntIso7816GuardTimerViolated   = 2U,   /*!< Guard Timer Violated. */
-    kUartIntIso7816AtrDurationTimer     = 3U,   /*!< ATR Duration Timer. */
-    kUartIntIso7816InitialCharDetected  = 4U,   /*!< Initial Character Detected. */
-    kUartIntIso7816BlockWaitTimer       = 5U,   /*!< Block Wait Timer. */
-    kUartIntIso7816CharWaitTimer        = 6U,   /*!< Character Wait Timer. */
-    kUartIntIso7816WaitTimer            = 7U,   /*!< Wait Timer. */
-    kUartIntIso7816All                  = 8U,   /*<!All above. */
+	kUartIntIso7816RxThreasholdExceeded = 0U,   /*!< Receive Threshold Exceeded. */
+	kUartIntIso7816TxThresholdExceeded  = 1U,   /*!< TransmitThresholdExceeded. */
+	kUartIntIso7816GuardTimerViolated   = 2U,   /*!< Guard Timer Violated. */
+	kUartIntIso7816AtrDurationTimer     = 3U,   /*!< ATR Duration Timer. */
+	kUartIntIso7816InitialCharDetected  = 4U,   /*!< Initial Character Detected. */
+	kUartIntIso7816BlockWaitTimer       = 5U,   /*!< Block Wait Timer. */
+	kUartIntIso7816CharWaitTimer        = 6U,   /*!< Character Wait Timer. */
+	kUartIntIso7816WaitTimer            = 7U,   /*!< Wait Timer. */
+	kUartIntIso7816All                  = 8U,   /*<!All above. */
 } uart_iso7816_interrupt_t;
 
 /*******************************************************************************
@@ -321,7 +321,7 @@ void UART_HAL_Init(UART_Type * base);
  */
 static inline void UART_HAL_EnableTransmitter(UART_Type * base)
 {
-    UART_BWR_C2_TE(base, 1U);
+	UART_BWR_C2_TE(base, 1U);
 }
 
 /*!
@@ -333,7 +333,7 @@ static inline void UART_HAL_EnableTransmitter(UART_Type * base)
  */
 static inline void UART_HAL_DisableTransmitter(UART_Type * base)
 {
-    UART_BWR_C2_TE(base, 0U);
+	UART_BWR_C2_TE(base, 0U);
 }
 
 /*!
@@ -346,7 +346,7 @@ static inline void UART_HAL_DisableTransmitter(UART_Type * base)
  */
 static inline bool UART_HAL_IsTransmitterEnabled(UART_Type * base)
 {
-    return (bool)UART_BRD_C2_TE(base);
+	return (bool)UART_BRD_C2_TE(base);
 }
 
 /*!
@@ -358,7 +358,7 @@ static inline bool UART_HAL_IsTransmitterEnabled(UART_Type * base)
  */
 static inline void UART_HAL_EnableReceiver(UART_Type * base)
 {
-    UART_BWR_C2_RE(base, 1U);
+	UART_BWR_C2_RE(base, 1U);
 }
 
 /*!
@@ -370,7 +370,7 @@ static inline void UART_HAL_EnableReceiver(UART_Type * base)
  */
 static inline void UART_HAL_DisableReceiver(UART_Type * base)
 {
-    UART_BWR_C2_RE(base, 0U);
+	UART_BWR_C2_RE(base, 0U);
 }
 
 /*!
@@ -383,7 +383,7 @@ static inline void UART_HAL_DisableReceiver(UART_Type * base)
  */
 static inline bool UART_HAL_IsReceiverEnabled(UART_Type * base)
 {
-    return (bool)UART_BRD_C2_RE(base);
+	return (bool)UART_BRD_C2_RE(base);
 }
 
 /*!
@@ -431,8 +431,8 @@ void UART_HAL_SetBaudRateDivisor(UART_Type * base, uint16_t baudRateDivisor);
  */
 static inline void UART_HAL_SetBaudRateFineAdjust(UART_Type * base, uint8_t baudFineAdjust)
 {
-    assert(baudFineAdjust < 0x1F);
-    UART_BWR_C4_BRFA(base, baudFineAdjust);
+	assert(baudFineAdjust < 0x1F);
+	UART_BWR_C4_BRFA(base, baudFineAdjust);
 }
 #endif
 
@@ -446,10 +446,10 @@ static inline void UART_HAL_SetBaudRateFineAdjust(UART_Type * base, uint8_t baud
  * @param   bitCountPerChar Number of bits per char (8, 9, or 10, depending on the UART base).
  */
 static inline void UART_HAL_SetBitCountPerChar(UART_Type * base,
-                                          uart_bit_count_per_char_t bitCountPerChar)
+										  uart_bit_count_per_char_t bitCountPerChar)
 {
-    /* config 8- (M=0) or 9-bits (M=1) */
-    UART_BWR_C1_M(base, bitCountPerChar);
+	/* config 8- (M=0) or 9-bits (M=1) */
+	UART_BWR_C1_M(base, bitCountPerChar);
 }
 
 /*!
@@ -477,7 +477,7 @@ void UART_HAL_SetParityMode(UART_Type * base, uart_parity_mode_t parityMode);
  */
 static inline void UART_HAL_SetStopBitCount(UART_Type * base, uart_stop_bit_count_t stopBitCount)
 {
-    UART_BWR_BDH_SBNS(base, stopBitCount);
+	UART_BWR_BDH_SBNS(base, stopBitCount);
 }
 #endif
 
@@ -489,7 +489,7 @@ static inline void UART_HAL_SetStopBitCount(UART_Type * base, uart_stop_bit_coun
  */
 static inline uint32_t UART_HAL_GetDataRegAddr(UART_Type * base)
 {
-    return (uint32_t)(&UART_D_REG(base));
+	return (uint32_t)(&UART_D_REG(base));
 }
 
 /*@}*/
@@ -539,13 +539,13 @@ void UART_HAL_SetTxDmaCmd(UART_Type * base, bool enable);
  */
 static inline bool UART_HAL_GetTxDmaCmd(UART_Type * base)
 {
-    return (!UART_BRD_C2_TCIE(base))
+	return (!UART_BRD_C2_TCIE(base))
 #if FSL_FEATURE_UART_IS_SCI
-            && UART_BRD_C4_TDMAS(base)
+			&& UART_BRD_C4_TDMAS(base)
 #else
-            && UART_BRD_C5_TDMAS(base)
+			&& UART_BRD_C5_TDMAS(base)
 #endif
-            && UART_BRD_C2_TIE(base);
+			&& UART_BRD_C2_TIE(base);
 }
 
 /*!
@@ -569,11 +569,11 @@ void UART_HAL_SetRxDmaCmd(UART_Type * base, bool enable);
  */
 static inline bool UART_HAL_GetRxDmaCmd(UART_Type * base)
 {
-    return UART_BRD_C2_RIE(base)
+	return UART_BRD_C2_RIE(base)
 #if FSL_FEATURE_UART_IS_SCI
-           && UART_BRD_C4_RDMAS(base);
+		   && UART_BRD_C4_RDMAS(base);
 #else
-           && UART_BRD_C5_RDMAS(base);
+		   && UART_BRD_C5_RDMAS(base);
 #endif
 }
 
@@ -656,10 +656,10 @@ uart_status_t UART_HAL_ReceiveDataPolling(UART_Type * base, uint8_t *rxBuff, uin
  */
 static inline void UART_HAL_SetBit10AsParityBit(UART_Type * base, bool enable)
 {
-    /* to enable the parity bit as the tenth data bit, along with enabling UARTx_C4[M10]
-     * need to also enable parity and set UARTx_C1[M] bit
-     * assumed that the user has already set the appropriate bits */
-    UART_BWR_C4_M10(base, enable);
+	/* to enable the parity bit as the tenth data bit, along with enabling UARTx_C4[M10]
+	 * need to also enable parity and set UARTx_C1[M] bit
+	 * assumed that the user has already set the appropriate bits */
+	UART_BWR_C4_M10(base, enable);
 }
 
 /*!
@@ -675,7 +675,7 @@ static inline void UART_HAL_SetBit10AsParityBit(UART_Type * base, bool enable)
  */
 static inline bool UART_HAL_IsBit10SetAsParityBit(UART_Type * base)
 {
-    return UART_BRD_C4_M10(base);
+	return UART_BRD_C4_M10(base);
 }
 
 /*!
@@ -689,7 +689,7 @@ static inline bool UART_HAL_IsBit10SetAsParityBit(UART_Type * base)
  */
 static inline bool UART_HAL_IsCurrentDataWithNoise(UART_Type * base)
 {
-    return UART_BRD_ED_NOISY(base);
+	return UART_BRD_ED_NOISY(base);
 }
 
 /*!
@@ -703,7 +703,7 @@ static inline bool UART_HAL_IsCurrentDataWithNoise(UART_Type * base)
  */
 static inline bool UART_HAL_IsCurrentDataWithParityError(UART_Type * base)
 {
-    return UART_BRD_ED_PARITYE(base);
+	return UART_BRD_ED_PARITYE(base);
 }
 
 #endif  /* FSL_FEATURE_UART_HAS_EXTENDED_DATA_REGISTER_FLAGS*/
@@ -787,7 +787,7 @@ uart_status_t UART_HAL_SetRxFifoCmd(UART_Type * base, bool enable);
  */
 static inline uint8_t UART_HAL_GetTxFifoSize(UART_Type * base)
 {
-    return UART_BRD_PFIFO_TXFIFOSIZE(base);
+	return UART_BRD_PFIFO_TXFIFOSIZE(base);
 }
 
 /*!
@@ -803,7 +803,7 @@ static inline uint8_t UART_HAL_GetTxFifoSize(UART_Type * base)
  */
 static inline uint8_t UART_HAL_GetRxFifoSize(UART_Type * base)
 {
-    return UART_BRD_PFIFO_RXFIFOSIZE(base);
+	return UART_BRD_PFIFO_RXFIFOSIZE(base);
 }
 
 /*!
@@ -843,7 +843,7 @@ uart_status_t UART_HAL_FlushRxFifo(UART_Type * base);
  */
 static inline bool UART_HAL_IsTxFifoEmpty(UART_Type * base)
 {
-    return UART_BRD_SFIFO_TXEMPT(base);
+	return UART_BRD_SFIFO_TXEMPT(base);
 }
 
 /*!
@@ -857,7 +857,7 @@ static inline bool UART_HAL_IsTxFifoEmpty(UART_Type * base)
  */
 static inline bool UART_HAL_IsRxFifoEmpty(UART_Type * base)
 {
-    return UART_BRD_SFIFO_RXEMPT(base);
+	return UART_BRD_SFIFO_RXEMPT(base);
 }
 
 /*!
@@ -880,7 +880,7 @@ uart_status_t UART_HAL_SetTxFifoWatermark(UART_Type * base, uint8_t watermark);
  */
 static inline uint8_t UART_HAL_GetTxFifoWatermark(UART_Type * base)
 {
-    return UART_RD_TWFIFO(base);
+	return UART_RD_TWFIFO(base);
 }
 
 /*!
@@ -894,7 +894,7 @@ static inline uint8_t UART_HAL_GetTxFifoWatermark(UART_Type * base)
  */
 static inline uint8_t UART_HAL_GetTxDatawordCountInFifo(UART_Type * base)
 {
-    return UART_RD_TCFIFO(base);
+	return UART_RD_TCFIFO(base);
 }
 
 /*!
@@ -921,7 +921,7 @@ uart_status_t UART_HAL_SetRxFifoWatermark(UART_Type * base, uint8_t watermark);
  */
 static inline uint8_t UART_HAL_GetRxDatawordCountInFifo(UART_Type * base)
 {
-    return UART_RD_RCFIFO(base);
+	return UART_RD_RCFIFO(base);
 }
 
 /*!
@@ -932,7 +932,7 @@ static inline uint8_t UART_HAL_GetRxDatawordCountInFifo(UART_Type * base)
  */
 static inline uint8_t UART_HAL_GetRxFifoWatermark(UART_Type * base)
 {
-    return UART_RD_RWFIFO(base);
+	return UART_RD_RWFIFO(base);
 }
 
 #endif  /* FSL_FEATURE_UART_HAS_FIFO*/
@@ -969,8 +969,8 @@ static inline void UART_HAL_SetWaitModeOperation(UART_Type * base, uart_operatio
  */
 static inline uart_operation_config_t UART_HAL_GetWaitModeOperation(UART_Type * base)
 {
-    /*In CPU wait mode: 0 - uart is enabled; 1 - uart is disabled */
-    return (uart_operation_config_t)UART_BRD_C1_UARTSWAI(base);
+	/*In CPU wait mode: 0 - uart is enabled; 1 - uart is disabled */
+	return (uart_operation_config_t)UART_BRD_C1_UARTSWAI(base);
 }
 #endif /* FSL_FEATURE_UART_HAS_WAIT_MODE_OPERATION */
 
@@ -984,7 +984,7 @@ static inline uart_operation_config_t UART_HAL_GetWaitModeOperation(UART_Type * 
  */
 static inline void UART_HAL_SetLoopCmd(UART_Type * base, bool enable)
 {
-    UART_BWR_C1_LOOPS(base, enable);
+	UART_BWR_C1_LOOPS(base, enable);
 }
 
 /*!
@@ -1000,7 +1000,7 @@ static inline void UART_HAL_SetLoopCmd(UART_Type * base, bool enable)
  */
 static inline void UART_HAL_SetReceiverSource(UART_Type * base, uart_receiver_source_t source)
 {
-    UART_BWR_C1_RSRC(base, source);
+	UART_BWR_C1_RSRC(base, source);
 }
 
 /*!
@@ -1016,9 +1016,9 @@ static inline void UART_HAL_SetReceiverSource(UART_Type * base, uart_receiver_so
  */
 static inline void UART_HAL_SetTransmitterDir(UART_Type * base, uart_singlewire_txdir_t direction)
 {
-    /* configure UART transmit direction (input or output) when in single-wire mode
-     * it is assumed UART is in single-wire mode. */
-    UART_BWR_C3_TXDIR(base, direction);
+	/* configure UART transmit direction (input or output) when in single-wire mode
+	 * it is assumed UART is in single-wire mode. */
+	UART_BWR_C3_TXDIR(base, direction);
 }
 
 /*!
@@ -1049,7 +1049,7 @@ uart_status_t UART_HAL_PutReceiverInStandbyMode(UART_Type * base);
  */
 static inline void UART_HAL_PutReceiverInNormalMode(UART_Type * base)
 {
-    UART_CLR_C2(base, UART_C2_RWU_MASK);
+	UART_CLR_C2(base, UART_C2_RWU_MASK);
 }
 
 /*!
@@ -1064,7 +1064,7 @@ static inline void UART_HAL_PutReceiverInNormalMode(UART_Type * base)
  */
 static inline bool UART_HAL_IsReceiverInStandby(UART_Type * base)
 {
-    return UART_BRD_C2_RWU(base);
+	return UART_BRD_C2_RWU(base);
 }
 
 /*!
@@ -1079,7 +1079,7 @@ static inline bool UART_HAL_IsReceiverInStandby(UART_Type * base)
  */
 static inline void UART_HAL_SetReceiverWakeupMethod(UART_Type * base, uart_wakeup_method_t method)
 {
-    UART_BWR_C1_WAKE(base, method);
+	UART_BWR_C1_WAKE(base, method);
 }
 
 /*!
@@ -1094,7 +1094,7 @@ static inline void UART_HAL_SetReceiverWakeupMethod(UART_Type * base, uart_wakeu
  */
 static inline uart_wakeup_method_t UART_HAL_GetReceiverWakeupMethod(UART_Type * base)
 {
-    return (uart_wakeup_method_t)UART_BRD_C1_WAKE(base);
+	return (uart_wakeup_method_t)UART_BRD_C1_WAKE(base);
 }
 
 /*!
@@ -1126,13 +1126,13 @@ void UART_HAL_ConfigIdleLineDetect(UART_Type * base, uint8_t idleLine, uint8_t r
  *               minimum 10-bit times or a minimum 13-bit times.
  */
 static inline void UART_HAL_SetBreakCharTransmitLength(UART_Type * base,
-                                                       uart_break_char_length_t length)
+													   uart_break_char_length_t length)
 {
-    /* Configure BRK13 - Break Character transmit length configuration
-     * UART break character length setting:
-     * 0 - minimum 10-bit times (default),
-     * 1 - minimum 13-bit times */
-    UART_BWR_S2_BRK13(base, length);
+	/* Configure BRK13 - Break Character transmit length configuration
+	 * UART break character length setting:
+	 * 0 - minimum 10-bit times (default),
+	 * 1 - minimum 13-bit times */
+	UART_BWR_S2_BRK13(base, length);
 }
 
 #if FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT
@@ -1148,11 +1148,11 @@ static inline void UART_HAL_SetBreakCharTransmitLength(UART_Type * base,
  */
 static inline void UART_HAL_SetBreakCharDetectLength(UART_Type * base, uart_break_char_length_t length)
 {
-    /* Configure LBKDE - Break Character detect length configuration
-     * UART break character length setting:
-     * 0 - minimum 10-bit times (default),
-     * 1 - minimum 13-bit times */
-    UART_BWR_S2_LBKDE(base, length);
+	/* Configure LBKDE - Break Character detect length configuration
+	 * UART break character length setting:
+	 * 0 - minimum 10-bit times (default),
+	 * 1 - minimum 13-bit times */
+	UART_BWR_S2_LBKDE(base, length);
 }
 #endif /* FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT */
 
@@ -1171,7 +1171,7 @@ static inline void UART_HAL_SetBreakCharDetectLength(UART_Type * base, uart_brea
  */
 static inline void UART_HAL_SetBreakCharCmd(UART_Type * base, bool enable)
 {
-    UART_BWR_C2_SBK(base, enable);
+	UART_BWR_C2_SBK(base, enable);
 }
 
 /*!
@@ -1189,7 +1189,7 @@ static inline void UART_HAL_SetBreakCharCmd(UART_Type * base, bool enable)
  * @param  matchAddrValue2 The match address value to program for match address mode 2.
  */
 void UART_HAL_SetMatchAddress(UART_Type * base, bool matchAddrMode1, bool matchAddrMode2,
-                              uint8_t matchAddrValue1, uint8_t matchAddrValue2);
+							  uint8_t matchAddrValue1, uint8_t matchAddrValue2);
 
 #if FSL_FEATURE_UART_HAS_BIT_ORDER_SELECT
 /*!
@@ -1207,7 +1207,7 @@ void UART_HAL_SetMatchAddress(UART_Type * base, bool matchAddrMode1, bool matchA
  */
 static inline void UART_HAL_SetSendMsbFirstCmd(UART_Type * base, bool enable)
 {
-    UART_BWR_S2_MSBF(base, enable);
+	UART_BWR_S2_MSBF(base, enable);
 }
 #endif
 
@@ -1227,7 +1227,7 @@ static inline void UART_HAL_SetSendMsbFirstCmd(UART_Type * base, bool enable)
  */
 static inline void UART_HAL_SetReceiverRtsCmd(UART_Type * base, bool enable)
 {
-    UART_BWR_MODEM_RXRTSE(base, enable);
+	UART_BWR_MODEM_RXRTSE(base, enable);
 }
 
 /*!
@@ -1245,7 +1245,7 @@ static inline void UART_HAL_SetReceiverRtsCmd(UART_Type * base, bool enable)
  */
 static inline void UART_HAL_SetTransmitterRtsCmd(UART_Type * base, bool enable)
 {
-    UART_BWR_MODEM_TXRTSE(base, enable);
+	UART_BWR_MODEM_TXRTSE(base, enable);
 }
 
 /*!
@@ -1260,7 +1260,7 @@ static inline void UART_HAL_SetTransmitterRtsCmd(UART_Type * base, bool enable)
  */
 static inline void UART_HAL_SetTransmitterRtsPolarityMode(UART_Type * base, bool polarity)
 {
-    UART_BWR_MODEM_TXRTSPOL(base, polarity);
+	UART_BWR_MODEM_TXRTSPOL(base, polarity);
 }
 
 /*!
@@ -1277,7 +1277,7 @@ static inline void UART_HAL_SetTransmitterRtsPolarityMode(UART_Type * base, bool
  */
 static inline void UART_HAL_SetTransmitterCtsCmd(UART_Type * base, bool enable)
 {
-    UART_BWR_MODEM_TXCTSE(base, enable);
+	UART_BWR_MODEM_TXCTSE(base, enable);
 }
 
 #endif  /* FSL_FEATURE_UART_HAS_MODEM_SUPPORT*/
@@ -1294,7 +1294,7 @@ static inline void UART_HAL_SetTransmitterCtsCmd(UART_Type * base, bool enable)
  * @param   pulseWidth The UART transmit narrow pulse width setting of type uart_ir_tx_pulsewidth_t.
  */
 void UART_HAL_SetInfraredOperation(UART_Type * base, bool enable,
-                                   uart_ir_tx_pulsewidth_t pulseWidth);
+								   uart_ir_tx_pulsewidth_t pulseWidth);
 #endif  /* FSL_FEATURE_UART_HAS_IR_SUPPORT*/
 
 /*@}*/
@@ -1315,7 +1315,7 @@ void UART_HAL_SetInfraredOperation(UART_Type * base, bool enable,
  */
 static inline void UART_HAL_EnableISO7816(UART_Type * base)
 {
-    UART_BWR_C7816_ISO_7816E(base, 1U);
+	UART_BWR_C7816_ISO_7816E(base, 1U);
 }
 
 /*!
@@ -1328,7 +1328,7 @@ static inline void UART_HAL_EnableISO7816(UART_Type * base)
  */
 static inline void UART_HAL_DisableISO7816(UART_Type * base)
 {
-    UART_BWR_C7816_ISO_7816E(base, 0U);
+	UART_BWR_C7816_ISO_7816E(base, 0U);
 }
 
 /*!
@@ -1341,7 +1341,7 @@ static inline void UART_HAL_DisableISO7816(UART_Type * base)
  */
 static inline bool UART_HAL_IsISO7816Enabled(UART_Type * base)
 {
-    return (bool)UART_BRD_C7816_ISO_7816E(base);
+	return (bool)UART_BRD_C7816_ISO_7816E(base);
 }
 
 /*!
@@ -1356,7 +1356,7 @@ static inline bool UART_HAL_IsISO7816Enabled(UART_Type * base)
  */
 static inline void UART_HAL_ConfigureNackOnOverflow(UART_Type * base, uart_iso7816_onack_config_t onack)
 {
-    UART_BWR_C7816_ONACK(base, onack);
+	UART_BWR_C7816_ONACK(base, onack);
 }
 
 /*!
@@ -1370,7 +1370,7 @@ static inline void UART_HAL_ConfigureNackOnOverflow(UART_Type * base, uart_iso78
  */
 static inline bool UART_HAL_Is6NackOnOverflowEnabled(UART_Type * base)
 {
-    return (bool)UART_BRD_C7816_ONACK(base);
+	return (bool)UART_BRD_C7816_ONACK(base);
 }
 
 /*!
@@ -1385,7 +1385,7 @@ static inline bool UART_HAL_Is6NackOnOverflowEnabled(UART_Type * base)
  */
 static inline void UART_HAL_ConfigureNackOnError(UART_Type * base, uart_iso7816_anack_config_t anack)
 {
-    UART_BWR_C7816_ANACK(base, anack);
+	UART_BWR_C7816_ANACK(base, anack);
 }
 
 /*!
@@ -1399,7 +1399,7 @@ static inline void UART_HAL_ConfigureNackOnError(UART_Type * base, uart_iso7816_
  */
 static inline bool UART_HAL_Is6NackOnOnErrorEnabled(UART_Type * base)
 {
-    return (bool)UART_BRD_C7816_ANACK(base);
+	return (bool)UART_BRD_C7816_ANACK(base);
 }
 
 /*!
@@ -1414,7 +1414,7 @@ static inline bool UART_HAL_Is6NackOnOnErrorEnabled(UART_Type * base)
  */
 static inline void UART_HAL_ConfigureInitialCharacterDetection(UART_Type * base, uart_iso7816_initd_config_t initd)
 {
-    UART_BWR_C7816_INIT(base, initd);
+	UART_BWR_C7816_INIT(base, initd);
 }
 
 /*!
@@ -1431,7 +1431,7 @@ static inline void UART_HAL_ConfigureInitialCharacterDetection(UART_Type * base,
  */
 static inline bool UART_HAL_IsInitialCharacterDetectionEnabled(UART_Type * base)
 {
-    return (bool)UART_BRD_C7816_INIT(base);
+	return (bool)UART_BRD_C7816_INIT(base);
 }
 
 /*!
@@ -1445,7 +1445,7 @@ static inline bool UART_HAL_IsInitialCharacterDetectionEnabled(UART_Type * base)
  */
 static inline void UART_HAL_SetTransferProtocolType(UART_Type * base, uart_iso7816_transfer_protocoltype_t transferType)
 {
-    UART_BWR_C7816_TTYPE(base, transferType);
+	UART_BWR_C7816_TTYPE(base, transferType);
 }
 
 /*!
@@ -1459,7 +1459,7 @@ static inline void UART_HAL_SetTransferProtocolType(UART_Type * base, uart_iso78
  */
 static inline uart_iso7816_transfer_protocoltype_t UART_HAL_GetTransferProtocolType(UART_Type * base)
 {
-    return (uart_iso7816_transfer_protocoltype_t)UART_BRD_C7816_TTYPE(base);
+	return (uart_iso7816_transfer_protocoltype_t)UART_BRD_C7816_TTYPE(base);
 }
 
 /*!
@@ -1545,7 +1545,7 @@ void UART_HAL_ResetISO7816BlockWaitTimer(UART_Type * base);
  */
 static inline void UART_HAL_SetWaitTimeMultipllier(UART_Type * base, uint8_t wtx)
 {
-    UART_WR_WP7816(base, wtx);
+	UART_WR_WP7816(base, wtx);
 }
 
 /*!
@@ -1559,7 +1559,7 @@ static inline void UART_HAL_SetWaitTimeMultipllier(UART_Type * base, uint8_t wtx
  */
 static inline uint8_t UART_HAL_GetWaitTimeMultipllier(UART_Type * base)
 {
-    return UART_RD_WP7816(base);
+	return UART_RD_WP7816(base);
 }
 
 /*!
@@ -1582,7 +1582,7 @@ void UART_HAL_ResetWaitTimeMultipllier(UART_Type * base, uint8_t mWtx);
  */
 static inline void UART_HAL_SetGuardBandInteger(UART_Type * base, uint8_t gtn)
 {
-    UART_WR_WN7816(base, gtn);
+	UART_WR_WN7816(base, gtn);
 }
 
 /*!
@@ -1596,7 +1596,7 @@ static inline void UART_HAL_SetGuardBandInteger(UART_Type * base, uint8_t gtn)
  */
 static inline uint8_t UART_HAL_GetGuardBandInteger(UART_Type * base)
 {
-    return UART_RD_WN7816(base);
+	return UART_RD_WN7816(base);
 }
 
 /*!
@@ -1610,7 +1610,7 @@ static inline uint8_t UART_HAL_GetGuardBandInteger(UART_Type * base)
  */
 static inline void UART_HAL_SetFDMultiplier(UART_Type * base, uint8_t gtfd)
 {
-    UART_WR_WF7816(base, gtfd);
+	UART_WR_WF7816(base, gtfd);
 }
 
 /*!
@@ -1624,7 +1624,7 @@ static inline void UART_HAL_SetFDMultiplier(UART_Type * base, uint8_t gtfd)
  */
 static inline uint8_t UART_HAL_GetFDMultiplier(UART_Type * base)
 {
-    return UART_RD_WF7816(base);
+	return UART_RD_WF7816(base);
 }
 
 /*!
@@ -1638,7 +1638,7 @@ static inline uint8_t UART_HAL_GetFDMultiplier(UART_Type * base)
  */
 static inline void UART_HAL_SetTxNACKThreshold(UART_Type * base, uint8_t txThreshold)
 {
-    UART_BWR_ET7816_TXTHRESHOLD(base, txThreshold);
+	UART_BWR_ET7816_TXTHRESHOLD(base, txThreshold);
 }
 
 /*!
@@ -1652,7 +1652,7 @@ static inline void UART_HAL_SetTxNACKThreshold(UART_Type * base, uint8_t txThres
  */
 static inline uint8_t UART_HAL_GetTxNACKThreshold(UART_Type * base)
 {
-    return UART_BRD_ET7816_TXTHRESHOLD(base);
+	return UART_BRD_ET7816_TXTHRESHOLD(base);
 }
 
 /*!
@@ -1666,7 +1666,7 @@ static inline uint8_t UART_HAL_GetTxNACKThreshold(UART_Type * base)
  */
 static inline void UART_HAL_SetRxNACKThreshold(UART_Type * base, uint8_t rxThreshold)
 {
-    UART_BWR_ET7816_RXTHRESHOLD(base, rxThreshold);
+	UART_BWR_ET7816_RXTHRESHOLD(base, rxThreshold);
 }
 
 /*!
@@ -1680,7 +1680,7 @@ static inline void UART_HAL_SetRxNACKThreshold(UART_Type * base, uint8_t rxThres
  */
 static inline uint8_t UART_HAL_GetRxNACKThreshold(UART_Type * base)
 {
-    return UART_BRD_ET7816_RXTHRESHOLD(base);
+	return UART_BRD_ET7816_RXTHRESHOLD(base);
 }
 
 /*!
@@ -1694,7 +1694,7 @@ static inline uint8_t UART_HAL_GetRxNACKThreshold(UART_Type * base)
  */
 static inline void UART_HAL_SetTLen(UART_Type * base, uint8_t tLen)
 {
-    UART_WR_TL7816(base, tLen);
+	UART_WR_TL7816(base, tLen);
 }
 
 /*!
@@ -1708,7 +1708,7 @@ static inline void UART_HAL_SetTLen(UART_Type * base, uint8_t tLen)
  */
 static inline uint8_t UART_HAL_GetTLen(UART_Type * base)
 {
-    return UART_RD_TL7816(base);
+	return UART_RD_TL7816(base);
 }
 
 #if FSL_FEATURE_UART_HAS_IMPROVED_SMART_CARD_SUPPORT
@@ -1723,8 +1723,8 @@ static inline uint8_t UART_HAL_GetTLen(UART_Type * base)
  */
 static inline void UART_HAL_SetAtrDurationTimer(UART_Type * base, uint16_t atrDuration)
 {
-    UART_WR_AP7816A_T0(base, (uint8_t)(atrDuration >> 8));
-    UART_WR_AP7816B_T0(base, (uint8_t)atrDuration);
+	UART_WR_AP7816A_T0(base, (uint8_t)(atrDuration >> 8));
+	UART_WR_AP7816B_T0(base, (uint8_t)atrDuration);
 }
 
 /*!
@@ -1738,7 +1738,7 @@ static inline void UART_HAL_SetAtrDurationTimer(UART_Type * base, uint16_t atrDu
  */
 static inline uint16_t UART_HAL_GetAtrDurationTimer(UART_Type * base)
 {
-    return (uint16_t)((uint16_t)((uint16_t)UART_RD_AP7816A_T0(base) << 8) | UART_RD_AP7816B_T0(base));
+	return (uint16_t)((uint16_t)((uint16_t)UART_RD_AP7816A_T0(base) << 8) | UART_RD_AP7816B_T0(base));
 }
 #endif
 
@@ -1754,8 +1754,8 @@ static inline uint16_t UART_HAL_GetAtrDurationTimer(UART_Type * base)
  */
 static inline void UART_HAL_SetWorkWaitTimeInteger(UART_Type * base, uint16_t wi)
 {
-    UART_WR_WP7816A_T0(base, (uint8_t)(wi >> 8));
-    UART_WR_WP7816B_T0(base, (uint8_t)wi);
+	UART_WR_WP7816A_T0(base, (uint8_t)(wi >> 8));
+	UART_WR_WP7816B_T0(base, (uint8_t)wi);
 }
 #else
 /*!
@@ -1769,7 +1769,7 @@ static inline void UART_HAL_SetWorkWaitTimeInteger(UART_Type * base, uint16_t wi
  */
 static inline void UART_HAL_SetWorkWaitTimeInteger(UART_Type * base, uint8_t wi)
 {
-    UART_WR_WP7816T0(base, wi);
+	UART_WR_WP7816T0(base, wi);
 }
 #endif
 
@@ -1785,7 +1785,7 @@ static inline void UART_HAL_SetWorkWaitTimeInteger(UART_Type * base, uint8_t wi)
  */
 static inline uint16_t UART_HAL_GetWorkWaitTimeInteger(UART_Type * base)
 {
-    return (uint16_t)(((uint16_t)(UART_RD_WP7816A_T0(base) >> 8)) | UART_RD_WP7816B_T0(base));
+	return (uint16_t)(((uint16_t)(UART_RD_WP7816A_T0(base) >> 8)) | UART_RD_WP7816B_T0(base));
 }
 #else
 /*!
@@ -1799,7 +1799,7 @@ static inline uint16_t UART_HAL_GetWorkWaitTimeInteger(UART_Type * base)
  */
 static inline uint8_t UART_HAL_GetWorkWaitTimeInteger(UART_Type * base)
 {
-    return UART_RD_WP7816T0(base);
+	return UART_RD_WP7816T0(base);
 }
 #endif
 
@@ -1816,10 +1816,10 @@ static inline uint8_t UART_HAL_GetWorkWaitTimeInteger(UART_Type * base)
 static inline void UART_HAL_SetCharacterWaitTimeInteger(UART_Type * base, uint8_t cwi1, uint8_t cwi2)
 {
 #if FSL_FEATURE_UART_HAS_IMPROVED_SMART_CARD_SUPPORT
-    UART_BWR_WGP7816_T1_CWI1(base, cwi1);
-    UART_BWR_WP7816C_T1_CWI2(base, cwi2);
+	UART_BWR_WGP7816_T1_CWI1(base, cwi1);
+	UART_BWR_WP7816C_T1_CWI2(base, cwi2);
 #else
-    UART_BWR_WP7816T1_CWI(base, (uint8_t)(cwi1 & 0xFU));
+	UART_BWR_WP7816T1_CWI(base, (uint8_t)(cwi1 & 0xFU));
 #endif
 }
 
@@ -1835,14 +1835,14 @@ static inline void UART_HAL_SetCharacterWaitTimeInteger(UART_Type * base, uint8_
  */
 static inline void UART_HAL_GetCharacterWaitTimeInteger(UART_Type * base, uint8_t *ptrCwi1, uint8_t *ptrCwi2)
 {
-    assert(ptrCwi1 == NULL);
-    assert(ptrCwi2 == NULL);
+	assert(ptrCwi1 == NULL);
+	assert(ptrCwi2 == NULL);
 
 #if FSL_FEATURE_UART_HAS_IMPROVED_SMART_CARD_SUPPORT
-    *ptrCwi1 = UART_BRD_WGP7816_T1_CWI1(base);
-    *ptrCwi2 = UART_BRD_WP7816C_T1_CWI2(base);
+	*ptrCwi1 = UART_BRD_WGP7816_T1_CWI1(base);
+	*ptrCwi2 = UART_BRD_WP7816C_T1_CWI2(base);
 #else
-    *ptrCwi1 = UART_BRD_WP7816T1_CWI(base);
+	*ptrCwi1 = UART_BRD_WP7816T1_CWI(base);
 #endif
 }
 
@@ -1858,8 +1858,8 @@ static inline void UART_HAL_GetCharacterWaitTimeInteger(UART_Type * base, uint8_
  */
 static inline void UART_HAL_SetBlockWaitTimeInteger(UART_Type * base, uint16_t bwi)
 {
-    UART_WR_WP7816A_T1(base, (uint8_t)(bwi >> 8));
-    UART_WR_WP7816B_T1(base, (uint8_t)bwi);
+	UART_WR_WP7816A_T1(base, (uint8_t)(bwi >> 8));
+	UART_WR_WP7816B_T1(base, (uint8_t)bwi);
 }
 #else
 /*!
@@ -1873,7 +1873,7 @@ static inline void UART_HAL_SetBlockWaitTimeInteger(UART_Type * base, uint16_t b
  */
 static inline void UART_HAL_SetBlockWaitTimeInteger(UART_Type * base, uint8_t bwi)
 {
-    UART_WR_WP7816T1(base, (uint8_t)(bwi & 0xFU));
+	UART_WR_WP7816T1(base, (uint8_t)(bwi & 0xFU));
 }
 #endif
 
@@ -1889,7 +1889,7 @@ static inline void UART_HAL_SetBlockWaitTimeInteger(UART_Type * base, uint8_t bw
  */
 static inline uint16_t UART_HAL_GetBlockWaitTimeInteger(UART_Type * base)
 {
-    return (uint16_t)((uint16_t)(UART_RD_WP7816A_T1(base) >> 8)| UART_RD_WP7816B_T1(base));
+	return (uint16_t)((uint16_t)(UART_RD_WP7816A_T1(base) >> 8)| UART_RD_WP7816B_T1(base));
 }
 #else
 /*!
@@ -1903,7 +1903,7 @@ static inline uint16_t UART_HAL_GetBlockWaitTimeInteger(UART_Type * base)
  */
 static inline uint8_t UART_HAL_GetBlockWaitTimeInteger(UART_Type * base)
 {
-    return (uint8_t)(UART_RD_WP7816T1(base) & 0xFU);
+	return (uint8_t)(UART_RD_WP7816T1(base) & 0xFU);
 }
 #endif
 
@@ -1919,7 +1919,7 @@ static inline uint8_t UART_HAL_GetBlockWaitTimeInteger(UART_Type * base)
  */
 static inline void UART_HAL_SetBlockGuardTimeInteger(UART_Type * base, uint8_t bgi)
 {
-    UART_BWR_WGP7816_T1_BGI(base, bgi);
+	UART_BWR_WGP7816_T1_BGI(base, bgi);
 }
 
 /*!
@@ -1933,7 +1933,7 @@ static inline void UART_HAL_SetBlockGuardTimeInteger(UART_Type * base, uint8_t b
  */
 static inline uint8_t UART_HAL_GetBlockGuardTimeInteger(UART_Type * base)
 {
-    return UART_BRD_WGP7816_T1_BGI(base);
+	return UART_BRD_WGP7816_T1_BGI(base);
 }
 #endif
 
@@ -1950,4 +1950,3 @@ static inline uint8_t UART_HAL_GetBlockGuardTimeInteger(UART_Type * base)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

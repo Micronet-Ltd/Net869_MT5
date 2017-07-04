@@ -45,8 +45,8 @@
  ******************************************************************************/
 /*! @brief interrupt status return codes.*/
 typedef enum _interrupt_status_t {
-    kStatus_INT_Success            = 0x0U,
-    kStatus_INT_NoVectorInRAM      = 0x1U,
+	kStatus_INT_Success            = 0x0U,
+	kStatus_INT_NoVectorInRAM      = 0x1U,
 } interrupt_status_t;
 
 /*******************************************************************************
@@ -61,15 +61,15 @@ extern "C" {
 /*@{*/
 
 /*!
- * @brief Installs an interrupt handler routine for a given IRQ number. 
+ * @brief Installs an interrupt handler routine for a given IRQ number.
  *
- * This function lets the application  register/replace the interrupt 
+ * This function lets the application  register/replace the interrupt
  * handler for a specified IRQ number. The IRQ number is different than the vector
  * number. IRQ 0  starts from the vector 16 address. See a chip-specific reference
  * manual for details and the  startup_MKxxxx.s file for each chip
  * family to find out the default interrupt handler for each device. This
  * function converts the IRQ number to the vector number by adding 16 to
- * it. 
+ * it.
  *
  * @param irqNumber IRQ number
  * @param handler   Interrupt handler routine address pointer
@@ -78,7 +78,7 @@ extern "C" {
 void * INT_SYS_InstallHandler(IRQn_Type irqNumber, void (*handler)(void));
 
 /*!
- * @brief Enables an interrupt for a given IRQ number. 
+ * @brief Enables an interrupt for a given IRQ number.
  *
  * This function  enables the individual interrupt for a specified IRQ
  * number. It calls the system NVIC API to access the interrupt control
@@ -89,16 +89,16 @@ void * INT_SYS_InstallHandler(IRQn_Type irqNumber, void (*handler)(void));
  */
 static inline void INT_SYS_EnableIRQ(IRQn_Type irqNumber)
 {
-    /* check IRQ number */
-    assert(0 <= irqNumber);
-    assert(irqNumber <= FSL_FEATURE_INTERRUPT_IRQ_MAX);
+	/* check IRQ number */
+	assert(0 <= irqNumber);
+	assert(irqNumber <= FSL_FEATURE_INTERRUPT_IRQ_MAX);
 
-    /* call core API to enable the IRQ*/
-    NVIC_EnableIRQ(irqNumber);
+	/* call core API to enable the IRQ*/
+	NVIC_EnableIRQ(irqNumber);
 }
 
 /*!
- * @brief Disables an interrupt for a given IRQ number. 
+ * @brief Disables an interrupt for a given IRQ number.
  *
  * This function  enables the individual interrupt for a specified IRQ
  * number. It  calls the system NVIC API to access the interrupt control
@@ -108,12 +108,12 @@ static inline void INT_SYS_EnableIRQ(IRQn_Type irqNumber)
  */
 static inline void INT_SYS_DisableIRQ(IRQn_Type irqNumber)
 {
-    /* check IRQ number */
-    assert(0 <= irqNumber);
-    assert(irqNumber <= FSL_FEATURE_INTERRUPT_IRQ_MAX);
+	/* check IRQ number */
+	assert(0 <= irqNumber);
+	assert(irqNumber <= FSL_FEATURE_INTERRUPT_IRQ_MAX);
 
-    /* call core API to disable the IRQ*/
-    NVIC_DisableIRQ(irqNumber);
+	/* call core API to disable the IRQ*/
+	NVIC_DisableIRQ(irqNumber);
 }
 
 /*!
@@ -125,7 +125,7 @@ static inline void INT_SYS_DisableIRQ(IRQn_Type irqNumber)
 void INT_SYS_EnableIRQGlobal(void);
 
 /*!
- * @brief Disable system interrupt. 
+ * @brief Disable system interrupt.
  *
  * This function  disables the global interrupt by calling the core API.
  *
@@ -144,4 +144,3 @@ void INT_SYS_DisableIRQGlobal(void);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

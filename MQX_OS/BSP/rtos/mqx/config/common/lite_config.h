@@ -513,11 +513,11 @@
 ** then mqx will compile with support for uncached memory allocation.
 */
 #ifndef MQX_USE_UNCACHED_MEM
-    #if MQXCFG_ALLOCATOR == MQX_ALLOCATOR_LWMEM
-        #define MQX_USE_UNCACHED_MEM         0
-    #else
-        #define MQX_USE_UNCACHED_MEM         1
-    #endif
+	#if MQXCFG_ALLOCATOR == MQX_ALLOCATOR_LWMEM
+		#define MQX_USE_UNCACHED_MEM         0
+	#else
+		#define MQX_USE_UNCACHED_MEM         1
+	#endif
 #endif
 
 /*

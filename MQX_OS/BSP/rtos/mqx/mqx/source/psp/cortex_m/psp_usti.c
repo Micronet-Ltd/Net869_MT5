@@ -22,22 +22,22 @@
 *
 *
 *END************************************************************************/
-    
+
 #include "mqx_inc.h"
 
 /*!
  * \brief This function converts microseconds into ticks
- * 
+ *
  * \param[in] usecs The number of microseconds to convert
  * \param[out] tick_ptr Pointer to tick structure where the result will be stored
  */
 void _psp_usecs_to_ticks
    (
-       /* [IN] The number of microseconds to convert */
-       _mqx_uint           usecs,
+	   /* [IN] The number of microseconds to convert */
+	   _mqx_uint           usecs,
 
-       /* [OUT] Pointer to tick structure where the result will be stored */
-       PSP_TICK_STRUCT_PTR tick_ptr
+	   /* [OUT] Pointer to tick structure where the result will be stored */
+	   PSP_TICK_STRUCT_PTR tick_ptr
    )
 { /* Body */
    uint64_t                tmp;

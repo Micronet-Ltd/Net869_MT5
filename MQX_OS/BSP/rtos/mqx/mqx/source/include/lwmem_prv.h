@@ -54,7 +54,7 @@
  */
 #define GET_LWMEMBLOCK_PTR(addr) \
    (LWMEM_BLOCK_STRUCT_PTR)((void *)((unsigned char *)(addr) - \
-      sizeof(LWMEM_BLOCK_STRUCT)))
+	  sizeof(LWMEM_BLOCK_STRUCT)))
 
 /*--------------------------------------------------------------------------*/
 /*
@@ -77,15 +77,15 @@ typedef struct lwmem_block_struct
    _lwmem_pool_id POOL;
 
    /*!
-    * \brief For an allocated block, this is the task ID of the owning task.
-    * When on the free list, this points to the next block on the free list.
-    */
+	* \brief For an allocated block, this is the task ID of the owning task.
+	* When on the free list, this points to the next block on the free list.
+	*/
    union {
-      void       *NEXTBLOCK;
-      struct {
-         _task_number    TASK_NUMBER;
-         _mem_type       MEM_TYPE;
-      } S;
+	  void       *NEXTBLOCK;
+	  struct {
+		 _task_number    TASK_NUMBER;
+		 _mem_type       MEM_TYPE;
+	  } S;
    } U;
 
 } LWMEM_BLOCK_STRUCT, * LWMEM_BLOCK_STRUCT_PTR;
@@ -107,10 +107,10 @@ extern "C" {
  * \cond DOXYGEN_PRIVATE
  */
 extern void *_lwmem_alloc_internal(
-    _mem_size requested_size,
-    TD_STRUCT_PTR td_ptr,
-    _lwmem_pool_id pool_id,
-    bool zero
+	_mem_size requested_size,
+	TD_STRUCT_PTR td_ptr,
+	_lwmem_pool_id pool_id,
+	bool zero
 );
 /*! \endcond */
 
@@ -118,8 +118,8 @@ extern void *_lwmem_alloc_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _lwmem_alloc_extend_internal(
-    void *mem_ptr,
-    _mem_size size
+	void *mem_ptr,
+	_mem_size size
 );
 /*! \endcond */
 
@@ -127,8 +127,8 @@ extern _mqx_uint _lwmem_alloc_extend_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _lwmem_free_part_internal(
-    void *mem_ptr,
-    _mem_size size
+	void *mem_ptr,
+	_mem_size size
 );
 /*! \endcond */
 
@@ -136,11 +136,11 @@ extern _mqx_uint _lwmem_free_part_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void *_lwmem_alloc_at_internal(
-    _mem_size requested_size,
-    void *requested_addr,
-    TD_STRUCT_PTR  td_ptr,
-    _lwmem_pool_id pool_id,
-    bool zero
+	_mem_size requested_size,
+	void *requested_addr,
+	TD_STRUCT_PTR  td_ptr,
+	_lwmem_pool_id pool_id,
+	bool zero
 );
 /*! \endcond */
 
@@ -148,11 +148,11 @@ extern void *_lwmem_alloc_at_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void *_lwmem_alloc_align_internal(
-    _mem_size requested_size,
-    _mem_size req_align,
-    TD_STRUCT_PTR td_ptr,
-    _lwmem_pool_id pool_id,
-    bool zero
+	_mem_size requested_size,
+	_mem_size req_align,
+	TD_STRUCT_PTR td_ptr,
+	_lwmem_pool_id pool_id,
+	bool zero
 );
 /*! \endcond */
 
@@ -160,7 +160,7 @@ extern void *_lwmem_alloc_align_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mem_size _lwmem_get_free_internal(
-    _lwmem_pool_id pool_id
+	_lwmem_pool_id pool_id
 );
 /*! \endcond */
 
@@ -168,8 +168,8 @@ extern _mem_size _lwmem_get_free_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _lwmem_transfer_internal(
-    void *memory_ptr,
-    TD_STRUCT_PTR target_td
+	void *memory_ptr,
+	TD_STRUCT_PTR target_td
 );
 /*! \endcond */
 
@@ -177,9 +177,9 @@ extern void _lwmem_transfer_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _lwmem_transfer_td_internal(
-    void *memory_ptr,
-    TD_STRUCT_PTR source_td,
-    TD_STRUCT_PTR target_td
+	void *memory_ptr,
+	TD_STRUCT_PTR source_td,
+	TD_STRUCT_PTR target_td
 );
 /*! \endcond */
 
@@ -193,8 +193,8 @@ extern _mqx_uint _lwmem_init_internal(void);
  * \cond DOXYGEN_PRIVATE
  */
 extern void *_lwmem_get_next_block_internal(
-    TD_STRUCT_PTR td_ptr,
-    void *in_block_ptr
+	TD_STRUCT_PTR td_ptr,
+	void *in_block_ptr
 );
 /*! \endcond */
 
@@ -202,8 +202,8 @@ extern void *_lwmem_get_next_block_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _lwmem_pool_id _lwmem_create_pool_mapped(
-    void *start,
-    _mem_size size
+	void *start,
+	_mem_size size
 );
 /*! \endcond */
 
@@ -213,7 +213,7 @@ extern _lwmem_pool_id _lwmem_create_pool_mapped(
  * \cond DOXYGEN_PRIVATE
  */
 void *_usr_lwmem_alloc_internal(
-    _mem_size requested_size
+	_mem_size requested_size
 );
 /*! \endcond */
 

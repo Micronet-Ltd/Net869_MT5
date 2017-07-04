@@ -1,27 +1,27 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2015 Freescale Semiconductor;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
 *
 * $FileName: usb_class_video.h$
-* $Version : 
-* $Date    : 
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -164,8 +164,8 @@ typedef uint32_t video_handle_t;
 #define GET_MIN_CT_REGION_OF_INTEREST_CONTROL       (0x8252)
 #endif
 
-#define GET_MIN_VS_PROBE_CONTROL                         (0x8261) 
-#define GET_MIN_VS_STILL_PROBE_CONTROL                   (0x8263) 
+#define GET_MIN_VS_PROBE_CONTROL                         (0x8261)
+#define GET_MIN_VS_STILL_PROBE_CONTROL                   (0x8263)
 #define GET_MIN_VS_UPDATE_FRAME_SEGMENT_CONTROL          (0x8268)
 #define GET_MIN_VS_SYNCH_DELAY_CONTROL                   (0x8269)
 
@@ -213,7 +213,7 @@ typedef uint32_t video_handle_t;
 #define GET_MAX_CT_REGION_OF_INTEREST_CONTROL       (0x8352)
 #endif
 
-#define GET_MAX_VS_PROBE_CONTROL                         (0x8361) 
+#define GET_MAX_VS_PROBE_CONTROL                         (0x8361)
 #define GET_MAX_VS_STILL_PROBE_CONTROL                   (0x8363)
 #define GET_MAX_VS_UPDATE_FRAME_SEGMENT_CONTROL          (0x8368)
 #define GET_MAX_VS_SYNCH_DELAY_CONTROL                   (0x8369)
@@ -417,8 +417,8 @@ typedef uint32_t video_handle_t;
 #define GET_DEF_CT_REGION_OF_INTEREST_CONTROL       (0x8753)
 #endif
 
-#define GET_DEF_VS_PROBE_CONTROL                         (0x8761) 
-#define GET_DEF_VS_STILL_PROBE_CONTROL                   (0x8763) 
+#define GET_DEF_VS_PROBE_CONTROL                         (0x8761)
+#define GET_DEF_VS_STILL_PROBE_CONTROL                   (0x8763)
 #define GET_DEF_VS_UPDATE_FRAME_SEGMENT_CONTROL          (0x8768)
 #define GET_DEF_VS_SYNCH_DELAY_CONTROL                   (0x8769)
 
@@ -733,75 +733,75 @@ typedef uint32_t video_handle_t;
 PACKED_STRUCT_BEGIN
 struct _video_mjpeg_payload_header_struct
 {
-    uint8_t          bHeaderLength;
-    union
-    {
-        uint8_t      bmHeaderInfo;
-        struct
-        {
-          uint8_t frame_id:1;
-          uint8_t end_of_frame:1;
-          uint8_t presentation_time:1;
-          uint8_t source_clock:1;
-          uint8_t reserved:1;
-          uint8_t still_image:1;
-          uint8_t error:1;
-          uint8_t end_of_header:1;
-        }bitMap;
-        struct
-        {
-          uint8_t FID:1;
-          uint8_t EOI:1;
-          uint8_t PTS:1;
-          uint8_t SCR:1;
-          uint8_t RES:1;
-          uint8_t STI:1;
-          uint8_t ERR:1;
-          uint8_t EOH:1;
-        }bitField;
-    }HeaderInfo;
-    uint32_t         dwPresentationTime;
-    uint8_t          bSourceClockReference[6];
+	uint8_t          bHeaderLength;
+	union
+	{
+		uint8_t      bmHeaderInfo;
+		struct
+		{
+		  uint8_t frame_id:1;
+		  uint8_t end_of_frame:1;
+		  uint8_t presentation_time:1;
+		  uint8_t source_clock:1;
+		  uint8_t reserved:1;
+		  uint8_t still_image:1;
+		  uint8_t error:1;
+		  uint8_t end_of_header:1;
+		}bitMap;
+		struct
+		{
+		  uint8_t FID:1;
+		  uint8_t EOI:1;
+		  uint8_t PTS:1;
+		  uint8_t SCR:1;
+		  uint8_t RES:1;
+		  uint8_t STI:1;
+		  uint8_t ERR:1;
+		  uint8_t EOH:1;
+		}bitField;
+	}HeaderInfo;
+	uint32_t         dwPresentationTime;
+	uint8_t          bSourceClockReference[6];
 } PACKED_STRUCT_END;
 typedef struct _video_mjpeg_payload_header_struct video_mjpeg_payload_header_struct_t;
 
 PACKED_STRUCT_BEGIN
 struct _video_probe_and_commit_controls_struct
 {
-    union
-    {
-        uint16_t     Hint;
-        struct
-        {
-          uint8_t dwFrameInterval:1;
-          uint8_t wKeyFrameRate:1;
-          uint8_t wPFrameRate:1;
-          uint8_t wCompQuality:1;
-          uint8_t wCompWindowSize:1;
-        }bitMap;
-    }bmHint;
-    uint8_t          bFormatIndex;
-    uint8_t          bFrameIndex;
-    uint32_t         dwFrameInterval;
-    uint16_t         wKeyFrameRate;
-    uint16_t         wPFrameRate;
-    uint16_t         wCompQuality;
-    uint16_t         wCompWindowSize;
-    uint16_t         wDelay;
-    uint32_t         dwMaxVideoFrameSize;
-    uint32_t         dwMaxPayloadTransferSize;
-    uint32_t         dwClockFrequency;
-    uint8_t          bmFramingInfo;
-    uint8_t          bPreferedVersion;
-    uint8_t          bMinVersion;
-    uint8_t          bMaxVersion;
+	union
+	{
+		uint16_t     Hint;
+		struct
+		{
+		  uint8_t dwFrameInterval:1;
+		  uint8_t wKeyFrameRate:1;
+		  uint8_t wPFrameRate:1;
+		  uint8_t wCompQuality:1;
+		  uint8_t wCompWindowSize:1;
+		}bitMap;
+	}bmHint;
+	uint8_t          bFormatIndex;
+	uint8_t          bFrameIndex;
+	uint32_t         dwFrameInterval;
+	uint16_t         wKeyFrameRate;
+	uint16_t         wPFrameRate;
+	uint16_t         wCompQuality;
+	uint16_t         wCompWindowSize;
+	uint16_t         wDelay;
+	uint32_t         dwMaxVideoFrameSize;
+	uint32_t         dwMaxPayloadTransferSize;
+	uint32_t         dwClockFrequency;
+	uint8_t          bmFramingInfo;
+	uint8_t          bPreferedVersion;
+	uint8_t          bMinVersion;
+	uint8_t          bMaxVersion;
 #if defined(USBCFG_VIDEO_CLASS_1_5) && USBCFG_VIDEO_CLASS_1_5
-    uint8_t          bUsage;
-    uint8_t          bBitDepthLuma;
-    uint8_t          bmSettings;
-    uint8_t          bMaxNumberOfRefFramesPlus1;
-    uint16_t         bmRateControlModes;
-    uint64_t         bmLayoutPerStream;
+	uint8_t          bUsage;
+	uint8_t          bBitDepthLuma;
+	uint8_t          bmSettings;
+	uint8_t          bMaxNumberOfRefFramesPlus1;
+	uint16_t         bmRateControlModes;
+	uint64_t         bmLayoutPerStream;
 #endif
 } PACKED_STRUCT_END;
 typedef struct _video_probe_and_commit_controls_struct video_probe_and_commit_controls_struct_t;
@@ -809,11 +809,11 @@ typedef struct _video_probe_and_commit_controls_struct video_probe_and_commit_co
 PACKED_STRUCT_BEGIN
 struct _video_still_probe_and_commit_controls_struct
 {
-    uint8_t          bFormatIndex;
-    uint8_t          bFrameIndex;
-    uint8_t          bCompressionIndex;
-    uint32_t         dwMaxVideoFrameSize;
-    uint32_t         dwMaxPayloadTransferSize;
+	uint8_t          bFormatIndex;
+	uint8_t          bFrameIndex;
+	uint8_t          bCompressionIndex;
+	uint32_t         dwMaxVideoFrameSize;
+	uint32_t         dwMaxPayloadTransferSize;
 } PACKED_STRUCT_END;
 typedef struct _video_still_probe_and_commit_controls_struct video_still_probe_and_commit_controls_struct_t;
 
@@ -821,30 +821,30 @@ typedef struct _video_still_probe_and_commit_controls_struct video_still_probe_a
 /* structure to hold a request in the endpoint queue */
 typedef struct _video_ut_struct
 {
-    uint8_t         unit_id;     /* uint id         */
-    uint8_t         type;        /* type of uint        */
-    uint16_t        unit_type;   /* type of terminal        */
+	uint8_t         unit_id;     /* uint id         */
+	uint8_t         type;        /* type of uint        */
+	uint16_t        unit_type;   /* type of terminal        */
 }video_ut_struct_t;
 
-typedef  struct _video_units_struct 
+typedef  struct _video_units_struct
 {
-    uint8_t            count;       /* Number of terminal or Ferture Unit End point */  
-    video_ut_struct_t* put;         /* Array of terminal or Feature Unit */
-}video_units_struct_t; 
+	uint8_t            count;       /* Number of terminal or Ferture Unit End point */
+	video_ut_struct_t* put;         /* Array of terminal or Feature Unit */
+}video_units_struct_t;
 
 
 /* MSD Configuration structure to be passed by APP*/
 typedef struct _video_config_struct
-{    
-    usb_application_callback_struct_t          video_application_callback;/*!< application callback function to handle the Device status related event*/
-    usb_vendor_req_callback_struct_t           vendor_req_callback;       /*!< application callback function to handle the vendor request related event, reserved for future use*/
-    usb_class_specific_callback_struct_t       class_specific_callback;   /*!< application callback function to handle all the class related event*/
-    usb_desc_request_notify_struct_t*          desc_callback_ptr;         /*!< descriptor related callback function data structure*/
-    usb_board_init_callback_struct_t           board_init_callback;       /*!< application callback function to handle board init*/
+{
+	usb_application_callback_struct_t          video_application_callback;/*!< application callback function to handle the Device status related event*/
+	usb_vendor_req_callback_struct_t           vendor_req_callback;       /*!< application callback function to handle the vendor request related event, reserved for future use*/
+	usb_class_specific_callback_struct_t       class_specific_callback;   /*!< application callback function to handle all the class related event*/
+	usb_desc_request_notify_struct_t*          desc_callback_ptr;         /*!< descriptor related callback function data structure*/
+	usb_board_init_callback_struct_t           board_init_callback;       /*!< application callback function to handle board init*/
 }video_config_struct_t;
 
 extern void USB_Class_Periodic_Task(void);
-#define USB_Video_Periodic_Task USB_Class_Periodic_Task 
+#define USB_Video_Periodic_Task USB_Class_Periodic_Task
 /******************************************************************************
  * Global Functions
  *****************************************************************************/
@@ -852,44 +852,44 @@ extern void USB_Class_Periodic_Task(void);
  *
  * @name  USB_Class_Video_Init
  *
- * @brief The funtion initializes the Device and Controller layer 
+ * @brief The funtion initializes the Device and Controller layer
  *
  * @param msd_config_ptr    : Configuration paramemter strucutre pointer
  *                            passed by APP.
- * @return status       
- *         MSD Handle           : When Successfull 
+ * @return status
+ *         MSD Handle           : When Successfull
  *         Others           : Errors
  ******************************************************************************
  *
- *This function initializes the Video Class layer and layers it is dependednt on 
+ *This function initializes the Video Class layer and layers it is dependednt on
  ******************************************************************************/
 extern usb_status USB_Class_Video_Init
 (
-    uint8_t controller_id,
-    video_config_struct_t* video_config_ptr,
-    video_handle_t *  video_handle
-); 
+	uint8_t controller_id,
+	video_config_struct_t* video_config_ptr,
+	video_handle_t *  video_handle
+);
 
 
 /**************************************************************************//*!
  *
  * @name  USB_Class_Video_Deinit
  *
- * @brief The funtion initializes the Device and Controller layer 
+ * @brief The funtion initializes the Device and Controller layer
  *
  * @param cdc_handle
  *
- * @return status       
- *         USB_OK           : When Successfull 
+ * @return status
+ *         USB_OK           : When Successfull
  *         Others           : Errors
  ******************************************************************************
  *
- *This function initializes the Video Class layer and layers it is dependednt on 
+ *This function initializes the Video Class layer and layers it is dependednt on
  *
  *****************************************************************************/
 extern usb_status USB_Class_Video_Deinit
 (
-    video_handle_t handle
+	video_handle_t handle
 );
 
 /**************************************************************************//*!
@@ -911,10 +911,10 @@ extern usb_status USB_Class_Video_Deinit
  * This fucntion is used by Application to send data through Video class
  *****************************************************************************/
 uint8_t USB_Class_Video_Send_Data (
-        video_handle_t handle,       /* [IN] class handle */
-        uint8_t ep_num,              /* [IN] Endpoint Number */
-        uint8_t* app_buff,        /* [IN] Buffer to Send */
-        uint32_t size        /* [IN] Length of the Transfer */
+		video_handle_t handle,       /* [IN] class handle */
+		uint8_t ep_num,              /* [IN] Endpoint Number */
+		uint8_t* app_buff,        /* [IN] Buffer to Send */
+		uint32_t size        /* [IN] Length of the Transfer */
 );
 
 /**************************************************************************//*!
@@ -936,10 +936,10 @@ uint8_t USB_Class_Video_Send_Data (
  * This fucntion is used by Application to send data through Video class
  *****************************************************************************/
 uint8_t USB_Class_Video_Recv_Data (
-        video_handle_t handle,       /* [IN] class handle */
-        uint8_t ep_num,              /* [IN] Endpoint Number */
-        uint8_t* app_buff,        /* [IN] Buffer to Send */
-        uint32_t size        /* [IN] Length of the Transfer */
+		video_handle_t handle,       /* [IN] class handle */
+		uint8_t ep_num,              /* [IN] Endpoint Number */
+		uint8_t* app_buff,        /* [IN] Buffer to Send */
+		uint32_t size        /* [IN] Length of the Transfer */
 );
 
 #if USBCFG_DEV_ADVANCED_CANCEL_ENABLE
@@ -947,21 +947,21 @@ uint8_t USB_Class_Video_Recv_Data (
  *
  * @name  USB_Class_Video_Cancel
  *
- * @brief 
+ * @brief
  *
  * @param handle          :   handle returned by USB_Class_Video_Init
- * @param ep_num          :   endpoint num 
- * @param direction        :   direction of the endpoint 
+ * @param ep_num          :   endpoint num
+ * @param direction        :   direction of the endpoint
  *
- * @return status       
- *         USB_OK           : When Successfull 
+ * @return status
+ *         USB_OK           : When Successfull
  *         Others           : Errors
  *****************************************************************************/
 usb_status USB_Class_Video_Cancel
 (
-    video_handle_t handle,/*[IN]*/
-    uint8_t ep_num,/*[IN]*/
-    uint8_t direction
+	video_handle_t handle,/*[IN]*/
+	uint8_t ep_num,/*[IN]*/
+	uint8_t direction
 );
 #endif
 
@@ -974,16 +974,14 @@ usb_status USB_Class_Video_Cancel
  * @param handle          :   handle returned by USB_Class_Video_Init
  * @param speed           :   speed
  *
- * @return status       
- *         USB_OK         : When Successfull 
+ * @return status
+ *         USB_OK         : When Successfull
  *         Others         : Errors
  *****************************************************************************/
 usb_status USB_Class_Video_Get_Speed
 (
-    video_handle_t        handle,
-    uint16_t *            speed/* [OUT] the requested error */
+	video_handle_t        handle,
+	uint16_t *            speed/* [OUT] the requested error */
 );
 
 #endif
-
-

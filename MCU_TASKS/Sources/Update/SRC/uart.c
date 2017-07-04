@@ -60,8 +60,8 @@ TIME_STRUCT tt[16] 		= {0};
  *END**************************************************************************/
 void UART_DRV_IRQHandler_spec(uint32_t instance)
 {
-    uart_state_t * uartState = (uart_state_t *)g_uartStatePtr[instance];
-    UART_Type * base = g_uartBase[instance];
+	uart_state_t * uartState = (uart_state_t *)g_uartStatePtr[instance];
+	UART_Type * base = g_uartBase[instance];
 
 #ifdef DEB_PRINT_FIRST_IRQS
 	static uint32_t debug_cnt = 0;
@@ -69,24 +69,24 @@ void UART_DRV_IRQHandler_spec(uint32_t instance)
 	uint8_t irq_en_mask;
 	uint8_t irq_stat, rx_stat, tx_stat;
 	uint8_t rxofes;
-	
+
 	static uint32_t busy = 0;
 
 	if (busy)
 		return;
 	INT_SYS_DisableIRQ(UART3_RX_TX_IRQn);
 	busy = 1;
-	
+
 	irq_en_mask = (UART_C2_REG(base) & (UART_C2_RIE_MASK | UART_C2_TIE_MASK));
 	irq_stat = irq_en_mask;
-	
+
 	rxofes = (UART_S1_REG(base) & (UART_S1_PF_MASK | UART_S1_FE_MASK | UART_S1_NF_MASK | UART_S1_OR_MASK)) |
-	  			(UART_SFIFO_REG(base) & UART_SFIFO_RXOF_MASK);
+				(UART_SFIFO_REG(base) & UART_SFIFO_RXOF_MASK);
 
 #ifdef DEB_PRINT_FIRST_IRQS
 	if(16 > debug_cnt)
 	{
-	  	_time_get(&tt[debug_cnt]);
+		_time_get(&tt[debug_cnt]);
 		s1[debug_cnt] = UART_S1_REG(base);
 		rcfifo[debug_cnt] = UART_RD_RCFIFO(base);
 		sfifo[debug_cnt] = UART_RD_SFIFO(base);
@@ -95,23 +95,23 @@ void UART_DRV_IRQHandler_spec(uint32_t instance)
 	while(rxofes)
 	{
 		UART_HAL_Getchar(base, uartState->rxBuff);
-	  	UART_HAL_FlushRxFifo(base);
+		UART_HAL_FlushRxFifo(base);
 		if(UART_SFIFO_REG(base) & UART_SFIFO_RXOF_MASK)
 			UART_SFIFO_REG(base) |= UART_SFIFO_RXOF_MASK;
 		asm("nop");
 		asm("nop");
 		asm("nop");
 		rxofes = (UART_S1_REG(base) & (UART_S1_PF_MASK | UART_S1_FE_MASK | UART_S1_NF_MASK | UART_S1_OR_MASK)) |
-	  			(UART_SFIFO_REG(base) & UART_SFIFO_RXOF_MASK);
+				(UART_SFIFO_REG(base) & UART_SFIFO_RXOF_MASK);
 	}
 	rx_stat = (UART_S1_REG(base) & UART_S1_RDRF_MASK);
 //	tx_stat = (UART_S1_REG(base) & UART_S1_TDRE_MASK);
 	irq_stat |= rx_stat; // | tx_stat;
 	while(irq_stat)
-	{	  
-    /* Handle receive data register full interrupt, if rx data register full
-     * interrupt is enabled AND there is data available. */
-	  
+	{
+	/* Handle receive data register full interrupt, if rx data register full
+	 * interrupt is enabled AND there is data available. */
+
 //    if((UART_BRD_C2_RIE(base)) && (UART_BRD_S1_RDRF(base)))
 		if (irq_stat & rx_stat)
 		{
@@ -132,16 +132,16 @@ void UART_DRV_IRQHandler_spec(uint32_t instance)
 				if (uartState->rxCallback != NULL)
 				{
 					uartState->rxCallback(instance, uartState);
-				}			
+				}
 			}
 		}
 
-    /* Handle transmit data register empty interrupt, if tx data register empty
-     * interrupt is enabled AND tx data register is currently empty. */
+	/* Handle transmit data register empty interrupt, if tx data register empty
+	 * interrupt is enabled AND tx data register is currently empty. */
 //    if((UART_BRD_C2_TIE(base)) && (UART_BRD_S1_TDRE(base)))
 /*		if (irq_stat & tx_stat)
 		{
-			// Check to see if there are any more bytes to send 
+			// Check to see if there are any more bytes to send
 			if (uartState->txSize)
 			{
 				uint8_t emptyEntryCountInFifo;
@@ -181,15 +181,15 @@ void UART_DRV_IRQHandler_spec(uint32_t instance)
 */
 		rx_stat = (UART_S1_REG(base) & UART_S1_RDRF_MASK);
 //		tx_stat = (UART_S1_REG(base) & UART_S1_TDRE_MASK);
-  		irq_stat &= ~(UART_C2_RIE_MASK);// | UART_C2_TIE_MASK);
+		irq_stat &= ~(UART_C2_RIE_MASK);// | UART_C2_TIE_MASK);
 		irq_stat |= rx_stat;//    | tx_stat;
 //		rxofes = (UART_S1_REG(base) & (UART_S1_PF_MASK | UART_S1_FE_MASK | UART_S1_NF_MASK | UART_S1_OR_MASK));
-		
+
 	}//while any
-	
+
 #ifdef DEB_PRINT_FIRST_IRQS
 	debug_cnt++;
-#endif	
+#endif
 	busy = 0;
 	INT_SYS_EnableIRQ(UART3_RX_TX_IRQn);
 }
@@ -203,11 +203,10 @@ int32_t	Set_IRQHandler_spec(void)
 //	uartState->rxCallback = &nio_serial_uart_rxcallback_spec;
 
 	INT_SYS_EnableIRQ(UART3_RX_TX_IRQn);
-	
+
 	return 0;
 }
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

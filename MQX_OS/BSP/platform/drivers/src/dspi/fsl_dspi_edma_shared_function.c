@@ -57,23 +57,22 @@ extern void DSPI_DRV_EdmaSlaveIRQHandler(uint32_t instance);
  */
 void DSPI_DRV_EdmaIRQHandler(uint32_t instance)
 {
-    assert(instance < SPI_INSTANCE_COUNT);
-    SPI_Type *base = g_dspiBase[instance];
+	assert(instance < SPI_INSTANCE_COUNT);
+	SPI_Type *base = g_dspiBase[instance];
 
-    if (DSPI_HAL_IsMaster(base))
-    {
-        /* Master mode.*/
-        DSPI_DRV_EdmaMasterIRQHandler(instance);
-    }
-    else
-    {
-        /* Slave mode.*/
-        DSPI_DRV_EdmaSlaveIRQHandler(instance);
-    }
+	if (DSPI_HAL_IsMaster(base))
+	{
+		/* Master mode.*/
+		DSPI_DRV_EdmaMasterIRQHandler(instance);
+	}
+	else
+	{
+		/* Slave mode.*/
+		DSPI_DRV_EdmaSlaveIRQHandler(instance);
+	}
 }
 
 #endif /* FSL_FEATURE_SOC_DSPI_COUNT */
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

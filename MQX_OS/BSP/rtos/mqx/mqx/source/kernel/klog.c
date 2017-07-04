@@ -112,23 +112,23 @@ extern char      *_klog_get_function_name2_internal(uint32_t);
  */
 void _klog_control
 (
-    uint32_t bit_mask,
-    bool set_bits
+	uint32_t bit_mask,
+	bool set_bits
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _int_disable();
-    if (set_bits)
-    {
-        kernel_data->LOG_CONTROL |= bit_mask;
-    }
-    else
-    {
-        kernel_data->LOG_CONTROL &= ~bit_mask;
-    } /* Endif */
-    _int_enable();
+	_GET_KERNEL_DATA(kernel_data);
+	_int_disable();
+	if (set_bits)
+	{
+		kernel_data->LOG_CONTROL |= bit_mask;
+	}
+	else
+	{
+		kernel_data->LOG_CONTROL &= ~bit_mask;
+	} /* Endif */
+	_int_enable();
 
 } /* Endbody */
 
@@ -171,19 +171,19 @@ void _klog_control
  */
 _mqx_uint _klog_create
 (
-    _mqx_uint max_size,
-    _mqx_uint flags
+	_mqx_uint max_size,
+	_mqx_uint flags
 )
 { /* Body */
 
-    /*
-      * Each element in the each log entry is of the type _mqx_max_type.
-      * The lightweight log takes the number of entries to create so
-      * adjust size accordingly.
-      */
-    max_size = max_size * sizeof(_mqx_max_type) / sizeof(LWLOG_ENTRY_STRUCT);
+	/*
+	  * Each element in the each log entry is of the type _mqx_max_type.
+	  * The lightweight log takes the number of entries to create so
+	  * adjust size accordingly.
+	  */
+	max_size = max_size * sizeof(_mqx_max_type) / sizeof(LWLOG_ENTRY_STRUCT);
 
-    return _lwlog_create(LOG_KERNEL_LOG_NUMBER, max_size, flags);
+	return _lwlog_create(LOG_KERNEL_LOG_NUMBER, max_size, flags);
 
 } /* Endbody */
 #endif /* MQXCFG_STATIC_KLOG */
@@ -227,19 +227,19 @@ _mqx_uint _klog_create
  */
 _mqx_uint _klog_create_at
 (
-    _mqx_uint max_size,
-    _mqx_uint flags,
-    void   *where
+	_mqx_uint max_size,
+	_mqx_uint flags,
+	void   *where
 )
 { /* Body */
 
-    /*
-      * The size of the kernel log must be a multiple of the size of a
-      * lightweight log entry
-      */
-    max_size = max_size * sizeof(_mqx_max_type) / sizeof(LWLOG_ENTRY_STRUCT);
+	/*
+	  * The size of the kernel log must be a multiple of the size of a
+	  * lightweight log entry
+	  */
+	max_size = max_size * sizeof(_mqx_max_type) / sizeof(LWLOG_ENTRY_STRUCT);
 
-    return _lwlog_create_at(LOG_KERNEL_LOG_NUMBER, max_size, flags, where);
+	return _lwlog_create_at(LOG_KERNEL_LOG_NUMBER, max_size, flags, where);
 
 } /* Endbody */
 
@@ -257,18 +257,18 @@ _mqx_uint _klog_create_at
  */
 void _klog_disable_logging_task
 (
-    _task_id tid
+	_task_id tid
 )
 { /* Body */
-    TD_STRUCT_PTR td_ptr;
+	TD_STRUCT_PTR td_ptr;
 
-    _int_disable();
-    td_ptr = (TD_STRUCT_PTR)_task_get_td(tid);
-    if (td_ptr != NULL)
-    {
-        td_ptr->FLAGS &= ~TASK_LOGGING_ENABLED;
-    } /* Endif */
-    _int_enable();
+	_int_disable();
+	td_ptr = (TD_STRUCT_PTR)_task_get_td(tid);
+	if (td_ptr != NULL)
+	{
+		td_ptr->FLAGS &= ~TASK_LOGGING_ENABLED;
+	} /* Endif */
+	_int_enable();
 
 } /* Endbody */
 
@@ -285,18 +285,18 @@ void _klog_disable_logging_task
  */
 void _klog_enable_logging_task
 (
-    _task_id tid
+	_task_id tid
 )
 { /* Body */
-    TD_STRUCT_PTR td_ptr;
+	TD_STRUCT_PTR td_ptr;
 
-    _int_disable();
-    td_ptr = (TD_STRUCT_PTR)_task_get_td(tid);
-    if (td_ptr != NULL)
-    {
-        td_ptr->FLAGS |= TASK_LOGGING_ENABLED;
-    } /* Endif */
-    _int_enable();
+	_int_disable();
+	td_ptr = (TD_STRUCT_PTR)_task_get_td(tid);
+	if (td_ptr != NULL)
+	{
+		td_ptr->FLAGS |= TASK_LOGGING_ENABLED;
+	} /* Endif */
+	_int_enable();
 
 } /* Endbody */
 
@@ -318,81 +318,81 @@ void _klog_enable_logging_task
  */
 bool _klog_display(void)
 { /* Body */
-    LWLOG_ENTRY_STRUCT     log_entry;
-    LWLOG_ENTRY_STRUCT_PTR log_ptr;
-    _mqx_uint              result;
-    _mqx_int               i;
+	LWLOG_ENTRY_STRUCT     log_entry;
+	LWLOG_ENTRY_STRUCT_PTR log_ptr;
+	_mqx_uint              result;
+	_mqx_int               i;
 
-    log_ptr = &log_entry;
-    result = _lwlog_read(LOG_KERNEL_LOG_NUMBER, LOG_READ_OLDEST_AND_DELETE, log_ptr);
-    if (result != MQX_OK)
-    {
-        return FALSE;
-    } /* Endif */
+	log_ptr = &log_entry;
+	result = _lwlog_read(LOG_KERNEL_LOG_NUMBER, LOG_READ_OLDEST_AND_DELETE, log_ptr);
+	if (result != MQX_OK)
+	{
+		return FALSE;
+	} /* Endif */
 
 #if MQX_LWLOG_TIME_STAMP_IN_TICKS == 0
-    /* Normalize the time in the record */
-    log_ptr->MILLISECONDS += log_ptr->MICROSECONDS / 1000;
-    log_ptr->MICROSECONDS = log_ptr->MICROSECONDS % 1000;
-    log_ptr->SECONDS += log_ptr->MILLISECONDS / 1000;
-    log_ptr->MILLISECONDS = log_ptr->MILLISECONDS % 1000;
+	/* Normalize the time in the record */
+	log_ptr->MILLISECONDS += log_ptr->MICROSECONDS / 1000;
+	log_ptr->MICROSECONDS = log_ptr->MICROSECONDS % 1000;
+	log_ptr->SECONDS += log_ptr->MILLISECONDS / 1000;
+	log_ptr->MILLISECONDS = log_ptr->MILLISECONDS % 1000;
 
-    printf("%ld. %ld:%03ld%03ld -> ",
-                    (uint32_t)log_ptr->SEQUENCE_NUMBER,
-                    log_ptr->SECONDS,
-                    log_ptr->MILLISECONDS,
-                    log_ptr->MICROSECONDS);
+	printf("%ld. %ld:%03ld%03ld -> ",
+					(uint32_t)log_ptr->SEQUENCE_NUMBER,
+					log_ptr->SECONDS,
+					log_ptr->MILLISECONDS,
+					log_ptr->MICROSECONDS);
 #else
 
-    printf("%ld. ", (uint32_t)log_ptr->SEQUENCE_NUMBER);
+	printf("%ld. ", (uint32_t)log_ptr->SEQUENCE_NUMBER);
 
-    PSP_PRINT_TICKS(&log_ptr->TIMESTAMP);
+	PSP_PRINT_TICKS(&log_ptr->TIMESTAMP);
 
-    printf(" -> ");
+	printf(" -> ");
 #endif
 
-    switch (log_ptr->DATA[0])
-    {
+	switch (log_ptr->DATA[0])
+	{
 
-        case KLOG_FUNCTION_ENTRY:
-        case KLOG_FUNCTION_EXIT:
-        printf("%s %22.22s ",
-                        (log_ptr->DATA[0] == KLOG_FUNCTION_ENTRY) ? "FUN " : "XFUN",
-                        _klog_get_function_name_internal((uint32_t)log_ptr->DATA[1]));
-        /* for (i = 2; i < LWLOG_MAXIMUM_DATA_ENETRIES; ++i) { */
-        for (i = 2; i < LWLOG_MAXIMUM_DATA_ENTRIES; ++i)
-        {
-            printf("0x%lX ", (uint32_t)log_ptr->DATA[i]);
-        } /* Endfor */
-        printf("\n");
-        break;
+		case KLOG_FUNCTION_ENTRY:
+		case KLOG_FUNCTION_EXIT:
+		printf("%s %22.22s ",
+						(log_ptr->DATA[0] == KLOG_FUNCTION_ENTRY) ? "FUN " : "XFUN",
+						_klog_get_function_name_internal((uint32_t)log_ptr->DATA[1]));
+		/* for (i = 2; i < LWLOG_MAXIMUM_DATA_ENETRIES; ++i) { */
+		for (i = 2; i < LWLOG_MAXIMUM_DATA_ENTRIES; ++i)
+		{
+			printf("0x%lX ", (uint32_t)log_ptr->DATA[i]);
+		} /* Endfor */
+		printf("\n");
+		break;
 
-        case KLOG_INTERRUPT:
-        printf("INT   0x%lX\n", (uint32_t)log_ptr->DATA[1]);
-        break;
+		case KLOG_INTERRUPT:
+		printf("INT   0x%lX\n", (uint32_t)log_ptr->DATA[1]);
+		break;
 
-        case KLOG_INTERRUPT_END:
-        printf("INT   0x%lX END\n",(uint32_t)log_ptr->DATA[1]);
-        break;
+		case KLOG_INTERRUPT_END:
+		printf("INT   0x%lX END\n",(uint32_t)log_ptr->DATA[1]);
+		break;
 
-        case KLOG_CONTEXT_SWITCH:
-        printf("NEW TASK TD 0x%lX ID 0x%lX STATE 0x%lX STACK 0x%lX\n",
-                        (uint32_t)log_ptr->DATA[1], (uint32_t)log_ptr->DATA[2],
-                        (uint32_t)log_ptr->DATA[3], (uint32_t)log_ptr->DATA[4]);
-        break;
+		case KLOG_CONTEXT_SWITCH:
+		printf("NEW TASK TD 0x%lX ID 0x%lX STATE 0x%lX STACK 0x%lX\n",
+						(uint32_t)log_ptr->DATA[1], (uint32_t)log_ptr->DATA[2],
+						(uint32_t)log_ptr->DATA[3], (uint32_t)log_ptr->DATA[4]);
+		break;
 
-        default:
-        printf("USER ENTRY: 0x%lX:", (uint32_t)log_ptr->DATA[0]);
-        /* for (i = 1; i < LWLOG_MAXIMUM_DATA_ENETRIES; ++i) { */
-        for (i = 1; i < LWLOG_MAXIMUM_DATA_ENTRIES; ++i)
-        {
-            printf("0x%lX ", (uint32_t)log_ptr->DATA[i]);
-        } /* Endfor */
-        printf("\n");
-        break;
-    } /* Endswitch */
+		default:
+		printf("USER ENTRY: 0x%lX:", (uint32_t)log_ptr->DATA[0]);
+		/* for (i = 1; i < LWLOG_MAXIMUM_DATA_ENETRIES; ++i) { */
+		for (i = 1; i < LWLOG_MAXIMUM_DATA_ENTRIES; ++i)
+		{
+			printf("0x%lX ", (uint32_t)log_ptr->DATA[i]);
+		} /* Endfor */
+		printf("\n");
+		break;
+	} /* Endswitch */
 
-    return TRUE;
+	return TRUE;
 
 } /* Endbody */
 
@@ -423,26 +423,26 @@ bool _klog_display(void)
  */
 _mqx_uint _klog_get_task_stack_usage
 (
-    _task_id task_id,
-    _mem_size_ptr stack_size_ptr,
-    _mem_size_ptr stack_used_ptr
+	_task_id task_id,
+	_mem_size_ptr stack_size_ptr,
+	_mem_size_ptr stack_used_ptr
 )
 { /* Body */
 #if MQX_MONITOR_STACK
-    TD_STRUCT_PTR td_ptr;
+	TD_STRUCT_PTR td_ptr;
 
-    td_ptr = (TD_STRUCT_PTR)_task_get_td(task_id);
+	td_ptr = (TD_STRUCT_PTR)_task_get_td(task_id);
 #if MQX_CHECK_ERRORS
-    if (td_ptr == NULL)
-    {
-        return(MQX_INVALID_TASK_ID);
-    } /* Endif */
+	if (td_ptr == NULL)
+	{
+		return(MQX_INVALID_TASK_ID);
+	} /* Endif */
 #endif
 
-    return _klog_get_task_stack_usage_internal(td_ptr, stack_size_ptr, stack_used_ptr);
+	return _klog_get_task_stack_usage_internal(td_ptr, stack_size_ptr, stack_used_ptr);
 
 #else
-    return MQX_INVALID_CONFIGURATION;
+	return MQX_INVALID_CONFIGURATION;
 #endif
 
 } /* Endbody */
@@ -470,57 +470,57 @@ _mqx_uint _klog_get_task_stack_usage
  */
 _mqx_uint _klog_get_task_stack_usage_internal
 (
-    TD_STRUCT_PTR td_ptr,
-    _mem_size_ptr stack_size_ptr,
-    _mem_size_ptr stack_used_ptr
+	TD_STRUCT_PTR td_ptr,
+	_mem_size_ptr stack_size_ptr,
+	_mem_size_ptr stack_used_ptr
 )
 { /* Body */
 #if MQX_MONITOR_STACK && MQX_TD_HAS_STACK_LIMIT
-    _mqx_uint_ptr stack_ptr;
-    _mqx_uint_ptr stack_base;
+	_mqx_uint_ptr stack_ptr;
+	_mqx_uint_ptr stack_base;
 
 #if MQX_CHECK_ERRORS
-    if (td_ptr == NULL)
-    {
-        return(MQX_INVALID_TASK_ID);
-    } /* Endif */
+	if (td_ptr == NULL)
+	{
+		return(MQX_INVALID_TASK_ID);
+	} /* Endif */
 #endif
 
 #if PSP_STACK_GROWS_TO_LOWER_MEM
-    stack_base = (_mqx_uint_ptr)td_ptr->STACK_BASE;
-    stack_ptr  = (_mqx_uint_ptr)td_ptr->STACK_LIMIT;
-    while (stack_ptr < stack_base)
-    {
-        if (*stack_ptr != MQX_STACK_MONITOR_VALUE)
-        {
-            break;
-        } /* Endif */
-        ++stack_ptr;
-    } /* Endwhile */
-    *stack_used_ptr = (_mqx_uint)((unsigned char *)td_ptr->STACK_BASE -
-                    (unsigned char *)stack_ptr);
-    *stack_size_ptr = (_mqx_uint)((unsigned char *)td_ptr->STACK_BASE -
-                    (unsigned char *)td_ptr->STACK_LIMIT);
+	stack_base = (_mqx_uint_ptr)td_ptr->STACK_BASE;
+	stack_ptr  = (_mqx_uint_ptr)td_ptr->STACK_LIMIT;
+	while (stack_ptr < stack_base)
+	{
+		if (*stack_ptr != MQX_STACK_MONITOR_VALUE)
+		{
+			break;
+		} /* Endif */
+		++stack_ptr;
+	} /* Endwhile */
+	*stack_used_ptr = (_mqx_uint)((unsigned char *)td_ptr->STACK_BASE -
+					(unsigned char *)stack_ptr);
+	*stack_size_ptr = (_mqx_uint)((unsigned char *)td_ptr->STACK_BASE -
+					(unsigned char *)td_ptr->STACK_LIMIT);
 #else
-    stack_base = (void *)td_ptr->STACK_BASE;
-    stack_ptr = (void *)td_ptr->STACK_LIMIT;
-    stack_ptr--;
-    while (stack_ptr > stack_base)
-    {
-        if (*stack_ptr != MQX_STACK_MONITOR_VALUE)
-        {
-            break;
-        } /* Endif */
-        --stack_ptr;
-    } /* Endwhile */
-    *stack_used_ptr = (_mem_size)((unsigned char *)stack_ptr -
-                    (unsigned char *)td_ptr->STACK_BASE);
-    *stack_size_ptr = (_mem_size)((unsigned char *)td_ptr->STACK_LIMIT -
-                    (unsigned char *)td_ptr->STACK_BASE);
+	stack_base = (void *)td_ptr->STACK_BASE;
+	stack_ptr = (void *)td_ptr->STACK_LIMIT;
+	stack_ptr--;
+	while (stack_ptr > stack_base)
+	{
+		if (*stack_ptr != MQX_STACK_MONITOR_VALUE)
+		{
+			break;
+		} /* Endif */
+		--stack_ptr;
+	} /* Endwhile */
+	*stack_used_ptr = (_mem_size)((unsigned char *)stack_ptr -
+					(unsigned char *)td_ptr->STACK_BASE);
+	*stack_size_ptr = (_mem_size)((unsigned char *)td_ptr->STACK_LIMIT -
+					(unsigned char *)td_ptr->STACK_BASE);
 #endif
-    return(MQX_OK);
+	return(MQX_OK);
 #else
-    return MQX_INVALID_CONFIGURATION;
+	return MQX_INVALID_CONFIGURATION;
 #endif
 
 } /* Endbody */
@@ -551,59 +551,59 @@ _mqx_uint _klog_get_task_stack_usage_internal
  */
 _mqx_uint _klog_get_interrupt_stack_usage
 (
-    _mem_size_ptr stack_size_ptr,
-    _mem_size_ptr stack_used_ptr
+	_mem_size_ptr stack_size_ptr,
+	_mem_size_ptr stack_used_ptr
 )
 { /* Body */
 #if MQX_MONITOR_STACK
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    _mqx_uint_ptr          stack_ptr;
-    _mqx_uint_ptr          stack_base;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	_mqx_uint_ptr          stack_ptr;
+	_mqx_uint_ptr          stack_base;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    *stack_size_ptr = kernel_data->INIT.INTERRUPT_STACK_SIZE;
+	*stack_size_ptr = kernel_data->INIT.INTERRUPT_STACK_SIZE;
 
 #if PSP_STACK_GROWS_TO_LOWER_MEM
-    stack_base = (_mqx_uint_ptr)kernel_data->INTERRUPT_STACK_PTR;
-    stack_ptr = (_mqx_uint_ptr)((unsigned char *)stack_base -
-                    kernel_data->INIT.INTERRUPT_STACK_SIZE
+	stack_base = (_mqx_uint_ptr)kernel_data->INTERRUPT_STACK_PTR;
+	stack_ptr = (_mqx_uint_ptr)((unsigned char *)stack_base -
+					kernel_data->INIT.INTERRUPT_STACK_SIZE
 #if PSP_MEMORY_ALIGNMENT
-                    + PSP_MEMORY_ALIGNMENT + 1
+					+ PSP_MEMORY_ALIGNMENT + 1
 #endif
-    );
-    while (stack_ptr < stack_base)
-    {
-        if (*stack_ptr != MQX_STACK_MONITOR_VALUE)
-        {
-            break;
-        } /* Endif */
-        ++stack_ptr;
-    } /* Endwhile */
-    *stack_used_ptr = (_mem_size)((unsigned char *)stack_base - (unsigned char *)stack_ptr);
+	);
+	while (stack_ptr < stack_base)
+	{
+		if (*stack_ptr != MQX_STACK_MONITOR_VALUE)
+		{
+			break;
+		} /* Endif */
+		++stack_ptr;
+	} /* Endwhile */
+	*stack_used_ptr = (_mem_size)((unsigned char *)stack_base - (unsigned char *)stack_ptr);
 #else
-    stack_base = (_mqx_uint_ptr)kernel_data->INTERRUPT_STACK_PTR;
-    stack_ptr  = (_mqx_uint_ptr)((unsigned char *)stack_base +
-                    kernel_data->INIT.INTERRUPT_STACK_SIZE - 1
+	stack_base = (_mqx_uint_ptr)kernel_data->INTERRUPT_STACK_PTR;
+	stack_ptr  = (_mqx_uint_ptr)((unsigned char *)stack_base +
+					kernel_data->INIT.INTERRUPT_STACK_SIZE - 1
 #if PSP_MEMORY_ALIGNMENT
-                    - PSP_MEMORY_ALIGNMENT
+					- PSP_MEMORY_ALIGNMENT
 #endif
-    );
-    stack_ptr--;
-    while (stack_ptr > stack_base)
-    {
-        if (*stack_ptr != MQX_STACK_MONITOR_VALUE)
-        {
-            break;
-        } /* Endif */
-        --stack_ptr;
-    } /* Endwhile */
-    *stack_used_ptr = (_mem_size)((unsigned char *)stack_ptr - (unsigned char *)stack_base);
+	);
+	stack_ptr--;
+	while (stack_ptr > stack_base)
+	{
+		if (*stack_ptr != MQX_STACK_MONITOR_VALUE)
+		{
+			break;
+		} /* Endif */
+		--stack_ptr;
+	} /* Endwhile */
+	*stack_used_ptr = (_mem_size)((unsigned char *)stack_ptr - (unsigned char *)stack_base);
 #endif
 
-    return(MQX_OK);
+	return(MQX_OK);
 #else
-    return MQX_INVALID_CONFIGURATION;
+	return MQX_INVALID_CONFIGURATION;
 #endif
 
 } /* Endbody */
@@ -627,44 +627,44 @@ _mqx_uint _klog_get_interrupt_stack_usage
 void _klog_show_stack_usage(void)
 { /* Body */
 #if MQX_MONITOR_STACK
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR          td_ptr;
-    _mem_size              stack_size;
-    _mem_size              stack_used;
-    _mqx_uint              size;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR          td_ptr;
+	_mem_size              stack_size;
+	_mem_size              stack_used;
+	_mqx_uint              size;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    /* Now display the gathered information */
-    _klog_get_interrupt_stack_usage(&stack_size, &stack_used);
-    printf("Stack usage: \n\n");
-    printf("Interrupt stack:    size %08ld    used %08ld\n\n",
-                    (uint32_t)stack_size, (uint32_t)stack_used);
+	/* Now display the gathered information */
+	_klog_get_interrupt_stack_usage(&stack_size, &stack_used);
+	printf("Stack usage: \n\n");
+	printf("Interrupt stack:    size %08ld    used %08ld\n\n",
+					(uint32_t)stack_size, (uint32_t)stack_used);
 
-    printf("SIZE                  USED                 TASK ID      NAME\n");
+	printf("SIZE                  USED                 TASK ID      NAME\n");
 
-    _lwsem_wait((LWSEM_STRUCT_PTR)(&kernel_data->TASK_CREATE_LWSEM));
-    td_ptr = (TD_STRUCT_PTR)((unsigned char *)kernel_data->TD_LIST.NEXT -
-                    FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
-    size = _QUEUE_GET_SIZE(&kernel_data->TD_LIST);
+	_lwsem_wait((LWSEM_STRUCT_PTR)(&kernel_data->TASK_CREATE_LWSEM));
+	td_ptr = (TD_STRUCT_PTR)((unsigned char *)kernel_data->TD_LIST.NEXT -
+					FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
+	size = _QUEUE_GET_SIZE(&kernel_data->TD_LIST);
 
-    while (size && td_ptr)
-    {
-        _klog_get_task_stack_usage_internal(td_ptr, &stack_size, &stack_used);
-        printf("%08ld(%08lX)    %08ld(%08lX)   %08lX     %s\n",
-                        (uint32_t)stack_size, (uint32_t)stack_size, (uint32_t)stack_used,
-                        (uint32_t)stack_used, td_ptr->TASK_ID,
-                        (td_ptr->TASK_TEMPLATE_PTR->TASK_NAME != NULL) ?
-                        td_ptr->TASK_TEMPLATE_PTR->TASK_NAME : "");
-        size--;
-        td_ptr = (TD_STRUCT_PTR)((unsigned char *)(td_ptr->TD_LIST_INFO.NEXT) -
-                        FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
-    } /* Endwhile */
+	while (size && td_ptr)
+	{
+		_klog_get_task_stack_usage_internal(td_ptr, &stack_size, &stack_used);
+		printf("%08ld(%08lX)    %08ld(%08lX)   %08lX     %s\n",
+						(uint32_t)stack_size, (uint32_t)stack_size, (uint32_t)stack_used,
+						(uint32_t)stack_used, td_ptr->TASK_ID,
+						(td_ptr->TASK_TEMPLATE_PTR->TASK_NAME != NULL) ?
+						td_ptr->TASK_TEMPLATE_PTR->TASK_NAME : "");
+		size--;
+		td_ptr = (TD_STRUCT_PTR)((unsigned char *)(td_ptr->TD_LIST_INFO.NEXT) -
+						FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
+	} /* Endwhile */
 
-    _lwsem_post((LWSEM_STRUCT_PTR)(&kernel_data->TASK_CREATE_LWSEM));
+	_lwsem_post((LWSEM_STRUCT_PTR)(&kernel_data->TASK_CREATE_LWSEM));
 
 #else
-    printf("Stack usage: ERROR MQX_MONITOR_STACK not set in mqx_cnfg.h\n\n");
+	printf("Stack usage: ERROR MQX_MONITOR_STACK not set in mqx_cnfg.h\n\n");
 #endif
 
 } /* Endbody */
@@ -682,56 +682,56 @@ void _klog_show_stack_usage(void)
  */
 void _klog_log
 (
-    _mqx_uint type,
-    _mqx_max_type p1,
-    _mqx_max_type p2,
-    _mqx_max_type p3,
-    _mqx_max_type p4,
-    _mqx_max_type p5
+	_mqx_uint type,
+	_mqx_max_type p1,
+	_mqx_max_type p2,
+	_mqx_max_type p3,
+	_mqx_max_type p4,
+	_mqx_max_type p5
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    _mqx_max_type          calling_pc;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	_mqx_max_type          calling_pc;
 
-    _GET_KERNEL_DATA(kernel_data);
-    if ( !(kernel_data->LOG_CONTROL & KLOG_ENABLED) )
-    {
-        return;
-    } /* Endif */
-    if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
-    {
-        if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
-        {
-            return;
-        } /* Endif */
-    } /* Endif */
+	_GET_KERNEL_DATA(kernel_data);
+	if ( !(kernel_data->LOG_CONTROL & KLOG_ENABLED) )
+	{
+		return;
+	} /* Endif */
+	if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
+	{
+		if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
+		{
+			return;
+		} /* Endif */
+	} /* Endif */
 
-    if ((type == KLOG_FUNCTION_ENTRY) || (type == KLOG_FUNCTION_EXIT))
-    {
-        if ( !(kernel_data->LOG_CONTROL & KLOG_FUNCTIONS_ENABLED) )
-        {
-            return;
-        } /* Endif */
-        /* Functions enabled, now lets check function group enabled */
-        if (((p1 & KLOG_FUNCTION_MASK) & kernel_data->LOG_CONTROL) == 0)
-        {
-            return;
-        } /* Endif */
-    } /* Endif */
+	if ((type == KLOG_FUNCTION_ENTRY) || (type == KLOG_FUNCTION_EXIT))
+	{
+		if ( !(kernel_data->LOG_CONTROL & KLOG_FUNCTIONS_ENABLED) )
+		{
+			return;
+		} /* Endif */
+		/* Functions enabled, now lets check function group enabled */
+		if (((p1 & KLOG_FUNCTION_MASK) & kernel_data->LOG_CONTROL) == 0)
+		{
+			return;
+		} /* Endif */
+	} /* Endif */
 
-    if (type == KLOG_FUNCTION_ENTRY)
-    {
-        calling_pc = (_mqx_max_type)_PSP_GET_CALLING_PC();
-    }
-    else
-    {
-        calling_pc = 0;
-    } /* Endif */
+	if (type == KLOG_FUNCTION_ENTRY)
+	{
+		calling_pc = (_mqx_max_type)_PSP_GET_CALLING_PC();
+	}
+	else
+	{
+		calling_pc = 0;
+	} /* Endif */
 
-    _INT_DISABLE();
-    _lwlog_write(LOG_KERNEL_LOG_NUMBER, (_mqx_max_type)type, p1, p2, p3, p4, p5,
-                    calling_pc);
-    _INT_ENABLE();
+	_INT_DISABLE();
+	_lwlog_write(LOG_KERNEL_LOG_NUMBER, (_mqx_max_type)type, p1, p2, p3, p4, p5,
+					calling_pc);
+	_INT_ENABLE();
 
 } /* Endbody */
 /*! \endcond */
@@ -747,7 +747,7 @@ void _klog_log
  */
 void _klog_log_function(void *fn)
 {
-    _klog_log(KLOG_FUNCTION_ADDRESS, (uint32_t)fn, 0,0,0,0);
+	_klog_log(KLOG_FUNCTION_ADDRESS, (uint32_t)fn, 0,0,0,0);
 }
 
 /*!
@@ -758,33 +758,33 @@ void _klog_log_function(void *fn)
  */
 void _klog_block_internal(void)
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR          td_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR          td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
-    if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
-    {
-        if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
-        {
-            return;
-        } /* Endif */
-    } /* Endif */
+	_GET_KERNEL_DATA(kernel_data);
+	if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
+	{
+		if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
+		{
+			return;
+		} /* Endif */
+	} /* Endif */
 
-    if (kernel_data->LOG_CONTROL & KLOG_FUNCTIONS_ENABLED)
-    {
-        if ((KLOG_task_block & KLOG_FUNCTION_MASK) & kernel_data->LOG_CONTROL)
-        {
-            if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
-            {
-                td_ptr = kernel_data->ACTIVE_PTR;
-                _lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
-                                (_mqx_max_type)KLOG_FUNCTION_ENTRY,
-                                (_mqx_max_type)KLOG_task_block, (_mqx_max_type)td_ptr,
-                                (_mqx_max_type)td_ptr->TASK_ID, (_mqx_max_type)td_ptr->STATE,
-                                (_mqx_max_type)td_ptr->STACK_PTR, (_mqx_max_type)0);
-            } /* Endif */
-        } /* Endif */
-    } /* Endif */
+	if (kernel_data->LOG_CONTROL & KLOG_FUNCTIONS_ENABLED)
+	{
+		if ((KLOG_task_block & KLOG_FUNCTION_MASK) & kernel_data->LOG_CONTROL)
+		{
+			if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
+			{
+				td_ptr = kernel_data->ACTIVE_PTR;
+				_lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
+								(_mqx_max_type)KLOG_FUNCTION_ENTRY,
+								(_mqx_max_type)KLOG_task_block, (_mqx_max_type)td_ptr,
+								(_mqx_max_type)td_ptr->TASK_ID, (_mqx_max_type)td_ptr->STATE,
+								(_mqx_max_type)td_ptr->STACK_PTR, (_mqx_max_type)0);
+			} /* Endif */
+		} /* Endif */
+	} /* Endif */
 
 } /* Endbody */
 /*! \endcond */
@@ -798,33 +798,33 @@ void _klog_block_internal(void)
  */
 void _klog_execute_scheduler_internal(void)
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR          td_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR          td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
-    if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
-    {
-        if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
-        {
-            return;
-        } /* Endif */
-    } /* Endif */
+	_GET_KERNEL_DATA(kernel_data);
+	if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
+	{
+		if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
+		{
+			return;
+		} /* Endif */
+	} /* Endif */
 
-    if (kernel_data->LOG_CONTROL & KLOG_FUNCTIONS_ENABLED)
-    {
-        if ((KLOG_task_execute_scheduler & KLOG_FUNCTION_MASK) & kernel_data->LOG_CONTROL)
-        {
-            if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
-            {
-                td_ptr = kernel_data->ACTIVE_PTR;
-                _lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
-                                (_mqx_max_type)KLOG_FUNCTION_ENTRY,
-                                (_mqx_max_type)KLOG_task_execute_scheduler, (_mqx_max_type)td_ptr,
-                                (_mqx_max_type)td_ptr->TASK_ID, (_mqx_max_type)td_ptr->STATE,
-                                (_mqx_max_type)td_ptr->STACK_PTR, (_mqx_max_type)0);
-            } /* Endif */
-        } /* Endif */
-    } /* Endif */
+	if (kernel_data->LOG_CONTROL & KLOG_FUNCTIONS_ENABLED)
+	{
+		if ((KLOG_task_execute_scheduler & KLOG_FUNCTION_MASK) & kernel_data->LOG_CONTROL)
+		{
+			if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
+			{
+				td_ptr = kernel_data->ACTIVE_PTR;
+				_lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
+								(_mqx_max_type)KLOG_FUNCTION_ENTRY,
+								(_mqx_max_type)KLOG_task_execute_scheduler, (_mqx_max_type)td_ptr,
+								(_mqx_max_type)td_ptr->TASK_ID, (_mqx_max_type)td_ptr->STATE,
+								(_mqx_max_type)td_ptr->STACK_PTR, (_mqx_max_type)0);
+			} /* Endif */
+		} /* Endif */
+	} /* Endif */
 
 } /* Endbody */
 /*! \endcond */
@@ -836,33 +836,33 @@ void _klog_execute_scheduler_internal(void)
  */
 void _klog_yield_internal(void)
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR          td_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR          td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
-    if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
-    {
-        if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
-        {
-            return;
-        } /* Endif */
-    } /* Endif */
+	_GET_KERNEL_DATA(kernel_data);
+	if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
+	{
+		if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
+		{
+			return;
+		} /* Endif */
+	} /* Endif */
 
-    if (kernel_data->LOG_CONTROL & KLOG_FUNCTIONS_ENABLED)
-    {
-        if ((KLOG_sched_yield & KLOG_FUNCTION_MASK) & kernel_data->LOG_CONTROL)
-        {
-            if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
-            {
-                td_ptr = kernel_data->ACTIVE_PTR;
-                _lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
-                                (_mqx_max_type)KLOG_FUNCTION_ENTRY,
-                                (_mqx_max_type)KLOG_sched_yield, (_mqx_max_type)td_ptr,
-                                (_mqx_max_type)td_ptr->TASK_ID, (_mqx_max_type)td_ptr->STATE,
-                                (_mqx_max_type)td_ptr->STACK_PTR, (_mqx_max_type)0);
-            } /* Endif */
-        } /* Endif */
-    } /* Endif */
+	if (kernel_data->LOG_CONTROL & KLOG_FUNCTIONS_ENABLED)
+	{
+		if ((KLOG_sched_yield & KLOG_FUNCTION_MASK) & kernel_data->LOG_CONTROL)
+		{
+			if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
+			{
+				td_ptr = kernel_data->ACTIVE_PTR;
+				_lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
+								(_mqx_max_type)KLOG_FUNCTION_ENTRY,
+								(_mqx_max_type)KLOG_sched_yield, (_mqx_max_type)td_ptr,
+								(_mqx_max_type)td_ptr->TASK_ID, (_mqx_max_type)td_ptr->STATE,
+								(_mqx_max_type)td_ptr->STACK_PTR, (_mqx_max_type)0);
+			} /* Endif */
+		} /* Endif */
+	} /* Endif */
 
 } /* Endbody */
 
@@ -874,42 +874,42 @@ void _klog_yield_internal(void)
  */
 void _klog_context_switch_internal(void)
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR          td_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR          td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 #if 0
-    if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
-    {
-        if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
-        {
-            return;
-        } /* Endif */
-    } /* Endif */
+	if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
+	{
+		if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
+		{
+			return;
+		} /* Endif */
+	} /* Endif */
 #endif
-    if (kernel_data->LOG_CONTROL & KLOG_CONTEXT_ENABLED)
-    {
-        if (kernel_data->ACTIVE_PTR != kernel_data->LOG_OLD_TD)
-        {
-            if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
-            {
-                kernel_data->LOG_OLD_TD = kernel_data->ACTIVE_PTR;
-                if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
-                {
-                    if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
-                    {
-                        return;
-                    } /* Endif */
-                } /* Endif */
-                td_ptr = kernel_data->ACTIVE_PTR;
-                _lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
-                                (_mqx_max_type)KLOG_CONTEXT_SWITCH,
-                                (_mqx_max_type)td_ptr, (_mqx_max_type)td_ptr->TASK_ID,
-                                (_mqx_max_type)td_ptr->STATE, (_mqx_max_type)td_ptr->STACK_PTR,
-                                (_mqx_max_type)0, (_mqx_max_type)0);
-            } /* Endif */
-        } /* Endif */
-    } /* Endif */
+	if (kernel_data->LOG_CONTROL & KLOG_CONTEXT_ENABLED)
+	{
+		if (kernel_data->ACTIVE_PTR != kernel_data->LOG_OLD_TD)
+		{
+			if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
+			{
+				kernel_data->LOG_OLD_TD = kernel_data->ACTIVE_PTR;
+				if ( kernel_data->LOG_CONTROL & KLOG_TASK_QUALIFIED )
+				{
+					if (! (kernel_data->ACTIVE_PTR->FLAGS & TASK_LOGGING_ENABLED) )
+					{
+						return;
+					} /* Endif */
+				} /* Endif */
+				td_ptr = kernel_data->ACTIVE_PTR;
+				_lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
+								(_mqx_max_type)KLOG_CONTEXT_SWITCH,
+								(_mqx_max_type)td_ptr, (_mqx_max_type)td_ptr->TASK_ID,
+								(_mqx_max_type)td_ptr->STATE, (_mqx_max_type)td_ptr->STACK_PTR,
+								(_mqx_max_type)0, (_mqx_max_type)0);
+			} /* Endif */
+		} /* Endif */
+	} /* Endif */
 
 } /* Endbody */
 /*! \endcond */
@@ -924,31 +924,31 @@ void _klog_context_switch_internal(void)
  */
 void _klog_isr_start_internal
 (
-    _mqx_uint vector_number
+	_mqx_uint vector_number
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
-    {
-        if (kernel_data->LOG_CONTROL & KLOG_INTERRUPTS_ENABLED)
-        {
-            if (!(kernel_data->LOG_CONTROL & KLOG_SYSTEM_CLOCK_INT_ENABLED))
-            {
-                /* Check to see if the vector number is to be ignored */
-                if (vector_number == kernel_data->SYSTEM_CLOCK_INT_NUMBER)
-                {
-                    return;
-                } /* Endif */
-            } /* Endif */
-            _lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
-                            (_mqx_max_type)KLOG_INTERRUPT, (_mqx_max_type)vector_number,
-                            (_mqx_max_type)_int_get_isr(vector_number),
-                            (_mqx_max_type)_int_get_isr_data(vector_number), (_mqx_max_type)0,
-                            (_mqx_max_type)0, (_mqx_max_type)0);
-        } /* Endif */
-    } /* Endif */
+	_GET_KERNEL_DATA(kernel_data);
+	if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
+	{
+		if (kernel_data->LOG_CONTROL & KLOG_INTERRUPTS_ENABLED)
+		{
+			if (!(kernel_data->LOG_CONTROL & KLOG_SYSTEM_CLOCK_INT_ENABLED))
+			{
+				/* Check to see if the vector number is to be ignored */
+				if (vector_number == kernel_data->SYSTEM_CLOCK_INT_NUMBER)
+				{
+					return;
+				} /* Endif */
+			} /* Endif */
+			_lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
+							(_mqx_max_type)KLOG_INTERRUPT, (_mqx_max_type)vector_number,
+							(_mqx_max_type)_int_get_isr(vector_number),
+							(_mqx_max_type)_int_get_isr_data(vector_number), (_mqx_max_type)0,
+							(_mqx_max_type)0, (_mqx_max_type)0);
+		} /* Endif */
+	} /* Endif */
 
 } /* Endbody */
 /*! \endcond */
@@ -963,30 +963,30 @@ void _klog_isr_start_internal
  */
 void _klog_isr_end_internal
 (
-    _mqx_uint vector_number
+	_mqx_uint vector_number
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
-    {
-        if (kernel_data->LOG_CONTROL & KLOG_INTERRUPTS_ENABLED)
-        {
-            if (!(kernel_data->LOG_CONTROL & KLOG_SYSTEM_CLOCK_INT_ENABLED))
-            {
-                /* Check to see if the vector number is to be ignored */
-                if (vector_number == kernel_data->SYSTEM_CLOCK_INT_NUMBER)
-                {
-                    return;
-                } /* Endif */
-            } /* Endif */
-            _lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
-                            (_mqx_max_type)KLOG_INTERRUPT_END, (_mqx_max_type)vector_number,
-                            (_mqx_max_type)0, (_mqx_max_type)0, (_mqx_max_type)0,
-                            (_mqx_max_type)0, (_mqx_max_type)0);
-        } /* Endif */
-    } /* Endif */
+	_GET_KERNEL_DATA(kernel_data);
+	if (kernel_data->KERNEL_COMPONENTS[KERNEL_LWLOG])
+	{
+		if (kernel_data->LOG_CONTROL & KLOG_INTERRUPTS_ENABLED)
+		{
+			if (!(kernel_data->LOG_CONTROL & KLOG_SYSTEM_CLOCK_INT_ENABLED))
+			{
+				/* Check to see if the vector number is to be ignored */
+				if (vector_number == kernel_data->SYSTEM_CLOCK_INT_NUMBER)
+				{
+					return;
+				} /* Endif */
+			} /* Endif */
+			_lwlog_write_internal(LOG_KERNEL_LOG_NUMBER,
+							(_mqx_max_type)KLOG_INTERRUPT_END, (_mqx_max_type)vector_number,
+							(_mqx_max_type)0, (_mqx_max_type)0, (_mqx_max_type)0,
+							(_mqx_max_type)0, (_mqx_max_type)0);
+		} /* Endif */
+	} /* Endif */
 
 } /* Endbody */
 /*! \endcond */
@@ -1003,98 +1003,98 @@ void _klog_isr_end_internal
  */
 char  *_klog_get_function_name_internal
 (
-    uint32_t index
+	uint32_t index
 )
 { /* Body */
-    char      *result;
+	char      *result;
 
-    switch (index)
-    {
-        KLOG_NAME(_task_ready);
-        KLOG_NAME(_task_block);
-        KLOG_NAME(_task_execute_scheduler);
-        KLOG_NAME(_task_create);
-        KLOG_NAME(_task_create_block);
-        KLOG_NAME(_task_destroy);
-        KLOG_NAME(_time_dequeue);
+	switch (index)
+	{
+		KLOG_NAME(_task_ready);
+		KLOG_NAME(_task_block);
+		KLOG_NAME(_task_execute_scheduler);
+		KLOG_NAME(_task_create);
+		KLOG_NAME(_task_create_block);
+		KLOG_NAME(_task_destroy);
+		KLOG_NAME(_time_dequeue);
 
-        KLOG_NAME(_sched_setscheduler);
-        KLOG_NAME(_sched_yield);
-        KLOG_NAME(_sched_setparam);
-        KLOG_NAME(_sched_setparam_td);
-        KLOG_NAME(_sched_boost_priority);
-        KLOG_NAME(_sched_unboost_priority);
-        KLOG_NAME(_task_exit_function);
-        KLOG_NAME(_taskq_create);
-        KLOG_NAME(_taskq_destroy);
-        KLOG_NAME(_taskq_suspend);
-        KLOG_NAME(_taskq_resume);
-        KLOG_NAME(_sched_set_policy);
-        KLOG_NAME(_sched_set_rr_interval);
-        KLOG_NAME(_sched_set_rr_interval_ticks);
-        KLOG_NAME(_taskq_suspend_task);
-        KLOG_NAME(_task_set_priority);
-        KLOG_NAME(_time_dequeue_td);
-        KLOG_NAME(_task_abort);
-        KLOG_NAME(_task_set_environment);
-        KLOG_NAME(_task_enable_fp);
-        KLOG_NAME(_task_disable_fp);
-        KLOG_NAME(_task_set_parameter);
-        KLOG_NAME(_task_stop_preemption);
-        KLOG_NAME(_task_start_preemption);
-        KLOG_NAME(_task_set_exception_handler);
-        KLOG_NAME(_task_set_exit_handler);
-        KLOG_NAME(_taskq_test);
-        KLOG_NAME(_io_set_handle);
-        KLOG_NAME(_task_restart);
+		KLOG_NAME(_sched_setscheduler);
+		KLOG_NAME(_sched_yield);
+		KLOG_NAME(_sched_setparam);
+		KLOG_NAME(_sched_setparam_td);
+		KLOG_NAME(_sched_boost_priority);
+		KLOG_NAME(_sched_unboost_priority);
+		KLOG_NAME(_task_exit_function);
+		KLOG_NAME(_taskq_create);
+		KLOG_NAME(_taskq_destroy);
+		KLOG_NAME(_taskq_suspend);
+		KLOG_NAME(_taskq_resume);
+		KLOG_NAME(_sched_set_policy);
+		KLOG_NAME(_sched_set_rr_interval);
+		KLOG_NAME(_sched_set_rr_interval_ticks);
+		KLOG_NAME(_taskq_suspend_task);
+		KLOG_NAME(_task_set_priority);
+		KLOG_NAME(_time_dequeue_td);
+		KLOG_NAME(_task_abort);
+		KLOG_NAME(_task_set_environment);
+		KLOG_NAME(_task_enable_fp);
+		KLOG_NAME(_task_disable_fp);
+		KLOG_NAME(_task_set_parameter);
+		KLOG_NAME(_task_stop_preemption);
+		KLOG_NAME(_task_start_preemption);
+		KLOG_NAME(_task_set_exception_handler);
+		KLOG_NAME(_task_set_exit_handler);
+		KLOG_NAME(_taskq_test);
+		KLOG_NAME(_io_set_handle);
+		KLOG_NAME(_task_restart);
 
-        KLOG_NAME(_mqx_exit);
-        KLOG_NAME(_int_default_isr);
-        KLOG_NAME(_task_set_error);
-        KLOG_NAME(_log_test);
-        KLOG_NAME(_mqx_set_exit_handler);
-        KLOG_NAME(_mqx_fatal_error);
+		KLOG_NAME(_mqx_exit);
+		KLOG_NAME(_int_default_isr);
+		KLOG_NAME(_task_set_error);
+		KLOG_NAME(_log_test);
+		KLOG_NAME(_mqx_set_exit_handler);
+		KLOG_NAME(_mqx_fatal_error);
 
-        KLOG_NAME(_msgq_close);
-        KLOG_NAME(_msgpool_create_system);
-        KLOG_NAME(_msgpool_create);
-        KLOG_NAME(_msgpool_destroy);
-        KLOG_NAME(_msg_free);
-        KLOG_NAME(_msg_alloc_system);
-        KLOG_NAME(_msg_alloc);
-        KLOG_NAME(_msgq_open);
-        KLOG_NAME(_msgq_open_system);
-        KLOG_NAME(_msgq_receive);
-        KLOG_NAME(_msgq_receive_for);
-        KLOG_NAME(_msgq_receive_ticks);
-        KLOG_NAME(_msgq_receive_until);
-        KLOG_NAME(_msgq_poll);
-        KLOG_NAME(_msgq_get_count);
-        KLOG_NAME(_msgq_send);
-        KLOG_NAME(_msgq_send_blocked);
-        KLOG_NAME(_msgq_send_queue);
-        KLOG_NAME(_msgq_send_urgent);
-        KLOG_NAME(_msgq_send_broadcast);
-        KLOG_NAME(_msgq_set_notification_function);
-        KLOG_NAME(_msgq_peek);
-        KLOG_NAME(_msgq_send_priority);
-        KLOG_NAME(_msg_create_component);
-        KLOG_NAME(_msgpool_test);
-        KLOG_NAME(_msgq_test);
-        KLOG_NAME(_lwmsgq_init);
-        KLOG_NAME(_lwmsgq_send);
-        KLOG_NAME(_lwmsgq_receive);
+		KLOG_NAME(_msgq_close);
+		KLOG_NAME(_msgpool_create_system);
+		KLOG_NAME(_msgpool_create);
+		KLOG_NAME(_msgpool_destroy);
+		KLOG_NAME(_msg_free);
+		KLOG_NAME(_msg_alloc_system);
+		KLOG_NAME(_msg_alloc);
+		KLOG_NAME(_msgq_open);
+		KLOG_NAME(_msgq_open_system);
+		KLOG_NAME(_msgq_receive);
+		KLOG_NAME(_msgq_receive_for);
+		KLOG_NAME(_msgq_receive_ticks);
+		KLOG_NAME(_msgq_receive_until);
+		KLOG_NAME(_msgq_poll);
+		KLOG_NAME(_msgq_get_count);
+		KLOG_NAME(_msgq_send);
+		KLOG_NAME(_msgq_send_blocked);
+		KLOG_NAME(_msgq_send_queue);
+		KLOG_NAME(_msgq_send_urgent);
+		KLOG_NAME(_msgq_send_broadcast);
+		KLOG_NAME(_msgq_set_notification_function);
+		KLOG_NAME(_msgq_peek);
+		KLOG_NAME(_msgq_send_priority);
+		KLOG_NAME(_msg_create_component);
+		KLOG_NAME(_msgpool_test);
+		KLOG_NAME(_msgq_test);
+		KLOG_NAME(_lwmsgq_init);
+		KLOG_NAME(_lwmsgq_send);
+		KLOG_NAME(_lwmsgq_receive);
 
-        KLOG_NAME(_int_install_kernel_isr);
-        KLOG_NAME(_int_install_isr);
-        KLOG_NAME(_int_install_default_isr);
-        KLOG_NAME(_int_set_isr_data);
-        KLOG_NAME(_int_set_exception_handler);
+		KLOG_NAME(_int_install_kernel_isr);
+		KLOG_NAME(_int_install_isr);
+		KLOG_NAME(_int_install_default_isr);
+		KLOG_NAME(_int_set_isr_data);
+		KLOG_NAME(_int_set_exception_handler);
 
-        default: result = _klog_get_function_name2_internal(index); break;
-    } /* Endswitch */
+		default: result = _klog_get_function_name2_internal(index); break;
+	} /* Endswitch */
 
-    return result;
+	return result;
 } /* Endbody */
 /*! \endcond */
 
@@ -1112,180 +1112,180 @@ char  *_klog_get_function_name_internal
  */
 char  *_klog_get_function_name2_internal
 (
-    uint32_t index
+	uint32_t index
 )
 { /* Body */
-    char      *result;
+	char      *result;
 
-    switch (index)
-    {
-        KLOG_NAME(_mem_free);
-        KLOG_NAME(_mem_alloc);
-        KLOG_NAME(_mem_alloc_from);
-        KLOG_NAME(_mem_test);
-        KLOG_NAME(_mem_test_pool);
-        KLOG_NAME(_mem_alloc_zero);
-        KLOG_NAME(_mem_alloc_system);
-        KLOG_NAME(_mem_alloc_system_from);
-        KLOG_NAME(_mem_alloc_system_zero);
-        KLOG_NAME(_mem_alloc_system_zero_from);
-        KLOG_NAME(_mem_extend);
-        KLOG_NAME(_mem_extend_pool);
-        KLOG_NAME(_mem_transfer);
-        KLOG_NAME(_mem_free_part);
-        KLOG_NAME(_mem_create_pool);
+	switch (index)
+	{
+		KLOG_NAME(_mem_free);
+		KLOG_NAME(_mem_alloc);
+		KLOG_NAME(_mem_alloc_from);
+		KLOG_NAME(_mem_test);
+		KLOG_NAME(_mem_test_pool);
+		KLOG_NAME(_mem_alloc_zero);
+		KLOG_NAME(_mem_alloc_system);
+		KLOG_NAME(_mem_alloc_system_from);
+		KLOG_NAME(_mem_alloc_system_zero);
+		KLOG_NAME(_mem_alloc_system_zero_from);
+		KLOG_NAME(_mem_extend);
+		KLOG_NAME(_mem_extend_pool);
+		KLOG_NAME(_mem_transfer);
+		KLOG_NAME(_mem_free_part);
+		KLOG_NAME(_mem_create_pool);
 
-        KLOG_NAME(_tlsf_free);
-        KLOG_NAME(_tlsf_alloc);
-        KLOG_NAME(_tlsf_alloc_from);
-        KLOG_NAME(_tlsf_alloc_zero);
-        KLOG_NAME(_tlsf_alloc_system);
-        KLOG_NAME(_tlsf_alloc_system_from);
-        KLOG_NAME(_tlsf_alloc_system_zero);
-        KLOG_NAME(_tlsf_alloc_system_zero_from);
-        KLOG_NAME(_tlsf_transfer);
-        KLOG_NAME(_tlsf_create_pool);
+		KLOG_NAME(_tlsf_free);
+		KLOG_NAME(_tlsf_alloc);
+		KLOG_NAME(_tlsf_alloc_from);
+		KLOG_NAME(_tlsf_alloc_zero);
+		KLOG_NAME(_tlsf_alloc_system);
+		KLOG_NAME(_tlsf_alloc_system_from);
+		KLOG_NAME(_tlsf_alloc_system_zero);
+		KLOG_NAME(_tlsf_alloc_system_zero_from);
+		KLOG_NAME(_tlsf_transfer);
+		KLOG_NAME(_tlsf_create_pool);
 
-        KLOG_NAME(_lwmem_alloc);
-        KLOG_NAME(_lwmem_alloc_from);
-        KLOG_NAME(_lwmem_alloc_zero);
-        KLOG_NAME(_lwmem_alloc_zero_from);
-        KLOG_NAME(_lwmem_create_pool);
-        KLOG_NAME(_lwmem_free);
-        KLOG_NAME(_lwmem_alloc_system);
-        KLOG_NAME(_lwmem_alloc_system_from);
-        KLOG_NAME(_lwmem_transfer);
-        KLOG_NAME(_lwmem_alloc_system_zero);
-        KLOG_NAME(_lwmem_alloc_system_zero_from);
+		KLOG_NAME(_lwmem_alloc);
+		KLOG_NAME(_lwmem_alloc_from);
+		KLOG_NAME(_lwmem_alloc_zero);
+		KLOG_NAME(_lwmem_alloc_zero_from);
+		KLOG_NAME(_lwmem_create_pool);
+		KLOG_NAME(_lwmem_free);
+		KLOG_NAME(_lwmem_alloc_system);
+		KLOG_NAME(_lwmem_alloc_system_from);
+		KLOG_NAME(_lwmem_transfer);
+		KLOG_NAME(_lwmem_alloc_system_zero);
+		KLOG_NAME(_lwmem_alloc_system_zero_from);
 
-        KLOG_NAME(_time_set);
-        KLOG_NAME(_time_set_ticks);
-        KLOG_NAME(_time_delay);
-        KLOG_NAME(_time_delay_for);
-        KLOG_NAME(_time_delay_ticks);
-        KLOG_NAME(_time_delay_until);
-        KLOG_NAME(_timer_create_component);
-        KLOG_NAME(_timer_cancel);
-        KLOG_NAME(_timer_start_oneshot_after);
-        KLOG_NAME(_timer_start_oneshot_at);
-        KLOG_NAME(_timer_start_periodic_every);
-        KLOG_NAME(_timer_start_periodic_at);
-        KLOG_NAME(_timer_test);
-        KLOG_NAME(_timer_start_oneshot_after_ticks);
-        KLOG_NAME(_timer_start_oneshot_at_ticks);
-        KLOG_NAME(_timer_start_periodic_every_ticks);
-        KLOG_NAME(_timer_start_periodic_at_ticks);
+		KLOG_NAME(_time_set);
+		KLOG_NAME(_time_set_ticks);
+		KLOG_NAME(_time_delay);
+		KLOG_NAME(_time_delay_for);
+		KLOG_NAME(_time_delay_ticks);
+		KLOG_NAME(_time_delay_until);
+		KLOG_NAME(_timer_create_component);
+		KLOG_NAME(_timer_cancel);
+		KLOG_NAME(_timer_start_oneshot_after);
+		KLOG_NAME(_timer_start_oneshot_at);
+		KLOG_NAME(_timer_start_periodic_every);
+		KLOG_NAME(_timer_start_periodic_at);
+		KLOG_NAME(_timer_test);
+		KLOG_NAME(_timer_start_oneshot_after_ticks);
+		KLOG_NAME(_timer_start_oneshot_at_ticks);
+		KLOG_NAME(_timer_start_periodic_every_ticks);
+		KLOG_NAME(_timer_start_periodic_at_ticks);
 
-        KLOG_NAME(_lwtimer_create_periodic_queue);
-        KLOG_NAME(_lwtimer_add_timer_to_queue);
-        KLOG_NAME(_lwtimer_cancel_period);
-        KLOG_NAME(_lwtimer_cancel_timer);
-        KLOG_NAME(_lwtimer_test);
+		KLOG_NAME(_lwtimer_create_periodic_queue);
+		KLOG_NAME(_lwtimer_add_timer_to_queue);
+		KLOG_NAME(_lwtimer_cancel_period);
+		KLOG_NAME(_lwtimer_cancel_timer);
+		KLOG_NAME(_lwtimer_test);
 
-        KLOG_NAME(_event_create_component);
-        KLOG_NAME(_event_create);
-        KLOG_NAME(_event_destroy);
-        KLOG_NAME(_event_open);
-        KLOG_NAME(_event_close);
-        KLOG_NAME(_event_wait_all);
-        KLOG_NAME(_event_wait_all_ticks);
-        KLOG_NAME(_event_wait_all_for);
-        KLOG_NAME(_event_wait_all_until);
-        KLOG_NAME(_event_wait_any);
-        KLOG_NAME(_event_wait_any_ticks);
-        KLOG_NAME(_event_wait_any_for);
-        KLOG_NAME(_event_wait_any_until);
-        KLOG_NAME(_event_set);
-        KLOG_NAME(_event_clear);
-        KLOG_NAME(_event_create_fast);
-        KLOG_NAME(_event_open_fast);
-        KLOG_NAME(_event_destroy_fast);
-        KLOG_NAME(_event_test);
+		KLOG_NAME(_event_create_component);
+		KLOG_NAME(_event_create);
+		KLOG_NAME(_event_destroy);
+		KLOG_NAME(_event_open);
+		KLOG_NAME(_event_close);
+		KLOG_NAME(_event_wait_all);
+		KLOG_NAME(_event_wait_all_ticks);
+		KLOG_NAME(_event_wait_all_for);
+		KLOG_NAME(_event_wait_all_until);
+		KLOG_NAME(_event_wait_any);
+		KLOG_NAME(_event_wait_any_ticks);
+		KLOG_NAME(_event_wait_any_for);
+		KLOG_NAME(_event_wait_any_until);
+		KLOG_NAME(_event_set);
+		KLOG_NAME(_event_clear);
+		KLOG_NAME(_event_create_fast);
+		KLOG_NAME(_event_open_fast);
+		KLOG_NAME(_event_destroy_fast);
+		KLOG_NAME(_event_test);
 
-        KLOG_NAME(_lwevent_clear);
-        KLOG_NAME(_lwevent_create);
-        KLOG_NAME(_lwevent_destroy);
-        KLOG_NAME(_lwevent_set);
-        KLOG_NAME(_lwevent_test);
-        KLOG_NAME(_lwevent_wait);
-        KLOG_NAME(_lwevent_wait_for);
-        KLOG_NAME(_lwevent_wait_until);
-        KLOG_NAME(_lwevent_wait_ticks);
+		KLOG_NAME(_lwevent_clear);
+		KLOG_NAME(_lwevent_create);
+		KLOG_NAME(_lwevent_destroy);
+		KLOG_NAME(_lwevent_set);
+		KLOG_NAME(_lwevent_test);
+		KLOG_NAME(_lwevent_wait);
+		KLOG_NAME(_lwevent_wait_for);
+		KLOG_NAME(_lwevent_wait_until);
+		KLOG_NAME(_lwevent_wait_ticks);
 
-        KLOG_NAME(_name_create_component);
-        KLOG_NAME(_name_add);
-        KLOG_NAME(_name_delete);
-        KLOG_NAME(_name_find);
-        KLOG_NAME(_name_find_name);
-        KLOG_NAME(_name_test);
+		KLOG_NAME(_name_create_component);
+		KLOG_NAME(_name_add);
+		KLOG_NAME(_name_delete);
+		KLOG_NAME(_name_find);
+		KLOG_NAME(_name_find_name);
+		KLOG_NAME(_name_test);
 
-        KLOG_NAME(_mutatr_init);
-        KLOG_NAME(_mutatr_destroy);
-        KLOG_NAME(_mutatr_set_sched_protocol);
-        KLOG_NAME(_mutatr_set_priority_ceiling);
+		KLOG_NAME(_mutatr_init);
+		KLOG_NAME(_mutatr_destroy);
+		KLOG_NAME(_mutatr_set_sched_protocol);
+		KLOG_NAME(_mutatr_set_priority_ceiling);
 
-        KLOG_NAME(_mutex_create_component);
-        KLOG_NAME(_mutex_init);
-        KLOG_NAME(_mutex_set_priority_ceiling);
-        KLOG_NAME(_mutex_destroy);
-        KLOG_NAME(_mutex_lock);
-        KLOG_NAME(_mutex_try_lock);
-        KLOG_NAME(_mutex_unlock);
+		KLOG_NAME(_mutex_create_component);
+		KLOG_NAME(_mutex_init);
+		KLOG_NAME(_mutex_set_priority_ceiling);
+		KLOG_NAME(_mutex_destroy);
+		KLOG_NAME(_mutex_lock);
+		KLOG_NAME(_mutex_try_lock);
+		KLOG_NAME(_mutex_unlock);
 
-        KLOG_NAME(_mutatr_set_wait_protocol);
-        KLOG_NAME(_mutatr_set_spin_limit);
-        KLOG_NAME(_mutex_test);
+		KLOG_NAME(_mutatr_set_wait_protocol);
+		KLOG_NAME(_mutatr_set_spin_limit);
+		KLOG_NAME(_mutex_test);
 
-        KLOG_NAME(_sem_create_component);
-        KLOG_NAME(_sem_create);
-        KLOG_NAME(_sem_destroy);
-        KLOG_NAME(_sem_open);
-        KLOG_NAME(_sem_close);
-        KLOG_NAME(_sem_post);
-        KLOG_NAME(_sem_create_fast);
-        KLOG_NAME(_sem_open_fast);
-        KLOG_NAME(_sem_destroy_fast);
-        KLOG_NAME(_sem_test);
-        KLOG_NAME(_sem_wait);
-        KLOG_NAME(_sem_wait_for);
-        KLOG_NAME(_sem_wait_ticks);
-        KLOG_NAME(_sem_wait_until);
-        KLOG_NAME(_lwsem_create);
-        KLOG_NAME(_lwsem_wait);
-        KLOG_NAME(_lwsem_post);
-        KLOG_NAME(_lwsem_destroy);
-        KLOG_NAME(_lwsem_test);
-        KLOG_NAME(_lwsem_poll);
-        KLOG_NAME(_lwsem_wait_ticks);
-        KLOG_NAME(_lwsem_wait_for);
-        KLOG_NAME(_lwsem_wait_until);
+		KLOG_NAME(_sem_create_component);
+		KLOG_NAME(_sem_create);
+		KLOG_NAME(_sem_destroy);
+		KLOG_NAME(_sem_open);
+		KLOG_NAME(_sem_close);
+		KLOG_NAME(_sem_post);
+		KLOG_NAME(_sem_create_fast);
+		KLOG_NAME(_sem_open_fast);
+		KLOG_NAME(_sem_destroy_fast);
+		KLOG_NAME(_sem_test);
+		KLOG_NAME(_sem_wait);
+		KLOG_NAME(_sem_wait_for);
+		KLOG_NAME(_sem_wait_ticks);
+		KLOG_NAME(_sem_wait_until);
+		KLOG_NAME(_lwsem_create);
+		KLOG_NAME(_lwsem_wait);
+		KLOG_NAME(_lwsem_post);
+		KLOG_NAME(_lwsem_destroy);
+		KLOG_NAME(_lwsem_test);
+		KLOG_NAME(_lwsem_poll);
+		KLOG_NAME(_lwsem_wait_ticks);
+		KLOG_NAME(_lwsem_wait_for);
+		KLOG_NAME(_lwsem_wait_until);
 
-        KLOG_NAME(_watchdog_create_component);
-        KLOG_NAME(_watchdog_stop);
-        KLOG_NAME(_watchdog_start);
-        KLOG_NAME(_watchdog_start_ticks);
-        KLOG_NAME(_watchdog_test);
+		KLOG_NAME(_watchdog_create_component);
+		KLOG_NAME(_watchdog_stop);
+		KLOG_NAME(_watchdog_start);
+		KLOG_NAME(_watchdog_start_ticks);
+		KLOG_NAME(_watchdog_test);
 
-        KLOG_NAME(_partition_create);
-        KLOG_NAME(_partition_create_at);
-        KLOG_NAME(_partition_alloc);
-        KLOG_NAME(_partition_alloc_zero);
-        KLOG_NAME(_partition_alloc_system);
-        KLOG_NAME(_partition_alloc_system_zero);
-        KLOG_NAME(_partition_extend);
-        KLOG_NAME(_partition_free);
-        KLOG_NAME(_partition_test);
-        KLOG_NAME(_partition_transfer);
-        KLOG_NAME(_partition_destroy);
-        KLOG_NAME(_partition_create_component);
+		KLOG_NAME(_partition_create);
+		KLOG_NAME(_partition_create_at);
+		KLOG_NAME(_partition_alloc);
+		KLOG_NAME(_partition_alloc_zero);
+		KLOG_NAME(_partition_alloc_system);
+		KLOG_NAME(_partition_alloc_system_zero);
+		KLOG_NAME(_partition_extend);
+		KLOG_NAME(_partition_free);
+		KLOG_NAME(_partition_test);
+		KLOG_NAME(_partition_transfer);
+		KLOG_NAME(_partition_destroy);
+		KLOG_NAME(_partition_create_component);
 
-        KLOG_NAME(_eds_create_component);
-        KLOG_NAME(_eds_remove);
+		KLOG_NAME(_eds_create_component);
+		KLOG_NAME(_eds_remove);
 
-        default: result = "Unknown function"; break;
-    } /* Endswitch */
+		default: result = "Unknown function"; break;
+	} /* Endswitch */
 
-    return result;
+	return result;
 
 } /* Endbody */
 /*! \endcond */

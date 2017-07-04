@@ -54,35 +54,35 @@ static ftm_clock_source_t s_ftmClockSource = kClock_source_FTM_None;
  *END**************************************************************************/
 ftm_status_t FTM_DRV_Init(uint32_t instance, const ftm_user_config_t * info)
 {
-    assert(instance < FTM_INSTANCE_COUNT);
-    assert(g_ftmBase[instance] != NULL);
+	assert(instance < FTM_INSTANCE_COUNT);
+	assert(g_ftmBase[instance] != NULL);
 
-    FTM_Type *ftmBase = g_ftmBase[instance];
-    uint8_t chan = g_ftmChannelCount[instance];
+	FTM_Type *ftmBase = g_ftmBase[instance];
+	uint8_t chan = g_ftmChannelCount[instance];
 
-    /* clock setting initialization*/
-    CLOCK_SYS_EnableFtmClock(instance);
+	/* clock setting initialization*/
+	CLOCK_SYS_EnableFtmClock(instance);
 
-    FTM_HAL_Reset(ftmBase);
-    /* Reset the channel registers */
-    for(int i = 0; i < chan; i++)
-    {
-        FTM_WR_CnSC(ftmBase, i, 0);
-        FTM_WR_CnV(ftmBase, i, 0);
-    }
+	FTM_HAL_Reset(ftmBase);
+	/* Reset the channel registers */
+	for(int i = 0; i < chan; i++)
+	{
+		FTM_WR_CnSC(ftmBase, i, 0);
+		FTM_WR_CnV(ftmBase, i, 0);
+	}
 
-    FTM_HAL_Init(ftmBase);
+	FTM_HAL_Init(ftmBase);
 
-    FTM_HAL_SetSyncMode(ftmBase, info->syncMethod);
+	FTM_HAL_SetSyncMode(ftmBase, info->syncMethod);
 
-    FTM_HAL_SetTofFreq(ftmBase, info->tofFrequency);
-    FTM_HAL_SetWriteProtectionCmd(ftmBase, info->isWriteProtection);
-    FTM_HAL_SetBdmMode(ftmBase,info->BDMMode);
+	FTM_HAL_SetTofFreq(ftmBase, info->tofFrequency);
+	FTM_HAL_SetWriteProtectionCmd(ftmBase, info->isWriteProtection);
+	FTM_HAL_SetBdmMode(ftmBase,info->BDMMode);
 
-    NVIC_ClearPendingIRQ(g_ftmIrqId[instance]);
-    INT_SYS_EnableIRQ(g_ftmIrqId[instance]);
+	NVIC_ClearPendingIRQ(g_ftmIrqId[instance]);
+	INT_SYS_EnableIRQ(g_ftmIrqId[instance]);
 
-    return kStatusFtmSuccess;
+	return kStatusFtmSuccess;
 }
 
 /*FUNCTION**********************************************************************
@@ -93,12 +93,12 @@ ftm_status_t FTM_DRV_Init(uint32_t instance, const ftm_user_config_t * info)
  *END**************************************************************************/
 void FTM_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < FTM_INSTANCE_COUNT);
+	assert(instance < FTM_INSTANCE_COUNT);
 
-    /* disable clock for FTM.*/
-    CLOCK_SYS_DisableFtmClock(instance);
+	/* disable clock for FTM.*/
+	CLOCK_SYS_DisableFtmClock(instance);
 
-    INT_SYS_DisableIRQ(g_ftmIrqId[instance]);
+	INT_SYS_DisableIRQ(g_ftmIrqId[instance]);
 }
 
 /*FUNCTION**********************************************************************
@@ -109,14 +109,14 @@ void FTM_DRV_Deinit(uint32_t instance)
  *END**************************************************************************/
 void FTM_DRV_SetFaultIntCmd(uint32_t instance, bool faultEnable)
 {
-    if (faultEnable)
-    {
-        FTM_HAL_EnableFaultInt(g_ftmBase[instance]);
-    }
-    else
-    {
-        FTM_HAL_DisableFaultInt(g_ftmBase[instance]);
-    }
+	if (faultEnable)
+	{
+		FTM_HAL_EnableFaultInt(g_ftmBase[instance]);
+	}
+	else
+	{
+		FTM_HAL_DisableFaultInt(g_ftmBase[instance]);
+	}
 
 }
 
@@ -128,14 +128,14 @@ void FTM_DRV_SetFaultIntCmd(uint32_t instance, bool faultEnable)
  *END**************************************************************************/
 void FTM_DRV_SetTimeOverflowIntCmd(uint32_t instance, bool overflowEnable)
 {
-    if (overflowEnable)
-    {
-        FTM_HAL_EnableTimerOverflowInt(g_ftmBase[instance]);
-    }
-    else
-    {
-        FTM_HAL_DisableTimerOverflowInt(g_ftmBase[instance]);
-    }
+	if (overflowEnable)
+	{
+		FTM_HAL_EnableTimerOverflowInt(g_ftmBase[instance]);
+	}
+	else
+	{
+		FTM_HAL_DisableTimerOverflowInt(g_ftmBase[instance]);
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -146,34 +146,34 @@ void FTM_DRV_SetTimeOverflowIntCmd(uint32_t instance, bool overflowEnable)
  *
  *END**************************************************************************/
 void FTM_DRV_QuadDecodeStart(uint32_t instance, ftm_phase_params_t *phaseAParams,
-                                      ftm_phase_params_t *phaseBParams, ftm_quad_decode_mode_t quadMode)
+									  ftm_phase_params_t *phaseBParams, ftm_quad_decode_mode_t quadMode)
 {
-    assert(instance < FTM_INSTANCE_COUNT);
-    assert(phaseAParams);
-    assert(phaseBParams);
+	assert(instance < FTM_INSTANCE_COUNT);
+	assert(phaseAParams);
+	assert(phaseBParams);
 
-    FTM_Type *ftmBase = g_ftmBase[instance];
+	FTM_Type *ftmBase = g_ftmBase[instance];
 
-    FTM_HAL_SetQuadMode(ftmBase, quadMode);
-    FTM_HAL_SetQuadPhaseAFilterCmd(ftmBase, phaseAParams->kFtmPhaseInputFilter);
-    if (phaseAParams->kFtmPhaseInputFilter)
-    {
-        /* Set Phase A filter value if phase filter is enabled */
-        FTM_HAL_SetChnInputCaptureFilter(ftmBase, CHAN0_IDX, phaseAParams->kFtmPhaseFilterVal);
-    }
-    FTM_HAL_SetQuadPhaseBFilterCmd(ftmBase, phaseBParams->kFtmPhaseInputFilter);
-    if (phaseBParams->kFtmPhaseInputFilter)
-    {
-        /* Set Phase B filter value if phase filter is enabled */
-        FTM_HAL_SetChnInputCaptureFilter(ftmBase, CHAN1_IDX, phaseBParams->kFtmPhaseFilterVal);
-    }
-    FTM_HAL_SetQuadPhaseAPolarity(ftmBase, phaseAParams->kFtmPhasePolarity);
-    FTM_HAL_SetQuadPhaseBPolarity(ftmBase, phaseBParams->kFtmPhasePolarity);
+	FTM_HAL_SetQuadMode(ftmBase, quadMode);
+	FTM_HAL_SetQuadPhaseAFilterCmd(ftmBase, phaseAParams->kFtmPhaseInputFilter);
+	if (phaseAParams->kFtmPhaseInputFilter)
+	{
+		/* Set Phase A filter value if phase filter is enabled */
+		FTM_HAL_SetChnInputCaptureFilter(ftmBase, CHAN0_IDX, phaseAParams->kFtmPhaseFilterVal);
+	}
+	FTM_HAL_SetQuadPhaseBFilterCmd(ftmBase, phaseBParams->kFtmPhaseInputFilter);
+	if (phaseBParams->kFtmPhaseInputFilter)
+	{
+		/* Set Phase B filter value if phase filter is enabled */
+		FTM_HAL_SetChnInputCaptureFilter(ftmBase, CHAN1_IDX, phaseBParams->kFtmPhaseFilterVal);
+	}
+	FTM_HAL_SetQuadPhaseAPolarity(ftmBase, phaseAParams->kFtmPhasePolarity);
+	FTM_HAL_SetQuadPhaseBPolarity(ftmBase, phaseBParams->kFtmPhasePolarity);
 
-    FTM_HAL_SetQuadDecoderCmd(ftmBase, true);
+	FTM_HAL_SetQuadDecoderCmd(ftmBase, true);
 
-    /* Set clock source to start the counter */
-    FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
+	/* Set clock source to start the counter */
+	FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
 }
 
 /*FUNCTION**********************************************************************
@@ -185,10 +185,10 @@ void FTM_DRV_QuadDecodeStart(uint32_t instance, ftm_phase_params_t *phaseAParams
  *END**************************************************************************/
 void FTM_DRV_QuadDecodeStop(uint32_t instance)
 {
-    /* Stop the FTM counter */
-    FTM_HAL_SetClockSource(g_ftmBase[instance], kClock_source_FTM_None);
+	/* Stop the FTM counter */
+	FTM_HAL_SetClockSource(g_ftmBase[instance], kClock_source_FTM_None);
 
-    FTM_HAL_SetQuadDecoderCmd(g_ftmBase[instance], false);
+	FTM_HAL_SetQuadDecoderCmd(g_ftmBase[instance], false);
 }
 
 /*FUNCTION**********************************************************************
@@ -201,41 +201,41 @@ void FTM_DRV_QuadDecodeStop(uint32_t instance)
  *
  *END**************************************************************************/
 void FTM_DRV_CounterStart(uint32_t instance, ftm_counting_mode_t countMode, uint32_t countStartVal,
-                                 uint32_t countFinalVal, bool enableOverflowInt)
+								 uint32_t countFinalVal, bool enableOverflowInt)
 {
-    assert(instance < FTM_INSTANCE_COUNT);
+	assert(instance < FTM_INSTANCE_COUNT);
 
-    FTM_Type *ftmBase = g_ftmBase[instance];
-    uint32_t channel = 0;
+	FTM_Type *ftmBase = g_ftmBase[instance];
+	uint32_t channel = 0;
 
-    /* Clear the overflow flag */
-    FTM_HAL_ClearTimerOverflow(ftmBase);
-    FTM_HAL_SetCounterInitVal(ftmBase, countStartVal);
-    FTM_HAL_SetMod(ftmBase, countFinalVal);
-    FTM_HAL_SetCounter(ftmBase, 0);
+	/* Clear the overflow flag */
+	FTM_HAL_ClearTimerOverflow(ftmBase);
+	FTM_HAL_SetCounterInitVal(ftmBase, countStartVal);
+	FTM_HAL_SetMod(ftmBase, countFinalVal);
+	FTM_HAL_SetCounter(ftmBase, 0);
 
-    /* Use FTM as counter, disable all the channels */
-    for (channel = 0; channel < g_ftmChannelCount[instance]; channel++)
-    {
-        FTM_HAL_SetChnEdgeLevel(ftmBase, channel, 0);
-    }
+	/* Use FTM as counter, disable all the channels */
+	for (channel = 0; channel < g_ftmChannelCount[instance]; channel++)
+	{
+		FTM_HAL_SetChnEdgeLevel(ftmBase, channel, 0);
+	}
 
-    if (countMode == kCounting_FTM_UP)
-    {
-        FTM_HAL_SetQuadDecoderCmd(ftmBase, false);
-        FTM_HAL_SetCpwms(ftmBase, 0);
-    }
-    else if (countMode == kCounting_FTM_UpDown)
-    {
-        FTM_HAL_SetQuadDecoderCmd(ftmBase, false);
-        FTM_HAL_SetCpwms(ftmBase, 1);
-    }
+	if (countMode == kCounting_FTM_UP)
+	{
+		FTM_HAL_SetQuadDecoderCmd(ftmBase, false);
+		FTM_HAL_SetCpwms(ftmBase, 0);
+	}
+	else if (countMode == kCounting_FTM_UpDown)
+	{
+		FTM_HAL_SetQuadDecoderCmd(ftmBase, false);
+		FTM_HAL_SetCpwms(ftmBase, 1);
+	}
 
-    /* Activate interrupts if required */
-    FTM_DRV_SetTimeOverflowIntCmd(instance, enableOverflowInt);
+	/* Activate interrupts if required */
+	FTM_DRV_SetTimeOverflowIntCmd(instance, enableOverflowInt);
 
-    /* Set clock source to start the counter */
-    FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
+	/* Set clock source to start the counter */
+	FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
 }
 
 /*FUNCTION**********************************************************************
@@ -246,13 +246,13 @@ void FTM_DRV_CounterStart(uint32_t instance, ftm_counting_mode_t countMode, uint
  *END**************************************************************************/
 void FTM_DRV_CounterStop(uint32_t instance)
 {
-    /* Stop the FTM counter */
-    FTM_HAL_SetClockSource(g_ftmBase[instance], kClock_source_FTM_None);
+	/* Stop the FTM counter */
+	FTM_HAL_SetClockSource(g_ftmBase[instance], kClock_source_FTM_None);
 
-    FTM_HAL_SetCpwms(g_ftmBase[instance], 0);
+	FTM_HAL_SetCpwms(g_ftmBase[instance], 0);
 
-    /* Disable the overflow interrupt */
-    FTM_DRV_SetTimeOverflowIntCmd(instance, false);
+	/* Disable the overflow interrupt */
+	FTM_DRV_SetTimeOverflowIntCmd(instance, false);
 }
 
 /*FUNCTION**********************************************************************
@@ -263,9 +263,9 @@ void FTM_DRV_CounterStop(uint32_t instance)
  *END**************************************************************************/
 uint32_t FTM_DRV_CounterRead(uint32_t instance)
 {
-    assert(instance < FTM_INSTANCE_COUNT);
+	assert(instance < FTM_INSTANCE_COUNT);
 
-    return FTM_HAL_GetCounter(g_ftmBase[instance]);
+	return FTM_HAL_GetCounter(g_ftmBase[instance]);
 }
 
 /*FUNCTION**********************************************************************
@@ -279,12 +279,12 @@ uint32_t FTM_DRV_CounterRead(uint32_t instance)
  *END**************************************************************************/
 void FTM_DRV_SetClock(uint8_t instance, ftm_clock_source_t clock, ftm_clock_ps_t clockPs)
 {
-    assert(instance < FTM_INSTANCE_COUNT);
-    assert(clock != kClock_source_FTM_None);
+	assert(instance < FTM_INSTANCE_COUNT);
+	assert(clock != kClock_source_FTM_None);
 
-    /*Clock prescaler*/
-    FTM_HAL_SetClockPs(g_ftmBase[instance], clockPs);
-    s_ftmClockSource = clock;
+	/*Clock prescaler*/
+	FTM_HAL_SetClockPs(g_ftmBase[instance], clockPs);
+	s_ftmClockSource = clock;
 }
 
 /*FUNCTION**********************************************************************
@@ -296,30 +296,30 @@ void FTM_DRV_SetClock(uint8_t instance, ftm_clock_source_t clock, ftm_clock_ps_t
  *END**************************************************************************/
 uint32_t FTM_DRV_GetClock(uint8_t instance)
 {
-    assert(instance < FTM_INSTANCE_COUNT);
+	assert(instance < FTM_INSTANCE_COUNT);
 
-    FTM_Type *ftmBase = g_ftmBase[instance];
-    uint8_t clkPs;
-    uint32_t freq = 0;
+	FTM_Type *ftmBase = g_ftmBase[instance];
+	uint8_t clkPs;
+	uint32_t freq = 0;
 
-    clkPs = (1 << FTM_HAL_GetClockPs(ftmBase));
+	clkPs = (1 << FTM_HAL_GetClockPs(ftmBase));
 
-    switch(s_ftmClockSource)
-    {
-        case kClock_source_FTM_ExternalClk:
-            freq = CLOCK_SYS_GetFtmExternalFreq(instance) / clkPs;
-            break;
-        case kClock_source_FTM_FixedClk:
-            freq = CLOCK_SYS_GetFtmFixedFreq(instance) / clkPs;
-            break;
-        case kClock_source_FTM_SystemClk:
-            freq = CLOCK_SYS_GetFtmSystemClockFreq(instance) / clkPs;
-            break;
-        default:
-            break;
-    }
+	switch(s_ftmClockSource)
+	{
+		case kClock_source_FTM_ExternalClk:
+			freq = CLOCK_SYS_GetFtmExternalFreq(instance) / clkPs;
+			break;
+		case kClock_source_FTM_FixedClk:
+			freq = CLOCK_SYS_GetFtmFixedFreq(instance) / clkPs;
+			break;
+		case kClock_source_FTM_SystemClk:
+			freq = CLOCK_SYS_GetFtmSystemClockFreq(instance) / clkPs;
+			break;
+		default:
+			break;
+	}
 
-    return freq;
+	return freq;
 }
 
 /*FUNCTION**********************************************************************
@@ -330,21 +330,21 @@ uint32_t FTM_DRV_GetClock(uint8_t instance)
  *END**************************************************************************/
 void FTM_DRV_PwmStop(uint32_t instance, ftm_pwm_param_t *param, uint8_t channel)
 {
-    assert((param->mode == kFtmEdgeAlignedPWM) || (param->mode == kFtmCenterAlignedPWM) ||
-           (param->mode == kFtmCombinedPWM));
-    assert(instance < FTM_INSTANCE_COUNT);
-    assert(channel < g_ftmChannelCount[instance]);
+	assert((param->mode == kFtmEdgeAlignedPWM) || (param->mode == kFtmCenterAlignedPWM) ||
+		   (param->mode == kFtmCombinedPWM));
+	assert(instance < FTM_INSTANCE_COUNT);
+	assert(channel < g_ftmChannelCount[instance]);
 
-    FTM_Type *ftmBase = g_ftmBase[instance];
+	FTM_Type *ftmBase = g_ftmBase[instance];
 
-    /* Stop the FTM counter */
-    FTM_HAL_SetClockSource(ftmBase, kClock_source_FTM_None);
+	/* Stop the FTM counter */
+	FTM_HAL_SetClockSource(ftmBase, kClock_source_FTM_None);
 
-    FTM_HAL_DisablePwmMode(ftmBase, param, channel);
+	FTM_HAL_DisablePwmMode(ftmBase, param, channel);
 
-    /* Clear out the registers */
-    FTM_HAL_SetMod(ftmBase, 0);
-    FTM_HAL_SetCounter(ftmBase, 0);
+	/* Clear out the registers */
+	FTM_HAL_SetMod(ftmBase, 0);
+	FTM_HAL_SetCounter(ftmBase, 0);
 }
 
 /*FUNCTION**********************************************************************
@@ -356,77 +356,77 @@ void FTM_DRV_PwmStop(uint32_t instance, ftm_pwm_param_t *param, uint8_t channel)
  *END**************************************************************************/
 ftm_status_t FTM_DRV_PwmStart(uint32_t instance, ftm_pwm_param_t *param, uint8_t channel)
 {
-    uint32_t uFTMhz;
-    uint16_t uMod, uCnv, uCnvFirstEdge = 0;
+	uint32_t uFTMhz;
+	uint16_t uMod, uCnv, uCnvFirstEdge = 0;
 
-    assert(instance < FTM_INSTANCE_COUNT);
-    assert(param->uDutyCyclePercent <= 100);
-    assert(channel < g_ftmChannelCount[instance]);
+	assert(instance < FTM_INSTANCE_COUNT);
+	assert(param->uDutyCyclePercent <= 100);
+	assert(channel < g_ftmChannelCount[instance]);
 
-    FTM_Type *ftmBase = g_ftmBase[instance];
+	FTM_Type *ftmBase = g_ftmBase[instance];
 
-    /* Clear the overflow flag */
-    FTM_HAL_ClearTimerOverflow(ftmBase);
+	/* Clear the overflow flag */
+	FTM_HAL_ClearTimerOverflow(ftmBase);
 
-    FTM_HAL_EnablePwmMode(ftmBase, param, channel);
+	FTM_HAL_EnablePwmMode(ftmBase, param, channel);
 
-    if (s_ftmClockSource == kClock_source_FTM_None)
-    {
-        return kStatusFtmError;
-    }
+	if (s_ftmClockSource == kClock_source_FTM_None)
+	{
+		return kStatusFtmError;
+	}
 
-    uFTMhz = FTM_DRV_GetClock(instance);
+	uFTMhz = FTM_DRV_GetClock(instance);
 
-    /* Based on Ref manual, in PWM mode CNTIN is to be set 0*/
-    FTM_HAL_SetCounterInitVal(ftmBase, 0);
+	/* Based on Ref manual, in PWM mode CNTIN is to be set 0*/
+	FTM_HAL_SetCounterInitVal(ftmBase, 0);
 
-    switch(param->mode)
-    {
-        case kFtmEdgeAlignedPWM:
-            uMod = uFTMhz / (param->uFrequencyHZ) - 1;
-            uCnv = uMod * param->uDutyCyclePercent / 100;
-            /* For 100% duty cycle */
-            if(uCnv >= uMod)
-            {
-                uCnv = uMod + 1;
-            }
-            FTM_HAL_SetMod(ftmBase, uMod);
-            FTM_HAL_SetChnCountVal(ftmBase, channel, uCnv);
-            break;
-        case kFtmCenterAlignedPWM:
-            uMod = uFTMhz / (param->uFrequencyHZ * 2);
-            uCnv = uMod * param->uDutyCyclePercent / 100;
-            /* For 100% duty cycle */
-            if(uCnv >= uMod)
-            {
-                uCnv = uMod + 1;
-            }
-            FTM_HAL_SetMod(ftmBase, uMod);
-            FTM_HAL_SetChnCountVal(ftmBase, channel, uCnv);
-            break;
-        case kFtmCombinedPWM:
-            uMod = uFTMhz / (param->uFrequencyHZ) - 1;
-            uCnv = uMod * param->uDutyCyclePercent / 100;
-            uCnvFirstEdge = uMod * param->uFirstEdgeDelayPercent / 100;
-            /* For 100% duty cycle */
-            if(uCnv >= uMod)
-            {
-                uCnv = uMod + 1;
-            }
-            FTM_HAL_SetMod(ftmBase, uMod);
-            FTM_HAL_SetChnCountVal(ftmBase, FTM_HAL_GetChnPairIndex(channel) * 2,
-                                   uCnvFirstEdge);
-            FTM_HAL_SetChnCountVal(ftmBase, FTM_HAL_GetChnPairIndex(channel) * 2 + 1,
-                                   uCnv + uCnvFirstEdge);
-            break;
-        default:
-            assert(0);
-            break;
-    }
+	switch(param->mode)
+	{
+		case kFtmEdgeAlignedPWM:
+			uMod = uFTMhz / (param->uFrequencyHZ) - 1;
+			uCnv = uMod * param->uDutyCyclePercent / 100;
+			/* For 100% duty cycle */
+			if(uCnv >= uMod)
+			{
+				uCnv = uMod + 1;
+			}
+			FTM_HAL_SetMod(ftmBase, uMod);
+			FTM_HAL_SetChnCountVal(ftmBase, channel, uCnv);
+			break;
+		case kFtmCenterAlignedPWM:
+			uMod = uFTMhz / (param->uFrequencyHZ * 2);
+			uCnv = uMod * param->uDutyCyclePercent / 100;
+			/* For 100% duty cycle */
+			if(uCnv >= uMod)
+			{
+				uCnv = uMod + 1;
+			}
+			FTM_HAL_SetMod(ftmBase, uMod);
+			FTM_HAL_SetChnCountVal(ftmBase, channel, uCnv);
+			break;
+		case kFtmCombinedPWM:
+			uMod = uFTMhz / (param->uFrequencyHZ) - 1;
+			uCnv = uMod * param->uDutyCyclePercent / 100;
+			uCnvFirstEdge = uMod * param->uFirstEdgeDelayPercent / 100;
+			/* For 100% duty cycle */
+			if(uCnv >= uMod)
+			{
+				uCnv = uMod + 1;
+			}
+			FTM_HAL_SetMod(ftmBase, uMod);
+			FTM_HAL_SetChnCountVal(ftmBase, FTM_HAL_GetChnPairIndex(channel) * 2,
+								   uCnvFirstEdge);
+			FTM_HAL_SetChnCountVal(ftmBase, FTM_HAL_GetChnPairIndex(channel) * 2 + 1,
+								   uCnv + uCnvFirstEdge);
+			break;
+		default:
+			assert(0);
+			break;
+	}
 
-    /* Set clock source to start counter */
-    FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
-    return kStatusFtmSuccess;
+	/* Set clock source to start counter */
+	FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
+	return kStatusFtmSuccess;
 }
 
 /*FUNCTION**********************************************************************
@@ -441,32 +441,32 @@ ftm_status_t FTM_DRV_PwmStart(uint32_t instance, ftm_pwm_param_t *param, uint8_t
  *
  *END**************************************************************************/
 void FTM_DRV_SetupChnInputCapture(uint32_t instance, ftm_input_capture_edge_mode_t captureMode,
-                                            uint8_t channel, uint8_t filterVal)
+											uint8_t channel, uint8_t filterVal)
 {
-    assert(instance < FTM_INSTANCE_COUNT);
-    assert(channel < g_ftmChannelCount[instance]);
+	assert(instance < FTM_INSTANCE_COUNT);
+	assert(channel < g_ftmChannelCount[instance]);
 
-    FTM_Type *ftmBase = g_ftmBase[instance];
-    uint32_t chnlPairnum = FTM_HAL_GetChnPairIndex(channel);
+	FTM_Type *ftmBase = g_ftmBase[instance];
+	uint32_t chnlPairnum = FTM_HAL_GetChnPairIndex(channel);
 
-    FTM_HAL_SetClockSource(ftmBase, kClock_source_FTM_None);
+	FTM_HAL_SetClockSource(ftmBase, kClock_source_FTM_None);
 
-    FTM_HAL_SetCounterInitVal(ftmBase, 0);
-    FTM_HAL_SetMod(ftmBase, 0xFFFF);
-    FTM_HAL_SetCpwms(ftmBase, 0);
-    FTM_HAL_SetDualChnCombineCmd(ftmBase, chnlPairnum, false);
-    FTM_HAL_SetDualEdgeCaptureCmd(ftmBase, chnlPairnum, false);
-    FTM_HAL_SetChnEdgeLevel(ftmBase, channel, captureMode);
+	FTM_HAL_SetCounterInitVal(ftmBase, 0);
+	FTM_HAL_SetMod(ftmBase, 0xFFFF);
+	FTM_HAL_SetCpwms(ftmBase, 0);
+	FTM_HAL_SetDualChnCombineCmd(ftmBase, chnlPairnum, false);
+	FTM_HAL_SetDualEdgeCaptureCmd(ftmBase, chnlPairnum, false);
+	FTM_HAL_SetChnEdgeLevel(ftmBase, channel, captureMode);
 
-    if (channel < CHAN4_IDX)
-    {
-        FTM_HAL_SetChnInputCaptureFilter(ftmBase, channel, filterVal);
-    }
+	if (channel < CHAN4_IDX)
+	{
+		FTM_HAL_SetChnInputCaptureFilter(ftmBase, channel, filterVal);
+	}
 
-    FTM_HAL_SetChnMSnBAMode(ftmBase, channel, 0);
+	FTM_HAL_SetChnMSnBAMode(ftmBase, channel, 0);
 
-    /* Set clock source to start the counter */
-    FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
+	/* Set clock source to start the counter */
+	FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
 }
 
 /*FUNCTION**********************************************************************
@@ -479,27 +479,27 @@ void FTM_DRV_SetupChnInputCapture(uint32_t instance, ftm_input_capture_edge_mode
  *
  *END**************************************************************************/
 void FTM_DRV_SetupChnOutputCompare(uint32_t instance, ftm_output_compare_edge_mode_t compareMode,
-                                               uint8_t channel, uint32_t compareVal)
+											   uint8_t channel, uint32_t compareVal)
 {
-    assert(instance < FTM_INSTANCE_COUNT);
-    assert(channel < g_ftmChannelCount[instance]);
+	assert(instance < FTM_INSTANCE_COUNT);
+	assert(channel < g_ftmChannelCount[instance]);
 
-    FTM_Type *ftmBase = g_ftmBase[instance];
-    uint32_t chnlPairnum = FTM_HAL_GetChnPairIndex(channel);
+	FTM_Type *ftmBase = g_ftmBase[instance];
+	uint32_t chnlPairnum = FTM_HAL_GetChnPairIndex(channel);
 
-    FTM_HAL_SetClockSource(ftmBase, kClock_source_FTM_None);
+	FTM_HAL_SetClockSource(ftmBase, kClock_source_FTM_None);
 
-    FTM_HAL_SetCounterInitVal(ftmBase, 0);
-    FTM_HAL_SetMod(ftmBase, 0xFFFF);
-    FTM_HAL_SetCpwms(ftmBase, 0);
-    FTM_HAL_SetDualChnCombineCmd(ftmBase, chnlPairnum, false);
-    FTM_HAL_SetDualEdgeCaptureCmd(ftmBase, chnlPairnum, false);
-    FTM_HAL_SetChnEdgeLevel(ftmBase, channel, compareMode);
-    FTM_HAL_SetChnMSnBAMode(ftmBase, channel, 1);
-    FTM_HAL_SetChnCountVal(ftmBase, channel, compareVal);
+	FTM_HAL_SetCounterInitVal(ftmBase, 0);
+	FTM_HAL_SetMod(ftmBase, 0xFFFF);
+	FTM_HAL_SetCpwms(ftmBase, 0);
+	FTM_HAL_SetDualChnCombineCmd(ftmBase, chnlPairnum, false);
+	FTM_HAL_SetDualEdgeCaptureCmd(ftmBase, chnlPairnum, false);
+	FTM_HAL_SetChnEdgeLevel(ftmBase, channel, compareMode);
+	FTM_HAL_SetChnMSnBAMode(ftmBase, channel, 1);
+	FTM_HAL_SetChnCountVal(ftmBase, channel, compareVal);
 
-    /* Set clock source to start the counter */
-    FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
+	/* Set clock source to start the counter */
+	FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
 }
 
 /*FUNCTION**********************************************************************
@@ -515,39 +515,39 @@ void FTM_DRV_SetupChnOutputCompare(uint32_t instance, ftm_output_compare_edge_mo
  *
  *END**************************************************************************/
 void FTM_DRV_SetupChnDualEdgeCapture(uint32_t instance, ftm_dual_edge_capture_param_t *param,
-                                                 uint8_t channel, uint8_t filterVal)
+												 uint8_t channel, uint8_t filterVal)
 {
-    assert(instance < FTM_INSTANCE_COUNT);
-    assert(channel < g_ftmChannelCount[instance]);
+	assert(instance < FTM_INSTANCE_COUNT);
+	assert(channel < g_ftmChannelCount[instance]);
 
-    FTM_Type *ftmBase = g_ftmBase[instance];
-    uint32_t chnlPairnum = FTM_HAL_GetChnPairIndex(channel);
+	FTM_Type *ftmBase = g_ftmBase[instance];
+	uint32_t chnlPairnum = FTM_HAL_GetChnPairIndex(channel);
 
-    /* Stop the counter */
-    FTM_HAL_SetClockSource(ftmBase, kClock_source_FTM_None);
+	/* Stop the counter */
+	FTM_HAL_SetClockSource(ftmBase, kClock_source_FTM_None);
 
-    FTM_HAL_SetCounterInitVal(ftmBase, 0);
-    FTM_HAL_SetMod(ftmBase, 0xFFFF);
-    FTM_HAL_SetCpwms(ftmBase, 0);
-    FTM_HAL_SetDualChnCombineCmd(ftmBase, chnlPairnum, false);
-    /* Enable the DECAPEN bit */
-    FTM_HAL_SetDualEdgeCaptureCmd(ftmBase, chnlPairnum, true);
-    /* Setup the edge detection from channel n and n + 1 */
-    FTM_HAL_SetChnEdgeLevel(ftmBase, chnlPairnum * 2, param->currChanEdgeMode);
-    FTM_HAL_SetChnEdgeLevel(ftmBase, (chnlPairnum * 2) + 1, param->nextChanEdgeMode);
+	FTM_HAL_SetCounterInitVal(ftmBase, 0);
+	FTM_HAL_SetMod(ftmBase, 0xFFFF);
+	FTM_HAL_SetCpwms(ftmBase, 0);
+	FTM_HAL_SetDualChnCombineCmd(ftmBase, chnlPairnum, false);
+	/* Enable the DECAPEN bit */
+	FTM_HAL_SetDualEdgeCaptureCmd(ftmBase, chnlPairnum, true);
+	/* Setup the edge detection from channel n and n + 1 */
+	FTM_HAL_SetChnEdgeLevel(ftmBase, chnlPairnum * 2, param->currChanEdgeMode);
+	FTM_HAL_SetChnEdgeLevel(ftmBase, (chnlPairnum * 2) + 1, param->nextChanEdgeMode);
 
-    FTM_HAL_ClearChnEventFlag(ftmBase, channel);
-    FTM_HAL_ClearChnEventFlag(ftmBase, channel + 1);
-    FTM_HAL_SetDualChnDecapCmd(ftmBase, chnlPairnum, true);
-    FTM_HAL_SetChnMSnBAMode(ftmBase, chnlPairnum * 2, param->mode);
+	FTM_HAL_ClearChnEventFlag(ftmBase, channel);
+	FTM_HAL_ClearChnEventFlag(ftmBase, channel + 1);
+	FTM_HAL_SetDualChnDecapCmd(ftmBase, chnlPairnum, true);
+	FTM_HAL_SetChnMSnBAMode(ftmBase, chnlPairnum * 2, param->mode);
 
-    if (channel < CHAN4_IDX)
-    {
-        FTM_HAL_SetChnInputCaptureFilter(ftmBase, channel, filterVal);
-    }
+	if (channel < CHAN4_IDX)
+	{
+		FTM_HAL_SetChnInputCaptureFilter(ftmBase, channel, filterVal);
+	}
 
-    /* Set clock source to start the counter */
-    FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
+	/* Set clock source to start the counter */
+	FTM_HAL_SetClockSource(ftmBase, s_ftmClockSource);
 }
 
 /*FUNCTION**********************************************************************
@@ -559,22 +559,22 @@ void FTM_DRV_SetupChnDualEdgeCapture(uint32_t instance, ftm_dual_edge_capture_pa
  *END**************************************************************************/
 void FTM_DRV_IRQHandler(uint32_t instance)
 {
-    FTM_Type *ftmBase = g_ftmBase[instance];
-    uint16_t channel;
+	FTM_Type *ftmBase = g_ftmBase[instance];
+	uint16_t channel;
 
-    /* Clear the Status flag if the interrupt is enabled */
-    if (FTM_HAL_IsOverflowIntEnabled(ftmBase))
-    {
-        FTM_HAL_ClearTimerOverflow(ftmBase);
-    }
+	/* Clear the Status flag if the interrupt is enabled */
+	if (FTM_HAL_IsOverflowIntEnabled(ftmBase))
+	{
+		FTM_HAL_ClearTimerOverflow(ftmBase);
+	}
 
-    for (channel = 0; channel < g_ftmChannelCount[instance]; channel++)
-    {
-        if (FTM_HAL_IsChnIntEnabled(ftmBase, channel))
-        {
-            FTM_HAL_ClearChnEventStatus(ftmBase, channel);
-        }
-    }
+	for (channel = 0; channel < g_ftmChannelCount[instance]; channel++)
+	{
+		if (FTM_HAL_IsChnIntEnabled(ftmBase, channel))
+		{
+			FTM_HAL_ClearChnEventStatus(ftmBase, channel);
+		}
+	}
 }
 
 #endif /* FSL_FEATURE_SOC_FTM_COUNT */
@@ -582,4 +582,3 @@ void FTM_DRV_IRQHandler(uint32_t instance)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

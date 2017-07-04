@@ -57,8 +57,8 @@ extern const IRQn_Type g_dspiIrqId[SPI_INSTANCE_COUNT];
  * properly communicate with the SPI device.
  */
 typedef struct DspiDevice {
-    uint32_t bitsPerSec;                 /*!< @brief Baud rate in bits per second.*/
-    dspi_data_format_config_t dataBusConfig;  /* data format configuration structure*/
+	uint32_t bitsPerSec;                 /*!< @brief Baud rate in bits per second.*/
+	dspi_data_format_config_t dataBusConfig;  /* data format configuration structure*/
 } dspi_device_t;
 
 /*!
@@ -71,20 +71,20 @@ typedef struct DspiDevice {
  * DSPI master driver populates the members.
  */
 typedef struct DspiMasterState {
-    dspi_ctar_selection_t whichCtar; /*!< Desired Clock and Transfer Attributes Register (CTAR)*/
-    uint32_t bitsPerFrame;         /*!< Desired number of bits per frame */
-    dspi_which_pcs_config_t whichPcs; /*!< Desired Peripheral Chip Select (pcs) */
-    bool isChipSelectContinuous;  /*!< Option to enable the continuous assertion of chip select
-                                       between transfers*/
-    uint32_t dspiSourceClock;              /*!< Module source clock*/
-    volatile bool isTransferInProgress;             /*!< True if there is an active transfer.*/
-    const uint8_t * sendBuffer;  /*!< The buffer from which transmitted bytes are taken.*/
-    uint8_t * receiveBuffer;     /*!< The buffer into which received bytes are placed.*/
-    volatile size_t remainingSendByteCount;         /*!< Number of bytes remaining to send.*/
-    volatile size_t remainingReceiveByteCount;      /*!< Number of bytes remaining to receive.*/
-    volatile bool isTransferBlocking;    /*!< True if transfer is a blocking transaction. */
-    semaphore_t irqSync;                 /*!< Used to wait for ISR to complete its business.*/
-    bool extraByte;    /*!< Flag used for 16-bit transfers with odd byte count */
+	dspi_ctar_selection_t whichCtar; /*!< Desired Clock and Transfer Attributes Register (CTAR)*/
+	uint32_t bitsPerFrame;         /*!< Desired number of bits per frame */
+	dspi_which_pcs_config_t whichPcs; /*!< Desired Peripheral Chip Select (pcs) */
+	bool isChipSelectContinuous;  /*!< Option to enable the continuous assertion of chip select
+									   between transfers*/
+	uint32_t dspiSourceClock;              /*!< Module source clock*/
+	volatile bool isTransferInProgress;             /*!< True if there is an active transfer.*/
+	const uint8_t * sendBuffer;  /*!< The buffer from which transmitted bytes are taken.*/
+	uint8_t * receiveBuffer;     /*!< The buffer into which received bytes are placed.*/
+	volatile size_t remainingSendByteCount;         /*!< Number of bytes remaining to send.*/
+	volatile size_t remainingReceiveByteCount;      /*!< Number of bytes remaining to receive.*/
+	volatile bool isTransferBlocking;    /*!< True if transfer is a blocking transaction. */
+	semaphore_t irqSync;                 /*!< Used to wait for ISR to complete its business.*/
+	bool extraByte;    /*!< Flag used for 16-bit transfers with odd byte count */
 } dspi_master_state_t;
 
 /*!
@@ -95,12 +95,12 @@ typedef struct DspiMasterState {
  * @internal gui name="Master configuration" id="dspiMasterCfg"
  */
 typedef struct DspiMasterUserConfig {
-    dspi_ctar_selection_t whichCtar; /*!< Desired Clock and Transfer Attributes Register(CTAR) @internal gui name="CTAR selection" id="MasterCtar" */
-    bool isSckContinuous;                  /*!< Disable or Enable continuous SCK operation @internal gui name="Continuous SCK" id="MasterContSck" */
-    bool isChipSelectContinuous;  /*!< Option to enable the continuous assertion of chip select
-                                       between transfers @internal gui name="Continuous chip select" id="MasterContCs" */
-    dspi_which_pcs_config_t whichPcs;        /*!< Desired Peripheral Chip Select (pcs) @internal gui name="Chip select" id="MasterCs" */
-    dspi_pcs_polarity_config_t pcsPolarity;  /*!< Peripheral Chip Select (pcs) polarity setting. @internal gui name="Chip select polarity" id="MasterPolarity" */
+	dspi_ctar_selection_t whichCtar; /*!< Desired Clock and Transfer Attributes Register(CTAR) @internal gui name="CTAR selection" id="MasterCtar" */
+	bool isSckContinuous;                  /*!< Disable or Enable continuous SCK operation @internal gui name="Continuous SCK" id="MasterContSck" */
+	bool isChipSelectContinuous;  /*!< Option to enable the continuous assertion of chip select
+									   between transfers @internal gui name="Continuous chip select" id="MasterContCs" */
+	dspi_which_pcs_config_t whichPcs;        /*!< Desired Peripheral Chip Select (pcs) @internal gui name="Chip select" id="MasterCs" */
+	dspi_pcs_polarity_config_t pcsPolarity;  /*!< Peripheral Chip Select (pcs) polarity setting. @internal gui name="Chip select polarity" id="MasterPolarity" */
 } dspi_master_user_config_t;
 
 /*******************************************************************************
@@ -133,15 +133,15 @@ extern "C" {
  * dspi_master_user_config_t parameters and to call the DSPI_DRV_MasterInit function by passing
  * in these parameters:
    @code
-    dspi_master_state_t dspiMasterState; <- the user  allocates memory for this structure
-    uint32_t calculatedBaudRate;
-    dspi_master_user_config_t userConfig; <- the user populates members for this structure
-    userConfig.isChipSelectContinuous = false;
-    userConfig.isSckContinuous = false;
-    userConfig.pcsPolarity = kDspiPcs_ActiveLow;
-    userConfig.whichCtar = kDspiCtar0;
-    userConfig.whichPcs = kDspiPcs0;
-    DSPI_DRV_MasterInit(masterInstance, &dspiMasterState, &userConfig);
+	dspi_master_state_t dspiMasterState; <- the user  allocates memory for this structure
+	uint32_t calculatedBaudRate;
+	dspi_master_user_config_t userConfig; <- the user populates members for this structure
+	userConfig.isChipSelectContinuous = false;
+	userConfig.isSckContinuous = false;
+	userConfig.pcsPolarity = kDspiPcs_ActiveLow;
+	userConfig.whichCtar = kDspiCtar0;
+	userConfig.whichPcs = kDspiPcs0;
+	DSPI_DRV_MasterInit(masterInstance, &dspiMasterState, &userConfig);
    @endcode
  *
  * @param instance The instance number of the DSPI peripheral.
@@ -156,8 +156,8 @@ extern "C" {
  * @return An error code or kStatus_DSPI_Success.
  */
 dspi_status_t DSPI_DRV_MasterInit(uint32_t instance,
-                                  dspi_master_state_t * dspiState,
-                                  const dspi_master_user_config_t * userConfig);
+								  dspi_master_state_t * dspiState,
+								  const dspi_master_user_config_t * userConfig);
 
 /*!
  * @brief Shuts down a DSPI instance.
@@ -209,7 +209,7 @@ dspi_status_t DSPI_DRV_MasterDeinit(uint32_t instance);
  *         the capability of the device.
  */
 dspi_status_t DSPI_DRV_MasterSetDelay(uint32_t instance, dspi_delay_type_t whichDelay,
-                                      uint32_t delayInNanoSec, uint32_t * calculatedDelay);
+									  uint32_t delayInNanoSec, uint32_t * calculatedDelay);
 
 /*@}*/
 
@@ -233,13 +233,13 @@ dspi_status_t DSPI_DRV_MasterSetDelay(uint32_t instance, dspi_delay_type_t which
  * first). This is an example to set up the dspi_device_t structure to call
  * the DSPI_DRV_MasterConfigureBus function by passing in these parameters:
    @code
-    dspi_device_t spiDevice;
-    spiDevice.dataBusConfig.bitsPerFrame = 16;
-    spiDevice.dataBusConfig.clkPhase = kDspiClockPhase_FirstEdge;
-    spiDevice.dataBusConfig.clkPolarity = kDspiClockPolarity_ActiveHigh;
-    spiDevice.dataBusConfig.direction = kDspiMsbFirst;
-    spiDevice.bitsPerSec = 50000;
-    DSPI_DRV_MasterConfigureBus(instance, &spiDevice, &calculatedBaudRate);
+	dspi_device_t spiDevice;
+	spiDevice.dataBusConfig.bitsPerFrame = 16;
+	spiDevice.dataBusConfig.clkPhase = kDspiClockPhase_FirstEdge;
+	spiDevice.dataBusConfig.clkPolarity = kDspiClockPolarity_ActiveHigh;
+	spiDevice.dataBusConfig.direction = kDspiMsbFirst;
+	spiDevice.bitsPerSec = 50000;
+	DSPI_DRV_MasterConfigureBus(instance, &spiDevice, &calculatedBaudRate);
    @endcode
  *
  * @param instance The instance number of the DSPI peripheral.
@@ -253,8 +253,8 @@ dspi_status_t DSPI_DRV_MasterSetDelay(uint32_t instance, dspi_delay_type_t which
  * @return An error code or kStatus_DSPI_Success.
  */
 dspi_status_t DSPI_DRV_MasterConfigureBus(uint32_t instance,
-                                          const dspi_device_t * device,
-                                          uint32_t * calculatedBaudRate);
+										  const dspi_device_t * device,
+										  uint32_t * calculatedBaudRate);
 
 /*@}*/
 
@@ -288,11 +288,11 @@ dspi_status_t DSPI_DRV_MasterConfigureBus(uint32_t instance,
  *         kStatus_DSPI_Timeout The transfer timed out and was aborted.
  */
 dspi_status_t DSPI_DRV_MasterTransferBlocking(uint32_t instance,
-                                              const dspi_device_t * device,
-                                              const uint8_t * sendBuffer,
-                                              uint8_t * receiveBuffer,
-                                              size_t transferByteCount,
-                                              uint32_t timeout);
+											  const dspi_device_t * device,
+											  const uint8_t * sendBuffer,
+											  uint8_t * receiveBuffer,
+											  size_t transferByteCount,
+											  uint32_t timeout);
 /*@}*/
 
 /*!
@@ -323,10 +323,10 @@ dspi_status_t DSPI_DRV_MasterTransferBlocking(uint32_t instance,
  *         kStatus_DSPI_Busy Cannot perform transfer because a transfer is already in progress.
  */
 dspi_status_t DSPI_DRV_MasterTransfer(uint32_t instance,
-                                      const dspi_device_t * device,
-                                      const uint8_t * sendBuffer,
-                                      uint8_t * receiveBuffer,
-                                      size_t transferByteCount);
+									  const dspi_device_t * device,
+									  const uint8_t * sendBuffer,
+									  uint8_t * receiveBuffer,
+									  size_t transferByteCount);
 
 
 /*!
@@ -381,4 +381,3 @@ void DSPI_DRV_MasterIRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

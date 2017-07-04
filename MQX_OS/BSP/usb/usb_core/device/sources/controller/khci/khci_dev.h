@@ -20,8 +20,8 @@
  **************************************************************************
  *
  * $FileName: khci_dev.h$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
@@ -44,29 +44,29 @@ extern "C"
 {
 #endif
 
-    usb_status usb_dci_khci_preinit(usb_device_handle upper_layer_handle, usb_device_handle *handle_ptr);
-    usb_status usb_dci_khci_postinit(uint8_t controller_id, usb_device_handle handle);
-    usb_status usb_dci_khci_init(uint8_t controller_id, usb_device_handle handle);
-    usb_status usb_dci_khci_send(usb_device_handle handle, xd_struct_t* xd_ptr);
-    usb_status usb_dci_khci_recv(usb_device_handle handle, xd_struct_t* xd_ptr);
-    usb_status usb_dci_khci_cancel(usb_device_handle handle, uint8_t ep_num, uint8_t direction);
-    usb_status usb_dci_khci_set_addr(usb_device_handle handle, uint8_t addr);
-    usb_status usb_dci_khci_shutdown(usb_device_handle handle);
+	usb_status usb_dci_khci_preinit(usb_device_handle upper_layer_handle, usb_device_handle *handle_ptr);
+	usb_status usb_dci_khci_postinit(uint8_t controller_id, usb_device_handle handle);
+	usb_status usb_dci_khci_init(uint8_t controller_id, usb_device_handle handle);
+	usb_status usb_dci_khci_send(usb_device_handle handle, xd_struct_t* xd_ptr);
+	usb_status usb_dci_khci_recv(usb_device_handle handle, xd_struct_t* xd_ptr);
+	usb_status usb_dci_khci_cancel(usb_device_handle handle, uint8_t ep_num, uint8_t direction);
+	usb_status usb_dci_khci_set_addr(usb_device_handle handle, uint8_t addr);
+	usb_status usb_dci_khci_shutdown(usb_device_handle handle);
 //usb_status usb_dci_khci_get_setup_data(usb_device_handle handle, uint8_t, uint8_t *);
 #if ((defined USBCFG_DEV_ADVANCED_SUSPEND_RESUME) && (USBCFG_DEV_ADVANCED_SUSPEND_RESUME))
-    usb_status usb_dci_khci_assert_resume(usb_device_handle handle);
+	usb_status usb_dci_khci_assert_resume(usb_device_handle handle);
 #endif
-    usb_status usb_dci_khci_init_endpoint(usb_device_handle handle, xd_struct_t* xd_ptr);
-    usb_status usb_dci_khci_stall_endpoint(usb_device_handle handle, uint8_t ep_num, uint8_t direction);
-    usb_status usb_dci_khci_unstall_endpoint(usb_device_handle handle, uint8_t ep_num, uint8_t direction);
-    usb_status usb_dci_khci_deinit_endpoint(usb_device_handle handle, uint8_t ep_num, uint8_t direction);
-    usb_status usb_dci_khci_get_endpoint_status(usb_device_handle handle, uint8_t component, uint16_t *endp_status);
-    usb_status usb_dci_khci_set_endpoint_status(usb_device_handle handle, uint8_t component, uint16_t setting);
+	usb_status usb_dci_khci_init_endpoint(usb_device_handle handle, xd_struct_t* xd_ptr);
+	usb_status usb_dci_khci_stall_endpoint(usb_device_handle handle, uint8_t ep_num, uint8_t direction);
+	usb_status usb_dci_khci_unstall_endpoint(usb_device_handle handle, uint8_t ep_num, uint8_t direction);
+	usb_status usb_dci_khci_deinit_endpoint(usb_device_handle handle, uint8_t ep_num, uint8_t direction);
+	usb_status usb_dci_khci_get_endpoint_status(usb_device_handle handle, uint8_t component, uint16_t *endp_status);
+	usb_status usb_dci_khci_set_endpoint_status(usb_device_handle handle, uint8_t component, uint16_t setting);
 //usb_status usb_dci_khci_get_transfer_status(usb_device_handle handle,uint8_t,uint8_t);
-    usb_status usb_dci_khci_get_status(usb_device_handle handle, uint8_t component, uint16_t *error);
-    usb_status usb_dci_khci_set_status(usb_device_handle handle, uint8_t component, uint16_t setting);
-    usb_status usb_dci_khci_get_xd(usb_device_handle handle, xd_struct_t** xd_ptr_ptr);
-    usb_status usb_dci_khci_reset(usb_device_handle handle);
+	usb_status usb_dci_khci_get_status(usb_device_handle handle, uint8_t component, uint16_t *error);
+	usb_status usb_dci_khci_set_status(usb_device_handle handle, uint8_t component, uint16_t setting);
+	usb_status usb_dci_khci_get_xd(usb_device_handle handle, xd_struct_t** xd_ptr_ptr);
+	usb_status usb_dci_khci_reset(usb_device_handle handle);
 
 #ifdef __cplusplus
 }

@@ -49,7 +49,7 @@
  * the DMA driver.
  */
 typedef enum _dmamux_source {
-    kDmamuxDmaRequestSource = 64U    /*!< Maximum number of the DMA requests allowed for the DMA mux. */
+	kDmamuxDmaRequestSource = 64U    /*!< Maximum number of the DMA requests allowed for the DMA mux. */
 } dmamux_dma_request_source;
 
 /*******************************************************************************
@@ -86,8 +86,8 @@ void DMAMUX_HAL_Init(DMAMUX_Type * base);
  */
 static inline void DMAMUX_HAL_SetChannelCmd(DMAMUX_Type * base, uint32_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
-    DMAMUX_BWR_CHCFG_ENBL(base, channel, enable);
+	assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+	DMAMUX_BWR_CHCFG_ENBL(base, channel, enable);
 }
 
 #if (FSL_FEATURE_DMAMUX_HAS_TRIG == 1)
@@ -100,8 +100,8 @@ static inline void DMAMUX_HAL_SetChannelCmd(DMAMUX_Type * base, uint32_t channel
  */
 static inline void DMAMUX_HAL_SetPeriodTriggerCmd(DMAMUX_Type * base, uint32_t channel, bool enable)
 {
-    assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
-    DMAMUX_BWR_CHCFG_TRIG(base, channel, enable);
+	assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+	DMAMUX_BWR_CHCFG_TRIG(base, channel, enable);
 }
 #endif
 
@@ -117,8 +117,8 @@ static inline void DMAMUX_HAL_SetPeriodTriggerCmd(DMAMUX_Type * base, uint32_t c
  */
 static inline void DMAMUX_HAL_SetTriggerSource(DMAMUX_Type * base, uint32_t channel, uint8_t source)
 {
-    assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
-    DMAMUX_BWR_CHCFG_SOURCE(base, channel, source);
+	assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+	DMAMUX_BWR_CHCFG_SOURCE(base, channel, source);
 }
 
 /* @} */
@@ -134,4 +134,3 @@ static inline void DMAMUX_HAL_SetTriggerSource(DMAMUX_Type * base, uint32_t chan
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

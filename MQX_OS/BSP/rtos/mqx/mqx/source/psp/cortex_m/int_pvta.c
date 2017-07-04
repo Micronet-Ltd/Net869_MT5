@@ -30,19 +30,19 @@
 
 #if MQX_EXIT_ENABLED && MQX_USE_INTERRUPTS
 /*!
- * \brief Gets the address of the interrupt vector table that MQX might have 
+ * \brief Gets the address of the interrupt vector table that MQX might have
  * created when it started.
- * 
+ *
  * The function is useful if you are installing third-party debuggers or monitors.
- * 
+ *
  * \return Address of the interrupt vector table that MQX creates when it starts.
- * 
+ *
  * \see _int_get_vector_table
  * \see _int_set_vector_table
- */       
+ */
 _psp_code_addr _int_get_previous_vector_table
    (
-      void
+	  void
    )
 { /* Body */
    register KERNEL_DATA_STRUCT_PTR  kernel_data;

@@ -57,21 +57,21 @@
  */
 INT_KERNEL_ISR_FPTR _int_install_kernel_isr
 (
-    _mqx_int             vector,
-    INT_KERNEL_ISR_FPTR isr_ptr
+	_mqx_int             vector,
+	INT_KERNEL_ISR_FPTR isr_ptr
 )
 {
-    INT_KERNEL_ISR_FPTR old_isr;
+	INT_KERNEL_ISR_FPTR old_isr;
 
 #if MQX_CHECK_ERRORS
-    if (vector - _PSP_VECTOR_BASE < BSP_FIRST_INTERRUPT_VECTOR_USED ||
-        vector - _PSP_VECTOR_BASE > PSP_MAXIMUM_INTERRUPT_VECTORS)
-    {
-        _task_set_error(MQX_INVALID_VECTORED_INTERRUPT);
-        return NULL;
-    }    /* Endif */    
+	if (vector - _PSP_VECTOR_BASE < BSP_FIRST_INTERRUPT_VECTOR_USED ||
+		vector - _PSP_VECTOR_BASE > PSP_MAXIMUM_INTERRUPT_VECTORS)
+	{
+		_task_set_error(MQX_INVALID_VECTORED_INTERRUPT);
+		return NULL;
+	}    /* Endif */
 #endif
-    old_isr = (INT_KERNEL_ISR_FPTR)INT_SYS_InstallHandler((IRQn_Type)vector, (void (*)(void)) isr_ptr);
+	old_isr = (INT_KERNEL_ISR_FPTR)INT_SYS_InstallHandler((IRQn_Type)vector, (void (*)(void)) isr_ptr);
 
-    return old_isr;
+	return old_isr;
 }

@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
 * All Rights Reserved
 *
 * Copyright (c) 1989-2008 ARC International;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
 *
 * $FileName: usb_host_ch9.h$
-* $Version : 
-* $Date    : 
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -53,7 +53,7 @@ DEPRECATED: Use USB_DESC_TYPE_xxx constant from usb_desc.h !
 #define  DESCTYPE_OTHER_SPEED    0x7
 #define  DESCTYPE_INTF_POWER     0x8
 #define  DESCTYPE_OTG            0x9
-*/ 
+*/
 
 /*******************************************************************
 **
@@ -107,16 +107,16 @@ usb_status _usb_host_ch9_clear_feature(usb_device_instance_handle dev_handle, ui
 usb_status _usb_host_ch9_get_configuration(usb_device_instance_handle dev_handle, uint8_t* buffer);
 usb_status _usb_host_ch9_get_descriptor
 (
-    /* usb device */
-    usb_device_instance_handle   dev_handle,
-    /* descriptor type & index */
-    uint16_t                       type_index,
-    /* Language ID or 0 */
-    uint16_t                       lang_id,
-    /* buffer length */
-    uint16_t                       buflen,
-    /* descriptor buffer */
-    uint8_t *                     buffer
+	/* usb device */
+	usb_device_instance_handle   dev_handle,
+	/* descriptor type & index */
+	uint16_t                       type_index,
+	/* Language ID or 0 */
+	uint16_t                       lang_id,
+	/* buffer length */
+	uint16_t                       buflen,
+	/* descriptor buffer */
+	uint8_t *                     buffer
 );
 usb_status _usb_host_ch9_get_interface(usb_device_instance_handle dev_handle, uint8_t interface, uint8_t* buffer);
 usb_status _usb_host_ch9_get_status(usb_device_instance_handle dev_handle, uint8_t req_type, uint16_t intf_endpt, uint8_t* buffer);

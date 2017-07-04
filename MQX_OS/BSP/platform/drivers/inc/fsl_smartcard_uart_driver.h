@@ -57,7 +57,7 @@ extern UART_Type * const g_uartBase[UART_INSTANCE_COUNT];
 
 /*******************************************************************************
  * Definitions
- ******************************************************************************/ 
+ ******************************************************************************/
 #define EMV_RX_NACK_THRESHOLD       (5U)
 #define EMV_TX_NACK_THRESHOLD       (3U)
 #define EMV_RX_TO_TX_GUARD_TIME_T0  (4U)
@@ -80,7 +80,7 @@ extern "C" {
  * This function initializes the run-time state structure to keep track of the on-going
  * transfers, un-gates the clock to the Smart card module, initializes the module
  * to user-defined settings and default settings, configures the IRQ state structure, and enables
- * the module-level interrupt to the core, initializes the DMA, and enables the Smart card module 
+ * the module-level interrupt to the core, initializes the DMA, and enables the Smart card module
  * transmitter and receiver.
  *
  * @param instance The UART instance number.
@@ -93,12 +93,12 @@ extern "C" {
  *  into this function.
  * @return An error code or kStatus_SMARTCARD_Success.
  */
-smartcard_status_t SMARTCARD_UART_DRV_Init(uint32_t instance, 
-                                    smartcard_state_t * smartcardStatePtr,
-                                    const smartcard_user_config_t * smartcardUserConfig);
+smartcard_status_t SMARTCARD_UART_DRV_Init(uint32_t instance,
+									smartcard_state_t * smartcardStatePtr,
+									const smartcard_user_config_t * smartcardUserConfig);
 
 /*!
- * @brief       
+ * @brief
  *
  * This function disables the UART interrupts, the transmitter and receiver, and
  * flushes the FIFOs (for modules that support FIFOs).
@@ -119,10 +119,10 @@ void SMARTCARD_UART_DRV_Deinit(uint32_t instance);
  * @param timeout A timeout value for RTOS abstraction sync control in milliseconds (ms).
  * @return An error code or kStatus_SMARTCARD_Success.
  */
-smartcard_status_t SMARTCARD_UART_DRV_SendDataBlocking(uint32_t instance, 
-                                      const uint8_t * txBuff,
-                                      uint32_t txSize, 
-                                      uint32_t timeout);
+smartcard_status_t SMARTCARD_UART_DRV_SendDataBlocking(uint32_t instance,
+									  const uint8_t * txBuff,
+									  uint32_t txSize,
+									  uint32_t timeout);
 
 /*!
  * @brief Sends (transmits) data through the UART module using a non-blocking method.
@@ -138,9 +138,9 @@ smartcard_status_t SMARTCARD_UART_DRV_SendDataBlocking(uint32_t instance,
  * @param txSize The number of bytes to send.
  * @return An error code or kStatus_SMARTCARD_Success.
  */
-smartcard_status_t SMARTCARD_UART_DRV_SendData(uint32_t instance, 
-                                      const uint8_t * txBuff, 
-                                      uint32_t txSize);
+smartcard_status_t SMARTCARD_UART_DRV_SendData(uint32_t instance,
+									  const uint8_t * txBuff,
+									  uint32_t txSize);
 
 /*!
  * @brief Returns whether the previous UART transmit has finished.
@@ -157,8 +157,8 @@ smartcard_status_t SMARTCARD_UART_DRV_SendData(uint32_t instance,
  * @retval kStatus_SMARTCARD_TxBusy The transmit is still in progress. bytesTransmitted is
  *     filled with the number of bytes which are transmitted up to that point.
  */
-smartcard_status_t SMARTCARD_UART_DRV_GetTransmitStatus(uint32_t instance, 
-                                      uint32_t * bytesRemaining);
+smartcard_status_t SMARTCARD_UART_DRV_GetTransmitStatus(uint32_t instance,
+									  uint32_t * bytesRemaining);
 
 /*!
  * @brief Terminates an asynchronous UART transmission early.
@@ -186,10 +186,10 @@ smartcard_status_t SMARTCARD_UART_DRV_AbortSendingData(uint32_t instance);
  * @return An error code or kStatus_SMARTCARD_Success.
  */
 smartcard_status_t SMARTCARD_UART_DRV_ReceiveDataBlocking(uint32_t instance,
-                                      uint8_t * rxBuff,
-                                      uint32_t rxSize,
-                                      uint32_t * rcvdSize,
-                                      uint32_t timeout);
+									  uint8_t * rxBuff,
+									  uint32_t rxSize,
+									  uint32_t * rcvdSize,
+									  uint32_t timeout);
 
 /*!
  * @brief Gets (receives) data from the UART module using a non-blocking method.
@@ -205,9 +205,9 @@ smartcard_status_t SMARTCARD_UART_DRV_ReceiveDataBlocking(uint32_t instance,
  * @param rxSize The number of bytes to receive.
  * @return An error code or kStatus_SMARTCARD_Success.
  */
-smartcard_status_t SMARTCARD_UART_DRV_ReceiveData(uint32_t instance, 
-                                      uint8_t * rxBuff, 
-                                      uint32_t rxSize);
+smartcard_status_t SMARTCARD_UART_DRV_ReceiveData(uint32_t instance,
+									  uint8_t * rxBuff,
+									  uint32_t rxSize);
 
 /*!
  * @brief Returns whether the previous UART receive is complete.
@@ -225,8 +225,8 @@ smartcard_status_t SMARTCARD_UART_DRV_ReceiveData(uint32_t instance,
  * @retval kStatus_SMARTCARD_RxBusy The receive is still in progress. bytesReceived is
  *     filled with the number of bytes which are received up to that point.
  */
-smartcard_status_t SMARTCARD_UART_DRV_GetReceiveStatus(uint32_t instance, 
-                                      uint32_t * bytesRemaining);
+smartcard_status_t SMARTCARD_UART_DRV_GetReceiveStatus(uint32_t instance,
+									  uint32_t * bytesRemaining);
 
 /*!
  * @brief Terminates an asynchronous UART receive early.
@@ -250,9 +250,9 @@ smartcard_status_t SMARTCARD_UART_DRV_AbortReceivingData(uint32_t instance);
  *
  * @retval kStatus_SMARTCARD_Success The control operation was successful.
  */
-smartcard_status_t SMARTCARD_UART_DRV_Control(uint32_t instance, 
-                                    smartcard_control_t control, 
-                                    void *controlBuff);
+smartcard_status_t SMARTCARD_UART_DRV_Control(uint32_t instance,
+									smartcard_control_t control,
+									void *controlBuff);
 
 /*@}*/
 
@@ -266,4 +266,3 @@ smartcard_status_t SMARTCARD_UART_DRV_Control(uint32_t instance,
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

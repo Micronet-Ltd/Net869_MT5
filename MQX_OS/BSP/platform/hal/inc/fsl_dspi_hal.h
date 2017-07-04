@@ -50,81 +50,81 @@
 /* Defines constant value arrays for the baud rate pre-scalar and scalar divider values.*/
 static const uint32_t s_baudratePrescaler[] = { 2, 3, 5, 7 };
 static const uint32_t s_baudrateScaler[] = { 2, 4, 6, 8, 16, 32, 64, 128, 256, 512, 1024, 2048,
-                                           4096, 8192, 16384, 32768 };
+										   4096, 8192, 16384, 32768 };
 
 static const uint32_t s_delayPrescaler[] = { 1, 3, 5, 7 };
 static const uint32_t s_delayScaler[] = { 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048,
-                                           4096, 8192, 16384, 32768, 65536 };
+										   4096, 8192, 16384, 32768, 65536 };
 
 
 /*! @brief Error codes for the DSPI driver.*/
 typedef enum _dspi_status
 {
-    kStatus_DSPI_Success = 0,
-    kStatus_DSPI_SlaveTxUnderrun,           /*!< DSPI Slave Tx Under run error*/
-    kStatus_DSPI_SlaveRxOverrun,            /*!< DSPI Slave Rx Overrun error*/
-    kStatus_DSPI_Timeout,                   /*!< DSPI transfer timed out*/
-    kStatus_DSPI_Busy,                      /*!< DSPI instance is already busy performing a
-                                                 transfer.*/
-    kStatus_DSPI_NoTransferInProgress,      /*!< Attempt to abort a transfer when no transfer
-                                                 was in progress*/
-    kStatus_DSPI_InvalidBitCount,           /*!< bits-per-frame value not valid*/
-    kStatus_DSPI_InvalidInstanceNumber,     /*!< DSPI instance number does not match current count*/
-    kStatus_DSPI_OutOfRange,                /*!< DSPI out-of-range error  */
-    kStatus_DSPI_InvalidParameter,          /*!< DSPI invalid parameter error */
-    kStatus_DSPI_NonInit,                   /*!< DSPI driver does not initialize, not ready */
-    kStatus_DSPI_Initialized,               /*!< DSPI driver has initialized, cannot re-initialize*/
-    kStatus_DSPI_DMAChannelInvalid,         /*!< DSPI driver could not request DMA channel(s) */
-    kStatus_DSPI_Error,                     /*!< DSPI driver error */
-    kStatus_DSPI_EdmaStcdUnaligned32Error   /*!< DSPI Edma driver STCD unaligned to 32byte error */
+	kStatus_DSPI_Success = 0,
+	kStatus_DSPI_SlaveTxUnderrun,           /*!< DSPI Slave Tx Under run error*/
+	kStatus_DSPI_SlaveRxOverrun,            /*!< DSPI Slave Rx Overrun error*/
+	kStatus_DSPI_Timeout,                   /*!< DSPI transfer timed out*/
+	kStatus_DSPI_Busy,                      /*!< DSPI instance is already busy performing a
+												 transfer.*/
+	kStatus_DSPI_NoTransferInProgress,      /*!< Attempt to abort a transfer when no transfer
+												 was in progress*/
+	kStatus_DSPI_InvalidBitCount,           /*!< bits-per-frame value not valid*/
+	kStatus_DSPI_InvalidInstanceNumber,     /*!< DSPI instance number does not match current count*/
+	kStatus_DSPI_OutOfRange,                /*!< DSPI out-of-range error  */
+	kStatus_DSPI_InvalidParameter,          /*!< DSPI invalid parameter error */
+	kStatus_DSPI_NonInit,                   /*!< DSPI driver does not initialize, not ready */
+	kStatus_DSPI_Initialized,               /*!< DSPI driver has initialized, cannot re-initialize*/
+	kStatus_DSPI_DMAChannelInvalid,         /*!< DSPI driver could not request DMA channel(s) */
+	kStatus_DSPI_Error,                     /*!< DSPI driver error */
+	kStatus_DSPI_EdmaStcdUnaligned32Error   /*!< DSPI Edma driver STCD unaligned to 32byte error */
 } dspi_status_t;
 
 /*! @brief DSPI master or slave configuration*/
 typedef enum _dspi_master_slave_mode {
-    kDspiMaster = 1,     /*!< DSPI peripheral operates in master mode*/
-    kDspiSlave = 0       /*!< DSPI peripheral operates in slave mode*/
+	kDspiMaster = 1,     /*!< DSPI peripheral operates in master mode*/
+	kDspiSlave = 0       /*!< DSPI peripheral operates in slave mode*/
 } dspi_master_slave_mode_t;
 
 /*! @brief DSPI clock polarity configuration for a given CTAR*/
 typedef enum _dspi_clock_polarity {
-    kDspiClockPolarity_ActiveHigh = 0,   /*!< Active-high DSPI clock (idles low)*/
-    kDspiClockPolarity_ActiveLow = 1     /*!< Active-low DSPI clock (idles high)*/
+	kDspiClockPolarity_ActiveHigh = 0,   /*!< Active-high DSPI clock (idles low)*/
+	kDspiClockPolarity_ActiveLow = 1     /*!< Active-low DSPI clock (idles high)*/
 } dspi_clock_polarity_t;
 
 /*! @brief DSPI clock phase configuration for a given CTAR*/
 typedef enum _dspi_clock_phase {
-    kDspiClockPhase_FirstEdge = 0,       /*!< Data is captured on the leading edge of the SCK and
-                                              changed on the following edge.*/
-    kDspiClockPhase_SecondEdge = 1       /*!< Data is changed on the leading edge of the SCK and
-                                              captured on the following edge.*/
+	kDspiClockPhase_FirstEdge = 0,       /*!< Data is captured on the leading edge of the SCK and
+											  changed on the following edge.*/
+	kDspiClockPhase_SecondEdge = 1       /*!< Data is changed on the leading edge of the SCK and
+											  captured on the following edge.*/
 } dspi_clock_phase_t;
 
 /*! @brief DSPI data shifter direction options for a given CTAR*/
 typedef enum _dspi_shift_direction {
-    kDspiMsbFirst = 0,   /*!< Data transfers start with most significant bit.*/
-    kDspiLsbFirst = 1    /*!< Data transfers start with least significant bit.*/
+	kDspiMsbFirst = 0,   /*!< Data transfers start with most significant bit.*/
+	kDspiLsbFirst = 1    /*!< Data transfers start with least significant bit.*/
 } dspi_shift_direction_t;
 
 /*! @brief DSPI Clock and Transfer Attributes Register (CTAR) selection*/
 typedef enum _dspi_ctar_selection {
-    kDspiCtar0 = 0,   /*!< CTAR0 selection option for master or slave mode @internal gui name="CTAR0" */
-    kDspiCtar1 = 1    /*!< CTAR1 selection option for master mode only @internal gui name="CTAR1" */
+	kDspiCtar0 = 0,   /*!< CTAR0 selection option for master or slave mode @internal gui name="CTAR0" */
+	kDspiCtar1 = 1    /*!< CTAR1 selection option for master mode only @internal gui name="CTAR1" */
 } dspi_ctar_selection_t;
 
 /*! @brief DSPI Peripheral Chip Select (PCS) Polarity configuration.*/
 typedef enum _dspi_pcs_polarity_config {
-    kDspiPcs_ActiveHigh = 0, /*!< PCS Active High (idles low) @internal gui name="Active high" */
-    kDspiPcs_ActiveLow  = 1 /*!< PCS Active Low (idles high) @internal gui name="Active low" */
+	kDspiPcs_ActiveHigh = 0, /*!< PCS Active High (idles low) @internal gui name="Active high" */
+	kDspiPcs_ActiveLow  = 1 /*!< PCS Active Low (idles high) @internal gui name="Active low" */
 } dspi_pcs_polarity_config_t;
 
 /*! @brief DSPI Peripheral Chip Select (PCS) configuration (which PCS to configure)*/
 typedef enum _dspi_which_pcs_config {
-    kDspiPcs0 = 1 << 0, /*!< PCS[0] @internal gui name="PCS0" */
-    kDspiPcs1 = 1 << 1, /*!< PCS[1] @internal gui name="PCS1" */
-    kDspiPcs2 = 1 << 2, /*!< PCS[2] @internal gui name="PCS2" */
-    kDspiPcs3 = 1 << 3, /*!< PCS[3] @internal gui name="PCS3" */
-    kDspiPcs4 = 1 << 4, /*!< PCS[4] @internal gui name="PCS4" */
-    kDspiPcs5 = 1 << 5  /*!< PCS[5] @internal gui name="PCS5" */
+	kDspiPcs0 = 1 << 0, /*!< PCS[0] @internal gui name="PCS0" */
+	kDspiPcs1 = 1 << 1, /*!< PCS[1] @internal gui name="PCS1" */
+	kDspiPcs2 = 1 << 2, /*!< PCS[2] @internal gui name="PCS2" */
+	kDspiPcs3 = 1 << 3, /*!< PCS[3] @internal gui name="PCS3" */
+	kDspiPcs4 = 1 << 4, /*!< PCS[4] @internal gui name="PCS4" */
+	kDspiPcs5 = 1 << 5  /*!< PCS[5] @internal gui name="PCS5" */
 } dspi_which_pcs_config_t;
 
 /*!
@@ -132,33 +132,33 @@ typedef enum _dspi_which_pcs_config {
  *  Format. This field is valid only when CPHA bit in CTAR register is 0.
  */
 typedef enum _dspi_master_sample_point {
-    kDspiSckToSin_0Clock = 0,  /*!< 0 system clocks between SCK edge and SIN sample*/
-    kDspiSckToSin_1Clock = 1,  /*!< 1 system clock between SCK edge and SIN sample*/
-    kDspiSckToSin_2Clock = 2   /*!< 2 system clocks between SCK edge and SIN sample*/
+	kDspiSckToSin_0Clock = 0,  /*!< 0 system clocks between SCK edge and SIN sample*/
+	kDspiSckToSin_1Clock = 1,  /*!< 1 system clock between SCK edge and SIN sample*/
+	kDspiSckToSin_2Clock = 2   /*!< 2 system clocks between SCK edge and SIN sample*/
 } dspi_master_sample_point_t;
 
 /*! @brief DSPI Tx FIFO Fill and Rx FIFO Drain DMA or Interrupt configuration */
 typedef enum _dspi_dma_or_int_mode {
-    kDspiGenerateIntReq = 0, /*!< Desired flag generates an Interrupt request */
-    kDspiGenerateDmaReq = 1  /*!< Desired flag generates a DMA request */
+	kDspiGenerateIntReq = 0, /*!< Desired flag generates an Interrupt request */
+	kDspiGenerateDmaReq = 1  /*!< Desired flag generates a DMA request */
 } dspi_dma_or_int_mode_t;
 
 /*! @brief DSPI status flags and interrupt request enable*/
 typedef enum _dspi_status_and_interrupt_request {
-    kDspiTxComplete = SPI_RSER_TCF_RE_SHIFT,  /*!< TCF status/interrupt enable */
-    kDspiTxAndRxStatus = SPI_SR_TXRXS_SHIFT,  /*!< TXRXS status only, no interrupt*/
-    kDspiEndOfQueue = SPI_RSER_EOQF_RE_SHIFT, /*!< EOQF status/interrupt enable*/
-    kDspiTxFifoUnderflow = SPI_RSER_TFUF_RE_SHIFT, /*!< TFUF status/interrupt enable*/
-    kDspiTxFifoFillRequest = SPI_RSER_TFFF_RE_SHIFT, /*!< TFFF status/interrupt enable*/
-    kDspiRxFifoOverflow = SPI_RSER_RFOF_RE_SHIFT, /*!< RFOF status/interrupt enable*/
-    kDspiRxFifoDrainRequest = SPI_RSER_RFDF_RE_SHIFT /*!< RFDF status/interrupt enable*/
+	kDspiTxComplete = SPI_RSER_TCF_RE_SHIFT,  /*!< TCF status/interrupt enable */
+	kDspiTxAndRxStatus = SPI_SR_TXRXS_SHIFT,  /*!< TXRXS status only, no interrupt*/
+	kDspiEndOfQueue = SPI_RSER_EOQF_RE_SHIFT, /*!< EOQF status/interrupt enable*/
+	kDspiTxFifoUnderflow = SPI_RSER_TFUF_RE_SHIFT, /*!< TFUF status/interrupt enable*/
+	kDspiTxFifoFillRequest = SPI_RSER_TFFF_RE_SHIFT, /*!< TFFF status/interrupt enable*/
+	kDspiRxFifoOverflow = SPI_RSER_RFOF_RE_SHIFT, /*!< RFOF status/interrupt enable*/
+	kDspiRxFifoDrainRequest = SPI_RSER_RFDF_RE_SHIFT /*!< RFDF status/interrupt enable*/
 } dspi_status_and_interrupt_request_t;
 
 /*! @brief DSPI delay type selection*/
 typedef enum _dspi_delay_type {
-    kDspiPcsToSck = 1,      /*!< PCS-to-SCK delay */
-    kDspiLastSckToPcs = 2,  /*!< Last SCK edge to PCS delay */
-    kDspiAfterTransfer = 3, /*!< Delay between transfers */
+	kDspiPcsToSck = 1,      /*!< PCS-to-SCK delay */
+	kDspiLastSckToPcs = 2,  /*!< Last SCK edge to PCS delay */
+	kDspiAfterTransfer = 3, /*!< Delay between transfers */
 } dspi_delay_type_t;
 
 /*!
@@ -168,12 +168,12 @@ typedef enum _dspi_delay_type {
  * CTARn register, which the user must provide in this structure.
  */
 typedef struct DspiDataFormatConfig {
-    uint32_t bitsPerFrame;        /*!< Bits per frame, minimum 4, maximum 16 */
-    dspi_clock_polarity_t clkPolarity;   /*!< Active high or low clock polarity*/
-    dspi_clock_phase_t clkPhase;     /*!< Clock phase setting to change and capture data*/
-    dspi_shift_direction_t direction; /*!< MSB or LSB data shift direction
-                                           This setting relevant only in master mode and
-                                           can be ignored in slave  mode */
+	uint32_t bitsPerFrame;        /*!< Bits per frame, minimum 4, maximum 16 */
+	dspi_clock_polarity_t clkPolarity;   /*!< Active high or low clock polarity*/
+	dspi_clock_phase_t clkPhase;     /*!< Clock phase setting to change and capture data*/
+	dspi_shift_direction_t direction; /*!< MSB or LSB data shift direction
+										   This setting relevant only in master mode and
+										   can be ignored in slave  mode */
 } dspi_data_format_config_t;
 
 /*!
@@ -185,9 +185,9 @@ typedef struct DspiDataFormatConfig {
  * CTARn register  with the divisor settings.
  */
 typedef struct DspiBaudRateDivisors {
-    bool doubleBaudRate;          /*!< Double Baud rate parameter setting */
-    uint32_t prescaleDivisor;     /*!< Baud Rate Pre-scalar parameter setting*/
-    uint32_t baudRateDivisor;     /*!< Baud Rate scaler parameter setting */
+	bool doubleBaudRate;          /*!< Double Baud rate parameter setting */
+	uint32_t prescaleDivisor;     /*!< Baud Rate Pre-scalar parameter setting*/
+	uint32_t baudRateDivisor;     /*!< Baud Rate scaler parameter setting */
 } dspi_baud_rate_divisors_t;
 
 /*!
@@ -202,13 +202,13 @@ typedef struct DspiBaudRateDivisors {
  * older documentation which erroneously states that a 32-bit value may be written).
  */
 typedef struct DspiCommandDataConfig {
-    bool isChipSelectContinuous;  /*!< Option to enable the continuous assertion of chip select
-                                       between transfers*/
-    dspi_ctar_selection_t whichCtar; /*!< The desired Clock and Transfer Attributes
-                                          Register (CTAR) to use for CTAS*/
-    dspi_which_pcs_config_t whichPcs;   /*!< The desired PCS signal to use for the data transfer*/
-    bool isEndOfQueue;            /*!< Signals that the current transfer is the last in the queue*/
-    bool clearTransferCount;      /*!< Clears SPI_TCNT field; cleared before transmission starts*/
+	bool isChipSelectContinuous;  /*!< Option to enable the continuous assertion of chip select
+									   between transfers*/
+	dspi_ctar_selection_t whichCtar; /*!< The desired Clock and Transfer Attributes
+										  Register (CTAR) to use for CTAS*/
+	dspi_which_pcs_config_t whichPcs;   /*!< The desired PCS signal to use for the data transfer*/
+	bool isEndOfQueue;            /*!< Signals that the current transfer is the last in the queue*/
+	bool clearTransferCount;      /*!< Clears SPI_TCNT field; cleared before transmission starts*/
 } dspi_command_config_t;
 
 /*******************************************************************************
@@ -245,7 +245,7 @@ void DSPI_HAL_Init(SPI_Type * base);
  */
 static inline void DSPI_HAL_Enable(SPI_Type * base)
 {
-    SPI_BWR_MCR_MDIS(base, 0);
+	SPI_BWR_MCR_MDIS(base, 0);
 }
 
 /*!
@@ -255,7 +255,7 @@ static inline void DSPI_HAL_Enable(SPI_Type * base)
  */
 static inline void DSPI_HAL_Disable(SPI_Type * base)
 {
-    SPI_BWR_MCR_MDIS(base, 1);
+	SPI_BWR_MCR_MDIS(base, 1);
 }
 
 /*!
@@ -274,7 +274,7 @@ static inline void DSPI_HAL_Disable(SPI_Type * base)
  * @return  The actual calculated baud rate
  */
 uint32_t DSPI_HAL_SetBaudRate(SPI_Type * base, dspi_ctar_selection_t whichCtar,
-                              uint32_t bitsPerSec, uint32_t sourceClockInHz);
+							  uint32_t bitsPerSec, uint32_t sourceClockInHz);
 
 /*!
  * @brief Configures the baud rate divisors manually.
@@ -288,8 +288,8 @@ uint32_t DSPI_HAL_SetBaudRate(SPI_Type * base, dspi_ctar_selection_t whichCtar,
  * @param divisors Pointer to a structure containing the user defined baud rate divisor settings
  */
 void DSPI_HAL_SetBaudDivisors(SPI_Type * base,
-                              dspi_ctar_selection_t whichCtar,
-                              const dspi_baud_rate_divisors_t * divisors);
+							  dspi_ctar_selection_t whichCtar,
+							  const dspi_baud_rate_divisors_t * divisors);
 
 /*!
  * @brief Configures the DSPI for master or slave.
@@ -299,7 +299,7 @@ void DSPI_HAL_SetBaudDivisors(SPI_Type * base,
  */
 static inline void DSPI_HAL_SetMasterSlaveMode(SPI_Type * base, dspi_master_slave_mode_t mode)
 {
-    SPI_BWR_MCR_MSTR(base, (uint32_t)mode);
+	SPI_BWR_MCR_MSTR(base, (uint32_t)mode);
 }
 
 /*!
@@ -310,7 +310,7 @@ static inline void DSPI_HAL_SetMasterSlaveMode(SPI_Type * base, dspi_master_slav
  */
 static inline bool DSPI_HAL_IsMaster(SPI_Type * base)
 {
-    return (bool)SPI_RD_MCR_MSTR(base);
+	return (bool)SPI_RD_MCR_MSTR(base);
 }
 
 /*!
@@ -321,7 +321,7 @@ static inline bool DSPI_HAL_IsMaster(SPI_Type * base)
  */
 static inline void DSPI_HAL_SetContinuousSckCmd(SPI_Type * base, bool enable)
 {
-    SPI_BWR_MCR_CONT_SCKE(base, (enable == true));
+	SPI_BWR_MCR_CONT_SCKE(base, (enable == true));
 }
 
 #if FSL_FEATURE_DSPI_HAS_CHIP_SELECT_STROBE
@@ -339,7 +339,7 @@ static inline void DSPI_HAL_SetContinuousSckCmd(SPI_Type * base, bool enable)
  */
 static inline void DSPI_HAL_SetPcsStrobeCmd(SPI_Type * base, bool enable)
 {
-    SPI_BWR_MCR_PCSSE(base, (enable == true));
+	SPI_BWR_MCR_PCSSE(base, (enable == true));
 }
 #endif
 
@@ -356,7 +356,7 @@ static inline void DSPI_HAL_SetPcsStrobeCmd(SPI_Type * base, bool enable)
  */
 static inline void DSPI_HAL_SetRxFifoOverwriteCmd(SPI_Type * base, bool enable)
 {
-    SPI_BWR_MCR_ROOE(base, (enable == true));
+	SPI_BWR_MCR_ROOE(base, (enable == true));
 }
 
 /*!
@@ -374,7 +374,7 @@ static inline void DSPI_HAL_SetRxFifoOverwriteCmd(SPI_Type * base, bool enable)
  *                        "active low, inactive high(1)" of type dspi_pcs_polarity_config_t.
  */
 void DSPI_HAL_SetPcsPolarityMode(SPI_Type * base, dspi_which_pcs_config_t pcs,
-                                 dspi_pcs_polarity_config_t activeLowOrHigh);
+								 dspi_pcs_polarity_config_t activeLowOrHigh);
 
 /*!
  * @brief Enables (or disables) the DSPI FIFOs.
@@ -411,9 +411,9 @@ void DSPI_HAL_SetFlushFifoCmd(SPI_Type * base, bool enableFlushTxFifo, bool enab
  *                  and the SIN (data in) sample.
  */
 static inline void DSPI_HAL_SetDatainSamplepointMode(SPI_Type * base,
-                                                   dspi_master_sample_point_t samplePnt)
+												   dspi_master_sample_point_t samplePnt)
 {
-    SPI_BWR_MCR_SMPL_PT(base, samplePnt);
+	SPI_BWR_MCR_SMPL_PT(base, samplePnt);
 }
 
 /*!
@@ -426,7 +426,7 @@ static inline void DSPI_HAL_SetDatainSamplepointMode(SPI_Type * base,
  */
 static inline void DSPI_HAL_StartTransfer(SPI_Type * base)
 {
-    SPI_BWR_MCR_HALT(base, 0);
+	SPI_BWR_MCR_HALT(base, 0);
 }
 
 /*!
@@ -438,7 +438,7 @@ static inline void DSPI_HAL_StartTransfer(SPI_Type * base)
  */
 static inline void DSPI_HAL_StopTransfer(SPI_Type * base)
 {
-    SPI_BWR_MCR_HALT(base, 1);
+	SPI_BWR_MCR_HALT(base, 1);
 }
 
 /*!
@@ -447,12 +447,12 @@ static inline void DSPI_HAL_StopTransfer(SPI_Type * base)
  * This function configures the bits-per-frame, polarity, phase, and shift direction for a
  * particular CTAR. An example use case is as follows:
    @code
-    dspi_data_format_config_t dataFormat;
-    dataFormat.bitsPerFrame = 16;
-    dataFormat.clkPolarity = kDspiClockPolarity_ActiveLow;
-    dataFormat.clkPhase = kDspiClockPhase_FirstEdge;
-    dataFormat.direction = kDspiMsbFirst;
-    DSPI_HAL_SetDataFormat(instance, kDspiCtar0, &dataFormat);
+	dspi_data_format_config_t dataFormat;
+	dataFormat.bitsPerFrame = 16;
+	dataFormat.clkPolarity = kDspiClockPolarity_ActiveLow;
+	dataFormat.clkPhase = kDspiClockPhase_FirstEdge;
+	dataFormat.direction = kDspiMsbFirst;
+	DSPI_HAL_SetDataFormat(instance, kDspiCtar0, &dataFormat);
    @endcode
  *
  * @param base Module base pointer of type SPI_Type.
@@ -462,8 +462,8 @@ static inline void DSPI_HAL_StopTransfer(SPI_Type * base)
  * @return  An error code or kStatus_DSPI_Success
  */
 dspi_status_t DSPI_HAL_SetDataFormat(SPI_Type * base,
-                                     dspi_ctar_selection_t whichCtar,
-                                     const dspi_data_format_config_t * config);
+									 dspi_ctar_selection_t whichCtar,
+									 const dspi_data_format_config_t * config);
 
 /*!
  * @brief Manually configures the delay prescaler and scaler for a particular CTAR.
@@ -486,7 +486,7 @@ dspi_status_t DSPI_HAL_SetDataFormat(SPI_Type * base,
  * @param whichDelay The desired delay to configure, must be of type dspi_delay_type_t
  */
 void DSPI_HAL_SetDelay(SPI_Type * base, dspi_ctar_selection_t whichCtar, uint32_t prescaler,
-                       uint32_t scaler, dspi_delay_type_t whichDelay);
+					   uint32_t scaler, dspi_delay_type_t whichDelay);
 
 /*!
  * @brief Calculates the delay prescaler and scaler based on the desired delay input in nanoseconds.
@@ -515,8 +515,8 @@ void DSPI_HAL_SetDelay(SPI_Type * base, dspi_ctar_selection_t whichCtar, uint32_
  * @return The actual calculated delay value.
  */
 uint32_t DSPI_HAL_CalculateDelay(SPI_Type * base, dspi_ctar_selection_t whichCtar,
-                                 dspi_delay_type_t whichDelay, uint32_t sourceClockInHz,
-                                 uint32_t delayInNanoSec);
+								 dspi_delay_type_t whichDelay, uint32_t sourceClockInHz,
+								 uint32_t delayInNanoSec);
 
 /*!
  * @brief Gets the DSPI master PUSHR data register address for DMA operation.
@@ -529,7 +529,7 @@ uint32_t DSPI_HAL_CalculateDelay(SPI_Type * base, dspi_ctar_selection_t whichCta
  */
 static inline uint32_t DSPI_HAL_GetMasterPushrRegAddr(SPI_Type * base)
 {
-    return (uint32_t)(&SPI_PUSHR_REG(base));
+	return (uint32_t)(&SPI_PUSHR_REG(base));
 }
 
 /*!
@@ -543,7 +543,7 @@ static inline uint32_t DSPI_HAL_GetMasterPushrRegAddr(SPI_Type * base)
  */
 static inline uint32_t DSPI_HAL_GetSlavePushrRegAddr(SPI_Type * base)
 {
-    return (uint32_t)(&SPI_PUSHR_SLAVE_REG(base));
+	return (uint32_t)(&SPI_PUSHR_SLAVE_REG(base));
 }
 
 /*!
@@ -557,7 +557,7 @@ static inline uint32_t DSPI_HAL_GetSlavePushrRegAddr(SPI_Type * base)
  */
 static inline uint32_t DSPI_HAL_GetPoprRegAddr(SPI_Type * base)
 {
-    return (uint32_t)(&SPI_POPR_REG(base));
+	return (uint32_t)(&SPI_POPR_REG(base));
 }
 /*@}*/
 
@@ -574,9 +574,9 @@ static inline uint32_t DSPI_HAL_GetPoprRegAddr(SPI_Type * base)
  * of type dspi_dma_or_int_mode_t and whether or not they wish to enable this request.
  * Note, when disabling the request, the request type is don't care.
    @code
-    DSPI_HAL_SetTxFifoFillDmaIntMode(base, kDspiGenerateDmaReq, true); <- to enable DMA
-    DSPI_HAL_SetTxFifoFillDmaIntMode(base, kDspiGenerateIntReq, true); <- to enable Interrupt
-    DSPI_HAL_SetTxFifoFillDmaIntMode(base, kDspiGenerateIntReq, false); <- to disable
+	DSPI_HAL_SetTxFifoFillDmaIntMode(base, kDspiGenerateDmaReq, true); <- to enable DMA
+	DSPI_HAL_SetTxFifoFillDmaIntMode(base, kDspiGenerateIntReq, true); <- to enable Interrupt
+	DSPI_HAL_SetTxFifoFillDmaIntMode(base, kDspiGenerateIntReq, false); <- to disable
    @endcode
  * @param base Module base pointer of type SPI_Type.
  * @param mode Configures the DSPI Tx FIFO Fill to generate an interrupt or DMA request
@@ -592,9 +592,9 @@ void DSPI_HAL_SetTxFifoFillDmaIntMode(SPI_Type * base, dspi_dma_or_int_mode_t mo
  * of type dspi_dma_or_int_mode_t and whether or not they wish to enable this request.
  * Note, when disabling the request, the request type is don't care.
    @code
-    DSPI_HAL_SetRxFifoDrainDmaIntMode(base, kDspiGenerateDmaReq, true); <- to enable DMA
-    DSPI_HAL_SetRxFifoDrainDmaIntMode(base, kDspiGenerateIntReq, true); <- to enable Interrupt
-    DSPI_HAL_SetRxFifoDrainDmaIntMode(base, kDspiGenerateIntReq, false); <- to disable
+	DSPI_HAL_SetRxFifoDrainDmaIntMode(base, kDspiGenerateDmaReq, true); <- to enable DMA
+	DSPI_HAL_SetRxFifoDrainDmaIntMode(base, kDspiGenerateIntReq, true); <- to enable Interrupt
+	DSPI_HAL_SetRxFifoDrainDmaIntMode(base, kDspiGenerateIntReq, false); <- to disable
    @endcode
  * @param base Module base pointer of type SPI_Type.
  * @param mode Configures the Rx FIFO Drain to generate an interrupt or DMA request
@@ -617,7 +617,7 @@ void DSPI_HAL_SetRxFifoDrainDmaIntMode(SPI_Type * base, dspi_dma_or_int_mode_t m
  * DSPI_HAL_SetTxFifoFillDmaIntMode and DSPI_HAL_SetRxFifoDrainDmaIntMode respectively as
  * these requests can generate either an interrupt or DMA request.
    @code
-    DSPI_HAL_SetIntMode(base, kDspiTxComplete, true); <- example use-case
+	DSPI_HAL_SetIntMode(base, kDspiTxComplete, true); <- example use-case
    @endcode
  *
  * @param base Module base pointer of type SPI_Type.
@@ -625,8 +625,8 @@ void DSPI_HAL_SetRxFifoDrainDmaIntMode(SPI_Type * base, dspi_dma_or_int_mode_t m
  * @param enable Enable (true) or disable (false) the interrupt source to generate requests
  */
 void DSPI_HAL_SetIntMode(SPI_Type * base,
-                         dspi_status_and_interrupt_request_t interruptSrc,
-                         bool enable);
+						 dspi_status_and_interrupt_request_t interruptSrc,
+						 bool enable);
 
 /*!
  * @brief Gets DSPI interrupt configuration, returns if interrupt request is enabled or disabled.
@@ -647,9 +647,9 @@ void DSPI_HAL_SetIntMode(SPI_Type * base,
  * @return Configuration of interrupt request: enable (true) or disable (false).
  */
 static inline bool DSPI_HAL_GetIntMode(SPI_Type * base,
-                                             dspi_status_and_interrupt_request_t interruptSrc)
+											 dspi_status_and_interrupt_request_t interruptSrc)
 {
-    return ((SPI_RD_RSER(base) >> interruptSrc) & 0x1);
+	return ((SPI_RD_RSER(base) >> interruptSrc) & 0x1);
 }
 
 /*@}*/
@@ -667,7 +667,7 @@ static inline bool DSPI_HAL_GetIntMode(SPI_Type * base,
  * SR registers.  The function  uses these bit positions in its algorithm to obtain the desired
  * flag state, similar to the dspi_get_interrupt_config function.
    @code
-    getStatus = DSPI_HAL_GetStatusFlag(base, kDspiTxComplete);
+	getStatus = DSPI_HAL_GetStatusFlag(base, kDspiTxComplete);
    @endcode
  *
  * @param base Module base pointer of type SPI_Type.
@@ -675,9 +675,9 @@ static inline bool DSPI_HAL_GetIntMode(SPI_Type * base,
  * @return State of the status flag: asserted (true) or not-asserted (false)
  */
 static inline bool DSPI_HAL_GetStatusFlag(SPI_Type * base,
-                                        dspi_status_and_interrupt_request_t statusFlag)
+										dspi_status_and_interrupt_request_t statusFlag)
 {
-    return ((SPI_RD_SR(base) >> statusFlag) & 0x1);
+	return ((SPI_RD_SR(base) >> statusFlag) & 0x1);
 }
 
 /*!
@@ -688,16 +688,16 @@ static inline bool DSPI_HAL_GetStatusFlag(SPI_Type * base,
  * dspi_status_and_interrupt_request_t.  The function  uses these bit positions in its algorithm
  * to clear the desired flag state. Example usage:
    @code
-    DSPI_HAL_ClearStatusFlag(base, kDspiTxComplete);
+	DSPI_HAL_ClearStatusFlag(base, kDspiTxComplete);
    @endcode
  *
  * @param base Module base pointer of type SPI_Type.
  * @param statusFlag The status flag, of type dspi_status_and_interrupt_request_t
  */
 static inline void DSPI_HAL_ClearStatusFlag(SPI_Type * base,
-                                              dspi_status_and_interrupt_request_t statusFlag)
+											  dspi_status_and_interrupt_request_t statusFlag)
 {
-    SPI_WR_SR(base, (0x1U << statusFlag));
+	SPI_WR_SR(base, (0x1U << statusFlag));
 }
 
 /*@}*/
@@ -715,7 +715,7 @@ static inline void DSPI_HAL_ClearStatusFlag(SPI_Type * base,
  */
 static inline uint32_t DSPI_HAL_ReadData(SPI_Type * base)
 {
-    return SPI_RD_POPR(base);
+	return SPI_RD_POPR(base);
 }
 
 /*!
@@ -728,7 +728,7 @@ static inline uint32_t DSPI_HAL_ReadData(SPI_Type * base)
  */
 static inline void DSPI_HAL_WriteDataSlavemode(SPI_Type * base, uint32_t data)
 {
-    SPI_WR_PUSHR_SLAVE(base, data);
+	SPI_WR_PUSHR_SLAVE(base, data);
 }
 
 /*!
@@ -753,13 +753,13 @@ void DSPI_HAL_WriteDataSlavemodeBlocking(SPI_Type * base, uint32_t data);
  * transfer is the last in the queue, and whether to clear the transfer count (normally needed when
  * sending the first frame of a data packet). This is an example:
    @code
-    dspi_command_config_t commandConfig;
-    commandConfig.isChipSelectContinuous = true;
-    commandConfig.whichCtar = kDspiCtar0;
-    commandConfig.whichPcs = kDspiPcs1;
-    commandConfig.clearTransferCount = false;
-    commandConfig.isEndOfQueue = false;
-    DSPI_HAL_WriteDataMastermode(base, &commandConfig, dataWord);
+	dspi_command_config_t commandConfig;
+	commandConfig.isChipSelectContinuous = true;
+	commandConfig.whichCtar = kDspiCtar0;
+	commandConfig.whichPcs = kDspiPcs1;
+	commandConfig.clearTransferCount = false;
+	commandConfig.isEndOfQueue = false;
+	DSPI_HAL_WriteDataMastermode(base, &commandConfig, dataWord);
    @endcode
  *
  * @param base Module base pointer of type SPI_Type.
@@ -767,8 +767,8 @@ void DSPI_HAL_WriteDataSlavemodeBlocking(SPI_Type * base, uint32_t data);
  * @param data The data word to be sent
  */
 void DSPI_HAL_WriteDataMastermode(SPI_Type * base,
-                                  dspi_command_config_t * command,
-                                  uint16_t data);
+								  dspi_command_config_t * command,
+								  uint16_t data);
 
 /*!
  * @brief Writes data into the data buffer, master mode and waits till complete to return.
@@ -780,13 +780,13 @@ void DSPI_HAL_WriteDataMastermode(SPI_Type * base,
  * transfer is the last in the queue, and whether to clear the transfer count (normally needed when
  * sending the first frame of a data packet). This is an example:
    @code
-    dspi_command_config_t commandConfig;
-    commandConfig.isChipSelectContinuous = true;
-    commandConfig.whichCtar = kDspiCtar0;
-    commandConfig.whichPcs = kDspiPcs1;
-    commandConfig.clearTransferCount = false;
-    commandConfig.isEndOfQueue = false;
-    DSPI_HAL_WriteDataMastermodeBlocking(base, &commandConfig, dataWord);
+	dspi_command_config_t commandConfig;
+	commandConfig.isChipSelectContinuous = true;
+	commandConfig.whichCtar = kDspiCtar0;
+	commandConfig.whichPcs = kDspiPcs1;
+	commandConfig.clearTransferCount = false;
+	commandConfig.isEndOfQueue = false;
+	DSPI_HAL_WriteDataMastermodeBlocking(base, &commandConfig, dataWord);
    @endcode
  *
  * Note that this function does not return until after the transmit is complete. Also note that
@@ -798,8 +798,8 @@ void DSPI_HAL_WriteDataMastermode(SPI_Type * base,
  * @param data The data word to be sent
  */
 void DSPI_HAL_WriteDataMastermodeBlocking(SPI_Type * base,
-                                          dspi_command_config_t * command,
-                                          uint16_t data);
+										  dspi_command_config_t * command,
+										  uint16_t data);
 
 /*!
  * @brief Writes a 32-bit data word (16-bit command appended with 16-bit data) into the data
@@ -814,8 +814,8 @@ void DSPI_HAL_WriteDataMastermodeBlocking(SPI_Type * base,
  * sending the first frame of a data packet). The user is responsible for appending this command
  * with the data to send.  This is an example:
    @code
-    dataWord = <16-bit command> | <16-bit data>;
-    DSPI_HAL_WriteCmdDataMastermode(base, dataWord);
+	dataWord = <16-bit command> | <16-bit data>;
+	DSPI_HAL_WriteCmdDataMastermode(base, dataWord);
    @endcode
  *
  * @param base Module base pointer of type SPI_Type.
@@ -823,7 +823,7 @@ void DSPI_HAL_WriteDataMastermodeBlocking(SPI_Type * base,
  */
 static inline void DSPI_HAL_WriteCmdDataMastermode(SPI_Type * base, uint32_t data)
 {
-    SPI_WR_PUSHR(base, data);
+	SPI_WR_PUSHR(base, data);
 }
 
 /*!
@@ -839,8 +839,8 @@ static inline void DSPI_HAL_WriteCmdDataMastermode(SPI_Type * base, uint32_t dat
  * sending the first frame of a data packet). The user is responsible for appending this command
  * with the data to send.  This is an example:
    @code
-    dataWord = <16-bit command> | <16-bit data>;
-    DSPI_HAL_WriteCmdDataMastermodeBlocking(base, dataWord);
+	dataWord = <16-bit command> | <16-bit data>;
+	DSPI_HAL_WriteCmdDataMastermodeBlocking(base, dataWord);
    @endcode
  *
  * Note that this function does not return until after the transmit is complete. Also note that
@@ -862,7 +862,7 @@ void DSPI_HAL_WriteCmdDataMastermodeBlocking(SPI_Type * base, uint32_t data);
  */
 static inline uint32_t DSPI_HAL_GetTransferCount(SPI_Type * base)
 {
-    return SPI_RD_TCR_SPI_TCNT(base);
+	return SPI_RD_TCR_SPI_TCNT(base);
 }
 
 /*!
@@ -876,7 +876,7 @@ static inline uint32_t DSPI_HAL_GetTransferCount(SPI_Type * base)
  */
 static inline void DSPI_HAL_PresetTransferCount(SPI_Type * base, uint16_t presetValue)
 {
-    SPI_BWR_TCR_SPI_TCNT(base, presetValue);
+	SPI_BWR_TCR_SPI_TCNT(base, presetValue);
 }
 
 /*!
@@ -914,4 +914,3 @@ uint32_t DSPI_HAL_GetFormattedCommand(SPI_Type * base, dspi_command_config_t * c
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

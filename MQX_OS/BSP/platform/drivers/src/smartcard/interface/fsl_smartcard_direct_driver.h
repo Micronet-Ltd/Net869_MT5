@@ -48,7 +48,7 @@
 
 /*******************************************************************************
  * Definitions
- ******************************************************************************/ 
+ ******************************************************************************/
 #define ATR_DURATION_ADJUSTMENT             (360)
 #define INIT_DELAY_CLOCK_CYCLES_ADJUSTMENT  (4200)
 
@@ -64,9 +64,9 @@ typedef struct InterfaceSlotParams
 /*! @brief Defines interface IC control types */
 typedef enum _smartcard_interface_control
 {
-    kSmartcardInterfaceSetVcc                  = 0x0U,
-    kSmartcardInterfaceSetClockToResetDelay    = 0x01U,
-    kSmartcardInterfaceReadStatus              = 0x02
+	kSmartcardInterfaceSetVcc                  = 0x0U,
+	kSmartcardInterfaceSetClockToResetDelay    = 0x01U,
+	kSmartcardInterfaceReadStatus              = 0x02
 }smartcard_interface_control_t;
 
 /*******************************************************************************
@@ -89,9 +89,9 @@ extern "C" {
  *  is responsible to fill out the members of this structure and to pass the pointer of this structure
  *  into this function.
  */
-smartcard_status_t SMARTCARD_DRV_DirectInit(uint32_t interfaceInstance, 
-                               smartcard_state_t * smartcardStatePtr,
-                               const smartcard_interface_config_t * interfaceUserConfig);
+smartcard_status_t SMARTCARD_DRV_DirectInit(uint32_t interfaceInstance,
+							   smartcard_state_t * smartcardStatePtr,
+							   const smartcard_interface_config_t * interfaceUserConfig);
 
 /*!
  * @brief De-initializes an SMARTCARD interface instance for operation.
@@ -100,9 +100,9 @@ smartcard_status_t SMARTCARD_DRV_DirectInit(uint32_t interfaceInstance,
  *
  */
 void SMARTCARD_DRV_DirectDeInit(uint32_t instance);
-  
+
 /*!
- * @brief Installs a callback function for an SMARTCARD interface instance. The installed 
+ * @brief Installs a callback function for an SMARTCARD interface instance. The installed
  * callback function should be called from the interrupt serive routine context of the interface
  * device.
  *
@@ -112,15 +112,15 @@ void SMARTCARD_DRV_DirectDeInit(uint32_t instance);
  *
  * @retval Function pointer of the last installed callback function.
  */
-smartcard_interface_callback_t SMARTCARD_DRV_DirectInstallCallback(uint32_t instance, 
-                                              smartcard_interface_callback_t function, 
-                                              void * callbackParam);
+smartcard_interface_callback_t SMARTCARD_DRV_DirectInstallCallback(uint32_t instance,
+											  smartcard_interface_callback_t function,
+											  void * callbackParam);
 
 /*!
  * @brief Activates the SMARTCARD interface.
  *
  * @param instance The SMARTCARD module instance number.
- * @param resetType type of reset to be performed, possible values 
+ * @param resetType type of reset to be performed, possible values
  *                       = kSmartcardColdReset, kSmartcardWarmReset
  *
  */
@@ -155,4 +155,3 @@ void SMARTCARD_DRV_DirectControl(uint32_t instance, void *interfaceControl, void
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

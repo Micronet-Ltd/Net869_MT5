@@ -86,11 +86,11 @@ typedef struct shell_command_struct  {
 
 typedef struct shell_getopt_context
 {
-    int   opterr;
-    int   optind;
-    int   optopt;
-    int   sp;
-    char  *optarg;
+	int   opterr;
+	int   optind;
+	int   optopt;
+	int   sp;
+	char  *optarg;
 }SHELL_GETOPT_CONTEXT;
 
 /*

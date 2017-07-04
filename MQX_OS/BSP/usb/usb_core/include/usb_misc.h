@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
 * All Rights Reserved
 *
 * Copyright (c) 1989-2008 ARC International;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
 *
 * $FileName: usb_misc.h$
-* $Version : 
-* $Date    : 
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -42,7 +42,7 @@
 
 /* USB device state- see USB 2.0 Documentation */
 #define USB_STATE_UNKNOWN                    (0xff)
-#define USB_STATE_PENDING_ADDRESS            (0x04) 
+#define USB_STATE_PENDING_ADDRESS            (0x04)
 #define USB_STATE_POWERED                    (0x03)
 #define USB_STATE_DEFAULT                    (0x02)
 #define USB_STATE_ADDRESS                    (0x01)
@@ -63,7 +63,7 @@
 
 /* possible values of XD->bStatus */
 #define USB_STATUS_IDLE                      (0)
-#define USB_STATUS_STALLED                   (1) 
+#define USB_STATUS_STALLED                   (1)
 #define USB_STATUS_TRANSFER_PENDING          (2)
 #define USB_STATUS_TRANSFER_IN_PROGRESS      (3)
 #define USB_STATUS_ERROR                     (4)
@@ -101,90 +101,90 @@
 #define USB_SETUP_PKT_SIZE              (8)/* Setup Packet Size */
 #define MAX_EXPECTED_CONTROL_OUT_SIZE   (76 + USB_SETUP_PKT_SIZE)
 
-typedef struct xd_struct 
+typedef struct xd_struct
 {
-    uint8_t            ep_num;           /* Endpoint number */
-    uint8_t            bdirection;       /* Direction : Send/Receive */
-    uint8_t            ep_type;          /* Type of the endpoint: Ctrl, Isoch, Bulk, Int */
-    uint8_t            bstatus;          /* Current transfer status */
-    uint8_t *          wstartaddress;    /* Address of first byte */
-    uint32_t           wtotallength;     /* number of bytes to send/recv */
-    uint32_t           wsofar;           /* number of bytes recv'd so far */
-    struct xd_struct*  next;
-    uint16_t           wmaxpacketsize;   /* max packet size */   
-    uint8_t            dont_zero_terminate;
+	uint8_t            ep_num;           /* Endpoint number */
+	uint8_t            bdirection;       /* Direction : Send/Receive */
+	uint8_t            ep_type;          /* Type of the endpoint: Ctrl, Isoch, Bulk, Int */
+	uint8_t            bstatus;          /* Current transfer status */
+	uint8_t *          wstartaddress;    /* Address of first byte */
+	uint32_t           wtotallength;     /* number of bytes to send/recv */
+	uint32_t           wsofar;           /* number of bytes recv'd so far */
+	struct xd_struct*  next;
+	uint16_t           wmaxpacketsize;   /* max packet size */
+	uint8_t            dont_zero_terminate;
 #if (defined USBCFG_KHCI_4BYTE_ALIGN_FIX && USBCFG_KHCI_4BYTE_ALIGN_FIX)
-    uint8_t               internal_dma_align;
+	uint8_t               internal_dma_align;
 #endif
-    uint8_t            max_pkts_per_uframe;
+	uint8_t            max_pkts_per_uframe;
 } xd_struct_t;
 
 typedef struct
 {
-    uint8_t*             name;
-    uint8_t             instance;
+	uint8_t*             name;
+	uint8_t             instance;
 } usb_instance_t;
 
 #if (defined USBCFG_DEV_KHCI && USBCFG_DEV_KHCI) || (defined USBCFG_DEV_EHCI && USBCFG_DEV_EHCI)
 typedef struct usb_dev_data
 {
-    uint8_t             control_out[(((MAX_EXPECTED_CONTROL_OUT_SIZE-1)/32) + 1) * 32];
-                         /* control_out must be 32 byte align, 
-                                        ** 96 = (((MAX_EXPECTED_CONTROL_OUT_SIZE-1)/32) + 1) * 32
-                                        */
+	uint8_t             control_out[(((MAX_EXPECTED_CONTROL_OUT_SIZE-1)/32) + 1) * 32];
+						 /* control_out must be 32 byte align,
+										** 96 = (((MAX_EXPECTED_CONTROL_OUT_SIZE-1)/32) + 1) * 32
+										*/
 } usb_dev_data_t;
 #endif
 
 #if (defined USBCFG_DEV_KHCI && USBCFG_DEV_KHCI)
 typedef struct usb_device_khci_data
 {
-    uint8_t             setup_packet[16];
+	uint8_t             setup_packet[16];
 #if USBCFG_KHCI_4BYTE_ALIGN_FIX
-    uint8_t             swap_buf[USBCFG_DEV_KHCI_SWAP_BUF_MAX];
+	uint8_t             swap_buf[USBCFG_DEV_KHCI_SWAP_BUF_MAX];
 #endif
-    uint8_t             xd_base[USBCFG_DEV_MAX_XDS * sizeof(xd_struct_t)];
+	uint8_t             xd_base[USBCFG_DEV_MAX_XDS * sizeof(xd_struct_t)];
 }usb_device_khci_data_t;
 #endif
 
 #if (defined USBCFG_DEV_EHCI && USBCFG_DEV_EHCI)
 typedef struct usb_device_ehci_data
 {
-    uint8_t             qh_base[USBCFG_DEV_EHCI_MAX_ENDPOINTS * 2 * 64];
-    uint8_t             dtd_base[USBCFG_DEV_EHCI_MAX_DTD * 32];
-    uint8_t             xd_base[USBCFG_DEV_MAX_XDS * sizeof(xd_struct_t)];
-    uint8_t             reserved[688]; /* each ehci data should be 2048B aligned */
+	uint8_t             qh_base[USBCFG_DEV_EHCI_MAX_ENDPOINTS * 2 * 64];
+	uint8_t             dtd_base[USBCFG_DEV_EHCI_MAX_DTD * 32];
+	uint8_t             xd_base[USBCFG_DEV_MAX_XDS * sizeof(xd_struct_t)];
+	uint8_t             reserved[688]; /* each ehci data should be 2048B aligned */
 }usb_device_ehci_data_t;
 #endif
 
 typedef enum
 {
-    INTR_USBRST = 0x01,
-    INTR_ERROR  = 0x02,
-    INTR_SOFTOK = 0x04,
-    INTR_TOKDNE = 0x08,
-    INTR_SLEEP  = 0x10,
-    INTR_RESUME = 0x20,
-    INTR_ATTACH = 0x40,
-    INTR_STALL  = 0x80, 
+	INTR_USBRST = 0x01,
+	INTR_ERROR  = 0x02,
+	INTR_SOFTOK = 0x04,
+	INTR_TOKDNE = 0x08,
+	INTR_SLEEP  = 0x10,
+	INTR_RESUME = 0x20,
+	INTR_ATTACH = 0x40,
+	INTR_STALL  = 0x80,
 }INTR_TYPE;
 
 typedef enum
 {
-    ERROR_PIDERR  = 0x01,
-    ERROR_CRC5EOF = 0x02,
-    ERROR_CRC16   = 0x04,
-    ERROR_DFN8    = 0x08,
-    ERROR_BTOERR  = 0x10,
-    ERROR_DMAERR  = 0x20,
-    ERROR_BTSERR  = 0x80,
+	ERROR_PIDERR  = 0x01,
+	ERROR_CRC5EOF = 0x02,
+	ERROR_CRC16   = 0x04,
+	ERROR_DFN8    = 0x08,
+	ERROR_BTOERR  = 0x10,
+	ERROR_DMAERR  = 0x20,
+	ERROR_BTSERR  = 0x80,
 }ERROR_TYPE;
 
 typedef enum
 {
-    USB_CONTROLLER_KHCI_0 = 0x00,
-    USB_CONTROLLER_KHCI_1,
-    USB_CONTROLLER_EHCI_0,
-    USB_CONTROLLER_EHCI_1
+	USB_CONTROLLER_KHCI_0 = 0x00,
+	USB_CONTROLLER_KHCI_1,
+	USB_CONTROLLER_EHCI_0,
+	USB_CONTROLLER_EHCI_1
 }CONTROLLER_INDEX;
 
 #endif

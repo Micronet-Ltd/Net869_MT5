@@ -45,7 +45,7 @@
 /*******************************************************************************
  * API
  ******************************************************************************/
- 
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -66,19 +66,19 @@ extern "C" {
 #if (HW_USB_INSTANCE_COUNT > 1)
 static USB_MemMapPtr _usb_hal_ehci_get_base_addr(uint32_t instance)
 {
-    USB_MemMapPtr base;
-    switch(instance)
-    {
-        case 0:
-            base = USB0_BASE_PTR;
-            break;
-        case 1:
-            base = USB1_BASE_PTR;
-            break;
-        default:
-            break;
-        }
-        return base;
+	USB_MemMapPtr base;
+	switch(instance)
+	{
+		case 0:
+			base = USB0_BASE_PTR;
+			break;
+		case 1:
+			base = USB1_BASE_PTR;
+			break;
+		default:
+			break;
+		}
+		return base;
 }
 #endif
 
@@ -91,7 +91,7 @@ static USB_MemMapPtr _usb_hal_ehci_get_base_addr(uint32_t instance)
  */
 static inline void usb_hal_ehci_set_controller_host_mode(uint32_t baseAddr)
 {
-    USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_CM_MASK) | USBHS_USBMODE_CM(0x3); 
+	USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_CM_MASK) | USBHS_USBMODE_CM(0x3);
 }
 
 /*!
@@ -103,7 +103,7 @@ static inline void usb_hal_ehci_set_controller_host_mode(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_set_controller_device_mode(uint32_t baseAddr)
 {
-    USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_CM_MASK) | USBHS_USBMODE_CM(0x2); 
+	USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_CM_MASK) | USBHS_USBMODE_CM(0x2);
 }
 
 /*!
@@ -115,7 +115,7 @@ static inline void usb_hal_ehci_set_controller_device_mode(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_set_big_endian(uint32_t baseAddr)
 {
-    USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_ES_MASK)|(1 << USBHS_USBMODE_ES_SHIFT);
+	USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_ES_MASK)|(1 << USBHS_USBMODE_ES_SHIFT);
 }
 
 /*!
@@ -127,7 +127,7 @@ static inline void usb_hal_ehci_set_big_endian(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_set_little_endian(uint32_t baseAddr)
 {
-    USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_ES_MASK)|(0 << USBHS_USBMODE_ES_SHIFT);
+	USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_ES_MASK)|(0 << USBHS_USBMODE_ES_SHIFT);
 }
 
 /*!
@@ -139,7 +139,7 @@ static inline void usb_hal_ehci_set_little_endian(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_disable_setup_lock(uint32_t baseAddr)
 {
-    USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_SLOM_MASK)|(1 << USBHS_USBMODE_SLOM_SHIFT);
+	USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_SLOM_MASK)|(1 << USBHS_USBMODE_SLOM_SHIFT);
 }
 
 /*!
@@ -151,7 +151,7 @@ static inline void usb_hal_ehci_disable_setup_lock(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_enable_setup_lock(uint32_t baseAddr)
 {
-    USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_SLOM_MASK)|(0 << USBHS_USBMODE_SLOM_SHIFT);
+	USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = (USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) & ~USBHS_USBMODE_SLOM_MASK)|(0 << USBHS_USBMODE_SLOM_SHIFT);
 }
 
 /*!
@@ -164,7 +164,7 @@ static inline void usb_hal_ehci_enable_setup_lock(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_set_usb_mode(uint32_t baseAddr, uint32_t mode)
 {
-    USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = mode;
+	USBHS_USBMODE_REG((USBHS_MemMapPtr)baseAddr) = mode;
 }
 
 /*!
@@ -177,7 +177,7 @@ static inline void usb_hal_ehci_set_usb_mode(uint32_t baseAddr, uint32_t mode)
  */
 static inline uint32_t usb_hal_ehci_get_dcc_params(uint32_t baseAddr)
 {
-    return USBHS_DCCPARAMS_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_DCCPARAMS_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -189,8 +189,8 @@ static inline uint32_t usb_hal_ehci_get_dcc_params(uint32_t baseAddr)
  * @param epSetupStatus the epSetupStatus needs to clear from endpoint.
  */
 static inline void usb_hal_ehci_clear_ep_setup_status(uint32_t baseAddr, uint32_t epSetupStatus)
-{   
-    USBHS_EPSETUPSR_REG((USBHS_MemMapPtr)baseAddr) |= (epSetupStatus << USBHS_EPSETUPSR_EPSETUPSTAT_SHIFT) & USBHS_EPSETUPSR_EPSETUPSTAT_MASK;
+{
+	USBHS_EPSETUPSR_REG((USBHS_MemMapPtr)baseAddr) |= (epSetupStatus << USBHS_EPSETUPSR_EPSETUPSTAT_SHIFT) & USBHS_EPSETUPSR_EPSETUPSTAT_MASK;
 }
 
 /*!
@@ -203,7 +203,7 @@ static inline void usb_hal_ehci_clear_ep_setup_status(uint32_t baseAddr, uint32_
  */
 static inline void usb_hal_ehci_clear_setup_stat_ep_num(uint32_t baseAddr, uint32_t ep_num)
 {
-    USBHS_EPSETUPSR_REG((USBHS_MemMapPtr)baseAddr) = ep_num;
+	USBHS_EPSETUPSR_REG((USBHS_MemMapPtr)baseAddr) = ep_num;
 }
 
 /*!
@@ -215,8 +215,8 @@ static inline void usb_hal_ehci_clear_setup_stat_ep_num(uint32_t baseAddr, uint3
  * @return the epSetupStatus of endpoint.
  */
 static inline uint32_t usb_hal_ehci_get_ep_setup_status(uint32_t baseAddr)
-{   
-    return USBHS_EPSETUPSR_REG((USBHS_MemMapPtr)baseAddr);
+{
+	return USBHS_EPSETUPSR_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -229,7 +229,7 @@ static inline uint32_t usb_hal_ehci_get_ep_setup_status(uint32_t baseAddr)
  */
 static inline uint32_t usb_hal_ehci_get_ep_complete_status(uint32_t baseAddr)
 {
-    return USBHS_EPCOMPLETE_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_EPCOMPLETE_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -242,7 +242,7 @@ static inline uint32_t usb_hal_ehci_get_ep_complete_status(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_clear_ep_complete_status(uint32_t baseAddr, uint32_t epCompleteStatus)
 {
-    USBHS_EPCOMPLETE_REG((USBHS_MemMapPtr)baseAddr) = epCompleteStatus;
+	USBHS_EPCOMPLETE_REG((USBHS_MemMapPtr)baseAddr) = epCompleteStatus;
 }
 
 /*!
@@ -255,7 +255,7 @@ static inline void usb_hal_ehci_clear_ep_complete_status(uint32_t baseAddr, uint
  */
 static inline void usb_hal_ehci_set_eplist_address(uint32_t baseAddr, uint32_t epQHAddress)
 {
-    USBHS_EPLISTADDR_REG((USBHS_MemMapPtr)baseAddr) = epQHAddress;
+	USBHS_EPLISTADDR_REG((USBHS_MemMapPtr)baseAddr) = epQHAddress;
 }
 
 /*!
@@ -268,7 +268,7 @@ static inline void usb_hal_ehci_set_eplist_address(uint32_t baseAddr, uint32_t e
  */
 static inline uint32_t usb_hal_ehci_get_eplist_address(uint32_t baseAddr)
 {
-    return USBHS_EPLISTADDR_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_EPLISTADDR_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -281,7 +281,7 @@ static inline uint32_t usb_hal_ehci_get_eplist_address(uint32_t baseAddr)
  */
 static inline uint32_t usb_hal_ehci_get_interrupt_enable_status(uint32_t baseAddr)
 {
-    return USBHS_USBINTR_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_USBINTR_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -294,7 +294,7 @@ static inline uint32_t usb_hal_ehci_get_interrupt_enable_status(uint32_t baseAdd
  */
 static inline void usb_hal_ehci_enable_interrupts(uint32_t baseAddr, uint32_t intrType)
 {
-    USBHS_USBINTR_REG((USBHS_MemMapPtr)baseAddr) |= intrType;
+	USBHS_USBINTR_REG((USBHS_MemMapPtr)baseAddr) |= intrType;
 }
 
 /*!
@@ -320,7 +320,7 @@ static inline void usb_hal_ehci_interrupts_set(uint32_t baseAddr, uint32_t intrT
  */
 static inline void usb_hal_ehci_disable_interrupts(uint32_t baseAddr, uint32_t intrType)
 {
-    USBHS_USBINTR_REG((USBHS_MemMapPtr)baseAddr) &= ~intrType;
+	USBHS_USBINTR_REG((USBHS_MemMapPtr)baseAddr) &= ~intrType;
 }
 
 /*!
@@ -332,7 +332,7 @@ static inline void usb_hal_ehci_disable_interrupts(uint32_t baseAddr, uint32_t i
  */
 static inline void usb_hal_ehci_initiate_attach_event(uint32_t baseAddr)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) |= EHCI_CMD_RUN_STOP;
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) |= EHCI_CMD_RUN_STOP;
 }
 
 /*!
@@ -344,7 +344,7 @@ static inline void usb_hal_ehci_initiate_attach_event(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_initiate_detach_event(uint32_t baseAddr)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= (uint32_t)(~(uint32_t)EHCI_CMD_RUN_STOP);
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= (uint32_t)(~(uint32_t)EHCI_CMD_RUN_STOP);
 }
 
 /*!
@@ -356,7 +356,7 @@ static inline void usb_hal_ehci_initiate_detach_event(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_reset_controller(uint32_t baseAddr)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) = EHCI_CMD_CTRL_RESET;
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) = EHCI_CMD_CTRL_RESET;
 }
 
 /*!
@@ -368,7 +368,7 @@ static inline void usb_hal_ehci_reset_controller(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_set_dtd_tripwire(uint32_t baseAddr)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) |= EHCI_CMD_ATDTW_TRIPWIRE_SET;
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) |= EHCI_CMD_ATDTW_TRIPWIRE_SET;
 }
 
 /*!
@@ -380,7 +380,7 @@ static inline void usb_hal_ehci_set_dtd_tripwire(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_clear_dtd_tripwire(uint32_t baseAddr)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= (uint32_t)(~(uint32_t)EHCI_CMD_ATDTW_TRIPWIRE_SET);
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= (uint32_t)(~(uint32_t)EHCI_CMD_ATDTW_TRIPWIRE_SET);
 }
 
 /*!
@@ -392,7 +392,7 @@ static inline void usb_hal_ehci_clear_dtd_tripwire(uint32_t baseAddr)
  */
 static inline void usb_hal_echi_disable_usb_cmd_async_sched(uint32_t baseAddr)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= (uint32_t)(~(uint32_t)EHCI_USBCMD_ASYNC_SCHED_ENABLE);
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= (uint32_t)(~(uint32_t)EHCI_USBCMD_ASYNC_SCHED_ENABLE);
 }
 
 /*!
@@ -404,7 +404,7 @@ static inline void usb_hal_echi_disable_usb_cmd_async_sched(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_enable_usb_cmd_async_sched(uint32_t baseAddr)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) |= EHCI_USBCMD_ASYNC_SCHED_ENABLE;
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) |= EHCI_USBCMD_ASYNC_SCHED_ENABLE;
 }
 
 /*!
@@ -416,7 +416,7 @@ static inline void usb_hal_ehci_enable_usb_cmd_async_sched(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_disable_usb_cmd_periodic_sched(uint32_t baseAddr)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= (uint32_t)(~(uint32_t)EHCI_USBCMD_PERIODIC_SCHED_ENABLE);
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= (uint32_t)(~(uint32_t)EHCI_USBCMD_PERIODIC_SCHED_ENABLE);
 }
 
 /*!
@@ -429,7 +429,7 @@ static inline void usb_hal_ehci_disable_usb_cmd_periodic_sched(uint32_t baseAddr
  */
 static inline uint32_t usb_hal_ehci_is_tripwire_set(uint32_t baseAddr)
 {
-    return (USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) & EHCI_CMD_ATDTW_TRIPWIRE_SET);
+	return (USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) & EHCI_CMD_ATDTW_TRIPWIRE_SET);
 }
 
 /*!
@@ -441,7 +441,7 @@ static inline uint32_t usb_hal_ehci_is_tripwire_set(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_clear_usb_cmd_setup_trip_wire(uint32_t baseAddr)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= (uint32_t)(~(uint32_t)EHCI_CMD_SETUP_TRIPWIRE_SET);
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= (uint32_t)(~(uint32_t)EHCI_CMD_SETUP_TRIPWIRE_SET);
 }
 
 /*!
@@ -453,7 +453,7 @@ static inline void usb_hal_ehci_clear_usb_cmd_setup_trip_wire(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_set_usb_cmd_setup_trip_wire(uint32_t baseAddr)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) |= EHCI_CMD_SETUP_TRIPWIRE_SET;
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) |= EHCI_CMD_SETUP_TRIPWIRE_SET;
 }
 
 /*!
@@ -466,7 +466,7 @@ static inline void usb_hal_ehci_set_usb_cmd_setup_trip_wire(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_set_usb_cmd(uint32_t baseAddr, uint32_t value)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) = value;
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) = value;
 }
 
 /*!
@@ -479,7 +479,7 @@ static inline void usb_hal_ehci_set_usb_cmd(uint32_t baseAddr, uint32_t value)
  */
 static inline void usb_hal_ehci_clear_usb_cmd(uint32_t baseAddr, uint32_t value)
 {
-    USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= ~(value);
+	USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr) &= ~(value);
 }
 
 
@@ -493,7 +493,7 @@ static inline void usb_hal_ehci_clear_usb_cmd(uint32_t baseAddr, uint32_t value)
  */
 static inline uint32_t  usb_hal_ehci_get_usb_cmd(uint32_t baseAddr)
 {
-    return USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_USBCMD_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 
@@ -507,7 +507,7 @@ static inline uint32_t  usb_hal_ehci_get_usb_cmd(uint32_t baseAddr)
  */
 static inline uint8_t usb_hal_ehci_get_cap_length(uint32_t baseAddr)
 {
-    return 0;
+	return 0;
 }
 
 /*!
@@ -520,7 +520,7 @@ static inline uint8_t usb_hal_ehci_get_cap_length(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_set_usb_config(uint32_t baseAddr, uint32_t value)
 {
-    //USBHS_CONFIGFLAG = value;
+	//USBHS_CONFIGFLAG = value;
 }
 
 /*!
@@ -532,8 +532,8 @@ static inline void usb_hal_ehci_set_usb_config(uint32_t baseAddr, uint32_t value
  * @param value the value needs to be set.
  */
 static inline void usb_hal_ehci_set_endpoint_prime(uint32_t baseAddr, uint32_t value)
-{   
-    USBHS_EPPRIME_REG((USBHS_MemMapPtr)baseAddr) = value;
+{
+	USBHS_EPPRIME_REG((USBHS_MemMapPtr)baseAddr) = value;
 }
 
 /*!
@@ -546,7 +546,7 @@ static inline void usb_hal_ehci_set_endpoint_prime(uint32_t baseAddr, uint32_t v
  */
 static inline uint32_t usb_hal_ehci_get_endpoint_prime(uint32_t baseAddr)
 {
-    return USBHS_EPPRIME_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_EPPRIME_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -559,7 +559,7 @@ static inline uint32_t usb_hal_ehci_get_endpoint_prime(uint32_t baseAddr)
  */
 static inline uint32_t usb_hal_echi_get_endpoint_status(uint32_t baseAddr)
 {
-    return USBHS_EPSR_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_EPSR_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -572,7 +572,7 @@ static inline uint32_t usb_hal_echi_get_endpoint_status(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_flush_endpoint_buffer(uint32_t baseAddr, uint32_t epNumber)
 {
-    USBHS_EPFLUSH_REG((USBHS_MemMapPtr)baseAddr) = epNumber;
+	USBHS_EPFLUSH_REG((USBHS_MemMapPtr)baseAddr) = epNumber;
 }
 
 /*!
@@ -586,7 +586,7 @@ static inline void usb_hal_ehci_flush_endpoint_buffer(uint32_t baseAddr, uint32_
  */
 static inline uint32_t usb_hal_ehci_is_endpoint_transfer_flushed(uint32_t baseAddr, uint32_t epNumber)
 {
-    return (USBHS_EPFLUSH_REG((USBHS_MemMapPtr)baseAddr) & epNumber);
+	return (USBHS_EPFLUSH_REG((USBHS_MemMapPtr)baseAddr) & epNumber);
 }
 
 /*!
@@ -599,7 +599,7 @@ static inline uint32_t usb_hal_ehci_is_endpoint_transfer_flushed(uint32_t baseAd
  */
 static inline uint32_t usb_hal_ehci_get_frame_index(uint32_t baseAddr)
 {
-    return USBHS_FRINDEX_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_FRINDEX_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -612,7 +612,7 @@ static inline uint32_t usb_hal_ehci_get_frame_index(uint32_t baseAddr)
  */
 static inline uint32_t usb_hal_ehci_get_port_status(uint32_t baseAddr)
 {
-    return USBHS_PORTSC1_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_PORTSC1_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -625,7 +625,7 @@ static inline uint32_t usb_hal_ehci_get_port_status(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_set_port_status(uint32_t baseAddr, uint32_t status)
 {
-    USBHS_PORTSC1_REG((USBHS_MemMapPtr)baseAddr) = status;
+	USBHS_PORTSC1_REG((USBHS_MemMapPtr)baseAddr) = status;
 }
 
 /*!
@@ -638,7 +638,7 @@ static inline void usb_hal_ehci_set_port_status(uint32_t baseAddr, uint32_t stat
  */
 static inline uint32_t usb_hal_ehci_get_usb_interrupt_status(uint32_t baseAddr)
 {
-    return USBHS_USBSTS_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_USBSTS_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -651,7 +651,7 @@ static inline uint32_t usb_hal_ehci_get_usb_interrupt_status(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_clear_usb_interrupt_status(uint32_t baseAddr, uint32_t status)
 {
-    USBHS_USBSTS_REG((USBHS_MemMapPtr)baseAddr) = status;
+	USBHS_USBSTS_REG((USBHS_MemMapPtr)baseAddr) = status;
 }
 
 /*!
@@ -664,7 +664,7 @@ static inline void usb_hal_ehci_clear_usb_interrupt_status(uint32_t baseAddr, ui
  */
 static inline uint32_t usb_hal_ehci_get_hcsparams(uint32_t baseAddr)
 {
-    return USBHS_HCSPARAMS_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_HCSPARAMS_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -677,7 +677,7 @@ static inline uint32_t usb_hal_ehci_get_hcsparams(uint32_t baseAddr)
  */
 static inline uint32_t usb_hal_ehci_get_hccparams(uint32_t baseAddr)
 {
-    return USBHS_HCCPARAMS_REG((USBHS_MemMapPtr)baseAddr);
+	return USBHS_HCCPARAMS_REG((USBHS_MemMapPtr)baseAddr);
 }
 
 /*!
@@ -689,7 +689,7 @@ static inline uint32_t usb_hal_ehci_get_hccparams(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_clear_device_address(uint32_t baseAddr)
 {
-    USBHS_DEVICEADDR_REG((USBHS_MemMapPtr)baseAddr) &= ~0xFE000000;
+	USBHS_DEVICEADDR_REG((USBHS_MemMapPtr)baseAddr) &= ~0xFE000000;
 }
 
 /*!
@@ -702,7 +702,7 @@ static inline void usb_hal_ehci_clear_device_address(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_set_qh_to_curr_async_list(uint32_t baseAddr, uint32_t qh_addr)
 {
-    USBHS_ASYNCLISTADDR_REG((USBHS_MemMapPtr)baseAddr) = qh_addr;
+	USBHS_ASYNCLISTADDR_REG((USBHS_MemMapPtr)baseAddr) = qh_addr;
 }
 
 /*!
@@ -728,7 +728,7 @@ static inline uint32_t usb_hal_ehci_get_curr_async_list(uint32_t baseAddr)
  */
 static inline void usb_hal_ehci_set_periodic_list_base_addr(uint32_t baseAddr, uint32_t base_addr)
 {
-    USBHS_PERIODICLISTBASE_REG((USBHS_MemMapPtr)baseAddr) = base_addr;
+	USBHS_PERIODICLISTBASE_REG((USBHS_MemMapPtr)baseAddr) = base_addr;
 }
 
 /*!
@@ -743,22 +743,22 @@ static inline void usb_hal_ehci_set_periodic_list_base_addr(uint32_t baseAddr, u
  */
 static inline void usb_hal_ehci_enable_endpoint(uint32_t baseAddr, uint32_t epNumber, uint32_t direction, uint32_t type)
 {
-    if (epNumber == 0)
-    {
-        USBHS_EPCR0_REG((USBHS_MemMapPtr)baseAddr) |= ((direction ? (uint32_t)(EHCI_EPCTRL_TX_ENABLE |
-            EHCI_EPCTRL_TX_DATA_TOGGLE_RST) :
-            (uint32_t)(EHCI_EPCTRL_RX_ENABLE | EHCI_EPCTRL_RX_DATA_TOGGLE_RST)) |
-            (type << (direction ?
-            EHCI_EPCTRL_TX_EP_TYPE_SHIFT : EHCI_EPCTRL_RX_EP_TYPE_SHIFT)));
-    }
-    else
-    {
-        USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1) |= ((direction ? (uint32_t)(EHCI_EPCTRL_TX_ENABLE |
-            EHCI_EPCTRL_TX_DATA_TOGGLE_RST) :
-            (uint32_t)(EHCI_EPCTRL_RX_ENABLE | EHCI_EPCTRL_RX_DATA_TOGGLE_RST)) |
-            (type << (direction ?
-            EHCI_EPCTRL_TX_EP_TYPE_SHIFT : EHCI_EPCTRL_RX_EP_TYPE_SHIFT)));
-    }
+	if (epNumber == 0)
+	{
+		USBHS_EPCR0_REG((USBHS_MemMapPtr)baseAddr) |= ((direction ? (uint32_t)(EHCI_EPCTRL_TX_ENABLE |
+			EHCI_EPCTRL_TX_DATA_TOGGLE_RST) :
+			(uint32_t)(EHCI_EPCTRL_RX_ENABLE | EHCI_EPCTRL_RX_DATA_TOGGLE_RST)) |
+			(type << (direction ?
+			EHCI_EPCTRL_TX_EP_TYPE_SHIFT : EHCI_EPCTRL_RX_EP_TYPE_SHIFT)));
+	}
+	else
+	{
+		USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1) |= ((direction ? (uint32_t)(EHCI_EPCTRL_TX_ENABLE |
+			EHCI_EPCTRL_TX_DATA_TOGGLE_RST) :
+			(uint32_t)(EHCI_EPCTRL_RX_ENABLE | EHCI_EPCTRL_RX_DATA_TOGGLE_RST)) |
+			(type << (direction ?
+			EHCI_EPCTRL_TX_EP_TYPE_SHIFT : EHCI_EPCTRL_RX_EP_TYPE_SHIFT)));
+	}
 }
 
 /*!
@@ -772,7 +772,7 @@ static inline void usb_hal_ehci_enable_endpoint(uint32_t baseAddr, uint32_t epNu
  */
 static inline void usb_hal_ehci_disable_endpoint(uint32_t baseAddr, uint32_t epNumber, uint32_t direction)
 {
-    USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr, epNumber) &= ~(direction ? ((uint32_t)EHCI_EPCTRL_TX_ENABLE|EHCI_EPCTRL_TX_TYPE):((uint32_t)EHCI_EPCTRL_RX_ENABLE|EHCI_EPCTRL_RX_TYPE));
+	USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr, epNumber) &= ~(direction ? ((uint32_t)EHCI_EPCTRL_TX_ENABLE|EHCI_EPCTRL_TX_TYPE):((uint32_t)EHCI_EPCTRL_RX_ENABLE|EHCI_EPCTRL_RX_TYPE));
 }
 
 /*!
@@ -786,8 +786,8 @@ static inline void usb_hal_ehci_disable_endpoint(uint32_t baseAddr, uint32_t epN
  */
 static inline uint32_t usb_hal_ehci_get_endpoint_control(uint32_t baseAddr, uint32_t epNumber)
 {
-    return (epNumber == 0 ? USBHS_EPCR0_REG((USBHS_MemMapPtr)baseAddr) : USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1));
-}   
+	return (epNumber == 0 ? USBHS_EPCR0_REG((USBHS_MemMapPtr)baseAddr) : USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1));
+}
 
 /*!
  * @brief Clear the endpoint  stall status.
@@ -800,14 +800,14 @@ static inline uint32_t usb_hal_ehci_get_endpoint_control(uint32_t baseAddr, uint
  */
 static inline void usb_hal_ehci_clear_endpoint_stall(uint32_t baseAddr, uint32_t epNumber, uint32_t direction)
 {
-    if (epNumber == 0)
-    {
-        USBHS_EPCR0_REG((USBHS_MemMapPtr)baseAddr) &= ~(direction ? (uint32_t)EHCI_EPCTRL_TX_EP_STALL : EHCI_EPCTRL_RX_EP_STALL);
-    }
-    else
-    {
-        USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1) &= ~(direction ? (uint32_t)EHCI_EPCTRL_TX_EP_STALL : EHCI_EPCTRL_RX_EP_STALL);
-    }
+	if (epNumber == 0)
+	{
+		USBHS_EPCR0_REG((USBHS_MemMapPtr)baseAddr) &= ~(direction ? (uint32_t)EHCI_EPCTRL_TX_EP_STALL : EHCI_EPCTRL_RX_EP_STALL);
+	}
+	else
+	{
+		USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1) &= ~(direction ? (uint32_t)EHCI_EPCTRL_TX_EP_STALL : EHCI_EPCTRL_RX_EP_STALL);
+	}
 }
 
 /*!
@@ -821,10 +821,10 @@ static inline void usb_hal_ehci_clear_endpoint_stall(uint32_t baseAddr, uint32_t
  */
 static inline void usb_hal_ehci_reset_endpoint_data_toggle(uint32_t baseAddr, uint32_t epNumber, uint32_t direction)
 {
-    if (epNumber != 0)
-    {
-        USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1) |= (direction ? (uint32_t)EHCI_EPCTRL_TX_DATA_TOGGLE_RST : EHCI_EPCTRL_RX_DATA_TOGGLE_RST);
-    }
+	if (epNumber != 0)
+	{
+		USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1) |= (direction ? (uint32_t)EHCI_EPCTRL_TX_DATA_TOGGLE_RST : EHCI_EPCTRL_RX_DATA_TOGGLE_RST);
+	}
 }
 
 /*!
@@ -837,14 +837,14 @@ static inline void usb_hal_ehci_reset_endpoint_data_toggle(uint32_t baseAddr, ui
  */
 static inline void usb_hal_ehci_stall_both_directions(uint32_t baseAddr, uint32_t epNumber)
 {
-    if (epNumber == 0)
-    {
-        USBHS_EPCR0_REG((USBHS_MemMapPtr)baseAddr) |= (EHCI_EPCTRL_TX_EP_STALL | EHCI_EPCTRL_RX_EP_STALL);
-    }
-    else
-    {
-        USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1) |= (EHCI_EPCTRL_TX_EP_STALL | EHCI_EPCTRL_RX_EP_STALL);
-    }
+	if (epNumber == 0)
+	{
+		USBHS_EPCR0_REG((USBHS_MemMapPtr)baseAddr) |= (EHCI_EPCTRL_TX_EP_STALL | EHCI_EPCTRL_RX_EP_STALL);
+	}
+	else
+	{
+		USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1) |= (EHCI_EPCTRL_TX_EP_STALL | EHCI_EPCTRL_RX_EP_STALL);
+	}
 }
 
 /*!
@@ -858,14 +858,14 @@ static inline void usb_hal_ehci_stall_both_directions(uint32_t baseAddr, uint32_
  */
 static inline void usb_hal_ehci_stall_specific_direction(uint32_t baseAddr, uint32_t epNumber, uint32_t direction)
 {
-    if (epNumber == 0)
-    {
-        USBHS_EPCR0_REG((USBHS_MemMapPtr)baseAddr) |= (uint32_t)(direction ? EHCI_EPCTRL_TX_EP_STALL : EHCI_EPCTRL_RX_EP_STALL);
-    }
-    else
-    {
-        USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1) |= (uint32_t)(direction ? EHCI_EPCTRL_TX_EP_STALL : EHCI_EPCTRL_RX_EP_STALL);
-    }
+	if (epNumber == 0)
+	{
+		USBHS_EPCR0_REG((USBHS_MemMapPtr)baseAddr) |= (uint32_t)(direction ? EHCI_EPCTRL_TX_EP_STALL : EHCI_EPCTRL_RX_EP_STALL);
+	}
+	else
+	{
+		USBHS_EPCR_REG((USBHS_MemMapPtr)baseAddr,epNumber - 1) |= (uint32_t)(direction ? EHCI_EPCTRL_TX_EP_STALL : EHCI_EPCTRL_RX_EP_STALL);
+	}
 }
 
 
@@ -879,7 +879,7 @@ static inline void usb_hal_ehci_stall_specific_direction(uint32_t baseAddr, uint
  */
 static inline void usb_hal_ehci_set_device_address(uint32_t baseAddr, uint32_t address)
 {
-    USBHS_DEVICEADDR_REG((USBHS_MemMapPtr)baseAddr) = (uint32_t)(address << USBHS_ADDRESS_BIT_SHIFT);
+	USBHS_DEVICEADDR_REG((USBHS_MemMapPtr)baseAddr) = (uint32_t)(address << USBHS_ADDRESS_BIT_SHIFT);
 }
 
 /*!
@@ -891,7 +891,7 @@ static inline void usb_hal_ehci_set_device_address(uint32_t baseAddr, uint32_t a
  */
 static inline void usb_hal_ehci_clear_max_packet_length(usb_ehc_dev_qh_struct_t * epQueueHeadAddr)
 {
-    epQueueHeadAddr->MAX_PKT_LENGTH = 0;
+	epQueueHeadAddr->MAX_PKT_LENGTH = 0;
 }
 
 /*!
@@ -904,7 +904,7 @@ static inline void usb_hal_ehci_clear_max_packet_length(usb_ehc_dev_qh_struct_t 
  */
 static inline void usb_hal_ehci_set_max_packet_length(usb_ehc_dev_qh_struct_t * epQueueHeadAddr, uint32_t maxPacketSize)
 {
-    epQueueHeadAddr->MAX_PKT_LENGTH = ((uint32_t)maxPacketSize) ;
+	epQueueHeadAddr->MAX_PKT_LENGTH = ((uint32_t)maxPacketSize) ;
 }
 
 /*!
@@ -917,7 +917,7 @@ static inline void usb_hal_ehci_set_max_packet_length(usb_ehc_dev_qh_struct_t * 
  */
 static inline void usb_hal_ehci_set_max_packet_length_for_non_iso(usb_ehc_dev_qh_struct_t * epQueueHeadAddr, uint32_t value)
 {
-    epQueueHeadAddr->MAX_PKT_LENGTH = value;
+	epQueueHeadAddr->MAX_PKT_LENGTH = value;
 }
 
 /*!
@@ -930,7 +930,7 @@ static inline void usb_hal_ehci_set_max_packet_length_for_non_iso(usb_ehc_dev_qh
  */
 static inline uint32_t usb_hal_ehci_is_ios_set( usb_ehc_dev_qh_struct_t * epQueueHeadAddr)
 {
-    return (epQueueHeadAddr->MAX_PKT_LENGTH & VUSB_EP_QUEUE_HEAD_IOS);
+	return (epQueueHeadAddr->MAX_PKT_LENGTH & VUSB_EP_QUEUE_HEAD_IOS);
 }
 
 /*!
@@ -942,7 +942,7 @@ static inline uint32_t usb_hal_ehci_is_ios_set( usb_ehc_dev_qh_struct_t * epQueu
  */
 static inline void usb_hal_ehci_set_next_dtd_terminate(usb_ehc_dev_qh_struct_t * epQueueHeadAddr)
 {
-    epQueueHeadAddr->NEXT_DTD_PTR = VUSB_EP_QUEUE_HEAD_NEXT_TERMINATE;
+	epQueueHeadAddr->NEXT_DTD_PTR = VUSB_EP_QUEUE_HEAD_NEXT_TERMINATE;
 }
 
 /*!
@@ -980,7 +980,7 @@ static inline void usb_hal_ehci_set_dtd_next_tr_elem_ptr(volatile usb_ehci_dev_d
  */
 static inline void usb_hal_ehci_set_qh_next_dtd(usb_ehc_dev_qh_struct_t * epQueueHeadAddr, uint32_t dtdAddr)
 {
-    epQueueHeadAddr->NEXT_DTD_PTR = dtdAddr;
+	epQueueHeadAddr->NEXT_DTD_PTR = dtdAddr;
 }
 
 /*!
@@ -992,7 +992,7 @@ static inline void usb_hal_ehci_set_qh_next_dtd(usb_ehc_dev_qh_struct_t * epQueu
  */
 static inline void usb_hal_ehci_set_next_dtd_invalid(usb_ehci_dev_dtd_struct_t * dtdAddr)
 {
-    dtdAddr->NEXT_TR_ELEM_PTR = USBHS_TD_NEXT_TERMINATE;
+	dtdAddr->NEXT_TR_ELEM_PTR = USBHS_TD_NEXT_TERMINATE;
 }
 
 /*!
@@ -1004,7 +1004,7 @@ static inline void usb_hal_ehci_set_next_dtd_invalid(usb_ehci_dev_dtd_struct_t *
  */
 static inline void usb_hal_ehci_clear_size_ioc_sts( usb_ehci_dev_dtd_struct_t * dtdAddr)
 {
-    dtdAddr->SIZE_IOC_STS = 0;
+	dtdAddr->SIZE_IOC_STS = 0;
 }
 
 /*!
@@ -1016,7 +1016,7 @@ static inline void usb_hal_ehci_clear_size_ioc_sts( usb_ehci_dev_dtd_struct_t * 
  */
 static inline void usb_hal_ehci_clear_ioc_reserved_fields(volatile usb_ehci_dev_dtd_struct_t * dtdAddr)
 {
-    dtdAddr->SIZE_IOC_STS &= ~((uint32_t)USBHS_TD_RESERVED_FIELDS);
+	dtdAddr->SIZE_IOC_STS &= ~((uint32_t)USBHS_TD_RESERVED_FIELDS);
 }
 
 /*!
@@ -1028,13 +1028,13 @@ static inline void usb_hal_ehci_clear_ioc_reserved_fields(volatile usb_ehci_dev_
  */
 static inline void usb_hal_ehci_clear_dtd(volatile usb_ehci_dev_dtd_struct_t * dtdAddr)
 {
-    dtdAddr->NEXT_TR_ELEM_PTR = 0;
-    dtdAddr->SIZE_IOC_STS = 0;
-    dtdAddr->BUFF_PTR0 = 0;
-    dtdAddr->BUFF_PTR1 = 0;
-    dtdAddr->BUFF_PTR2 = 0;
-    dtdAddr->BUFF_PTR3 = 0;
-    dtdAddr->BUFF_PTR4 = 0;
+	dtdAddr->NEXT_TR_ELEM_PTR = 0;
+	dtdAddr->SIZE_IOC_STS = 0;
+	dtdAddr->BUFF_PTR0 = 0;
+	dtdAddr->BUFF_PTR1 = 0;
+	dtdAddr->BUFF_PTR2 = 0;
+	dtdAddr->BUFF_PTR3 = 0;
+	dtdAddr->BUFF_PTR4 = 0;
 }
 
 /*!
@@ -1047,11 +1047,11 @@ static inline void usb_hal_ehci_clear_dtd(volatile usb_ehci_dev_dtd_struct_t * d
  */
 static inline void usb_hal_ehci_set_dtd_buffer_address(volatile usb_ehci_dev_dtd_struct_t * dtdAddr, uint32_t addr)
 {
-    dtdAddr->BUFF_PTR0 = addr;
-    dtdAddr->BUFF_PTR1 = addr + 4096;
-    dtdAddr->BUFF_PTR2 = addr + (4096*2);
-    dtdAddr->BUFF_PTR3 = addr + (4096*3);
-    dtdAddr->BUFF_PTR4 = addr + (4096*4);
+	dtdAddr->BUFF_PTR0 = addr;
+	dtdAddr->BUFF_PTR1 = addr + 4096;
+	dtdAddr->BUFF_PTR2 = addr + (4096*2);
+	dtdAddr->BUFF_PTR3 = addr + (4096*3);
+	dtdAddr->BUFF_PTR4 = addr + (4096*4);
 }
 
 /*!
@@ -1064,7 +1064,7 @@ static inline void usb_hal_ehci_set_dtd_buffer_address(volatile usb_ehci_dev_dtd
  */
 static inline void usb_hal_ehci_set_dtd_size_ioc_status(volatile usb_ehci_dev_dtd_struct_t * dtdAddr, uint32_t value)
 {
-    dtdAddr->SIZE_IOC_STS = value;
+	dtdAddr->SIZE_IOC_STS = value;
 }
 
 /*!
@@ -1077,7 +1077,7 @@ static inline void usb_hal_ehci_set_dtd_size_ioc_status(volatile usb_ehci_dev_dt
  */
 static inline uint32_t usb_hal_ehci_get_dtd_size_ioc_status(volatile usb_ehci_dev_dtd_struct_t * dtdAddr)
 {
-    return dtdAddr->SIZE_IOC_STS;
+	return dtdAddr->SIZE_IOC_STS;
 }
 
 /*!
@@ -1090,7 +1090,7 @@ static inline uint32_t usb_hal_ehci_get_dtd_size_ioc_status(volatile usb_ehci_de
  */
 static inline uint32_t usb_hal_ehci_get_next_dtd_address(volatile usb_ehci_dev_dtd_struct_t * dtdAddr)
 {
-    return (dtdAddr->NEXT_TR_ELEM_PTR & USBHS_TD_ADDR_MASK);
+	return (dtdAddr->NEXT_TR_ELEM_PTR & USBHS_TD_ADDR_MASK);
 }
 
 /*!
@@ -1103,7 +1103,7 @@ static inline uint32_t usb_hal_ehci_get_next_dtd_address(volatile usb_ehci_dev_d
  */
 static inline uint32_t usb_hal_ehci_get_dtd_error_status( usb_ehci_dev_dtd_struct_t * dtdAddr)
 {
-    return (dtdAddr->SIZE_IOC_STS & USBHS_TD_ERROR_MASK);
+	return (dtdAddr->SIZE_IOC_STS & USBHS_TD_ERROR_MASK);
 }
 
 /*!
@@ -1116,7 +1116,7 @@ static inline uint32_t usb_hal_ehci_get_dtd_error_status( usb_ehci_dev_dtd_struc
  */
 static inline void usb_hal_ehci_clear_qh_error_status( usb_ehc_dev_qh_struct_t * epQueueHeadAddr, uint32_t errors)
 {
-    epQueueHeadAddr->SIZE_IOC_INT_STS &= ~errors;
+	epQueueHeadAddr->SIZE_IOC_INT_STS &= ~errors;
 }
 
 /*!
@@ -1129,7 +1129,7 @@ static inline void usb_hal_ehci_clear_qh_error_status( usb_ehc_dev_qh_struct_t *
  */
 static inline uint32_t usb_hal_ehci_get_tr_packet_size(usb_ehci_dev_dtd_struct_t * dtdAddr)
 {
-    return ((dtdAddr->SIZE_IOC_STS & VUSB_EP_TR_PACKET_SIZE) >> 16);
+	return ((dtdAddr->SIZE_IOC_STS & VUSB_EP_TR_PACKET_SIZE) >> 16);
 }
 
 /*!
@@ -1142,7 +1142,7 @@ static inline uint32_t usb_hal_ehci_get_tr_packet_size(usb_ehci_dev_dtd_struct_t
  */
 static inline uint32_t usb_hal_ehci_get_xd_for_this_dtd( usb_ehci_dev_dtd_struct_t * dtdAddr)
 {
-    return (uint32_t)dtdAddr->xd_for_this_dtd;
+	return (uint32_t)dtdAddr->xd_for_this_dtd;
 }
 
 /*!
@@ -1154,7 +1154,7 @@ static inline uint32_t usb_hal_ehci_get_xd_for_this_dtd( usb_ehci_dev_dtd_struct
  */
 static inline void usb_hal_ehci_clear_size_ioc_int_sts( usb_ehc_dev_qh_struct_t * epQueueHeadAddr)
 {
-    epQueueHeadAddr->SIZE_IOC_INT_STS = 0;
+	epQueueHeadAddr->SIZE_IOC_INT_STS = 0;
 }
 
 
@@ -1260,7 +1260,7 @@ static inline void usb_hal_ehci_set_transfer_data_struct( volatile uint32_t*  tr
  */
 static inline void usb_hal_ehci_set_itd_next_link_pointer(ehci_itd_struct_t* itd_ptr, uint32_t transaction_descriptor )
 {
-    itd_ptr->next_link_ptr = (uint32_t)transaction_descriptor;
+	itd_ptr->next_link_ptr = (uint32_t)transaction_descriptor;
 }
 
 /*!
@@ -1298,7 +1298,7 @@ static inline void usb_hal_ehci_set_ITD_terminate_bit(ehci_itd_struct_t* itd_ptr
  */
 static inline void usb_hal_ehci_store_endpoint_number_and_device_addr( ehci_itd_struct_t* itd_ptr, uint32_t value)
 {
-    itd_ptr->buffer_page_ptr_list[0] = value;
+	itd_ptr->buffer_page_ptr_list[0] = value;
 }
 
 /*!
@@ -1311,7 +1311,7 @@ static inline void usb_hal_ehci_store_endpoint_number_and_device_addr( ehci_itd_
  */
 static inline void usb_hal_ehci_store_max_packet_size_and_direction( ehci_itd_struct_t* itd_ptr, uint32_t value)
 {
-    itd_ptr->buffer_page_ptr_list[1] = value;
+	itd_ptr->buffer_page_ptr_list[1] = value;
 }
 
 /*!
@@ -1324,7 +1324,7 @@ static inline void usb_hal_ehci_store_max_packet_size_and_direction( ehci_itd_st
  */
 static inline void usb_hal_ehci_store_direction( ehci_itd_struct_t* itd_ptr, uint32_t direction)
 {
-    itd_ptr->buffer_page_ptr_list[1] |= (uint32_t)(direction << EHCI_ITD_DIRECTION_BIT_POS);
+	itd_ptr->buffer_page_ptr_list[1] |= (uint32_t)(direction << EHCI_ITD_DIRECTION_BIT_POS);
 }
 
 /*!
@@ -1432,7 +1432,7 @@ static inline void usb_hal_ehci_set_itd_length_scheduled( ehci_itd_struct_t* itd
  */
 static inline void usb_hal_ehci_set_sitd_next_link_pointer(ehci_sitd_struct_t* sitd_ptr, uint32_t transaction_descriptor )
 {
-    sitd_ptr->next_link_ptr =  (uint32_t)transaction_descriptor;
+	sitd_ptr->next_link_ptr =  (uint32_t)transaction_descriptor;
 }
 
 /*!
@@ -1458,7 +1458,7 @@ static inline uint32_t usb_hal_ehci_get_sitd_next_link_pointer(ehci_sitd_struct_
  */
 static inline uint32_t usb_hal_ehci_get_sitd_transfer_state(ehci_sitd_struct_t* sitd_ptr)
 {
-    return sitd_ptr->transfer_state;
+	return sitd_ptr->transfer_state;
 }
 
 /*!
@@ -1470,7 +1470,7 @@ static inline uint32_t usb_hal_ehci_get_sitd_transfer_state(ehci_sitd_struct_t* 
  */
 static inline void usb_hal_ehci_set_sitd_next_link_terminate_bit( ehci_sitd_struct_t* sitd_ptr)
 {
-    sitd_ptr->next_link_ptr = EHCI_SITD_T_BIT;
+	sitd_ptr->next_link_ptr = EHCI_SITD_T_BIT;
 }
 
 /*!
@@ -1482,7 +1482,7 @@ static inline void usb_hal_ehci_set_sitd_next_link_terminate_bit( ehci_sitd_stru
  */
 static inline void usb_hal_ehci_set_sitd_back_pointer_terminate_bit( ehci_sitd_struct_t* sitd_ptr)
 {
-    sitd_ptr->back_link_ptr = EHCI_SITD_T_BIT;
+	sitd_ptr->back_link_ptr = EHCI_SITD_T_BIT;
 }
 
 /*!
@@ -1715,14 +1715,14 @@ static inline void usb_hal_ehci_set_qh_horiz_link_ptr( ehci_qh_struct_t* qh_ptr,
  */
 static inline void usb_hal_ehci_init_qh( ehci_qh_struct_t* qh_ptr)
 {
-    qh_ptr->curr_qtd_link_ptr = EHCI_QTD_T_BIT;
-    qh_ptr->alt_next_qtd_link_ptr = EHCI_QTD_T_BIT;
-    qh_ptr->status = 0;
-    qh_ptr->buffer_ptr_0 = 0;
-    qh_ptr->buffer_ptr_1 = 0;
-    qh_ptr->buffer_ptr_2 = 0;
-    qh_ptr->buffer_ptr_3 = 0;
-    qh_ptr->buffer_ptr_4 = 0;
+	qh_ptr->curr_qtd_link_ptr = EHCI_QTD_T_BIT;
+	qh_ptr->alt_next_qtd_link_ptr = EHCI_QTD_T_BIT;
+	qh_ptr->status = 0;
+	qh_ptr->buffer_ptr_0 = 0;
+	qh_ptr->buffer_ptr_1 = 0;
+	qh_ptr->buffer_ptr_2 = 0;
+	qh_ptr->buffer_ptr_3 = 0;
+	qh_ptr->buffer_ptr_4 = 0;
 }
 
 /*!
@@ -1778,9 +1778,9 @@ static inline uint32_t usb_hal_ehci_get_ep_capab_charac2( ehci_qh_struct_t* qh_p
 }
 
 /*!
- * @brief Set the horiz link ptr terminate. 
+ * @brief Set the horiz link ptr terminate.
  *
- * This function Set the horiz link ptr terminate. 
+ * This function Set the horiz link ptr terminate.
  *
  * @param qh_ptr the qh_ptr needs to be set.
  */
@@ -1856,11 +1856,11 @@ static inline uint32_t usb_hal_ehci_get_qtd_token( ehci_qtd_struct_t* qtd_ptr)
  */
 static inline void usb_hal_ehci_set_qtd_terminate_bit( ehci_qtd_struct_t* qtd_ptr)
 {
-    qtd_ptr->next_qtd_ptr = EHCI_QTD_T_BIT;
+	qtd_ptr->next_qtd_ptr = EHCI_QTD_T_BIT;
 }
 
 /*!
- * @brief Get the qtd next ptr. 
+ * @brief Get the qtd next ptr.
  *
  * This function Get the qtd next ptr.
  *
@@ -1869,7 +1869,7 @@ static inline void usb_hal_ehci_set_qtd_terminate_bit( ehci_qtd_struct_t* qtd_pt
  */
 static inline uint32_t usb_hal_ehci_get_next_qtd_ptr(ehci_qtd_struct_t* qtd_ptr)
 {
-    return qtd_ptr->next_qtd_ptr;
+	return qtd_ptr->next_qtd_ptr;
 }
 
 /*!
@@ -1907,7 +1907,7 @@ static inline void usb_hal_ehci_link_qtd( ehci_qtd_struct_t* prev_qtd_ptr,uint32
  */
 static inline void usb_hal_ehci_enable_otg_interrupts(uint32_t baseAddr, uint32_t intrType)
 {
-    USBHS_OTGSC_REG((USBHS_MemMapPtr)baseAddr) |= intrType;
+	USBHS_OTGSC_REG((USBHS_MemMapPtr)baseAddr) |= intrType;
 }
 
 /*!
@@ -1920,7 +1920,7 @@ static inline void usb_hal_ehci_enable_otg_interrupts(uint32_t baseAddr, uint32_
  */
 static inline void usb_hal_ehci_disable_otg_interrupts(uint32_t baseAddr, uint32_t intrType)
 {
-    USBHS_OTGSC_REG((USBHS_MemMapPtr)baseAddr) &= ~intrType;
+	USBHS_OTGSC_REG((USBHS_MemMapPtr)baseAddr) &= ~intrType;
 }
 
 /*!
@@ -1933,7 +1933,7 @@ static inline void usb_hal_ehci_disable_otg_interrupts(uint32_t baseAddr, uint32
  */
 static inline void usb_hal_ehci_clear_otg_interrupts(uint32_t baseAddr, uint32_t intrType)
 {
-    USBHS_OTGSC_REG((USBHS_MemMapPtr)baseAddr)|= intrType;
+	USBHS_OTGSC_REG((USBHS_MemMapPtr)baseAddr)|= intrType;
 }
 
 /*!
@@ -1946,8 +1946,8 @@ static inline void usb_hal_ehci_clear_otg_interrupts(uint32_t baseAddr, uint32_t
  */
 static inline uint32_t usb_hal_ehci_get_otg_status(uint32_t baseAddr)
 {
-    return USBHS_OTGSC_REG((USBHS_MemMapPtr)baseAddr);
-    
+	return USBHS_OTGSC_REG((USBHS_MemMapPtr)baseAddr);
+
 }
 
 /*!
@@ -1963,14 +1963,14 @@ static inline uint32_t usb_hal_ehci_get_otg_status(uint32_t baseAddr)
 static inline void usb_hal_ehci_set_gpt_timer(uint32_t baseAddr, uint32_t gpt_index, uint32_t ms)
 {
 
-    if( gpt_index == 0)
-    {
-        USBHS_GPTIMER0LD_REG((USBHS_MemMapPtr)baseAddr) = ms*0x3E7;
-    }
-    else if( gpt_index == 1)
-    {
-        USBHS_GPTIMER1LD_REG((USBHS_MemMapPtr)baseAddr) = ms*0x3E7;
-    }
+	if( gpt_index == 0)
+	{
+		USBHS_GPTIMER0LD_REG((USBHS_MemMapPtr)baseAddr) = ms*0x3E7;
+	}
+	else if( gpt_index == 1)
+	{
+		USBHS_GPTIMER1LD_REG((USBHS_MemMapPtr)baseAddr) = ms*0x3E7;
+	}
 }
 
 /*!
@@ -1983,14 +1983,14 @@ static inline void usb_hal_ehci_set_gpt_timer(uint32_t baseAddr, uint32_t gpt_in
  */
 static inline void usb_hal_ehcit_gpt_timer_run(uint32_t baseAddr, uint32_t gpt_index)
 {
-    if( gpt_index == 0)
-    {
-        USBHS_GPTIMER0CTL_REG((USBHS_MemMapPtr)baseAddr) |= USBHS_GPTIMER0CTL_MODE_MASK | USBHS_GPTIMER0CTL_RST_MASK |USBHS_GPTIMER0CTL_RUN_MASK;
-    }
-    else if( gpt_index == 1)
-    {
-        USBHS_GPTIMER1CTL_REG((USBHS_MemMapPtr)baseAddr)  |= USBHS_GPTIMER1CTL_MODE_MASK | USBHS_GPTIMER1CTL_RST_MASK |USBHS_GPTIMER1CTL_RUN_MASK;
-    }
+	if( gpt_index == 0)
+	{
+		USBHS_GPTIMER0CTL_REG((USBHS_MemMapPtr)baseAddr) |= USBHS_GPTIMER0CTL_MODE_MASK | USBHS_GPTIMER0CTL_RST_MASK |USBHS_GPTIMER0CTL_RUN_MASK;
+	}
+	else if( gpt_index == 1)
+	{
+		USBHS_GPTIMER1CTL_REG((USBHS_MemMapPtr)baseAddr)  |= USBHS_GPTIMER1CTL_MODE_MASK | USBHS_GPTIMER1CTL_RST_MASK |USBHS_GPTIMER1CTL_RUN_MASK;
+	}
 }
 
 /*!
@@ -2003,14 +2003,14 @@ static inline void usb_hal_ehcit_gpt_timer_run(uint32_t baseAddr, uint32_t gpt_i
  */
 static inline void usb_hal_ehcit_gpt_timer_stop(uint32_t baseAddr, uint32_t gpt_index)
 {
-    if( gpt_index == 0)
-    {
-        USBHS_GPTIMER0CTL_REG((USBHS_MemMapPtr)baseAddr) &= ~USBHS_GPTIMER0CTL_RUN_MASK;
-    }
-    else if( gpt_index == 1)
-    {
-        USBHS_GPTIMER1CTL_REG((USBHS_MemMapPtr)baseAddr)  &= ~USBHS_GPTIMER1CTL_RUN_MASK;
-    }
+	if( gpt_index == 0)
+	{
+		USBHS_GPTIMER0CTL_REG((USBHS_MemMapPtr)baseAddr) &= ~USBHS_GPTIMER0CTL_RUN_MASK;
+	}
+	else if( gpt_index == 1)
+	{
+		USBHS_GPTIMER1CTL_REG((USBHS_MemMapPtr)baseAddr)  &= ~USBHS_GPTIMER1CTL_RUN_MASK;
+	}
 }
 #if defined(__cplusplus)
 }

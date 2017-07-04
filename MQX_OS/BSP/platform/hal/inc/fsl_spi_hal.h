@@ -48,138 +48,138 @@
 /*! @brief Error codes for the SPI driver.*/
 typedef enum _spi_errors
 {
-    kStatus_SPI_Success = 0,
-    kStatus_SPI_SlaveTxUnderrun,        /*!< SPI Slave TX Underrun error.*/
-    kStatus_SPI_SlaveRxOverrun,         /*!< SPI Slave RX Overrun error.*/
-    kStatus_SPI_Timeout,                /*!< SPI transfer timed out.*/
-    kStatus_SPI_Busy,                   /*!< SPI instance is already busy performing a transfer.*/
-    kStatus_SPI_NoTransferInProgress,   /*!< Attempt to abort a transfer when no transfer
-                                             was in progress.*/
-    kStatus_SPI_OutOfRange,             /*!< SPI out-of-range error used in slave callback */
-    kStatus_SPI_TxBufferNotEmpty,       /*!< SPI TX buffer register is not empty */
-    kStatus_SPI_InvalidParameter,       /*!< Parameter is invalid */
-    kStatus_SPI_NonInit,                /*!< SPI driver is not initialized */
-    kStatus_SPI_AlreadyInitialized,     /*!< SPI driver already initialized */
-    kStatus_SPI_DMAChannelInvalid,      /*!< SPI driver cannot requests DMA channel */
-    kStatus_SPI_Error,                  /*!< SPI driver error */
+	kStatus_SPI_Success = 0,
+	kStatus_SPI_SlaveTxUnderrun,        /*!< SPI Slave TX Underrun error.*/
+	kStatus_SPI_SlaveRxOverrun,         /*!< SPI Slave RX Overrun error.*/
+	kStatus_SPI_Timeout,                /*!< SPI transfer timed out.*/
+	kStatus_SPI_Busy,                   /*!< SPI instance is already busy performing a transfer.*/
+	kStatus_SPI_NoTransferInProgress,   /*!< Attempt to abort a transfer when no transfer
+											 was in progress.*/
+	kStatus_SPI_OutOfRange,             /*!< SPI out-of-range error used in slave callback */
+	kStatus_SPI_TxBufferNotEmpty,       /*!< SPI TX buffer register is not empty */
+	kStatus_SPI_InvalidParameter,       /*!< Parameter is invalid */
+	kStatus_SPI_NonInit,                /*!< SPI driver is not initialized */
+	kStatus_SPI_AlreadyInitialized,     /*!< SPI driver already initialized */
+	kStatus_SPI_DMAChannelInvalid,      /*!< SPI driver cannot requests DMA channel */
+	kStatus_SPI_Error,                  /*!< SPI driver error */
 } spi_status_t;
 
 /*! @brief SPI master or slave configuration.*/
 typedef enum _spi_master_slave_mode {
-    kSpiMaster = 1,     /*!< SPI peripheral operates in master mode.*/
-    kSpiSlave = 0       /*!< SPI peripheral operates in slave mode.*/
+	kSpiMaster = 1,     /*!< SPI peripheral operates in master mode.*/
+	kSpiSlave = 0       /*!< SPI peripheral operates in slave mode.*/
 } spi_master_slave_mode_t;
 
 /*! @brief SPI clock polarity configuration.*/
 typedef enum _spi_clock_polarity {
-    kSpiClockPolarity_ActiveHigh = 0,   /*!< Active-high SPI clock (idles low). @internal gui name="Active high" */
-    kSpiClockPolarity_ActiveLow = 1     /*!< Active-low SPI clock (idles high).@internal gui name="Active low" */
+	kSpiClockPolarity_ActiveHigh = 0,   /*!< Active-high SPI clock (idles low). @internal gui name="Active high" */
+	kSpiClockPolarity_ActiveLow = 1     /*!< Active-low SPI clock (idles high).@internal gui name="Active low" */
 } spi_clock_polarity_t;
 
 /*! @brief SPI clock phase configuration.*/
 typedef enum _spi_clock_phase {
-    kSpiClockPhase_FirstEdge = 0,       /*!< First edge on SPSCK occurs at the middle of the first
-                                         *   cycle of a data transfer. @internal gui name="First edge" */
-    kSpiClockPhase_SecondEdge = 1       /*!< First edge on SPSCK occurs at the start of the
-                                         *   first cycle of a data transfer.@internal gui name="Second edge" */
+	kSpiClockPhase_FirstEdge = 0,       /*!< First edge on SPSCK occurs at the middle of the first
+										 *   cycle of a data transfer. @internal gui name="First edge" */
+	kSpiClockPhase_SecondEdge = 1       /*!< First edge on SPSCK occurs at the start of the
+										 *   first cycle of a data transfer.@internal gui name="Second edge" */
 } spi_clock_phase_t;
 
 /*! @brief SPI data shifter direction options.*/
 typedef enum _spi_shift_direction {
-    kSpiMsbFirst = 0,    /*!< Data transfers start with most significant bit. @internal gui name="Msb first" */
-    kSpiLsbFirst = 1    /*!< Data transfers start with least significant bit. @internal gui name="Lsb first" */
+	kSpiMsbFirst = 0,    /*!< Data transfers start with most significant bit. @internal gui name="Msb first" */
+	kSpiLsbFirst = 1    /*!< Data transfers start with least significant bit. @internal gui name="Lsb first" */
 } spi_shift_direction_t;
 
 /*! @brief SPI slave select output mode options.*/
 typedef enum _spi_ss_output_mode {
-    kSpiSlaveSelect_AsGpio = 0,         /*!< Slave select pin configured as GPIO.*/
-    kSpiSlaveSelect_FaultInput = 2,     /*!< Slave select pin configured for fault detection.*/
-    kSpiSlaveSelect_AutomaticOutput = 3 /*!< Slave select pin configured for automatic SPI output.*/
+	kSpiSlaveSelect_AsGpio = 0,         /*!< Slave select pin configured as GPIO.*/
+	kSpiSlaveSelect_FaultInput = 2,     /*!< Slave select pin configured for fault detection.*/
+	kSpiSlaveSelect_AutomaticOutput = 3 /*!< Slave select pin configured for automatic SPI output.*/
 } spi_ss_output_mode_t;
 
 /*! @brief SPI pin mode options.*/
 typedef enum _spi_pin_mode {
-    kSpiPinMode_Normal = 0,     /*!< Pins operate in normal, single-direction mode.*/
-    kSpiPinMode_Input = 1,      /*!< Bidirectional mode. Master: MOSI pin is input;
-                                 *   Slave: MISO pin is input*/
-    kSpiPinMode_Output = 3      /*!< Bidirectional mode. Master: MOSI pin is output;
-                                 *   Slave: MISO pin is output*/
+	kSpiPinMode_Normal = 0,     /*!< Pins operate in normal, single-direction mode.*/
+	kSpiPinMode_Input = 1,      /*!< Bidirectional mode. Master: MOSI pin is input;
+								 *   Slave: MISO pin is input*/
+	kSpiPinMode_Output = 3      /*!< Bidirectional mode. Master: MOSI pin is output;
+								 *   Slave: MISO pin is output*/
 } spi_pin_mode_t;
 
 /*! @brief SPI data length mode options.*/
 typedef enum _spi_data_bitcount_mode  {
-    kSpi8BitMode = 0,  /*!< 8-bit data transmission mode @internal gui name="8-bit" */
-    kSpi16BitMode = 1, /*!< 16-bit data transmission mode @internal gui name="16-bit" */
+	kSpi8BitMode = 0,  /*!< 8-bit data transmission mode @internal gui name="8-bit" */
+	kSpi16BitMode = 1, /*!< 16-bit data transmission mode @internal gui name="16-bit" */
 } spi_data_bitcount_mode_t;
 
 /*! @brief SPI interrupt sources.*/
 typedef enum _spi_interrupt_source  {
-    kSpiRxFullAndModfInt = 1, /*!< Receive buffer full (SPRF) and mode fault (MODF) interrupt */
-    kSpiTxEmptyInt = 2,       /*!< Transmit buffer empty interrupt */
-    kSpiMatchInt = 3,         /*!< Match interrupt */
+	kSpiRxFullAndModfInt = 1, /*!< Receive buffer full (SPRF) and mode fault (MODF) interrupt */
+	kSpiTxEmptyInt = 2,       /*!< Transmit buffer empty interrupt */
+	kSpiMatchInt = 3,         /*!< Match interrupt */
 } spi_interrupt_source_t;
 
 /*! @brief SPI interrupt status flags.*/
 typedef enum _spi_int_status_flag  {
-    kSpiRxBufferFullFlag = SPI_S_SPRF_SHIFT,   /*!< Read buffer full flag */
-    kSpiMatchFlag = SPI_S_SPMF_SHIFT,          /*!< Match flag */
-    kSpiTxBufferEmptyFlag = SPI_S_SPTEF_SHIFT, /*!< Transmit buffer empty flag */
-    kSpiModeFaultFlag = SPI_S_MODF_SHIFT,      /*!< Mode fault flag */
+	kSpiRxBufferFullFlag = SPI_S_SPRF_SHIFT,   /*!< Read buffer full flag */
+	kSpiMatchFlag = SPI_S_SPMF_SHIFT,          /*!< Match flag */
+	kSpiTxBufferEmptyFlag = SPI_S_SPTEF_SHIFT, /*!< Transmit buffer empty flag */
+	kSpiModeFaultFlag = SPI_S_MODF_SHIFT,      /*!< Mode fault flag */
 } spi_int_status_flag_t ;
 
 /*! @brief SPI FIFO interrupt sources.*/
 typedef enum _spi_fifo_interrupt_source  {
-    kSpiRxFifoNearFullInt = 1, /*!< Receive FIFO nearly full interrupt */
-    kSpiTxFifoNearEmptyInt = 2,  /*!< Transmit FIFO nearly empty interrupt */
+	kSpiRxFifoNearFullInt = 1, /*!< Receive FIFO nearly full interrupt */
+	kSpiTxFifoNearEmptyInt = 2,  /*!< Transmit FIFO nearly empty interrupt */
 } spi_fifo_interrupt_source_t ;
 
 /*! @brief SPI FIFO write-1-to-clear interrupt flags.*/
 typedef enum _spi_w1c_interrupt {
-    kSpiRxFifoFullClearInt = 0, /*!< Receive FIFO full interrupt */
-    kSpiTxFifoEmptyClearInt = 1, /*!< Transmit FIFO empty interrupt */
-    kSpiRxNearFullClearInt = 2, /*!< Receive FIFO nearly full interrupt */
-    kSpiTxNearEmptyClearInt = 3, /*!< Transmit FIFO nearly empty interrupt */
+	kSpiRxFifoFullClearInt = 0, /*!< Receive FIFO full interrupt */
+	kSpiTxFifoEmptyClearInt = 1, /*!< Transmit FIFO empty interrupt */
+	kSpiRxNearFullClearInt = 2, /*!< Receive FIFO nearly full interrupt */
+	kSpiTxNearEmptyClearInt = 3, /*!< Transmit FIFO nearly empty interrupt */
 } spi_w1c_interrupt_t;
 
 /*! @brief SPI TX FIFO watermark settings.*/
 typedef enum _spi_txfifo_watermark {
-    kSpiTxFifoOneFourthEmpty = 0,
-    kSpiTxFifoOneHalfEmpty = 1
+	kSpiTxFifoOneFourthEmpty = 0,
+	kSpiTxFifoOneHalfEmpty = 1
 } spi_txfifo_watermark_t;
 
 /*! @brief SPI RX FIFO watermark settings.*/
 typedef enum _spi_rxfifo_watermark {
-    kSpiRxFifoThreeFourthsFull = 0,
-    kSpiRxFifoOneHalfFull = 1
+	kSpiRxFifoThreeFourthsFull = 0,
+	kSpiRxFifoOneHalfFull = 1
 } spi_rxfifo_watermark_t;
 
 /*! @brief SPI status flags.*/
 typedef enum _spi_fifo_status_flag {
-    kSpiRxFifoEmpty = 0,
-    kSpiTxFifoFull = 1,
-    kSpiTxNearEmpty = 2,
-    kSpiRxNearFull = 3
+	kSpiRxFifoEmpty = 0,
+	kSpiTxFifoFull = 1,
+	kSpiTxNearEmpty = 2,
+	kSpiRxNearFull = 3
 } spi_fifo_status_flag_t;
 
 /*! @brief SPI error flags.*/
 typedef enum _spi_fifo_error_flag {
-    kSpiNoFifoError = 0,  /*!< No error is detected */
-    kSpiRxfof = 1, /*!< Receive FIFO Overflow */
-    kSpiTxfof = 2, /*!< Transmit FIFO Overflow */
-    kSpiRxfofTxfof = 3, /*!< Receive FIFO Overflow, Transmit FIFO Overflow */
-    kSpiRxferr = 4,  /*!< Receive FIFO Error */
-    kSpiRxfofRxferr = 5, /*!< Receive FIFO Overflow, Receive FIFO Error */
-    kSpiTxfofRxferr = 6, /*!< Transmit FIFO Overflow, Receive FIFO Error */
-    kSpiRxfofTxfofRxferr = 7,  /*!< Receive FIFO Overflow, Transmit FIFO Overflow, Receive FIFO Error */
-    kSpiTxferr = 8, /*!< Transmit FIFO Error */
-    kSpiRxfofTxferr = 9, /*!< Receive FIFO Overflow, Transmit FIFO Error */
-    kSpiTxfofTxferr = 10, /*!< Transmit FIFO Overflow, Transmit FIFO Error */
-    kSpiRxfofTxfofTxferr = 11, /*!< Receive FIFO Overflow, Transmit FIFO Overflow, Transmit FIFO Error */
-    kSpiRxferrTxferr = 12, /*!< Receive FIFO Error, Transmit FIFO Error */
-    kSpiRxfofRxferrTxferr = 13, /*!< Receive FIFO Overflow, Receive FIFO Error, Transmit FIFO Error */
-    kSpiTxfofRxferrTxferr = 14, /*!< Transmit FIFO Overflow, Receive FIFO Error, Transmit FIFO Error */
-    kSpiRxfofTxfofRxferrTxferr =15 /*!< Receive FIFO Overflow, Transmit FIFO Overflow
-                                    * Receive FIFO Error, Transmit FIFO Error */
+	kSpiNoFifoError = 0,  /*!< No error is detected */
+	kSpiRxfof = 1, /*!< Receive FIFO Overflow */
+	kSpiTxfof = 2, /*!< Transmit FIFO Overflow */
+	kSpiRxfofTxfof = 3, /*!< Receive FIFO Overflow, Transmit FIFO Overflow */
+	kSpiRxferr = 4,  /*!< Receive FIFO Error */
+	kSpiRxfofRxferr = 5, /*!< Receive FIFO Overflow, Receive FIFO Error */
+	kSpiTxfofRxferr = 6, /*!< Transmit FIFO Overflow, Receive FIFO Error */
+	kSpiRxfofTxfofRxferr = 7,  /*!< Receive FIFO Overflow, Transmit FIFO Overflow, Receive FIFO Error */
+	kSpiTxferr = 8, /*!< Transmit FIFO Error */
+	kSpiRxfofTxferr = 9, /*!< Receive FIFO Overflow, Transmit FIFO Error */
+	kSpiTxfofTxferr = 10, /*!< Transmit FIFO Overflow, Transmit FIFO Error */
+	kSpiRxfofTxfofTxferr = 11, /*!< Receive FIFO Overflow, Transmit FIFO Overflow, Transmit FIFO Error */
+	kSpiRxferrTxferr = 12, /*!< Receive FIFO Error, Transmit FIFO Error */
+	kSpiRxfofRxferrTxferr = 13, /*!< Receive FIFO Overflow, Receive FIFO Error, Transmit FIFO Error */
+	kSpiTxfofRxferrTxferr = 14, /*!< Transmit FIFO Overflow, Receive FIFO Error, Transmit FIFO Error */
+	kSpiRxfofTxfofRxferrTxferr =15 /*!< Receive FIFO Overflow, Transmit FIFO Overflow
+									* Receive FIFO Error, Transmit FIFO Error */
 } spi_fifo_error_flag_t;
 
 /*******************************************************************************
@@ -216,7 +216,7 @@ void SPI_HAL_Init(SPI_Type * base);
  */
 static inline void SPI_HAL_Enable(SPI_Type * base)
 {
-    SPI_BWR_C1_SPE(base, 1);
+	SPI_BWR_C1_SPE(base, 1);
 }
 
 /*!
@@ -226,7 +226,7 @@ static inline void SPI_HAL_Enable(SPI_Type * base)
  */
 static inline void SPI_HAL_Disable(SPI_Type * base)
 {
-    SPI_BWR_C1_SPE(base, 0);
+	SPI_BWR_C1_SPE(base, 0);
 }
 
 /*!
@@ -256,9 +256,9 @@ uint32_t SPI_HAL_SetBaud(SPI_Type * base, uint32_t bitsPerSec, uint32_t sourceCl
  * @param rateDivisor baud rate divisor setting.
  */
 static inline void SPI_HAL_SetBaudDivisors(SPI_Type * base, uint32_t prescaleDivisor,
-                                            uint32_t rateDivisor)
+											uint32_t rateDivisor)
 {
-    SPI_WR_BR(base, SPI_BR_SPR(rateDivisor) | SPI_BR_SPPR(prescaleDivisor));
+	SPI_WR_BR(base, SPI_BR_SPR(rateDivisor) | SPI_BR_SPPR(prescaleDivisor));
 }
 
 /*!
@@ -269,7 +269,7 @@ static inline void SPI_HAL_SetBaudDivisors(SPI_Type * base, uint32_t prescaleDiv
  */
 static inline void SPI_HAL_SetMasterSlave(SPI_Type * base, spi_master_slave_mode_t mode)
 {
-    SPI_BWR_C1_MSTR(base, (uint32_t)mode);
+	SPI_BWR_C1_MSTR(base, (uint32_t)mode);
 }
 
 /*!
@@ -281,7 +281,7 @@ static inline void SPI_HAL_SetMasterSlave(SPI_Type * base, spi_master_slave_mode
  */
 static inline bool SPI_HAL_IsMaster(SPI_Type * base)
 {
-    return (bool)SPI_RD_C1_MSTR(base);
+	return (bool)SPI_RD_C1_MSTR(base);
 }
 
 /*!
@@ -306,9 +306,9 @@ void SPI_HAL_SetSlaveSelectOutputMode(SPI_Type * base, spi_ss_output_mode_t mode
  * @param direction Data shift direction (MSB or LSB) of type spi_shift_direction_t.
  */
 void SPI_HAL_SetDataFormat(SPI_Type * base,
-    spi_clock_polarity_t polarity,
-    spi_clock_phase_t phase,
-    spi_shift_direction_t direction);
+	spi_clock_polarity_t polarity,
+	spi_clock_phase_t phase,
+	spi_shift_direction_t direction);
 
 
 #if FSL_FEATURE_SPI_16BIT_TRANSFERS
@@ -323,7 +323,7 @@ void SPI_HAL_SetDataFormat(SPI_Type * base,
  */
 static inline void SPI_HAL_Set8or16BitMode(SPI_Type * base, spi_data_bitcount_mode_t mode)
 {
-    SPI_BWR_C2_SPIMODE(base, (uint32_t)mode);
+	SPI_BWR_C2_SPIMODE(base, (uint32_t)mode);
 }
 
 /*!
@@ -336,7 +336,7 @@ static inline void SPI_HAL_Set8or16BitMode(SPI_Type * base, spi_data_bitcount_mo
  */
 static inline spi_data_bitcount_mode_t SPI_HAL_Get8or16BitMode(SPI_Type * base)
 {
-    return (spi_data_bitcount_mode_t)SPI_RD_C2_SPIMODE(base);
+	return (spi_data_bitcount_mode_t)SPI_RD_C2_SPIMODE(base);
 }
 
 /*!
@@ -351,7 +351,7 @@ static inline spi_data_bitcount_mode_t SPI_HAL_Get8or16BitMode(SPI_Type * base)
  */
 static inline uint32_t SPI_HAL_GetDataRegAddr(SPI_Type * base)
 {
-    return (uint32_t)(&SPI_DL_REG(base));
+	return (uint32_t)(&SPI_DL_REG(base));
 }
 
 #else
@@ -367,7 +367,7 @@ static inline uint32_t SPI_HAL_GetDataRegAddr(SPI_Type * base)
  */
 static inline uint32_t SPI_HAL_GetDataRegAddr(SPI_Type * base)
 {
-    return (uint32_t)(&SPI_D_REG(base));
+	return (uint32_t)(&SPI_D_REG(base));
 }
 
 #endif
@@ -403,7 +403,7 @@ void SPI_HAL_SetPinMode(SPI_Type * base, spi_pin_mode_t mode);
  */
 static inline void SPI_HAL_SetTxDmaCmd(SPI_Type * base, bool enableTransmit)
 {
-    SPI_BWR_C2_TXDMAE(base, (enableTransmit == true));
+	SPI_BWR_C2_TXDMAE(base, (enableTransmit == true));
 }
 
 /*!
@@ -417,7 +417,7 @@ static inline void SPI_HAL_SetTxDmaCmd(SPI_Type * base, bool enableTransmit)
  */
 static inline void SPI_HAL_SetRxDmaCmd(SPI_Type * base, bool enableReceive)
 {
-    SPI_BWR_C2_RXDMAE(base, (enableReceive == true));
+	SPI_BWR_C2_RXDMAE(base, (enableReceive == true));
 }
 #endif
 /*@}*/
@@ -455,7 +455,7 @@ void SPI_HAL_SetIntMode(SPI_Type * base, spi_interrupt_source_t interrupt, bool 
  */
 static inline void SPI_HAL_SetReceiveAndFaultIntCmd(SPI_Type * base, bool enable)
 {
-    SPI_BWR_C1_SPIE(base, (enable == true));
+	SPI_BWR_C1_SPIE(base, (enable == true));
 }
 
 /*!
@@ -469,7 +469,7 @@ static inline void SPI_HAL_SetReceiveAndFaultIntCmd(SPI_Type * base, bool enable
  */
 static inline void SPI_HAL_SetTransmitIntCmd(SPI_Type * base, bool enable)
 {
-    SPI_BWR_C1_SPTIE(base, (enable == true));
+	SPI_BWR_C1_SPTIE(base, (enable == true));
 }
 
 /*!
@@ -482,7 +482,7 @@ static inline void SPI_HAL_SetTransmitIntCmd(SPI_Type * base, bool enable)
  */
 static inline void SPI_HAL_SetMatchIntCmd(SPI_Type * base, bool enable)
 {
-    SPI_BWR_C2_SPMIE(base, (enable == true));
+	SPI_BWR_C2_SPMIE(base, (enable == true));
 }
 
 /*@}*/
@@ -503,7 +503,7 @@ static inline void SPI_HAL_SetMatchIntCmd(SPI_Type * base, bool enable)
  */
 static inline bool SPI_HAL_GetIntStatusFlag(SPI_Type * base, spi_int_status_flag_t flag)
 {
-    return (SPI_RD_S(base) >> flag) & 1U;
+	return (SPI_RD_S(base) >> flag) & 1U;
 }
 
 /*!
@@ -513,12 +513,12 @@ static inline bool SPI_HAL_GetIntStatusFlag(SPI_Type * base, spi_int_status_flag
  * it when it is set, then reading the data register by calling the SPI_HAL_ReadData().
  * This example code demonstrates how to check the flag, read data, and clear the flag.
    @code
-        // Check read buffer flag.
-        if (SPI_HAL_IsReadBuffFullPending(base))
-        {
-            // Read the data in the buffer, which also clears the flag.
-            byte = SPI_HAL_ReadData(base);
-        }
+		// Check read buffer flag.
+		if (SPI_HAL_IsReadBuffFullPending(base))
+		{
+			// Read the data in the buffer, which also clears the flag.
+			byte = SPI_HAL_ReadData(base);
+		}
    @endcode
  *
  * @param base Module base pointer of type SPI_Type.
@@ -526,7 +526,7 @@ static inline bool SPI_HAL_GetIntStatusFlag(SPI_Type * base, spi_int_status_flag
  */
 static inline bool SPI_HAL_IsReadBuffFullPending(SPI_Type * base)
 {
-    return SPI_RD_S_SPRF(base);
+	return SPI_RD_S_SPRF(base);
 }
 
 /*!
@@ -536,12 +536,12 @@ static inline bool SPI_HAL_IsReadBuffFullPending(SPI_Type * base)
  * read the flag when it is set. Then, write a new data value into the transmit buffer with a call
  * to the SPI_HAL_WriteData(). The example code shows how to do this.
    @code
-        // Check if transmit buffer is empty.
-        if (SPI_HAL_IsTxBuffEmptyPending(base))
-        {
-            // Buffer has room, so write the next data value.
-            SPI_HAL_WriteData(base, byte);
-        }
+		// Check if transmit buffer is empty.
+		if (SPI_HAL_IsTxBuffEmptyPending(base))
+		{
+			// Buffer has room, so write the next data value.
+			SPI_HAL_WriteData(base, byte);
+		}
    @endcode
  *
  * @param base Module base pointer of type SPI_Type.
@@ -549,7 +549,7 @@ static inline bool SPI_HAL_IsReadBuffFullPending(SPI_Type * base)
  */
 static inline bool SPI_HAL_IsTxBuffEmptyPending(SPI_Type * base)
 {
-    return SPI_RD_S_SPTEF(base);
+	return SPI_RD_S_SPTEF(base);
 }
 
 /*!
@@ -560,7 +560,7 @@ static inline bool SPI_HAL_IsTxBuffEmptyPending(SPI_Type * base)
  */
 static inline bool SPI_HAL_IsModeFaultPending(SPI_Type * base)
 {
-    return SPI_RD_S_MODF(base);
+	return SPI_RD_S_MODF(base);
 }
 
 /*!
@@ -578,7 +578,7 @@ void SPI_HAL_ClearModeFaultFlag(SPI_Type * base);
  */
 static inline bool SPI_HAL_IsMatchPending(SPI_Type * base)
 {
-    return SPI_RD_S_SPMF(base);
+	return SPI_RD_S_SPMF(base);
 }
 
 /*!
@@ -605,7 +605,7 @@ void SPI_HAL_ClearMatchFlag(SPI_Type * base);
  */
 static inline uint8_t SPI_HAL_ReadDataHigh(SPI_Type * base)
 {
-    return SPI_RD_DH(base);
+	return SPI_RD_DH(base);
 }
 
 /*!
@@ -616,7 +616,7 @@ static inline uint8_t SPI_HAL_ReadDataHigh(SPI_Type * base)
  */
 static inline uint8_t SPI_HAL_ReadDataLow(SPI_Type * base)
 {
-    return SPI_RD_DL(base);
+	return SPI_RD_DL(base);
 }
 
 /*!
@@ -627,7 +627,7 @@ static inline uint8_t SPI_HAL_ReadDataLow(SPI_Type * base)
  */
 static inline void SPI_HAL_WriteDataHigh(SPI_Type * base, uint8_t data)
 {
-    SPI_WR_DH(base, data);
+	SPI_WR_DH(base, data);
 }
 
 /*!
@@ -638,7 +638,7 @@ static inline void SPI_HAL_WriteDataHigh(SPI_Type * base, uint8_t data)
  */
 static inline void SPI_HAL_WriteDataLow(SPI_Type * base, uint8_t data)
 {
-    SPI_WR_DL(base, data);
+	SPI_WR_DL(base, data);
 }
 
 /*!
@@ -658,7 +658,7 @@ static inline void SPI_HAL_WriteDataLow(SPI_Type * base, uint8_t data)
  * @param dataLow The lower 8-bit data to send, if only sending 8-bits, then use this parameter.
  */
 void SPI_HAL_WriteDataBlocking(SPI_Type * base, spi_data_bitcount_mode_t bitCount,
-                               uint8_t dataHigh, uint8_t dataLow);
+							   uint8_t dataHigh, uint8_t dataLow);
 
 #else
 
@@ -670,7 +670,7 @@ void SPI_HAL_WriteDataBlocking(SPI_Type * base, spi_data_bitcount_mode_t bitCoun
  */
 static inline uint8_t SPI_HAL_ReadData(SPI_Type * base)
 {
-    return SPI_RD_D(base);
+	return SPI_RD_D(base);
 }
 
 /*!
@@ -681,7 +681,7 @@ static inline uint8_t SPI_HAL_ReadData(SPI_Type * base)
  */
 static inline void SPI_HAL_WriteData(SPI_Type * base, uint8_t data)
 {
-    SPI_WR_D(base, data);
+	SPI_WR_D(base, data);
 }
 
 /*!
@@ -711,7 +711,7 @@ void SPI_HAL_WriteDataBlocking(SPI_Type * base, uint8_t data);
  */
 static inline void SPI_HAL_SetMatchValueHigh(SPI_Type * base, uint8_t matchByte)
 {
-    SPI_WR_MH(base, matchByte);
+	SPI_WR_MH(base, matchByte);
 }
 
 /*!
@@ -722,7 +722,7 @@ static inline void SPI_HAL_SetMatchValueHigh(SPI_Type * base, uint8_t matchByte)
  */
 static inline void SPI_HAL_SetMatchValueLow(SPI_Type * base, uint8_t matchByte)
 {
-    SPI_WR_ML(base, matchByte);
+	SPI_WR_ML(base, matchByte);
 }
 #else
 /*!
@@ -733,7 +733,7 @@ static inline void SPI_HAL_SetMatchValueLow(SPI_Type * base, uint8_t matchByte)
  */
 static inline void SPI_HAL_SetMatchValue(SPI_Type * base, uint8_t matchByte)
 {
-    SPI_WR_M(base, matchByte);
+	SPI_WR_M(base, matchByte);
 }
 #endif
 
@@ -756,7 +756,7 @@ static inline void SPI_HAL_SetMatchValue(SPI_Type * base, uint8_t matchByte)
  */
 static inline void SPI_HAL_SetIntClearCmd(SPI_Type * base, bool enable)
 {
-    SPI_BWR_C3_INTCLR(base, (enable == true));
+	SPI_BWR_C3_INTCLR(base, (enable == true));
 }
 
 /*!
@@ -773,8 +773,8 @@ static inline void SPI_HAL_SetIntClearCmd(SPI_Type * base, bool enable)
  * @param rxWaterMark The RX watermark setting of type spi_rxfifo_watermark_t.
  */
 void SPI_HAL_SetFifoMode(SPI_Type * base, bool enable,
-                         spi_txfifo_watermark_t txWaterMark,
-                         spi_rxfifo_watermark_t rxWaterMark);
+						 spi_txfifo_watermark_t txWaterMark,
+						 spi_rxfifo_watermark_t rxWaterMark);
 
 /*!
  * @brief Returns the setting of the SPI FIFO mode (enable or disable).
@@ -786,7 +786,7 @@ void SPI_HAL_SetFifoMode(SPI_Type * base, bool enable,
  */
 static inline bool SPI_HAL_GetFifoCmd(SPI_Type * base)
 {
-    return SPI_RD_C3_FIFOMODE(base);
+	return SPI_RD_C3_FIFOMODE(base);
 }
 
 /*!
@@ -802,7 +802,7 @@ static inline bool SPI_HAL_GetFifoCmd(SPI_Type * base)
  * @param enable Enable (true) or disable (false) the specific FIFO interrupt.
  */
 void SPI_HAL_SetFifoIntCmd(SPI_Type * base, spi_fifo_interrupt_source_t intSrc,
-                                         bool enable);
+										 bool enable);
 
 /*!
  * @brief Clears the FIFO related interrupt sources using write-1-to-clear feature.
@@ -839,7 +839,7 @@ void SPI_HAL_ClearFifoIntUsingBitWrite(SPI_Type * base, spi_w1c_interrupt_t intS
  */
 static inline bool SPI_HAL_GetFifoStatusFlag(SPI_Type * base, spi_fifo_status_flag_t status)
 {
-    return ((SPI_RD_S(base) >> status) & 0x1U);
+	return ((SPI_RD_S(base) >> status) & 0x1U);
 }
 
 /*!
@@ -860,7 +860,7 @@ static inline bool SPI_HAL_GetFifoStatusFlag(SPI_Type * base, spi_fifo_status_fl
  */
 static inline spi_fifo_error_flag_t SPI_HAL_GetFifoErrorFlag(SPI_Type * base)
 {
-    return (spi_fifo_error_flag_t)((SPI_RD_CI(base) >> 4) & 0xFU);
+	return (spi_fifo_error_flag_t)((SPI_RD_CI(base) >> 4) & 0xFU);
 }
 
 /*@}*/
@@ -877,4 +877,3 @@ static inline spi_fifo_error_flag_t SPI_HAL_GetFifoErrorFlag(SPI_Type * base)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

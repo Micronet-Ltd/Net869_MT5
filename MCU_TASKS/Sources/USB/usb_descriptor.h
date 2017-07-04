@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2008, 2015 Freescale Semiconductor;
  * All Rights Reserved
  *
  * Copyright (c) 1989-2008 ARC International;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
  *
  * $FileName: usb_descriptor.h$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
@@ -185,7 +185,7 @@
 #endif //MIC_USB_CDC_INF_COUNT > 5
 
 /*
- * In RedStripe IP DMA Transaction fails 
+ * In RedStripe IP DMA Transaction fails
  * if Packet Size is configured more than 160.
  * As per USB 2.0 spec MAX packet Size has to be configured to 512 bytes.
  * Hence compliance fails.
@@ -310,7 +310,7 @@
  * Global Functions
  *****************************************************************************/
 extern uint8_t USB_Desc_Get_Descriptor(
-	uint32_t handle, 
+	uint32_t handle,
 	uint8_t type,
 	uint8_t str_num,
 	uint16_t index,
@@ -363,4 +363,3 @@ uint8_t USB_Desc_Set_Speed( uint32_t handle, uint16_t speed );
 #endif
 
 /* EOF */
-

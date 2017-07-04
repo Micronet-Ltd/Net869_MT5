@@ -30,17 +30,17 @@
 
 /*!
  * \brief This function converts days into ticks
- * 
+ *
  * \param[in] days The number of days to convert
  * \param[out] tick_ptr Pointer to tick structure where the result will be stored
  */
 void _psp_days_to_ticks
    (
-       /* [IN] The number of days to convert */
-       _mqx_uint           days,
+	   /* [IN] The number of days to convert */
+	   _mqx_uint           days,
 
-       /* [OUT] Pointer to tick structure where the result will be stored */
-       PSP_TICK_STRUCT_PTR tick_ptr
+	   /* [OUT] Pointer to tick structure where the result will be stored */
+	   PSP_TICK_STRUCT_PTR tick_ptr
    )
 { /* Body */
    KERNEL_DATA_STRUCT_PTR kernel_data;
@@ -48,9 +48,9 @@ void _psp_days_to_ticks
    _GET_KERNEL_DATA(kernel_data);
 
    tick_ptr->HW_TICKS[0] = 0;
-   tick_ptr->TICKS[0]    = (uint64_t)days * kernel_data->TICKS_PER_SECOND * 
-      (3600 * 24);
-      
+   tick_ptr->TICKS[0]    = (uint64_t)days * kernel_data->TICKS_PER_SECOND *
+	  (3600 * 24);
+
 } /* Endbody */
 
 #endif

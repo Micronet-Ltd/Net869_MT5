@@ -53,10 +53,10 @@
 /*! @brief PWM Signal Type options */
 typedef enum _pwm_signal_type
 {
-    kFlexPwmSignedCenterAligned = 0U,   /*!< Signed center-aligned. @internal gui name="Signed center-aligned PWM" */
-    kFlexPwmCenterAligned,              /*!< Unsigned cente-aligned. @internal gui name="Center-aligned PWM" */
-    kFlexPwmSignedEdgeAligned,          /*!< Signed edge-aligned. @internal gui name="Signed edge-aligned PWM" */
-    kFlexPwmEdgeAligned                 /*!< Unsigned edge-aligned. @internal gui name="Edge-aligned PWM" */
+	kFlexPwmSignedCenterAligned = 0U,   /*!< Signed center-aligned. @internal gui name="Signed center-aligned PWM" */
+	kFlexPwmCenterAligned,              /*!< Unsigned cente-aligned. @internal gui name="Center-aligned PWM" */
+	kFlexPwmSignedEdgeAligned,          /*!< Signed edge-aligned. @internal gui name="Signed edge-aligned PWM" */
+	kFlexPwmEdgeAligned                 /*!< Unsigned edge-aligned. @internal gui name="Edge-aligned PWM" */
 } pwm_signal_type_t;
 
 /*!
@@ -65,12 +65,12 @@ typedef enum _pwm_signal_type
  * @internal gui name="PWM signal configuration" id="pwmSignalCfg"
  */
 typedef struct PwmModuleSignalSetup {
-    uint32_t pwmPeriod;        /*!< PWM period specified in microseconds. @internal gui name="PWM period" id="pwm_pwmPeriod" */
-    pwm_signal_type_t pwmType; /*!< PWM type, edge or center, signed or unsigned. @internal gui name="PWM signal type" id="pwm_pwmType" */
-    uint32_t pwmAPulseWidth;   /*!< PWM A pulse width specified in microseconds. Specify FLEXPWM_NO_PWM_OUT_SIGNAL if no PWM output on this pin. @internal gui name="PWM-A pulse width" id="pwm_pwmAPulseWidth" */
-    uint32_t pwmBPulseWidth;   /*!< PWM B pulse width specified in microseconds. Specify FLEXPWM_NO_PWM_OUT_SIGNAL if no PWM output on this pin. @internal gui name="PWM-B pulse width" id="pwm_pwmBPulseWidth" */
-    bool pwmAPolarity;         /*!< true: if output is to be inverted; false: if no output inversion. @internal gui name="PWM-A signal polarity" id="pwm_pwmAPolarity" */
-    bool pwmBPolarity;         /*!< true: if output is to be inverted; false: if no output inversion. @internal gui name="PWM-B signal polarity" id="pwm_pwmBPolarity" */
+	uint32_t pwmPeriod;        /*!< PWM period specified in microseconds. @internal gui name="PWM period" id="pwm_pwmPeriod" */
+	pwm_signal_type_t pwmType; /*!< PWM type, edge or center, signed or unsigned. @internal gui name="PWM signal type" id="pwm_pwmType" */
+	uint32_t pwmAPulseWidth;   /*!< PWM A pulse width specified in microseconds. Specify FLEXPWM_NO_PWM_OUT_SIGNAL if no PWM output on this pin. @internal gui name="PWM-A pulse width" id="pwm_pwmAPulseWidth" */
+	uint32_t pwmBPulseWidth;   /*!< PWM B pulse width specified in microseconds. Specify FLEXPWM_NO_PWM_OUT_SIGNAL if no PWM output on this pin. @internal gui name="PWM-B pulse width" id="pwm_pwmBPulseWidth" */
+	bool pwmAPolarity;         /*!< true: if output is to be inverted; false: if no output inversion. @internal gui name="PWM-A signal polarity" id="pwm_pwmAPolarity" */
+	bool pwmBPolarity;         /*!< true: if output is to be inverted; false: if no output inversion. @internal gui name="PWM-B signal polarity" id="pwm_pwmBPolarity" */
 } pwm_module_signal_setup_t;
 
 /*! @brief Table of base addresses for PWM instances. */
@@ -128,7 +128,7 @@ void PWM_DRV_Deinit(uint32_t instance);
  *         clock frequency by calling PWM_DVR_SetExternalClkFreq(). Success otherwise.
  */
 pwm_status_t PWM_DRV_SetupPwm(uint32_t instance, pwm_module_t subModule, pwm_module_setup_t *moduleSetupParams,
-                                       pwm_module_signal_setup_t *signalParams);
+									   pwm_module_signal_setup_t *signalParams);
 
 /*!
  * @brief Updates the PWM signal settings.
@@ -142,7 +142,7 @@ pwm_status_t PWM_DRV_SetupPwm(uint32_t instance, pwm_module_t subModule, pwm_mod
  * @param signalParams  Signal parameters which generate the submodules PWM signals
  */
 void PWM_DRV_UpdatePwmSignal(uint32_t instance, pwm_module_t subModule,
-                                        pwm_module_signal_setup_t *signalParams);
+										pwm_module_signal_setup_t *signalParams);
 
 /*!
  * @brief Enables or disables the PWM output trigger.
@@ -187,7 +187,7 @@ void PWM_DRV_SetTriggerVal(uint32_t instance, pwm_module_t subModule, pwm_val_re
  * @param pwmX          true: PWM X is disabled by this fault; false: PWM A is not affected by this fault
  */
 void PWM_DRV_SetupFault(uint32_t instance, pwm_module_t subModule, pwm_fault_input_t faultNum, pwm_fault_setup_t *faultParams,
-                               bool pwmA, bool pwmB, bool pwmX);
+							   bool pwmA, bool pwmB, bool pwmX);
 
 /*!
  * @brief Starts the PWM counter.
@@ -234,4 +234,3 @@ void PWM_DRV_SetExternalClkFreq(uint32_t instance, uint32_t externalClkFreq);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

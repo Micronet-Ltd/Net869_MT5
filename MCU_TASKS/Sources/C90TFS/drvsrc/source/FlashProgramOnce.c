@@ -4,14 +4,14 @@
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the <organization> nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -39,8 +39,8 @@
 
 /************************** CHANGES *************************************
 1.1.GA      09.25.2014      FPT Team      First version of SDK C90TFS flash driver
-                                          inherited from BM C90TFS flash driver v1.02
-                                          (08.04.2014, FPT Team)
+										  inherited from BM C90TFS flash driver v1.02
+										  (08.04.2014, FPT Team)
 1.3.GA      06.23.2015      ROM Team      Support programming FAC IFR
 *************************************************************************/
 /* include the header files */
@@ -64,46 +64,44 @@
 #endif /* End of CPU_CORE */
 
 uint32_t SIZE_OPTIMIZATION FlashProgramOnce(PFLASH_SSD_CONFIG pSSDConfig, \
-                             uint8_t recordIndex,\
-                             uint8_t* pDataArray, \
-                             uint32_t size, \
-                             pFLASHCOMMANDSEQUENCE pFlashCommandSequence)
+							 uint8_t recordIndex,\
+							 uint8_t* pDataArray, \
+							 uint32_t size, \
+							 pFLASHCOMMANDSEQUENCE pFlashCommandSequence)
 {
 
-    uint8_t i;
-    uint32_t ret;         /* return code variable */
-    uint32_t temp;        /* temporary variable */
+	uint8_t i;
+	uint32_t ret;         /* return code variable */
+	uint32_t temp;        /* temporary variable */
 
    /* clear RDCOLERR & ACCERR & FPVIOL flag in flash status register. Write 1 to clear*/
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FSTAT_OFFSET;
-    REG_WRITE(temp, FTFx_SSD_FSTAT_ERROR_BITS);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FSTAT_OFFSET;
+	REG_WRITE(temp, FTFx_SSD_FSTAT_ERROR_BITS);
 
-    /* passing parameter to the command */
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FCCOB0_OFFSET;
-    REG_WRITE(temp, FTFx_PROGRAM_ONCE);
+	/* passing parameter to the command */
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FCCOB0_OFFSET;
+	REG_WRITE(temp, FTFx_PROGRAM_ONCE);
 
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FCCOB1_OFFSET;
-    REG_WRITE(temp, recordIndex);
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FCCOB1_OFFSET;
+	REG_WRITE(temp, recordIndex);
 
-    for (i = 0x0U; i < size; i ++)
-    {
-        temp = pSSDConfig->ftfxRegBase + i + 0x08U;
-        REG_WRITE(temp, pDataArray[i]);
-    }
-    /* calling flash command sequence function to execute the command */
-    ret = pFlashCommandSequence(pSSDConfig);
+	for (i = 0x0U; i < size; i ++)
+	{
+		temp = pSSDConfig->ftfxRegBase + i + 0x08U;
+		REG_WRITE(temp, pDataArray[i]);
+	}
+	/* calling flash command sequence function to execute the command */
+	ret = pFlashCommandSequence(pSSDConfig);
 
 #if C90TFS_ENABLE_DEBUG
-    /* Enter Debug state if enabled */
-    if (TRUE == (pSSDConfig->DebugEnable))
-    {
-        ENTER_DEBUG_MODE;
-    }
+	/* Enter Debug state if enabled */
+	if (TRUE == (pSSDConfig->DebugEnable))
+	{
+		ENTER_DEBUG_MODE;
+	}
 #endif
 
-    return(ret);
+	return(ret);
 }
 
 /* End of file */
-
-

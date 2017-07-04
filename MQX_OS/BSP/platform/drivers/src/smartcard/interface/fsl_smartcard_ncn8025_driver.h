@@ -66,7 +66,7 @@
 #define MASK_NCN8025_STATUS_ACTIVE              0x02
 #define MASK_NCN8025_STATUS_FAULTY              0x04
 #define MASK_NCN8025_STATUS_CARD_REMOVED        0x08
-#define MASK_NCN8025_STATUS_CARD_DEACTIVATED    0x10   
+#define MASK_NCN8025_STATUS_CARD_DEACTIVATED    0x10
 
 /*! @brief SMARTCARD interface slot parameters, specific to interface IC */
 typedef struct InterfaceSlotParams
@@ -82,9 +82,9 @@ typedef struct InterfaceSlotParams
 /*! @brief Defines interface IC control types */
 typedef enum _smartcard_interface_control
 {
-    kSmartcardInterfaceSetVcc                  = 0x0U,
-    kSmartcardInterfaceSetClockToResetDelay    = 0x01U,
-    kSmartcardInterfaceReadStatus              = 0x02
+	kSmartcardInterfaceSetVcc                  = 0x0U,
+	kSmartcardInterfaceSetClockToResetDelay    = 0x01U,
+	kSmartcardInterfaceReadStatus              = 0x02
 }smartcard_interface_control_t;
 
 /*******************************************************************************
@@ -107,9 +107,9 @@ extern "C" {
  *  is responsible to fill out the members of this structure and to pass the pointer of this structure
  *  into this function.
  */
-smartcard_status_t SMARTCARD_DRV_NCN8025Init(uint32_t interfaceInstance, 
-                               smartcard_state_t * smartcardStatePtr,
-                               const smartcard_interface_config_t * interfaceUserConfig);
+smartcard_status_t SMARTCARD_DRV_NCN8025Init(uint32_t interfaceInstance,
+							   smartcard_state_t * smartcardStatePtr,
+							   const smartcard_interface_config_t * interfaceUserConfig);
 
 /*!
  * @brief De-initializes an SMARTCARD interface instance for operation.
@@ -118,9 +118,9 @@ smartcard_status_t SMARTCARD_DRV_NCN8025Init(uint32_t interfaceInstance,
  *
  */
 void SMARTCARD_DRV_NCN8025DeInit(uint32_t instance);
-  
+
 /*!
- * @brief Installs a callback function for an SMARTCARD interface instance. The installed 
+ * @brief Installs a callback function for an SMARTCARD interface instance. The installed
  * callback function should be called from the interrupt serive routine context of the interface
  * device.
  *
@@ -130,15 +130,15 @@ void SMARTCARD_DRV_NCN8025DeInit(uint32_t instance);
  *
  * @retval Function pointer of the last installed callback function.
  */
-smartcard_interface_callback_t SMARTCARD_DRV_NCN8025InstallCallback(uint32_t instance, 
-                                              smartcard_interface_callback_t function, 
-                                              void * callbackParam);
+smartcard_interface_callback_t SMARTCARD_DRV_NCN8025InstallCallback(uint32_t instance,
+											  smartcard_interface_callback_t function,
+											  void * callbackParam);
 
 /*!
  * @brief Activates the SMARTCARD interface.
  *
  * @param instance The SMARTCARD module instance number.
- * @param resetType type of reset to be performed, possible values 
+ * @param resetType type of reset to be performed, possible values
  *                       = kSmartcardColdReset, kSmartcardWarmReset
  *
  */
@@ -181,4 +181,3 @@ void SMARTCARD_DRV_NCN8025IRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

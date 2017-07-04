@@ -28,7 +28,7 @@
 
 /*!
  * \brief This function converts ticks into milliseconds, with rounding or truncating
- * 
+ *
  * \param[in] tick_ptr Ticks to be converted
  * \param[out] overflow_ptr pointer to where the overflow bool is to be written
  * \param[in] round bool to control rounding or truncating
@@ -37,14 +37,14 @@
  */
 static uint32_t __psp_ticks_to_milliseconds
    (
-      /* [IN] Ticks to be converted */
-      PSP_TICK_STRUCT_PTR tick_ptr,
+	  /* [IN] Ticks to be converted */
+	  PSP_TICK_STRUCT_PTR tick_ptr,
 
-      /* [OUT] pointer to where the overflow bool is to be written */
-      bool        *overflow_ptr,
-      
-      /* [IN] bool to control rounding or truncating */
-      bool             round
+	  /* [OUT] pointer to where the overflow bool is to be written */
+	  bool        *overflow_ptr,
+
+	  /* [IN] bool to control rounding or truncating */
+	  bool             round
    )
 { /* Body */
    PSP_128_BIT_UNION      tmp;
@@ -64,20 +64,20 @@ static uint32_t __psp_ticks_to_milliseconds
    _psp_mul_128_by_32(&tmp, kernel_data->HW_TICKS_PER_TICK, &tmp);
 
    /* Add in hardware ticks */
-   _psp_add_element_to_array(tmp.LW, tick_ptr->HW_TICKS[0], 
-      sizeof(PSP_128_BIT_UNION) / sizeof(uint32_t), tmp.LW);
+   _psp_add_element_to_array(tmp.LW, tick_ptr->HW_TICKS[0],
+	  sizeof(PSP_128_BIT_UNION) / sizeof(uint32_t), tmp.LW);
 
-   /* 
+   /*
    ** Convert hardware ticks to ms. (H / (T/S * H/T) * 1000)
    ** Multiply by an extra 10 for rounding purposes.
    */
    _psp_mul_128_by_32(&tmp, 10000, &tmp);
    _psp_div_128_by_32(&tmp, kernel_data->TICKS_PER_SECOND, &tmp);
    _psp_div_128_by_32(&tmp, kernel_data->HW_TICKS_PER_TICK, &tmp);
-      /* Round OR Truncate*/
+	  /* Round OR Truncate*/
    if (round)
    {
-       _psp_add_element_to_array(tmp.LW, 5, sizeof(PSP_128_BIT_UNION) / sizeof(uint32_t), tmp.LW);
+	   _psp_add_element_to_array(tmp.LW, 5, sizeof(PSP_128_BIT_UNION) / sizeof(uint32_t), tmp.LW);
    }
    _psp_div_128_by_32(&tmp, 10, &tmp);
 
@@ -93,7 +93,7 @@ static uint32_t __psp_ticks_to_milliseconds
 
 /*!
  * \brief This function converts ticks into milliseconds, with rounding
- * 
+ *
  * \param[in] tick_ptr Ticks to be converted
  * \param[out] overflow_ptr pointer to where the overflow bool is to be written
  *
@@ -101,19 +101,19 @@ static uint32_t __psp_ticks_to_milliseconds
  */
 uint32_t _psp_ticks_to_milliseconds
    (
-      /* [IN] Ticks to be converted */
-      PSP_TICK_STRUCT_PTR tick_ptr,
+	  /* [IN] Ticks to be converted */
+	  PSP_TICK_STRUCT_PTR tick_ptr,
 
-      /* [OUT] pointer to where the overflow bool is to be written */
-      bool        *overflow_ptr
+	  /* [OUT] pointer to where the overflow bool is to be written */
+	  bool        *overflow_ptr
    )
 { /* Body */
-    return __psp_ticks_to_milliseconds(tick_ptr, overflow_ptr, TRUE);
+	return __psp_ticks_to_milliseconds(tick_ptr, overflow_ptr, TRUE);
 }
 
 /*!
  * \brief This function converts ticks into milliseconds, with truncating
- * 
+ *
  * \param[in] tick_ptr Ticks to be converted
  * \param[out] overflow_ptr pointer to where the overflow bool is to be written
  *
@@ -121,13 +121,13 @@ uint32_t _psp_ticks_to_milliseconds
  */
 uint32_t _psp_ticks_to_milliseconds_truncate
    (
-      /* [IN] Ticks to be converted */
-      PSP_TICK_STRUCT_PTR tick_ptr,
+	  /* [IN] Ticks to be converted */
+	  PSP_TICK_STRUCT_PTR tick_ptr,
 
-      /* [OUT] pointer to where the overflow bool is to be written */
-      bool        *overflow_ptr
+	  /* [OUT] pointer to where the overflow bool is to be written */
+	  bool        *overflow_ptr
    )
 { /* Body */
-    return __psp_ticks_to_milliseconds(tick_ptr, overflow_ptr, FALSE);
+	return __psp_ticks_to_milliseconds(tick_ptr, overflow_ptr, FALSE);
 }
 /* EOF */

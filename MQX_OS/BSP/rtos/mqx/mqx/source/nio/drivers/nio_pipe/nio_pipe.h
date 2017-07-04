@@ -30,7 +30,7 @@
 extern const NIO_DEV_FN_STRUCT nio_pipe_dev_fn;
 
 typedef struct {
-    uint32_t LEN;
+	uint32_t LEN;
 } NIO_PIPE_INIT_DATA_STRUCT;
 
 #ifdef __cplusplus

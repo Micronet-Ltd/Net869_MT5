@@ -39,10 +39,10 @@
 #include "sh_rtcs.h"
 
 #if !MQX_USE_IO_OLD
-    #include <stdio.h>
-    #define MQX_FILE_PTR FILE *
+	#include <stdio.h>
+	#define MQX_FILE_PTR FILE *
 #else
-    #include <fio.h>
+	#include <fio.h>
 #endif
 
 #define SHELL_TFTPCLN_DEFAULT_PORT "69"
@@ -58,199 +58,199 @@ static FILE* Shell_tftpcln_stdout;
  */
 int32_t Shell_tftpcln(int32_t argc, char *argv[])
 {
-    bool                   shorthelp = FALSE;
-    int32_t                return_code = SHELL_EXIT_SUCCESS;
-    TFTPCLN_PARAM_STRUCT   params = {0};
-    char                   *optstring = ":h:pm:r:l:f:";
-    SHELL_GETOPT_CONTEXT   gopt_context;
-    int32_t                next_option;
-    char                   *host;
-    char                   *port;
-    char                   *remote_filename;
-    char                   *local_filename;
-    char                   *mode;
-    struct addrinfo        hints = {0};
-    struct addrinfo        *getadd_result;
-    int                    error;
-    uint32_t               handle;
-    int32_t                result;
-    char*                  result_string;
-    SHELL_CONTEXT_PTR      shell_ptr;
+	bool                   shorthelp = FALSE;
+	int32_t                return_code = SHELL_EXIT_SUCCESS;
+	TFTPCLN_PARAM_STRUCT   params = {0};
+	char                   *optstring = ":h:pm:r:l:f:";
+	SHELL_GETOPT_CONTEXT   gopt_context;
+	int32_t                next_option;
+	char                   *host;
+	char                   *port;
+	char                   *remote_filename;
+	char                   *local_filename;
+	char                   *mode;
+	struct addrinfo        hints = {0};
+	struct addrinfo        *getadd_result;
+	int                    error;
+	uint32_t               handle;
+	int32_t                result;
+	char*                  result_string;
+	SHELL_CONTEXT_PTR      shell_ptr;
 
-    shell_ptr = Shell_get_context(argv);
-    Shell_tftpcln_stdout = shell_ptr->STDOUT;
-    if (Shell_check_help_request(argc, argv, &shorthelp))
-    {
-        sh_tftpcln_print_usage(argv[0], shorthelp);
-        return(return_code);
-    }
+	shell_ptr = Shell_get_context(argv);
+	Shell_tftpcln_stdout = shell_ptr->STDOUT;
+	if (Shell_check_help_request(argc, argv, &shorthelp))
+	{
+		sh_tftpcln_print_usage(argv[0], shorthelp);
+		return(return_code);
+	}
 
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_family = AF_UNSPEC;
-    port = SHELL_TFTPCLN_DEFAULT_PORT;
-    host = NULL;
-    mode = NULL;
-    remote_filename = NULL;
-    local_filename = NULL;
-    params.recv_callback = sh_tftpcln_callback;
-    params.send_callback = sh_tftpcln_callback;
-    params.error_callback = sh_tftpcln_error;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_family = AF_UNSPEC;
+	port = SHELL_TFTPCLN_DEFAULT_PORT;
+	host = NULL;
+	mode = NULL;
+	remote_filename = NULL;
+	local_filename = NULL;
+	params.recv_callback = sh_tftpcln_callback;
+	params.send_callback = sh_tftpcln_callback;
+	params.error_callback = sh_tftpcln_error;
 
-    /* Parse command line options */
-    Shell_getopt_init(&gopt_context);
-    do
-    {
-        next_option = Shell_getopt(argc, argv, optstring, &gopt_context);
-        switch (next_option)
-        {
-            case 'h':
-                host = gopt_context.optarg;
-                break;
-            case 'p':
-                if(strtoul(gopt_context.optarg, NULL, 10) != 0)
-                {
-                    port = gopt_context.optarg;
-                }
-                break;
-            case 'm':
-                mode = gopt_context.optarg;
-                break;
-            case 'r':
-                remote_filename = gopt_context.optarg;
-                break;
-            case 'l':
-                local_filename = gopt_context.optarg;
-                break;
-            case 'f':
-                if(strtoul(gopt_context.optarg, NULL, 10) == 4)
-                {
-                    hints.ai_family = AF_INET;
-                }
-                else if(strtoul(gopt_context.optarg, NULL, 10) == 6)
-                {
-                    hints.ai_family = AF_INET6;
-                }
-                break;
-            case '?': /* User specified an invalid option. */
-                fprintf(shell_ptr->STDOUT, "Unknown option -%c.\n", next_option);
-                sh_tftpcln_print_usage(argv[0], TRUE);
-                return_code = SHELL_EXIT_ERROR;
-                next_option = -1;
-                break;
-            case ':': /* Option has a missing parameter. */
-                fprintf(shell_ptr->STDOUT, "Option -%c requires a parameter.\n", next_option);
-                return_code = SHELL_EXIT_ERROR;
-                next_option = -1;
-                break;
-            case -1: /* Done with options. */
-                break;
-            default:
-                break;
-        }
-    }while(next_option != -1);
-    
-    if (return_code == SHELL_EXIT_ERROR)
-    {
-        return(return_code);
-    }
+	/* Parse command line options */
+	Shell_getopt_init(&gopt_context);
+	do
+	{
+		next_option = Shell_getopt(argc, argv, optstring, &gopt_context);
+		switch (next_option)
+		{
+			case 'h':
+				host = gopt_context.optarg;
+				break;
+			case 'p':
+				if(strtoul(gopt_context.optarg, NULL, 10) != 0)
+				{
+					port = gopt_context.optarg;
+				}
+				break;
+			case 'm':
+				mode = gopt_context.optarg;
+				break;
+			case 'r':
+				remote_filename = gopt_context.optarg;
+				break;
+			case 'l':
+				local_filename = gopt_context.optarg;
+				break;
+			case 'f':
+				if(strtoul(gopt_context.optarg, NULL, 10) == 4)
+				{
+					hints.ai_family = AF_INET;
+				}
+				else if(strtoul(gopt_context.optarg, NULL, 10) == 6)
+				{
+					hints.ai_family = AF_INET6;
+				}
+				break;
+			case '?': /* User specified an invalid option. */
+				fprintf(shell_ptr->STDOUT, "Unknown option -%c.\n", next_option);
+				sh_tftpcln_print_usage(argv[0], TRUE);
+				return_code = SHELL_EXIT_ERROR;
+				next_option = -1;
+				break;
+			case ':': /* Option has a missing parameter. */
+				fprintf(shell_ptr->STDOUT, "Option -%c requires a parameter.\n", next_option);
+				return_code = SHELL_EXIT_ERROR;
+				next_option = -1;
+				break;
+			case -1: /* Done with options. */
+				break;
+			default:
+				break;
+		}
+	}while(next_option != -1);
 
-    /* check if we have all required parameters. */
-    if (host == NULL)
-    {
-        fputs("Host not specified!\n", shell_ptr->STDOUT);
-        sh_tftpcln_print_usage(argv[0], TRUE);
-        return(SHELL_EXIT_ERROR);
-    }
+	if (return_code == SHELL_EXIT_ERROR)
+	{
+		return(return_code);
+	}
 
-    error = getaddrinfo(host, port, &hints, &getadd_result);
-    if (error == 0)
-    {
-        params.sa_remote_host = *getadd_result->ai_addr;
+	/* check if we have all required parameters. */
+	if (host == NULL)
+	{
+		fputs("Host not specified!\n", shell_ptr->STDOUT);
+		sh_tftpcln_print_usage(argv[0], TRUE);
+		return(SHELL_EXIT_ERROR);
+	}
 
-        freeaddrinfo(getadd_result);
-        fprintf(shell_ptr->STDOUT, "Connecting to %s, port %s...", host, port);
+	error = getaddrinfo(host, port, &hints, &getadd_result);
+	if (error == 0)
+	{
+		params.sa_remote_host = *getadd_result->ai_addr;
 
-        handle = TFTPCLN_connect(&params);
-        if (handle == 0)
-        {
-            fputs("FAIL\n", shell_ptr->STDOUT);
-            return(SHELL_EXIT_ERROR);
-        }
-        else
-        {
-            fputs("OK\n", shell_ptr->STDOUT);
-        }
-    }
-    else
-    {
-        printf("Failed to resolve %s:%s\n", host, port);
-    }
+		freeaddrinfo(getadd_result);
+		fprintf(shell_ptr->STDOUT, "Connecting to %s, port %s...", host, port);
 
-    if (!strcmp(mode, "PUT"))
-    {
-        if (local_filename == NULL)
-        {
-            fputs("Local file name not specified!\n", shell_ptr->STDOUT);
-            sh_tftpcln_print_usage(argv[0], TRUE);
-            return(SHELL_EXIT_ERROR);
-        }
-        fprintf(shell_ptr->STDOUT, "Uploading local file %s to %s:", local_filename, remote_filename);
-        result = TFTPCLN_put(handle, local_filename, remote_filename);
-    }
-    else if (!strcmp(mode, "GET"))
-    {
-        if (remote_filename == NULL)
-        {
-            fputs("Remote file name not specified!\n", shell_ptr->STDOUT);
-            sh_tftpcln_print_usage(argv[0], TRUE);
-            return(SHELL_EXIT_ERROR);
-        }
-        fprintf(shell_ptr->STDOUT, "Downloading remote file %s to %s:", remote_filename, local_filename);
-        result = TFTPCLN_get(handle, local_filename, remote_filename);
-    }
-    if (result == RTCS_OK)
-    {
-        result_string = "successful";
-    }
-    else
-    {
-        result_string = "failed";
-    }
-    fprintf(shell_ptr->STDOUT, "Transaction %s.\n", result_string);
-    TFTPCLN_disconnect(handle);
-    return(return_code);
+		handle = TFTPCLN_connect(&params);
+		if (handle == 0)
+		{
+			fputs("FAIL\n", shell_ptr->STDOUT);
+			return(SHELL_EXIT_ERROR);
+		}
+		else
+		{
+			fputs("OK\n", shell_ptr->STDOUT);
+		}
+	}
+	else
+	{
+		printf("Failed to resolve %s:%s\n", host, port);
+	}
+
+	if (!strcmp(mode, "PUT"))
+	{
+		if (local_filename == NULL)
+		{
+			fputs("Local file name not specified!\n", shell_ptr->STDOUT);
+			sh_tftpcln_print_usage(argv[0], TRUE);
+			return(SHELL_EXIT_ERROR);
+		}
+		fprintf(shell_ptr->STDOUT, "Uploading local file %s to %s:", local_filename, remote_filename);
+		result = TFTPCLN_put(handle, local_filename, remote_filename);
+	}
+	else if (!strcmp(mode, "GET"))
+	{
+		if (remote_filename == NULL)
+		{
+			fputs("Remote file name not specified!\n", shell_ptr->STDOUT);
+			sh_tftpcln_print_usage(argv[0], TRUE);
+			return(SHELL_EXIT_ERROR);
+		}
+		fprintf(shell_ptr->STDOUT, "Downloading remote file %s to %s:", remote_filename, local_filename);
+		result = TFTPCLN_get(handle, local_filename, remote_filename);
+	}
+	if (result == RTCS_OK)
+	{
+		result_string = "successful";
+	}
+	else
+	{
+		result_string = "failed";
+	}
+	fprintf(shell_ptr->STDOUT, "Transaction %s.\n", result_string);
+	TFTPCLN_disconnect(handle);
+	return(return_code);
 }
 
 static void sh_tftpcln_print_usage(char* name, bool shorthelp)
 {
-    if (!shorthelp)
-    {
-        puts("Usage:");
-    }
-    fprintf(Shell_tftpcln_stdout, "%s -h <host> [-p <port>] [-f <family>] -m <operation_mode> [-r <remote_filename>] [-l <local_filename>]\n" , name);
-    if (!shorthelp)
-    {
-        fputs("    <host>   = remote host IP address or hostname\n"
-             "    <port>   = remote port\n"
-             "    <family> = preferred address family for connection\n"
-             "    <operation mode> = 'GET' for reading or 'PUT' writing file from/to server\n"
-             "    <remote_filename> = File to read from/write to on remote host. Mandatory in GET mode\n"
-             "    <local_filename>  = File to read from/write to on local host. Mandatory in PUT mode\n", Shell_tftpcln_stdout);
-    }
+	if (!shorthelp)
+	{
+		puts("Usage:");
+	}
+	fprintf(Shell_tftpcln_stdout, "%s -h <host> [-p <port>] [-f <family>] -m <operation_mode> [-r <remote_filename>] [-l <local_filename>]\n" , name);
+	if (!shorthelp)
+	{
+		fputs("    <host>   = remote host IP address or hostname\n"
+			 "    <port>   = remote port\n"
+			 "    <family> = preferred address family for connection\n"
+			 "    <operation mode> = 'GET' for reading or 'PUT' writing file from/to server\n"
+			 "    <remote_filename> = File to read from/write to on remote host. Mandatory in GET mode\n"
+			 "    <local_filename>  = File to read from/write to on local host. Mandatory in PUT mode\n", Shell_tftpcln_stdout);
+	}
 }
 
 static void sh_tftpcln_callback(uint32_t data_length)
 {
-    fputc('.', Shell_tftpcln_stdout);
-    if (data_length < TFTPCLN_MAX_DATA_SIZE)
-    {
-        fputs("DONE\n", Shell_tftpcln_stdout);
-    }
+	fputc('.', Shell_tftpcln_stdout);
+	if (data_length < TFTPCLN_MAX_DATA_SIZE)
+	{
+		fputs("DONE\n", Shell_tftpcln_stdout);
+	}
 }
 
 static void sh_tftpcln_error(uint16_t error_code, char* error_string)
 {
-    fprintf(Shell_tftpcln_stdout, "FAIL\nError: %s\n", error_string);
+	fprintf(Shell_tftpcln_stdout, "FAIL\nError: %s\n", error_string);
 }
 
 #endif /* SHELLCFG_USES_RTCS */

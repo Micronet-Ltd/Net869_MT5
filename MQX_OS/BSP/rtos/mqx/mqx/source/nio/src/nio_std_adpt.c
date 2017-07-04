@@ -24,49 +24,48 @@
 /*! \cond DOXYGEN_PRIVATE */
 int _WRITE(int fd, const void *buf, size_t nbytes)
 {
-    return (int)write(fd, buf, nbytes);
+	return (int)write(fd, buf, nbytes);
 }
 /*! \endcond */
 
 /*! \cond DOXYGEN_PRIVATE */
 int _READ(int fd, void *buf, size_t nbytes)
 {
-    return (int)read(fd, buf, nbytes);
+	return (int)read(fd, buf, nbytes);
 }
 /*! \endcond */
 
 /*! \cond DOXYGEN_PRIVATE */
 int _OPEN(const char *name, int flags, int mode)
 {
-    return open(name, flags, mode);
+	return open(name, flags, mode);
 }
 /*! \endcond */
 
 /*! \cond DOXYGEN_PRIVATE */
 int _CLOSE(int fd)
 {
-    return close(fd);
+	return close(fd);
 }
 /*! \endcond */
 
 /*! \cond DOXYGEN_PRIVATE */
 long _LSEEK(int fd, long offset, int whence)
 {
-    return lseek(fd, offset, whence);
+	return lseek(fd, offset, whence);
 }
 /*! \endcond */
 
 /*! \cond DOXYGEN_PRIVATE */
 void _STD_LOCK()
 {
-    _int_disable();
+	_int_disable();
 }
 /*! \endcond */
 
 /*! \cond DOXYGEN_PRIVATE */
 void _STD_UNLOCK()
 {
-    _int_enable();
+	_int_enable();
 }
 /*! \endcond */
-

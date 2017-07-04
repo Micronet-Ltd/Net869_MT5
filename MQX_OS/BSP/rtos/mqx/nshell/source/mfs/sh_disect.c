@@ -70,68 +70,68 @@ int32_t  Shell_disect(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if ((argc < 2) || (argc > 4)) {
-         fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage = TRUE;
-      } else if ( !Shell_parse_uint_32(argv[1], (uint32_t *) &sector ))  {
-         fprintf(shell_ptr->STDOUT, "Error, invalid sector number.\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage = TRUE;
-      } else {
-         int fs;
+	  if ((argc < 2) || (argc > 4)) {
+		 fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage = TRUE;
+	  } else if ( !Shell_parse_uint_32(argv[1], (uint32_t *) &sector ))  {
+		 fprintf(shell_ptr->STDOUT, "Error, invalid sector number.\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage = TRUE;
+	  } else {
+		 int fs;
 
-         if (argc >= 3) {
-            /* open the device if it was specified */
-            fs = _io_get_fs_by_name(argv[2]);
-         }
-         else {
-            /* get the current opened device descriptor */
-            fs = Shell_get_current_filesystem(argv);
-         }
-         if (0 > fs) {
-            fprintf(shell_ptr->STDOUT, "Error, unable to open disk.\n");
-            return_code = SHELL_EXIT_ERROR;
-         }
-         if (0 > ioctl(fs, IO_IOCTL_GET_DEVICE_HANDLE, &fd)) {
-            fprintf(shell_ptr->STDOUT, "Error, unable to get device descriptor.\n");
-            return_code = SHELL_EXIT_ERROR;
-         }
+		 if (argc >= 3) {
+			/* open the device if it was specified */
+			fs = _io_get_fs_by_name(argv[2]);
+		 }
+		 else {
+			/* get the current opened device descriptor */
+			fs = Shell_get_current_filesystem(argv);
+		 }
+		 if (0 > fs) {
+			fprintf(shell_ptr->STDOUT, "Error, unable to open disk.\n");
+			return_code = SHELL_EXIT_ERROR;
+		 }
+		 if (0 > ioctl(fs, IO_IOCTL_GET_DEVICE_HANDLE, &fd)) {
+			fprintf(shell_ptr->STDOUT, "Error, unable to get device descriptor.\n");
+			return_code = SHELL_EXIT_ERROR;
+		 }
 
-         if (0 <= fd) {
-            buffer = _mem_alloc(SECTOR_SIZE);
-            if (buffer) {
-               if (0 > lseek(fd, sector * SECTOR_SIZE, SEEK_SET))  {
-                  fprintf(shell_ptr->STDOUT, "Error, unable to seek to sector %s.\n", argv[1] );
-                  return_code = SHELL_EXIT_ERROR;
-               } else if (read(fd, (char *) buffer, SECTOR_SIZE) != SECTOR_SIZE) {
-                  fprintf(shell_ptr->STDOUT, "Error, unable to read sector %s.\n", argv[1] );
-                  return_code = SHELL_EXIT_ERROR;
-               } else {
-                  fprintf(shell_ptr->STDOUT, "\nSector # %d\n", sector);
-                  for (e = 0; e < (32 + SECTOR_SIZE - 1) / 32; e++)  {
-                     for (i = 0; i < 32; i++) {
-                        fprintf(shell_ptr->STDOUT, "%02x ",(uint32_t) buffer[e*32+i]);
-                     }
-                     fprintf(shell_ptr->STDOUT, "\n");
-                  }
-               }
-               _mem_free(buffer);
-            }
-         }
+		 if (0 <= fd) {
+			buffer = _mem_alloc(SECTOR_SIZE);
+			if (buffer) {
+			   if (0 > lseek(fd, sector * SECTOR_SIZE, SEEK_SET))  {
+				  fprintf(shell_ptr->STDOUT, "Error, unable to seek to sector %s.\n", argv[1] );
+				  return_code = SHELL_EXIT_ERROR;
+			   } else if (read(fd, (char *) buffer, SECTOR_SIZE) != SECTOR_SIZE) {
+				  fprintf(shell_ptr->STDOUT, "Error, unable to read sector %s.\n", argv[1] );
+				  return_code = SHELL_EXIT_ERROR;
+			   } else {
+				  fprintf(shell_ptr->STDOUT, "\nSector # %d\n", sector);
+				  for (e = 0; e < (32 + SECTOR_SIZE - 1) / 32; e++)  {
+					 for (i = 0; i < 32; i++) {
+						fprintf(shell_ptr->STDOUT, "%02x ",(uint32_t) buffer[e*32+i]);
+					 }
+					 fprintf(shell_ptr->STDOUT, "\n");
+				  }
+			   }
+			   _mem_free(buffer);
+			}
+		 }
 
-         fprintf(shell_ptr->STDOUT, "\n");
-      }
+		 fprintf(shell_ptr->STDOUT, "\n");
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <sector> [<device>]\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <sector> [<device>]\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <sector>     = sector number\n");
-         fprintf(shell_ptr->STDOUT, "   <device>     = low level device\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <sector> [<device>]\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <sector> [<device>]\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <sector>     = sector number\n");
+		 fprintf(shell_ptr->STDOUT, "   <device>     = low level device\n");
+	  }
    }
 
    return return_code;

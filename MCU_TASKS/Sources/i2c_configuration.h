@@ -12,7 +12,7 @@ extern "C"
 void I2C_Enable          (uint8_t port);
 void I2C_Disable         (uint8_t port);
 void I2C_Reset           (uint8_t port);
-	
+
 extern void MQX_I2C0_IRQHandler (void);
 extern void MQX_I2C1_IRQHandler (void);
 
@@ -23,4 +23,3 @@ extern void MQX_I2C1_IRQHandler (void);
 
 
 #endif /* I2C_CONFIGURATION_H */
-

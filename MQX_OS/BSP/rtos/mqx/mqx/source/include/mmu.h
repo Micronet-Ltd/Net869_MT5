@@ -29,7 +29,7 @@
 #ifndef __mmu_h__
 #define __mmu_h__
 
-/* When a region is added to the mmu, the default is to make this region 
+/* When a region is added to the mmu, the default is to make this region
  * cachable, copyback, writeable, for both code and data accesses
  */
 
@@ -51,16 +51,16 @@
 /* On some MMUs, a write can be made without updating the cache. */
 #define PSP_MMU_WRITE_NO_UPDATE         (0x00000020)
 
-/* On some MMUs, a write can be stored into a write buffer, and 
- * stores to memory performed at some future time. 
+/* On some MMUs, a write can be stored into a write buffer, and
+ * stores to memory performed at some future time.
  */
 #define PSP_MMU_WRITE_BUFFERED          (0x00000040)
 
 /* This page is shared with an external hardware device that can snoop. */
 #define PSP_MMU_COHERENT                (0x00000080)
 
-/* This page requires that memory accesses are not out-of-order, 
- * or that memory not specifically requested by the software be accessed. 
+/* This page requires that memory accesses are not out-of-order,
+ * or that memory not specifically requested by the software be accessed.
  */
 #define PSP_MMU_GUARDED                 (0x00000100)
 
@@ -129,7 +129,7 @@ extern _mqx_uint _mmu_vtop(void *, void **);
 
 extern _mqx_uint _mmu_add_vcontext(_task_id, void *, _mem_size, _mqx_uint);
 extern _mqx_uint _mmu_create_vcontext(_task_id);
-extern _task_id  _mmu_create_vtask(_mqx_uint, _mqx_uint, void *, void *, 
+extern _task_id  _mmu_create_vtask(_mqx_uint, _mqx_uint, void *, void *,
    _mem_size, _mqx_uint);
 extern _mqx_uint _mmu_destroy_vcontext(_task_id);
 #endif
@@ -140,5 +140,5 @@ extern _mqx_uint _mmu_destroy_vcontext(_task_id);
 
 #endif  /* __ASM__ */
 
-#endif 
+#endif
 /* EOF */

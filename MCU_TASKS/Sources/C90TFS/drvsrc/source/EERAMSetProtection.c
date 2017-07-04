@@ -4,14 +4,14 @@
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the <organization> nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -39,8 +39,8 @@
 
 /************************** CHANGES *************************************
 1.1.GA      09.25.2014      FPT Team      First version of SDK C90TFS flash driver
-                                          inherited from BM C90TFS flash driver v1.02
-                                          (08.04.2014, FPT Team)
+										  inherited from BM C90TFS flash driver v1.02
+										  (08.04.2014, FPT Team)
 *************************************************************************/
 /* include the header files */
 #include "SSD_FTFx.h"
@@ -63,41 +63,41 @@
 
 uint32_t SIZE_OPTIMIZATION EERAMSetProtection(PFLASH_SSD_CONFIG pSSDConfig, uint8_t protectStatus)
 {
-    uint32_t ret = FTFx_OK;       /* return code variable */
-    uint32_t temp;                /* temporary variable */
+	uint32_t ret = FTFx_OK;       /* return code variable */
+	uint32_t temp;                /* temporary variable */
 
-    /* Check if EERAM is set for EEE */
-    temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FCNFG_OFFSET;
-    if(0x0U == (REG_BIT_GET(temp, FTFx_SSD_FCNFG_EEERDY)))
-    {
-        /* EERAM is not set for EEE */
-        ret = FTFx_ERR_NOEEE;
-    }
-    else
-    {
-        temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FEPROT_OFFSET;
-        REG_WRITE(temp, protectStatus);
+	/* Check if EERAM is set for EEE */
+	temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FCNFG_OFFSET;
+	if(0x0U == (REG_BIT_GET(temp, FTFx_SSD_FCNFG_EEERDY)))
+	{
+		/* EERAM is not set for EEE */
+		ret = FTFx_ERR_NOEEE;
+	}
+	else
+	{
+		temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FEPROT_OFFSET;
+		REG_WRITE(temp, protectStatus);
 
-        temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FEPROT_OFFSET;
-        if ( protectStatus != REG_READ(temp))
-        {
-            ret = FTFx_ERR_CHANGEPROT;
-        }
-        else
-        {
-            /* do nothing */
-        }
-    }
+		temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FEPROT_OFFSET;
+		if ( protectStatus != REG_READ(temp))
+		{
+			ret = FTFx_ERR_CHANGEPROT;
+		}
+		else
+		{
+			/* do nothing */
+		}
+	}
 
 #if C90TFS_ENABLE_DEBUG
-    /* Enter Debug state if enabled */
-    if (TRUE == (pSSDConfig->DebugEnable))
-    {
-        ENTER_DEBUG_MODE;
-    }
+	/* Enter Debug state if enabled */
+	if (TRUE == (pSSDConfig->DebugEnable))
+	{
+		ENTER_DEBUG_MODE;
+	}
 #endif
 
-    return(ret);
+	return(ret);
 }
 #endif /* End of DEBLOCK_SIZE */
 /* End of file */

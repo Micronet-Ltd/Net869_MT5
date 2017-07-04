@@ -15,7 +15,7 @@ extern void UART_DRV_IRQHandler_spec(uint32_t instance);
 
 static uart_state_t  uartState [UART_INSTANCE_COUNT];
 
-void UART_Enable  (uint8_t port, const uart_user_config_t *uartConfig) 
+void UART_Enable  (uint8_t port, const uart_user_config_t *uartConfig)
 {
 	switch (port) {
 		case UART0_IDX:	NVIC_SetPriority      (UART0_RX_TX_IRQn, UART_NVIC_IRQ_Priority);
@@ -25,7 +25,7 @@ void UART_Enable  (uint8_t port, const uart_user_config_t *uartConfig)
 		case UART1_IDX:	NVIC_SetPriority      (UART1_RX_TX_IRQn, UART_NVIC_IRQ_Priority);
 						OSA_InstallIntHandler (UART1_RX_TX_IRQn, MQX_UART1_RX_TX_IRQHandler);
 						break;
-/*						
+/*
 		case UART3_IDX:	NVIC_SetPriority      (UART3_RX_TX_IRQn, 6U);
 						OSA_InstallIntHandler (UART3_RX_TX_IRQn, MQX_UART3_RX_TX_IRQHandler);
 						break;
@@ -33,12 +33,12 @@ void UART_Enable  (uint8_t port, const uart_user_config_t *uartConfig)
 		default:		printf("\nUART Enable - illeagal port\n");
 						return;
 	}
-	
+
 	UART_DRV_Init (port, &uartState[port], uartConfig);
 	printf("\nUART %d Enabled\n", port);
 }
 
-void UART_Disable (uint8_t port) 
+void UART_Disable (uint8_t port)
 {
 	UART_DRV_Deinit (port);
 	printf("\nUART %d Disabled\n", port);

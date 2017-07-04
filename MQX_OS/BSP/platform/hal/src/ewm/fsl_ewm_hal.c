@@ -53,13 +53,13 @@ void EWM_HAL_SetConfig(EWM_Type * base, const ewm_config_t *ewmConfigPtr)
 {
 	uint32_t value = 0;
 	assert(ewmConfigPtr);
-	value = EWM_CTRL_EWMEN(ewmConfigPtr->ewmEnable) | EWM_CTRL_ASSIN(ewmConfigPtr->ewmInAssertLogic) | 
+	value = EWM_CTRL_EWMEN(ewmConfigPtr->ewmEnable) | EWM_CTRL_ASSIN(ewmConfigPtr->ewmInAssertLogic) |
 		EWM_CTRL_INEN(ewmConfigPtr->ewmInEnable) | EWM_CTRL_INTEN(ewmConfigPtr->intEnable);
 #if FSL_FEATURE_EWM_HAS_PRESCALER
-        EWM_WR_CLKPRESCALER(base, ewmConfigPtr->ewmPrescalerValue);
+		EWM_WR_CLKPRESCALER(base, ewmConfigPtr->ewmPrescalerValue);
 #endif
-        EWM_WR_CMPL(base, ewmConfigPtr->ewmCmpLowValue);
-        EWM_WR_CMPH(base, ewmConfigPtr->ewmCmpHighValue);
+		EWM_WR_CMPL(base, ewmConfigPtr->ewmCmpLowValue);
+		EWM_WR_CMPH(base, ewmConfigPtr->ewmCmpHighValue);
 	EWM_WR_CTRL(base, value);
 }
 
@@ -71,21 +71,20 @@ void EWM_HAL_SetConfig(EWM_Type * base, const ewm_config_t *ewmConfigPtr)
  *END**************************************************************************/
 void EWM_HAL_Init(EWM_Type * base)
 {
-    ewm_config_t ewmCommonConfig;
-    ewmCommonConfig.ewmEnable         = true;
-    ewmCommonConfig.ewmInEnable       = true;
-    ewmCommonConfig.ewmInAssertLogic  = true;
-    ewmCommonConfig.intEnable         = true;
+	ewm_config_t ewmCommonConfig;
+	ewmCommonConfig.ewmEnable         = true;
+	ewmCommonConfig.ewmInEnable       = true;
+	ewmCommonConfig.ewmInAssertLogic  = true;
+	ewmCommonConfig.intEnable         = true;
 #if FSL_FEATURE_EWM_HAS_PRESCALER
-    ewmCommonConfig.ewmPrescalerValue = 0;
+	ewmCommonConfig.ewmPrescalerValue = 0;
 #endif
-    ewmCommonConfig.ewmCmpLowValue    = 0x00;
-    ewmCommonConfig.ewmCmpHighValue   = 0xfe;
-    EWM_HAL_SetConfig(base, &ewmCommonConfig);
+	ewmCommonConfig.ewmCmpLowValue    = 0x00;
+	ewmCommonConfig.ewmCmpHighValue   = 0xfe;
+	EWM_HAL_SetConfig(base, &ewmCommonConfig);
 }
 
 #endif
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

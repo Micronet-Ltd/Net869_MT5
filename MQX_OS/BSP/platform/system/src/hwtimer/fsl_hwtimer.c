@@ -59,26 +59,26 @@
  *END**************************************************************************/
 _hwtimer_error_code_t HWTIMER_SYS_Init(hwtimer_t *hwtimer, const hwtimer_devif_t * kDevif, uint32_t id, void *data)
  {
-    /* Check input parameters */
-    if ((hwtimer == NULL) || (kDevif == NULL))
-    {
-        return kHwtimerInvalidInput;
-    }
+	/* Check input parameters */
+	if ((hwtimer == NULL) || (kDevif == NULL))
+	{
+		return kHwtimerInvalidInput;
+	}
 
-    assert(NULL != kDevif->init);
+	assert(NULL != kDevif->init);
 
-    /* Initialize hwtimer structure */
-    hwtimer->devif   = kDevif;
-    hwtimer->ticks   = 0U;
-    hwtimer->divider = 0U;
-    hwtimer->modulo  = 0U;
-    hwtimer->callbackFunc = NULL;
-    hwtimer->callbackData = NULL;
-    hwtimer->callbackPending = 0U;
-    hwtimer->callbackBlocked = 0U;
+	/* Initialize hwtimer structure */
+	hwtimer->devif   = kDevif;
+	hwtimer->ticks   = 0U;
+	hwtimer->divider = 0U;
+	hwtimer->modulo  = 0U;
+	hwtimer->callbackFunc = NULL;
+	hwtimer->callbackData = NULL;
+	hwtimer->callbackPending = 0U;
+	hwtimer->callbackBlocked = 0U;
 
-    /* Call low level driver init function. */
-    return hwtimer->devif->init(hwtimer, id, data);
+	/* Call low level driver init function. */
+	return hwtimer->devif->init(hwtimer, id, data);
  }
 
 /*FUNCTION**********************************************************************
@@ -91,44 +91,44 @@ _hwtimer_error_code_t HWTIMER_SYS_Init(hwtimer_t *hwtimer, const hwtimer_devif_t
  *END**************************************************************************/
 _hwtimer_error_code_t HWTIMER_SYS_Deinit(hwtimer_t *hwtimer)
 {
-    _hwtimer_error_code_t result;
+	_hwtimer_error_code_t result;
 
-    /* Check input parameters */
-    if (NULL == hwtimer)
-    {
-        return kHwtimerInvalidInput;
-    }
-    if (NULL == hwtimer->devif)
-    {
-        return kHwtimerInvalidPointer;
-    }
-    /* Stop timer if runs */
-    assert(NULL != hwtimer->devif->stop);
-    result = hwtimer->devif->stop(hwtimer);
-    if (kHwtimerSuccess != result)
-    {
-        return result;
-    }
+	/* Check input parameters */
+	if (NULL == hwtimer)
+	{
+		return kHwtimerInvalidInput;
+	}
+	if (NULL == hwtimer->devif)
+	{
+		return kHwtimerInvalidPointer;
+	}
+	/* Stop timer if runs */
+	assert(NULL != hwtimer->devif->stop);
+	result = hwtimer->devif->stop(hwtimer);
+	if (kHwtimerSuccess != result)
+	{
+		return result;
+	}
 
-    /* De-initialize timer. */
-    assert(NULL != hwtimer->devif->deinit);
-    result = hwtimer->devif->deinit(hwtimer);
-    if (kHwtimerSuccess != result)
-    {
-        return result;
-    }
+	/* De-initialize timer. */
+	assert(NULL != hwtimer->devif->deinit);
+	result = hwtimer->devif->deinit(hwtimer);
+	if (kHwtimerSuccess != result)
+	{
+		return result;
+	}
 
-    hwtimer->devif      = NULL;
-    hwtimer->clockFreq  = 0U;
-    hwtimer->ticks      = 0U;
-    hwtimer->divider    = 0U;
-    hwtimer->modulo     = 0U;
-    hwtimer->callbackFunc = NULL;
-    hwtimer->callbackData = NULL;
-    hwtimer->callbackPending = 0U;
-    hwtimer->callbackBlocked = 0U;
+	hwtimer->devif      = NULL;
+	hwtimer->clockFreq  = 0U;
+	hwtimer->ticks      = 0U;
+	hwtimer->divider    = 0U;
+	hwtimer->modulo     = 0U;
+	hwtimer->callbackFunc = NULL;
+	hwtimer->callbackData = NULL;
+	hwtimer->callbackPending = 0U;
+	hwtimer->callbackBlocked = 0U;
 
-    return kHwtimerSuccess;
+	return kHwtimerSuccess;
 }
 
 /*FUNCTION**********************************************************************
@@ -140,18 +140,18 @@ _hwtimer_error_code_t HWTIMER_SYS_Deinit(hwtimer_t *hwtimer)
  *END**************************************************************************/
 _hwtimer_error_code_t HWTIMER_SYS_SetPeriod(hwtimer_t *hwtimer, uint32_t period)
 {
-    /* Check input parameters */
-    if ((NULL == hwtimer) || (0U == period))
-    {
-        return kHwtimerInvalidInput;
-    }
-    if (NULL == hwtimer->devif)
-    {
-        return kHwtimerInvalidPointer;
-    }
+	/* Check input parameters */
+	if ((NULL == hwtimer) || (0U == period))
+	{
+		return kHwtimerInvalidInput;
+	}
+	if (NULL == hwtimer->devif)
+	{
+		return kHwtimerInvalidPointer;
+	}
 
-    assert(NULL != hwtimer->devif->setDiv);
-    return hwtimer->devif->setDiv(hwtimer, period);
+	assert(NULL != hwtimer->devif->setDiv);
+	return hwtimer->devif->setDiv(hwtimer, period);
 }
 
 /*FUNCTION**********************************************************************
@@ -164,25 +164,25 @@ _hwtimer_error_code_t HWTIMER_SYS_SetPeriod(hwtimer_t *hwtimer, uint32_t period)
  *END**************************************************************************/
 uint32_t HWTIMER_SYS_GetPeriod(hwtimer_t *hwtimer)
 {
-    uint32_t period;
+	uint32_t period;
 
-    /* Check input parameters */
-    if (NULL == hwtimer)
-    {
-        return 0U;
-    }
+	/* Check input parameters */
+	if (NULL == hwtimer)
+	{
+		return 0U;
+	}
 
-    /* Obtain clock source clock frequency.*/
-    if (hwtimer->clockFreq == 0U)
-    {
-        return 0U;
-    }
+	/* Obtain clock source clock frequency.*/
+	if (hwtimer->clockFreq == 0U)
+	{
+		return 0U;
+	}
 
-    assert(hwtimer->divider <= hwtimer->clockFreq);
-    /* Divider is always less than clockFreq */
-    period = ((uint64_t)1000000U * hwtimer->divider) / hwtimer->clockFreq;
+	assert(hwtimer->divider <= hwtimer->clockFreq);
+	/* Divider is always less than clockFreq */
+	period = ((uint64_t)1000000U * hwtimer->divider) / hwtimer->clockFreq;
 
-    return period;
+	return period;
 }
 
 /*FUNCTION**********************************************************************
@@ -194,18 +194,18 @@ uint32_t HWTIMER_SYS_GetPeriod(hwtimer_t *hwtimer)
  *END**************************************************************************/
 _hwtimer_error_code_t HWTIMER_SYS_Start(hwtimer_t *hwtimer)
 {
-    /* Check input parameters */
-    if (NULL == hwtimer)
-    {
-        return kHwtimerInvalidInput;
-    }
-    if (NULL == hwtimer->devif)
-    {
-        return kHwtimerInvalidPointer;
-    }
-    /* Start timer */
-    assert(NULL != hwtimer->devif->start);
-    return hwtimer->devif->start(hwtimer);
+	/* Check input parameters */
+	if (NULL == hwtimer)
+	{
+		return kHwtimerInvalidInput;
+	}
+	if (NULL == hwtimer->devif)
+	{
+		return kHwtimerInvalidPointer;
+	}
+	/* Start timer */
+	assert(NULL != hwtimer->devif->start);
+	return hwtimer->devif->start(hwtimer);
 }
 
 /*FUNCTION**********************************************************************
@@ -217,23 +217,23 @@ _hwtimer_error_code_t HWTIMER_SYS_Start(hwtimer_t *hwtimer)
  *END**************************************************************************/
 _hwtimer_error_code_t HWTIMER_SYS_Stop(hwtimer_t *hwtimer)
 {
-    _hwtimer_error_code_t result;
+	_hwtimer_error_code_t result;
 
-    /* Check input parameters */
-    if (NULL == hwtimer)
-    {
-        return kHwtimerInvalidInput;
-    }
-    if (NULL == hwtimer->devif)
-    {
-        return kHwtimerInvalidPointer;
-    }
+	/* Check input parameters */
+	if (NULL == hwtimer)
+	{
+		return kHwtimerInvalidInput;
+	}
+	if (NULL == hwtimer->devif)
+	{
+		return kHwtimerInvalidPointer;
+	}
 
-    assert(NULL != hwtimer->devif->stop);
-    result = hwtimer->devif->stop(hwtimer);
-    hwtimer->callbackPending = 0U;
+	assert(NULL != hwtimer->devif->stop);
+	result = hwtimer->devif->stop(hwtimer);
+	hwtimer->callbackPending = 0U;
 
-    return result;
+	return result;
 }
 
 /*FUNCTION**********************************************************************
@@ -246,13 +246,13 @@ _hwtimer_error_code_t HWTIMER_SYS_Stop(hwtimer_t *hwtimer)
  *END**************************************************************************/
 uint32_t HWTIMER_SYS_GetModulo(hwtimer_t *hwtimer)
 {
-    /* Check input parameters */
-    if (NULL == hwtimer)
-    {
-        return 0U;
-    }
+	/* Check input parameters */
+	if (NULL == hwtimer)
+	{
+		return 0U;
+	}
 
-    return hwtimer->modulo;
+	return hwtimer->modulo;
 }
 
 /*FUNCTION**********************************************************************
@@ -267,18 +267,18 @@ uint32_t HWTIMER_SYS_GetModulo(hwtimer_t *hwtimer)
  *END**************************************************************************/
 _hwtimer_error_code_t HWTIMER_SYS_GetTime(hwtimer_t *hwtimer, hwtimer_time_t *time)
 {
-    /* Check input parameters */
-    if ((NULL == hwtimer) || (NULL == time))
-    {
-        return kHwtimerInvalidInput;
-    }
-    if (NULL == hwtimer->devif)
-    {
-        return kHwtimerInvalidPointer;
-    }
+	/* Check input parameters */
+	if ((NULL == hwtimer) || (NULL == time))
+	{
+		return kHwtimerInvalidInput;
+	}
+	if (NULL == hwtimer->devif)
+	{
+		return kHwtimerInvalidPointer;
+	}
 
-    assert(NULL != hwtimer->devif->getTime);
-    return hwtimer->devif->getTime(hwtimer, time);
+	assert(NULL != hwtimer->devif->getTime);
+	return hwtimer->devif->getTime(hwtimer, time);
 }
 
 /*FUNCTION**********************************************************************
@@ -293,14 +293,14 @@ _hwtimer_error_code_t HWTIMER_SYS_GetTime(hwtimer_t *hwtimer, hwtimer_time_t *ti
  *END**************************************************************************/
 uint32_t HWTIMER_SYS_GetTicks(hwtimer_t *hwtimer)
 {
-    /* Check input parameters */
-    if (NULL == hwtimer)
-    {
-        return 0U;
-    }
+	/* Check input parameters */
+	if (NULL == hwtimer)
+	{
+		return 0U;
+	}
 
-    /* return lower 32b of 64 bit value */
-    return (uint32_t)hwtimer->ticks;
+	/* return lower 32b of 64 bit value */
+	return (uint32_t)hwtimer->ticks;
 }
 
 /*FUNCTION**********************************************************************
@@ -313,22 +313,22 @@ uint32_t HWTIMER_SYS_GetTicks(hwtimer_t *hwtimer)
  *END**************************************************************************/
 _hwtimer_error_code_t HWTIMER_SYS_RegisterCallback(hwtimer_t *hwtimer, hwtimer_callback_t callbackFunc, void *callbackData)
 {
-    hwtimer_t volatile *hwtimerVol;
+	hwtimer_t volatile *hwtimerVol;
 
-    /* Check input parameters */
-    if (NULL == hwtimer)
-    {
-        return kHwtimerInvalidInput;
-    }
+	/* Check input parameters */
+	if (NULL == hwtimer)
+	{
+		return kHwtimerInvalidInput;
+	}
 
-    hwtimerVol = hwtimer;
-    /* Volatile used to prevent optimization of following lines. Interrupt may happen meanwhile. */
-    hwtimerVol->callbackFunc = NULL; /* Prevent callback execution with old data */
-    hwtimerVol->callbackPending = 0U;
-    hwtimerVol->callbackData = callbackData;
-    hwtimerVol->callbackFunc = callbackFunc;
+	hwtimerVol = hwtimer;
+	/* Volatile used to prevent optimization of following lines. Interrupt may happen meanwhile. */
+	hwtimerVol->callbackFunc = NULL; /* Prevent callback execution with old data */
+	hwtimerVol->callbackPending = 0U;
+	hwtimerVol->callbackData = callbackData;
+	hwtimerVol->callbackFunc = callbackFunc;
 
-    return kHwtimerSuccess;
+	return kHwtimerSuccess;
 }
 
 /*FUNCTION**********************************************************************
@@ -341,15 +341,15 @@ _hwtimer_error_code_t HWTIMER_SYS_RegisterCallback(hwtimer_t *hwtimer, hwtimer_c
  *END**************************************************************************/
 _hwtimer_error_code_t HWTIMER_SYS_BlockCallback(hwtimer_t *hwtimer)
 {
-    /* Check input parameters */
-    if (NULL == hwtimer)
-    {
-        return kHwtimerInvalidInput;
-    }
+	/* Check input parameters */
+	if (NULL == hwtimer)
+	{
+		return kHwtimerInvalidInput;
+	}
 
-    hwtimer->callbackBlocked = 1U;
+	hwtimer->callbackBlocked = 1U;
 
-    return kHwtimerSuccess;
+	return kHwtimerSuccess;
 }
 
 /*FUNCTION**********************************************************************
@@ -363,34 +363,34 @@ _hwtimer_error_code_t HWTIMER_SYS_BlockCallback(hwtimer_t *hwtimer)
  *END**************************************************************************/
 _hwtimer_error_code_t HWTIMER_SYS_UnblockCallback(hwtimer_t *hwtimer)
 {
-    hwtimer_callback_t callbackFunc;
-    hwtimer_t volatile *hwtimerVol = hwtimer;
+	hwtimer_callback_t callbackFunc;
+	hwtimer_t volatile *hwtimerVol = hwtimer;
 
-    /* Check input parameters */
-    if (NULL == hwtimer)
-    {
-        return kHwtimerInvalidInput;
-    }
+	/* Check input parameters */
+	if (NULL == hwtimer)
+	{
+		return kHwtimerInvalidInput;
+	}
 
-    /* Unblock callbacks in ISR. No more pending request could arrive after this. */
-    hwtimerVol->callbackBlocked = 0U;
-    /* Check for any previously set pending requests during blocked state */
-    if (hwtimerVol->callbackPending)
-    {
-        callbackFunc = hwtimerVol->callbackFunc;
-        if (NULL != callbackFunc)
-        {
-            /* Prevent invocation of callback from ISR (callback may not be re-entrant) */
-            hwtimerVol->callbackFunc = NULL;
-            callbackFunc(hwtimerVol->callbackData);
-            /* Allow invocation of callback from ISR */
-            hwtimerVol->callbackFunc = callbackFunc;
-        }
-        /* Clear pending flag, callback just serviced */
-        hwtimerVol->callbackPending = 0U;
-    }
+	/* Unblock callbacks in ISR. No more pending request could arrive after this. */
+	hwtimerVol->callbackBlocked = 0U;
+	/* Check for any previously set pending requests during blocked state */
+	if (hwtimerVol->callbackPending)
+	{
+		callbackFunc = hwtimerVol->callbackFunc;
+		if (NULL != callbackFunc)
+		{
+			/* Prevent invocation of callback from ISR (callback may not be re-entrant) */
+			hwtimerVol->callbackFunc = NULL;
+			callbackFunc(hwtimerVol->callbackData);
+			/* Allow invocation of callback from ISR */
+			hwtimerVol->callbackFunc = callbackFunc;
+		}
+		/* Clear pending flag, callback just serviced */
+		hwtimerVol->callbackPending = 0U;
+	}
 
-    return kHwtimerSuccess;
+	return kHwtimerSuccess;
 }
 
 /*FUNCTION**********************************************************************
@@ -401,15 +401,15 @@ _hwtimer_error_code_t HWTIMER_SYS_UnblockCallback(hwtimer_t *hwtimer)
  *END**************************************************************************/
 _hwtimer_error_code_t HWTIMER_SYS_CancelCallback(hwtimer_t *hwtimer)
 {
-    /* Check input parameters */
-    if (NULL == hwtimer)
-    {
-        return kHwtimerInvalidInput;
-    }
+	/* Check input parameters */
+	if (NULL == hwtimer)
+	{
+		return kHwtimerInvalidInput;
+	}
 
-    hwtimer->callbackPending = 0U;
+	hwtimer->callbackPending = 0U;
 
-    return kHwtimerSuccess;
+	return kHwtimerSuccess;
 }
 
 /*******************************************************************************

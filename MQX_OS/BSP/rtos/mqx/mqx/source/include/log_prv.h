@@ -46,44 +46,44 @@
 /*  LOG HEADER STRUCT */
 /*!
  * \cond DOXYGEN_PRIVATE
- *  
+ *
  * \brief This structure is stored at the front of each log to provide information
  * about the current state of the log.
  */
 typedef struct log_header_struct
 {
-    /*! \brief Control flags for the log. */
-    uint32_t       FLAGS;
+	/*! \brief Control flags for the log. */
+	uint32_t       FLAGS;
 
-    /*! \brief The sequence number for next write. */
-    _mqx_uint     NUMBER;
+	/*! \brief The sequence number for next write. */
+	_mqx_uint     NUMBER;
 
-    /*! \brief Where next log is to be written. */
-    _mqx_uint_ptr LOG_WRITE;
+	/*! \brief Where next log is to be written. */
+	_mqx_uint_ptr LOG_WRITE;
 
-    /*! \brief Where first log is to be read. */
-    _mqx_uint_ptr LOG_READ;
+	/*! \brief Where first log is to be read. */
+	_mqx_uint_ptr LOG_READ;
 
-    /*! \brief Where last log was written. */
-    _mqx_uint_ptr LAST_LOG;
+	/*! \brief Where last log was written. */
+	_mqx_uint_ptr LAST_LOG;
 
-    /*! \brief Starting address of data. */
-    _mqx_uint_ptr LOG_START;
+	/*! \brief Starting address of data. */
+	_mqx_uint_ptr LOG_START;
 
-    /*! \brief Ending address of data. */
-    _mqx_uint_ptr LOG_END;
+	/*! \brief Ending address of data. */
+	_mqx_uint_ptr LOG_END;
 
-    /*! \brief The next log to read. */
-    _mqx_uint_ptr LOG_NEXT;
+	/*! \brief The next log to read. */
+	_mqx_uint_ptr LOG_NEXT;
 
-    /*! \brief Current size of data. */
-    _mqx_uint     SIZE;
+	/*! \brief Current size of data. */
+	_mqx_uint     SIZE;
 
-    /*! \brief Maximum size of data. */
-    _mqx_uint     MAX;
+	/*! \brief Maximum size of data. */
+	_mqx_uint     MAX;
 
-    /*! \brief Variable array of data. */
-    _mqx_uint     DATA[1];
+	/*! \brief Variable array of data. */
+	_mqx_uint     DATA[1];
 
 } LOG_HEADER_STRUCT, * LOG_HEADER_STRUCT_PTR;
 /*! \endcond */
@@ -92,18 +92,18 @@ typedef struct log_header_struct
 /*  LOG COMPONENT STRUCT */
 /*!
  * \cond DOXYGEN_PRIVATE
- * 
+ *
  * \brief  This structure is used to store information required for log retrieval.
- * 
+ *
  * Its address is stored in the kernel component field of the kernel data structure.
  */
 typedef struct log_component_struct
 {
-    /*! \brief A validation stamp to verify handle correctness. */
-    _mqx_uint             VALID;
+	/*! \brief A validation stamp to verify handle correctness. */
+	_mqx_uint             VALID;
 
-    /*! \brief The address of the log headers. */
-    LOG_HEADER_STRUCT_PTR LOGS[LOG_MAXIMUM_NUMBER];
+	/*! \brief The address of the log headers. */
+	LOG_HEADER_STRUCT_PTR LOGS[LOG_MAXIMUM_NUMBER];
 
 } LOG_COMPONENT_STRUCT, * LOG_COMPONENT_STRUCT_PTR;
 /*! \endcond */

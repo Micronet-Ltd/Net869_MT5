@@ -60,23 +60,23 @@ uint8_t g_pitUsChannel;
  *END**************************************************************************/
 pit_status_t PIT_DRV_Init(uint32_t instance, bool isRunInDebug)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
+	PIT_Type * base = g_pitBase[instance];
 
-    /* Un-gate pit clock*/
-    CLOCK_SYS_EnablePitClock(instance);
+	/* Un-gate pit clock*/
+	CLOCK_SYS_EnablePitClock(instance);
 
-    /* Enable PIT module clock*/
-    PIT_HAL_Enable(base);
+	/* Enable PIT module clock*/
+	PIT_HAL_Enable(base);
 
-    /* Set timer run or stop in debug mode*/
-    PIT_HAL_SetTimerRunInDebugCmd(base, isRunInDebug);
+	/* Set timer run or stop in debug mode*/
+	PIT_HAL_SetTimerRunInDebugCmd(base, isRunInDebug);
 
-    /* Finally, update pit source clock frequency.*/
-    g_pitSourceClock = CLOCK_SYS_GetPitFreq(instance);
+	/* Finally, update pit source clock frequency.*/
+	g_pitSourceClock = CLOCK_SYS_GetPitFreq(instance);
 
-    return kStatus_PIT_Success;
+	return kStatus_PIT_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -90,25 +90,25 @@ pit_status_t PIT_DRV_Init(uint32_t instance, bool isRunInDebug)
  *
  *END**************************************************************************/
 void PIT_DRV_InitChannel(uint32_t instance,
-                         uint32_t channel,
-                         const pit_user_config_t * config)
+						 uint32_t channel,
+						 const pit_user_config_t * config)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
+	PIT_Type * base = g_pitBase[instance];
 
-    /* Set timer period.*/
-    PIT_DRV_SetTimerPeriodByUs(instance, channel, config->periodUs);
+	/* Set timer period.*/
+	PIT_DRV_SetTimerPeriodByUs(instance, channel, config->periodUs);
 
-    /* Enable or disable interrupt.*/
-    PIT_HAL_SetIntCmd(base, channel, config->isInterruptEnabled);
+	/* Enable or disable interrupt.*/
+	PIT_HAL_SetIntCmd(base, channel, config->isInterruptEnabled);
 
-    /* Configure NVIC*/
-    if (config->isInterruptEnabled)
-    {
-        /* Enable PIT interrupt.*/
-        INT_SYS_EnableIRQ(g_pitIrqId[channel]);
-    }
+	/* Configure NVIC*/
+	if (config->isInterruptEnabled)
+	{
+		/* Enable PIT interrupt.*/
+		INT_SYS_EnableIRQ(g_pitIrqId[channel]);
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -121,34 +121,34 @@ void PIT_DRV_InitChannel(uint32_t instance,
  *END**************************************************************************/
 pit_status_t PIT_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
-    uint32_t i;
+	PIT_Type * base = g_pitBase[instance];
+	uint32_t i;
 
-    /* Exit if current instance is gated.*/
-    if (!CLOCK_SYS_GetPitGateCmd(instance))
-    {
-        return kStatus_PIT_Fail;
-    }
+	/* Exit if current instance is gated.*/
+	if (!CLOCK_SYS_GetPitGateCmd(instance))
+	{
+		return kStatus_PIT_Fail;
+	}
 
-    /* Disable all PIT interrupts. Clear the chain bit if available */
-    for (i=0; i < FSL_FEATURE_PIT_TIMER_COUNT; i++)
-    {
-        PIT_HAL_SetIntCmd(base, i, false);
-        INT_SYS_DisableIRQ(g_pitIrqId[i]);
+	/* Disable all PIT interrupts. Clear the chain bit if available */
+	for (i=0; i < FSL_FEATURE_PIT_TIMER_COUNT; i++)
+	{
+		PIT_HAL_SetIntCmd(base, i, false);
+		INT_SYS_DisableIRQ(g_pitIrqId[i]);
 #if FSL_FEATURE_PIT_HAS_CHAIN_MODE
-        PIT_HAL_SetTimerChainCmd(base, i, false);
+		PIT_HAL_SetTimerChainCmd(base, i, false);
 #endif
-    }
+	}
 
-    /* Disable PIT module clock*/
-    PIT_HAL_Disable(base);
+	/* Disable PIT module clock*/
+	PIT_HAL_Disable(base);
 
-    /* Gate PIT clock control*/
-    CLOCK_SYS_DisablePitClock(instance);
+	/* Gate PIT clock control*/
+	CLOCK_SYS_DisablePitClock(instance);
 
-    return kStatus_PIT_Success;
+	return kStatus_PIT_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -162,10 +162,10 @@ pit_status_t PIT_DRV_Deinit(uint32_t instance)
  *END**************************************************************************/
 void PIT_DRV_StartTimer(uint32_t instance, uint32_t channel)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
-    PIT_HAL_StartTimer(base, channel);
+	PIT_Type * base = g_pitBase[instance];
+	PIT_HAL_StartTimer(base, channel);
 }
 
 /*FUNCTION**********************************************************************
@@ -178,10 +178,10 @@ void PIT_DRV_StartTimer(uint32_t instance, uint32_t channel)
  *END**************************************************************************/
 void PIT_DRV_StopTimer(uint32_t instance, uint32_t channel)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
-    PIT_HAL_StopTimer(base, channel);
+	PIT_Type * base = g_pitBase[instance];
+	PIT_HAL_StopTimer(base, channel);
 }
 
 /*FUNCTION**********************************************************************
@@ -196,12 +196,12 @@ void PIT_DRV_StopTimer(uint32_t instance, uint32_t channel)
  *END**************************************************************************/
 void PIT_DRV_SetTimerPeriodByUs(uint32_t instance, uint32_t channel, uint32_t us)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
-    /* Calculate the count value, assign it to timer counter register.*/
-    uint32_t count = (uint32_t)(us * g_pitSourceClock / 1000000U - 1U);
-    PIT_HAL_SetTimerPeriodByCount(base, channel, count);
+	PIT_Type * base = g_pitBase[instance];
+	/* Calculate the count value, assign it to timer counter register.*/
+	uint32_t count = (uint32_t)(us * g_pitSourceClock / 1000000U - 1U);
+	PIT_HAL_SetTimerPeriodByCount(base, channel, count);
 }
 
 /*FUNCTION**********************************************************************
@@ -212,15 +212,15 @@ void PIT_DRV_SetTimerPeriodByUs(uint32_t instance, uint32_t channel, uint32_t us
  *END**************************************************************************/
 uint32_t PIT_DRV_GetTimerPeriodByUs(uint32_t instance, uint32_t channel)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
-    /* Get current timer period by count.*/
-    uint64_t currentPeriod = PIT_HAL_GetTimerPeriodByCount(base, channel);
+	PIT_Type * base = g_pitBase[instance];
+	/* Get current timer period by count.*/
+	uint64_t currentPeriod = PIT_HAL_GetTimerPeriodByCount(base, channel);
 
-    /* Convert count numbers to microseconds unit.*/
-    currentPeriod = (currentPeriod + 1U) * 1000000U / g_pitSourceClock;
-    return (uint32_t)currentPeriod ;
+	/* Convert count numbers to microseconds unit.*/
+	currentPeriod = (currentPeriod + 1U) * 1000000U / g_pitSourceClock;
+	return (uint32_t)currentPeriod ;
 }
 
 /*FUNCTION**********************************************************************
@@ -237,15 +237,15 @@ uint32_t PIT_DRV_GetTimerPeriodByUs(uint32_t instance, uint32_t channel)
  *END**************************************************************************/
 uint32_t PIT_DRV_ReadTimerUs(uint32_t instance, uint32_t channel)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
-    /* Get current timer count, and reverse it to up-counting.*/
-    uint64_t currentTime = (~PIT_HAL_ReadTimerCount(base, channel));
+	PIT_Type * base = g_pitBase[instance];
+	/* Get current timer count, and reverse it to up-counting.*/
+	uint64_t currentTime = (~PIT_HAL_ReadTimerCount(base, channel));
 
-    /* Convert count numbers to microseconds unit.*/
-    currentTime = (currentTime * 1000000U) / g_pitSourceClock;
-    return (uint32_t)currentTime;
+	/* Convert count numbers to microseconds unit.*/
+	currentTime = (currentTime * 1000000U) / g_pitSourceClock;
+	return (uint32_t)currentTime;
 }
 
 /*FUNCTION**********************************************************************
@@ -261,11 +261,11 @@ uint32_t PIT_DRV_ReadTimerUs(uint32_t instance, uint32_t channel)
  *END**************************************************************************/
 void PIT_DRV_SetTimerPeriodByCount(uint32_t instance, uint32_t channel, uint32_t count)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
+	PIT_Type * base = g_pitBase[instance];
 
-    PIT_HAL_SetTimerPeriodByCount(base, channel, count);
+	PIT_HAL_SetTimerPeriodByCount(base, channel, count);
 }
 
 /*FUNCTION**********************************************************************
@@ -276,11 +276,11 @@ void PIT_DRV_SetTimerPeriodByCount(uint32_t instance, uint32_t channel, uint32_t
  *END**************************************************************************/
 uint32_t PIT_DRV_GetTimerPeriodByCount(uint32_t instance, uint32_t channel)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
+	PIT_Type * base = g_pitBase[instance];
 
-    return PIT_HAL_GetTimerPeriodByCount(base, channel);
+	return PIT_HAL_GetTimerPeriodByCount(base, channel);
 }
 
 /*FUNCTION**********************************************************************
@@ -293,11 +293,11 @@ uint32_t PIT_DRV_GetTimerPeriodByCount(uint32_t instance, uint32_t channel)
  *END**************************************************************************/
 uint32_t PIT_DRV_ReadTimerCount(uint32_t instance, uint32_t channel)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
+	PIT_Type * base = g_pitBase[instance];
 
-    return PIT_HAL_ReadTimerCount(base, channel);
+	return PIT_HAL_ReadTimerCount(base, channel);
 }
 
 #if FSL_FEATURE_PIT_HAS_LIFETIME_TIMER
@@ -312,17 +312,17 @@ uint32_t PIT_DRV_ReadTimerCount(uint32_t instance, uint32_t channel)
  *END**************************************************************************/
 void PIT_DRV_SetLifetimeTimerPeriodByUs(uint32_t instance, uint64_t us)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
-    uint64_t lifeTimeCount;
+	PIT_Type * base = g_pitBase[instance];
+	uint64_t lifeTimeCount;
 
-    /* Calculate the counter value.*/
-    lifeTimeCount = us * g_pitSourceClock / 1000000U - 1U;
+	/* Calculate the counter value.*/
+	lifeTimeCount = us * g_pitSourceClock / 1000000U - 1U;
 
-    /* Assign to timers.*/
-    PIT_HAL_SetTimerPeriodByCount(base, 0U, (uint32_t)lifeTimeCount);
-    PIT_HAL_SetTimerPeriodByCount(base, 1U, (uint32_t)(lifeTimeCount >> 32U));
+	/* Assign to timers.*/
+	PIT_HAL_SetTimerPeriodByCount(base, 0U, (uint32_t)lifeTimeCount);
+	PIT_HAL_SetTimerPeriodByCount(base, 1U, (uint32_t)(lifeTimeCount >> 32U));
 }
 
 /*FUNCTION**********************************************************************
@@ -335,15 +335,15 @@ void PIT_DRV_SetLifetimeTimerPeriodByUs(uint32_t instance, uint64_t us)
  *END**************************************************************************/
 uint64_t PIT_DRV_ReadLifetimeTimerUs(uint32_t instance)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
-    /* Get current lifetime timer count, and reverse it to up-counting.*/
-    uint64_t currentTime = (~PIT_HAL_ReadLifetimeTimerCount(base));
+	PIT_Type * base = g_pitBase[instance];
+	/* Get current lifetime timer count, and reverse it to up-counting.*/
+	uint64_t currentTime = (~PIT_HAL_ReadLifetimeTimerCount(base));
 
-    /* Convert count numbers to microseconds unit.*/
-    /* Note: using currentTime * 1000 rather than 1000000 to avoid short time overflow. */
-    return currentTime = (currentTime * 1000U) / (g_pitSourceClock / 1000U);
+	/* Convert count numbers to microseconds unit.*/
+	/* Note: using currentTime * 1000 rather than 1000000 to avoid short time overflow. */
+	return currentTime = (currentTime * 1000U) / (g_pitSourceClock / 1000U);
 }
 #endif /* FSL_FEATURE_PIT_HAS_LIFETIME_TIMER*/
 
@@ -363,19 +363,19 @@ uint64_t PIT_DRV_ReadLifetimeTimerUs(uint32_t instance)
  *END**************************************************************************/
 void PIT_DRV_InitUs(uint32_t instance, uint32_t channel)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
-    assert(channel > 0U);
+	assert(instance < PIT_INSTANCE_COUNT);
+	assert(channel > 0U);
 
-    PIT_Type * base = g_pitBase[instance];
-    g_pitUsInstance = instance;
-    g_pitUsChannel = channel;
+	PIT_Type * base = g_pitBase[instance];
+	g_pitUsInstance = instance;
+	g_pitUsChannel = channel;
 
-    PIT_HAL_SetTimerChainCmd(base, channel, true);
-    PIT_HAL_SetTimerPeriodByCount(base, channel, 0xFFFFFFFFU);
-    PIT_HAL_SetTimerPeriodByCount(base, channel - 1U, 0xFFFFFFFFU);
+	PIT_HAL_SetTimerChainCmd(base, channel, true);
+	PIT_HAL_SetTimerPeriodByCount(base, channel, 0xFFFFFFFFU);
+	PIT_HAL_SetTimerPeriodByCount(base, channel - 1U, 0xFFFFFFFFU);
 
-    PIT_HAL_StartTimer(base, channel);
-    PIT_HAL_StartTimer(base, channel - 1U);
+	PIT_HAL_StartTimer(base, channel);
+	PIT_HAL_StartTimer(base, channel - 1U);
 }
 
 /*FUNCTION**********************************************************************
@@ -389,13 +389,13 @@ void PIT_DRV_InitUs(uint32_t instance, uint32_t channel)
  *END**************************************************************************/
 uint32_t PIT_DRV_GetUs(void)
 {
-    PIT_Type * base = g_pitBase[g_pitUsInstance];
-    /* Get current timer count, and reverse it to up-counting.*/
-    uint64_t currentTime = ~(((uint64_t)PIT_HAL_ReadTimerCount(base, g_pitUsChannel) << 32U) +
-                           PIT_HAL_ReadTimerCount(base, g_pitUsChannel - 1U));
+	PIT_Type * base = g_pitBase[g_pitUsInstance];
+	/* Get current timer count, and reverse it to up-counting.*/
+	uint64_t currentTime = ~(((uint64_t)PIT_HAL_ReadTimerCount(base, g_pitUsChannel) << 32U) +
+						   PIT_HAL_ReadTimerCount(base, g_pitUsChannel - 1U));
 
-    /* Convert count numbers to microseconds unit.*/
-    return currentTime = (currentTime * 1000U) / (g_pitSourceClock / 1000U);
+	/* Convert count numbers to microseconds unit.*/
+	return currentTime = (currentTime * 1000U) / (g_pitSourceClock / 1000U);
 }
 
 /*FUNCTION**********************************************************************
@@ -407,16 +407,16 @@ uint32_t PIT_DRV_GetUs(void)
  *END**************************************************************************/
 void PIT_DRV_DelayUs(uint32_t us)
 {
-    PIT_Type * base = g_pitBase[g_pitUsInstance];
+	PIT_Type * base = g_pitBase[g_pitUsInstance];
 
-    uint64_t x = us * g_pitSourceClock / 1000000;
-    uint64_t timeToBe = ((uint64_t)PIT_HAL_ReadTimerCount(base, g_pitUsChannel) << 32U) +
-                           PIT_HAL_ReadTimerCount(base, g_pitUsChannel - 1U) - x;
+	uint64_t x = us * g_pitSourceClock / 1000000;
+	uint64_t timeToBe = ((uint64_t)PIT_HAL_ReadTimerCount(base, g_pitUsChannel) << 32U) +
+						   PIT_HAL_ReadTimerCount(base, g_pitUsChannel - 1U) - x;
 
-    while (((uint64_t)PIT_HAL_ReadTimerCount(base, g_pitUsChannel) << 32U) +
-                      PIT_HAL_ReadTimerCount(base, g_pitUsChannel - 1U)
-                      >= timeToBe)
-    {}
+	while (((uint64_t)PIT_HAL_ReadTimerCount(base, g_pitUsChannel) << 32U) +
+					  PIT_HAL_ReadTimerCount(base, g_pitUsChannel - 1U)
+					  >= timeToBe)
+	{}
 }
 
 #endif /* FSL_FEATURE_PIT_HAS_CHAIN_MODE */
@@ -429,11 +429,11 @@ void PIT_DRV_DelayUs(uint32_t us)
  *END**************************************************************************/
 void PIT_DRV_ClearIntFlag(uint32_t instance, uint32_t channel)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
+	PIT_Type * base = g_pitBase[instance];
 
-    PIT_HAL_ClearIntFlag(base, channel);
+	PIT_HAL_ClearIntFlag(base, channel);
 }
 
 /*FUNCTION**********************************************************************
@@ -444,15 +444,14 @@ void PIT_DRV_ClearIntFlag(uint32_t instance, uint32_t channel)
  *END**************************************************************************/
 bool PIT_DRV_IsIntPending(uint32_t instance, uint32_t channel)
 {
-    assert(instance < PIT_INSTANCE_COUNT);
+	assert(instance < PIT_INSTANCE_COUNT);
 
-    PIT_Type * base = g_pitBase[instance];
+	PIT_Type * base = g_pitBase[instance];
 
-    return PIT_HAL_IsIntPending(base, channel);
+	return PIT_HAL_IsIntPending(base, channel);
 }
 
 #endif /* FSL_FEATURE_SOC_PIT_COUNT */
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

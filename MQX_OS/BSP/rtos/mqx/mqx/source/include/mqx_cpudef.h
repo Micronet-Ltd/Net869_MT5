@@ -39,8 +39,8 @@
 
 
 #define PSP_MQX_CPU_IS_ARM              ( PSP_MQX_CPU_IS_ARM_CORTEX_M0P || \
-                                          PSP_MQX_CPU_IS_ARM_CORTEX_M4  || \
-                                          PSP_MQX_CPU_IS_ARM_CORTEX_A5)
+										  PSP_MQX_CPU_IS_ARM_CORTEX_M4  || \
+										  PSP_MQX_CPU_IS_ARM_CORTEX_A5)
 
 #define PSP_MQX_CPU_IS_KINETIS          (defined __CORTEX_M)
 

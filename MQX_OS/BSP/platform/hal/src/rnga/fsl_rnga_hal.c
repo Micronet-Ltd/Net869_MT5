@@ -39,21 +39,21 @@
  */
 rnga_status_t RNGA_HAL_GetRandomData(RNG_Type * base, uint32_t *data)
 {
-    volatile rnga_output_reg_level_t oregLevel;
-    uint16_t count = 0;
-    
-    do
-    {
-        oregLevel = RNGA_HAL_GetOutputRegLevel(base);
-        count++;
-        if (count == MAX_COUNT)
-        {
-            return kStatus_RNGA_Timeout;
-        }
-    } while (oregLevel == kRNGAOutputRegLevelNowords);
-    
-    *data = RNGA_HAL_ReadRandomData(base);
-    return(kStatus_RNGA_Success);
+	volatile rnga_output_reg_level_t oregLevel;
+	uint16_t count = 0;
+
+	do
+	{
+		oregLevel = RNGA_HAL_GetOutputRegLevel(base);
+		count++;
+		if (count == MAX_COUNT)
+		{
+			return kStatus_RNGA_Timeout;
+		}
+	} while (oregLevel == kRNGAOutputRegLevelNowords);
+
+	*data = RNGA_HAL_ReadRandomData(base);
+	return(kStatus_RNGA_Success);
 }
 #endif
 /*******************************************************************************

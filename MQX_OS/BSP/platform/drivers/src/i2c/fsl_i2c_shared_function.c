@@ -65,25 +65,25 @@ extern void I2C_DRV_SlaveIRQHandler(uint32_t instance);
  */
 void I2C_DRV_IRQHandler(uint32_t instance)
 {
-    assert(instance < I2C_INSTANCE_COUNT);
-    I2C_Type * base = g_i2cBase[instance];
-    if(I2C_HAL_GetStatusFlag(base, kI2CArbitrationLost))
-    {
-        /* Master mode.*/
-        I2C_DRV_MasterIRQHandler(instance);
-    }
+	assert(instance < I2C_INSTANCE_COUNT);
+	I2C_Type * base = g_i2cBase[instance];
+	if(I2C_HAL_GetStatusFlag(base, kI2CArbitrationLost))
+	{
+		/* Master mode.*/
+		I2C_DRV_MasterIRQHandler(instance);
+	}
 	else
 	{
-	    if (I2C_HAL_IsMaster(base))
-	    {
-	        /* Master mode.*/
-	        I2C_DRV_MasterIRQHandler(instance);
-	    }
-	    else
-	    {
-	        /* Slave mode.*/
-	        I2C_DRV_SlaveIRQHandler(instance);
-	    }
+		if (I2C_HAL_IsMaster(base))
+		{
+			/* Master mode.*/
+			I2C_DRV_MasterIRQHandler(instance);
+		}
+		else
+		{
+			/* Slave mode.*/
+			I2C_DRV_SlaveIRQHandler(instance);
+		}
 	}
 }
 
@@ -91,4 +91,3 @@ void I2C_DRV_IRQHandler(uint32_t instance)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

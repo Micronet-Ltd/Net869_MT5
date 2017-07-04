@@ -28,17 +28,17 @@
 
 /*!
  * \brief This function converts seconds into ticks
- * 
+ *
  * \param[in] seconds The number of seconds to convert
  * \param[out] tick_ptr Pointer to tick structure where the result will be stored
  */
 void _psp_seconds_to_ticks
    (
-       /* [IN] The number of seconds to convert */
-       _mqx_uint           seconds,
+	   /* [IN] The number of seconds to convert */
+	   _mqx_uint           seconds,
 
-       /* [OUT] Pointer to tick structure where the result will be stored */
-       PSP_TICK_STRUCT_PTR tick_ptr
+	   /* [OUT] Pointer to tick structure where the result will be stored */
+	   PSP_TICK_STRUCT_PTR tick_ptr
    )
 { /* Body */
    KERNEL_DATA_STRUCT_PTR kernel_data;
@@ -47,7 +47,7 @@ void _psp_seconds_to_ticks
 
    tick_ptr->HW_TICKS[0] = 0;
    tick_ptr->TICKS[0]    = (uint64_t)seconds * kernel_data->TICKS_PER_SECOND;
-      
+
 } /* Endbody */
 
 #endif

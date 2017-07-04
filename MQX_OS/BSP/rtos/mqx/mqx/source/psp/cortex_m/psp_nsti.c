@@ -27,17 +27,17 @@
 
 /*!
  * \brief This function converts nanoseconds into ticks.
- * 
+ *
  * \param[in] nsecs The number of nanoseconds to convert
  * \param[out] tick_ptr Pointer to tick structure where the result will be stored
  */
 void _psp_nsecs_to_ticks
    (
-       /* [IN] The number of nanoseconds to convert */
-       _mqx_uint           nsecs,
+	   /* [IN] The number of nanoseconds to convert */
+	   _mqx_uint           nsecs,
 
-       /* [OUT] Pointer to tick structure where the result will be stored */
-       PSP_TICK_STRUCT_PTR tick_ptr
+	   /* [OUT] Pointer to tick structure where the result will be stored */
+	   PSP_TICK_STRUCT_PTR tick_ptr
    )
 { /* Body */
    uint64_t                tmp;

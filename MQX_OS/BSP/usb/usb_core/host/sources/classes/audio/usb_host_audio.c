@@ -48,76 +48,76 @@ os_event_handle USB_Event;
 /* usb audio feature command declaration */
 static usb_audio_command_t usb_audio_feature_commands[NUMBER_OF_FEATURE_COMMANDS] =
 {
-    /* Mute commands */
-    {   FU_MUTE_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_MUTE, 1}, /* USB_AUDIO_GET_CUR_MUTE */
-    {   FU_MUTE_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_MUTE, 1}, /* USB_AUDIO_SET_CUR_MUTE */
-    /* Volume commands */
-    {   FU_VOLUME_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_GET_CUR_VOLUME */
-    {   FU_VOLUME_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_SET_CUR_VOLUME */
-    {   FU_VOLUME_MASK, GET_REQUEST_ITF, GET_MIN, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_GET_MIN_VOLUME */
-    {   FU_VOLUME_MASK, SET_REQUEST_ITF, SET_MIN, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_SET_MIN_VOLUME */
-    {   FU_VOLUME_MASK, GET_REQUEST_ITF, GET_MAX, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_GET_MAX_VOLUME */
-    {   FU_VOLUME_MASK, SET_REQUEST_ITF, SET_MAX, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_SET_MAX_VOLUME */
-    {   FU_VOLUME_MASK, GET_REQUEST_ITF, GET_RES, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_GET_RES_VOLUME */
-    {   FU_VOLUME_MASK, SET_REQUEST_ITF, SET_RES, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_SET_RES_VOLUME */
-    /* Bass commands */
-    {   FU_BASS_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_GET_CUR_BASS */
-    {   FU_BASS_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_SET_CUR_BASS */
-    {   FU_BASS_MASK, GET_REQUEST_ITF, GET_MIN, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_GET_MIN_BASS */
-    {   FU_BASS_MASK, SET_REQUEST_ITF, SET_MIN, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_SET_MIN_BASS */
-    {   FU_BASS_MASK, GET_REQUEST_ITF, GET_MAX, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_GET_MAX_BASS */
-    {   FU_BASS_MASK, SET_REQUEST_ITF, SET_MAX, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_SET_MAX_BASS */
-    {   FU_BASS_MASK, GET_REQUEST_ITF, GET_RES, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_GET_RES_BASS */
-    {   FU_BASS_MASK, SET_REQUEST_ITF, SET_RES, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_SET_RES_BASS */
-    /* Mid commands */
-    {   FU_MID_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_GET_CUR_MID */
-    {   FU_MID_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_SET_CUR_MID */
-    {   FU_MID_MASK, GET_REQUEST_ITF, GET_MIN, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_GET_MIN_MID */
-    {   FU_MID_MASK, SET_REQUEST_ITF, SET_MIN, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_SET_MIN_MID */
-    {   FU_MID_MASK, GET_REQUEST_ITF, GET_MAX, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_GET_MAX_MID */
-    {   FU_MID_MASK, SET_REQUEST_ITF, SET_MAX, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_SET_MAX_MID */
-    {   FU_MID_MASK, GET_REQUEST_ITF, GET_RES, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_GET_RES_MID */
-    {   FU_MID_MASK, SET_REQUEST_ITF, SET_RES, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_SET_RES_MID */
-    /* Treble commands */
-    {   FU_TREBLE_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_GET_CUR_TREBLE */
-    {   FU_TREBLE_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_SET_CUR_TREBLE */
-    {   FU_TREBLE_MASK, GET_REQUEST_ITF, GET_MIN, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_GET_MIN_TREBLE */
-    {   FU_TREBLE_MASK, SET_REQUEST_ITF, SET_MIN, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_SET_MIN_TREBLE */
-    {   FU_TREBLE_MASK, GET_REQUEST_ITF, GET_MAX, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_GET_MAX_TREBLE */
-    {   FU_TREBLE_MASK, SET_REQUEST_ITF, SET_MAX, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_SET_MAX_TREBLE */
-    {   FU_TREBLE_MASK, GET_REQUEST_ITF, GET_RES, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_GET_RES_TREBLE */
-    {   FU_TREBLE_MASK, SET_REQUEST_ITF, SET_RES, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_SET_RES_TREBLE */
-    /* AGC commands */
-    {   FU_AGC_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_AGC, 1}, /* USB_AUDIO_GET_CUR_AGC */
-    {   FU_AGC_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_AGC, 1}, /* USB_AUDIO_SET_CUR_AGC */
-    /* Delay commands */
-    {   FU_DELAY_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_GET_CUR_DELAY */
-    {   FU_DELAY_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_SET_CUR_DELAY */
-    {   FU_DELAY_MASK, GET_REQUEST_ITF, GET_MIN, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_GET_MIN_DELAY */
-    {   FU_DELAY_MASK, SET_REQUEST_ITF, SET_MIN, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_SET_MIN_DELAY */
-    {   FU_DELAY_MASK, GET_REQUEST_ITF, GET_MAX, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_GET_MAX_DELAY */
-    {   FU_DELAY_MASK, SET_REQUEST_ITF, SET_MAX, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_SET_MAX_DELAY */
-    {   FU_DELAY_MASK, GET_REQUEST_ITF, GET_RES, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_GET_RES_DELAY */
-    {   FU_DELAY_MASK, SET_REQUEST_ITF, SET_RES, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_SET_RES_DELAY */
-    /* Bass boost commands */
-    {   FU_BASS_BOOST_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_BASS_BOOST, 1}, /* USB_AUDIO_GET_CUR_BASS_BOOST */
-    {   FU_BASS_BOOST_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_BASS_BOOST, 1}, /* USB_AUDIO_SET_CUR_BASS_BOOST */
+	/* Mute commands */
+	{   FU_MUTE_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_MUTE, 1}, /* USB_AUDIO_GET_CUR_MUTE */
+	{   FU_MUTE_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_MUTE, 1}, /* USB_AUDIO_SET_CUR_MUTE */
+	/* Volume commands */
+	{   FU_VOLUME_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_GET_CUR_VOLUME */
+	{   FU_VOLUME_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_SET_CUR_VOLUME */
+	{   FU_VOLUME_MASK, GET_REQUEST_ITF, GET_MIN, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_GET_MIN_VOLUME */
+	{   FU_VOLUME_MASK, SET_REQUEST_ITF, SET_MIN, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_SET_MIN_VOLUME */
+	{   FU_VOLUME_MASK, GET_REQUEST_ITF, GET_MAX, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_GET_MAX_VOLUME */
+	{   FU_VOLUME_MASK, SET_REQUEST_ITF, SET_MAX, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_SET_MAX_VOLUME */
+	{   FU_VOLUME_MASK, GET_REQUEST_ITF, GET_RES, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_GET_RES_VOLUME */
+	{   FU_VOLUME_MASK, SET_REQUEST_ITF, SET_RES, USB_AUDIO_CTRL_FU_VOLUME, 2}, /* USB_AUDIO_SET_RES_VOLUME */
+	/* Bass commands */
+	{   FU_BASS_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_GET_CUR_BASS */
+	{   FU_BASS_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_SET_CUR_BASS */
+	{   FU_BASS_MASK, GET_REQUEST_ITF, GET_MIN, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_GET_MIN_BASS */
+	{   FU_BASS_MASK, SET_REQUEST_ITF, SET_MIN, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_SET_MIN_BASS */
+	{   FU_BASS_MASK, GET_REQUEST_ITF, GET_MAX, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_GET_MAX_BASS */
+	{   FU_BASS_MASK, SET_REQUEST_ITF, SET_MAX, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_SET_MAX_BASS */
+	{   FU_BASS_MASK, GET_REQUEST_ITF, GET_RES, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_GET_RES_BASS */
+	{   FU_BASS_MASK, SET_REQUEST_ITF, SET_RES, USB_AUDIO_CTRL_FU_BASS, 1}, /* USB_AUDIO_SET_RES_BASS */
+	/* Mid commands */
+	{   FU_MID_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_GET_CUR_MID */
+	{   FU_MID_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_SET_CUR_MID */
+	{   FU_MID_MASK, GET_REQUEST_ITF, GET_MIN, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_GET_MIN_MID */
+	{   FU_MID_MASK, SET_REQUEST_ITF, SET_MIN, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_SET_MIN_MID */
+	{   FU_MID_MASK, GET_REQUEST_ITF, GET_MAX, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_GET_MAX_MID */
+	{   FU_MID_MASK, SET_REQUEST_ITF, SET_MAX, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_SET_MAX_MID */
+	{   FU_MID_MASK, GET_REQUEST_ITF, GET_RES, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_GET_RES_MID */
+	{   FU_MID_MASK, SET_REQUEST_ITF, SET_RES, USB_AUDIO_CTRL_FU_MID, 1}, /* USB_AUDIO_SET_RES_MID */
+	/* Treble commands */
+	{   FU_TREBLE_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_GET_CUR_TREBLE */
+	{   FU_TREBLE_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_SET_CUR_TREBLE */
+	{   FU_TREBLE_MASK, GET_REQUEST_ITF, GET_MIN, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_GET_MIN_TREBLE */
+	{   FU_TREBLE_MASK, SET_REQUEST_ITF, SET_MIN, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_SET_MIN_TREBLE */
+	{   FU_TREBLE_MASK, GET_REQUEST_ITF, GET_MAX, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_GET_MAX_TREBLE */
+	{   FU_TREBLE_MASK, SET_REQUEST_ITF, SET_MAX, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_SET_MAX_TREBLE */
+	{   FU_TREBLE_MASK, GET_REQUEST_ITF, GET_RES, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_GET_RES_TREBLE */
+	{   FU_TREBLE_MASK, SET_REQUEST_ITF, SET_RES, USB_AUDIO_CTRL_FU_TREBLE, 1}, /* USB_AUDIO_SET_RES_TREBLE */
+	/* AGC commands */
+	{   FU_AGC_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_AGC, 1}, /* USB_AUDIO_GET_CUR_AGC */
+	{   FU_AGC_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_AGC, 1}, /* USB_AUDIO_SET_CUR_AGC */
+	/* Delay commands */
+	{   FU_DELAY_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_GET_CUR_DELAY */
+	{   FU_DELAY_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_SET_CUR_DELAY */
+	{   FU_DELAY_MASK, GET_REQUEST_ITF, GET_MIN, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_GET_MIN_DELAY */
+	{   FU_DELAY_MASK, SET_REQUEST_ITF, SET_MIN, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_SET_MIN_DELAY */
+	{   FU_DELAY_MASK, GET_REQUEST_ITF, GET_MAX, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_GET_MAX_DELAY */
+	{   FU_DELAY_MASK, SET_REQUEST_ITF, SET_MAX, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_SET_MAX_DELAY */
+	{   FU_DELAY_MASK, GET_REQUEST_ITF, GET_RES, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_GET_RES_DELAY */
+	{   FU_DELAY_MASK, SET_REQUEST_ITF, SET_RES, USB_AUDIO_CTRL_FU_DELAY, 1}, /* USB_AUDIO_SET_RES_DELAY */
+	/* Bass boost commands */
+	{   FU_BASS_BOOST_MASK, GET_REQUEST_ITF, GET_CUR, USB_AUDIO_CTRL_FU_BASS_BOOST, 1}, /* USB_AUDIO_GET_CUR_BASS_BOOST */
+	{   FU_BASS_BOOST_MASK, SET_REQUEST_ITF, SET_CUR, USB_AUDIO_CTRL_FU_BASS_BOOST, 1}, /* USB_AUDIO_SET_CUR_BASS_BOOST */
 };
 /* usb audio endpoint command declaration */
 static usb_audio_command_t usb_audio_endpoint_commands[NUMBER_OF_ENDPOINT_COMMANDS] =
 {
-    /* Pitch commands */
-    {   PITCH_MASK, GET_REQUEST_EP , GET_CUR, PITCH_CONTROL, 1}, /* USB_AUDIO_GET_CUR_PITCH */
-    {   PITCH_MASK, SET_REQUEST_EP, SET_CUR, PITCH_CONTROL, 1}, /* USB_AUDIO_SET_CUR_PITCH */
-    /* Sampling frequency commands */
-    {   SAMPLING_FREQ_MASK, GET_REQUEST_EP, GET_CUR, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_GET_CUR_SAMPLING_FREQ */
-    {   SAMPLING_FREQ_MASK, SET_REQUEST_EP, SET_CUR, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_SET_CUR_SAMPLING_FREQ */
-    {   SAMPLING_FREQ_MASK, GET_REQUEST_EP, GET_MIN, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_GET_MIN_SAMPLING_FREQ */
-    {   SAMPLING_FREQ_MASK, SET_REQUEST_EP, SET_MIN, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_SET_MIN_SAMPLING_FREQ */
-    {   SAMPLING_FREQ_MASK, GET_REQUEST_EP, GET_MAX, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_GET_MAX_SAMPLING_FREQ */
-    {   SAMPLING_FREQ_MASK, SET_REQUEST_EP, SET_MAX, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_SET_MAX_SAMPLING_FREQ */
-    {   SAMPLING_FREQ_MASK, GET_REQUEST_EP, GET_RES, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_GET_RES_SAMPLING_FREQ */
-    {   SAMPLING_FREQ_MASK, SET_REQUEST_EP, SET_RES, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_SET_RES_SAMPLING_FREQ */
+	/* Pitch commands */
+	{   PITCH_MASK, GET_REQUEST_EP , GET_CUR, PITCH_CONTROL, 1}, /* USB_AUDIO_GET_CUR_PITCH */
+	{   PITCH_MASK, SET_REQUEST_EP, SET_CUR, PITCH_CONTROL, 1}, /* USB_AUDIO_SET_CUR_PITCH */
+	/* Sampling frequency commands */
+	{   SAMPLING_FREQ_MASK, GET_REQUEST_EP, GET_CUR, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_GET_CUR_SAMPLING_FREQ */
+	{   SAMPLING_FREQ_MASK, SET_REQUEST_EP, SET_CUR, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_SET_CUR_SAMPLING_FREQ */
+	{   SAMPLING_FREQ_MASK, GET_REQUEST_EP, GET_MIN, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_GET_MIN_SAMPLING_FREQ */
+	{   SAMPLING_FREQ_MASK, SET_REQUEST_EP, SET_MIN, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_SET_MIN_SAMPLING_FREQ */
+	{   SAMPLING_FREQ_MASK, GET_REQUEST_EP, GET_MAX, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_GET_MAX_SAMPLING_FREQ */
+	{   SAMPLING_FREQ_MASK, SET_REQUEST_EP, SET_MAX, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_SET_MAX_SAMPLING_FREQ */
+	{   SAMPLING_FREQ_MASK, GET_REQUEST_EP, GET_RES, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_GET_RES_SAMPLING_FREQ */
+	{   SAMPLING_FREQ_MASK, SET_REQUEST_EP, SET_RES, SAMPLING_FREQ_CONTROL, 3}, /* USB_AUDIO_SET_RES_SAMPLING_FREQ */
 };
 /*FUNCTION*----------------------------------------------------------------
  *
@@ -141,27 +141,27 @@ uint32_t len,
 usb_status status
 )
 { /* Body */
-    usb_status usbstatus;
+	usb_status usbstatus;
 
-    audio_control_struct_t* audio_class = (audio_control_struct_t*)param;
+	audio_control_struct_t* audio_class = (audio_control_struct_t*)param;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_class_audio_cntrl_callback");
+	DEBUG_LOG_TRACE("usb_class_audio_cntrl_callback");
 #endif
-    usbstatus = usb_host_release_tr(audio_class->host_handle, (tr_struct_t*)tr_ptr);
-    if (usbstatus != USB_OK)
-    {
-        USB_PRINTF("_usb_host_release_tr failed status:%d \r\n", (unsigned int)usbstatus);
-    }
+	usbstatus = usb_host_release_tr(audio_class->host_handle, (tr_struct_t*)tr_ptr);
+	if (usbstatus != USB_OK)
+	{
+		USB_PRINTF("_usb_host_release_tr failed status:%d \r\n", (unsigned int)usbstatus);
+	}
 
-    audio_class->in_setup = FALSE;
-    if (audio_class->ctrl_callback)
-    {
-        audio_class->ctrl_callback(NULL, audio_class->ctrl_param, buffer, len, status);
-    }
+	audio_class->in_setup = FALSE;
+	if (audio_class->ctrl_callback)
+	{
+		audio_class->ctrl_callback(NULL, audio_class->ctrl_param, buffer, len, status);
+	}
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_class_audio_cntrl_callback, SUCCESSFUL");
+	DEBUG_LOG_TRACE("usb_class_audio_cntrl_callback, SUCCESSFUL");
 #endif
 
 } /* Endbody */
@@ -201,64 +201,64 @@ uint16_t wlength,
 uint8_t * data
 )
 { /* Body */
-    audio_control_struct_t* audio_class = NULL;
-    //usb_setup_t                       req;
-    usb_status status = USB_OK;
-    usb_pipe_handle pipe_handle;
-    tr_struct_t* tr_ptr;
+	audio_control_struct_t* audio_class = NULL;
+	//usb_setup_t                       req;
+	usb_status status = USB_OK;
+	usb_pipe_handle pipe_handle;
+	tr_struct_t* tr_ptr;
 
-    if ((com_ptr == NULL) || (com_ptr->class_control_handle == NULL))
-    {
-        return USBERR_ERROR;
-    }
-    audio_class = (audio_control_struct_t*)com_ptr->class_control_handle;
+	if ((com_ptr == NULL) || (com_ptr->class_control_handle == NULL))
+	{
+		return USBERR_ERROR;
+	}
+	audio_class = (audio_control_struct_t*)com_ptr->class_control_handle;
 
-    if (audio_class->in_setup)
-    {
-        return USBERR_TRANSFER_IN_PROGRESS;
-    }
-    if (audio_class->dev_handle == NULL)
-    {
-        return USB_log_error(__FILE__,__LINE__,USBERR_DEVICE_NOT_FOUND);
-    }
+	if (audio_class->in_setup)
+	{
+		return USBERR_TRANSFER_IN_PROGRESS;
+	}
+	if (audio_class->dev_handle == NULL)
+	{
+		return USB_log_error(__FILE__,__LINE__,USBERR_DEVICE_NOT_FOUND);
+	}
 
-    audio_class->ctrl_callback = com_ptr->callback_fn;
-    audio_class->ctrl_param = com_ptr->callback_param;
-    pipe_handle = usb_host_dev_mng_get_control_pipe(audio_class->dev_handle);
+	audio_class->ctrl_callback = com_ptr->callback_fn;
+	audio_class->ctrl_param = com_ptr->callback_param;
+	pipe_handle = usb_host_dev_mng_get_control_pipe(audio_class->dev_handle);
 
-    if (usb_host_get_tr(audio_class->host_handle, usb_class_audio_cntrl_callback, audio_class, &tr_ptr) != USB_OK)
-    {
-        USB_PRINTF("error to get tr audio \r\n");
-        return USBERR_ERROR;
-    }
+	if (usb_host_get_tr(audio_class->host_handle, usb_class_audio_cntrl_callback, audio_class, &tr_ptr) != USB_OK)
+	{
+		USB_PRINTF("error to get tr audio \r\n");
+		return USBERR_ERROR;
+	}
 
-    /* Set TR buffer length as required */
-    if ((REQ_TYPE_IN & bmrequesttype) != 0)
-    {
-        tr_ptr->rx_buffer = data;
-        tr_ptr->rx_length = wlength;
-    }
-    else
-    {
-        tr_ptr->tx_buffer = data;
-        tr_ptr->tx_length = wlength;
-    }
+	/* Set TR buffer length as required */
+	if ((REQ_TYPE_IN & bmrequesttype) != 0)
+	{
+		tr_ptr->rx_buffer = data;
+		tr_ptr->rx_length = wlength;
+	}
+	else
+	{
+		tr_ptr->tx_buffer = data;
+		tr_ptr->tx_length = wlength;
+	}
 
-    tr_ptr->setup_packet.bmrequesttype = bmrequesttype;
-    tr_ptr->setup_packet.brequest = brequest;
-    *(uint16_t*)&(tr_ptr->setup_packet.wvalue[0]) = USB_HOST_TO_LE_SHORT(wvalue);
-    *(uint16_t*)&(tr_ptr->setup_packet.windex[0]) = USB_HOST_TO_LE_SHORT(windex);  //USB_HOST_TO_LE_SHORT(((interface_descriptor_t*)(audio_class->intf_handle))->bInterfaceNumber);
-    *(uint16_t*)&(tr_ptr->setup_packet.wlength[0]) = USB_HOST_TO_LE_SHORT(wlength);
+	tr_ptr->setup_packet.bmrequesttype = bmrequesttype;
+	tr_ptr->setup_packet.brequest = brequest;
+	*(uint16_t*)&(tr_ptr->setup_packet.wvalue[0]) = USB_HOST_TO_LE_SHORT(wvalue);
+	*(uint16_t*)&(tr_ptr->setup_packet.windex[0]) = USB_HOST_TO_LE_SHORT(windex);  //USB_HOST_TO_LE_SHORT(((interface_descriptor_t*)(audio_class->intf_handle))->bInterfaceNumber);
+	*(uint16_t*)&(tr_ptr->setup_packet.wlength[0]) = USB_HOST_TO_LE_SHORT(wlength);
 
-    audio_class->in_setup = TRUE;
-    status = usb_host_send_setup(audio_class->host_handle, pipe_handle, tr_ptr);
-    if (status != USB_OK)
-    {
-        audio_class->in_setup = FALSE;
-        USB_PRINTF("\nError in usb_class_audio_cntrl_common: %x", (unsigned int)status);
-        usb_host_release_tr(audio_class->host_handle, tr_ptr);
-    }
-    return status;
+	audio_class->in_setup = TRUE;
+	status = usb_host_send_setup(audio_class->host_handle, pipe_handle, tr_ptr);
+	if (status != USB_OK)
+	{
+		audio_class->in_setup = FALSE;
+		USB_PRINTF("\nError in usb_class_audio_cntrl_common: %x", (unsigned int)status);
+		usb_host_release_tr(audio_class->host_handle, tr_ptr);
+	}
+	return status;
 } /* Endbody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -280,29 +280,29 @@ uint8_t control_mask,
 uint8_t atribute_index
 )
 {
-    usb_status status = USBERR_ERROR;
-    uint8_t*  bmacontrols;
+	usb_status status = USBERR_ERROR;
+	uint8_t*  bmacontrols;
 
-    if (NULL!=fu_ptr)
-    {
-        if(atribute_index<(fu_ptr->blength - 7))
-        /* Call num_logical_chan is number of logical channels.
-         * Compare atribute_index with (fu_ptr->bcontrolsize*(num_logical_chan + 1))= (fu_ptr->blength -7)
-         * to make sure atribute_index is valid element in bmacontrols() array */
-        {
-            //if (fu_ptr->bmacontrols[atribute_index] & control_mask)
-            //{
-            //    status = USB_OK;
-            //}
-            bmacontrols = &(fu_ptr->bcontrolsize);
-            bmacontrols++;
-            if(bmacontrols[atribute_index] & control_mask)
-            {
-                status = USB_OK;
-            }
-        }
-    }
-    return status;
+	if (NULL!=fu_ptr)
+	{
+		if(atribute_index<(fu_ptr->blength - 7))
+		/* Call num_logical_chan is number of logical channels.
+		 * Compare atribute_index with (fu_ptr->bcontrolsize*(num_logical_chan + 1))= (fu_ptr->blength -7)
+		 * to make sure atribute_index is valid element in bmacontrols() array */
+		{
+			//if (fu_ptr->bmacontrols[atribute_index] & control_mask)
+			//{
+			//    status = USB_OK;
+			//}
+			bmacontrols = &(fu_ptr->bcontrolsize);
+			bmacontrols++;
+			if(bmacontrols[atribute_index] & control_mask)
+			{
+				status = USB_OK;
+			}
+		}
+	}
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -322,21 +322,21 @@ usb_audio_stream_desc_specific_iso_endp_t* ep_ptr,
 uint8_t control_selector
 )
 {
-    usb_status status = USBERR_ERROR;
+	usb_status status = USBERR_ERROR;
 
-    if (NULL!=ep_ptr)
-    {
-        if ((ep_ptr->bmattributes) && control_selector)
-        {
-            status = USB_OK;
-        }
-        else
-        {
-            status = USBERR_INVALID_REQ_TYPE;
-        }
-    }
+	if (NULL!=ep_ptr)
+	{
+		if ((ep_ptr->bmattributes) && control_selector)
+		{
+			status = USB_OK;
+		}
+		else
+		{
+			status = USBERR_INVALID_REQ_TYPE;
+		}
+	}
 
-    return status;
+	return status;
 }
 
 static void usb_class_audio_control_recv_callback
@@ -353,17 +353,17 @@ uint32_t len,
 usb_status status
 )
 { /* Body */
-    audio_control_struct_t* audio_class = (audio_control_struct_t*)param;
+	audio_control_struct_t* audio_class = (audio_control_struct_t*)param;
 
-    if (usb_host_release_tr(audio_class->host_handle, (tr_struct_t*)tr_ptr) != USB_OK)
-    {
-        USB_PRINTF("_usb_host_release_tr failed\n");
-    }
+	if (usb_host_release_tr(audio_class->host_handle, (tr_struct_t*)tr_ptr) != USB_OK)
+	{
+		USB_PRINTF("_usb_host_release_tr failed\n");
+	}
 
-    if (audio_class->interrupt_callback)
-    {
-        audio_class->interrupt_callback(NULL, audio_class->interrupt_callback_param, buffer, len, status);
-    }
+	if (audio_class->interrupt_callback)
+	{
+		audio_class->interrupt_callback(NULL, audio_class->interrupt_callback_param, buffer, len, status);
+	}
 
 } /* Endbody */
 
@@ -387,46 +387,46 @@ uint32_t buf_size
 
 )
 { /* Body */
-    audio_control_struct_t* audio_class;
-    usb_status status = USBERR_ERROR;
-    //uint16_t request_value;
-    tr_struct_t* tr_ptr;
+	audio_control_struct_t* audio_class;
+	usb_status status = USBERR_ERROR;
+	//uint16_t request_value;
+	tr_struct_t* tr_ptr;
 
-    if ((audio_ptr == NULL) || (audio_ptr->class_control_handle == NULL))
-    {
-        return USBERR_ERROR;
-    }
+	if ((audio_ptr == NULL) || (audio_ptr->class_control_handle == NULL))
+	{
+		return USBERR_ERROR;
+	}
 
-    audio_class = (audio_control_struct_t*)audio_ptr->class_control_handle;
-    if ((audio_ptr == NULL) || (buffer == NULL))
-    {
-        USB_PRINTF("input parameter error\n");
-        return USBERR_ERROR;
-    }
+	audio_class = (audio_control_struct_t*)audio_ptr->class_control_handle;
+	if ((audio_ptr == NULL) || (buffer == NULL))
+	{
+		USB_PRINTF("input parameter error\n");
+		return USBERR_ERROR;
+	}
 
-    audio_class->interrupt_callback = audio_ptr->callback_fn;
-    audio_class->interrupt_callback_param = audio_ptr->callback_param;
-    if (audio_class->dev_handle == NULL)
-    {
-        return USBERR_ERROR;
-    }
-    if (usb_host_get_tr(audio_class->host_handle, usb_class_audio_control_recv_callback, audio_class, &tr_ptr) != USB_OK)
-    {
-        USB_PRINTF("error to get tr\n");
-        return USBERR_ERROR;
-    }
+	audio_class->interrupt_callback = audio_ptr->callback_fn;
+	audio_class->interrupt_callback_param = audio_ptr->callback_param;
+	if (audio_class->dev_handle == NULL)
+	{
+		return USBERR_ERROR;
+	}
+	if (usb_host_get_tr(audio_class->host_handle, usb_class_audio_control_recv_callback, audio_class, &tr_ptr) != USB_OK)
+	{
+		USB_PRINTF("error to get tr\n");
+		return USBERR_ERROR;
+	}
 
-    tr_ptr->rx_buffer = buffer;
-    tr_ptr->rx_length = buf_size;
-    status = usb_host_recv_data(audio_class->host_handle, audio_class->interrupt_pipe, tr_ptr);
-    if (status != USB_OK)
-    {
-        USB_PRINTF("\nError in usb_class_hid_recv_data: %x", (unsigned int)status);
-        usb_host_release_tr(audio_class->host_handle, tr_ptr);
-        return USBERR_ERROR;
-    }
+	tr_ptr->rx_buffer = buffer;
+	tr_ptr->rx_length = buf_size;
+	status = usb_host_recv_data(audio_class->host_handle, audio_class->interrupt_pipe, tr_ptr);
+	if (status != USB_OK)
+	{
+		USB_PRINTF("\nError in usb_class_hid_recv_data: %x", (unsigned int)status);
+		usb_host_release_tr(audio_class->host_handle, tr_ptr);
+		return USBERR_ERROR;
+	}
 
-    return USB_OK;
+	return USB_OK;
 } /* Endbody */
 
 static void usb_class_audio_recv_callback
@@ -443,17 +443,17 @@ uint32_t len,
 usb_status status
 )
 { /* Body */
-    audio_stream_struct_t* audio_class = (audio_stream_struct_t*)param;
+	audio_stream_struct_t* audio_class = (audio_stream_struct_t*)param;
 
-    if (usb_host_release_tr(audio_class->host_handle, (tr_struct_t*)tr_ptr) != USB_OK)
-    {
-        USB_PRINTF("_usb_host_release_tr failed\n");
-    }
+	if (usb_host_release_tr(audio_class->host_handle, (tr_struct_t*)tr_ptr) != USB_OK)
+	{
+		USB_PRINTF("_usb_host_release_tr failed\n");
+	}
 
-    if (audio_class->recv_callback)
-    {
-        audio_class->recv_callback(NULL, audio_class->recv_param, buffer, len, status);
-    }
+	if (audio_class->recv_callback)
+	{
+		audio_class->recv_callback(NULL, audio_class->recv_param, buffer, len, status);
+	}
 
 } /* Endbody */
 
@@ -476,48 +476,48 @@ uint8_t * buffer,
 uint32_t buf_size
 )
 { /* Body */
-    audio_stream_struct_t* audio_class;
-    usb_status status = USBERR_ERROR;
-    //uint16_t request_value;
-    tr_struct_t* tr_ptr;
-    //usb_audio_command_t* p_endpoint_command;
+	audio_stream_struct_t* audio_class;
+	usb_status status = USBERR_ERROR;
+	//uint16_t request_value;
+	tr_struct_t* tr_ptr;
+	//usb_audio_command_t* p_endpoint_command;
 
-    if ((audio_ptr == NULL) || (audio_ptr->class_stream_handle == NULL))
-    {
-        return USBERR_ERROR;
-    }
+	if ((audio_ptr == NULL) || (audio_ptr->class_stream_handle == NULL))
+	{
+		return USBERR_ERROR;
+	}
 
-    audio_class = (audio_stream_struct_t*)audio_ptr->class_stream_handle;
-    if ((audio_class == NULL) || (buffer == NULL))
-    {
-        USB_PRINTF("input parameter error\n");
-        return USBERR_ERROR;
-    }
+	audio_class = (audio_stream_struct_t*)audio_ptr->class_stream_handle;
+	if ((audio_class == NULL) || (buffer == NULL))
+	{
+		USB_PRINTF("input parameter error\n");
+		return USBERR_ERROR;
+	}
 
-    audio_class->recv_callback = audio_ptr->callback_fn;
-    audio_class->recv_param = audio_ptr->callback_param;
+	audio_class->recv_callback = audio_ptr->callback_fn;
+	audio_class->recv_param = audio_ptr->callback_param;
 
-    if (audio_class->dev_handle == NULL)
-    {
-        return USBERR_ERROR;
-    }
-    if (usb_host_get_tr(audio_class->host_handle, usb_class_audio_recv_callback, audio_class, &tr_ptr) != USB_OK)
-    {
-        USB_PRINTF("error to get tr\n");
-        return USBERR_ERROR;
-    }
+	if (audio_class->dev_handle == NULL)
+	{
+		return USBERR_ERROR;
+	}
+	if (usb_host_get_tr(audio_class->host_handle, usb_class_audio_recv_callback, audio_class, &tr_ptr) != USB_OK)
+	{
+		USB_PRINTF("error to get tr\n");
+		return USBERR_ERROR;
+	}
 
-    tr_ptr->rx_buffer = buffer;
-    tr_ptr->rx_length = buf_size;
-    status = usb_host_recv_data(audio_class->host_handle, audio_class->iso_in_pipe, tr_ptr);
-    if (status != USB_OK)
-    {
-        USB_PRINTF("\nError in _usb_host_recv_data: %x", (unsigned int)status);
-        usb_host_release_tr(audio_class->host_handle, tr_ptr);
-        return USBERR_ERROR;
-    }
+	tr_ptr->rx_buffer = buffer;
+	tr_ptr->rx_length = buf_size;
+	status = usb_host_recv_data(audio_class->host_handle, audio_class->iso_in_pipe, tr_ptr);
+	if (status != USB_OK)
+	{
+		USB_PRINTF("\nError in _usb_host_recv_data: %x", (unsigned int)status);
+		usb_host_release_tr(audio_class->host_handle, tr_ptr);
+		return USBERR_ERROR;
+	}
 
-    return USB_OK;
+	return USB_OK;
 } /* Endbody */
 
 static void usb_class_audio_send_callback
@@ -534,19 +534,19 @@ uint32_t len,
 usb_status status
 )
 { /* Body */
-    audio_stream_struct_t* audio_class = (audio_stream_struct_t*)param;
-    usb_status usbstatus;
+	audio_stream_struct_t* audio_class = (audio_stream_struct_t*)param;
+	usb_status usbstatus;
 
-    usbstatus = usb_host_release_tr(audio_class->host_handle, (tr_struct_t*)tr_ptr);
-    if (usbstatus != USB_OK)
-    {
-        USB_PRINTF("_usb_host_release_tr failed:%x\n",(unsigned int)usbstatus);
-    }
+	usbstatus = usb_host_release_tr(audio_class->host_handle, (tr_struct_t*)tr_ptr);
+	if (usbstatus != USB_OK)
+	{
+		USB_PRINTF("_usb_host_release_tr failed:%x\n",(unsigned int)usbstatus);
+	}
 
-    if (audio_class->send_callback)
-    {
-        audio_class->send_callback(NULL, audio_class->send_param, buffer, len, status);
-    }
+	if (audio_class->send_callback)
+	{
+		audio_class->send_callback(NULL, audio_class->send_param, buffer, len, status);
+	}
 
 } /* Endbody */
 
@@ -572,50 +572,50 @@ uint32_t buf_size
 )
 { /* Body */
 
-    audio_stream_struct_t* audio_class;
-    usb_status status = USBERR_ERROR;
-    //uint16_t request_value;
-    tr_struct_t* tr_ptr;
-    //usb_audio_command_t* p_endpoint_command;
+	audio_stream_struct_t* audio_class;
+	usb_status status = USBERR_ERROR;
+	//uint16_t request_value;
+	tr_struct_t* tr_ptr;
+	//usb_audio_command_t* p_endpoint_command;
 
-    if ((audio_ptr == NULL) || (audio_ptr->class_stream_handle == NULL))
-    {
-        USB_PRINTF("input parameter error\n");
-        return USBERR_ERROR;
-    }
+	if ((audio_ptr == NULL) || (audio_ptr->class_stream_handle == NULL))
+	{
+		USB_PRINTF("input parameter error\n");
+		return USBERR_ERROR;
+	}
 
-    audio_class = (audio_stream_struct_t*)audio_ptr->class_stream_handle;
-    if ((audio_class == NULL) || (buffer == NULL))
-    {
-        USB_PRINTF("get audio class parameter error\n");
-        return USBERR_ERROR;
-    }
+	audio_class = (audio_stream_struct_t*)audio_ptr->class_stream_handle;
+	if ((audio_class == NULL) || (buffer == NULL))
+	{
+		USB_PRINTF("get audio class parameter error\n");
+		return USBERR_ERROR;
+	}
 
-    audio_class->send_callback = audio_ptr->callback_fn;
-    audio_class->send_param = audio_ptr->callback_param;
+	audio_class->send_callback = audio_ptr->callback_fn;
+	audio_class->send_param = audio_ptr->callback_param;
 
-    if (audio_class->dev_handle == NULL)
-    {
-        USB_PRINTF("get audio class dev handle error\n");
-        return USBERR_ERROR;
-    }
-    if (usb_host_get_tr(audio_class->host_handle, usb_class_audio_send_callback, audio_class, &tr_ptr) != USB_OK)
-    {
-        USB_PRINTF("error to get tr\n");
-        return USBERR_ERROR;
-    }
+	if (audio_class->dev_handle == NULL)
+	{
+		USB_PRINTF("get audio class dev handle error\n");
+		return USBERR_ERROR;
+	}
+	if (usb_host_get_tr(audio_class->host_handle, usb_class_audio_send_callback, audio_class, &tr_ptr) != USB_OK)
+	{
+		USB_PRINTF("error to get tr\n");
+		return USBERR_ERROR;
+	}
 
-    tr_ptr->tx_buffer = buffer;
-    tr_ptr->tx_length = buf_size;
-    status = usb_host_send_data(audio_class->host_handle, audio_class->iso_out_pipe, tr_ptr);
-    if (status != USB_OK)
-    {
-        USB_PRINTF("\nError in _usb_host_send_data: %x", (unsigned int)status);
-        usb_host_release_tr(audio_class->host_handle, tr_ptr);
-        return USBERR_ERROR;
-    }
+	tr_ptr->tx_buffer = buffer;
+	tr_ptr->tx_length = buf_size;
+	status = usb_host_send_data(audio_class->host_handle, audio_class->iso_out_pipe, tr_ptr);
+	if (status != USB_OK)
+	{
+		USB_PRINTF("\nError in _usb_host_send_data: %x", (unsigned int)status);
+		usb_host_release_tr(audio_class->host_handle, tr_ptr);
+		return USBERR_ERROR;
+	}
 
-    return USB_OK;
+	return USB_OK;
 
 } /* Endbody */
 
@@ -637,22 +637,22 @@ void* buf
 )
 { /* Body */
 
-    audio_control_struct_t* if_ptr;
-    uint16_t windex;
+	audio_control_struct_t* if_ptr;
+	uint16_t windex;
 
-    if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
-    windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->it_desc->bterminalid)<<8)|(if_ptr->ifnum));
+	if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
+	windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->it_desc->bterminalid)<<8)|(if_ptr->ifnum));
 
-    /* check valid of input terminal descriptor */
-    if (if_ptr->it_desc==NULL)
-    {
-        return USBERR_NO_DESCRIPTOR;
-    }
-    else
-    {
-        return usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_ITF,GET_CUR,
-        (uint16_t)((COPY_PROTECT_CONTROL << 8)),windex,1,(uint8_t *)buf);
-    }
+	/* check valid of input terminal descriptor */
+	if (if_ptr->it_desc==NULL)
+	{
+		return USBERR_NO_DESCRIPTOR;
+	}
+	else
+	{
+		return usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_ITF,GET_CUR,
+		(uint16_t)((COPY_PROTECT_CONTROL << 8)),windex,1,(uint8_t *)buf);
+	}
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -673,25 +673,25 @@ void* buf
 )
 { /* Body */
 
-    audio_control_struct_t* if_ptr;
-    uint16_t windex;
-    usb_audio_ctrl_desc_ot_t* ot_desc;
+	audio_control_struct_t* if_ptr;
+	uint16_t windex;
+	usb_audio_ctrl_desc_ot_t* ot_desc;
 
-    if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
-    ot_desc = (usb_audio_ctrl_desc_ot_t*)if_ptr->ot_desc;
+	if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
+	ot_desc = (usb_audio_ctrl_desc_ot_t*)if_ptr->ot_desc;
 
-    windex = (uint16_t)((uint16_t)((uint16_t)(ot_desc->bterminalid)<<8)|(if_ptr->ifnum));
+	windex = (uint16_t)((uint16_t)((uint16_t)(ot_desc->bterminalid)<<8)|(if_ptr->ifnum));
 
-    /* check valid of input terminal descriptor */
-    if (ot_desc==NULL)
-    {
-        return USBERR_NO_DESCRIPTOR;
-    }
-    else
-    {
-        return usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_ITF,SET_CUR,
-        (uint16_t)((COPY_PROTECT_CONTROL << 8)),windex,1,(uint8_t *)buf);
-    }
+	/* check valid of input terminal descriptor */
+	if (ot_desc==NULL)
+	{
+		return USBERR_NO_DESCRIPTOR;
+	}
+	else
+	{
+		return usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_ITF,SET_CUR,
+		(uint16_t)((COPY_PROTECT_CONTROL << 8)),windex,1,(uint8_t *)buf);
+	}
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -699,7 +699,7 @@ void* buf
  * Function Name  : usb_class_audio_feature_command
  * Returned Value : USB_OK if command has been passed on USB
  * Comments       :
- *     This function is called by the application to get or set feature units 
+ *     This function is called by the application to get or set feature units
  *     of audio device
  *END*--------------------------------------------------------------------*/
 usb_status usb_class_audio_feature_command
@@ -716,38 +716,38 @@ void* buf,
 uint32_t cmd
 )
 { /* Body */
-    uint16_t windex;
-    uint16_t request_value;
-    audio_control_struct_t* if_ptr;
-    usb_audio_command_t* p_feature_command;
-    usb_status status = USBERR_ERROR;
+	uint16_t windex;
+	uint16_t request_value;
+	audio_control_struct_t* if_ptr;
+	usb_audio_command_t* p_feature_command;
+	usb_status status = USBERR_ERROR;
 
-    if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
-    /* Validity checking: for audio interface */
-    status = usb_hostdev_validate(if_ptr->dev_handle);
-    if (USB_OK == status)
-    {
-        /* pointer to command */
-        p_feature_command = &(usb_audio_feature_commands[cmd]);
-        /* get request value */
-        request_value = (uint16_t)((uint16_t)((uint16_t)p_feature_command->request_value << 8) | channel_no);
-        windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid) << 8)|(if_ptr->ifnum));
+	if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
+	/* Validity checking: for audio interface */
+	status = usb_hostdev_validate(if_ptr->dev_handle);
+	if (USB_OK == status)
+	{
+		/* pointer to command */
+		p_feature_command = &(usb_audio_feature_commands[cmd]);
+		/* get request value */
+		request_value = (uint16_t)((uint16_t)((uint16_t)p_feature_command->request_value << 8) | channel_no);
+		windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid) << 8)|(if_ptr->ifnum));
 
-        /* Check whether this attribute valid or not */
-        status = check_valid_fu(if_ptr->fu_desc,p_feature_command->control_mask,if_ptr->fu_desc->bcontrolsize*channel_no);
+		/* Check whether this attribute valid or not */
+		status = check_valid_fu(if_ptr->fu_desc,p_feature_command->control_mask,if_ptr->fu_desc->bcontrolsize*channel_no);
 
-        if (USB_OK == status)
-        {
-            status = usb_class_audio_cntrl_common(com_ptr,
-            p_feature_command->request_type,
-            p_feature_command->request_code,
-            request_value,
-            windex,
-            p_feature_command->length,
-            (uint8_t *)buf);
-        }
-    }
-    return status;
+		if (USB_OK == status)
+		{
+			status = usb_class_audio_cntrl_common(com_ptr,
+			p_feature_command->request_type,
+			p_feature_command->request_code,
+			request_value,
+			windex,
+			p_feature_command->length,
+			(uint8_t *)buf);
+		}
+	}
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -769,49 +769,49 @@ void* buf,
 uint32_t cmd
 )
 {
-    uint8_t Endp_num;
-    audio_stream_struct_t* if_ptr;
-    usb_status status = USBERR_ERROR;
-    uint16_t request_value;
-    usb_audio_command_t* p_endpoint_command;
+	uint8_t Endp_num;
+	audio_stream_struct_t* if_ptr;
+	usb_status status = USBERR_ERROR;
+	uint16_t request_value;
+	usb_audio_command_t* p_endpoint_command;
 
-    if_ptr = (audio_stream_struct_t*)com_ptr->class_stream_handle;
+	if_ptr = (audio_stream_struct_t*)com_ptr->class_stream_handle;
 
-    /* pointer to command */
-    p_endpoint_command = &(usb_audio_endpoint_commands[cmd]);
-    /* get request value */
-    request_value = (uint16_t)((uint16_t)((uint16_t)p_endpoint_command->request_value << 8));
+	/* pointer to command */
+	p_endpoint_command = &(usb_audio_endpoint_commands[cmd]);
+	/* get request value */
+	request_value = (uint16_t)((uint16_t)((uint16_t)p_endpoint_command->request_value << 8));
 
-    /* Check whether this attribute valid or not */
-    status = check_valid_ep(if_ptr->iso_endp_spec_desc,p_endpoint_command->control_mask);
+	/* Check whether this attribute valid or not */
+	status = check_valid_ep(if_ptr->iso_endp_spec_desc,p_endpoint_command->control_mask);
 
-    if (USB_OK == status)
-    {
-        /* Any isochronous pipe is supported? */
-        if ((NULL == if_ptr->iso_in_pipe) && (NULL == if_ptr->iso_out_pipe))
-        {
-            return USBERR_INVALID_NUM_OF_ENDPOINTS;
-        }
-        else if (NULL!=if_ptr->iso_in_pipe)
-        {
+	if (USB_OK == status)
+	{
+		/* Any isochronous pipe is supported? */
+		if ((NULL == if_ptr->iso_in_pipe) && (NULL == if_ptr->iso_out_pipe))
+		{
+			return USBERR_INVALID_NUM_OF_ENDPOINTS;
+		}
+		else if (NULL!=if_ptr->iso_in_pipe)
+		{
 
-            Endp_num = (if_ptr->iso_ep_num | 0x80);
-        }
-        else
-        {
-            Endp_num = if_ptr->iso_ep_num;
-        }/* Endif */
+			Endp_num = (if_ptr->iso_ep_num | 0x80);
+		}
+		else
+		{
+			Endp_num = if_ptr->iso_ep_num;
+		}/* Endif */
 
-        status = usb_class_audio_cntrl_common(com_ptr,
-        p_endpoint_command->request_type,
-        p_endpoint_command->request_code,
-        request_value,
-        (uint16_t)Endp_num,
-        p_endpoint_command->length,
-        (uint8_t *)buf);
-    }
+		status = usb_class_audio_cntrl_common(com_ptr,
+		p_endpoint_command->request_type,
+		p_endpoint_command->request_code,
+		request_value,
+		(uint16_t)Endp_num,
+		p_endpoint_command->length,
+		(uint8_t *)buf);
+	}
 
-    return status;
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -838,23 +838,23 @@ void* buf
 )
 { /* Body */
 
-    uint16_t windex;
-    audio_control_struct_t* if_ptr;
-    usb_status status = USBERR_ERROR;
+	uint16_t windex;
+	audio_control_struct_t* if_ptr;
+	usb_status status = USBERR_ERROR;
 
-    if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
-    windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
+	if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
+	windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
 
-    /* Check whether this attribute valid or not */
-    status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
+	/* Check whether this attribute valid or not */
+	status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
 
-    if (USB_OK == status)
-    {
-        status = usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_ITF,GET_CUR,
-        (uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
-    }
+	if (USB_OK == status)
+	{
+		status = usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_ITF,GET_CUR,
+		(uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
+	}
 
-    return status;
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -880,23 +880,23 @@ uint8_t channel_no,
 void* buf
 )
 { /* Body */
-    uint16_t windex;
-    audio_control_struct_t* if_ptr;
-    usb_status status = USBERR_ERROR;
+	uint16_t windex;
+	audio_control_struct_t* if_ptr;
+	usb_status status = USBERR_ERROR;
 
-    if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
-    windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
+	if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
+	windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
 
-    /* Check whether this attribute valid or not */
-    status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
+	/* Check whether this attribute valid or not */
+	status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
 
-    if (USB_OK == status)
-    {
-        status = usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_ITF,SET_CUR,
-        (uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
-    }
+	if (USB_OK == status)
+	{
+		status = usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_ITF,SET_CUR,
+		(uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
+	}
 
-    return status;
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -923,23 +923,23 @@ void* buf
 )
 { /* Body */
 
-    uint16_t windex;
-    audio_control_struct_t* if_ptr;
-    usb_status status = USBERR_ERROR;
+	uint16_t windex;
+	audio_control_struct_t* if_ptr;
+	usb_status status = USBERR_ERROR;
 
-    if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
-    windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
+	if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
+	windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
 
-    /* Check whether this attribute valid or not */
-    status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
+	/* Check whether this attribute valid or not */
+	status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
 
-    if (USB_OK == status)
-    {
-        status = usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_ITF,GET_MIN,
-        (uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
-    }
+	if (USB_OK == status)
+	{
+		status = usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_ITF,GET_MIN,
+		(uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
+	}
 
-    return status;
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -965,23 +965,23 @@ uint8_t channel_no,
 void* buf
 )
 { /* Body */
-    uint16_t windex;
-    audio_control_struct_t* if_ptr;
-    usb_status status = USBERR_ERROR;
+	uint16_t windex;
+	audio_control_struct_t* if_ptr;
+	usb_status status = USBERR_ERROR;
 
-    if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
-    windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
+	if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
+	windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
 
-    /* Check whether this attribute valid or not */
-    status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
+	/* Check whether this attribute valid or not */
+	status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
 
-    if (USB_OK == status)
-    {
-        status = usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_ITF,SET_MIN,
-        (uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
-    }
+	if (USB_OK == status)
+	{
+		status = usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_ITF,SET_MIN,
+		(uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
+	}
 
-    return status;
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -1008,23 +1008,23 @@ void* buf
 )
 { /* Body */
 
-    uint16_t windex;
-    audio_control_struct_t* if_ptr;
-    usb_status status = USBERR_ERROR;
+	uint16_t windex;
+	audio_control_struct_t* if_ptr;
+	usb_status status = USBERR_ERROR;
 
-    if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
-    windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
+	if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
+	windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
 
-    /* Check whether this attribute valid or not */
-    status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
+	/* Check whether this attribute valid or not */
+	status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
 
-    if (USB_OK == status)
-    {
-        status = usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_ITF,GET_MAX,
-        (uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
-    }
+	if (USB_OK == status)
+	{
+		status = usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_ITF,GET_MAX,
+		(uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
+	}
 
-    return status;
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -1050,23 +1050,23 @@ uint8_t channel_no,
 void* buf
 )
 { /* Body */
-    uint16_t windex;
-    audio_control_struct_t* if_ptr;
-    usb_status status = USBERR_ERROR;
+	uint16_t windex;
+	audio_control_struct_t* if_ptr;
+	usb_status status = USBERR_ERROR;
 
-    if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
-    windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
+	if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
+	windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
 
-    /* Check whether this attribute valid or not */
-    status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
+	/* Check whether this attribute valid or not */
+	status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
 
-    if (USB_OK == status)
-    {
-        status = usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_ITF,SET_MAX,
-        (uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
-    }
+	if (USB_OK == status)
+	{
+		status = usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_ITF,SET_MAX,
+		(uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
+	}
 
-    return status;
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -1092,23 +1092,23 @@ uint8_t channel_no,
 void* buf
 )
 { /* Body */
-    uint16_t windex;
-    audio_control_struct_t* if_ptr;
-    usb_status status = USBERR_ERROR;
+	uint16_t windex;
+	audio_control_struct_t* if_ptr;
+	usb_status status = USBERR_ERROR;
 
-    if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
-    windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
+	if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
+	windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
 
-    /* Check whether this attribute valid or not */
-    status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
+	/* Check whether this attribute valid or not */
+	status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
 
-    if (USB_OK == status)
-    {
-        status = usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_ITF,GET_RES,
-        (uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
-    }
+	if (USB_OK == status)
+	{
+		status = usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_ITF,GET_RES,
+		(uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
+	}
 
-    return status;
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -1134,23 +1134,23 @@ uint8_t channel_no,
 void* buf
 )
 { /* Body */
-    uint16_t windex;
-    audio_control_struct_t* if_ptr;
-    usb_status status = USBERR_ERROR;
+	uint16_t windex;
+	audio_control_struct_t* if_ptr;
+	usb_status status = USBERR_ERROR;
 
-    if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
-    windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
+	if_ptr = (audio_control_struct_t*)com_ptr->class_control_handle;
+	windex = (uint16_t)((uint16_t)((uint16_t)(if_ptr->fu_desc->bunitid)<<8)|(if_ptr->ifnum));
 
-    /* Check whether this attribute valid or not */
-    status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
+	/* Check whether this attribute valid or not */
+	status = check_valid_fu(if_ptr->fu_desc,FU_GRAPHIC_EQ_MASK,if_ptr->fu_desc->bcontrolsize*channel_no);
 
-    if (USB_OK == status)
-    {
-        status = usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_ITF,SET_RES,
-        (uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
-    }
+	if (USB_OK == status)
+	{
+		status = usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_ITF,SET_RES,
+		(uint16_t)((USB_AUDIO_CTRL_FU_GRAPHIC_EQ << 8) | channel_no),windex,blen,(uint8_t *)buf);
+	}
 
-    return status;
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -1177,31 +1177,31 @@ void* buf
 )
 { /* Body */
 
-    uint8_t Endp_num;
-    audio_stream_struct_t* if_ptr;
-    usb_status status = USBERR_ERROR;
-//  pipe_struct_t* pipe_ptr; 
+	uint8_t Endp_num;
+	audio_stream_struct_t* if_ptr;
+	usb_status status = USBERR_ERROR;
+//  pipe_struct_t* pipe_ptr;
 
-    if_ptr = (audio_stream_struct_t*)com_ptr->class_stream_handle;
+	if_ptr = (audio_stream_struct_t*)com_ptr->class_stream_handle;
 
-    /* Any isochronous pipe is supported? */
-    if ((NULL == if_ptr->iso_in_pipe) && (NULL == if_ptr->iso_out_pipe))
-    {
-        return USBERR_INVALID_NUM_OF_ENDPOINTS;
-    }
-    else if (if_ptr->iso_in_pipe!=NULL)
-    {
-        Endp_num = if_ptr->iso_ep_num;
-    }
-    else
-    {
-        Endp_num = if_ptr->iso_ep_num;
-    }/* Endif */
+	/* Any isochronous pipe is supported? */
+	if ((NULL == if_ptr->iso_in_pipe) && (NULL == if_ptr->iso_out_pipe))
+	{
+		return USBERR_INVALID_NUM_OF_ENDPOINTS;
+	}
+	else if (if_ptr->iso_in_pipe!=NULL)
+	{
+		Endp_num = if_ptr->iso_ep_num;
+	}
+	else
+	{
+		Endp_num = if_ptr->iso_ep_num;
+	}/* Endif */
 
-    status = usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_EP,GET_MEM,
-    offset,(uint16_t)Endp_num,blen,(uint8_t *)buf);
+	status = usb_class_audio_cntrl_common(com_ptr,GET_REQUEST_EP,GET_MEM,
+	offset,(uint16_t)Endp_num,blen,(uint8_t *)buf);
 
-    return status;
+	return status;
 }
 
 /*FUNCTION*----------------------------------------------------------------
@@ -1228,29 +1228,29 @@ void* buf
 )
 { /* Body */
 
-    uint8_t Endp_num;
-    audio_stream_struct_t* if_ptr;
-    usb_status status = USBERR_ERROR;
+	uint8_t Endp_num;
+	audio_stream_struct_t* if_ptr;
+	usb_status status = USBERR_ERROR;
 
-    if_ptr = (audio_stream_struct_t*)com_ptr->class_stream_handle;
+	if_ptr = (audio_stream_struct_t*)com_ptr->class_stream_handle;
 
-    /* Any isochronous pipe is supported? */
-    if ((NULL == if_ptr->iso_in_pipe) && (NULL == if_ptr->iso_out_pipe))
-    {
-        return USBERR_INVALID_NUM_OF_ENDPOINTS;
-    }
-    else if (if_ptr->iso_in_pipe!=NULL)
-    {
-        Endp_num = if_ptr->iso_ep_num;
-    }
-    else
-    {
-        Endp_num = if_ptr->iso_ep_num;
-    }/* Endif */
+	/* Any isochronous pipe is supported? */
+	if ((NULL == if_ptr->iso_in_pipe) && (NULL == if_ptr->iso_out_pipe))
+	{
+		return USBERR_INVALID_NUM_OF_ENDPOINTS;
+	}
+	else if (if_ptr->iso_in_pipe!=NULL)
+	{
+		Endp_num = if_ptr->iso_ep_num;
+	}
+	else
+	{
+		Endp_num = if_ptr->iso_ep_num;
+	}/* Endif */
 
-    status = usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_EP,SET_MEM,
-    offset,(uint16_t)Endp_num,blen,(uint8_t *)buf);
-    return status;
+	status = usb_class_audio_cntrl_common(com_ptr,SET_REQUEST_EP,SET_MEM,
+	offset,(uint16_t)Endp_num,blen,(uint8_t *)buf);
+	return status;
 }
 
 #endif

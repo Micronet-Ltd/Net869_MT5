@@ -49,45 +49,45 @@
 /*! @brief Error codes for the LMEM CACHE driver. */
 typedef enum _lmem_cache_status
 {
-    kStatus_LMEM_CACHE_Success = 0,
-    kStatus_LMEM_CACHE_Busy,        /*!< CACHE busy performing an operation*/
-    kStatus_LMEM_CACHE_DemoteError, /*!< CACHE region demotion error */
-    kStatus_LMEM_CACHE_Error,       /*!< CACHE driver error */
+	kStatus_LMEM_CACHE_Success = 0,
+	kStatus_LMEM_CACHE_Busy,        /*!< CACHE busy performing an operation*/
+	kStatus_LMEM_CACHE_DemoteError, /*!< CACHE region demotion error */
+	kStatus_LMEM_CACHE_Error,       /*!< CACHE driver error */
 } lmem_cache_status_t;
 
 /*! @brief LMEM CACHE mode options. */
 typedef enum _lmem_cache_mode {
-    kCacheNonCacheable     = 0x0U, /*!< CACHE mode: non-cacheable */
-    kCacheWriteThrough     = 0x2U, /*!< CACHE mode: write-through */
-    kCacheWriteBack        = 0x3U, /*!< CACHE mode: write-back */
+	kCacheNonCacheable     = 0x0U, /*!< CACHE mode: non-cacheable */
+	kCacheWriteThrough     = 0x2U, /*!< CACHE mode: write-through */
+	kCacheWriteBack        = 0x3U, /*!< CACHE mode: write-back */
 } lmem_cache_mode_t;
 
 /*! @brief LMEM CACHE Regions. */
 typedef enum _lmem_cache_region {
-    kCacheRegion0   = 0U,   /*!< Cache Region 0 */
-    kCacheRegion1   = 1U,   /*!< Cache Region 1 */
-    kCacheRegion2   = 2U,   /*!< Cache Region 2 */
-    kCacheRegion3   = 3U,   /*!< Cache Region 3 */
-    kCacheRegion4   = 4U,   /*!< Cache Region 4 */
-    kCacheRegion5   = 5U,   /*!< Cache Region 5 */
-    kCacheRegion6   = 6U,   /*!< Cache Region 6 */
-    kCacheRegion7   = 7U,   /*!< Cache Region 7 */
-    kCacheRegion8   = 8U,   /*!< Cache Region 8 */
-    kCacheRegion9   = 9U,   /*!< Cache Region 9 */
-    kCacheRegion10  = 10U,  /*!< Cache Region 10 */
-    kCacheRegion11  = 11U,  /*!< Cache Region 11 */
-    kCacheRegion12  = 12U,  /*!< Cache Region 12 */
-    kCacheRegion13  = 13U,  /*!< Cache Region 13 */
-    kCacheRegion14  = 14U,  /*!< Cache Region 14 */
-    kCacheRegion15  = 15U   /*!< Cache Region 15 */
+	kCacheRegion0   = 0U,   /*!< Cache Region 0 */
+	kCacheRegion1   = 1U,   /*!< Cache Region 1 */
+	kCacheRegion2   = 2U,   /*!< Cache Region 2 */
+	kCacheRegion3   = 3U,   /*!< Cache Region 3 */
+	kCacheRegion4   = 4U,   /*!< Cache Region 4 */
+	kCacheRegion5   = 5U,   /*!< Cache Region 5 */
+	kCacheRegion6   = 6U,   /*!< Cache Region 6 */
+	kCacheRegion7   = 7U,   /*!< Cache Region 7 */
+	kCacheRegion8   = 8U,   /*!< Cache Region 8 */
+	kCacheRegion9   = 9U,   /*!< Cache Region 9 */
+	kCacheRegion10  = 10U,  /*!< Cache Region 10 */
+	kCacheRegion11  = 11U,  /*!< Cache Region 11 */
+	kCacheRegion12  = 12U,  /*!< Cache Region 12 */
+	kCacheRegion13  = 13U,  /*!< Cache Region 13 */
+	kCacheRegion14  = 14U,  /*!< Cache Region 14 */
+	kCacheRegion15  = 15U   /*!< Cache Region 15 */
 } lmem_cache_region_t;
 
 /*! @brief LMEM CACHE line command. */
 typedef enum _lmem_cache_way {
-    kCacheLineSearchReadOrWrite  = 0U,   /*!< Cache line search and read or write */
-    kCacheLineInvalidate         = 1U,   /*!< Cache line invalidate */
-    kCacheLinePush               = 2U,   /*!< Cache line push */
-    kCacheLineClear              = 3U,   /*!< Cache line clear */
+	kCacheLineSearchReadOrWrite  = 0U,   /*!< Cache line search and read or write */
+	kCacheLineInvalidate         = 1U,   /*!< Cache line invalidate */
+	kCacheLinePush               = 2U,   /*!< Cache line push */
+	kCacheLineClear              = 3U,   /*!< Cache line clear */
 } lmem_cache_line_command_t;
 
 /*! @brief LMEM CACHE Line Size in bytes. */
@@ -116,8 +116,8 @@ extern "C" {
  */
 static inline void LMEM_HAL_SetCodeCacheEnableCmd(LMEM_Type * base, bool enable)
 {
-    LMEM_BWR_PCCCR_ENCACHE(base, (enable == true));
-    LMEM_BWR_PCCCR_ENWRBUF(base, (enable == true));
+	LMEM_BWR_PCCCR_ENCACHE(base, (enable == true));
+	LMEM_BWR_PCCCR_ENWRBUF(base, (enable == true));
 }
 
 /*!
@@ -140,7 +140,7 @@ void LMEM_HAL_SetCodeCacheInvalidateAllCmd(LMEM_Type * base, bool enable);
  *
  * @param base Module base pointer of type LMEM_Type.
  * @param enable Enable (true) or disable (false) the Processor Code bus option to push
-                 all modified lines
+				 all modified lines
  */
 void LMEM_HAL_SetCodeCachePushAllCmd(LMEM_Type * base, bool enable);
 
@@ -153,7 +153,7 @@ void LMEM_HAL_SetCodeCachePushAllCmd(LMEM_Type * base, bool enable);
  *
  * @param base Module base pointer of type LMEM_Type.
  * @param enable Enable (true) or disable (false) the Processor Code bus option to push
-                 all modified lines
+				 all modified lines
  */
 void LMEM_HAL_SetCodeCacheClearAllCmd(LMEM_Type * base, bool enable);
 
@@ -167,7 +167,7 @@ void LMEM_HAL_SetCodeCacheClearAllCmd(LMEM_Type * base, bool enable);
  */
 static inline void LMEM_HAL_InitiateCodeCacheCommand(LMEM_Type * base)
 {
-    LMEM_BWR_PCCCR_GO(base, true);
+	LMEM_BWR_PCCCR_GO(base, true);
 }
 
 /*!
@@ -181,7 +181,7 @@ static inline void LMEM_HAL_InitiateCodeCacheCommand(LMEM_Type * base)
  */
 static inline bool LMEM_HAL_IsCodeCacheCommandActive(LMEM_Type * base)
 {
-    return (bool)LMEM_RD_PCCCR_GO(base);
+	return (bool)LMEM_RD_PCCCR_GO(base);
 }
 
 
@@ -196,7 +196,7 @@ static inline bool LMEM_HAL_IsCodeCacheCommandActive(LMEM_Type * base)
  */
 static inline void LMEM_HAL_InitiateCodeCacheLineCommand(LMEM_Type * base)
 {
-    LMEM_BWR_PCCLCR_LGO(base, true);
+	LMEM_BWR_PCCLCR_LGO(base, true);
 }
 
 
@@ -212,7 +212,7 @@ static inline void LMEM_HAL_InitiateCodeCacheLineCommand(LMEM_Type * base)
  */
 static inline bool LMEM_HAL_IsCodeCacheLineCommandActive(LMEM_Type * base)
 {
-    return (bool)LMEM_RD_PCCLCR_LGO(base);
+	return (bool)LMEM_RD_PCCLCR_LGO(base);
 }
 
 /*!
@@ -225,9 +225,9 @@ static inline bool LMEM_HAL_IsCodeCacheLineCommandActive(LMEM_Type * base)
  * @param command The cache line command of type lmem_cache_line_command_t
  */
 static inline void LMEM_HAL_SetCodeCacheLineCommand(LMEM_Type * base,
-                                                    lmem_cache_line_command_t command)
+													lmem_cache_line_command_t command)
 {
-    LMEM_BWR_PCCLCR_LCMD(base, command);
+	LMEM_BWR_PCCLCR_LCMD(base, command);
 }
 
 /*!
@@ -242,7 +242,7 @@ static inline void LMEM_HAL_SetCodeCacheLineCommand(LMEM_Type * base,
  */
 static inline void LMEM_HAL_SetCodeCachePhysicalAddr(LMEM_Type * base, uint32_t addr)
 {
-    LMEM_WR_PCCSAR(base, (addr & LMEM_PCCSAR_PHYADDR_MASK));
+	LMEM_WR_PCCSAR(base, (addr & LMEM_PCCSAR_PHYADDR_MASK));
 }
 
 /*!
@@ -257,7 +257,7 @@ static inline void LMEM_HAL_SetCodeCachePhysicalAddr(LMEM_Type * base, uint32_t 
  * @param cacheMode The specified demoted cache mode of type lmem_cache_mode_t
  */
 void LMEM_HAL_SetCodeCacheRegionMode(LMEM_Type * base, lmem_cache_region_t region,
-                                     lmem_cache_mode_t cacheMode);
+									 lmem_cache_mode_t cacheMode);
 
 /*!
  * @brief Gets the current cache mode for a specific region for the Processor
@@ -290,8 +290,8 @@ uint32_t LMEM_HAL_GetCodeCacheRegionMode(LMEM_Type * base, lmem_cache_region_t r
  */
 static inline void LMEM_HAL_SetSystemCacheEnableCmd(LMEM_Type * base, bool enable)
 {
-    LMEM_BWR_PSCCR_ENCACHE(base, (enable == true));
-    LMEM_BWR_PSCCR_ENWRBUF(base, (enable == true));
+	LMEM_BWR_PSCCR_ENCACHE(base, (enable == true));
+	LMEM_BWR_PSCCR_ENWRBUF(base, (enable == true));
 }
 
 /*!
@@ -341,7 +341,7 @@ void LMEM_HAL_SetSystemCacheClearAllCmd(LMEM_Type * base, bool enable);
  */
 static inline void LMEM_HAL_InitiateSystemCacheCommand(LMEM_Type * base)
 {
-    LMEM_BWR_PSCCR_GO(base, true);
+	LMEM_BWR_PSCCR_GO(base, true);
 }
 
 /*!
@@ -355,7 +355,7 @@ static inline void LMEM_HAL_InitiateSystemCacheCommand(LMEM_Type * base)
  */
 static inline bool LMEM_HAL_IsSystemCacheCommandActive(LMEM_Type * base)
 {
-    return (bool)LMEM_RD_PSCCR_GO(base);
+	return (bool)LMEM_RD_PSCCR_GO(base);
 }
 
 /*!
@@ -369,7 +369,7 @@ static inline bool LMEM_HAL_IsSystemCacheCommandActive(LMEM_Type * base)
  */
 static inline void LMEM_HAL_InitiateSystemCacheLineCommand(LMEM_Type * base)
 {
-    LMEM_BWR_PSCLCR_LGO(base, true);
+	LMEM_BWR_PSCLCR_LGO(base, true);
 }
 
 /*!
@@ -384,7 +384,7 @@ static inline void LMEM_HAL_InitiateSystemCacheLineCommand(LMEM_Type * base)
  */
 static inline bool LMEM_HAL_IsSystemCacheLineCommandActive(LMEM_Type * base)
 {
-    return (bool)LMEM_RD_PSCLCR_LGO(base);
+	return (bool)LMEM_RD_PSCLCR_LGO(base);
 }
 
 /*!
@@ -397,9 +397,9 @@ static inline bool LMEM_HAL_IsSystemCacheLineCommandActive(LMEM_Type * base)
  * @param command The cache line command of type lmem_cache_line_command_t
  */
 static inline void LMEM_HAL_SetSystemCacheLineCommand(LMEM_Type * base,
-                                                      lmem_cache_line_command_t command)
+													  lmem_cache_line_command_t command)
 {
-    LMEM_BWR_PSCLCR_LCMD(base, command);
+	LMEM_BWR_PSCLCR_LCMD(base, command);
 }
 
 /*!
@@ -414,7 +414,7 @@ static inline void LMEM_HAL_SetSystemCacheLineCommand(LMEM_Type * base,
  */
 static inline void LMEM_HAL_SetSystemCachePhysicalAddr(LMEM_Type * base, uint32_t addr)
 {
-    LMEM_WR_PSCSAR(base, (addr & LMEM_PSCSAR_PHYADDR_MASK));
+	LMEM_WR_PSCSAR(base, (addr & LMEM_PSCSAR_PHYADDR_MASK));
 }
 
 /*!
@@ -429,7 +429,7 @@ static inline void LMEM_HAL_SetSystemCachePhysicalAddr(LMEM_Type * base, uint32_
  * @param cacheMode The specified demoted cache mode of type lmem_cache_mode_t
  */
 void LMEM_HAL_SetSystemCacheRegionMode(LMEM_Type * base, lmem_cache_region_t region,
-                                       lmem_cache_mode_t cacheMode);
+									   lmem_cache_mode_t cacheMode);
 
 /*!
  * @brief Gets the current cache mode for a specific region for the Processor
@@ -458,5 +458,3 @@ uint32_t LMEM_HAL_GetSystemCacheRegionMode(LMEM_Type * base, lmem_cache_region_t
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-
-

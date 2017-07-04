@@ -1,23 +1,23 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2008, 2013-2014 Freescale Semiconductor;
 * All Rights Reserved
 *
 * Copyright (c) 1989-2008 ARC International;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
@@ -71,23 +71,23 @@ typedef struct ehci_pipe_struct
    uint8_t               fsls_bwidth[8]; /* bandwidth for FSLS transaction */
    /* 84 bytes so far add padding to ensure cache alignment*/
 #if psp_has_data_cache  // todo check align
-   uint8_t               reserved[usb_cache_align(74) - 74]; 
-#endif  
-    
+   uint8_t               reserved[usb_cache_align(74) - 74];
+#endif
+
 } ehci_pipe_struct_t;
 
 typedef struct
 {
-    ehci_pipe_struct_t* pipe_ptr;
-    ehci_qh_struct_t*   qh_ptr;
-    ehci_qtd_struct_t*  qtd_head;
+	ehci_pipe_struct_t* pipe_ptr;
+	ehci_qh_struct_t*   qh_ptr;
+	ehci_qtd_struct_t*  qtd_head;
 } qh_node_t;
 
 /* Queue head management data structure */
 typedef struct qh_link_node_struct
 {
-    qh_node_t                          qh_node;
-    struct qh_link_node_struct*        next;
+	qh_node_t                          qh_node;
+	struct qh_link_node_struct*        next;
 } qh_link_node_t;
 
 /* Queue head management data structure */
@@ -102,9 +102,9 @@ typedef struct active_qh_mgmt_struct
 /* ITD,SITD list management data structure (doubly link list )*/
 typedef struct list_node_struct
 {
-    struct list_node_struct *next; /* next member in the list */
-    struct list_node_struct *prev; /* previous member in the list */
-    void*  member; /* pointer to the currently active ITD or SITD*/
+	struct list_node_struct *next; /* next member in the list */
+	struct list_node_struct *prev; /* previous member in the list */
+	void*  member; /* pointer to the currently active ITD or SITD*/
    bool                           next_active; /* is next node a active node */
 } list_node_struct_t;
 
@@ -124,7 +124,7 @@ typedef struct  usb_ehci_host_state_structure
    void                               *xtd_struct_base_addr;
    void                               *periodic_list_base_addr;
    ehci_qh_struct_t*                   async_list_base_addr;
-   ehci_qh_struct_t*                   qh_base_ptr; 
+   ehci_qh_struct_t*                   qh_base_ptr;
    uint32_t                            qh_entries;
    ehci_qh_struct_t*                   qh_head;
    ehci_qh_struct_t*                  qh_tail;
@@ -139,16 +139,16 @@ typedef struct  usb_ehci_host_state_structure
    ehci_qtd_struct_t*                 qtd_head;
    ehci_qtd_struct_t*                 qtd_tail;
    uint32_t                            qtd_entries;
-   
-    list_node_struct_t* active_iso_itd_periodic_list_head_ptr;
-    list_node_struct_t* active_iso_itd_periodic_list_tail_ptr;
+
+	list_node_struct_t* active_iso_itd_periodic_list_head_ptr;
+	list_node_struct_t* active_iso_itd_periodic_list_tail_ptr;
    ehci_itd_struct_t*                 itd_base_ptr;
    ehci_itd_struct_t*                 itd_head;
    ehci_itd_struct_t*                 itd_tail;
    uint32_t                            itd_entries;
 
-    list_node_struct_t* active_iso_sitd_periodic_list_head_ptr;
-    list_node_struct_t* active_iso_sitd_periodic_list_tail_ptr;
+	list_node_struct_t* active_iso_sitd_periodic_list_head_ptr;
+	list_node_struct_t* active_iso_sitd_periodic_list_tail_ptr;
    ehci_sitd_struct_t*                sitd_base_ptr;
    ehci_sitd_struct_t*                 sitd_head;
    ehci_sitd_struct_t*               sitd_tail;
@@ -157,7 +157,7 @@ typedef struct  usb_ehci_host_state_structure
    uint32_t                            port_num;
    os_mutex_handle                     mutex;
    os_event_handle                     ehci_event_ptr;
-   bool                                full_speed_iso_queue_active; 
+   bool                                full_speed_iso_queue_active;
    bool                                high_speed_iso_queue_active;
    bool                                periodic_list_initialized;
    bool                                itd_list_initialized;
@@ -165,10 +165,10 @@ typedef struct  usb_ehci_host_state_structure
    bool                                is_resetting;
    uint8_t                             uframe_count;
    uint8_t                             temp_speed;
-   
+
    uint8_t                             devices_inserted;
    uint8_t                             devices_attached;
-   
+
 } usb_ehci_host_state_struct_t;
 #define USB_EHCI_Host_lock()                OS_Mutex_lock(((usb_ehci_host_state_struct_t*)usb_host_ptr)->mutex)
 #define USB_EHCI_Host_unlock()              OS_Mutex_unlock(((usb_ehci_host_state_struct_t*)usb_host_ptr)->mutex)
@@ -178,108 +178,108 @@ typedef struct  usb_ehci_host_state_structure
 
 #define EHCI_ITD_QADD(head, tail, ITD)      \
    if ((head) == NULL) {         \
-      (head) = (ITD);            \
+	  (head) = (ITD);            \
    } else {                      \
-      (tail)->scratch_ptr = (ITD);   \
+	  (tail)->scratch_ptr = (ITD);   \
    } /* Endif */                 \
    (tail) = (ITD);               \
    (ITD)->scratch_ptr = NULL
-   
+
 #define EHCI_ITD_QGET(head, tail, ITD)      \
    (ITD) = (head);               \
    if (head) {                   \
-      (head) = (ehci_itd_struct_t*)((head)->scratch_ptr);  \
-      if ((head) == NULL) {      \
-         (tail) = NULL;          \
-      } /* Endif */              \
+	  (head) = (ehci_itd_struct_t*)((head)->scratch_ptr);  \
+	  if ((head) == NULL) {      \
+		 (tail) = NULL;          \
+	  } /* Endif */              \
    } /* Endif */
 
 #define EHCI_ACTIVE_QUEUE_ADD_NODE(tail,member_ptr)     \
    if (tail->prev != NULL) {                             \
-       tail->prev->next_active = TRUE;                   \
+	   tail->prev->next_active = TRUE;                   \
    }                                                     \
    tail->member =  member_ptr;                                  \
    tail->next_active = FALSE;                            \
-   tail = tail->next                   
+   tail = tail->next
 
 #define EHCI_QUEUE_FREE_NODE(head,tail,node_ptr) \
    if(node_ptr->prev != NULL) {                             \
-     node_ptr->prev->next = node_ptr->next;                 \
-     node_ptr->prev->next_active = node_ptr->next_active;   \
-     node_ptr->next->prev = node_ptr->prev;                 \
+	 node_ptr->prev->next = node_ptr->next;                 \
+	 node_ptr->prev->next_active = node_ptr->next_active;   \
+	 node_ptr->next->prev = node_ptr->prev;                 \
    } else  {                                                \
-     head = node_ptr->next;                                 \
-     head->prev = NULL;                                     \
+	 head = node_ptr->next;                                 \
+	 head->prev = NULL;                                     \
    }                                                        \
    node_ptr->next = tail->next;                             \
    node_ptr->prev = tail;                                   \
    node_ptr->next_active = FALSE;                           \
    node_ptr->member = NULL;                                 \
    if(tail->next != NULL)   {                               \
-      tail->next->prev = node_ptr;                          \
+	  tail->next->prev = node_ptr;                          \
    }                                                        \
    tail->next = node_ptr;                                   \
-   tail->next_active = FALSE;                             
+   tail->next_active = FALSE;
 
 #define EHCI_SITD_QADD(head, tail, SITD)      \
    if ((head) == NULL) {         \
-      (head) = (SITD);            \
+	  (head) = (SITD);            \
    } else {                      \
-      (tail)->scratch_ptr = (SITD);   \
+	  (tail)->scratch_ptr = (SITD);   \
    } /* Endif */                 \
    (tail) =  (SITD);               \
    (SITD)->scratch_ptr = NULL
-   
+
 #define EHCI_SITD_QGET(head, tail, SITD)      \
    (SITD) = (head);               \
    if (head) {                   \
-      (head) = (ehci_sitd_struct_t*)((head)->scratch_ptr);  \
-      if ((head) == NULL) {      \
-         (tail) = NULL;          \
-      } /* Endif */              \
+	  (head) = (ehci_sitd_struct_t*)((head)->scratch_ptr);  \
+	  if ((head) == NULL) {      \
+		 (tail) = NULL;          \
+	  } /* Endif */              \
    } /* Endif */
-   
+
 #define EHCI_QTD_QADD(head, tail, QTD)      \
    if ((head) == NULL) {         \
-      (head) = (QTD);            \
+	  (head) = (QTD);            \
    } else {                      \
-      (tail)->next = (QTD);   \
+	  (tail)->next = (QTD);   \
    } /* Endif */                 \
    (tail) = (QTD);               \
    (QTD)->next = NULL
-   
+
 #define EHCI_QTD_QGET(head, tail, QTD)      \
    (QTD) = (head);               \
    if (head) {                   \
-      (head) = (ehci_qtd_struct_t*)((head)->next);  \
-      if ((head) == NULL) {      \
-         (tail) = NULL;          \
-      } /* Endif */              \
+	  (head) = (ehci_qtd_struct_t*)((head)->next);  \
+	  if ((head) == NULL) {      \
+		 (tail) = NULL;          \
+	  } /* Endif */              \
    } /* Endif */
 
 #define EHCI_QH_QADD(head, tail, QH)      \
    if ((head) == NULL) {         \
-      (head) =  (QH);            \
+	  (head) =  (QH);            \
    } else {                      \
-      (tail)->next =  (QH);   \
+	  (tail)->next =  (QH);   \
    } /* Endif */                 \
    (tail) = (QH);               \
    (QH)->next = NULL
-   
+
 #define EHCI_QH_QGET(head, tail, QH)      \
    (QH) = (head);               \
    if (head) {                   \
-      (head) = (ehci_qh_struct_t*)((head)->next);  \
-      if ((head) == NULL) {      \
-         (tail) = NULL;          \
-      } /* Endif */              \
+	  (head) = (ehci_qh_struct_t*)((head)->next);  \
+	  if ((head) == NULL) {      \
+		 (tail) = NULL;          \
+	  } /* Endif */              \
    } /* Endif */
 
 #ifdef __cplusplus
 extern "C"
 {
-#endif   
-   
+#endif
+
 extern usb_status _usb_ehci_calculate_time (uint8_t speed, uint8_t pipetype, uint8_t direction, uint32_t bytes);
 extern uint32_t usb_ehci_get_frame_number (usb_host_handle handle);
 extern uint32_t usb_ehci_get_micro_frame_number (usb_host_handle handle);
@@ -288,10 +288,10 @@ extern usb_status _usb_ehci_allocate_bandwidth (usb_host_handle handle, pipe_str
 usb_status _usb_ehci_fsls_allocate_bandwidth(usb_host_handle handle, pipe_struct_t* pipe_ptr);
 usb_status _usb_ehci_fsls_sum_bandwidth
 (
-    usb_host_handle                        handle,
-    ehci_pipe_struct_t*                    pipe_descr_ptr,
-    uint32_t*                              uframe_bandwidth,
-    uint32_t                               frame
+	usb_host_handle                        handle,
+	ehci_pipe_struct_t*                    pipe_descr_ptr,
+	uint32_t*                              uframe_bandwidth,
+	uint32_t                               frame
 );
 
 
@@ -323,8 +323,8 @@ void _usb_ehci_process_tr_complete(usb_host_handle handle);
 
 void _usb_ehci_isr
    (
-      /* [IN] the USB Host state structure */
-      void
+	  /* [IN] the USB Host state structure */
+	  void
    );
 
 usb_status usb_ehci_preinit (usb_host_handle upper_layer_handle, usb_host_handle *handle);

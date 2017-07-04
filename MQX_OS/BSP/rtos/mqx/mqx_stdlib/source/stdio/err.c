@@ -36,7 +36,7 @@
  */
 void clearerr(FILE* stream)
 {
-    stream->_MODE &= ~(_MODE_ERR | _MODE_EOF);
+	stream->_MODE &= ~(_MODE_ERR | _MODE_EOF);
 }
 /*!
  * \brief This function function shall test the end-of-file indicator for the stream pointed to by stream.
@@ -48,15 +48,15 @@ void clearerr(FILE* stream)
  */
 int feof(FILE* stream)
 {
-    // if (NULL == stream)
-    // {
-        // return 0
-    // }
-    // else
-    // {
-        // return (stream->_MODE & _MODE_EOF);
-    // }
-    return (NULL == stream)? 0: (stream->_MODE & _MODE_EOF);
+	// if (NULL == stream)
+	// {
+		// return 0
+	// }
+	// else
+	// {
+		// return (stream->_MODE & _MODE_EOF);
+	// }
+	return (NULL == stream)? 0: (stream->_MODE & _MODE_EOF);
 }
 /*!
  * \brief This  function shall test the error indicator for the stream pointed to by stream.
@@ -68,13 +68,13 @@ int feof(FILE* stream)
  */
 int ferror(FILE* stream)
 {
-    // if (NULL == stream)
-    // {
-        // return 0
-    // }
-    // else
-    // {
-        // return (stream->_MODE & _MODE_ERR);
-    // }
-    return (NULL == stream)? 0: (stream->_MODE & _MODE_ERR);
+	// if (NULL == stream)
+	// {
+		// return 0
+	// }
+	// else
+	// {
+		// return (stream->_MODE & _MODE_ERR);
+	// }
+	return (NULL == stream)? 0: (stream->_MODE & _MODE_ERR);
 }

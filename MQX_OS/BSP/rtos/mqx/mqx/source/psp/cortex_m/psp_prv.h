@@ -32,7 +32,7 @@
 ** task will execute the provided function when it next runs
 */
 #define _PSP_SET_PC_OF_BLOCKED_TASK(stack_ptr, func)    \
-    ((PSP_BLOCKED_STACK_STRUCT_PTR)(stack_ptr))->PC = ((uint32_t)(func))
+	((PSP_BLOCKED_STACK_STRUCT_PTR)(stack_ptr))->PC = ((uint32_t)(func))
 
 /* This macro modifies the interrupt priority of a blocked task so that the
 ** task will execute at the correct interrupt priority when it restarts
@@ -43,13 +43,13 @@
 ** so that the task will execute the provided function when the isr returns
 */
 #define _PSP_SET_PC_OF_INTERRUPTED_TASK(stack_ptr, func)    \
-    ((PSP_BASIC_INT_FRAME_STRUCT_PTR)(__get_PSP()))->PC = (uint32_t)(func)
+	((PSP_BASIC_INT_FRAME_STRUCT_PTR)(__get_PSP()))->PC = (uint32_t)(func)
 
 /* This macro obtains the address of the kernel data structure */
 #define _GET_KERNEL_DATA(x)     x = _mqx_kernel_data
 
 #define _SET_KERNEL_DATA(x)     \
-    _mqx_kernel_data = (struct kernel_data_struct *)(x)
+	_mqx_kernel_data = (struct kernel_data_struct *)(x)
 
 #define _PSP_GET_CALLING_PC()   (0)
 

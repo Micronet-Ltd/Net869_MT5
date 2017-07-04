@@ -51,9 +51,9 @@
  */
 typedef enum _cadc_status
 {
-    kStatus_CADC_Success         = 0U, /*!< Success. */
-    kStatus_CADC_InvalidArgument = 1U, /*!< Invalid argument existed. */
-    kStatus_CADC_Failed          = 2U  /*!< Execution failed. */
+	kStatus_CADC_Success         = 0U, /*!< Success. */
+	kStatus_CADC_InvalidArgument = 1U, /*!< Invalid argument existed. */
+	kStatus_CADC_Failed          = 2U  /*!< Execution failed. */
 } cadc_status_t;
 
 /*!
@@ -64,14 +64,14 @@ typedef enum _cadc_status
  */
 typedef enum _cadc_diff_chn
 {
-    kCAdcDiffChnANA0_1 = 0U, /*!< ConvA's Chn 0 & 1. @internal gui name="ANA 0 & 1" */
-    kCAdcDiffChnANA2_3 = 1U, /*!< ConvA's Chn 2 & 3. @internal gui name="ANA 2 & 3" */
-    kCAdcDiffChnANA4_5 = 2U, /*!< ConvA's Chn 4 & 5. @internal gui name="ANA 4 & 5" */
-    kCAdcDiffChnANA6_7 = 3U, /*!< ConvA's Chn 6 & 7. @internal gui name="ANA 6 & 7" */
-    kCAdcDiffChnANB0_1 = 4U, /*!< ConvB's Chn 0 & 1. @internal gui name="ANB 0 & 1" */
-    kCAdcDiffChnANB2_3 = 5U, /*!< ConvB's Chn 2 & 3. @internal gui name="ANB 2 & 3" */
-    kCAdcDiffChnANB4_5 = 6U, /*!< ConvB's Chn 4 & 5. @internal gui name="ANB 4 & 5" */
-    kCAdcDiffChnANB6_7 = 7U  /*!< ConvB's Chn 6 & 7. @internal gui name="ANB 6 & 7" */
+	kCAdcDiffChnANA0_1 = 0U, /*!< ConvA's Chn 0 & 1. @internal gui name="ANA 0 & 1" */
+	kCAdcDiffChnANA2_3 = 1U, /*!< ConvA's Chn 2 & 3. @internal gui name="ANA 2 & 3" */
+	kCAdcDiffChnANA4_5 = 2U, /*!< ConvA's Chn 4 & 5. @internal gui name="ANA 4 & 5" */
+	kCAdcDiffChnANA6_7 = 3U, /*!< ConvA's Chn 6 & 7. @internal gui name="ANA 6 & 7" */
+	kCAdcDiffChnANB0_1 = 4U, /*!< ConvB's Chn 0 & 1. @internal gui name="ANB 0 & 1" */
+	kCAdcDiffChnANB2_3 = 5U, /*!< ConvB's Chn 2 & 3. @internal gui name="ANB 2 & 3" */
+	kCAdcDiffChnANB4_5 = 6U, /*!< ConvB's Chn 4 & 5. @internal gui name="ANB 4 & 5" */
+	kCAdcDiffChnANB6_7 = 7U  /*!< ConvB's Chn 6 & 7. @internal gui name="ANB 6 & 7" */
 } cadc_diff_chn_t;
 
 /*!
@@ -82,9 +82,9 @@ typedef enum _cadc_diff_chn
  */
 typedef enum _cadc_chn_sel_mode
 {
-    kCAdcChnSelN = 0U, /*!< Selects a negative side channel. @internal gui name="Negative channel side" */
-    kCAdcChnSelP = 1U, /*!< Selects a positive side channel. @internal gui name="Positive channel side" */
-    kCAdcChnSelBoth = 2U /*!< Selects  both channels in differential modes. @internal gui name="Both - differential mode" */
+	kCAdcChnSelN = 0U, /*!< Selects a negative side channel. @internal gui name="Negative channel side" */
+	kCAdcChnSelP = 1U, /*!< Selects a positive side channel. @internal gui name="Positive channel side" */
+	kCAdcChnSelBoth = 2U /*!< Selects  both channels in differential modes. @internal gui name="Both - differential mode" */
 } cadc_chn_sel_mode_t;
 
 /*!
@@ -95,12 +95,12 @@ typedef enum _cadc_chn_sel_mode
  */
 typedef enum _cadc_scan_mode
 {
-    kCAdcScanOnceSequential      = 0U, /*!< Once (single) sequential. @internal gui name="Once sequential" */
-    kCAdcScanOnceParallel        = 1U, /*!< Once parallel. @internal gui name="Once parallel" */
-    kCAdcScanLoopSequential      = 2U, /*!< Loop sequential. @internal gui name="Loop sequential" */
-    kCAdcScanLoopParallel        = 3U, /*!< Loop parallel. @internal gui name="Loop parallel" */
-    kCAdcScanTriggeredSequential = 4U, /*!< Triggered sequential. @internal gui name="Triggered sequential" */
-    kCAdcScanTriggeredParalled   = 5U  /*!< Triggered parallel (default). @internal gui name="Triggered parallel" */
+	kCAdcScanOnceSequential      = 0U, /*!< Once (single) sequential. @internal gui name="Once sequential" */
+	kCAdcScanOnceParallel        = 1U, /*!< Once parallel. @internal gui name="Once parallel" */
+	kCAdcScanLoopSequential      = 2U, /*!< Loop sequential. @internal gui name="Loop sequential" */
+	kCAdcScanLoopParallel        = 3U, /*!< Loop parallel. @internal gui name="Loop parallel" */
+	kCAdcScanTriggeredSequential = 4U, /*!< Triggered sequential. @internal gui name="Triggered sequential" */
+	kCAdcScanTriggeredParalled   = 5U  /*!< Triggered parallel (default). @internal gui name="Triggered parallel" */
 } cadc_scan_mode_t;
 
 /*!
@@ -108,10 +108,10 @@ typedef enum _cadc_scan_mode
  */
 typedef enum _cadc_zero_crossing_mode
 {
-    kCAdcZeroCrossingDisable        = 0U, /*!< Zero crossing detection disabled. @internal gui name="Disabled" */
-    kCAdcZeroCrossingAtRisingEdge   = 1U, /*!< Enable for positive to negative sign change. @internal gui name="Rising edge" */
-    kCAdcZeroCrossingAtFallingEdge  = 2U, /*!< Enable for negative to positive sign change. @internal gui name="Falling edge" */
-    kCAdcZeroCrossingAtBothEdge     = 3U  /*!< Enable for any sign change. @internal gui name="Both edges" */
+	kCAdcZeroCrossingDisable        = 0U, /*!< Zero crossing detection disabled. @internal gui name="Disabled" */
+	kCAdcZeroCrossingAtRisingEdge   = 1U, /*!< Enable for positive to negative sign change. @internal gui name="Rising edge" */
+	kCAdcZeroCrossingAtFallingEdge  = 2U, /*!< Enable for negative to positive sign change. @internal gui name="Falling edge" */
+	kCAdcZeroCrossingAtBothEdge     = 3U  /*!< Enable for any sign change. @internal gui name="Both edges" */
 } cadc_zero_crossing_mode_t;
 
 /*!
@@ -119,9 +119,9 @@ typedef enum _cadc_zero_crossing_mode
  */
 typedef enum _cadc_gain_mode
 {
-    kCAdcSGainBy1 = 0U, /*!< x1 amplification. @internal gui name="1" */
-    kCAdcSGainBy2 = 1U, /*!< x2 amplification. @internal gui name="2" */
-    kCAdcSGainBy4 = 2U  /*!< x4 amplification. @internal gui name="4" */
+	kCAdcSGainBy1 = 0U, /*!< x1 amplification. @internal gui name="1" */
+	kCAdcSGainBy2 = 1U, /*!< x2 amplification. @internal gui name="2" */
+	kCAdcSGainBy4 = 2U  /*!< x4 amplification. @internal gui name="4" */
 } cadc_gain_mode_t;
 
 /*!
@@ -132,14 +132,14 @@ typedef enum _cadc_gain_mode
  */
 typedef enum _cadc_conv_speed_mode
 {
-    kCAdcConvClkLimitBy6_25MHz  = 0U, /*!< Conversion clock frequency <= 6.25 MHz;
-                                            current consumption per converter = 6 mA. @internal gui name="Max 6.25 MHz" */
-    kCAdcConvClkLimitBy12_5MHz  = 1U, /*!< Conversion clock frequency <= 12.5 MHz;
-                                            current consumption per converter = 10.8 mA. @internal gui name="Max 12.5 MHz" */
-    kCAdcConvClkLimitBy18_75MHz = 2U, /*!< Conversion clock frequency <= 18.75 MHz;
-                                            current consumption per converter = 18 mA. @internal gui name="Max 18.75 MHz" */
-    kCAdcConvClkLimitBy25MHz    = 3U  /*!< Conversion clock frequency <= 25 MHz;
-                                            current consumption per converter = 25.2 mA. @internal gui name="Max 25 MHz" */
+	kCAdcConvClkLimitBy6_25MHz  = 0U, /*!< Conversion clock frequency <= 6.25 MHz;
+											current consumption per converter = 6 mA. @internal gui name="Max 6.25 MHz" */
+	kCAdcConvClkLimitBy12_5MHz  = 1U, /*!< Conversion clock frequency <= 12.5 MHz;
+											current consumption per converter = 10.8 mA. @internal gui name="Max 12.5 MHz" */
+	kCAdcConvClkLimitBy18_75MHz = 2U, /*!< Conversion clock frequency <= 18.75 MHz;
+											current consumption per converter = 18 mA. @internal gui name="Max 18.75 MHz" */
+	kCAdcConvClkLimitBy25MHz    = 3U  /*!< Conversion clock frequency <= 25 MHz;
+											current consumption per converter = 25.2 mA. @internal gui name="Max 25 MHz" */
 } cadc_conv_speed_mode_t;
 
 /*!
@@ -152,8 +152,8 @@ typedef enum _cadc_conv_speed_mode
  */
 typedef enum _cadc_dma_trigger_src
 {
-    kCAdcDmaTriggeredByEndOfScan = 0U, /*!< DMA trigger source is end of scan interrupt. @internal gui name="End of scan" */
-    kCAdcDmaTriggeredByConvReady = 1U  /*!< DMA trigger source is RDY status. @internal gui name="Conversion ready status" */
+	kCAdcDmaTriggeredByEndOfScan = 0U, /*!< DMA trigger source is end of scan interrupt. @internal gui name="End of scan" */
+	kCAdcDmaTriggeredByConvReady = 1U  /*!< DMA trigger source is RDY status. @internal gui name="Conversion ready status" */
 } cadc_dma_trigger_src_t;
 
 /******************************************************************************
@@ -168,18 +168,18 @@ typedef enum _cadc_dma_trigger_src
  */
 typedef struct CAdcControllerConfig
 {
-    /* Functional control. */
-    bool zeroCrossingIntEnable; /*!< Global zero crossing interrupt enable. @internal gui name="Zero crossing interrupt" */
-    bool lowLimitIntEnable;     /*!< Global low limit interrupt enable. @internal gui name="Low limit interrupt"*/
-    bool highLimitIntEnable;    /*!< Global high limit interrupt enable. @internal gui name="High limit interrupt" */
-    cadc_scan_mode_t scanMode;  /*!< ADC scan mode control. @internal gui name="Scan mode" */
-    bool parallelSimultModeEnable; /*!< Parallel scans done simultaneously enable. @internal gui name="Simultaneous parallel scans" */
-    cadc_dma_trigger_src_t dmaSrc; /*!< DMA trigger source. @internal gui name="DMA trigger source" */
+	/* Functional control. */
+	bool zeroCrossingIntEnable; /*!< Global zero crossing interrupt enable. @internal gui name="Zero crossing interrupt" */
+	bool lowLimitIntEnable;     /*!< Global low limit interrupt enable. @internal gui name="Low limit interrupt"*/
+	bool highLimitIntEnable;    /*!< Global high limit interrupt enable. @internal gui name="High limit interrupt" */
+	cadc_scan_mode_t scanMode;  /*!< ADC scan mode control. @internal gui name="Scan mode" */
+	bool parallelSimultModeEnable; /*!< Parallel scans done simultaneously enable. @internal gui name="Simultaneous parallel scans" */
+	cadc_dma_trigger_src_t dmaSrc; /*!< DMA trigger source. @internal gui name="DMA trigger source" */
 
-    /* Power control. */
-    bool autoStandbyEnable;     /*!< Auto standby mode enable. @internal gui name="Auto standby mode" */
-    uint16_t powerUpDelayCount; /*!< Power up delay. @internal gui name="Power up delay" range="0..63" default="26" */
-    bool autoPowerDownEnable;   /*!< Auto power down mode enable. @internal gui name="Auto power down mode" */
+	/* Power control. */
+	bool autoStandbyEnable;     /*!< Auto standby mode enable. @internal gui name="Auto standby mode" */
+	uint16_t powerUpDelayCount; /*!< Power up delay. @internal gui name="Power up delay" range="0..63" default="26" */
+	bool autoPowerDownEnable;   /*!< Auto power down mode enable. @internal gui name="Auto power down mode" */
 } cadc_controller_config_t;
 
 /*!
@@ -192,63 +192,63 @@ typedef struct CAdcControllerConfig
  */
 typedef struct CAdcConverterConfig
 {
-    bool dmaEnable;     /*!< DMA enable. @internal gui name="DMA" */
+	bool dmaEnable;     /*!< DMA enable. @internal gui name="DMA" */
 
-    /*
-    * When this bit is asserted, the current scan is stopped and no further
-    * scans can start.  Any further SYNC input pulses or software trigger are
-    * ignored until this bit has been cleared. After the ADC is in stop mode,
-    * the results registers can be modified by the processor. Any changes to
-    * the result registers in stop mode are treated as if the analog core
-    * supplied the data. Therefore, limit checking, zero crossing, and
-    * associated interrupts can occur when authorized.
-    */
-    bool stopEnable;    /*!< Stop mode enable. @internal gui name="Stop mode" */
+	/*
+	* When this bit is asserted, the current scan is stopped and no further
+	* scans can start.  Any further SYNC input pulses or software trigger are
+	* ignored until this bit has been cleared. After the ADC is in stop mode,
+	* the results registers can be modified by the processor. Any changes to
+	* the result registers in stop mode are treated as if the analog core
+	* supplied the data. Therefore, limit checking, zero crossing, and
+	* associated interrupts can occur when authorized.
+	*/
+	bool stopEnable;    /*!< Stop mode enable. @internal gui name="Stop mode" */
 
-    bool syncEnable;    /*!< Enable external sync input to trigger conversion. @internal gui name="External synchronization" */
-    bool endOfScanIntEnable; /*!< End of scan interrupt enable. @internal gui name="End of scan interrupt" */
+	bool syncEnable;    /*!< Enable external sync input to trigger conversion. @internal gui name="External synchronization" */
+	bool endOfScanIntEnable; /*!< End of scan interrupt enable. @internal gui name="End of scan interrupt" */
 
-    /*
-    * For Clock Divisor Select:
-    * The divider circuit generates the ADC clock by dividing the system clock:
-    *  - When the value is set to 0, the divisor is 2.
-    *  - For all other setting values, the divisor is 1 more than the decimal
-    *     value of the setting value.
-    * A divider value must be chosen to prevent the ADC clock from exceeding the
-    * maximum frequency.
-    */
-    uint16_t clkDivValue;    /*!< ADC clock divider from the bus clock. @internal gui name="Clock divider" range="0..63" */
+	/*
+	* For Clock Divisor Select:
+	* The divider circuit generates the ADC clock by dividing the system clock:
+	*  - When the value is set to 0, the divisor is 2.
+	*  - For all other setting values, the divisor is 1 more than the decimal
+	*     value of the setting value.
+	* A divider value must be chosen to prevent the ADC clock from exceeding the
+	* maximum frequency.
+	*/
+	uint16_t clkDivValue;    /*!< ADC clock divider from the bus clock. @internal gui name="Clock divider" range="0..63" */
 
-    bool useChnInputAsVrefH; /*!< Use input channel as high reference voltage, such as AN2. @internal gui name="Input channel as high voltage reference" */
-    bool useChnInputAsVrefL; /*!< Use input channel as low reference voltage, such as AN3. @internal gui name="Input channel as low voltage reference" */
-    cadc_conv_speed_mode_t speedMode; /*!< ADC speed control mode. @internal gui name="Speed mode" */
+	bool useChnInputAsVrefH; /*!< Use input channel as high reference voltage, such as AN2. @internal gui name="Input channel as high voltage reference" */
+	bool useChnInputAsVrefL; /*!< Use input channel as low reference voltage, such as AN3. @internal gui name="Input channel as low voltage reference" */
+	cadc_conv_speed_mode_t speedMode; /*!< ADC speed control mode. @internal gui name="Speed mode" */
 
-    /*
-    * For ConvA:
-    * During sequential and parallel simultaneous scan modes, the
-    * "sampleWindowCount" controls the sampling time of the first sample after
-    * a scan is initiated on both converters A and B.
-    * In parallel non-simultaneous mode, this field affects ConvA only.
-    * In sequential scan mode, this field setting is ignored whenever
-    * the channel selected for the next sample is on the other converter. In
-    * other words, during a sequential scan, if a sample converts a ConvA
-    * channel (ANA0-ANA7) and the next sample converts a ConvB channel
-    * (ANB0-ANB7) or vice versa, this field is ignored and uses the
-    * default sampling time (value 0) for the next sample.
-    *
-    * For ConvB:
-    * During parallel non-simultaneous scan mode, the "sampleWindowCount" for
-    * ConvB is used to control the sampling time of the first sample after
-    * a scan is initiated. During sequential and parallel simultaneous scan
-    * modes, "sampleWindowCount" is ignored and the sampling window for both
-    * converters is controlled by the "sampleWindowCount" for ConvA.
-    *
-    * To set the value:
-    * The value 0 corresponds to a sampling time of 2 ADC clocks. Each increment
-    * of "sampleWindowCount" corresponds to an additional ADC clock cycle of
-    * sampling time with a maximum sampling time of 9 ADC clocks.
-    */
-    uint16_t sampleWindowCount; /*!< Sample window count. @internal gui name="Sample window count" range="0..7" */
+	/*
+	* For ConvA:
+	* During sequential and parallel simultaneous scan modes, the
+	* "sampleWindowCount" controls the sampling time of the first sample after
+	* a scan is initiated on both converters A and B.
+	* In parallel non-simultaneous mode, this field affects ConvA only.
+	* In sequential scan mode, this field setting is ignored whenever
+	* the channel selected for the next sample is on the other converter. In
+	* other words, during a sequential scan, if a sample converts a ConvA
+	* channel (ANA0-ANA7) and the next sample converts a ConvB channel
+	* (ANB0-ANB7) or vice versa, this field is ignored and uses the
+	* default sampling time (value 0) for the next sample.
+	*
+	* For ConvB:
+	* During parallel non-simultaneous scan mode, the "sampleWindowCount" for
+	* ConvB is used to control the sampling time of the first sample after
+	* a scan is initiated. During sequential and parallel simultaneous scan
+	* modes, "sampleWindowCount" is ignored and the sampling window for both
+	* converters is controlled by the "sampleWindowCount" for ConvA.
+	*
+	* To set the value:
+	* The value 0 corresponds to a sampling time of 2 ADC clocks. Each increment
+	* of "sampleWindowCount" corresponds to an additional ADC clock cycle of
+	* sampling time with a maximum sampling time of 9 ADC clocks.
+	*/
+	uint16_t sampleWindowCount; /*!< Sample window count. @internal gui name="Sample window count" range="0..7" */
 } cadc_converter_config_t;
 
 /*!
@@ -262,9 +262,9 @@ typedef struct CAdcConverterConfig
  */
 typedef struct CAdcChnConfig
 {
-    cadc_diff_chn_t diffChns; /*!< Select the differential channel pair. @internal gui name="Channel" */
-    cadc_chn_sel_mode_t diffSelMode; /*!< Select which channel is indicated in a pair. @internal gui name="Differential mode" */
-    cadc_gain_mode_t gainMode; /*!< Gain mode for each channel. @internal gui name="Gain" */
+	cadc_diff_chn_t diffChns; /*!< Select the differential channel pair. @internal gui name="Channel" */
+	cadc_chn_sel_mode_t diffSelMode; /*!< Select which channel is indicated in a pair. @internal gui name="Differential mode" */
+	cadc_gain_mode_t gainMode; /*!< Gain mode for each channel. @internal gui name="Gain" */
 } cadc_chn_config_t;
 
 /*!
@@ -275,19 +275,19 @@ typedef struct CAdcChnConfig
  */
 typedef struct CAdcSlotConfig
 {
-    bool slotDisable; /*!< Keep the slot unavailable. @internal gui name="Slot" */
-    bool syncPointEnable; /*!< Sample waits for an enabled SYNC input to occur. @internal gui name="Synchronization point" */
-    bool syncIntEnable; /*!< Scan interrupt enable. @internal gui name="Scan interrupt" */
+	bool slotDisable; /*!< Keep the slot unavailable. @internal gui name="Slot" */
+	bool syncPointEnable; /*!< Sample waits for an enabled SYNC input to occur. @internal gui name="Synchronization point" */
+	bool syncIntEnable; /*!< Scan interrupt enable. @internal gui name="Scan interrupt" */
 
-    /* Select the input channel for slot. */
-    cadc_diff_chn_t diffChns;  /*!< Select the differential pair. @internal gui name="Channel pair" id="diffSlotChns" */
-    cadc_chn_sel_mode_t  diffSel;   /*!< Positive or negative channel in differential pair. @internal gui name="Channel select" */
+	/* Select the input channel for slot. */
+	cadc_diff_chn_t diffChns;  /*!< Select the differential pair. @internal gui name="Channel pair" id="diffSlotChns" */
+	cadc_chn_sel_mode_t  diffSel;   /*!< Positive or negative channel in differential pair. @internal gui name="Channel select" */
 
-    /* Event detection mode. */
-    cadc_zero_crossing_mode_t zeroCrossingMode; /*!< Select zero crossing detection mode. @internal gui name="Zero cross mode" */
-    uint16_t lowLimitValue; /*!< Select low limit for hardware compare. @internal gui name="Low limit compare value" range="0..32760" */
-    uint16_t highLimitValue;/*!< Select high limit for hardware compare. @internal gui name="High limit compare value" range="0..32760" */
-    uint16_t offsetValue;   /*!< Select sign change limit for hardware compare. @internal gui name="Offset value" range="0..32760" */
+	/* Event detection mode. */
+	cadc_zero_crossing_mode_t zeroCrossingMode; /*!< Select zero crossing detection mode. @internal gui name="Zero cross mode" */
+	uint16_t lowLimitValue; /*!< Select low limit for hardware compare. @internal gui name="Low limit compare value" range="0..32760" */
+	uint16_t highLimitValue;/*!< Select high limit for hardware compare. @internal gui name="High limit compare value" range="0..32760" */
+	uint16_t offsetValue;   /*!< Select sign change limit for hardware compare. @internal gui name="Offset value" range="0..32760" */
 } cadc_slot_config_t;
 
 #if defined(__cplusplus)
@@ -374,7 +374,7 @@ void CADC_HAL_ConfigSeqSlot(ADC_Type * base, uint32_t slotIdx, const cadc_slot_c
  */
 static inline void CADC_HAL_SetConvAStartCmd(ADC_Type * base)
 {
-    ADC_BWR_CTRL1_START0(base, 1U);
+	ADC_BWR_CTRL1_START0(base, 1U);
 }
 
 /*!
@@ -387,7 +387,7 @@ static inline void CADC_HAL_SetConvAStartCmd(ADC_Type * base)
  */
 static inline void CADC_HAL_SetConvBStartCmd(ADC_Type * base)
 {
-    ADC_BWR_CTRL2_START1(base, 1U);
+	ADC_BWR_CTRL2_START1(base, 1U);
 }
 
 /* Power switcher for converters. */
@@ -402,7 +402,7 @@ static inline void CADC_HAL_SetConvBStartCmd(ADC_Type * base)
  */
 static inline void CADC_HAL_SetConvAPowerDownCmd(ADC_Type * base, bool enable)
 {
-    ADC_BWR_PWR_PD0(base, (uint16_t)enable);
+	ADC_BWR_PWR_PD0(base, (uint16_t)enable);
 }
 
 /*!
@@ -416,7 +416,7 @@ static inline void CADC_HAL_SetConvAPowerDownCmd(ADC_Type * base, bool enable)
  */
 static inline void CADC_HAL_SetConvBPowerDownCmd(ADC_Type * base, bool enable)
 {
-    ADC_BWR_PWR_PD1(base, (uint16_t)enable);
+	ADC_BWR_PWR_PD1(base, (uint16_t)enable);
 }
 
 /* Flags. */
@@ -431,7 +431,7 @@ static inline void CADC_HAL_SetConvBPowerDownCmd(ADC_Type * base, bool enable)
  */
 static inline bool CADC_HAL_GetConvAInProgressFlag(ADC_Type * base)
 {
-    return ADC_BRD_STAT_CIP0(base);
+	return ADC_BRD_STAT_CIP0(base);
 }
 
 /*!
@@ -444,7 +444,7 @@ static inline bool CADC_HAL_GetConvAInProgressFlag(ADC_Type * base)
  */
 static inline bool CADC_HAL_GetConvBInProgressFlag(ADC_Type * base)
 {
-    return ADC_BRD_STAT_CIP1(base);
+	return ADC_BRD_STAT_CIP1(base);
 }
 
 /* End of scan interrupt flag. */
@@ -458,7 +458,7 @@ static inline bool CADC_HAL_GetConvBInProgressFlag(ADC_Type * base)
  */
 static inline bool CADC_HAL_GetConvAEndOfScanIntFlag(ADC_Type * base)
 {
-    return ADC_BRD_STAT_EOSI0(base);
+	return ADC_BRD_STAT_EOSI0(base);
 }
 
 /*!
@@ -471,7 +471,7 @@ static inline bool CADC_HAL_GetConvAEndOfScanIntFlag(ADC_Type * base)
  */
 static inline bool CADC_HAL_GetConvBEndOfScanIntFlag(ADC_Type * base)
 {
-    return ADC_BRD_STAT_EOSI1(base);
+	return ADC_BRD_STAT_EOSI1(base);
 }
 
 /*!
@@ -483,7 +483,7 @@ static inline bool CADC_HAL_GetConvBEndOfScanIntFlag(ADC_Type * base)
  */
 static inline void CADC_HAL_ClearConvAEndOfScanIntFlag(ADC_Type * base)
 {
-    ADC_BWR_STAT_EOSI0(base, 1U);
+	ADC_BWR_STAT_EOSI0(base, 1U);
 }
 
 /*!
@@ -495,7 +495,7 @@ static inline void CADC_HAL_ClearConvAEndOfScanIntFlag(ADC_Type * base)
  */
 static inline void CADC_HAL_ClearConvBEndOfScanIntFlag(ADC_Type * base)
 {
-    ADC_BWR_STAT_EOSI1(base, 1U);
+	ADC_BWR_STAT_EOSI1(base, 1U);
 }
 
 /* Zero-crossing interrupt flag. */
@@ -510,7 +510,7 @@ static inline void CADC_HAL_ClearConvBEndOfScanIntFlag(ADC_Type * base)
  */
 static inline bool CADC_HAL_GetZeroCrossingIntFlag(ADC_Type * base)
 {
-    return ADC_BRD_STAT_ZCI(base);
+	return ADC_BRD_STAT_ZCI(base);
 }
 
 /*!
@@ -525,7 +525,7 @@ static inline bool CADC_HAL_GetZeroCrossingIntFlag(ADC_Type * base)
  */
 static inline uint16_t CADC_HAL_GetSlotZeroCrossingFlag(ADC_Type * base, uint16_t slotIdxMask)
 {
-    return ( slotIdxMask & ADC_RD_ZXSTAT(base) );
+	return ( slotIdxMask & ADC_RD_ZXSTAT(base) );
 }
 
 /*!
@@ -538,7 +538,7 @@ static inline uint16_t CADC_HAL_GetSlotZeroCrossingFlag(ADC_Type * base, uint16_
  */
 static inline void CADC_HAL_ClearSlotZeroCrossingFlag(ADC_Type * base, uint16_t slotIdxMask)
 {
-    ADC_WR_ZXSTAT(base, slotIdxMask);
+	ADC_WR_ZXSTAT(base, slotIdxMask);
 }
 
 /* Low limit interrupt flag. */
@@ -553,7 +553,7 @@ static inline void CADC_HAL_ClearSlotZeroCrossingFlag(ADC_Type * base, uint16_t 
  */
 static inline bool CADC_HAL_GetLowLimitIntFlag(ADC_Type * base)
 {
-    return ADC_BRD_STAT_LLMTI(base);
+	return ADC_BRD_STAT_LLMTI(base);
 }
 
 /*!
@@ -568,7 +568,7 @@ static inline bool CADC_HAL_GetLowLimitIntFlag(ADC_Type * base)
  */
 static inline uint16_t CADC_HAL_GetSlotLowLimitFlag(ADC_Type * base, uint16_t slotIdxMask)
 {
-    return (slotIdxMask & ADC_RD_LOLIMSTAT(base));
+	return (slotIdxMask & ADC_RD_LOLIMSTAT(base));
 }
 
 /*!
@@ -581,7 +581,7 @@ static inline uint16_t CADC_HAL_GetSlotLowLimitFlag(ADC_Type * base, uint16_t sl
  */
 static inline void CADC_HAL_ClearSlotLowLimitFlag(ADC_Type * base, uint16_t slotIdxMask)
 {
-    ADC_WR_LOLIMSTAT(base, slotIdxMask);
+	ADC_WR_LOLIMSTAT(base, slotIdxMask);
 }
 
 /* High limit interrupt flag. */
@@ -596,7 +596,7 @@ static inline void CADC_HAL_ClearSlotLowLimitFlag(ADC_Type * base, uint16_t slot
  */
 static inline bool CADC_HAL_GetHighLimitIntFlag(ADC_Type * base)
 {
-    return ADC_BRD_STAT_HLMTI(base);
+	return ADC_BRD_STAT_HLMTI(base);
 }
 
 /*!
@@ -611,7 +611,7 @@ static inline bool CADC_HAL_GetHighLimitIntFlag(ADC_Type * base)
  */
 static inline uint16_t CADC_HAL_GetSlotHighLimitFlag(ADC_Type * base, uint16_t slotIdxMask)
 {
-    return (slotIdxMask & ADC_RD_HILIMSTAT(base) );
+	return (slotIdxMask & ADC_RD_HILIMSTAT(base) );
 }
 
 /*!
@@ -624,7 +624,7 @@ static inline uint16_t CADC_HAL_GetSlotHighLimitFlag(ADC_Type * base, uint16_t s
  */
 static inline void CADC_HAL_ClearSlotHighLimitFlag(ADC_Type * base, uint16_t slotIdxMask)
 {
-    ADC_WR_HILIMSTAT(base, slotIdxMask );
+	ADC_WR_HILIMSTAT(base, slotIdxMask );
 }
 
 /*!
@@ -638,7 +638,7 @@ static inline void CADC_HAL_ClearSlotHighLimitFlag(ADC_Type * base, uint16_t slo
  */
 static inline uint16_t CADC_HAL_GetSlotReadyFlag(ADC_Type * base, uint16_t slotIdxMask)
 {
-    return (slotIdxMask & ADC_RD_RDY(base) );
+	return (slotIdxMask & ADC_RD_RDY(base) );
 }
 
 /* ADC Converter's power status. */
@@ -652,7 +652,7 @@ static inline uint16_t CADC_HAL_GetSlotReadyFlag(ADC_Type * base, uint16_t slotI
  */
 static inline bool CADC_HAL_GetConvAPowerDownFlag(ADC_Type * base)
 {
-    return ADC_BRD_PWR_PSTS0(base);
+	return ADC_BRD_PWR_PSTS0(base);
 }
 
 /*!
@@ -665,7 +665,7 @@ static inline bool CADC_HAL_GetConvAPowerDownFlag(ADC_Type * base)
  */
 static inline bool CADC_HAL_GetConvBPowerDownFlag(ADC_Type * base)
 {
-    return ADC_BRD_PWR_PSTS1(base);
+	return ADC_BRD_PWR_PSTS1(base);
 }
 
 /* Value. */
@@ -681,7 +681,7 @@ static inline bool CADC_HAL_GetConvBPowerDownFlag(ADC_Type * base)
  */
 static inline uint16_t CADC_HAL_GetSampleValue(ADC_Type * base, uint16_t slotIdx)
 {
-    return ADC_RD_RSLT(base, slotIdx);
+	return ADC_RD_RSLT(base, slotIdx);
 }
 
 #if defined(__cplusplus)
@@ -697,4 +697,3 @@ static inline uint16_t CADC_HAL_GetSampleValue(ADC_Type * base, uint16_t slotIdx
 /******************************************************************************
  * EOF
  *****************************************************************************/
-

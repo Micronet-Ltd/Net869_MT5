@@ -46,7 +46,7 @@ int fprintf(FILE *stream, const char *fmt_s, ...)
    result = 0;
    if ( stream )
    {
-      result = _io_doprint(stream, fputc, -1, (char *)fmt_s, ap );
+	  result = _io_doprint(stream, fputc, -1, (char *)fmt_s, ap );
    }
    va_end(ap);
 
@@ -112,18 +112,18 @@ int sprintf(char *str_ptr, const char *fmt_s, ...)
  */
 int snprintf(char *str_ptr, size_t max_count, const char *fmt_s, ...)
 {
-    int result;
+	int result;
 
-    va_list ap;
-    va_start(ap, fmt_s);
-    result = _io_doprint((FILE *)((void *)&str_ptr), _io_sputc, max_count, (char *)fmt_s, ap);
-    va_end(ap);
-    if (0 != max_count)
-    {
-        *str_ptr = '\0';
-    }
+	va_list ap;
+	va_start(ap, fmt_s);
+	result = _io_doprint((FILE *)((void *)&str_ptr), _io_sputc, max_count, (char *)fmt_s, ap);
+	va_end(ap);
+	if (0 != max_count)
+	{
+		*str_ptr = '\0';
+	}
 
-    return result;
+	return result;
 
 }
 
@@ -166,7 +166,7 @@ int vfprintf(FILE *stream, const char *fmt_s, va_list arg)
 
    result = 0;
    if ( stream ) {
-      result = _io_doprint(stream, fputc, -1, (char *)fmt_s, arg);
+	  result = _io_doprint(stream, fputc, -1, (char *)fmt_s, arg);
    }
    return result;
 
@@ -209,15 +209,15 @@ int vsprintf( char *str_ptr, const char *fmt_s, va_list arg)
  */
 int vsnprintf(char *str_ptr, size_t max_count, const char *fmt_s, va_list arg)
 {
-    int result;
+	int result;
 
-    result = _io_doprint((FILE *)((void *)&str_ptr), _io_sputc, max_count, (char *)fmt_s, arg);
+	result = _io_doprint((FILE *)((void *)&str_ptr), _io_sputc, max_count, (char *)fmt_s, arg);
 
-    if (0 != max_count)
-    {
-        *str_ptr = '\0';
-    }
+	if (0 != max_count)
+	{
+		*str_ptr = '\0';
+	}
 
-    return result;
+	return result;
 
 }

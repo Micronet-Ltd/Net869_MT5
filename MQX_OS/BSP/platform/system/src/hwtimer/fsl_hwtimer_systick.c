@@ -53,12 +53,12 @@ static _hwtimer_error_code_t HWTIMER_SYS_SystickGetTime(hwtimer_t *hwtimer, hwti
 
 const hwtimer_devif_t kSystickDevif =
 {
-    HWTIMER_SYS_SystickInit,
-    HWTIMER_SYS_SystickDeinit,
-    HWTIMER_SYS_SystickSetDiv,
-    HWTIMER_SYS_SystickStart,
-    HWTIMER_SYS_SystickStop,
-    HWTIMER_SYS_SystickGetTime,
+	HWTIMER_SYS_SystickInit,
+	HWTIMER_SYS_SystickDeinit,
+	HWTIMER_SYS_SystickSetDiv,
+	HWTIMER_SYS_SystickStart,
+	HWTIMER_SYS_SystickStop,
+	HWTIMER_SYS_SystickGetTime,
 };
 
 static hwtimer_t *g_hwtimersSystick = NULL;
@@ -88,33 +88,33 @@ static hwtimer_t *g_hwtimersSystick = NULL;
  */
 void HWTIMER_SYS_SystickIsrAction(void)
 {
-    hwtimer_t *hwtimer = g_hwtimersSystick;
+	hwtimer_t *hwtimer = g_hwtimersSystick;
 
-    /* Check if interrupt is enabled for this systick. Cancel spurious interrupt */
-    if (!(SysTick_CTRL_TICKINT_Msk & SysTick->CTRL))
-    {
-        return;
-    }
+	/* Check if interrupt is enabled for this systick. Cancel spurious interrupt */
+	if (!(SysTick_CTRL_TICKINT_Msk & SysTick->CTRL))
+	{
+		return;
+	}
 
-    if (NULL != hwtimer)
-    {
+	if (NULL != hwtimer)
+	{
 
-        /* Following part of function is typically the same for all low level hwtimer drivers */
-        hwtimer->ticks++;
+		/* Following part of function is typically the same for all low level hwtimer drivers */
+		hwtimer->ticks++;
 
-        if (NULL != hwtimer->callbackFunc)
-        {
-            if (hwtimer->callbackBlocked)
-            {
-                hwtimer->callbackPending = 1U;
-            }
-            else
-            {
-                /* Run user function*/
-                hwtimer->callbackFunc(hwtimer->callbackData);
-            }
-        }
-    }
+		if (NULL != hwtimer->callbackFunc)
+		{
+			if (hwtimer->callbackBlocked)
+			{
+				hwtimer->callbackPending = 1U;
+			}
+			else
+			{
+				/* Run user function*/
+				hwtimer->callbackFunc(hwtimer->callbackData);
+			}
+		}
+	}
 }
 
 
@@ -146,26 +146,26 @@ void HWTIMER_SYS_SystickIsrAction(void)
 static _hwtimer_error_code_t HWTIMER_SYS_SystickInit(hwtimer_t *hwtimer, uint32_t systickId, void *data)
 {
 
-    assert(NULL != hwtimer);
-    /* We count only with one systick module inside core */
-    if ( 1U <= systickId)
-    {
-        return kHwtimerInvalidInput;
-    }
+	assert(NULL != hwtimer);
+	/* We count only with one systick module inside core */
+	if ( 1U <= systickId)
+	{
+		return kHwtimerInvalidInput;
+	}
 
-    /* Disable timer and interrupt. Set clock source to processor clock */
-    /* But mostly The CLKSOURCE bit in SysTick Control and Status register is always set to select the core clock. */
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk;
+	/* Disable timer and interrupt. Set clock source to processor clock */
+	/* But mostly The CLKSOURCE bit in SysTick Control and Status register is always set to select the core clock. */
+	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk;
 
-    /* Reset reload value register. A start value of 0 is possible, but has no effect */
-    SysTick->LOAD = 0U;
-    /* A write of any value to current value register clears the field to 0, and also clears the SYST_CSR COUNTFLAG bit to 0. */
-    SysTick->VAL = 0U;
+	/* Reset reload value register. A start value of 0 is possible, but has no effect */
+	SysTick->LOAD = 0U;
+	/* A write of any value to current value register clears the field to 0, and also clears the SYST_CSR COUNTFLAG bit to 0. */
+	SysTick->VAL = 0U;
 
-    /* Store hwtimer in global variable */
-    g_hwtimersSystick = hwtimer;
+	/* Store hwtimer in global variable */
+	g_hwtimersSystick = hwtimer;
 
-    return kHwtimerSuccess;
+	return kHwtimerSuccess;
 }
 
 /*!
@@ -189,19 +189,19 @@ static _hwtimer_error_code_t HWTIMER_SYS_SystickInit(hwtimer_t *hwtimer, uint32_
  */
 static _hwtimer_error_code_t HWTIMER_SYS_SystickDeinit(hwtimer_t *hwtimer)
 {
-    _hwtimer_error_code_t retval = kHwtimerSuccess;
-    assert(NULL != hwtimer);
+	_hwtimer_error_code_t retval = kHwtimerSuccess;
+	assert(NULL != hwtimer);
 
-    /* Disable timer and interrupt */
-    SysTick->CTRL = 0U;
-    /* Reset reload value register. A start value of 0 is possible, but has no effect */
-    SysTick->LOAD = 0U;
-    /* A write of any value to current value register clears the field to 0, and also clears the SYST_CSR COUNTFLAG bit to 0. */
-    SysTick->VAL = 0U;
+	/* Disable timer and interrupt */
+	SysTick->CTRL = 0U;
+	/* Reset reload value register. A start value of 0 is possible, but has no effect */
+	SysTick->LOAD = 0U;
+	/* A write of any value to current value register clears the field to 0, and also clears the SYST_CSR COUNTFLAG bit to 0. */
+	SysTick->VAL = 0U;
 
-    g_hwtimersSystick = NULL;
+	g_hwtimersSystick = NULL;
 
-    return retval;
+	return retval;
 }
 
 /*!
@@ -231,52 +231,52 @@ static _hwtimer_error_code_t HWTIMER_SYS_SystickDeinit(hwtimer_t *hwtimer)
  */
 static _hwtimer_error_code_t HWTIMER_SYS_SystickSetDiv(hwtimer_t *hwtimer, uint32_t period)
 {
-    assert(NULL != hwtimer);
-    uint64_t divider;
+	assert(NULL != hwtimer);
+	uint64_t divider;
 
 #if FSL_FEATURE_SYSTICK_HAS_EXT_REF
-    /* Set the clock source back to core freq */
-    CLOCK_SYS_SetSystickSrc(kClockSystickSrcCore);
+	/* Set the clock source back to core freq */
+	CLOCK_SYS_SetSystickSrc(kClockSystickSrcCore);
 #endif
-    /* Get Core clock frequency */
-    hwtimer->clockFreq = CLOCK_SYS_GetSystickFreq();
+	/* Get Core clock frequency */
+	hwtimer->clockFreq = CLOCK_SYS_GetSystickFreq();
 
-    divider = (((uint64_t)hwtimer->clockFreq * period)) / 1000000U ;
+	divider = (((uint64_t)hwtimer->clockFreq * period)) / 1000000U ;
 
-    /* if divider is greater than 24b value we return an error */
-    if ((divider - 1U) & ~SysTick_LOAD_RELOAD_Msk)
-    {
+	/* if divider is greater than 24b value we return an error */
+	if ((divider - 1U) & ~SysTick_LOAD_RELOAD_Msk)
+	{
 #if FSL_FEATURE_SYSTICK_HAS_EXT_REF
-        /* Check if we can use a slower clock source to get required period */
-        CLOCK_SYS_SetSystickSrc(kClockSystickSrcExtRef);
-        hwtimer->clockFreq = CLOCK_SYS_GetSystickFreq();
-        divider = (((uint64_t)hwtimer->clockFreq * period)) / 1000000U ;
+		/* Check if we can use a slower clock source to get required period */
+		CLOCK_SYS_SetSystickSrc(kClockSystickSrcExtRef);
+		hwtimer->clockFreq = CLOCK_SYS_GetSystickFreq();
+		divider = (((uint64_t)hwtimer->clockFreq * period)) / 1000000U ;
 
-        if ((divider - 1U) & ~SysTick_LOAD_RELOAD_Msk)
-        {
-            return kHwtimerInvalidInput;
-        }
+		if ((divider - 1U) & ~SysTick_LOAD_RELOAD_Msk)
+		{
+			return kHwtimerInvalidInput;
+		}
 #else
-        return kHwtimerInvalidInput;
+		return kHwtimerInvalidInput;
 #endif
-    }
+	}
 
-    /*
-     * A start value of 0 (divider == 1) is possible, but has no effect because the
-     * SysTick interrupt and COUNTFLAG are activated when counting from 1 to 0.
-     */
-    if (divider == 1U)
-    {
-        divider = 2U; /* Set smallest possible value for divider. */
-    }
+	/*
+	 * A start value of 0 (divider == 1) is possible, but has no effect because the
+	 * SysTick interrupt and COUNTFLAG are activated when counting from 1 to 0.
+	 */
+	if (divider == 1U)
+	{
+		divider = 2U; /* Set smallest possible value for divider. */
+	}
 
-    SysTick->LOAD = divider - 1U;
+	SysTick->LOAD = divider - 1U;
 
-    /* Store in struct. */
-    hwtimer->divider    = divider;
-    hwtimer->modulo     = divider;
+	/* Store in struct. */
+	hwtimer->divider    = divider;
+	hwtimer->modulo     = divider;
 
-    return kHwtimerSuccess;
+	return kHwtimerSuccess;
 }
 
 
@@ -301,15 +301,15 @@ static _hwtimer_error_code_t HWTIMER_SYS_SystickSetDiv(hwtimer_t *hwtimer, uint3
  */
 static _hwtimer_error_code_t HWTIMER_SYS_SystickStart(hwtimer_t *hwtimer)
 {
-    assert(NULL != hwtimer);
+	assert(NULL != hwtimer);
 
-    /* A write of any value to current value register clears the field to 0, and also clears the SYST_CSR COUNTFLAG bit to 0. */
-    SysTick->VAL = 0U;
+	/* A write of any value to current value register clears the field to 0, and also clears the SYST_CSR COUNTFLAG bit to 0. */
+	SysTick->VAL = 0U;
 
-    /* Run timer and enable interrupt */
-    SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_TICKINT_Msk;
+	/* Run timer and enable interrupt */
+	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_TICKINT_Msk;
 
-    return kHwtimerSuccess;
+	return kHwtimerSuccess;
 }
 
 /*!
@@ -332,12 +332,12 @@ static _hwtimer_error_code_t HWTIMER_SYS_SystickStart(hwtimer_t *hwtimer)
  */
 static _hwtimer_error_code_t HWTIMER_SYS_SystickStop(hwtimer_t *hwtimer)
 {
-    assert(NULL != hwtimer);
+	assert(NULL != hwtimer);
 
-    /* Disable timer and interrupt */
-    SysTick->CTRL = 0U;
+	/* Disable timer and interrupt */
+	SysTick->CTRL = 0U;
 
-    return kHwtimerSuccess;
+	return kHwtimerSuccess;
 }
 
 /*!
@@ -363,33 +363,33 @@ static _hwtimer_error_code_t HWTIMER_SYS_SystickStop(hwtimer_t *hwtimer)
  */
 static _hwtimer_error_code_t HWTIMER_SYS_SystickGetTime(hwtimer_t *hwtimer, hwtimer_time_t *time)
 {
-    uint32_t tempVal;
+	uint32_t tempVal;
 
-    assert(NULL != hwtimer);
-    assert(NULL != time);
+	assert(NULL != hwtimer);
+	assert(NULL != time);
 
-    /* Enter critical section to avoid disabling interrupt from pit for very long time */
-    OSA_EnterCritical(kCriticalDisableInt);
-    SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
+	/* Enter critical section to avoid disabling interrupt from pit for very long time */
+	OSA_EnterCritical(kCriticalDisableInt);
+	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
 
-    time->ticks = hwtimer->ticks;
-    tempVal = SysTick->VAL;
-    /* Check systick pending interrupt flag */
-    if (SCB->ICSR & SCB_ICSR_PENDSTSET_Msk)
-    {
-        SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
-        OSA_ExitCritical(kCriticalDisableInt);
-        time->subTicks = hwtimer->modulo - 1U;
-    }
-    else
-    {
-        SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
-        OSA_ExitCritical(kCriticalDisableInt);
-        /* interrupt flag is set upon 1->0 transition, not upon reload - wrap around */
-        time->subTicks = SysTick->LOAD - tempVal + 1U;
-    }
+	time->ticks = hwtimer->ticks;
+	tempVal = SysTick->VAL;
+	/* Check systick pending interrupt flag */
+	if (SCB->ICSR & SCB_ICSR_PENDSTSET_Msk)
+	{
+		SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
+		OSA_ExitCritical(kCriticalDisableInt);
+		time->subTicks = hwtimer->modulo - 1U;
+	}
+	else
+	{
+		SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
+		OSA_ExitCritical(kCriticalDisableInt);
+		/* interrupt flag is set upon 1->0 transition, not upon reload - wrap around */
+		time->subTicks = SysTick->LOAD - tempVal + 1U;
+	}
 
-    return kHwtimerSuccess;
+	return kHwtimerSuccess;
 }
  /*******************************************************************************
  * Code

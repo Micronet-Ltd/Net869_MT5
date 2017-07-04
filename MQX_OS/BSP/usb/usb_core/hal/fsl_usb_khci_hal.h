@@ -38,18 +38,18 @@
 
 
 #define usb_hal_khci_bdt_set_address(bdt_base, ep, direction, odd, address) \
-    *((uint32_t*)((bdt_base & 0xfffffe00) | (((uint32_t)ep & 0x0f) << 5) | (((uint32_t)direction & 1) << 4) | (((uint32_t)odd & 1) << 3)) + 1) = address
+	*((uint32_t*)((bdt_base & 0xfffffe00) | (((uint32_t)ep & 0x0f) << 5) | (((uint32_t)direction & 1) << 4) | (((uint32_t)odd & 1) << 3)) + 1) = address
 
 
 #define usb_hal_khci_bdt_set_control(bdt_base, ep, direction, odd, control) \
-    *(uint32_t*)((bdt_base & 0xfffffe00) | (((uint32_t)ep & 0x0f) << 5) | (((uint32_t)direction & 1) << 4) | (((uint32_t)odd & 1) << 3)) = control
+	*(uint32_t*)((bdt_base & 0xfffffe00) | (((uint32_t)ep & 0x0f) << 5) | (((uint32_t)direction & 1) << 4) | (((uint32_t)odd & 1) << 3)) = control
 
 #define usb_hal_khci_bdt_get_address(bdt_base, ep, direction, odd) \
-    (*((uint32_t*)((bdt_base & 0xfffffe00) | (((uint32_t)ep & 0x0f) << 5) | (((uint32_t)direction & 1) << 4) | (((uint32_t)odd & 1) << 3)) + 1))
+	(*((uint32_t*)((bdt_base & 0xfffffe00) | (((uint32_t)ep & 0x0f) << 5) | (((uint32_t)direction & 1) << 4) | (((uint32_t)odd & 1) << 3)) + 1))
 
 
 #define usb_hal_khci_bdt_get_control(bdt_base, ep, direction, odd) \
-    (*(uint32_t*)((bdt_base & 0xfffffe00) | (((uint32_t)ep & 0x0f) << 5) | (((uint32_t)direction & 1) << 4) | (((uint32_t)odd & 1) << 3)))
+	(*(uint32_t*)((bdt_base & 0xfffffe00) | (((uint32_t)ep & 0x0f) << 5) | (((uint32_t)direction & 1) << 4) | (((uint32_t)odd & 1) << 3)))
 
 
 /*!
@@ -60,13 +60,13 @@
 /*******************************************************************************
  * API
  ******************************************************************************/
- 
+
 #if defined(__cplusplus)
-      extern "C" {
+	  extern "C" {
 #endif
 
 
-/*! 
+/*!
  * @name Initialization
  * @{
  */
@@ -79,11 +79,11 @@
  */
 static inline void usb_hal_khci_set_buffer_descriptor_table_addr(uint32_t baseAddr, uint32_t bdtAddress)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_BDTPAGE1(_baseAddr,(uint8_t)((uint32_t)bdtAddress >> 8));
-    USB_WR_BDTPAGE2(_baseAddr,(uint8_t)((uint32_t)bdtAddress >> 16));
-    USB_WR_BDTPAGE3(_baseAddr,(uint8_t)((uint32_t)bdtAddress >> 24));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_BDTPAGE1(_baseAddr,(uint8_t)((uint32_t)bdtAddress >> 8));
+	USB_WR_BDTPAGE2(_baseAddr,(uint8_t)((uint32_t)bdtAddress >> 16));
+	USB_WR_BDTPAGE3(_baseAddr,(uint8_t)((uint32_t)bdtAddress >> 24));
 }
 
 
@@ -95,35 +95,35 @@ static inline void usb_hal_khci_set_buffer_descriptor_table_addr(uint32_t baseAd
  */
 static inline void usb_hal_khci_enable_interrupts(uint32_t baseAddr, uint32_t intrType)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_SET_INTEN(_baseAddr,(uint8_t)intrType);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_SET_INTEN(_baseAddr,(uint8_t)intrType);
 }
 
 /*!
  * @brief Disable the specific Interrupt
  *
  * @param baseAddr USB baseAddr id
- * @param intrType  specific interrupt type 
+ * @param intrType  specific interrupt type
  */
 static inline void usb_hal_khci_disable_interrupts(uint32_t baseAddr, uint32_t intrType)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_CLR_INTEN(_baseAddr, intrType);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_CLR_INTEN(_baseAddr, intrType);
 }
 
 /*!
  * @brief Get the interrupt status
  *
  * @param baseAddr USB baseAddr id
- * @return specific interrupt type 
+ * @return specific interrupt type
  */
 static inline uint8_t usb_hal_khci_get_interrupt_status(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    return (USB_RD_ISTAT(_baseAddr));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	return (USB_RD_ISTAT(_baseAddr));
 }
 
 #if defined (FSL_FEATURE_USB_KHCI_OTG_ENABLED) && (FSL_FEATURE_USB_KHCI_OTG_ENABLED == 1)
@@ -135,8 +135,8 @@ static inline uint8_t usb_hal_khci_get_interrupt_status(uint32_t baseAddr)
  */
 static inline void usb_hal_khci_enable_otg(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_SET_OTGCTL(_baseAddr,USB_OTGCTL_OTGEN_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_SET_OTGCTL(_baseAddr,USB_OTGCTL_OTGEN_MASK);
 }
 
 /*!
@@ -144,13 +144,13 @@ static inline void usb_hal_khci_enable_otg(uint32_t baseAddr)
  *
  * @param baseAddr USB baseAddr id
  * @param intrType specific interrupt type
- * 
+ *
  */
 static inline void usb_hal_khci_enable_otg_interrupts(uint32_t baseAddr, uint32_t intrType)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
 
-    USB_SET_OTGICR(_baseAddr,(uint8_t)intrType);
+	USB_SET_OTGICR(_baseAddr,(uint8_t)intrType);
 }
 
 /*!
@@ -158,12 +158,12 @@ static inline void usb_hal_khci_enable_otg_interrupts(uint32_t baseAddr, uint32_
  *
  * @param baseAddr USB baseAddr id
  * @return otg interrupt status
- * 
+ *
  */
 static inline uint8_t usb_hal_khci_get_otg_interrupt_status(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    return (USB_RD_OTGISTAT(_baseAddr));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	return (USB_RD_OTGISTAT(_baseAddr));
 }
 
 /*!
@@ -174,8 +174,8 @@ static inline uint8_t usb_hal_khci_get_otg_interrupt_status(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_clr_otg_interrupt(uint32_t baseAddr, uint32_t intrType)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_WR_OTGISTAT(_baseAddr,(uint8_t)intrType);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_WR_OTGISTAT(_baseAddr,(uint8_t)intrType);
 }
 
 /*!
@@ -185,8 +185,8 @@ static inline void usb_hal_khci_clr_otg_interrupt(uint32_t baseAddr, uint32_t in
 */
 static inline void usb_hal_khci_clr_all_otg_interrupts(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_WR_OTGISTAT(_baseAddr,0xFF);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_WR_OTGISTAT(_baseAddr,0xFF);
 }
 
 /*!
@@ -197,7 +197,7 @@ static inline void usb_hal_khci_clr_all_otg_interrupts(uint32_t baseAddr)
  */
 static inline uint8_t usb_hal_khci_is_line_stable(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
   return ((USB_RD_OTGSTAT(_baseAddr) & USB_OTGSTAT_LINESTATESTABLE_MASK) ? 1:0);
 }
 
@@ -207,9 +207,9 @@ static inline uint8_t usb_hal_khci_is_line_stable(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_enable_pull_up(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_OTGCTL(_baseAddr, USB_OTGCTL_DPHIGH_MASK |  USB_OTGCTL_OTGEN_MASK |USB_OTGCTL_DMLOW_MASK |USB_OTGCTL_DPLOW_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_OTGCTL(_baseAddr, USB_OTGCTL_DPHIGH_MASK |  USB_OTGCTL_OTGEN_MASK |USB_OTGCTL_DMLOW_MASK |USB_OTGCTL_DPLOW_MASK);
 }
 
 /*!
@@ -218,9 +218,9 @@ static inline void usb_hal_khci_enable_pull_up(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_disable_pull_up(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_CLR_OTGCTL(_baseAddr, USB_OTGCTL_DPHIGH_MASK |  USB_OTGCTL_OTGEN_MASK |USB_OTGCTL_DMLOW_MASK |USB_OTGCTL_DPLOW_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_CLR_OTGCTL(_baseAddr, USB_OTGCTL_DPHIGH_MASK |  USB_OTGCTL_OTGEN_MASK |USB_OTGCTL_DMLOW_MASK |USB_OTGCTL_DPLOW_MASK);
 }
 
 /*!
@@ -230,8 +230,8 @@ static inline void usb_hal_khci_disable_pull_up(uint32_t baseAddr)
 */
 static inline uint8_t usb_hal_khci_get_otg_status(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    return(USB_RD_OTGSTAT(_baseAddr));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	return(USB_RD_OTGSTAT(_baseAddr));
 }
 #endif
 
@@ -243,9 +243,9 @@ static inline uint8_t usb_hal_khci_get_otg_status(uint32_t baseAddr)
  */
 static inline uint8_t usb_hal_khci_get_interrupt_enable_status(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    return (USB_RD_INTEN(_baseAddr));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	return (USB_RD_INTEN(_baseAddr));
 }
 
 /*!
@@ -256,10 +256,10 @@ static inline uint8_t usb_hal_khci_get_interrupt_enable_status(uint32_t baseAddr
 */
 static inline void usb_hal_khci_clr_interrupt(uint32_t baseAddr, uint32_t intrType)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
 
-    
-    USB_WR_ISTAT(_baseAddr,(uint8_t)intrType);
+
+	USB_WR_ISTAT(_baseAddr,(uint8_t)intrType);
 }
 
 /*!
@@ -269,9 +269,9 @@ static inline void usb_hal_khci_clr_interrupt(uint32_t baseAddr, uint32_t intrTy
 */
 static inline void usb_hal_khci_clr_all_interrupts(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_ISTAT(_baseAddr,0xff);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_ISTAT(_baseAddr,0xff);
 }
 
 /*!
@@ -283,9 +283,9 @@ static inline void usb_hal_khci_clr_all_interrupts(uint32_t baseAddr)
 */
 static inline uint8_t usb_hal_khci_is_interrupt_issued(uint32_t baseAddr, uint32_t intrType)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    uint8_t temp = USB_RD_ISTAT(_baseAddr);
-    return ( temp & USB_RD_INTEN(_baseAddr) & (intrType));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	uint8_t temp = USB_RD_ISTAT(_baseAddr);
+	return ( temp & USB_RD_INTEN(_baseAddr) & (intrType));
 }
 
 
@@ -296,8 +296,8 @@ static inline uint8_t usb_hal_khci_is_interrupt_issued(uint32_t baseAddr, uint32
 */
 static inline void usb_hal_khci_enable_dynamic_sof_threshold(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_WR_MISCCTRL_SOFDYNTHLD(_baseAddr, (uint8_t)1);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_WR_MISCCTRL_SOFDYNTHLD(_baseAddr, (uint8_t)1);
 }
 
 /*!
@@ -306,23 +306,23 @@ static inline void usb_hal_khci_enable_dynamic_sof_threshold(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_disable_dynamic_sof_threshold(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_WR_MISCCTRL_SOFDYNTHLD(_baseAddr, (uint8_t)0);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_WR_MISCCTRL_SOFDYNTHLD(_baseAddr, (uint8_t)0);
 }
 #endif
 
 #if defined (FSL_FEATURE_USB_KHCI_VBUS_DETECT_ENABLED) && (FSL_FEATURE_USB_KHCI_VBUS_DETECT_ENABLED == 1)
 /*!
-* @brief Judge if the device is attached 
+* @brief Judge if the device is attached
 *
 * @param baseAddr usb baseAddr id
 * @return the device is attached or not
 */
 static inline uint8_t usb_hal_khci_is_attach_issued(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    uint8_t temp = USB_RD_USBTRC0_VREDG_DET(_baseAddr);
-    return temp;
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	uint8_t temp = USB_RD_USBTRC0_VREDG_DET(_baseAddr);
+	return temp;
 }
 
 /*!
@@ -332,8 +332,8 @@ static inline uint8_t usb_hal_khci_is_attach_issued(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_clear_vredg_en(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_WR_MISCCTRL_VREDG_EN(_baseAddr, 0);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_WR_MISCCTRL_VREDG_EN(_baseAddr, 0);
 }
 
 /*!
@@ -343,21 +343,21 @@ static inline void usb_hal_khci_clear_vredg_en(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_set_vredg_en(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_WR_MISCCTRL_VREDG_EN(_baseAddr, 1);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_WR_MISCCTRL_VREDG_EN(_baseAddr, 1);
 }
 
 /*!
-* @brief Judge if the device is detached 
+* @brief Judge if the device is detached
 *
 * @param baseAddr usb baseAddr id
 * @return the device is detached or not
 */
 static inline uint8_t usb_hal_khci_is_detach_issued(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    uint8_t temp = USB_RD_USBTRC0_VFEDG_DET(_baseAddr);
-    return temp;
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	uint8_t temp = USB_RD_USBTRC0_VFEDG_DET(_baseAddr);
+	return temp;
 }
 
 /*!
@@ -367,8 +367,8 @@ static inline uint8_t usb_hal_khci_is_detach_issued(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_clear_vfedg_en(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_WR_MISCCTRL_VFEDG_EN(_baseAddr, 0);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_WR_MISCCTRL_VFEDG_EN(_baseAddr, 0);
 }
 
 /*!
@@ -378,8 +378,8 @@ static inline void usb_hal_khci_clear_vfedg_en(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_set_vfedg_en(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_WR_MISCCTRL_VFEDG_EN(_baseAddr, 1);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_WR_MISCCTRL_VFEDG_EN(_baseAddr, 1);
 }
 #endif
 
@@ -390,9 +390,9 @@ static inline void usb_hal_khci_set_vfedg_en(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_enable_all_error_interrupts(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_ERREN(_baseAddr,0xFF);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_ERREN(_baseAddr,0xFF);
 }
 
 /*!
@@ -401,9 +401,9 @@ static inline void usb_hal_khci_enable_all_error_interrupts(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_disable_all_error_interrupts(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_ERREN(_baseAddr,0);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_ERREN(_baseAddr,0);
 }
 
 /*!
@@ -413,9 +413,9 @@ static inline void usb_hal_khci_disable_all_error_interrupts(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_enable_error_interrupts(uint32_t baseAddr, uint32_t errIntrType)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_SET_ERREN(_baseAddr,(uint8_t)errIntrType);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_SET_ERREN(_baseAddr,(uint8_t)errIntrType);
 }
 
 /*!
@@ -425,9 +425,9 @@ static inline void usb_hal_khci_enable_error_interrupts(uint32_t baseAddr, uint3
 */
 static inline void usb_hal_khci_disable_error_interrupts(uint32_t baseAddr, uint32_t errorIntrType)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_CLR_ERREN(_baseAddr, errorIntrType);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_CLR_ERREN(_baseAddr, errorIntrType);
 }
 
 /*!
@@ -438,9 +438,9 @@ static inline void usb_hal_khci_disable_error_interrupts(uint32_t baseAddr, uint
 */
 static inline uint8_t usb_hal_khci_get_error_interrupt_status(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    return (USB_RD_ERRSTAT(_baseAddr));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	return (USB_RD_ERRSTAT(_baseAddr));
 }
 
 /*!
@@ -451,9 +451,9 @@ static inline uint8_t usb_hal_khci_get_error_interrupt_status(uint32_t baseAddr)
 */
 static inline uint8_t usb_hal_khci_get_error_interrupt_enable_status(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    return (USB_RD_ERREN(_baseAddr));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	return (USB_RD_ERREN(_baseAddr));
 }
 
 /*!
@@ -463,9 +463,9 @@ static inline uint8_t usb_hal_khci_get_error_interrupt_enable_status(uint32_t ba
 */
 static inline void usb_hal_khci_clr_all_error_interrupts(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_ERRSTAT(_baseAddr,0xff);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_ERRSTAT(_baseAddr,0xff);
 }
 
 /*!
@@ -477,9 +477,9 @@ static inline void usb_hal_khci_clr_all_error_interrupts(uint32_t baseAddr)
 */
 static inline uint8_t usb_hal_khci_is_error_happend(uint32_t baseAddr, uint32_t errorType)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    return ( USB_RD_ERRSTAT(_baseAddr) & (uint8_t)errorType);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	return ( USB_RD_ERRSTAT(_baseAddr) & (uint8_t)errorType);
 }
 
 /*!
@@ -489,8 +489,8 @@ static inline uint8_t usb_hal_khci_is_error_happend(uint32_t baseAddr, uint32_t 
  */
 static inline void usb_hal_khci_clr_token_busy(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_CLR_CTL(_baseAddr,USB_CTL_TXSUSPENDTOKENBUSY_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_CLR_CTL(_baseAddr,USB_CTL_TXSUSPENDTOKENBUSY_MASK);
 }
 
 /*!
@@ -501,8 +501,8 @@ static inline void usb_hal_khci_clr_token_busy(uint32_t baseAddr)
  */
 static inline uint8_t usb_hal_khci_is_token_busy(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    return (uint8_t)(USB_RD_CTL(_baseAddr) & USB_CTL_TXSUSPENDTOKENBUSY_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	return (uint8_t)(USB_RD_CTL(_baseAddr) & USB_CTL_TXSUSPENDTOKENBUSY_MASK);
 }
 
 /*!
@@ -512,8 +512,8 @@ static inline uint8_t usb_hal_khci_is_token_busy(uint32_t baseAddr)
  */
 static inline void usb_hal_khci_set_oddrst(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_SET_CTL(_baseAddr,USB_CTL_ODDRST_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_SET_CTL(_baseAddr,USB_CTL_ODDRST_MASK);
 }
 
 /*!
@@ -523,8 +523,8 @@ static inline void usb_hal_khci_set_oddrst(uint32_t baseAddr)
  */
 static inline void usb_hal_khci_clr_oddrst(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_CLR_CTL(_baseAddr,USB_CTL_ODDRST_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_CLR_CTL(_baseAddr,USB_CTL_ODDRST_MASK);
 }
 
 #if defined (FSL_FEATURE_USB_KHCI_HOST_ENABLED) && (FSL_FEATURE_USB_KHCI_HOST_ENABLED == 1)
@@ -535,9 +535,9 @@ static inline void usb_hal_khci_clr_oddrst(uint32_t baseAddr)
  */
 static inline void usb_hal_khci_start_bus_reset(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_SET_CTL(_baseAddr,USB_CTL_RESET_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_SET_CTL(_baseAddr,USB_CTL_RESET_MASK);
 }
 
 /*!
@@ -547,9 +547,9 @@ static inline void usb_hal_khci_start_bus_reset(uint32_t baseAddr)
  */
 static inline void usb_hal_khci_stop_bus_reset(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_CLR_CTL(_baseAddr,USB_CTL_RESET_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_CLR_CTL(_baseAddr,USB_CTL_RESET_MASK);
 }
 
 /*!
@@ -559,9 +559,9 @@ static inline void usb_hal_khci_stop_bus_reset(uint32_t baseAddr)
  */
 static inline void usb_hal_khci_start_resume(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_SET_CTL(_baseAddr,USB_CTL_RESUME_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_SET_CTL(_baseAddr,USB_CTL_RESUME_MASK);
 }
 
 /*!
@@ -571,9 +571,9 @@ static inline void usb_hal_khci_start_resume(uint32_t baseAddr)
  */
 static inline void usb_hal_khci_stop_resume(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_CLR_CTL(_baseAddr,USB_CTL_RESUME_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_CLR_CTL(_baseAddr,USB_CTL_RESUME_MASK);
 }
 
 /*!
@@ -584,9 +584,9 @@ static inline void usb_hal_khci_stop_resume(uint32_t baseAddr)
  */
 static inline void usb_hal_khci_set_host_mode(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_CTL(_baseAddr,USB_CTL_HOSTMODEEN_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_CTL(_baseAddr,USB_CTL_HOSTMODEEN_MASK);
 }
 
 /*!
@@ -597,13 +597,13 @@ static inline void usb_hal_khci_set_host_mode(uint32_t baseAddr)
  */
 static inline void usb_hal_khci_set_device_mode(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-        
-    USB_CLR_CTL(_baseAddr,USB_CTL_HOSTMODEEN_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_CLR_CTL(_baseAddr,USB_CTL_HOSTMODEEN_MASK);
 }
 
 /*!
-* @brief Set the transfer target 
+* @brief Set the transfer target
 *
 * @param baseAddr usb baseAddr id
 * @param address the address used to set
@@ -611,108 +611,108 @@ static inline void usb_hal_khci_set_device_mode(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_set_transfer_target(uint32_t baseAddr, uint32_t address, uint32_t speed)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_ADDR(_baseAddr,(uint8_t)((speed == 0) ? (uint8_t)address : USB_ADDR_LSEN_MASK | (uint8_t)address));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_ADDR(_baseAddr,(uint8_t)((speed == 0) ? (uint8_t)address : USB_ADDR_LSEN_MASK | (uint8_t)address));
 }
 
 /*!
-* @brief Set the flag to indicate if the endpoint is communicating with controller through the hub  
-* 
+* @brief Set the flag to indicate if the endpoint is communicating with controller through the hub
+*
 * @param baseAddr usb baseAddr id
 * @param epNumber endpoint number
 */
 static inline void usb_hal_khci_endpoint_on_hub(uint32_t baseAddr, uint32_t epNumber)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    
-    USB_SET_ENDPT(_baseAddr, epNumber,USB_ENDPT_HOSTWOHUB_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+
+	USB_SET_ENDPT(_baseAddr, epNumber,USB_ENDPT_HOSTWOHUB_MASK);
 }
 
 /*!
 * @brief Enable the support for low speed
-* 
+*
 * @param baseAddr usb baseAddr id
 */
 static inline void usb_hal_khci_enable_low_speed_support(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_SET_ADDR(_baseAddr, USB_ADDR_LSEN_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_SET_ADDR(_baseAddr, USB_ADDR_LSEN_MASK);
 }
 
 
 /*!
 * @brief Disable the support for low speed
-* 
+*
 * @param baseAddr usb baseAddr id
 */
 static inline void usb_hal_khci_disable_low_speed_support(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_CLR_ADDR(_baseAddr, USB_ADDR_LSEN_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_CLR_ADDR(_baseAddr, USB_ADDR_LSEN_MASK);
 }
 
 /*!
 * @brief Enable the host communicate to low speed device directly
-* 
+*
 * @param baseAddr usb baseAddr id
 */
 static inline void usb_hal_khci_enable_communicate_low_speed_device(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_ENDPT(_baseAddr, 0, USB_ENDPT_HOSTWOHUB_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_ENDPT(_baseAddr, 0, USB_ENDPT_HOSTWOHUB_MASK);
 }
- 
+
 /*!
 * @brief Disable  the host communicate to low speed device directly
-* 
+*
 * @param baseAddr usb baseAddr id
 */
 static inline void usb_hal_khci_disable_communicate_low_speed_device(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_CLR_ENDPT(_baseAddr, 0, USB_ENDPT_HOSTWOHUB_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_CLR_ENDPT(_baseAddr, 0, USB_ENDPT_HOSTWOHUB_MASK);
 }
 
 /*!
 * @brief Set pull downs for USB otg control pin
-* 
+*
 * @param baseAddr usb baseAddr id
 * @param bitfield the specific bitfield
 */
 static inline uint8_t  usb_hal_khci_set_pull_downs(uint32_t baseAddr, uint8_t bitfield )
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_CLR_OTGCTL(_baseAddr,USB_OTGCTL_DMLOW_MASK | USB_OTGCTL_DPLOW_MASK);
-    if(bitfield & 0x01)
-    {
-        USB_SET_OTGCTL(_baseAddr,USB_OTGCTL_DPLOW_MASK);
-    }      
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_CLR_OTGCTL(_baseAddr,USB_OTGCTL_DMLOW_MASK | USB_OTGCTL_DPLOW_MASK);
+	if(bitfield & 0x01)
+	{
+		USB_SET_OTGCTL(_baseAddr,USB_OTGCTL_DPLOW_MASK);
+	}
 
-    if(bitfield & 0x02)
-    {
-        USB_SET_OTGCTL(_baseAddr,USB_OTGCTL_DMLOW_MASK);     
-    }
-    return USB_OK;
+	if(bitfield & 0x02)
+	{
+		USB_SET_OTGCTL(_baseAddr,USB_OTGCTL_DMLOW_MASK);
+	}
+	return USB_OK;
 }
 
 /*!
 * @brief Set the target token for specific endpoint
-* 
+*
 * @param baseAddr usb baseAddr id
 * @param token the specific token
 * @param endpoint_number the specific endpoint_number
 */
 static inline void usb_hal_khci_set_target_token(uint32_t baseAddr, uint8_t token, uint8_t endpoint_number)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_TOKEN(_baseAddr, (uint8_t)(USB_TOKEN_TOKENENDPT(endpoint_number) | token));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_TOKEN(_baseAddr, (uint8_t)(USB_TOKEN_TOKENENDPT(endpoint_number) | token));
 }
 
 /*!
@@ -723,9 +723,9 @@ static inline void usb_hal_khci_set_target_token(uint32_t baseAddr, uint8_t toke
 */
 static inline void usb_hal_khci_set_sof_theshold(uint32_t baseAddr, uint32_t value)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_SOFTHLD(_baseAddr, (uint8_t)value);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_SOFTHLD(_baseAddr, (uint8_t)value);
 }
 
 #endif
@@ -738,8 +738,8 @@ static inline void usb_hal_khci_set_sof_theshold(uint32_t baseAddr, uint32_t val
  */
 static inline void usb_hal_khci_enable_sof(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_SET_CTL(_baseAddr,USB_CTL_USBENSOFEN_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_SET_CTL(_baseAddr,USB_CTL_USBENSOFEN_MASK);
 }
 
 /*!
@@ -749,8 +749,8 @@ static inline void usb_hal_khci_enable_sof(uint32_t baseAddr)
  */
 static inline void usb_hal_khci_disable_sof(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_CLR_CTL(_baseAddr,USB_CTL_USBENSOFEN_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_CLR_CTL(_baseAddr,USB_CTL_USBENSOFEN_MASK);
 }
 
 /*!
@@ -761,8 +761,8 @@ static inline void usb_hal_khci_disable_sof(uint32_t baseAddr)
  */
 static inline void usb_hal_khci_clear_control_register(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_CLR_CTL(_baseAddr, 0xFFu);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_CLR_CTL(_baseAddr, 0xFFu);
 }
 
 /*!
@@ -773,20 +773,20 @@ static inline void usb_hal_khci_clear_control_register(uint32_t baseAddr)
  */
 static inline uint8_t usb_hal_khci_get_line_status(uint32_t  baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    return ((USB_RD_CTL(_baseAddr) & USB_CTL_JSTATE_MASK) ? 0 : 1);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	return ((USB_RD_CTL(_baseAddr) & USB_CTL_JSTATE_MASK) ? 0 : 1);
 }
 
 /*!
- * @brief 
+ * @brief
  *
  * @param baseAddr USB baseAddr id.
  * @return the SE0 status
  */
 static inline uint8_t usb_hal_khci_get_se0_status(uint32_t  baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    return ((USB_RD_CTL(_baseAddr) & USB_CTL_SE0_MASK) ? 1 : 0);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	return ((USB_RD_CTL(_baseAddr) & USB_CTL_SE0_MASK) ? 1 : 0);
 }
 
 
@@ -798,9 +798,9 @@ static inline uint8_t usb_hal_khci_get_se0_status(uint32_t  baseAddr)
 */
 static inline uint8_t usb_hal_khci_get_transfer_status(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-        return USB_RD_STAT(_baseAddr);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+		return USB_RD_STAT(_baseAddr);
 }
 
 /*!
@@ -811,9 +811,9 @@ static inline uint8_t usb_hal_khci_get_transfer_status(uint32_t baseAddr)
 */
 static inline uint8_t usb_hal_khci_get_transfer_done_ep_number(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    return ((uint8_t)(USB_RD_STAT(_baseAddr) & 0xf0) >> 4);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	return ((uint8_t)(USB_RD_STAT(_baseAddr) & 0xf0) >> 4);
 }
 
 /*!
@@ -824,9 +824,9 @@ static inline uint8_t usb_hal_khci_get_transfer_done_ep_number(uint32_t baseAddr
 */
 static inline uint8_t usb_hal_khci_get_transfer_done_direction(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    return ((USB_RD_STAT(_baseAddr) & USB_STAT_TX_MASK) >>USB_STAT_TX_SHIFT);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	return ((USB_RD_STAT(_baseAddr) & USB_STAT_TX_MASK) >>USB_STAT_TX_SHIFT);
 }
 
 /*!
@@ -837,9 +837,9 @@ static inline uint8_t usb_hal_khci_get_transfer_done_direction(uint32_t baseAddr
 */
 static inline uint8_t usb_hal_khci_get_transfer_done_odd(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    return ((USB_RD_STAT(_baseAddr) & USB_STAT_ODD_MASK) >> USB_STAT_ODD_SHIFT);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	return ((USB_RD_STAT(_baseAddr) & USB_STAT_ODD_MASK) >> USB_STAT_ODD_SHIFT);
 }
 
 /*!
@@ -850,123 +850,123 @@ static inline uint8_t usb_hal_khci_get_transfer_done_odd(uint32_t baseAddr)
 */
 static inline uint16_t usb_hal_khci_get_frame_number(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    uint16_t temp = (uint16_t)((uint16_t)(USB_RD_FRMNUMH(_baseAddr)) << 8);
-    return ( temp | USB_RD_FRMNUML(_baseAddr) );
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	uint16_t temp = (uint16_t)((uint16_t)(USB_RD_FRMNUMH(_baseAddr)) << 8);
+	return ( temp | USB_RD_FRMNUML(_baseAddr) );
 }
 
 /*!
-* @brief Set the device address 
+* @brief Set the device address
 *
 * @param baseAddr usb baseAddr id
 * @param addr the address used to set
 */
 static inline void usb_hal_khci_set_device_addr(uint32_t baseAddr, uint32_t addr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_ADDR_ADDR(_baseAddr,addr);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_ADDR_ADDR(_baseAddr,addr);
 }
 
 /*!
 * @brief Init the endpoint0
-* 
+*
 * @param baseAddr usb baseAddr id
 * @param isThoughHub endpoint0 is though hub or not
 * @param isIsochPipe  current pipe is iso or not
 */
 static inline void usb_hal_khci_endpoint0_init(uint32_t baseAddr, uint32_t isThoughHub, uint32_t isIsochPipe)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    uint8_t ep_ctl_val;
-#if (FSL_FEATURE_USB_KHCI_HOST_ENABLED) 
-    ep_ctl_val = (isThoughHub == 1 ? USB_ENDPT_HOSTWOHUB_MASK : 0)| USB_ENDPT_RETRYDIS_MASK |
-            USB_ENDPT_EPTXEN_MASK | USB_ENDPT_EPRXEN_MASK | (isIsochPipe == 1 ? 0 : USB_ENDPT_EPHSHK_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	uint8_t ep_ctl_val;
+#if (FSL_FEATURE_USB_KHCI_HOST_ENABLED)
+	ep_ctl_val = (isThoughHub == 1 ? USB_ENDPT_HOSTWOHUB_MASK : 0)| USB_ENDPT_RETRYDIS_MASK |
+			USB_ENDPT_EPTXEN_MASK | USB_ENDPT_EPRXEN_MASK | (isIsochPipe == 1 ? 0 : USB_ENDPT_EPHSHK_MASK);
 #else
-    ep_ctl_val = USB_ENDPT_EPTXEN_MASK | USB_ENDPT_EPRXEN_MASK |
-            (isIsochPipe == 1 ? 0 : USB_ENDPT_EPHSHK_MASK);
+	ep_ctl_val = USB_ENDPT_EPTXEN_MASK | USB_ENDPT_EPRXEN_MASK |
+			(isIsochPipe == 1 ? 0 : USB_ENDPT_EPHSHK_MASK);
 #endif
-    USB_WR_ENDPT(_baseAddr, 0, ep_ctl_val);
+	USB_WR_ENDPT(_baseAddr, 0, ep_ctl_val);
 }
 
 /*!
 * @brief Stop the endpoint
-* 
+*
 * @param baseAddr usb baseAddr id
 * @param epNumber endpoint number
 */
 static inline void usb_hal_khci_endpoint_shut_down(uint32_t baseAddr, uint32_t epNumber)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_ENDPT(_baseAddr,epNumber,0);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_ENDPT(_baseAddr,epNumber,0);
 }
 
 /*!
 * @brief Set the endpoint in host mode which need handshake or not
-* 
+*
 * @param baseAddr usb baseAddr id
 * @param epNumber endpoint number
 * @param isEphshkSet needs handshake or not
 */
 static inline void usb_hal_khci_endpoint_enable_handshake(uint32_t baseAddr, uint32_t epNumber, uint32_t isEphshkSet)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_SET_ENDPT(_baseAddr, epNumber,((isEphshkSet == 1) ? USB_ENDPT_EPHSHK_MASK : 0));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_SET_ENDPT(_baseAddr, epNumber,((isEphshkSet == 1) ? USB_ENDPT_EPHSHK_MASK : 0));
 }
 
 /*!
 * @brief Set the endpoint in host mode which in TX or RX
-* 
+*
 * @param baseAddr usb baseAddr id
 * @param epNumber endpoint number
 * @param isEptxenSet in TX or RX
 */
 static inline void usb_hal_khci_endpoint_set_direction(uint32_t baseAddr, uint32_t epNumber, uint8_t isEptxenSet)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_SET_ENDPT(_baseAddr, epNumber,((isEptxenSet == 1) ? USB_ENDPT_EPTXEN_MASK : USB_ENDPT_EPRXEN_MASK));
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_SET_ENDPT(_baseAddr, epNumber,((isEptxenSet == 1) ? USB_ENDPT_EPTXEN_MASK : USB_ENDPT_EPRXEN_MASK));
 }
 
 /*!
 * @brief Clear the stall status of the endpoint
-* 
+*
 * @param baseAddr usb baseAddr id
 * @param epNumber endpoint number
 */
 static inline void usb_hal_khci_endpoint_clr_stall(uint32_t baseAddr, uint32_t epNumber)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_CLR_ENDPT(_baseAddr, epNumber, USB_ENDPT_EPSTALL_MASK);
-    
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_CLR_ENDPT(_baseAddr, epNumber, USB_ENDPT_EPSTALL_MASK);
+
 }
 
 /*!
 * @brief Enable the pull down
-* 
+*
 * @param baseAddr usb baseAddr id
 */
 static inline void usb_hal_khci_enable_pull_down(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_SET_USBCTRL(_baseAddr, USB_USBCTRL_PDE_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_SET_USBCTRL(_baseAddr, USB_USBCTRL_PDE_MASK);
 }
 
 
 /*!
 * @brief Disable the pull down
-* 
+*
 * @param baseAddr usb baseAddr id
 */
 static inline void usb_hal_khci_disable_pull_down(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_CLR_USBCTRL(_baseAddr, USB_USBCTRL_PDE_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_CLR_USBCTRL(_baseAddr, USB_USBCTRL_PDE_MASK);
 }
 
 /*!
@@ -976,18 +976,18 @@ static inline void usb_hal_khci_disable_pull_down(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_enable_dp_pull_up(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
 #if (FSL_FEATURE_USB_KHCI_OTG_ENABLED)
-    if (USB_RD_OTGCTL_OTGEN(_baseAddr))
-    {
-        USB_SET_OTGCTL(_baseAddr, USB_OTGCTL_DPHIGH_MASK);
-    }
-    else
-    {
-        USB_SET_CONTROL(_baseAddr, USB_CONTROL_DPPULLUPNONOTG_MASK);
-    }
+	if (USB_RD_OTGCTL_OTGEN(_baseAddr))
+	{
+		USB_SET_OTGCTL(_baseAddr, USB_OTGCTL_DPHIGH_MASK);
+	}
+	else
+	{
+		USB_SET_CONTROL(_baseAddr, USB_CONTROL_DPPULLUPNONOTG_MASK);
+	}
 #else
-    USB_SET_CONTROL(_baseAddr, USB_CONTROL_DPPULLUPNONOTG_MASK);
+	USB_SET_CONTROL(_baseAddr, USB_CONTROL_DPPULLUPNONOTG_MASK);
 #endif
 }
 
@@ -998,18 +998,18 @@ static inline void usb_hal_khci_enable_dp_pull_up(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_disable_dp_pull_up(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
 #if (FSL_FEATURE_USB_KHCI_OTG_ENABLED)
-    if (USB_RD_OTGCTL_OTGEN(_baseAddr))
-    {
-        USB_CLR_OTGCTL(_baseAddr, USB_OTGCTL_DPHIGH_MASK);
-    }
-    else
-    {
-        USB_CLR_CONTROL(_baseAddr, USB_CONTROL_DPPULLUPNONOTG_MASK);
-    }
+	if (USB_RD_OTGCTL_OTGEN(_baseAddr))
+	{
+		USB_CLR_OTGCTL(_baseAddr, USB_OTGCTL_DPHIGH_MASK);
+	}
+	else
+	{
+		USB_CLR_CONTROL(_baseAddr, USB_CONTROL_DPPULLUPNONOTG_MASK);
+	}
 #else
-    USB_CLR_CONTROL(_baseAddr, USB_CONTROL_DPPULLUPNONOTG_MASK);
+	USB_CLR_CONTROL(_baseAddr, USB_CONTROL_DPPULLUPNONOTG_MASK);
 #endif
 }
 
@@ -1021,9 +1021,9 @@ static inline void usb_hal_khci_disable_dp_pull_up(uint32_t baseAddr)
 */
 static inline void  usb_hal_khci_clr_usbtrc0(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
 
-    USB_WR_USBTRC0(_baseAddr, 0);
+	USB_WR_USBTRC0(_baseAddr, 0);
 }
 
 /*!
@@ -1033,9 +1033,9 @@ static inline void  usb_hal_khci_clr_usbtrc0(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_set_suspend(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_SET_USBCTRL(_baseAddr, USB_USBCTRL_SUSP_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_SET_USBCTRL(_baseAddr, USB_USBCTRL_SUSP_MASK);
 }
 
 
@@ -1046,9 +1046,9 @@ static inline void usb_hal_khci_set_suspend(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_clr_suspend(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_CLR_USBCTRL(_baseAddr, USB_USBCTRL_SUSP_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_CLR_USBCTRL(_baseAddr, USB_USBCTRL_SUSP_MASK);
 }
 
 /*!
@@ -1058,9 +1058,9 @@ static inline void usb_hal_khci_clr_suspend(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_set_weak_pulldown(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_CTL(_baseAddr, USB_CTL_SE0_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_CTL(_baseAddr, USB_CTL_SE0_MASK);
 }
 
 /*!
@@ -1070,9 +1070,9 @@ static inline void usb_hal_khci_set_weak_pulldown(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_reset_control_register(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_CTL(_baseAddr, 0UL);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_CTL(_baseAddr, 0UL);
 }
 
 /*!
@@ -1082,9 +1082,9 @@ static inline void usb_hal_khci_reset_control_register(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_set_internal_pullup(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_WR_CONTROL(_baseAddr, USB_CONTROL_DPPULLUPNONOTG_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_WR_CONTROL(_baseAddr, USB_CONTROL_DPPULLUPNONOTG_MASK);
 }
 
 /*!
@@ -1094,9 +1094,9 @@ static inline void usb_hal_khci_set_internal_pullup(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_set_trc0(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    
-    USB_SET_USBTRC0(_baseAddr, 0x40);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+
+	USB_SET_USBTRC0(_baseAddr, 0x40);
 }
 #endif
 #if (FSL_FEATURE_USB_KHCI_USB_RAM )
@@ -1110,7 +1110,7 @@ static inline void usb_hal_khci_set_trc0(uint32_t baseAddr)
 */
 static inline uint32_t usb_hal_khci_get_usbram_add(uint32_t baseAddr)
 {
-    return USB_USBRAM_ADDRESS;
+	return USB_USBRAM_ADDRESS;
 }
 #endif
 
@@ -1122,7 +1122,7 @@ static inline uint32_t usb_hal_khci_get_usbram_add(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_clr_keepalive_wake_int_sts(uint32_t baseAddr)
 {
-    USB0_KEEP_ALIVE_CTRL |= USB_KEEP_ALIVE_CTRL_WAKE_INT_STS_MASK;
+	USB0_KEEP_ALIVE_CTRL |= USB_KEEP_ALIVE_CTRL_WAKE_INT_STS_MASK;
 }
 
 /*!
@@ -1133,7 +1133,7 @@ static inline void usb_hal_khci_clr_keepalive_wake_int_sts(uint32_t baseAddr)
 */
 static inline uint8_t usb_hal_khci_get_keepalive_wake_int_sts(uint32_t baseAddr)
 {
-    return(USB0_KEEP_ALIVE_CTRL & USB_KEEP_ALIVE_CTRL_WAKE_INT_STS_MASK);
+	return(USB0_KEEP_ALIVE_CTRL & USB_KEEP_ALIVE_CTRL_WAKE_INT_STS_MASK);
 }
 #endif
 
@@ -1145,8 +1145,8 @@ static inline uint8_t usb_hal_khci_get_keepalive_wake_int_sts(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_ungate_irc48m(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_SET_CLK_RECOVER_IRC_EN(_baseAddr, USB_CLK_RECOVER_IRC_EN_IRC_EN_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_SET_CLK_RECOVER_IRC_EN(_baseAddr, USB_CLK_RECOVER_IRC_EN_IRC_EN_MASK);
 }
 
 /*!
@@ -1156,11 +1156,11 @@ static inline void usb_hal_khci_ungate_irc48m(uint32_t baseAddr)
 */
 static inline void usb_hal_khci_enable_irc48m_recovery_block(uint32_t baseAddr)
 {
-    USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
-    USB_SET_CLK_RECOVER_CTRL(_baseAddr, USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN_MASK);
+	USB_MemMapPtr _baseAddr = (USB_MemMapPtr)baseAddr;
+	USB_SET_CLK_RECOVER_CTRL(_baseAddr, USB_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN_MASK);
 }
 #endif
 
 #if defined(__cplusplus)
-        }
+		}
 #endif

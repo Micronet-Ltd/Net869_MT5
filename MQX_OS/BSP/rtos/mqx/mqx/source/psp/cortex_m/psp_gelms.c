@@ -34,7 +34,7 @@
  */
 uint32_t _psp_get_elapsed_milliseconds
    (
-      void
+	  void
    )
 { /* Body */
    KERNEL_DATA_STRUCT_PTR kernel_data;
@@ -47,12 +47,12 @@ uint32_t _psp_get_elapsed_milliseconds
    ticks = ((PSP_TICK_STRUCT_PTR)&kernel_data->TIME)->TICKS[0];
    ms_per_tick = 1000 / kernel_data->TICKS_PER_SECOND;
    if ((ms_per_tick * kernel_data->TICKS_PER_SECOND) == 1000) {
-      ms = (uint32_t)(ticks * ms_per_tick);
+	  ms = (uint32_t)(ticks * ms_per_tick);
    } else {
-      ms = (uint32_t)((ticks * 1000) / kernel_data->TICKS_PER_SECOND);
+	  ms = (uint32_t)((ticks * 1000) / kernel_data->TICKS_PER_SECOND);
    } /* Endif */
    return(ms);
-   
+
 } /* Endbody */
 
 /* EOF */

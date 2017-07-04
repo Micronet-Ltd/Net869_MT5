@@ -57,49 +57,49 @@ int32_t Shell_arpdisp(int32_t argc, char *argv[] )
    int32_t           return_code = SHELL_EXIT_SUCCESS;
    uint32_t          enet_device = BSP_DEFAULT_ENET_DEVICE;
    uint32_t          index = 1;
-   _rtcs_if_handle   ihandle;  
+   _rtcs_if_handle   ihandle;
    SHELL_CONTEXT_PTR shell_ptr = Shell_get_context(argv);
 
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
-    if (!print_usage)
-    {
-        if (argc > index)
-        {
-            if (Shell_parse_number (argv[index], &enet_device))
-            {
-                index++;
-            }
-        }
+	if (!print_usage)
+	{
+		if (argc > index)
+		{
+			if (Shell_parse_number (argv[index], &enet_device))
+			{
+				index++;
+			}
+		}
 
-        if (enet_device >= BSP_ENET_DEVICE_COUNT)
-        {
-            printf ("Wrong number of ethernet device (%d)!\n", enet_device);
-            return_code = SHELL_EXIT_ERROR;
-            print_usage = TRUE;
-        }
-        else
-        {
-            if (argc > index)
-            {
-                return_code = SHELL_EXIT_ERROR;
-                print_usage = TRUE;
-            }
-            else
-            {
-                ihandle = ipcfg_get_ihandle (enet_device);
-                ARP_display_if_table(ihandle);
-            }
-        }
-    }
-   
+		if (enet_device >= BSP_ENET_DEVICE_COUNT)
+		{
+			printf ("Wrong number of ethernet device (%d)!\n", enet_device);
+			return_code = SHELL_EXIT_ERROR;
+			print_usage = TRUE;
+		}
+		else
+		{
+			if (argc > index)
+			{
+				return_code = SHELL_EXIT_ERROR;
+				print_usage = TRUE;
+			}
+			else
+			{
+				ihandle = ipcfg_get_ihandle (enet_device);
+				ARP_display_if_table(ihandle);
+			}
+		}
+	}
+
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s [<device>]\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s  [<device>]\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <device>      = Ethernet device number (default %d).\n", BSP_DEFAULT_ENET_DEVICE);
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s [<device>]\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s  [<device>]\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <device>      = Ethernet device number (default %d).\n", BSP_DEFAULT_ENET_DEVICE);
+	  }
    }
 
    return return_code;
@@ -126,44 +126,44 @@ int32_t Shell_arpdel(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc > index)
-      {
-          if (Shell_parse_number (argv[index], &enet_device))
-          {
-              index++;
-          }
-      }
+	  if (argc > index)
+	  {
+		  if (Shell_parse_number (argv[index], &enet_device))
+		  {
+			  index++;
+		  }
+	  }
 
-      if (enet_device >= BSP_ENET_DEVICE_COUNT)
-      {
-          printf ("Wrong number of ethernet device (%d)!\n", enet_device);
-          return_code = SHELL_EXIT_ERROR;
-          print_usage = TRUE;
-      }
-      else
-      {
-          if (argc != (index + 1)){
-             return_code = SHELL_EXIT_ERROR;
-             print_usage = TRUE;
-          } else  if (!Shell_parse_ip_address(argv[index], &ipaddr))  {
-              printf("Error, invalid ip address\n");
-              return_code = SHELL_EXIT_ERROR;
-          }
-          if (return_code == SHELL_EXIT_SUCCESS) {
-              ihandle = ipcfg_get_ihandle (enet_device);
-              RTCS_arp_delete(ihandle, ipaddr);
-          }
-      }
+	  if (enet_device >= BSP_ENET_DEVICE_COUNT)
+	  {
+		  printf ("Wrong number of ethernet device (%d)!\n", enet_device);
+		  return_code = SHELL_EXIT_ERROR;
+		  print_usage = TRUE;
+	  }
+	  else
+	  {
+		  if (argc != (index + 1)){
+			 return_code = SHELL_EXIT_ERROR;
+			 print_usage = TRUE;
+		  } else  if (!Shell_parse_ip_address(argv[index], &ipaddr))  {
+			  printf("Error, invalid ip address\n");
+			  return_code = SHELL_EXIT_ERROR;
+		  }
+		  if (return_code == SHELL_EXIT_SUCCESS) {
+			  ihandle = ipcfg_get_ihandle (enet_device);
+			  RTCS_arp_delete(ihandle, ipaddr);
+		  }
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s [<device>] <ip_address>\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s [<device>] <ip_address> \n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <device>      = Ethernet device number (default %d).\n", BSP_DEFAULT_ENET_DEVICE);
-         fprintf(shell_ptr->STDOUT, "   <ip_address>  = IP Address\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s [<device>] <ip_address>\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s [<device>] <ip_address> \n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <device>      = Ethernet device number (default %d).\n", BSP_DEFAULT_ENET_DEVICE);
+		 fprintf(shell_ptr->STDOUT, "   <ip_address>  = IP Address\n");
+	  }
    }
 
    return return_code;
@@ -178,76 +178,76 @@ int32_t Shell_arpdel(int32_t argc, char *argv[] )
 *END------------------------------------------------------------------*/
 int32_t Shell_arpadd(int32_t argc, char *argv[] )
 {
-    bool             print_usage, shorthelp = FALSE;
-    int32_t          return_code = SHELL_EXIT_SUCCESS;
-    uint32_t         enet_device = BSP_DEFAULT_ENET_DEVICE;
-    uint32_t         index = 1;
-    _enet_address    mac;
-    _ip_address      ipaddr;
-    _rtcs_if_handle  ihandle;
+	bool             print_usage, shorthelp = FALSE;
+	int32_t          return_code = SHELL_EXIT_SUCCESS;
+	uint32_t         enet_device = BSP_DEFAULT_ENET_DEVICE;
+	uint32_t         index = 1;
+	_enet_address    mac;
+	_ip_address      ipaddr;
+	_rtcs_if_handle  ihandle;
 	SHELL_CONTEXT_PTR shell_ptr = Shell_get_context(argv);
 
-    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
+	print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
-    if (!print_usage)
-    {
-        if (argc > index)
-        {
-            if (Shell_parse_number (argv[index], &enet_device))
-            {
-                index++;
-            }
-        }
+	if (!print_usage)
+	{
+		if (argc > index)
+		{
+			if (Shell_parse_number (argv[index], &enet_device))
+			{
+				index++;
+			}
+		}
 
-        if (enet_device >= BSP_ENET_DEVICE_COUNT)
-        {
-            printf ("Wrong number of ethernet device (%d)!\n", enet_device);
-            return_code = SHELL_EXIT_ERROR;
-            print_usage = TRUE;
-        }
-        else
-        {
-            if ((argc != (index + 3))&&(argc != (index + 2)))
-            {
-                return_code = SHELL_EXIT_ERROR;
-                print_usage = TRUE;
-            }
-            else  if (! Shell_parse_ip_address(argv[index], &ipaddr))
-            {
-                printf("Error, invalid ip address\n");
-                return_code = SHELL_EXIT_ERROR;
-            }
-            else if (! Shell_parse_enet_address(argv[index + 1], mac))
-            {
-                printf("Invalid MAC address!\n");
-                return_code = SHELL_EXIT_ERROR;
-            }
-            else
-            {
-                ihandle = ipcfg_get_ihandle (enet_device);
-                RTCS_arp_add(ihandle, ipaddr, (char*)mac);
-                ARP_display_if_table(ihandle);
-            }
-        }
-    }
+		if (enet_device >= BSP_ENET_DEVICE_COUNT)
+		{
+			printf ("Wrong number of ethernet device (%d)!\n", enet_device);
+			return_code = SHELL_EXIT_ERROR;
+			print_usage = TRUE;
+		}
+		else
+		{
+			if ((argc != (index + 3))&&(argc != (index + 2)))
+			{
+				return_code = SHELL_EXIT_ERROR;
+				print_usage = TRUE;
+			}
+			else  if (! Shell_parse_ip_address(argv[index], &ipaddr))
+			{
+				printf("Error, invalid ip address\n");
+				return_code = SHELL_EXIT_ERROR;
+			}
+			else if (! Shell_parse_enet_address(argv[index + 1], mac))
+			{
+				printf("Invalid MAC address!\n");
+				return_code = SHELL_EXIT_ERROR;
+			}
+			else
+			{
+				ihandle = ipcfg_get_ihandle (enet_device);
+				RTCS_arp_add(ihandle, ipaddr, (char*)mac);
+				ARP_display_if_table(ihandle);
+			}
+		}
+	}
 
 
-    if (print_usage)
-    {
-        if (shorthelp)
-        {
-            fprintf(shell_ptr->STDOUT, "%s [<device>] <ip_address> <mac>\n", argv[0]);
-        }
-        else
-        {
-            fprintf(shell_ptr->STDOUT, "Usage: %s [<device>] <ip_address> <mac>\n", argv[0]);
-            fprintf(shell_ptr->STDOUT, "   <device>      = Ethernet device number (default %d).\n", BSP_DEFAULT_ENET_DEVICE);
-            fprintf(shell_ptr->STDOUT, "   <ip_address>  = IP Address\n");
-            fprintf(shell_ptr->STDOUT, "   <mac>      = Ethernet MAC address\n"  );         
-        }
-    }
+	if (print_usage)
+	{
+		if (shorthelp)
+		{
+			fprintf(shell_ptr->STDOUT, "%s [<device>] <ip_address> <mac>\n", argv[0]);
+		}
+		else
+		{
+			fprintf(shell_ptr->STDOUT, "Usage: %s [<device>] <ip_address> <mac>\n", argv[0]);
+			fprintf(shell_ptr->STDOUT, "   <device>      = Ethernet device number (default %d).\n", BSP_DEFAULT_ENET_DEVICE);
+			fprintf(shell_ptr->STDOUT, "   <ip_address>  = IP Address\n");
+			fprintf(shell_ptr->STDOUT, "   <mac>      = Ethernet MAC address\n"  );
+		}
+	}
 
-    return return_code;
+	return return_code;
 }
 
 #else /* (BSP_ENET_DEVICE_COUNT > 0) */
@@ -294,4 +294,3 @@ int32_t Shell_arpdisp(int32_t argc, char *argv[] )
 #endif /* SHELLCFG_USES_RTCS */
 
 /* EOF */
-

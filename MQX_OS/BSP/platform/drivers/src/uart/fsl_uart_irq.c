@@ -44,8 +44,8 @@ extern void UART_DRV_IRQHandler(uint32_t instance);
  ******************************************************************************/
 
 #if defined (KL16Z4_SERIES) || defined (KL25Z4_SERIES) || defined (KL26Z4_SERIES) || \
-    defined (KL46Z4_SERIES) || defined (KV10Z7_SERIES) || defined (KW01Z4_SERIES) || \
-    defined(KV10Z1287_SERIES) || defined(KV11Z7_SERIES)
+	defined (KL46Z4_SERIES) || defined (KV10Z7_SERIES) || defined (KW01Z4_SERIES) || \
+	defined(KV10Z1287_SERIES) || defined(KV11Z7_SERIES)
 /* NOTE: If a sub-family has UART0 separated as another IP, it will be handled by
  * LPSCI driver.
  */
@@ -53,7 +53,7 @@ extern void UART_DRV_IRQHandler(uint32_t instance);
 /* Implementation of UART0 handler named in startup code. */
 void UART0_IRQHandler(void)
 {
-    UART_DRV_IRQHandler(0);
+	UART_DRV_IRQHandler(0);
 }
 #endif
 
@@ -61,7 +61,7 @@ void UART0_IRQHandler(void)
 /* Implementation of UART1 handler named in startup code. */
 void UART1_IRQHandler(void)
 {
-    UART_DRV_IRQHandler(1);
+	UART_DRV_IRQHandler(1);
 }
 #endif
 
@@ -69,22 +69,22 @@ void UART1_IRQHandler(void)
 /* Implementation of UART2 handler named in startup code. */
 void UART2_IRQHandler(void)
 {
-    UART_DRV_IRQHandler(2);
+	UART_DRV_IRQHandler(2);
 }
 #endif
 
 #elif defined (K64F12_SERIES) || defined (K24F12_SERIES) || defined (K63F12_SERIES) || \
-      defined (K22F51212_SERIES) || defined (K22F25612_SERIES) || defined (K22F12810_SERIES) || \
-      defined (KV31F51212_SERIES) || defined (KV31F25612_SERIES) || defined (KV31F12810_SERIES) || \
-      defined (K70F12_SERIES) || defined(K60D10_SERIES) || defined(K24F25612_SERIES) || \
-      defined (KV30F12810_SERIES) || defined (K02F12810_SERIES) || \
-      defined (K65F18_SERIES) || defined (K66F18_SERIES) || defined (K26F18_SERIES)
+	  defined (K22F51212_SERIES) || defined (K22F25612_SERIES) || defined (K22F12810_SERIES) || \
+	  defined (KV31F51212_SERIES) || defined (KV31F25612_SERIES) || defined (KV31F12810_SERIES) || \
+	  defined (K70F12_SERIES) || defined(K60D10_SERIES) || defined(K24F25612_SERIES) || \
+	  defined (KV30F12810_SERIES) || defined (K02F12810_SERIES) || \
+	  defined (K65F18_SERIES) || defined (K66F18_SERIES) || defined (K26F18_SERIES)
 
 #if (UART_INSTANCE_COUNT > 0)
 /* Implementation of UART0 handler named in startup code. */
 void UART0_RX_TX_IRQHandler(void)
 {
-    UART_DRV_IRQHandler(0);
+	UART_DRV_IRQHandler(0);
 }
 #endif
 
@@ -92,7 +92,7 @@ void UART0_RX_TX_IRQHandler(void)
 /* Implementation of UART1 handler named in startup code. */
 void UART1_RX_TX_IRQHandler(void)
 {
-    UART_DRV_IRQHandler(1);
+	UART_DRV_IRQHandler(1);
 }
 #endif
 
@@ -100,7 +100,7 @@ void UART1_RX_TX_IRQHandler(void)
 /* Implementation of UART2 handler named in startup code. */
 void UART2_RX_TX_IRQHandler(void)
 {
-    UART_DRV_IRQHandler(2);
+	UART_DRV_IRQHandler(2);
 }
 #endif
 
@@ -108,7 +108,7 @@ void UART2_RX_TX_IRQHandler(void)
 /* Implementation of UART3 handler named in startup code. */
 void UART3_RX_TX_IRQHandler(void)
 {
-    UART_DRV_IRQHandler(3);
+	UART_DRV_IRQHandler(3);
 }
 #endif
 
@@ -116,7 +116,7 @@ void UART3_RX_TX_IRQHandler(void)
 /* Implementation of UART4 handler named in startup code. */
 void UART4_RX_TX_IRQHandler(void)
 {
-    UART_DRV_IRQHandler(4);
+	UART_DRV_IRQHandler(4);
 }
 #endif
 
@@ -124,7 +124,7 @@ void UART4_RX_TX_IRQHandler(void)
 /* Implementation of UART5 handler named in startup code. */
 void UART5_RX_TX_IRQHandler(void)
 {
-    UART_DRV_IRQHandler(5);
+	UART_DRV_IRQHandler(5);
 }
 #endif
 
@@ -134,7 +134,7 @@ void UART5_RX_TX_IRQHandler(void)
 /* Implementation of UART1 handler named in startup code. */
 void UART2_FLEXIO_IRQHandler(void)
 {
-    UART_DRV_IRQHandler(2);
+	UART_DRV_IRQHandler(2);
 }
 #endif
 
@@ -142,18 +142,17 @@ void UART2_FLEXIO_IRQHandler(void)
 /* Implementation of UART5 handler named in startup code. */
 void UART0_UART1_UART2_UART3_IRQHandler(void)
 {
-    for(uint32_t i=0; i < UART_INSTANCE_COUNT; i++)
-    {
-        if (CLOCK_SYS_GetUartGateCmd(i))
-        {
-            UART_DRV_IRQHandler(i);
-        }
-    }
+	for(uint32_t i=0; i < UART_INSTANCE_COUNT; i++)
+	{
+		if (CLOCK_SYS_GetUartGateCmd(i))
+		{
+			UART_DRV_IRQHandler(i);
+		}
+	}
 }
 #else
-    #error "No valid CPU defined!"
+	#error "No valid CPU defined!"
 #endif
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

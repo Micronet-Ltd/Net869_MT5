@@ -27,19 +27,19 @@
 #if MQX_HAS_TICK
 
 /*!
- * \brief This function converts picoseconds into ticks. Note, there is no way to 
+ * \brief This function converts picoseconds into ticks. Note, there is no way to
  *  represent MAX_UINT_16 picoseconds in terms of ticks.
- * 
+ *
  * \param[in] psecs The number of picoseconds to convert
  * \param[out] tick_ptr Pointer to tick structure where the result will be stored
  */
 void _psp_psecs_to_ticks
    (
-       /* [IN] The number of picoseconds to convert */
-       _mqx_uint           psecs,
+	   /* [IN] The number of picoseconds to convert */
+	   _mqx_uint           psecs,
 
-       /* [OUT] Pointer to tick structure where the result will be stored */
-       PSP_TICK_STRUCT_PTR tick_ptr
+	   /* [OUT] Pointer to tick structure where the result will be stored */
+	   PSP_TICK_STRUCT_PTR tick_ptr
    )
 { /* Body */
    PSP_128_BIT_UNION      tmp;
@@ -66,7 +66,7 @@ void _psp_psecs_to_ticks
    /* Convert to hardware ticks */
 
    _psp_mul_128_by_32(&tmp, kernel_data->HW_TICKS_PER_TICK, &tmp);
-   
+
    _psp_div_128_by_32(&tmp, 1000UL * 1000 * 1000, &tmp);
    _psp_div_128_by_32(&tmp, 1000, &tmp);
 

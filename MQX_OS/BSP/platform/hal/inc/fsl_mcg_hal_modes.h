@@ -52,49 +52,49 @@
 
 /*! @brief MCG mode definitions */
 typedef enum _mcg_modes {
-    kMcgModeFEI    = 0x01 << 0U,   /*!< FEI   - FLL Engaged Internal         */
-    kMcgModeFBI    = 0x01 << 1U,   /*!< FBI   - FLL Bypassed Internal        */
-    kMcgModeBLPI   = 0x01 << 2U,   /*!< BLPI  - Bypassed Low Power Internal  */
-    kMcgModeFEE    = 0x01 << 3U,   /*!< FEE   - FLL Engaged External         */
-    kMcgModeFBE    = 0x01 << 4U,   /*!< FBE   - FLL Bypassed External        */
-    kMcgModeBLPE   = 0x01 << 5U,   /*!< BLPE  - Bypassed Low Power External  */
-    kMcgModePBE    = 0x01 << 6U,   /*!< PBE   - PLL Bypassed External        */
-    kMcgModePEE    = 0x01 << 7U,   /*!< PEE   - PLL Engaged External         */
+	kMcgModeFEI    = 0x01 << 0U,   /*!< FEI   - FLL Engaged Internal         */
+	kMcgModeFBI    = 0x01 << 1U,   /*!< FBI   - FLL Bypassed Internal        */
+	kMcgModeBLPI   = 0x01 << 2U,   /*!< BLPI  - Bypassed Low Power Internal  */
+	kMcgModeFEE    = 0x01 << 3U,   /*!< FEE   - FLL Engaged External         */
+	kMcgModeFBE    = 0x01 << 4U,   /*!< FBE   - FLL Bypassed External        */
+	kMcgModeBLPE   = 0x01 << 5U,   /*!< BLPE  - Bypassed Low Power External  */
+	kMcgModePBE    = 0x01 << 6U,   /*!< PBE   - PLL Bypassed External        */
+	kMcgModePEE    = 0x01 << 7U,   /*!< PEE   - PLL Engaged External         */
 #if (defined(FSL_FEATURE_MCG_HAS_PLL_INTERNAL_MODE) && FSL_FEATURE_MCG_HAS_PLL_INTERNAL_MODE)
-    kMcgModePEI    = 0x01 << 8U,   /*!< PEI   - PLL Engaged Internal         */
-    kMcgModePBI    = 0x01 << 9U,   /*!< PBI   - PLL Bypassed Internal        */
-    kMcgModeSTOP   = 0x01 << 10U,  /*!< STOP  - Stop                         */
-    kMcgModeError  = 0x01 << 11U   /*!< Unknown mode                         */
+	kMcgModePEI    = 0x01 << 8U,   /*!< PEI   - PLL Engaged Internal         */
+	kMcgModePBI    = 0x01 << 9U,   /*!< PBI   - PLL Bypassed Internal        */
+	kMcgModeSTOP   = 0x01 << 10U,  /*!< STOP  - Stop                         */
+	kMcgModeError  = 0x01 << 11U   /*!< Unknown mode                         */
 #else
-    kMcgModeSTOP   = 0x01 << 8U,   /*!< STOP  - Stop                         */
-    kMcgModeError  = 0x01 << 9U    /*!< Unknown mode                         */
+	kMcgModeSTOP   = 0x01 << 8U,   /*!< STOP  - Stop                         */
+	kMcgModeError  = 0x01 << 9U    /*!< Unknown mode                         */
 #endif
 } mcg_modes_t;
 
 /*! @brief MCG mode transition API error code definitions */
 typedef enum McgModeError {
 
-    kMcgModeErrNone            = 0x00U,    /*!< No error. */
-    kMcgModeErrModeUnreachable = 0x01U,    /*!< Target mode is unreachable. */
+	kMcgModeErrNone            = 0x00U,    /*!< No error. */
+	kMcgModeErrModeUnreachable = 0x01U,    /*!< Target mode is unreachable. */
 
-    /* Oscillator error codes */
-    kMcgModeErrOscFreqRange    = 0x21U,    /*!< OSC frequency is invalid. */
+	/* Oscillator error codes */
+	kMcgModeErrOscFreqRange    = 0x21U,    /*!< OSC frequency is invalid. */
 
-    /* IRC and FLL error codes */
-    kMcgModeErrIrcSlowRange    = 0x31U,    /*!< Slow IRC is outside the allowed range */
-    kMcgModeErrIrcFastRange    = 0x32U,    /*!< Fast IRC is outside the allowed range */
-    kMcgModeErrFllRefRange     = 0x33U,    /*!< FLL reference frequency is outside the allowed range */
-    kMcgModeErrFllFrdivRange   = 0x34U,    /*!< FRDIV outside allowed range */
-    kMcgModeErrFllDrsRange     = 0x35U,    /*!< DRS is out of range */
-    kMcgModeErrFllDmx32Range   = 0x36U,    /*!< DMX32 setting not allowed. */
+	/* IRC and FLL error codes */
+	kMcgModeErrIrcSlowRange    = 0x31U,    /*!< Slow IRC is outside the allowed range */
+	kMcgModeErrIrcFastRange    = 0x32U,    /*!< Fast IRC is outside the allowed range */
+	kMcgModeErrFllRefRange     = 0x33U,    /*!< FLL reference frequency is outside the allowed range */
+	kMcgModeErrFllFrdivRange   = 0x34U,    /*!< FRDIV outside allowed range */
+	kMcgModeErrFllDrsRange     = 0x35U,    /*!< DRS is out of range */
+	kMcgModeErrFllDmx32Range   = 0x36U,    /*!< DMX32 setting not allowed. */
 
-    /* PLL error codes */
-    kMcgModeErrPllPrdivRange   = 0x41U,    /*!< PRDIV outside allowed range */
-    kMcgModeErrPllVdivRange    = 0x42U,    /*!< VDIV outside allowed range */
-    kMcgModeErrPllRefClkRange  = 0x43U,    /*!< PLL reference clock frequency, out of range */
-    kMcgModeErrPllLockBit      = 0x44U,    /*!< LOCK or LOCK2 bit did not set */
-    kMcgModeErrPllOutClkRange  = 0x45U,    /*!< PLL output frequency is outside allowed range.  */
-    kMcgModeErrMax = 0x1000U
+	/* PLL error codes */
+	kMcgModeErrPllPrdivRange   = 0x41U,    /*!< PRDIV outside allowed range */
+	kMcgModeErrPllVdivRange    = 0x42U,    /*!< VDIV outside allowed range */
+	kMcgModeErrPllRefClkRange  = 0x43U,    /*!< PLL reference clock frequency, out of range */
+	kMcgModeErrPllLockBit      = 0x44U,    /*!< LOCK or LOCK2 bit did not set */
+	kMcgModeErrPllOutClkRange  = 0x45U,    /*!< PLL output frequency is outside allowed range.  */
+	kMcgModeErrMax = 0x1000U
 } mcg_mode_error_t;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -126,8 +126,8 @@ mcg_modes_t CLOCK_HAL_GetMcgMode(MCG_Type * base);
  * @return      Error code
  */
 mcg_mode_error_t CLOCK_HAL_SetFeiMode(MCG_Type * base,
-                              mcg_dco_range_select_t drs,
-                              void (* fllStableDelay)(void));
+							  mcg_dco_range_select_t drs,
+							  void (* fllStableDelay)(void));
 
 /*!
  * @brief Sets the MCG to FEE mode.
@@ -143,11 +143,11 @@ mcg_mode_error_t CLOCK_HAL_SetFeiMode(MCG_Type * base,
  * @return      Error code
  */
 mcg_mode_error_t CLOCK_HAL_SetFeeMode(MCG_Type * base,
-                              mcg_oscsel_select_t oscselVal,
-                              uint8_t frdivVal,
-                              mcg_dmx32_select_t dmx32,
-                              mcg_dco_range_select_t drs,
-                              void (* fllStableDelay)(void));
+							  mcg_oscsel_select_t oscselVal,
+							  uint8_t frdivVal,
+							  mcg_dmx32_select_t dmx32,
+							  mcg_dco_range_select_t drs,
+							  void (* fllStableDelay)(void));
 
 /*!
  * @brief Sets the MCG to FBI mode.
@@ -161,10 +161,10 @@ mcg_mode_error_t CLOCK_HAL_SetFeeMode(MCG_Type * base,
  * @return      Error code
  */
 mcg_mode_error_t CLOCK_HAL_SetFbiMode(MCG_Type * base,
-                              mcg_dco_range_select_t drs,
-                              mcg_irc_mode_t ircSelect,
-                              uint8_t fcrdivVal,
-                              void (* fllStableDelay)(void));
+							  mcg_dco_range_select_t drs,
+							  mcg_irc_mode_t ircSelect,
+							  uint8_t fcrdivVal,
+							  void (* fllStableDelay)(void));
 
 /*!
  * @brief Sets the MCG to FBE mode.
@@ -180,11 +180,11 @@ mcg_mode_error_t CLOCK_HAL_SetFbiMode(MCG_Type * base,
  * @return      Error code
  */
 mcg_mode_error_t CLOCK_HAL_SetFbeMode(MCG_Type * base,
-                             mcg_oscsel_select_t oscselVal,
-                             uint8_t frdivVal,
-                             mcg_dmx32_select_t dmx32,
-                             mcg_dco_range_select_t drs,
-                             void (* fllStableDelay)(void));
+							 mcg_oscsel_select_t oscselVal,
+							 uint8_t frdivVal,
+							 mcg_dmx32_select_t dmx32,
+							 mcg_dco_range_select_t drs,
+							 void (* fllStableDelay)(void));
 
 /*!
  * @brief Sets the MCG to BLPI mode.
@@ -196,8 +196,8 @@ mcg_mode_error_t CLOCK_HAL_SetFbeMode(MCG_Type * base,
  * @return      Error code
  */
 mcg_mode_error_t CLOCK_HAL_SetBlpiMode(MCG_Type * base,
-                               uint8_t fcrdivVal,
-                               mcg_irc_mode_t ircSelect);
+							   uint8_t fcrdivVal,
+							   mcg_irc_mode_t ircSelect);
 
 /*!
  * @brief Sets the MCG to BLPE mode.
@@ -209,7 +209,7 @@ mcg_mode_error_t CLOCK_HAL_SetBlpiMode(MCG_Type * base,
  * @return      Error code
  */
 mcg_mode_error_t CLOCK_HAL_SetBlpeMode(MCG_Type * base,
-                               mcg_oscsel_select_t oscselVal);
+							   mcg_oscsel_select_t oscselVal);
 
 
 #if (defined(FSL_FEATURE_MCG_HAS_PLL_INTERNAL_MODE) && FSL_FEATURE_MCG_HAS_PLL_INTERNAL_MODE)
@@ -225,9 +225,9 @@ mcg_mode_error_t CLOCK_HAL_SetBlpeMode(MCG_Type * base,
  * @return      Error code
  */
 mcg_mode_error_t CLOCK_HAL_SetPbeMode(MCG_Type * base,
-                              mcg_oscsel_select_t oscselVal,
-                              mcg_pll_ref_clock_source_t pll32kRef,
-                              uint8_t frdivVal);
+							  mcg_oscsel_select_t oscselVal,
+							  mcg_pll_ref_clock_source_t pll32kRef,
+							  uint8_t frdivVal);
 #else
 /*!
  * @brief Sets the MCG to PBE mode.
@@ -242,10 +242,10 @@ mcg_mode_error_t CLOCK_HAL_SetPbeMode(MCG_Type * base,
  * @return      Error code
  */
 mcg_mode_error_t CLOCK_HAL_SetPbeMode(MCG_Type * base,
-                              mcg_oscsel_select_t oscselVal,
-                              mcg_pll_clk_select_t pllcsSelect,
-                              uint8_t prdivVal,
-                              uint8_t vdivVal);
+							  mcg_oscsel_select_t oscselVal,
+							  mcg_pll_clk_select_t pllcsSelect,
+							  uint8_t prdivVal,
+							  uint8_t vdivVal);
 #endif
 
 /*!
@@ -273,8 +273,8 @@ mcg_mode_error_t CLOCK_HAL_SetPeeMode(MCG_Type * base);
  * @return      Error code
  */
 mcg_mode_error_t CLOCK_HAL_SetPbiMode(MCG_Type * base,
-                                      mcg_irc_mode_t ircSelect,
-                                      uint8_t fcrdivVal);
+									  mcg_irc_mode_t ircSelect,
+									  uint8_t fcrdivVal);
 
 /*!
  * @brief Sets the MCG to PEI mode.

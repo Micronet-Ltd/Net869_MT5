@@ -88,30 +88,30 @@ MUTEX_COMPONENT_STRUCT mutex_struct;
  */
 _mqx_uint _mutatr_init
 (
-    register MUTEX_ATTR_STRUCT_PTR attr_ptr
+	register MUTEX_ATTR_STRUCT_PTR attr_ptr
 )
 { /* Body */
-    _KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
+	_KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
-    _KLOGE2(KLOG_mutatr_init, attr_ptr);
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGE2(KLOG_mutatr_init, attr_ptr);
 
 #if MQX_CHECK_ERRORS
-    if (attr_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutatr_init, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutatr_init, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    attr_ptr->SCHED_PROTOCOL   = MUTEX_NO_PRIO_INHERIT;
-    attr_ptr->PRIORITY_CEILING = 0;
-    attr_ptr->VALID            = MUTEX_VALID;
-    attr_ptr->COUNT            = 0;
-    attr_ptr->WAIT_PROTOCOL    = MUTEX_QUEUEING;
+	attr_ptr->SCHED_PROTOCOL   = MUTEX_NO_PRIO_INHERIT;
+	attr_ptr->PRIORITY_CEILING = 0;
+	attr_ptr->VALID            = MUTEX_VALID;
+	attr_ptr->COUNT            = 0;
+	attr_ptr->WAIT_PROTOCOL    = MUTEX_QUEUEING;
 
-    _KLOGX2(KLOG_mutatr_init, MQX_EOK);
-    return (MQX_EOK);
+	_KLOGX2(KLOG_mutatr_init, MQX_EOK);
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -129,61 +129,61 @@ _mqx_uint _mutatr_init
  */
 _mqx_uint _mutex_create_component(void)
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    register MUTEX_COMPONENT_STRUCT_PTR mutex_component_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	register MUTEX_COMPONENT_STRUCT_PTR mutex_component_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE1(KLOG_mutex_create_component);
+	_KLOGE1(KLOG_mutex_create_component);
 
-    if (kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES] != NULL)
-    {
-        _KLOGX2(KLOG_mutex_create_component, MQX_OK);
-        return (MQX_OK);
-    } /* Endif */
+	if (kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES] != NULL)
+	{
+		_KLOGX2(KLOG_mutex_create_component, MQX_OK);
+		return (MQX_OK);
+	} /* Endif */
 
 #if MQXCFG_STATIC_MUTEX
-    mutex_component_ptr = &mutex_struct;
+	mutex_component_ptr = &mutex_struct;
 #else
-    mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) _mem_alloc_system_zero(
-                    (_mem_size) sizeof(MUTEX_COMPONENT_STRUCT));
+	mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) _mem_alloc_system_zero(
+					(_mem_size) sizeof(MUTEX_COMPONENT_STRUCT));
 #if MQX_CHECK_MEMORY_ALLOCATION_ERRORS
-    if (mutex_component_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutex_create_component, MQX_OUT_OF_MEMORY);
-        return (MQX_OUT_OF_MEMORY);
-    } /* Endif */
+	if (mutex_component_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutex_create_component, MQX_OUT_OF_MEMORY);
+		return (MQX_OUT_OF_MEMORY);
+	} /* Endif */
 #endif
-    _mem_set_type(mutex_component_ptr, MEM_TYPE_MUTEX_COMPONENT);
+	_mem_set_type(mutex_component_ptr, MEM_TYPE_MUTEX_COMPONENT);
 #endif /* MQXCFG_STATIC_MUTEX */
 
-    _QUEUE_INIT(&mutex_component_ptr->MUTEXES, 0);
-    mutex_component_ptr->VALID = MUTEX_VALID;
+	_QUEUE_INIT(&mutex_component_ptr->MUTEXES, 0);
+	mutex_component_ptr->VALID = MUTEX_VALID;
 
-    _int_disable();
+	_int_disable();
 
 #if MQX_CHECK_ERRORS
-    if (kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES] != NULL)
-    {
-        _int_enable();
+	if (kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES] != NULL)
+	{
+		_int_enable();
 #if MQXCFG_ALLOCATOR
-        _mem_free(mutex_component_ptr);
+		_mem_free(mutex_component_ptr);
 #endif /* MQXCFG_ALLOCATOR */
-        _KLOGX2(KLOG_mutex_create_component, MQX_OK);
-        return (MQX_OK);
-    } /* Endif */
+		_KLOGX2(KLOG_mutex_create_component, MQX_OK);
+		return (MQX_OK);
+	} /* Endif */
 #endif
 
-    kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES] = mutex_component_ptr;
+	kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES] = mutex_component_ptr;
 
 #if MQX_COMPONENT_DESTRUCTION
-    kernel_data->COMPONENT_CLEANUP[KERNEL_MUTEXES] = _mutex_cleanup;
+	kernel_data->COMPONENT_CLEANUP[KERNEL_MUTEXES] = _mutex_cleanup;
 #endif
 
-    _int_enable();
+	_int_enable();
 
-    _KLOGX2(KLOG_mutex_create_component, MQX_OK);
-    return (MQX_OK);
+	_KLOGX2(KLOG_mutex_create_component, MQX_OK);
+	return (MQX_OK);
 
 } /* Endbody */
 
@@ -203,33 +203,33 @@ _mqx_uint _mutex_create_component(void)
  */
 _mqx_uint _mutatr_destroy
 (
-    MUTEX_ATTR_STRUCT_PTR attr_ptr
+	MUTEX_ATTR_STRUCT_PTR attr_ptr
 )
 { /* Body */
-    _KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
+	_KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
-    _KLOGE2(KLOG_mutatr_destroy, attr_ptr);
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGE2(KLOG_mutatr_destroy, attr_ptr);
 
 #if MQX_CHECK_ERRORS
-    if (attr_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutatr_destroy, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutatr_destroy, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (attr_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutatr_destroy, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutatr_destroy, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    attr_ptr->VALID = 0;
+	attr_ptr->VALID = 0;
 
-    _KLOGX2(KLOG_mutatr_destroy, MQX_EOK);
-    return (MQX_EOK);
+	_KLOGX2(KLOG_mutatr_destroy, MQX_EOK);
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -257,92 +257,92 @@ _mqx_uint _mutatr_destroy
  */
 _mqx_uint _mutex_destroy
 (
-    register MUTEX_STRUCT_PTR mutex_ptr
+	register MUTEX_STRUCT_PTR mutex_ptr
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR     kernel_data;
-    MUTEX_COMPONENT_STRUCT_PTR mutex_component_ptr;
-    TD_STRUCT_PTR              td_ptr;
-    _mqx_uint                  result;
+	KERNEL_DATA_STRUCT_PTR     kernel_data;
+	MUTEX_COMPONENT_STRUCT_PTR mutex_component_ptr;
+	TD_STRUCT_PTR              td_ptr;
+	_mqx_uint                  result;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_mutex_destroy, mutex_ptr);
+	_KLOGE2(KLOG_mutex_destroy, mutex_ptr);
 
 #if MQX_CHECK_ERRORS
-    if (kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES] == NULL)
-    {
-        _KLOGX2(KLOG_mutex_destroy, MQX_COMPONENT_DOES_NOT_EXIST);
-        return (MQX_COMPONENT_DOES_NOT_EXIST);
-    } /* Endif */
+	if (kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES] == NULL)
+	{
+		_KLOGX2(KLOG_mutex_destroy, MQX_COMPONENT_DOES_NOT_EXIST);
+		return (MQX_COMPONENT_DOES_NOT_EXIST);
+	} /* Endif */
 #endif
 
-    mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES];
+	mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES];
 
 #if MQX_CHECK_VALIDITY
-    if (mutex_component_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutex_destroy, MQX_INVALID_COMPONENT_BASE);
-        return (MQX_INVALID_COMPONENT_BASE);
-    } /* Endif */
+	if (mutex_component_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutex_destroy, MQX_INVALID_COMPONENT_BASE);
+		return (MQX_INVALID_COMPONENT_BASE);
+	} /* Endif */
 #endif
 
 #if MQX_CHECK_VALIDITY
-    if (mutex_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutex_destroy, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (mutex_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutex_destroy, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    td_ptr = kernel_data->ACTIVE_PTR;
+	td_ptr = kernel_data->ACTIVE_PTR;
 
-    if (mutex_ptr->OWNER_TD != td_ptr)
-    {
-        result = _mutex_lock(mutex_ptr); /* Get the mutex */
-        if (result != MQX_EOK)
-        {
-            _KLOGX2(KLOG_mutex_destroy, result);
-            return (result);
-        } /* Endif */
-    } /* Endif */
+	if (mutex_ptr->OWNER_TD != td_ptr)
+	{
+		result = _mutex_lock(mutex_ptr); /* Get the mutex */
+		if (result != MQX_EOK)
+		{
+			_KLOGX2(KLOG_mutex_destroy, result);
+			return (result);
+		} /* Endif */
+	} /* Endif */
 
-    mutex_ptr->VALID = 0;
+	mutex_ptr->VALID = 0;
 
-    if (mutex_ptr->LINK.NEXT != NULL)
-    {
-        /* Remove mutex from the queue of mutexes in the kernel */
-        _int_disable();
-        _QUEUE_REMOVE(&mutex_component_ptr->MUTEXES, mutex_ptr);
-        _int_enable();
-    } /* Endif */
+	if (mutex_ptr->LINK.NEXT != NULL)
+	{
+		/* Remove mutex from the queue of mutexes in the kernel */
+		_int_disable();
+		_QUEUE_REMOVE(&mutex_component_ptr->MUTEXES, mutex_ptr);
+		_int_enable();
+	} /* Endif */
 
-    /* Get rid of all waiting tasks */
-    while (_QUEUE_GET_SIZE(&mutex_ptr->WAITING_TASKS))
-    {
-        _QUEUE_DEQUEUE(&mutex_ptr->WAITING_TASKS, td_ptr);
-        _task_set_error_td_internal(td_ptr, MQX_EINVAL);
-        _int_disable();
-        _TASK_READY(td_ptr,kernel_data);
-        _int_enable();
-    } /* Endwhile */
+	/* Get rid of all waiting tasks */
+	while (_QUEUE_GET_SIZE(&mutex_ptr->WAITING_TASKS))
+	{
+		_QUEUE_DEQUEUE(&mutex_ptr->WAITING_TASKS, td_ptr);
+		_task_set_error_td_internal(td_ptr, MQX_EINVAL);
+		_int_disable();
+		_TASK_READY(td_ptr,kernel_data);
+		_int_enable();
+	} /* Endwhile */
 
 #if MQX_HAS_DYNAMIC_PRIORITIES
-    td_ptr = kernel_data->ACTIVE_PTR;
+	td_ptr = kernel_data->ACTIVE_PTR;
 
-    _int_disable();
-    if (mutex_ptr->BOOSTED)
-    {
-        _sched_unboost_priority_internal(td_ptr, mutex_ptr->BOOSTED);
-    } /* Endif */
+	_int_disable();
+	if (mutex_ptr->BOOSTED)
+	{
+		_sched_unboost_priority_internal(td_ptr, mutex_ptr->BOOSTED);
+	} /* Endif */
 
-    _int_enable();
+	_int_enable();
 #endif
 
-    _CHECK_RUN_SCHEDULER(); /* Let higher priority task run */
+	_CHECK_RUN_SCHEDULER(); /* Let higher priority task run */
 
-    _KLOGX2(KLOG_mutex_destroy, MQX_EOK);
-    return (MQX_EOK);
+	_KLOGX2(KLOG_mutex_destroy, MQX_EOK);
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -364,26 +364,26 @@ _mqx_uint _mutex_destroy
  */
 _mqx_uint _mutatr_get_wait_protocol
 (
-    MUTEX_ATTR_STRUCT_PTR attr_ptr,
-    _mqx_uint_ptr         waiting_protocol_ptr
+	MUTEX_ATTR_STRUCT_PTR attr_ptr,
+	_mqx_uint_ptr         waiting_protocol_ptr
 )
 { /* Body */
 
 #if MQX_CHECK_ERRORS
-    if ((attr_ptr == NULL) || (waiting_protocol_ptr == NULL))
-    {
-        return (MQX_EINVAL);
-    } /* Endif */
+	if ((attr_ptr == NULL) || (waiting_protocol_ptr == NULL))
+	{
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (attr_ptr->VALID != MUTEX_VALID)
-    {
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr->VALID != MUTEX_VALID)
+	{
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    *waiting_protocol_ptr = attr_ptr->WAIT_PROTOCOL;
-    return (MQX_EOK);
+	*waiting_protocol_ptr = attr_ptr->WAIT_PROTOCOL;
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -404,26 +404,26 @@ _mqx_uint _mutatr_get_wait_protocol
  */
 _mqx_uint _mutatr_get_priority_ceiling
 (
-    MUTEX_ATTR_STRUCT_PTR attr_ptr,
-    _mqx_uint_ptr         ceiling_ptr
+	MUTEX_ATTR_STRUCT_PTR attr_ptr,
+	_mqx_uint_ptr         ceiling_ptr
 )
 { /* Body */
 
 #if MQX_CHECK_ERRORS
-    if ((attr_ptr == NULL) || (ceiling_ptr == NULL))
-    {
-        return (MQX_EINVAL);
-    } /* Endif */
+	if ((attr_ptr == NULL) || (ceiling_ptr == NULL))
+	{
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (attr_ptr->VALID != MUTEX_VALID)
-    {
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr->VALID != MUTEX_VALID)
+	{
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    *ceiling_ptr = attr_ptr->PRIORITY_CEILING;
-    return (MQX_EOK);
+	*ceiling_ptr = attr_ptr->PRIORITY_CEILING;
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -444,26 +444,26 @@ _mqx_uint _mutatr_get_priority_ceiling
  */
 _mqx_uint _mutatr_get_sched_protocol
 (
-    MUTEX_ATTR_STRUCT_PTR attr_ptr,
-    _mqx_uint_ptr         protocol_ptr
+	MUTEX_ATTR_STRUCT_PTR attr_ptr,
+	_mqx_uint_ptr         protocol_ptr
 )
 { /* Body */
 
 #if MQX_CHECK_ERRORS
-    if ((attr_ptr == NULL) || (protocol_ptr == NULL))
-    {
-        return (MQX_EINVAL);
-    } /* Endif */
+	if ((attr_ptr == NULL) || (protocol_ptr == NULL))
+	{
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (attr_ptr->VALID != MUTEX_VALID)
-    {
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr->VALID != MUTEX_VALID)
+	{
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    *protocol_ptr = attr_ptr->SCHED_PROTOCOL;
-    return (MQX_EOK);
+	*protocol_ptr = attr_ptr->SCHED_PROTOCOL;
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -488,26 +488,26 @@ _mqx_uint _mutatr_get_sched_protocol
  */
 _mqx_uint _mutatr_get_spin_limit
 (
-    MUTEX_ATTR_STRUCT_PTR attr_ptr,
-    _mqx_uint_ptr         spin_count_ptr
+	MUTEX_ATTR_STRUCT_PTR attr_ptr,
+	_mqx_uint_ptr         spin_count_ptr
 )
 { /* Body */
 
 #if MQX_CHECK_ERRORS
-    if ((attr_ptr == NULL) || (spin_count_ptr == NULL))
-    {
-        return (MQX_EINVAL);
-    } /* Endif */
+	if ((attr_ptr == NULL) || (spin_count_ptr == NULL))
+	{
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (attr_ptr->VALID != MUTEX_VALID)
-    {
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr->VALID != MUTEX_VALID)
+	{
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    *spin_count_ptr = attr_ptr->COUNT;
-    return (MQX_EOK);
+	*spin_count_ptr = attr_ptr->COUNT;
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -533,97 +533,97 @@ _mqx_uint _mutatr_get_spin_limit
  */
 _mqx_uint _mutex_init
 (
-    register MUTEX_STRUCT_PTR      mutex_ptr,
-    register MUTEX_ATTR_STRUCT_PTR attr_ptr
+	register MUTEX_STRUCT_PTR      mutex_ptr,
+	register MUTEX_ATTR_STRUCT_PTR attr_ptr
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR     kernel_data;
-    MUTEX_COMPONENT_STRUCT_PTR mutex_component_ptr;
-    MUTEX_ATTR_STRUCT          default_attr;
+	KERNEL_DATA_STRUCT_PTR     kernel_data;
+	MUTEX_COMPONENT_STRUCT_PTR mutex_component_ptr;
+	MUTEX_ATTR_STRUCT          default_attr;
 #if MQX_CHECK_ERRORS
-    MUTEX_STRUCT_PTR           mutex_chk_ptr;
+	MUTEX_STRUCT_PTR           mutex_chk_ptr;
 #endif
-    _mqx_uint                  result;
+	_mqx_uint                  result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    if (attr_ptr == NULL)
-    {
-        attr_ptr = &default_attr;
-        _mutatr_init(attr_ptr);
-        _KLOGE3(KLOG_mutex_init, mutex_ptr, NULL);
-    }
-    else
-    {
-        _KLOGE3(KLOG_mutex_init, mutex_ptr, attr_ptr);
-    } /* Endif */
+	_GET_KERNEL_DATA(kernel_data);
+	if (attr_ptr == NULL)
+	{
+		attr_ptr = &default_attr;
+		_mutatr_init(attr_ptr);
+		_KLOGE3(KLOG_mutex_init, mutex_ptr, NULL);
+	}
+	else
+	{
+		_KLOGE3(KLOG_mutex_init, mutex_ptr, attr_ptr);
+	} /* Endif */
 
 #if MQX_CHECK_ERRORS
-    if (mutex_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutex_init, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (mutex_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutex_init, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (attr_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutex_init, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutex_init, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES];
-    if (mutex_component_ptr == NULL)
-    {
-        result = _mutex_create_component();
-        mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES];
+	mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES];
+	if (mutex_component_ptr == NULL)
+	{
+		result = _mutex_create_component();
+		mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES];
 #if MQX_CHECK_MEMORY_ALLOCATION_ERRORS
-        if (mutex_component_ptr == NULL)
-        {
-            _KLOGX2(KLOG_mutex_init, result);
-            return (result);
-        } /* Endif */
+		if (mutex_component_ptr == NULL)
+		{
+			_KLOGX2(KLOG_mutex_init, result);
+			return (result);
+		} /* Endif */
 #endif
-    } /* Endif */
+	} /* Endif */
 
 #if MQX_CHECK_VALIDITY
-    if (mutex_component_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutex_init, MQX_INVALID_COMPONENT_BASE);
-        return (MQX_INVALID_COMPONENT_BASE);
-    } /* Endif */
+	if (mutex_component_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutex_init, MQX_INVALID_COMPONENT_BASE);
+		return (MQX_INVALID_COMPONENT_BASE);
+	} /* Endif */
 #endif
 
-    _int_disable();
+	_int_disable();
 #if MQX_CHECK_ERRORS
-    /* Check if mutex is already initialized */
-    mutex_chk_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_component_ptr->MUTEXES.NEXT);
-    while (mutex_chk_ptr != (MUTEX_STRUCT_PTR) ((void *) &mutex_component_ptr->MUTEXES))
-    {
-        if (mutex_chk_ptr == mutex_ptr)
-        {
-            _int_enable();
-            _KLOGX2(KLOG_mutex_init, MQX_EINVAL);
-            return (MQX_EINVAL);
-        } /* Endif */
-        mutex_chk_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_chk_ptr->LINK.NEXT);
-    } /* Endif */
+	/* Check if mutex is already initialized */
+	mutex_chk_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_component_ptr->MUTEXES.NEXT);
+	while (mutex_chk_ptr != (MUTEX_STRUCT_PTR) ((void *) &mutex_component_ptr->MUTEXES))
+	{
+		if (mutex_chk_ptr == mutex_ptr)
+		{
+			_int_enable();
+			_KLOGX2(KLOG_mutex_init, MQX_EINVAL);
+			return (MQX_EINVAL);
+		} /* Endif */
+		mutex_chk_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_chk_ptr->LINK.NEXT);
+	} /* Endif */
 #endif
 
-    mutex_ptr->PROTOCOLS = attr_ptr->SCHED_PROTOCOL | attr_ptr->WAIT_PROTOCOL;
-    mutex_ptr->VALID            = MUTEX_VALID;
-    mutex_ptr->COUNT            = attr_ptr->COUNT;
-    mutex_ptr->PRIORITY_CEILING = attr_ptr->PRIORITY_CEILING;
-    mutex_ptr->LOCK             = 0;
-    mutex_ptr->BOOSTED          = 0;
-    mutex_ptr->OWNER_TD         = NULL;
-    _QUEUE_INIT(&mutex_ptr->WAITING_TASKS, 0);
+	mutex_ptr->PROTOCOLS = attr_ptr->SCHED_PROTOCOL | attr_ptr->WAIT_PROTOCOL;
+	mutex_ptr->VALID            = MUTEX_VALID;
+	mutex_ptr->COUNT            = attr_ptr->COUNT;
+	mutex_ptr->PRIORITY_CEILING = attr_ptr->PRIORITY_CEILING;
+	mutex_ptr->LOCK             = 0;
+	mutex_ptr->BOOSTED          = 0;
+	mutex_ptr->OWNER_TD         = NULL;
+	_QUEUE_INIT(&mutex_ptr->WAITING_TASKS, 0);
 
-    _QUEUE_ENQUEUE(&mutex_component_ptr->MUTEXES, mutex_ptr);
-    _int_enable();
+	_QUEUE_ENQUEUE(&mutex_component_ptr->MUTEXES, mutex_ptr);
+	_int_enable();
 
-    _KLOGX2(KLOG_mutex_init, MQX_EOK);
-    return (MQX_EOK);
+	_KLOGX2(KLOG_mutex_init, MQX_EOK);
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -655,241 +655,241 @@ _mqx_uint _mutex_init
  */
 _mqx_uint _mutex_lock
 (
-    register MUTEX_STRUCT_PTR mutex_ptr
+	register MUTEX_STRUCT_PTR mutex_ptr
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register TD_STRUCT_PTR          td_ptr;
-    volatile unsigned char                 *lock_ptr;
-    _mqx_uint                       priority;
-    _mqx_uint                       count;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register TD_STRUCT_PTR          td_ptr;
+	volatile unsigned char                 *lock_ptr;
+	_mqx_uint                       priority;
+	_mqx_uint                       count;
 #if MQX_MUTEX_HAS_POLLING
-    _mqx_uint                       limited;
+	_mqx_uint                       limited;
 #endif
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_mutex_lock, mutex_ptr);
+	_KLOGE2(KLOG_mutex_lock, mutex_ptr);
 
-    td_ptr = kernel_data->ACTIVE_PTR;
+	td_ptr = kernel_data->ACTIVE_PTR;
 
 #if MQX_CHECK_ERRORS
-    if (kernel_data->IN_ISR)
-    {
-        _KLOGX2(KLOG_mutex_lock, MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
-        return (MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
-    } /* Endif */
-    if (mutex_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutex_lock, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (kernel_data->IN_ISR)
+	{
+		_KLOGX2(KLOG_mutex_lock, MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
+		return (MQX_CANNOT_CALL_FUNCTION_FROM_ISR);
+	} /* Endif */
+	if (mutex_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutex_lock, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (mutex_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutex_lock, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (mutex_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutex_lock, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    if (mutex_ptr->OWNER_TD == (void *) td_ptr)
-    {
-        _KLOGX2(KLOG_mutex_lock, MQX_EDEADLK);
-        return (MQX_EDEADLK);
-    } /* Endif */
+	if (mutex_ptr->OWNER_TD == (void *) td_ptr)
+	{
+		_KLOGX2(KLOG_mutex_lock, MQX_EDEADLK);
+		return (MQX_EDEADLK);
+	} /* Endif */
 
-    priority = td_ptr->MY_QUEUE->PRIORITY;
-    lock_ptr = &mutex_ptr->LOCK;
+	priority = td_ptr->MY_QUEUE->PRIORITY;
+	lock_ptr = &mutex_ptr->LOCK;
 
 #if MQX_MUTEX_HAS_POLLING
-    if ((mutex_ptr->PROTOCOLS & MUTEX_SPIN_ONLY) ||
-        (mutex_ptr->PROTOCOLS & MUTEX_LIMITED_SPIN))
-    {
+	if ((mutex_ptr->PROTOCOLS & MUTEX_SPIN_ONLY) ||
+		(mutex_ptr->PROTOCOLS & MUTEX_LIMITED_SPIN))
+	{
 
-        if (mutex_ptr->PROTOCOLS & MUTEX_SPIN_ONLY)
-        {
-            count = 1;
-            limited = 0;
-        }
-        else
-        {
-            count = mutex_ptr->COUNT;
-            limited = 1;
-        } /* Endif */
+		if (mutex_ptr->PROTOCOLS & MUTEX_SPIN_ONLY)
+		{
+			count = 1;
+			limited = 0;
+		}
+		else
+		{
+			count = mutex_ptr->COUNT;
+			limited = 1;
+		} /* Endif */
 #if MQX_HAS_DYNAMIC_PRIORITIES
-        if (mutex_ptr->PROTOCOLS & MUTEX_PRIO_INHERIT)
-        {
+		if (mutex_ptr->PROTOCOLS & MUTEX_PRIO_INHERIT)
+		{
 
-            _INT_DISABLE();
-            while (count && *lock_ptr)
-            {
-                count -= limited;
-                if (((TD_STRUCT_PTR)(mutex_ptr->OWNER_TD))->HOME_QUEUE->PRIORITY >
-                    priority)
-                {
-                    if (((TD_STRUCT_PTR)(mutex_ptr->OWNER_TD))->MY_QUEUE->PRIORITY >
-                        priority)
-                    {
-                        _sched_boost_priority_internal(
-                                        (TD_STRUCT_PTR)mutex_ptr->OWNER_TD, priority);
-                    } /* Endif */
-                    mutex_ptr->BOOSTED++;
-                } /* Endif */
-                _INT_ENABLE(); /* Allow interruption and tasks of same prio a kick*/
-                _sched_yield();
-                _INT_DISABLE();
+			_INT_DISABLE();
+			while (count && *lock_ptr)
+			{
+				count -= limited;
+				if (((TD_STRUCT_PTR)(mutex_ptr->OWNER_TD))->HOME_QUEUE->PRIORITY >
+					priority)
+				{
+					if (((TD_STRUCT_PTR)(mutex_ptr->OWNER_TD))->MY_QUEUE->PRIORITY >
+						priority)
+					{
+						_sched_boost_priority_internal(
+										(TD_STRUCT_PTR)mutex_ptr->OWNER_TD, priority);
+					} /* Endif */
+					mutex_ptr->BOOSTED++;
+				} /* Endif */
+				_INT_ENABLE(); /* Allow interruption and tasks of same prio a kick*/
+				_sched_yield();
+				_INT_DISABLE();
 #if MQX_COMPONENT_DESTRUCTION
-                if (mutex_ptr->VALID != MUTEX_VALID)
-                {
-                    _int_enable();
-                    _KLOGX2(KLOG_mutex_lock, MQX_EINVAL);
-                    return(MQX_EINVAL);
-                } /* Endif */
+				if (mutex_ptr->VALID != MUTEX_VALID)
+				{
+					_int_enable();
+					_KLOGX2(KLOG_mutex_lock, MQX_EINVAL);
+					return(MQX_EINVAL);
+				} /* Endif */
 #endif
-            } /* Endwhile */
-            if (count)
-            {
-                /* Test and set sets the high bit. */
-                mutex_ptr->LOCK = MQX_TEST_AND_SET_VALUE;
-            } /* Endif */
-            _INT_ENABLE();
+			} /* Endwhile */
+			if (count)
+			{
+				/* Test and set sets the high bit. */
+				mutex_ptr->LOCK = MQX_TEST_AND_SET_VALUE;
+			} /* Endif */
+			_INT_ENABLE();
 
-        }
-        else
+		}
+		else
 #endif /* #if MQX_HAS_DYNAMIC_PRIORITIES */
-        {
+		{
 
-            while (count && _mem_test_and_set((unsigned char *)lock_ptr))
-            {
-                count -= limited;
-                _sched_yield();
+			while (count && _mem_test_and_set((unsigned char *)lock_ptr))
+			{
+				count -= limited;
+				_sched_yield();
 #if MQX_COMPONENT_DESTRUCTION
-                if (mutex_ptr->VALID != MUTEX_VALID)
-                {
-                    _KLOGX2(KLOG_mutex_lock, MQX_EINVAL);
-                    return(MQX_EINVAL);
-                } /* Endif */
+				if (mutex_ptr->VALID != MUTEX_VALID)
+				{
+					_KLOGX2(KLOG_mutex_lock, MQX_EINVAL);
+					return(MQX_EINVAL);
+				} /* Endif */
 #endif
-            } /* Endwhile */
+			} /* Endwhile */
 
-        } /* Endif */
+		} /* Endif */
 
-        if (count == 0)
-        {
-            _KLOGX2(KLOG_mutex_lock, MQX_EBUSY);
-            return(MQX_EBUSY);
-        } /* Endif */
-        mutex_ptr->OWNER_TD = td_ptr;
+		if (count == 0)
+		{
+			_KLOGX2(KLOG_mutex_lock, MQX_EBUSY);
+			return(MQX_EBUSY);
+		} /* Endif */
+		mutex_ptr->OWNER_TD = td_ptr;
 
-    }
-    else
-    {
+	}
+	else
+	{
 
 #endif
 
-    _INT_DISABLE();
-    if (*lock_ptr)
-    {
-        /* Must wait for a mutex to become available */
+	_INT_DISABLE();
+	if (*lock_ptr)
+	{
+		/* Must wait for a mutex to become available */
 
 #if MQX_HAS_DYNAMIC_PRIORITIES
-        /* Boost the priority of the owner task if necessary */
-        if (mutex_ptr->PROTOCOLS & MUTEX_PRIO_INHERIT) {
-            if (((TD_STRUCT_PTR) (mutex_ptr->OWNER_TD))->HOME_QUEUE->PRIORITY > priority)
-            {
-                if (((TD_STRUCT_PTR) (mutex_ptr->OWNER_TD))->MY_QUEUE->PRIORITY > priority)
-                {
-                    _sched_boost_priority_internal((TD_STRUCT_PTR) mutex_ptr->OWNER_TD, priority);
-                } /* Endif */
-                mutex_ptr->BOOSTED++;
-            } /* Endif */
-        } /* Endif */
+		/* Boost the priority of the owner task if necessary */
+		if (mutex_ptr->PROTOCOLS & MUTEX_PRIO_INHERIT) {
+			if (((TD_STRUCT_PTR) (mutex_ptr->OWNER_TD))->HOME_QUEUE->PRIORITY > priority)
+			{
+				if (((TD_STRUCT_PTR) (mutex_ptr->OWNER_TD))->MY_QUEUE->PRIORITY > priority)
+				{
+					_sched_boost_priority_internal((TD_STRUCT_PTR) mutex_ptr->OWNER_TD, priority);
+				} /* Endif */
+				mutex_ptr->BOOSTED++;
+			} /* Endif */
+		} /* Endif */
 #endif /* #if MQX_HAS_DYNAMIC_PRIORITIES */
 
-        _QUEUE_UNLINK(td_ptr); /* Remove from ready to run queue */
-        td_ptr->INFO = (_mqx_uint) &mutex_ptr->WAITING_TASKS;
-        if (mutex_ptr->PROTOCOLS & MUTEX_PRIORITY_QUEUEING)
-        {
-            /*
-             ** The waiting task must be inserted into the waiting list in order
-             ** of the priority of the waiting task.
-             */
-            _sched_insert_priorityq_internal(&mutex_ptr->WAITING_TASKS, td_ptr);
-        }
-        else
-        {
-            /* Enqueue at end */
-            _QUEUE_ENQUEUE(&mutex_ptr->WAITING_TASKS, td_ptr);
-        } /* Endif */
+		_QUEUE_UNLINK(td_ptr); /* Remove from ready to run queue */
+		td_ptr->INFO = (_mqx_uint) &mutex_ptr->WAITING_TASKS;
+		if (mutex_ptr->PROTOCOLS & MUTEX_PRIORITY_QUEUEING)
+		{
+			/*
+			 ** The waiting task must be inserted into the waiting list in order
+			 ** of the priority of the waiting task.
+			 */
+			_sched_insert_priorityq_internal(&mutex_ptr->WAITING_TASKS, td_ptr);
+		}
+		else
+		{
+			/* Enqueue at end */
+			_QUEUE_ENQUEUE(&mutex_ptr->WAITING_TASKS, td_ptr);
+		} /* Endif */
 
-        /* Now put the task to sleep */
-        td_ptr->STATE = MUTEX_BLOCKED;
-        _sched_execute_scheduler_internal();
+		/* Now put the task to sleep */
+		td_ptr->STATE = MUTEX_BLOCKED;
+		_sched_execute_scheduler_internal();
 
-        /* If mutex alive, then active task owns it now, (done by unlock) */
+		/* If mutex alive, then active task owns it now, (done by unlock) */
 #if MQX_COMPONENT_DESTRUCTION
-        if (mutex_ptr->VALID != MUTEX_VALID)
-        {
-            _int_enable();
-            _KLOGX2(KLOG_mutex_lock, MQX_EINVAL);
-            return (MQX_EINVAL);
-        } /* Endif */
+		if (mutex_ptr->VALID != MUTEX_VALID)
+		{
+			_int_enable();
+			_KLOGX2(KLOG_mutex_lock, MQX_EINVAL);
+			return (MQX_EINVAL);
+		} /* Endif */
 #endif
 
-    }
-    else
-    {
-        /* Test and set sets the high bit. */
-        mutex_ptr->LOCK = MQX_TEST_AND_SET_VALUE;
-        mutex_ptr->OWNER_TD = td_ptr;
-    } /* Endif */
+	}
+	else
+	{
+		/* Test and set sets the high bit. */
+		mutex_ptr->LOCK = MQX_TEST_AND_SET_VALUE;
+		mutex_ptr->OWNER_TD = td_ptr;
+	} /* Endif */
 
-    /*
-     * This task now owns the mutex, if priority inheritance is in effect
-     * the queue of waiting tasks must be checked for any task which may
-     * have a higher priority than mine ONLY if priority queueing is NOT
-     * in effect
-     */
+	/*
+	 * This task now owns the mutex, if priority inheritance is in effect
+	 * the queue of waiting tasks must be checked for any task which may
+	 * have a higher priority than mine ONLY if priority queueing is NOT
+	 * in effect
+	 */
 #if MQX_HAS_DYNAMIC_PRIORITIES
-    if ((mutex_ptr->PROTOCOLS & MUTEX_PRIO_INHERIT) && !(mutex_ptr->PROTOCOLS & MUTEX_PRIORITY_QUEUEING))
-    {
-        count = _sched_get_max_priority_on_q_internal(&mutex_ptr->WAITING_TASKS);
-        if (count < td_ptr->HOME_QUEUE->PRIORITY)
-        {
-            if (count < td_ptr->MY_QUEUE->PRIORITY)
-            {
-                _sched_boost_priority_internal(td_ptr, count);
-            } /* Endif */
-            mutex_ptr->BOOSTED++;
-        } /* Endif */
-    } /* Endif */
+	if ((mutex_ptr->PROTOCOLS & MUTEX_PRIO_INHERIT) && !(mutex_ptr->PROTOCOLS & MUTEX_PRIORITY_QUEUEING))
+	{
+		count = _sched_get_max_priority_on_q_internal(&mutex_ptr->WAITING_TASKS);
+		if (count < td_ptr->HOME_QUEUE->PRIORITY)
+		{
+			if (count < td_ptr->MY_QUEUE->PRIORITY)
+			{
+				_sched_boost_priority_internal(td_ptr, count);
+			} /* Endif */
+			mutex_ptr->BOOSTED++;
+		} /* Endif */
+	} /* Endif */
 #endif /* #if MQX_HAS_DYNAMIC_PRIORITIES */
-    _INT_ENABLE();
+	_INT_ENABLE();
 
 #if MQX_MUTEX_HAS_POLLING
 } /* Endif */
 #endif
 
 #if MQX_HAS_DYNAMIC_PRIORITIES
-    if (mutex_ptr->PROTOCOLS & MUTEX_PRIO_PROTECT)
-    {
-        /* Switch my priority to the higher one if necessary */
-        _INT_DISABLE();
-        if (mutex_ptr->PRIORITY_CEILING < td_ptr->HOME_QUEUE->PRIORITY)
-        {
-            if (mutex_ptr->PRIORITY_CEILING < td_ptr->MY_QUEUE->PRIORITY)
-            {
-                _sched_boost_priority_internal(td_ptr, mutex_ptr->PRIORITY_CEILING);
-            } /* Endif */
-            mutex_ptr->BOOSTED++;
-        } /* Endif */
-        _INT_ENABLE();
-    } /* Endif */
+	if (mutex_ptr->PROTOCOLS & MUTEX_PRIO_PROTECT)
+	{
+		/* Switch my priority to the higher one if necessary */
+		_INT_DISABLE();
+		if (mutex_ptr->PRIORITY_CEILING < td_ptr->HOME_QUEUE->PRIORITY)
+		{
+			if (mutex_ptr->PRIORITY_CEILING < td_ptr->MY_QUEUE->PRIORITY)
+			{
+				_sched_boost_priority_internal(td_ptr, mutex_ptr->PRIORITY_CEILING);
+			} /* Endif */
+			mutex_ptr->BOOSTED++;
+		} /* Endif */
+		_INT_ENABLE();
+	} /* Endif */
 #endif
 
-    _KLOGX2(KLOG_mutex_lock, MQX_EOK);
-    return (MQX_EOK);
+	_KLOGX2(KLOG_mutex_lock, MQX_EOK);
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -910,48 +910,48 @@ _mqx_uint _mutex_lock
  */
 _mqx_uint _mutatr_set_wait_protocol
 (
-    MUTEX_ATTR_STRUCT_PTR attr_ptr,
-    _mqx_uint             waiting_protocol
+	MUTEX_ATTR_STRUCT_PTR attr_ptr,
+	_mqx_uint             waiting_protocol
 )
 { /* Body */
-    _KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
+	_KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
 
-    _KLOGE3(KLOG_mutatr_set_wait_protocol, attr_ptr, waiting_protocol);
+	_KLOGE3(KLOG_mutatr_set_wait_protocol, attr_ptr, waiting_protocol);
 
 #if MQX_CHECK_ERRORS
-    if (attr_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutatr_set_wait_protocol, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutatr_set_wait_protocol, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (attr_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutatr_set_wait_protocol, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutatr_set_wait_protocol, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_ERRORS
-    /* Validate input value */
-    if (!(
+	/* Validate input value */
+	if (!(
 #if MQX_MUTEX_HAS_POLLING
-    (waiting_protocol == MUTEX_SPIN_ONLY) ||
-    (waiting_protocol == MUTEX_LIMITED_SPIN) ||
+	(waiting_protocol == MUTEX_SPIN_ONLY) ||
+	(waiting_protocol == MUTEX_LIMITED_SPIN) ||
 #endif
-    (waiting_protocol == MUTEX_QUEUEING) || (waiting_protocol == MUTEX_PRIORITY_QUEUEING)))
-    {
-        _KLOGX2(KLOG_mutatr_set_wait_protocol, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	(waiting_protocol == MUTEX_QUEUEING) || (waiting_protocol == MUTEX_PRIORITY_QUEUEING)))
+	{
+		_KLOGX2(KLOG_mutatr_set_wait_protocol, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    attr_ptr->WAIT_PROTOCOL = waiting_protocol;
+	attr_ptr->WAIT_PROTOCOL = waiting_protocol;
 
-    _KLOGX2(KLOG_mutatr_set_wait_protocol, MQX_EOK);
-    return (MQX_EOK);
+	_KLOGX2(KLOG_mutatr_set_wait_protocol, MQX_EOK);
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -972,42 +972,42 @@ _mqx_uint _mutatr_set_wait_protocol
  */
 _mqx_uint _mutatr_set_priority_ceiling
 (
-    MUTEX_ATTR_STRUCT_PTR attr_ptr,
-    _mqx_uint             ceiling
+	MUTEX_ATTR_STRUCT_PTR attr_ptr,
+	_mqx_uint             ceiling
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE3(KLOG_mutatr_set_priority_ceiling, attr_ptr, ceiling);
+	_KLOGE3(KLOG_mutatr_set_priority_ceiling, attr_ptr, ceiling);
 
 #if MQX_CHECK_ERRORS
-    if (attr_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutatr_set_priority_ceiling, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutatr_set_priority_ceiling, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (attr_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutatr_set_priority_ceiling, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutatr_set_priority_ceiling, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_ERRORS
-    if (ceiling > kernel_data->LOWEST_TASK_PRIORITY)
-    {
-        _KLOGX2(KLOG_mutatr_set_priority_ceiling, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (ceiling > kernel_data->LOWEST_TASK_PRIORITY)
+	{
+		_KLOGX2(KLOG_mutatr_set_priority_ceiling, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    attr_ptr->PRIORITY_CEILING = ceiling;
+	attr_ptr->PRIORITY_CEILING = ceiling;
 
-    _KLOGX2(KLOG_mutatr_set_priority_ceiling, MQX_EOK);
-    return (MQX_EOK);
+	_KLOGX2(KLOG_mutatr_set_priority_ceiling, MQX_EOK);
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -1028,42 +1028,42 @@ _mqx_uint _mutatr_set_priority_ceiling
  */
 _mqx_uint _mutatr_set_sched_protocol
 (
-    MUTEX_ATTR_STRUCT_PTR attr_ptr,
-    _mqx_uint             protocol
+	MUTEX_ATTR_STRUCT_PTR attr_ptr,
+	_mqx_uint             protocol
 )
 { /* Body */
-    _KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
+	_KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
-    _KLOGE3(KLOG_mutatr_set_sched_protocol, attr_ptr, protocol);
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGE3(KLOG_mutatr_set_sched_protocol, attr_ptr, protocol);
 
 #if MQX_CHECK_ERRORS
-    if (attr_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutatr_set_sched_protocol, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutatr_set_sched_protocol, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (attr_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutatr_set_sched_protocol, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutatr_set_sched_protocol, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_ERRORS
-    /* Validate protocol value */
-    if (!((protocol == MUTEX_PRIO_INHERIT) || (protocol == MUTEX_PRIO_PROTECT) || (protocol == MUTEX_NO_PRIO_INHERIT)))
-    {
-        _KLOGX2(KLOG_mutatr_set_sched_protocol, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	/* Validate protocol value */
+	if (!((protocol == MUTEX_PRIO_INHERIT) || (protocol == MUTEX_PRIO_PROTECT) || (protocol == MUTEX_NO_PRIO_INHERIT)))
+	{
+		_KLOGX2(KLOG_mutatr_set_sched_protocol, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    attr_ptr->SCHED_PROTOCOL = protocol;
+	attr_ptr->SCHED_PROTOCOL = protocol;
 
-    _KLOGX2(KLOG_mutatr_set_sched_protocol, MQX_EOK);
-    return (MQX_EOK);
+	_KLOGX2(KLOG_mutatr_set_sched_protocol, MQX_EOK);
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -1088,38 +1088,38 @@ _mqx_uint _mutatr_set_sched_protocol
  */
 _mqx_uint _mutatr_set_spin_limit
 (
-    MUTEX_ATTR_STRUCT_PTR attr_ptr,
-    _mqx_uint             spin_count
+	MUTEX_ATTR_STRUCT_PTR attr_ptr,
+	_mqx_uint             spin_count
 )
 { /* Body */
-    _KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
+	_KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
-    _KLOGE3(KLOG_mutatr_set_spin_limit, attr_ptr, spin_count);
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGE3(KLOG_mutatr_set_spin_limit, attr_ptr, spin_count);
 
 #if MQX_MUTEX_HAS_POLLING
 #if MQX_CHECK_ERRORS
-    if (attr_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutatr_set_spin_limit, MQX_EINVAL);
-        return(MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutatr_set_spin_limit, MQX_EINVAL);
+		return(MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (attr_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutatr_set_spin_limit, MQX_EINVAL);
-        return(MQX_EINVAL);
-    } /* Endif */
+	if (attr_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutatr_set_spin_limit, MQX_EINVAL);
+		return(MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    attr_ptr->COUNT = spin_count;
+	attr_ptr->COUNT = spin_count;
 
-    _KLOGX2(KLOG_mutatr_set_spin_limit, MQX_EOK);
-    return(MQX_EOK);
+	_KLOGX2(KLOG_mutatr_set_spin_limit, MQX_EOK);
+	return(MQX_EOK);
 #else
-    _KLOGX2(KLOG_mutatr_set_spin_limit, MQX_EINVAL);
-    return (MQX_EINVAL);
+	_KLOGX2(KLOG_mutatr_set_spin_limit, MQX_EINVAL);
+	return (MQX_EINVAL);
 #endif
 
 } /* Endbody */
@@ -1134,44 +1134,44 @@ _mqx_uint _mutatr_set_spin_limit
  */
 void _mutex_cleanup
 (
-    TD_STRUCT_PTR td_ptr
+	TD_STRUCT_PTR td_ptr
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR     kernel_data;
-    MUTEX_COMPONENT_STRUCT_PTR mutex_component_ptr;
-    MUTEX_STRUCT_PTR           mutex_ptr;
+	KERNEL_DATA_STRUCT_PTR     kernel_data;
+	MUTEX_COMPONENT_STRUCT_PTR mutex_component_ptr;
+	MUTEX_STRUCT_PTR           mutex_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES];
-    if (mutex_component_ptr == NULL)
-    {
-        return; /* No work to do! */
-    } /* Endif */
+	mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES];
+	if (mutex_component_ptr == NULL)
+	{
+		return; /* No work to do! */
+	} /* Endif */
 
 #if MQX_CHECK_VALIDITY
-    if (mutex_component_ptr->VALID != MUTEX_VALID)
-    {
-        return;
-    } /* Endif */
+	if (mutex_component_ptr->VALID != MUTEX_VALID)
+	{
+		return;
+	} /* Endif */
 #endif
 
-    _int_disable();
-    mutex_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_component_ptr->MUTEXES.NEXT);
-    while (mutex_ptr != (MUTEX_STRUCT_PTR) ((void *) &mutex_component_ptr->MUTEXES))
-    {
-        if ((mutex_ptr->LOCK) && (mutex_ptr->OWNER_TD == td_ptr))
-        {
-            mutex_ptr->OWNER_TD = kernel_data->ACTIVE_PTR;
-            _mutex_unlock(mutex_ptr);
-            mutex_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_component_ptr->MUTEXES.NEXT);
-        }
-        else
-        {
-            mutex_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_ptr->LINK.NEXT);
-        } /* Endif */
-    } /* Endwhile */
-    _int_enable();
+	_int_disable();
+	mutex_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_component_ptr->MUTEXES.NEXT);
+	while (mutex_ptr != (MUTEX_STRUCT_PTR) ((void *) &mutex_component_ptr->MUTEXES))
+	{
+		if ((mutex_ptr->LOCK) && (mutex_ptr->OWNER_TD == td_ptr))
+		{
+			mutex_ptr->OWNER_TD = kernel_data->ACTIVE_PTR;
+			_mutex_unlock(mutex_ptr);
+			mutex_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_component_ptr->MUTEXES.NEXT);
+		}
+		else
+		{
+			mutex_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_ptr->LINK.NEXT);
+		} /* Endif */
+	} /* Endwhile */
+	_int_enable();
 
 } /* Endbody */
 /*! \endcond */
@@ -1201,69 +1201,69 @@ void _mutex_cleanup
  */
 _mqx_uint _mutex_test
 (
-    void    **mutex_error_ptr
+	void    **mutex_error_ptr
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR     kernel_data;
-    MUTEX_COMPONENT_STRUCT_PTR mutex_component_ptr;
-    MUTEX_STRUCT_PTR           mutex_ptr;
-    _mqx_uint                  result;
+	KERNEL_DATA_STRUCT_PTR     kernel_data;
+	MUTEX_COMPONENT_STRUCT_PTR mutex_component_ptr;
+	MUTEX_STRUCT_PTR           mutex_ptr;
+	_mqx_uint                  result;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_mutex_test, mutex_error_ptr);
+	_KLOGE2(KLOG_mutex_test, mutex_error_ptr);
 
-    *mutex_error_ptr = NULL;
+	*mutex_error_ptr = NULL;
 
-    mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES];
-    if (mutex_component_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutex_test, MQX_OK);
-        return (MQX_OK);
-    } /* Endif */
+	mutex_component_ptr = (MUTEX_COMPONENT_STRUCT_PTR) kernel_data->KERNEL_COMPONENTS[KERNEL_MUTEXES];
+	if (mutex_component_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutex_test, MQX_OK);
+		return (MQX_OK);
+	} /* Endif */
 
-    if (mutex_component_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutex_test, MQX_INVALID_COMPONENT_BASE);
-        return (MQX_INVALID_COMPONENT_BASE);
-    } /* Endif */
+	if (mutex_component_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutex_test, MQX_INVALID_COMPONENT_BASE);
+		return (MQX_INVALID_COMPONENT_BASE);
+	} /* Endif */
 
-    _int_disable();
+	_int_disable();
 
-    /* Make sure that the queue of mutexes is ok */
-    result = _queue_test(&mutex_component_ptr->MUTEXES, mutex_error_ptr);
-    if (result != MQX_OK)
-    {
-        _int_enable();
-        _KLOGX3(KLOG_mutex_test, result, *mutex_error_ptr);
-        return (result);
-    } /* Endif */
+	/* Make sure that the queue of mutexes is ok */
+	result = _queue_test(&mutex_component_ptr->MUTEXES, mutex_error_ptr);
+	if (result != MQX_OK)
+	{
+		_int_enable();
+		_KLOGX3(KLOG_mutex_test, result, *mutex_error_ptr);
+		return (result);
+	} /* Endif */
 
-    mutex_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_component_ptr->MUTEXES.NEXT);
-    while (mutex_ptr != (MUTEX_STRUCT_PTR) ((void *) &mutex_component_ptr->MUTEXES))
-    {
-        if (mutex_ptr->VALID != MUTEX_VALID)
-        {
-            _int_enable();
-            *mutex_error_ptr = mutex_ptr;
-            _KLOGX3(KLOG_mutex_test, MQX_EINVAL, mutex_ptr);
-            return (MQX_EINVAL);
-        } /* Endif */
-        result = _queue_test(&mutex_ptr->WAITING_TASKS, mutex_error_ptr);
-        if (result != MQX_OK)
-        {
-            _int_enable();
-            *mutex_error_ptr = mutex_ptr;
-            _KLOGX3(KLOG_mutex_test, result, mutex_ptr);
-            return (result);
-        } /* Endif */
-        mutex_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_ptr->LINK.NEXT);
-    } /* Endif */
+	mutex_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_component_ptr->MUTEXES.NEXT);
+	while (mutex_ptr != (MUTEX_STRUCT_PTR) ((void *) &mutex_component_ptr->MUTEXES))
+	{
+		if (mutex_ptr->VALID != MUTEX_VALID)
+		{
+			_int_enable();
+			*mutex_error_ptr = mutex_ptr;
+			_KLOGX3(KLOG_mutex_test, MQX_EINVAL, mutex_ptr);
+			return (MQX_EINVAL);
+		} /* Endif */
+		result = _queue_test(&mutex_ptr->WAITING_TASKS, mutex_error_ptr);
+		if (result != MQX_OK)
+		{
+			_int_enable();
+			*mutex_error_ptr = mutex_ptr;
+			_KLOGX3(KLOG_mutex_test, result, mutex_ptr);
+			return (result);
+		} /* Endif */
+		mutex_ptr = (MUTEX_STRUCT_PTR) ((void *) mutex_ptr->LINK.NEXT);
+	} /* Endif */
 
-    _int_enable();
+	_int_enable();
 
-    _KLOGX2(KLOG_mutex_test, MQX_OK);
-    return (MQX_OK);
+	_KLOGX2(KLOG_mutex_test, MQX_OK);
+	return (MQX_OK);
 
 } /* Endbody */
 
@@ -1289,74 +1289,74 @@ _mqx_uint _mutex_test
  */
 _mqx_uint _mutex_try_lock
 (
-    register MUTEX_STRUCT_PTR mutex_ptr
+	register MUTEX_STRUCT_PTR mutex_ptr
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TD_STRUCT_PTR          td_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TD_STRUCT_PTR          td_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_mutex_try_lock, mutex_ptr);
+	_KLOGE2(KLOG_mutex_try_lock, mutex_ptr);
 
 #if MQX_CHECK_ERRORS
-    if (mutex_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutex_try_lock, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (mutex_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutex_try_lock, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (mutex_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutex_try_lock, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (mutex_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutex_try_lock, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    _INT_DISABLE();
-    if (_mem_test_and_set(&mutex_ptr->LOCK))
-    {
-        _INT_ENABLE();
-        /* Lock value was set, can't have it */
-        if (mutex_ptr->OWNER_TD == (void *) kernel_data->ACTIVE_PTR)
-        {
-            _KLOGX2(KLOG_mutex_try_lock, MQX_EDEADLK);
-            return (MQX_EDEADLK);
-        }
-        else
-        {
-            _KLOGX2(KLOG_mutex_try_lock, MQX_EBUSY);
-            return (MQX_EBUSY);
-        } /* Endif */
-    }
-    else
-    {
-        /* Lock value was not set, now it is, I own it */
-        mutex_ptr->OWNER_TD = kernel_data->ACTIVE_PTR;
-        _INT_ENABLE();
+	_INT_DISABLE();
+	if (_mem_test_and_set(&mutex_ptr->LOCK))
+	{
+		_INT_ENABLE();
+		/* Lock value was set, can't have it */
+		if (mutex_ptr->OWNER_TD == (void *) kernel_data->ACTIVE_PTR)
+		{
+			_KLOGX2(KLOG_mutex_try_lock, MQX_EDEADLK);
+			return (MQX_EDEADLK);
+		}
+		else
+		{
+			_KLOGX2(KLOG_mutex_try_lock, MQX_EBUSY);
+			return (MQX_EBUSY);
+		} /* Endif */
+	}
+	else
+	{
+		/* Lock value was not set, now it is, I own it */
+		mutex_ptr->OWNER_TD = kernel_data->ACTIVE_PTR;
+		_INT_ENABLE();
 
 #if MQX_HAS_DYNAMIC_PRIORITIES
-        if (mutex_ptr->PROTOCOLS & MUTEX_PRIO_PROTECT)
-        {
-            /* Switch my priority to the higher one if necessary */
-            td_ptr = kernel_data->ACTIVE_PTR;
-            _INT_DISABLE();
-            if (mutex_ptr->PRIORITY_CEILING < td_ptr->HOME_QUEUE->PRIORITY)
-            {
-                if (mutex_ptr->PRIORITY_CEILING < td_ptr->MY_QUEUE->PRIORITY)
-                {
-                    _sched_boost_priority_internal(td_ptr, mutex_ptr->PRIORITY_CEILING);
-                } /* Endif */
-                mutex_ptr->BOOSTED++;
-            } /* Endif */
-            _INT_ENABLE();
-        } /* Endif */
+		if (mutex_ptr->PROTOCOLS & MUTEX_PRIO_PROTECT)
+		{
+			/* Switch my priority to the higher one if necessary */
+			td_ptr = kernel_data->ACTIVE_PTR;
+			_INT_DISABLE();
+			if (mutex_ptr->PRIORITY_CEILING < td_ptr->HOME_QUEUE->PRIORITY)
+			{
+				if (mutex_ptr->PRIORITY_CEILING < td_ptr->MY_QUEUE->PRIORITY)
+				{
+					_sched_boost_priority_internal(td_ptr, mutex_ptr->PRIORITY_CEILING);
+				} /* Endif */
+				mutex_ptr->BOOSTED++;
+			} /* Endif */
+			_INT_ENABLE();
+		} /* Endif */
 #endif /* #if MQX_HAS_DYNAMIC_PRIORITIES */
 
-        _KLOGX2(KLOG_mutex_try_lock, MQX_EOK);
-        return (MQX_EOK);
-    } /* Endif */
+		_KLOGX2(KLOG_mutex_try_lock, MQX_EOK);
+		return (MQX_EOK);
+	} /* Endif */
 
 } /* Endbody */
 
@@ -1382,106 +1382,106 @@ _mqx_uint _mutex_try_lock
  */
 _mqx_uint _mutex_unlock
 (
-    register MUTEX_STRUCT_PTR mutex_ptr
+	register MUTEX_STRUCT_PTR mutex_ptr
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    register TD_STRUCT_PTR          td_ptr;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register TD_STRUCT_PTR          td_ptr;
 #if MQX_HAS_DYNAMIC_PRIORITIES
-    _mqx_uint                       boosted;
+	_mqx_uint                       boosted;
 #endif /* #if MQX_HAS_DYNAMIC_PRIORITIES */
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_mutex_unlock, mutex_ptr);
+	_KLOGE2(KLOG_mutex_unlock, mutex_ptr);
 
-    td_ptr = kernel_data->ACTIVE_PTR;
+	td_ptr = kernel_data->ACTIVE_PTR;
 
 #if MQX_CHECK_ERRORS
-    if (mutex_ptr == NULL)
-    {
-        _KLOGX2(KLOG_mutex_unlock, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (mutex_ptr == NULL)
+	{
+		_KLOGX2(KLOG_mutex_unlock, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (mutex_ptr->VALID != MUTEX_VALID)
-    {
-        _KLOGX2(KLOG_mutex_unlock, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (mutex_ptr->VALID != MUTEX_VALID)
+	{
+		_KLOGX2(KLOG_mutex_unlock, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
 #if MQX_CHECK_ERRORS
-    if (mutex_ptr->LOCK != MQX_TEST_AND_SET_VALUE)
-    {
-        _KLOGX2(KLOG_mutex_unlock, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
-    if (mutex_ptr->OWNER_TD != (void *) td_ptr)
-    {
-        _KLOGX2(KLOG_mutex_unlock, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (mutex_ptr->LOCK != MQX_TEST_AND_SET_VALUE)
+	{
+		_KLOGX2(KLOG_mutex_unlock, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
+	if (mutex_ptr->OWNER_TD != (void *) td_ptr)
+	{
+		_KLOGX2(KLOG_mutex_unlock, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    _INT_DISABLE();
+	_INT_DISABLE();
 #if MQX_HAS_DYNAMIC_PRIORITIES
-    boosted = mutex_ptr->BOOSTED;
-    mutex_ptr->BOOSTED = 0;
+	boosted = mutex_ptr->BOOSTED;
+	mutex_ptr->BOOSTED = 0;
 #endif /* #if MQX_HAS_DYNAMIC_PRIORITIES */
 
-    if (mutex_ptr->PROTOCOLS & (MUTEX_SPIN_ONLY | MUTEX_LIMITED_SPIN))
-    {
-        mutex_ptr->OWNER_TD = NULL;
-        mutex_ptr->LOCK = 0;
-    }
-    else
-    {
+	if (mutex_ptr->PROTOCOLS & (MUTEX_SPIN_ONLY | MUTEX_LIMITED_SPIN))
+	{
+		mutex_ptr->OWNER_TD = NULL;
+		mutex_ptr->LOCK = 0;
+	}
+	else
+	{
 
-        if (_QUEUE_GET_SIZE(&mutex_ptr->WAITING_TASKS))
-        {
+		if (_QUEUE_GET_SIZE(&mutex_ptr->WAITING_TASKS))
+		{
 
-            /* Schedule a waiting task to run */
-            _QUEUE_DEQUEUE(&mutex_ptr->WAITING_TASKS, td_ptr);
-            mutex_ptr->OWNER_TD = td_ptr;
-            _TASK_READY(td_ptr, kernel_data);
+			/* Schedule a waiting task to run */
+			_QUEUE_DEQUEUE(&mutex_ptr->WAITING_TASKS, td_ptr);
+			mutex_ptr->OWNER_TD = td_ptr;
+			_TASK_READY(td_ptr, kernel_data);
 #if MQX_HAS_DYNAMIC_PRIORITIES
-            if (mutex_ptr->PROTOCOLS & MUTEX_PRIO_PROTECT)
-            {
-                /* Switch priority to the higher one if necessary */
-                if (mutex_ptr->PRIORITY_CEILING < td_ptr->HOME_QUEUE->PRIORITY)
-                {
-                    if (mutex_ptr->PRIORITY_CEILING < td_ptr->MY_QUEUE->PRIORITY)
-                    {
-                        _sched_boost_priority_internal(td_ptr, mutex_ptr->PRIORITY_CEILING);
-                    } /* Endif */
-                    mutex_ptr->BOOSTED++;
-                } /* Endif */
-            } /* Endif */
+			if (mutex_ptr->PROTOCOLS & MUTEX_PRIO_PROTECT)
+			{
+				/* Switch priority to the higher one if necessary */
+				if (mutex_ptr->PRIORITY_CEILING < td_ptr->HOME_QUEUE->PRIORITY)
+				{
+					if (mutex_ptr->PRIORITY_CEILING < td_ptr->MY_QUEUE->PRIORITY)
+					{
+						_sched_boost_priority_internal(td_ptr, mutex_ptr->PRIORITY_CEILING);
+					} /* Endif */
+					mutex_ptr->BOOSTED++;
+				} /* Endif */
+			} /* Endif */
 #endif /* #if MQX_HAS_DYNAMIC_PRIORITIES */
 
-            _CHECK_RUN_SCHEDULER();/* Let higher priority task run */
+			_CHECK_RUN_SCHEDULER();/* Let higher priority task run */
 
-        }
-        else
-        {
-            mutex_ptr->LOCK = 0;
-            mutex_ptr->OWNER_TD = NULL;
-        } /* Endif */
+		}
+		else
+		{
+			mutex_ptr->LOCK = 0;
+			mutex_ptr->OWNER_TD = NULL;
+		} /* Endif */
 
-    } /* Endif */
+	} /* Endif */
 
 #if MQX_HAS_DYNAMIC_PRIORITIES
-    if (boosted)
-    {
-        _sched_unboost_priority_internal(kernel_data->ACTIVE_PTR, boosted);
-    } /* Endif */
+	if (boosted)
+	{
+		_sched_unboost_priority_internal(kernel_data->ACTIVE_PTR, boosted);
+	} /* Endif */
 #endif /* #if MQX_HAS_DYNAMIC_PRIORITIES */
-    _INT_ENABLE();
+	_INT_ENABLE();
 
-    _KLOGX2(KLOG_mutex_unlock, MQX_EOK);
-    return (MQX_EOK);
+	_KLOGX2(KLOG_mutex_unlock, MQX_EOK);
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -1506,49 +1506,49 @@ _mqx_uint _mutex_unlock
  */
 _mqx_uint _mutex_set_priority_ceiling
 (
-    MUTEX_STRUCT_PTR mutex_ptr,
-    _mqx_uint        ceiling,
-    _mqx_uint_ptr    old_ceiling_ptr
+	MUTEX_STRUCT_PTR mutex_ptr,
+	_mqx_uint        ceiling,
+	_mqx_uint_ptr    old_ceiling_ptr
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE4(KLOG_mutex_set_priority_ceiling, mutex_ptr, ceiling, old_ceiling_ptr);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE4(KLOG_mutex_set_priority_ceiling, mutex_ptr, ceiling, old_ceiling_ptr);
 
 #if MQX_CHECK_ERRORS
-    if (ceiling > kernel_data->LOWEST_TASK_PRIORITY)
-    {
-        _KLOGX2(KLOG_mutex_set_priority_ceiling, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (ceiling > kernel_data->LOWEST_TASK_PRIORITY)
+	{
+		_KLOGX2(KLOG_mutex_set_priority_ceiling, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    _int_disable();
+	_int_disable();
 
 #if MQX_CHECK_ERRORS
-    if ((mutex_ptr == NULL) || (old_ceiling_ptr == NULL))
-    {
-        _int_enable();
-        _KLOGX2(KLOG_mutex_set_priority_ceiling, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if ((mutex_ptr == NULL) || (old_ceiling_ptr == NULL))
+	{
+		_int_enable();
+		_KLOGX2(KLOG_mutex_set_priority_ceiling, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (mutex_ptr->VALID != MUTEX_VALID)
-    {
-        _int_enable();
-        _KLOGX2(KLOG_mutex_set_priority_ceiling, MQX_EINVAL);
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (mutex_ptr->VALID != MUTEX_VALID)
+	{
+		_int_enable();
+		_KLOGX2(KLOG_mutex_set_priority_ceiling, MQX_EINVAL);
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    *old_ceiling_ptr = mutex_ptr->PRIORITY_CEILING;
-    mutex_ptr->PRIORITY_CEILING = ceiling;
-    _int_enable();
+	*old_ceiling_ptr = mutex_ptr->PRIORITY_CEILING;
+	mutex_ptr->PRIORITY_CEILING = ceiling;
+	_int_enable();
 
-    _KLOGX2(KLOG_mutex_set_priority_ceiling, MQX_EOK);
-    return (MQX_EOK);
+	_KLOGX2(KLOG_mutex_set_priority_ceiling, MQX_EOK);
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -1572,26 +1572,26 @@ _mqx_uint _mutex_set_priority_ceiling
  */
 _mqx_uint _mutex_get_priority_ceiling
 (
-    MUTEX_STRUCT_PTR mutex_ptr,
-    _mqx_uint_ptr    ceiling_ptr
+	MUTEX_STRUCT_PTR mutex_ptr,
+	_mqx_uint_ptr    ceiling_ptr
 )
 { /* Body */
 
 #if MQX_CHECK_ERRORS
-    if ((mutex_ptr == NULL) || (ceiling_ptr == NULL))
-    {
-        return (MQX_EINVAL);
-    } /* Endif */
+	if ((mutex_ptr == NULL) || (ceiling_ptr == NULL))
+	{
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (mutex_ptr->VALID != MUTEX_VALID)
-    {
-        return (MQX_EINVAL);
-    } /* Endif */
+	if (mutex_ptr->VALID != MUTEX_VALID)
+	{
+		return (MQX_EINVAL);
+	} /* Endif */
 #endif
 
-    *ceiling_ptr = mutex_ptr->PRIORITY_CEILING;
-    return (MQX_EOK);
+	*ceiling_ptr = mutex_ptr->PRIORITY_CEILING;
+	return (MQX_EOK);
 
 } /* Endbody */
 
@@ -1612,26 +1612,26 @@ _mqx_uint _mutex_get_priority_ceiling
  */
 _mqx_uint _mutex_get_wait_count
 (
-    register MUTEX_STRUCT_PTR mutex_ptr
+	register MUTEX_STRUCT_PTR mutex_ptr
 )
 { /* Body */
 
 #if MQX_CHECK_ERRORS
-    if (mutex_ptr == NULL)
-    {
-        _task_set_error(MQX_EINVAL);
-        return (MAX_MQX_UINT);
-    } /* Endif */
+	if (mutex_ptr == NULL)
+	{
+		_task_set_error(MQX_EINVAL);
+		return (MAX_MQX_UINT);
+	} /* Endif */
 #endif
 #if MQX_CHECK_VALIDITY
-    if (mutex_ptr->VALID != MUTEX_VALID)
-    {
-        _task_set_error(MQX_EINVAL);
-        return (MAX_MQX_UINT);
-    } /* Endif */
+	if (mutex_ptr->VALID != MUTEX_VALID)
+	{
+		_task_set_error(MQX_EINVAL);
+		return (MAX_MQX_UINT);
+	} /* Endif */
 #endif
 
-    return (_QUEUE_GET_SIZE(&mutex_ptr->WAITING_TASKS));
+	return (_QUEUE_GET_SIZE(&mutex_ptr->WAITING_TASKS));
 
 } /* Endbody */
 

@@ -39,7 +39,7 @@
 /*--------------------------------------------------------------------------*/
 /*                        CONSTANT DEFINITIONS                              */
 
-/* 
+/*
  * How long to wait for all mult-proc configuration messages to
  * return.
  */
@@ -89,27 +89,27 @@
 /*                      DATA STRUCTURE DEFINITIONS                          */
 
 /*!
- * \cond DOXYGEN_PRIVATE 
- * 
+ * \cond DOXYGEN_PRIVATE
+ *
  * \brief EDS operation structure.
- * 
+ *
  * This structure is always BIG Endian. */
-typedef struct eds_op_struct 
+typedef struct eds_op_struct
 {
    /*! \brief Server operation. */
-   uint32_t  OPERATION;   
+   uint32_t  OPERATION;
    /*! \brief Read/write memory address. */
-   uint32_t  ADDRESS;     
+   uint32_t  ADDRESS;
    /*! \brief Extra address field. */
-   uint32_t  ADDRESS2;    
+   uint32_t  ADDRESS2;
    /*! \brief Size of buffer. */
-   uint32_t  SIZE;        
+   uint32_t  SIZE;
    /*! \brief Processor type. */
-   uint32_t  PROCESSOR;   
+   uint32_t  PROCESSOR;
    /*! \brief Endian of processor. */
-   uint32_t  ENDIAN;      
+   uint32_t  ENDIAN;
    /*! \brief Error code. */
-   uint32_t  EDS_ERROR;   
+   uint32_t  EDS_ERROR;
 } EDS_OP_STRUCT, * EDS_OP_STRUCT_PTR;
 /*! \endcond */
 
@@ -117,7 +117,7 @@ typedef struct eds_op_struct
  * \cond DOXYGEN_PRIVATE
  *
  * \brief EDS Message struct.
- *  
+ *
  * The EDS Message struct overlays the Parameters field of the IPC Message struct.
  */
 typedef struct eds_msg_struct
@@ -135,7 +135,7 @@ typedef struct eds_msg_struct
  * \cond DOXYGEN_PRIVATE
  *
  * \brief EDS component structure.
- */ 
+ */
 typedef struct eds_component_struct
 {
    /*! \brief Lightweight semaphore. */

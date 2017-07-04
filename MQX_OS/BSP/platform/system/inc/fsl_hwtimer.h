@@ -50,12 +50,12 @@
  */
 typedef enum _hwtimer_error_code
 {
-    kHwtimerSuccess,                /*!< success */
-    kHwtimerInvalidInput,           /*!< invalid input parameter */
-    kHwtimerInvalidPointer,         /*!< invalid pointer */
-    kHwtimerClockManagerError,      /*!< clock manager return error */
-    kHwtimerRegisterHandlerError,   /*!< Interrupt handler registration returns error */
-    kHwtimerUnknown,                /*!< unknown error*/
+	kHwtimerSuccess,                /*!< success */
+	kHwtimerInvalidInput,           /*!< invalid input parameter */
+	kHwtimerInvalidPointer,         /*!< invalid pointer */
+	kHwtimerClockManagerError,      /*!< clock manager return error */
+	kHwtimerRegisterHandlerError,   /*!< Interrupt handler registration returns error */
+	kHwtimerUnknown,                /*!< unknown error*/
 } _hwtimer_error_code_t;
 
 /*!
@@ -92,27 +92,27 @@ typedef void (* hwtimer_callback_t)(void *p);
  */
 typedef struct Hwtimer
 {
-    /*! @brief Pointer to a device interface structure */
-    const struct Hwtimer_devif *    devif;
-    /*! @brief Timer's source clock frequency */
-    uint32_t                        clockFreq;
-    /*! @brief Actual total divider */
-    uint32_t                        divider;
-    /*! @brief Determine how many sub ticks are in one tick */
-    uint32_t                        modulo;
-    /*! @brief Number of elapsed ticks */
-    volatile uint64_t               ticks;
-    /*! @brief Function pointer to be called when the timer expires. */
-    hwtimer_callback_t              callbackFunc;
-    /*! @brief Arbitrary pointer passed as parameter to the callback function. */
-    void                            *callbackData;
-    /*! @brief Indicate pending callback.
-     *  If the timer overflows when callbacks are blocked the callback becomes pending. */
-    volatile int                    callbackPending;
-    /*! @brief Indicate blocked callback. */
-    int                             callbackBlocked;
-    /*! @brief Private storage locations for arbitrary data keeping the context of the lower layer driver. */
-    uint32_t                        llContext[HWTIMER_LL_CONTEXT_LEN];
+	/*! @brief Pointer to a device interface structure */
+	const struct Hwtimer_devif *    devif;
+	/*! @brief Timer's source clock frequency */
+	uint32_t                        clockFreq;
+	/*! @brief Actual total divider */
+	uint32_t                        divider;
+	/*! @brief Determine how many sub ticks are in one tick */
+	uint32_t                        modulo;
+	/*! @brief Number of elapsed ticks */
+	volatile uint64_t               ticks;
+	/*! @brief Function pointer to be called when the timer expires. */
+	hwtimer_callback_t              callbackFunc;
+	/*! @brief Arbitrary pointer passed as parameter to the callback function. */
+	void                            *callbackData;
+	/*! @brief Indicate pending callback.
+	 *  If the timer overflows when callbacks are blocked the callback becomes pending. */
+	volatile int                    callbackPending;
+	/*! @brief Indicate blocked callback. */
+	int                             callbackBlocked;
+	/*! @brief Private storage locations for arbitrary data keeping the context of the lower layer driver. */
+	uint32_t                        llContext[HWTIMER_LL_CONTEXT_LEN];
 } hwtimer_t, * hwtimer_ptr_t;
 
 /*!
@@ -124,10 +124,10 @@ typedef struct Hwtimer
  */
 typedef struct Hwtimer_time
 {
-    /*! @brief Ticks of timer */
-    uint64_t ticks;
-    /*! @brief Sub ticks of timer */
-    uint32_t subTicks;
+	/*! @brief Ticks of timer */
+	uint64_t ticks;
+	/*! @brief Sub ticks of timer */
+	uint32_t subTicks;
 } hwtimer_time_t, * hwtimer_time_ptr_t;
 
 /*!
@@ -176,18 +176,18 @@ typedef _hwtimer_error_code_t (*  hwtimer_devif_get_time_t)(hwtimer_t *hwtimer, 
  */
 typedef struct Hwtimer_devif
 {
-     /*! @brief Function pointer to lower layer initialization */
-    hwtimer_devif_init_t             init;
-     /*! @brief Function pointer to lower layer de-initialization */
-    hwtimer_devif_deinit_t           deinit;
-     /*! @brief Function pointer to lower layer set divider functionality */
-    hwtimer_devif_set_div_t          setDiv;
-     /*! @brief Function pointer to lower layer start functionality */
-    hwtimer_devif_start_t            start;
-     /*! @brief Function pointer to lower layer stop functionality */
-    hwtimer_devif_stop_t             stop;
-     /*! @brief Function pointer to lower layer get time functionality */
-    hwtimer_devif_get_time_t         getTime;
+	 /*! @brief Function pointer to lower layer initialization */
+	hwtimer_devif_init_t             init;
+	 /*! @brief Function pointer to lower layer de-initialization */
+	hwtimer_devif_deinit_t           deinit;
+	 /*! @brief Function pointer to lower layer set divider functionality */
+	hwtimer_devif_set_div_t          setDiv;
+	 /*! @brief Function pointer to lower layer start functionality */
+	hwtimer_devif_start_t            start;
+	 /*! @brief Function pointer to lower layer stop functionality */
+	hwtimer_devif_stop_t             stop;
+	 /*! @brief Function pointer to lower layer get time functionality */
+	hwtimer_devif_get_time_t         getTime;
 } hwtimer_devif_t, * hwtimer_devif_ptr_t;
 
 #if defined(__cplusplus)
