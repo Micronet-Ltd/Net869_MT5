@@ -55,7 +55,7 @@ extern void __cexit_call_dtors(void);
  */
 void *malloc(_mem_size bytes)
 {
-    return _mem_alloc_system(bytes);
+	return _mem_alloc_system(bytes);
 }
 
 /*!
@@ -69,7 +69,7 @@ void *malloc(_mem_size bytes)
 void *calloc(_mem_size n, _mem_size z)
 {
 
-    return _mem_alloc_system_zero(n*z);
+	return _mem_alloc_system_zero(n*z);
 }
 
 /*!
@@ -79,7 +79,7 @@ void *calloc(_mem_size n, _mem_size z)
  */
 void free(void *p)
 {
-    _mem_free(p);
+	_mem_free(p);
 }
 #endif /* MQXCFG_ALLOCATOR */
 
@@ -94,17 +94,17 @@ void free(void *p)
 void exit(int status)
 {
 #if MQX_ENABLE_CPP || BSPCFG_ENABLE_CPP
-    /* Destroy all constructed global objects */
-    __cexit_call_dtors();
+	/* Destroy all constructed global objects */
+	__cexit_call_dtors();
 #endif /* MQX_ENABLE_CPP || BSPCFG_ENABLE_CPP */
 
-    /*
-    ** Change for whatever is appropriate for your board
-    ** and application.  Perhaps a software reset or
-    ** some kind of trap/call to the kernel soft re-boot.
-    */
-    while (TRUE) {
-    }
+	/*
+	** Change for whatever is appropriate for your board
+	** and application.  Perhaps a software reset or
+	** some kind of trap/call to the kernel soft re-boot.
+	*/
+	while (TRUE) {
+	}
 }
 
 #else  /* MQX_EXIT_ENABLED */

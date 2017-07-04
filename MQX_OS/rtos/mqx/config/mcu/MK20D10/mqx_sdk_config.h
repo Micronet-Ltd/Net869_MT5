@@ -36,6 +36,7 @@
 #define CMSIS_ENABLED                       1
 #define MQX_USE_IDLE_TASK                   1
 #define MQX_TASK_DESTRUCTION                1
+#define MQX_USE_SW_WATCHDOGS                1
 
 // #undef MQX_DISABLE_CONFIG_CHECK
 
@@ -48,9 +49,9 @@
 
 /* Select one of common configurations according to project settings. */
 #if MQX_COMMON_CONFIG == MQX_LITE_CONFIG
-    #include "lite_config.h"
+	#include "lite_config.h"
 #elif MQX_COMMON_CONFIG == MQX_SMALL_RAM_CONFIG
-    #include "small_ram_config.h"
+	#include "small_ram_config.h"
 #endif
 
 /* In the case the I/O subsystem is not used,

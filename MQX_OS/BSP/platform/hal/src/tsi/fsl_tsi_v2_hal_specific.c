@@ -41,7 +41,7 @@ static int32_t TSI_HAL_MeasurementBlocking(TSI_Type * base);
 *END**************************************************************************/
 void TSI_HAL_EnableLowPower(TSI_Type * base)
 {
-    TSI_HAL_EnableStop(base);
+	TSI_HAL_EnableStop(base);
 }
 
 /*FUNCTION**********************************************************************
@@ -52,8 +52,8 @@ void TSI_HAL_EnableLowPower(TSI_Type * base)
 *END**************************************************************************/
 void TSI_HAL_Init(TSI_Type * base)
 {
-    TSI_WR_GENCS(base, 0);
-    TSI_WR_SCANC(base, 0);
+	TSI_WR_GENCS(base, 0);
+	TSI_WR_SCANC(base, 0);
 }
 
 /*FUNCTION**********************************************************************
@@ -64,32 +64,32 @@ void TSI_HAL_Init(TSI_Type * base)
 *END**************************************************************************/
 void TSI_HAL_SetConfiguration(TSI_Type * base, tsi_config_t *config)
 {
-    assert(config != NULL);
+	assert(config != NULL);
 
-    TSI_HAL_SetPrescaler(base, config->ps);
-    TSI_HAL_SetNumberOfScans(base, config->nscn);
-    TSI_HAL_SetLowPowerScanInterval(base, config->lpscnitv);
-    TSI_HAL_SetLowPowerClock(base, config->lpclks);
-    TSI_HAL_SetActiveModeSource(base, config->amclks);
-    TSI_HAL_SetActiveModePrescaler(base, config->ampsc);
+	TSI_HAL_SetPrescaler(base, config->ps);
+	TSI_HAL_SetNumberOfScans(base, config->nscn);
+	TSI_HAL_SetLowPowerScanInterval(base, config->lpscnitv);
+	TSI_HAL_SetLowPowerClock(base, config->lpclks);
+	TSI_HAL_SetActiveModeSource(base, config->amclks);
+	TSI_HAL_SetActiveModePrescaler(base, config->ampsc);
 
 #if (FSL_FEATURE_TSI_VERSION == 1)
-    TSI_HAL_SetActiveModePrescaler(base, config->amclkdiv);
-    TSI_HAL_SetDeltaVoltage(base, config->delvol);
-    TSI_HAL_SetInternalCapacitanceTrim(base, config->captrm);
+	TSI_HAL_SetActiveModePrescaler(base, config->amclkdiv);
+	TSI_HAL_SetDeltaVoltage(base, config->delvol);
+	TSI_HAL_SetInternalCapacitanceTrim(base, config->captrm);
 #endif
 
-    TSI_HAL_SetReferenceChargeCurrent(base, config->refchrg);
-    TSI_HAL_SetElectrodeChargeCurrent(base, config->extchrg);
+	TSI_HAL_SetReferenceChargeCurrent(base, config->refchrg);
+	TSI_HAL_SetElectrodeChargeCurrent(base, config->extchrg);
 
 #if (FSL_FEATURE_TSI_VERSION == 1) /* TODO HAL for VER 1 */
-    for (uint32_t i = 0U; i < 16U; i++) {
-        tsi->threshold[i] = TSI_THRESHOLD_HTHH(config->thresh) |
-                            TSI_THRESHOLD_LTHH(config->thresl);
-    }
+	for (uint32_t i = 0U; i < 16U; i++) {
+		tsi->threshold[i] = TSI_THRESHOLD_HTHH(config->thresh) |
+							TSI_THRESHOLD_LTHH(config->thresl);
+	}
 #elif (FSL_FEATURE_TSI_VERSION == 2)
-    TSI_HAL_SetLowThreshold(base, config->thresl);
-    TSI_HAL_SetHighThreshold(base, config->thresh);
+	TSI_HAL_SetLowThreshold(base, config->thresl);
+	TSI_HAL_SetHighThreshold(base, config->thresh);
 #endif
 }
 
@@ -104,48 +104,48 @@ void TSI_HAL_SetConfiguration(TSI_Type * base, tsi_config_t *config)
 
 uint32_t TSI_HAL_Recalibrate(TSI_Type * base, tsi_config_t *config, const uint32_t electrodes, const tsi_parameter_limits_t *parLimits)
 {
-    assert(config != NULL);
-    
-    uint32_t is_enabled = TSI_HAL_IsModuleEnabled(base);
-    uint32_t is_int_enabled = TSI_HAL_IsInterruptEnabled(base);
-    uint32_t lowest_signal = TSI_RECALIBRATE_MAX_SIGNAL_VAL;
-    
-    if (is_enabled) {
-        TSI_HAL_DisableModule(base);
-    }
-    if (is_int_enabled) {
-        TSI_HAL_DisableInterrupt(base);
-    }
+	assert(config != NULL);
 
-    TSI_HAL_SetNumberOfScans(base, config->nscn);
-    TSI_HAL_SetPrescaler(base, config->ps);
-    TSI_HAL_SetElectrodeChargeCurrent(base, config->extchrg);
-    TSI_HAL_SetReferenceChargeCurrent(base, config->refchrg);
+	uint32_t is_enabled = TSI_HAL_IsModuleEnabled(base);
+	uint32_t is_int_enabled = TSI_HAL_IsInterruptEnabled(base);
+	uint32_t lowest_signal = TSI_RECALIBRATE_MAX_SIGNAL_VAL;
 
-    TSI_HAL_EnableModule(base);
+	if (is_enabled) {
+		TSI_HAL_DisableModule(base);
+	}
+	if (is_int_enabled) {
+		TSI_HAL_DisableInterrupt(base);
+	}
 
-    if (TSI_HAL_MeasurementBlocking(base) == 0) {
-        for (uint32_t i = 0U; i < 16U; i++) {
-            if (TSI_HAL_GetEnabledChannel(base, i)) {
-                int32_t counter = TSI_HAL_GetCounter(base, i);
-                if (counter < lowest_signal) {
-                    lowest_signal = counter;
-                }
-            }
-        }
-    }
+	TSI_HAL_SetNumberOfScans(base, config->nscn);
+	TSI_HAL_SetPrescaler(base, config->ps);
+	TSI_HAL_SetElectrodeChargeCurrent(base, config->extchrg);
+	TSI_HAL_SetReferenceChargeCurrent(base, config->refchrg);
 
-    if (!is_enabled) {
-        TSI_HAL_EnableModule(base);
-    }
-    if (is_int_enabled) {
-        TSI_HAL_EnableInterrupt(base);
-    }
-    if (lowest_signal == TSI_RECALIBRATE_MAX_SIGNAL_VAL) {
-        lowest_signal = 0U;  /* not valid */
-    }
+	TSI_HAL_EnableModule(base);
 
-    return lowest_signal;
+	if (TSI_HAL_MeasurementBlocking(base) == 0) {
+		for (uint32_t i = 0U; i < 16U; i++) {
+			if (TSI_HAL_GetEnabledChannel(base, i)) {
+				int32_t counter = TSI_HAL_GetCounter(base, i);
+				if (counter < lowest_signal) {
+					lowest_signal = counter;
+				}
+			}
+		}
+	}
+
+	if (!is_enabled) {
+		TSI_HAL_EnableModule(base);
+	}
+	if (is_int_enabled) {
+		TSI_HAL_EnableInterrupt(base);
+	}
+	if (lowest_signal == TSI_RECALIBRATE_MAX_SIGNAL_VAL) {
+		lowest_signal = 0U;  /* not valid */
+	}
+
+	return lowest_signal;
 }
 
 /*FUNCTION**********************************************************************
@@ -157,26 +157,26 @@ uint32_t TSI_HAL_Recalibrate(TSI_Type * base, tsi_config_t *config, const uint32
 static int32_t TSI_HAL_MeasurementBlocking(TSI_Type * base)
 {
   int32_t result = -1;
-  uint32_t timeout = 10000000; /* Big timeout */ 
-  
+  uint32_t timeout = 10000000; /* Big timeout */
+
   if (TSI_RD_PEN(base)) {
 
-    /* measure only if at least one electrode is enabled */
-    TSI_HAL_EnableSoftwareTriggerScan(base);
-    TSI_HAL_EnableModule(base);
-    TSI_HAL_StartSoftwareTrigger(base);
+	/* measure only if at least one electrode is enabled */
+	TSI_HAL_EnableSoftwareTriggerScan(base);
+	TSI_HAL_EnableModule(base);
+	TSI_HAL_StartSoftwareTrigger(base);
 
-    while((TSI_HAL_GetEndOfScanFlag(base) == 0U) && (timeout--))
-    {
-      /* Do nothing, just to meet MISRA C 2004 rule 14.3 . */
-    }
-    TSI_HAL_ClearEndOfScanFlag(base);
-    TSI_HAL_DisableModule(base);
+	while((TSI_HAL_GetEndOfScanFlag(base) == 0U) && (timeout--))
+	{
+	  /* Do nothing, just to meet MISRA C 2004 rule 14.3 . */
+	}
+	TSI_HAL_ClearEndOfScanFlag(base);
+	TSI_HAL_DisableModule(base);
 
-    if(timeout)
-    {
-      result = 0;
-    }
+	if(timeout)
+	{
+	  result = 0;
+	}
   }
   return result;
 }

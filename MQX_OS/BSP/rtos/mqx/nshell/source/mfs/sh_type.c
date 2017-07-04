@@ -65,59 +65,59 @@ int32_t  Shell_type(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc == 2)  {
-         /* check if filesystem is mounted */
-         if (0 > Shell_get_current_filesystem(argv))    {
-            fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n" );
-            return_code = SHELL_EXIT_ERROR;
-         }
-         else if (MFS_alloc_path(&abs_path) != MFS_NO_ERROR) {
-            fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
-            return_code = SHELL_EXIT_ERROR;
-         }
-         else {
-            error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[1],PATHNAME_SIZE,shell_ptr->CURRENT_DEVICE_NAME);
+	  if (argc == 2)  {
+		 /* check if filesystem is mounted */
+		 if (0 > Shell_get_current_filesystem(argv))    {
+			fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n" );
+			return_code = SHELL_EXIT_ERROR;
+		 }
+		 else if (MFS_alloc_path(&abs_path) != MFS_NO_ERROR) {
+			fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
+			return_code = SHELL_EXIT_ERROR;
+		 }
+		 else {
+			error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[1],PATHNAME_SIZE,shell_ptr->CURRENT_DEVICE_NAME);
 
-            if (error)  {
-               fprintf(shell_ptr->STDOUT, "Error, unable to locate file %s.\n", argv[1] );
-               return_code = SHELL_EXIT_ERROR;
-            } else  {
-               fd = open(abs_path, O_RDONLY);
-               if (0 <= fd) {
-                  do {
+			if (error)  {
+			   fprintf(shell_ptr->STDOUT, "Error, unable to locate file %s.\n", argv[1] );
+			   return_code = SHELL_EXIT_ERROR;
+			} else  {
+			   fd = open(abs_path, O_RDONLY);
+			   if (0 <= fd) {
+				  do {
 //                   c = fgetc(fd);
-                     res = read(fd, &c, 1);
+					 res = read(fd, &c, 1);
 
-                     if (0 < res) {
+					 if (0 < res) {
 //                      fputc((char)c, stdout);
-                        fputc(c, shell_ptr->STDOUT);
-                     }
-                  } while (0 < res);
-                  close(fd);
-                  fprintf(shell_ptr->STDOUT, "\n");
-               }
-               else {
-                  fprintf(shell_ptr->STDOUT, "Error, unable to open file %s.\n", argv[1] );
-                  return_code = SHELL_EXIT_ERROR;
-               }
-            }
+						fputc(c, shell_ptr->STDOUT);
+					 }
+				  } while (0 < res);
+				  close(fd);
+				  fprintf(shell_ptr->STDOUT, "\n");
+			   }
+			   else {
+				  fprintf(shell_ptr->STDOUT, "Error, unable to open file %s.\n", argv[1] );
+				  return_code = SHELL_EXIT_ERROR;
+			   }
+			}
 
-            MFS_free_path(abs_path);
-         }
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
-         return_code = SHELL_EXIT_ERROR;
-         print_usage = TRUE;
-      }
+			MFS_free_path(abs_path);
+		 }
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage = TRUE;
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <filename>\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <filename>\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <filename>   = filename to display\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <filename>\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <filename>\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <filename>   = filename to display\n");
+	  }
    }
    return return_code;
 } /* Endbody */

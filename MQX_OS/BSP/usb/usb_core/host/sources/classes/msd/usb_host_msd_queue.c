@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
  * All Rights Reserved
  *
  * Copyright (c) 1989-2008 ARC International;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
  *
  * $FileName: usb_host_msd_queue.c$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
@@ -53,24 +53,24 @@
 
 void usb_class_mass_q_init
 (
-    /* [IN] interface structure pointer */
-    usb_mass_class_struct_t * msd_class_ptr
-    )
+	/* [IN] interface structure pointer */
+	usb_mass_class_struct_t * msd_class_ptr
+	)
 { /* Body */
-    uint32_t i = 0;
+	uint32_t i = 0;
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_class_mass_q_init");
+	DEBUG_LOG_TRACE("usb_class_mass_q_init");
 #endif
 
-    msd_class_ptr->queue.FIRST = 0;
-    msd_class_ptr->queue.LAST = 0;
-    msd_class_ptr->queue.COUNT = 0;
-    for (i = 0; i < QUEUE_SIZE; i++)
-    {
-        msd_class_ptr->queue.ELEMENTS[i] = NULL;
-    }
+	msd_class_ptr->queue.FIRST = 0;
+	msd_class_ptr->queue.LAST = 0;
+	msd_class_ptr->queue.COUNT = 0;
+	for (i = 0; i < QUEUE_SIZE; i++)
+	{
+		msd_class_ptr->queue.ELEMENTS[i] = NULL;
+	}
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_class_mass_q_init, SUCCESSFUL");
+	DEBUG_LOG_TRACE("usb_class_mass_q_init, SUCCESSFUL");
 #endif
 
 } /* Endbody */
@@ -86,39 +86,39 @@ void usb_class_mass_q_init
 
 int32_t usb_class_mass_q_insert
 (
-    /* [IN] interface structure pointer */
-    usb_mass_class_struct_t * mass_class,
+	/* [IN] interface structure pointer */
+	usb_mass_class_struct_t * mass_class,
 
-    /* [IN] command object to be inserted in the queue*/
-    mass_command_struct_t* pCmd
-    )
+	/* [IN] command object to be inserted in the queue*/
+	mass_command_struct_t* pCmd
+	)
 { /* Body */
-    mass_queue_struct_t * q = &mass_class->queue;
-    int32_t tmp = -1;
+	mass_queue_struct_t * q = &mass_class->queue;
+	int32_t tmp = -1;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_class_mass_q_insert");
+	DEBUG_LOG_TRACE("usb_class_mass_q_insert");
 #endif
 
-    /*
-     ** Insert into queue, update LAST, check if full and return queue position.
-     ** If queue is full -1 will be returned
-     */
-    USB_Host_MSD_lock();
-    if (q->COUNT < QUEUE_SIZE)
-    {
-        q->ELEMENTS[q->LAST] = pCmd;
-        tmp = q->LAST;
-        q->LAST = MASSQ_NEXT(q->LAST);
-        q->COUNT++;
-    } /* Endif */
-    USB_Host_MSD_unlock();
+	/*
+	 ** Insert into queue, update LAST, check if full and return queue position.
+	 ** If queue is full -1 will be returned
+	 */
+	USB_Host_MSD_lock();
+	if (q->COUNT < QUEUE_SIZE)
+	{
+		q->ELEMENTS[q->LAST] = pCmd;
+		tmp = q->LAST;
+		q->LAST = MASSQ_NEXT(q->LAST);
+		q->COUNT++;
+	} /* Endif */
+	USB_Host_MSD_unlock();
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_class_mass_q_insert, SUCCESSFUL");
+	DEBUG_LOG_TRACE("usb_class_mass_q_insert, SUCCESSFUL");
 #endif
 
-    return tmp;
+	return tmp;
 } /* Endbody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -131,28 +131,28 @@ int32_t usb_class_mass_q_insert
 
 void usb_class_mass_deleteq
 (
-    /* [IN] interface structure pointer */
-    usb_mass_class_struct_t * mass_class
-    )
+	/* [IN] interface structure pointer */
+	usb_mass_class_struct_t * mass_class
+	)
 { /* Body */
-    mass_queue_struct_t * q = &mass_class->queue;
+	mass_queue_struct_t * q = &mass_class->queue;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_class_mass_deleteq");
+	DEBUG_LOG_TRACE("usb_class_mass_deleteq");
 #endif
 
-    /* Remove current command and increment FIRST modulo the q size */
-    USB_Host_MSD_lock();
-    if (q->COUNT)
-    {
-        q->ELEMENTS[q->FIRST] = NULL;
-        q->FIRST = MASSQ_NEXT(q->FIRST);
-        q->COUNT--;
-    }
-    USB_Host_MSD_unlock();
+	/* Remove current command and increment FIRST modulo the q size */
+	USB_Host_MSD_lock();
+	if (q->COUNT)
+	{
+		q->ELEMENTS[q->FIRST] = NULL;
+		q->FIRST = MASSQ_NEXT(q->FIRST);
+		q->COUNT--;
+	}
+	USB_Host_MSD_unlock();
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_class_mass_deleteq, SUCCESSFUL");
+	DEBUG_LOG_TRACE("usb_class_mass_deleteq, SUCCESSFUL");
 #endif
 
 } /* Endbody */
@@ -168,35 +168,35 @@ void usb_class_mass_deleteq
 
 void usb_class_mass_get_pending_request
 (
-    /* [IN] interface structure pointer */
-    usb_mass_class_struct_t * mass_class,
+	/* [IN] interface structure pointer */
+	usb_mass_class_struct_t * mass_class,
 
-    /* [OUT] pointer to pointer which will hold the pending request */
-    mass_command_struct_t* * cmd_ptr_ptr
-    )
+	/* [OUT] pointer to pointer which will hold the pending request */
+	mass_command_struct_t* * cmd_ptr_ptr
+	)
 { /* Body */
-    mass_queue_struct_t * q = &mass_class->queue;
+	mass_queue_struct_t * q = &mass_class->queue;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_class_mass_get_pending_request");
+	DEBUG_LOG_TRACE("usb_class_mass_get_pending_request");
 #endif
 
-    USB_Host_MSD_lock();
-    if (q->COUNT)
-    {
-        *cmd_ptr_ptr = (mass_command_struct_t*) q->ELEMENTS[q->FIRST];
-    }
-    else
-    {
-        *cmd_ptr_ptr = NULL;
-    } /* Endif */
-    USB_Host_MSD_unlock();
+	USB_Host_MSD_lock();
+	if (q->COUNT)
+	{
+		*cmd_ptr_ptr = (mass_command_struct_t*) q->ELEMENTS[q->FIRST];
+	}
+	else
+	{
+		*cmd_ptr_ptr = NULL;
+	} /* Endif */
+	USB_Host_MSD_unlock();
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_class_mass_get_pending_request, SUCCESSFUL");
+	DEBUG_LOG_TRACE("usb_class_mass_get_pending_request, SUCCESSFUL");
 #endif
 
-    return;
+	return;
 } /* Endbody */
 
 /*FUNCTION*----------------------------------------------------------------
@@ -209,45 +209,45 @@ void usb_class_mass_get_pending_request
 
 bool usb_class_mass_cancelq
 (
-    /* [IN] interface structure pointer */
-    usb_mass_class_struct_t * mass_class,
+	/* [IN] interface structure pointer */
+	usb_mass_class_struct_t * mass_class,
 
-    /* [IN] command object to be inserted in the queue*/
-    mass_command_struct_t * pCmd
-    )
+	/* [IN] command object to be inserted in the queue*/
+	mass_command_struct_t * pCmd
+	)
 { /* Body */
-    mass_queue_struct_t * q = &mass_class->queue;
-    uint32_t i;
-    uint32_t index;
-    bool result = FALSE;
+	mass_queue_struct_t * q = &mass_class->queue;
+	uint32_t i;
+	uint32_t index;
+	bool result = FALSE;
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE("usb_class_mass_cancelq");
+	DEBUG_LOG_TRACE("usb_class_mass_cancelq");
 #endif
 
-    /* Remove given command - leave q size the same*/
-    USB_Host_MSD_lock();
-    if (q->COUNT)
-    {
-        index = q->FIRST;
-        for (i = 0; i < q->COUNT; i++)
-        {
-            if (q->ELEMENTS[index] == pCmd)
-            {
-                q->ELEMENTS[index] = NULL;
-                result = TRUE;
-                break;
-            }
-            index = MASSQ_NEXT(index);
-        }
-    }
-    USB_Host_MSD_unlock();
+	/* Remove given command - leave q size the same*/
+	USB_Host_MSD_lock();
+	if (q->COUNT)
+	{
+		index = q->FIRST;
+		for (i = 0; i < q->COUNT; i++)
+		{
+			if (q->ELEMENTS[index] == pCmd)
+			{
+				q->ELEMENTS[index] = NULL;
+				result = TRUE;
+				break;
+			}
+			index = MASSQ_NEXT(index);
+		}
+	}
+	USB_Host_MSD_unlock();
 
 #ifdef _HOST_DEBUG_
-    DEBUG_LOG_TRACE(result?"usb_class_mass_cancelq, SUCCESSFUL":"usb_class_mass_cancelq, FAILED");
+	DEBUG_LOG_TRACE(result?"usb_class_mass_cancelq, SUCCESSFUL":"usb_class_mass_cancelq, FAILED");
 #endif
 
-    return result;
+	return result;
 } /* Endbody */
 
 /* EOF */

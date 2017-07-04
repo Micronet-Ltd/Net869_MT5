@@ -41,10 +41,10 @@
 /* #define DO_DEBUG */
 #ifdef DO_DEBUG
 #define DEBUGM(x) x
-#define EDS_USE_DEBUG_SPACES 
+#define EDS_USE_DEBUG_SPACES
 #else
 #define DEBUGM(x)
-#undef EDS_USE_DEBUG_SPACES 
+#undef EDS_USE_DEBUG_SPACES
 #endif
 
 /* Private defines */
@@ -91,94 +91,94 @@
 /* Macros */
 #if (PSP_MEMORY_ADDRESSING_CAPABILITY != 8)
    #if (PSP_MEMORY_ADDRESSING_CAPABILITY == 32)
-      #define UNPACK(src,dest,size) \
-         { \
-            uint32_t i; \
-            uint32_t      *src_lp;\
-            unsigned char        *dest_lp;\
-            src_lp = (src);\
-            dest_lp = (dest);\
-            for(i = 0; i < (size); i+=4) { \
-               mqx_htonl(dest_lp,*src_lp);\
-               src_lp++;\
-               dest_lp+=4;\
-            }\
-         }
-      #define PACK(src,dest,size) \
-         { \
-            uint32_t i; \
-            unsigned char       *src_lp;\
-            unsigned char       *dest_lp;\
-            src_lp = (src);\
-            dest_lp = (dest);\
-            for(i = 0; i < (size); i+=4) { \
-               *dest_lp = mqx_ntohl(src_lp);\
-               dest_lp++;\
-               src_lp +=4;\
-            }\
-         }
+	  #define UNPACK(src,dest,size) \
+		 { \
+			uint32_t i; \
+			uint32_t      *src_lp;\
+			unsigned char        *dest_lp;\
+			src_lp = (src);\
+			dest_lp = (dest);\
+			for(i = 0; i < (size); i+=4) { \
+			   mqx_htonl(dest_lp,*src_lp);\
+			   src_lp++;\
+			   dest_lp+=4;\
+			}\
+		 }
+	  #define PACK(src,dest,size) \
+		 { \
+			uint32_t i; \
+			unsigned char       *src_lp;\
+			unsigned char       *dest_lp;\
+			src_lp = (src);\
+			dest_lp = (dest);\
+			for(i = 0; i < (size); i+=4) { \
+			   *dest_lp = mqx_ntohl(src_lp);\
+			   dest_lp++;\
+			   src_lp +=4;\
+			}\
+		 }
    #elif (PSP_MEMORY_ADDRESSING_CAPABILITY == 24)
-      #define UNPACK(src,dest,size) \
-         { \
-            uint_24 i; \
-            uint_24      *src_lp;\
-            unsigned char        *dest_lp;\
-            src_lp = (src);\
-            dest_lp = (dest);\
-            for(i = 0; i < (size); i+=3) { \
-               mqx_htonls(dest_lp,*src_lp);\
-               src_lp++;\
-               dest_lp+=3;\
-            }\
-         }
-      #define PACK(src,dest,size) \
-         { \
-            uint_24 i; \
-            unsigned char       *src_lp;\
-            unsigned char       *dest_lp;\
-            src_lp = (src);\
-            dest_lp = (dest);\
-            for(i = 0; i < (size); i+=3) { \
-               *dest_lp = mqx_ntohls(src_lp);\
-               dest_lp++;\
-               src_lp +=3;\
-            }\
-         }
+	  #define UNPACK(src,dest,size) \
+		 { \
+			uint_24 i; \
+			uint_24      *src_lp;\
+			unsigned char        *dest_lp;\
+			src_lp = (src);\
+			dest_lp = (dest);\
+			for(i = 0; i < (size); i+=3) { \
+			   mqx_htonls(dest_lp,*src_lp);\
+			   src_lp++;\
+			   dest_lp+=3;\
+			}\
+		 }
+	  #define PACK(src,dest,size) \
+		 { \
+			uint_24 i; \
+			unsigned char       *src_lp;\
+			unsigned char       *dest_lp;\
+			src_lp = (src);\
+			dest_lp = (dest);\
+			for(i = 0; i < (size); i+=3) { \
+			   *dest_lp = mqx_ntohls(src_lp);\
+			   dest_lp++;\
+			   src_lp +=3;\
+			}\
+		 }
    #elif (PSP_MEMORY_ADDRESSING_CAPABILITY == 16)
-      #define UNPACK(src,dest,size) \
-         { \
-            uint16_t i; \
-            uint16_t      *src_lp;\
-            unsigned char        *dest_lp;\
-            src_lp = (src);\
-            dest_lp = (dest);\
-            for(i = 0; i < (size); i+=2) { \
-               mqx_htons(dest_lp,*src_lp);\
-               src_lp++;\
-               dest_lp+=2;\
-            }\
-         }
-      #define PACK(src,dest,size) \
-         { \
-            uint16_t i; \
-            unsigned char       *src_lp;\
-            unsigned char       *dest_lp;\
-            src_lp = (src);\
-            dest_lp = (dest);\
-            for(i = 0; i < (size); i+=2) { \
-               *dest_lp = mqx_ntohs(src_lp);\
-               dest_lp++;\
-               src_lp +=2;\
-            }\
-         }
+	  #define UNPACK(src,dest,size) \
+		 { \
+			uint16_t i; \
+			uint16_t      *src_lp;\
+			unsigned char        *dest_lp;\
+			src_lp = (src);\
+			dest_lp = (dest);\
+			for(i = 0; i < (size); i+=2) { \
+			   mqx_htons(dest_lp,*src_lp);\
+			   src_lp++;\
+			   dest_lp+=2;\
+			}\
+		 }
+	  #define PACK(src,dest,size) \
+		 { \
+			uint16_t i; \
+			unsigned char       *src_lp;\
+			unsigned char       *dest_lp;\
+			src_lp = (src);\
+			dest_lp = (dest);\
+			for(i = 0; i < (size); i+=2) { \
+			   *dest_lp = mqx_ntohs(src_lp);\
+			   dest_lp++;\
+			   src_lp +=2;\
+			}\
+		 }
    #else
-      #error "Memory type not understood"
+	  #error "Memory type not understood"
    #endif
 
    #define READ_BYTES(src,dest,size)   UNPACK(src,dest,size)
    #define WRITE_BYTES(src,dest,size)  PACK(src,dest,size)
 
-#else 
+#else
    #define READ_BYTES(dest,src,size)   _mem_copy(dest,src,size)
    #define WRITE_BYTES(dest,src,size)  _mem_copy(dest,src,size)
 #endif
@@ -189,32 +189,32 @@
 /* Structures */
 /*!
  * \cond DOXYGEN_PRIVATE
- *  
+ *
  * \brief Operation structure
- */ 
+ */
 typedef struct op_struct {
    /*! \brief Server operation. */
-   unsigned char OPERATION[4];   
+   unsigned char OPERATION[4];
    /*! \brief Read/write memory address. */
-   unsigned char ADDRESS[4];     
+   unsigned char ADDRESS[4];
    /*! \brief Extra address field. */
-   unsigned char ADDRESS2[4];    
+   unsigned char ADDRESS2[4];
    /*! \brief Size of buffer. */
-   unsigned char SIZE[4];        
+   unsigned char SIZE[4];
    /*! \brief Processor type. */
-   unsigned char PROCESSOR[4];   
+   unsigned char PROCESSOR[4];
    /*! \brief Endian of processor. */
-   unsigned char ENDIAN[4];      
+   unsigned char ENDIAN[4];
    /*! \brief Error code. */
-   unsigned char EDS_ERROR[4];   
+   unsigned char EDS_ERROR[4];
 } EDS_OP_STRUCT, * EDS_OP_STRUCT_PTR;
 /*! \endcond */
 
 /*!
  * \cond DOXYGEN_PRIVATE
- *  
+ *
  * \brief EDS data structure.
- */ 
+ */
 typedef struct eds_data_struct {
    /*! \brief EDS operation data structure. */
    EDS_OP_STRUCT  EDS_OP_DATA;
@@ -223,10 +223,10 @@ typedef struct eds_data_struct {
 } EDS_DATA_STRUCT, * EDS_DATA_STRUCT_PTR;
 /*! \endcond */
 
-/*! 
+/*!
  * \cond DOXYGEN_PRIVATE
- *  
- * \brief Structure used to define a processor. 
+ *
+ * \brief Structure used to define a processor.
  */
 typedef struct eds_proc_def_struct {
    /*! \brief Endian of processor. */
@@ -242,7 +242,7 @@ typedef struct eds_proc_def_struct {
 
 /*!
  * \cond DOXYGEN_PRIVATE
- */ 
+ */
 typedef struct eds_proc_reg_struct {
    EDS_PROC_DEF_STRUCT   PROC_DATA;
    QUEUE_ELEMENT_STRUCT  LIST;
@@ -253,7 +253,7 @@ typedef struct eds_proc_reg_struct {
  * \cond DOXYGEN_PRIVATE
  *
  * \brief EDS component structure.
- */ 
+ */
 typedef struct eds_component_struct
 {
    /*! \brief Lightweight semaphore. */
@@ -267,15 +267,15 @@ typedef struct eds_component_struct
 
 /*!
  * \cond DOXYGEN_PRIVATE
- * 
+ *
  * \brief Configuration structure for IO channel.
- */ 
+ */
 typedef struct io_channel_struct
 {
-    /*! \brief Pointer to channel to use. */
-    char    *CHANNEL;
-    /*! \brief Baud rate. */
-    uint32_t     BAUD;
+	/*! \brief Pointer to channel to use. */
+	char    *CHANNEL;
+	/*! \brief Baud rate. */
+	uint32_t     BAUD;
 } IO_CHAN_STRUCT, * IO_CHAN_STRUCT_PTR;
 /*! \endcond */
 /* function prototypes */
@@ -298,7 +298,7 @@ extern void    _eds_serial_identify(EDS_OP_STRUCT_PTR);
 extern int32_t  _eds_serial_send(MQX_FILE_PTR, char *, int32_t);
 extern int32_t  _eds_serial_recv(MQX_FILE_PTR, char *, int32_t);
 #endif
- 
+
 #ifdef __cplusplus
 }
 #endif

@@ -57,14 +57,14 @@ extern UART0_Type * const g_lpsciBase[UART0_INSTANCE_COUNT];
  * @brief Runtime state structure for LPSCI driver with DMA.
  */
 typedef struct LpsciDmaState {
-    volatile bool isTxBusy;     /*!< True if there is an active transmit. */
-    volatile bool isRxBusy;     /*!< True if there is an active receive. */
-    volatile bool isTxBlocking; /*!< True if transmit is blocking transaction. */
-    volatile bool isRxBlocking; /*!< True if receive is blocking transaction. */
-    semaphore_t txIrqSync;      /*!< Used to wait for ISR to complete its TX business. */
-    semaphore_t rxIrqSync;      /*!< Used to wait for ISR to complete its RX business. */
-    dma_channel_t dmaLpsciTx;    /*!< DMA channel used for send. */
-    dma_channel_t dmaLpsciRx;   /*!< DMA channel used for receive. */
+	volatile bool isTxBusy;     /*!< True if there is an active transmit. */
+	volatile bool isRxBusy;     /*!< True if there is an active receive. */
+	volatile bool isTxBlocking; /*!< True if transmit is blocking transaction. */
+	volatile bool isRxBlocking; /*!< True if receive is blocking transaction. */
+	semaphore_t txIrqSync;      /*!< Used to wait for ISR to complete its TX business. */
+	semaphore_t rxIrqSync;      /*!< Used to wait for ISR to complete its RX business. */
+	dma_channel_t dmaLpsciTx;    /*!< DMA channel used for send. */
+	dma_channel_t dmaLpsciRx;   /*!< DMA channel used for receive. */
 } lpsci_dma_state_t;
 
 /*!
@@ -76,12 +76,12 @@ typedef struct LpsciDmaState {
  * the number of bits per data word.
  */
 typedef struct LpsciDmaUserConfig {
-    clock_lpsci_src_t clockSource;       /*!< LPSCI clock source in fsl_sim_hal_<device>.h */
-    uint32_t baudRate;                   /*!< LPSCI baud rate*/
-    lpsci_parity_mode_t parityMode;      /*!< parity mode, disabled (default), even, odd */
-    lpsci_stop_bit_count_t stopBitCount; /*!< number of stop bits, 1 stop bit (default) or 2 stop bits */
-    lpsci_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in
-                                                    a word (up to 10-bits in some LPSCI instances) */
+	clock_lpsci_src_t clockSource;       /*!< LPSCI clock source in fsl_sim_hal_<device>.h */
+	uint32_t baudRate;                   /*!< LPSCI baud rate*/
+	lpsci_parity_mode_t parityMode;      /*!< parity mode, disabled (default), even, odd */
+	lpsci_stop_bit_count_t stopBitCount; /*!< number of stop bits, 1 stop bit (default) or 2 stop bits */
+	lpsci_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in
+													a word (up to 10-bits in some LPSCI instances) */
 } lpsci_dma_user_config_t;
 
 /*******************************************************************************
@@ -108,13 +108,13 @@ extern "C" {
  * lpsci_user_config_t parameters and how to call the LPSCI_DRV_DmaInit function by passing
  * in these parameters:
    @code
-    lpsci_user_config_t lpsciConfig;
-    lpsciConfig.baudRate = 9600;
-    lpsciConfig.bitCountPerChar = kLpsci8BitsPerChar;
-    lpsciConfig.parityMode = kLpsciParityDisabled;
-    lpsciConfig.stopBitCount = kLpsciOneStopBit;
-    lpsci_dma_state_t lpsciDmaState;
-    LPSCI_DRV_DmaInit(instance, &lpsciDmaState, &lpsciConfig);
+	lpsci_user_config_t lpsciConfig;
+	lpsciConfig.baudRate = 9600;
+	lpsciConfig.bitCountPerChar = kLpsci8BitsPerChar;
+	lpsciConfig.parityMode = kLpsciParityDisabled;
+	lpsciConfig.stopBitCount = kLpsciOneStopBit;
+	lpsci_dma_state_t lpsciDmaState;
+	LPSCI_DRV_DmaInit(instance, &lpsciDmaState, &lpsciConfig);
    @endcode
  *
  * @param instance The LPSCI instance number.
@@ -128,7 +128,7 @@ extern "C" {
  * @return An error code or kStatus_LPSCI_Success.
  */
 lpsci_status_t LPSCI_DRV_DmaInit(uint32_t instance, lpsci_dma_state_t * lpsciDmaStatePtr,
-                               const lpsci_dma_user_config_t * lpsciUserConfig);
+							   const lpsci_dma_user_config_t * lpsciUserConfig);
 /*!
  * @brief Shuts down the LPSCI.
  *
@@ -149,9 +149,9 @@ lpsci_status_t LPSCI_DRV_DmaDeinit(uint32_t instance);
  * @return An error code or kStatus_LPSCI_Success.
  */
 lpsci_status_t LPSCI_DRV_DmaSendDataBlocking(uint32_t instance,
-                                           const uint8_t * txBuff,
-                                           uint32_t txSize,
-                                           uint32_t timeout);
+										   const uint8_t * txBuff,
+										   uint32_t txSize,
+										   uint32_t timeout);
 
 /*!
  * @brief Sends (transmits) data through the LPSCI-DMA module using a non-blocking method.
@@ -162,8 +162,8 @@ lpsci_status_t LPSCI_DRV_DmaSendDataBlocking(uint32_t instance,
  * @return An error code or kStatus_LPSCI_Success.
  */
 lpsci_status_t LPSCI_DRV_DmaSendData(uint32_t instance,
-                                   const uint8_t * txBuff,
-                                   uint32_t txSize);
+								   const uint8_t * txBuff,
+								   uint32_t txSize);
 /*!
  * @brief Returns whether the previous LPSCI-DMA transmit has finished.
  *
@@ -197,9 +197,9 @@ lpsci_status_t LPSCI_DRV_DmaAbortSendingData(uint32_t instance);
  * @return An error code or kStatus_LPSCI_Success.
  */
 lpsci_status_t LPSCI_DRV_DmaReceiveDataBlocking(uint32_t instance,
-                                              uint8_t * rxBuff,
-                                              uint32_t rxSize,
-                                              uint32_t timeout);
+											  uint8_t * rxBuff,
+											  uint32_t rxSize,
+											  uint32_t timeout);
 /*!
  * @brief Gets (receives) data from the LPSCI-DMA module using a non-blocking method.
  *
@@ -209,8 +209,8 @@ lpsci_status_t LPSCI_DRV_DmaReceiveDataBlocking(uint32_t instance,
  * @return An error code or kStatus_LPSCI_Success.
  */
 lpsci_status_t LPSCI_DRV_DmaReceiveData(uint32_t instance,
-                                      uint8_t * rxBuff,
-                                      uint32_t rxSize);
+									  uint8_t * rxBuff,
+									  uint32_t rxSize);
 
 /*!
  * @brief Returns whether the previous LPSCI-DMA receive is complete.
@@ -247,4 +247,3 @@ lpsci_status_t LPSCI_DRV_DmaAbortReceivingData(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

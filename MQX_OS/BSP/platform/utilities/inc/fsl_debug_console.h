@@ -64,22 +64,22 @@
 
 /*! @brief Error code for the debug console driver. */
 typedef enum _debug_console_status {
-    kStatus_DEBUGCONSOLE_Success = 0U,
-    kStatus_DEBUGCONSOLE_InvalidDevice,
-    kStatus_DEBUGCONSOLE_AllocateMemoryFailed,
-    kStatus_DEBUGCONSOLE_Failed 
+	kStatus_DEBUGCONSOLE_Success = 0U,
+	kStatus_DEBUGCONSOLE_InvalidDevice,
+	kStatus_DEBUGCONSOLE_AllocateMemoryFailed,
+	kStatus_DEBUGCONSOLE_Failed
 } debug_console_status_t;
 
 /*! @brief Supported debug console hardware device type. */
 typedef enum _debug_console_device_type {
-    kDebugConsoleNone   = 0U,
-    kDebugConsoleLPSCI  = 15U,     /*<! Use strange start number to avoid treating 0
-                                     as correct device type. Sometimes user forget
-                                     to specify the device type but only use the 
-                                     default value '0' as the device type.  */
-    kDebugConsoleUART   = 16U,
-    kDebugConsoleLPUART = 17U,
-    kDebugConsoleUSBCDC = 18U
+	kDebugConsoleNone   = 0U,
+	kDebugConsoleLPSCI  = 15U,     /*<! Use strange start number to avoid treating 0
+									 as correct device type. Sometimes user forget
+									 to specify the device type but only use the
+									 default value '0' as the device type.  */
+	kDebugConsoleUART   = 16U,
+	kDebugConsoleLPUART = 17U,
+	kDebugConsoleUSBCDC = 18U
 } debug_console_device_type_t;
 
 /*******************************************************************************
@@ -104,10 +104,10 @@ extern "C" {
  * @param uartInstance Which UART/LPUART instance is used to send debug messages.
  * @param baudRate The desired baud rate in bits per second.
  * @param device Low level device type for the debug console.
- * @return Whether initialization was successful or not. 
+ * @return Whether initialization was successful or not.
  */
 debug_console_status_t DbgConsole_Init(
-        uint32_t uartInstance, uint32_t baudRate, debug_console_device_type_t device);
+		uint32_t uartInstance, uint32_t baudRate, debug_console_device_type_t device);
 
 /*!
  * @brief Deinit the UART/LPUART used for debug messages.

@@ -39,35 +39,35 @@
  */
 size_t fread(void *ptr, size_t size, size_t nmemb, FILE  *stream)
 {
-    size_t count = 0;
-    int result;
+	size_t count = 0;
+	int result;
 
-    if ((NULL == ptr) || (NULL == stream) || (0 == size) || (0 == nmemb))
-    {
-        return 0; //error: bad input parameter
-    }
+	if ((NULL == ptr) || (NULL == stream) || (0 == size) || (0 == nmemb))
+	{
+		return 0; //error: bad input parameter
+	}
 
-    for (; 0 < nmemb; nmemb--)
-    {
-        result = _buf_read((unsigned char*)ptr, size, stream);
-        ptr = (unsigned char*)ptr + size;
-        if (result == 0)
-        {
-            stream->_MODE |= _MODE_EOF;
-            break;
-        }
-        else if (0 > result)
-        {
-            stream->_MODE |= _MODE_ERR;
-            break;
-        }
-        else if (result != size)
-        {
-            break;
-        }
-        count++;
-    }
+	for (; 0 < nmemb; nmemb--)
+	{
+		result = _buf_read((unsigned char*)ptr, size, stream);
+		ptr = (unsigned char*)ptr + size;
+		if (result == 0)
+		{
+			stream->_MODE |= _MODE_EOF;
+			break;
+		}
+		else if (0 > result)
+		{
+			stream->_MODE |= _MODE_ERR;
+			break;
+		}
+		else if (result != size)
+		{
+			break;
+		}
+		count++;
+	}
 
-    return count;
+	return count;
 
 }

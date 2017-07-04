@@ -54,52 +54,52 @@ int32_t Shell_gate(int32_t argc, char *argv[] )
    _ip_address       ipmask = INADDR_ANY;
    uint32_t           error = 0;
   SHELL_CONTEXT_PTR shell_ptr = Shell_get_context(argv);
-    
+
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if ((argc <= 1) || (argc > 4))  {
-         return_code = SHELL_EXIT_ERROR;
-         print_usage = TRUE;
-      } else  {
-         if (! Shell_parse_ip_address( argv[1], &gate_ipaddr  ))  {
-            fprintf(shell_ptr->STDOUT, "Error, invalid gateway address\n");
-            return_code = SHELL_EXIT_ERROR;
-         } else if (argc > 2)  {
-            if (! Shell_parse_ip_address( argv[2], &ipaddr  ))  {
-               fprintf(shell_ptr->STDOUT, "Error, invalid ip address\n");
-               return_code = SHELL_EXIT_ERROR;
-            } else if (argc > 3)  {
-               if (! Shell_parse_netmask( argv[3], &ipmask ))  {
-                  fprintf(shell_ptr->STDOUT, "Error, invalid ip mask\n");
-                  return_code = SHELL_EXIT_ERROR;
-               }          
-            }          
-         }          
-      }          
-         
-         
-      if (return_code == SHELL_EXIT_SUCCESS)  {
-         fprintf(shell_ptr->STDOUT, "Adding gateway %d.%d.%d.%d, ip address: %d.%d.%d.%d, netmask: %d.%d.%d.%d\n",
-              IPBYTES(gate_ipaddr),IPBYTES(ipaddr),IPBYTES(ipmask));
-         error = RTCS_gate_add(gate_ipaddr, ipaddr, ipmask);
-         if (error) {
-            fprintf(shell_ptr->STDOUT, "Error, could not initialize gateway %d.%d.%d.%d\n", gate_ipaddr);
-            fprintf(shell_ptr->STDOUT, "RCS_gate_add returned: %d\n", error);
-            return_code = SHELL_EXIT_ERROR;
-         } 
-      } 
+	  if ((argc <= 1) || (argc > 4))  {
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage = TRUE;
+	  } else  {
+		 if (! Shell_parse_ip_address( argv[1], &gate_ipaddr  ))  {
+			fprintf(shell_ptr->STDOUT, "Error, invalid gateway address\n");
+			return_code = SHELL_EXIT_ERROR;
+		 } else if (argc > 2)  {
+			if (! Shell_parse_ip_address( argv[2], &ipaddr  ))  {
+			   fprintf(shell_ptr->STDOUT, "Error, invalid ip address\n");
+			   return_code = SHELL_EXIT_ERROR;
+			} else if (argc > 3)  {
+			   if (! Shell_parse_netmask( argv[3], &ipmask ))  {
+				  fprintf(shell_ptr->STDOUT, "Error, invalid ip mask\n");
+				  return_code = SHELL_EXIT_ERROR;
+			   }
+			}
+		 }
+	  }
+
+
+	  if (return_code == SHELL_EXIT_SUCCESS)  {
+		 fprintf(shell_ptr->STDOUT, "Adding gateway %d.%d.%d.%d, ip address: %d.%d.%d.%d, netmask: %d.%d.%d.%d\n",
+			  IPBYTES(gate_ipaddr),IPBYTES(ipaddr),IPBYTES(ipmask));
+		 error = RTCS_gate_add(gate_ipaddr, ipaddr, ipmask);
+		 if (error) {
+			fprintf(shell_ptr->STDOUT, "Error, could not initialize gateway %d.%d.%d.%d\n", gate_ipaddr);
+			fprintf(shell_ptr->STDOUT, "RCS_gate_add returned: %d\n", error);
+			return_code = SHELL_EXIT_ERROR;
+		 }
+	  }
    }
-   
+
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <gateway> [<ipaddr>] [<netmask>]\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s  <gateway> [<ipaddr>] [<netmask>]\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <gateway> = IP address of gateway\n");
-         fprintf(shell_ptr->STDOUT, "   <ipaddr>  = IP address \n");
-         fprintf(shell_ptr->STDOUT, "   <netmask> = Network mask\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <gateway> [<ipaddr>] [<netmask>]\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s  <gateway> [<ipaddr>] [<netmask>]\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <gateway> = IP address of gateway\n");
+		 fprintf(shell_ptr->STDOUT, "   <ipaddr>  = IP address \n");
+		 fprintf(shell_ptr->STDOUT, "   <netmask> = Network mask\n");
+	  }
    }
 
    return return_code;
@@ -107,4 +107,3 @@ int32_t Shell_gate(int32_t argc, char *argv[] )
 
 #endif /* SHELLCFG_USES_RTCS */
 /* EOF */
-

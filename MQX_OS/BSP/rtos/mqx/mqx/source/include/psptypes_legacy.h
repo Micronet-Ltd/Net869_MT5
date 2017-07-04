@@ -20,8 +20,8 @@
 * Comments:
 *   This file contains the definitions of old MQX types that have been used
 *   before the MQX 4.1.0 release. This file has been created for the backward
-*   compatibility and is intended to be included into old MQX application source 
-*   files (created in MQX releases up to the version 4.1.0) to avoid types 
+*   compatibility and is intended to be included into old MQX application source
+*   files (created in MQX releases up to the version 4.1.0) to avoid types
 *   conflicts in MQX 4.0.1 and above releases. Include this file into the main
 *   application header file.
 *

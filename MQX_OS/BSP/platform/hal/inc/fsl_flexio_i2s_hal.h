@@ -44,15 +44,15 @@
  */
 typedef struct FlexioI2sDev
 {
-    FLEXIO_Type * flexioBase; /*!< FlexIO module base address. */  
-    /* User-defined pin for I2S. */
-    uint32_t txPinIdx;  /*!< output for cases of both master and slave. */
-    uint32_t rxPinIdx;  /*!< input for cases of both master and slave. */
-    uint32_t sckPinIdx; /*!< output for master, input for slave. */
-    uint32_t wsPinIdx;  /*!< output for master, input for slave. */
-    /* Internal hardware resource. */
-    uint32_t shifterIdx[2]; /*!< Shifter index used for I2S in FlexIO. */
-    uint32_t timerIdx[2];   /*!< Timer index used for I2S in FlexIO. */
+	FLEXIO_Type * flexioBase; /*!< FlexIO module base address. */
+	/* User-defined pin for I2S. */
+	uint32_t txPinIdx;  /*!< output for cases of both master and slave. */
+	uint32_t rxPinIdx;  /*!< input for cases of both master and slave. */
+	uint32_t sckPinIdx; /*!< output for master, input for slave. */
+	uint32_t wsPinIdx;  /*!< output for master, input for slave. */
+	/* Internal hardware resource. */
+	uint32_t shifterIdx[2]; /*!< Shifter index used for I2S in FlexIO. */
+	uint32_t timerIdx[2];   /*!< Timer index used for I2S in FlexIO. */
 } flexio_i2s_dev_t;
 
 /*!
@@ -60,9 +60,9 @@ typedef struct FlexioI2sDev
  */
 typedef struct FlexioI2sMasterConfig
 {
-    uint32_t flexioBusClk;  /*!< Flexio bus clock in Hz. */
-    uint32_t bitClk;        /*!< Bit clock in Hz. */
-    uint32_t bitCount;      /*!< Bit count for each work. */
+	uint32_t flexioBusClk;  /*!< Flexio bus clock in Hz. */
+	uint32_t bitClk;        /*!< Bit clock in Hz. */
+	uint32_t bitCount;      /*!< Bit count for each work. */
 } flexio_i2s_master_config_t;
 
 /*!
@@ -70,7 +70,7 @@ typedef struct FlexioI2sMasterConfig
  */
 typedef struct FlexioI2sSlaveConfig
 {
-    uint32_t bitCount;     /*!< Bit count for each work. */
+	uint32_t bitCount;     /*!< Bit count for each work. */
 } flexio_i2s_slave_config_t;
 
 #if defined(__cplusplus)
@@ -88,7 +88,7 @@ extern "C" {
  * @return Execution status.
  */
 flexio_status_t FLEXIO_I2S_HAL_Configure_Master(
-    flexio_i2s_dev_t *devPtr, const flexio_i2s_master_config_t *configPtr);
+	flexio_i2s_dev_t *devPtr, const flexio_i2s_master_config_t *configPtr);
 
 /*!
  * @brief Configure the flexio working as i2s slave device.
@@ -98,7 +98,7 @@ flexio_status_t FLEXIO_I2S_HAL_Configure_Master(
  * @return Execution status.
  */
 flexio_status_t FLEXIO_I2S_HAL_Configure_Slave(
-    flexio_i2s_dev_t *devPtr, const flexio_i2s_slave_config_t *configPtr);
+	flexio_i2s_dev_t *devPtr, const flexio_i2s_slave_config_t *configPtr);
 
 /*---------------------------------------------------------------------------
  * Tx.
@@ -186,7 +186,7 @@ void FLEXIO_I2S_HAL_PutDataPolling(flexio_i2s_dev_t *devPtr, uint32_t dat);
 void FLEXIO_I2S_HAL_SetTxDmaCmd(flexio_i2s_dev_t *devPtr, bool enable);
 
 /*!
- * @brief Get the address of tx buffer when using DMA. 
+ * @brief Get the address of tx buffer when using DMA.
  *
  * @param devPtr Pointer to the device.
  * @return Address of tx buffer.
@@ -297,4 +297,3 @@ uint32_t FLEXIO_I2S_HAL_GetRxBufferAddr(flexio_i2s_dev_t *devPtr);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

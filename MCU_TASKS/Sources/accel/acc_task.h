@@ -10,5 +10,8 @@
 
 void AccEnable (void);
 void AccDisable (void);
+bool accInit (void);
+void AccReadRegister(uint8_t address, uint8_t * read_data);
+void AccWriteRegister(uint8_t address, uint8_t write_data);
 
 #endif /* _ACC_TASK_H_ */

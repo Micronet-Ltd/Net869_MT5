@@ -40,10 +40,10 @@
 
 /* Enable modification of flash configuration bytes during loading for flash targets */
 #ifndef BSPCFG_ENABLE_CFMPROTECT
-    #define BSPCFG_ENABLE_CFMPROTECT        1
+	#define BSPCFG_ENABLE_CFMPROTECT        1
 #endif
 #if !BSPCFG_ENABLE_CFMPROTECT && defined(__ICCARM__)
-    #error Cannot disable CFMPROTECT field on IAR compiler. Please define BSPCFG_ENABLE_CFMPROTECT to 1.
+	#error Cannot disable CFMPROTECT field on IAR compiler. Please define BSPCFG_ENABLE_CFMPROTECT to 1.
 #endif
 
 /* Init startup clock configuration is CPU_CLOCK_CONFIG_0 */
@@ -57,11 +57,11 @@
 #define BSP_SYSTIMER_ID           0
 #define BSP_SYSTIMER_SRC_CLK      kCoreClock
 #if PSP_MQX_CPU_IS_ARM_CORTEX_M4
-    #define BSP_SYSTIMER_ISR_PRIOR    2
+	#define BSP_SYSTIMER_ISR_PRIOR    2
 #elif PSP_MQX_CPU_IS_ARM_CORTEX_M0P
-    #define BSP_SYSTIMER_ISR_PRIOR    3
+	#define BSP_SYSTIMER_ISR_PRIOR    3
 #else
-    #error Unknown ARM Cortex device
+	#error Unknown ARM Cortex device
 #endif
 #define BSP_SYSTIMER_INTERRUPT_VECTOR SysTick_IRQn
 
@@ -72,14 +72,14 @@
  * MGCT: <option type="number" min="1" max="1000"/>
  */
 #ifndef BSP_ALARM_FREQUENCY
-    #define BSP_ALARM_FREQUENCY             (200)
+	#define BSP_ALARM_FREQUENCY             (200)
 #endif
 
 /*
 * HWTimer period
 */
 #ifndef BSP_ALARM_PERIOD
-    #define BSP_ALARM_PERIOD             (5000)
+	#define BSP_ALARM_PERIOD             (5000)
 #endif
 
 
@@ -102,7 +102,7 @@
 
 /* MGCT: <option type="string" quoted="false" allowempty="false"/> */
 #ifndef BSP_DEFAULT_INTERRUPT_STACK_SIZE
-    #define BSP_DEFAULT_INTERRUPT_STACK_SIZE                  ((uint32_t)__DEFAULT_INTERRUPT_STACK_SIZE)
+	#define BSP_DEFAULT_INTERRUPT_STACK_SIZE                  ((uint32_t)__DEFAULT_INTERRUPT_STACK_SIZE)
 #endif
 
 /* MGCT: <option type="list">
@@ -116,28 +116,28 @@
  * </option>
  */
 #ifndef BSP_DEFAULT_MQX_HARDWARE_INTERRUPT_LEVEL_MAX
-    #define BSP_DEFAULT_MQX_HARDWARE_INTERRUPT_LEVEL_MAX        (2L)
+	#define BSP_DEFAULT_MQX_HARDWARE_INTERRUPT_LEVEL_MAX        (2L)
 #endif
 
 /*
  * MGCT: <option type="number"/>
  */
 #ifndef BSP_DEFAULT_MAX_MSGPOOLS
-    #define BSP_DEFAULT_MAX_MSGPOOLS                            (2L)
+	#define BSP_DEFAULT_MAX_MSGPOOLS                            (2L)
 #endif
 
 /*
  * MGCT: <option type="number"/>
  */
 #ifndef BSP_DEFAULT_MAX_MSGQS
-    #define BSP_DEFAULT_MAX_MSGQS                               (16L)
+	#define BSP_DEFAULT_MAX_MSGQS                               (16L)
 #endif
 
 /*
  * MGCT: <option type="string" maxsize="1024" quoted="false" allowempty="false"/>
  */
 #ifndef BSP_DEFAULT_IO_OPEN_MODE
-    #define BSP_DEFAULT_IO_OPEN_MODE                      (void *)(NULL)
+	#define BSP_DEFAULT_IO_OPEN_MODE                      (void *)(NULL)
 #endif
 
 /*******************************************************************************
@@ -147,11 +147,11 @@
 #define BSP_ENET_DEVICE_COUNT                   ENET_INSTANCE_COUNT
 
 #ifndef BSP_DEFAULT_ENET_DEVICE
-    #define BSP_DEFAULT_ENET_DEVICE             0
+	#define BSP_DEFAULT_ENET_DEVICE             0
 #endif
 
 #ifndef BSP_DEFAULT_ENET_OUI
-    #define BSP_DEFAULT_ENET_OUI                { 0x00, 0x00, 0x5E, 0, 0, 0 }
+	#define BSP_DEFAULT_ENET_OUI                { 0x00, 0x00, 0x5E, 0, 0, 0 }
 #endif
 
 /** MGCT: <category name="BSP Ethernet Options"> */
@@ -160,16 +160,16 @@
  * MACNET interrupt levels and vectors
  */
 #ifndef BSP_MACNET0_INT_TX_LEVEL
-    #define BSP_MACNET0_INT_TX_LEVEL            (4)
+	#define BSP_MACNET0_INT_TX_LEVEL            (4)
 #endif
 #ifndef BSP_MACNET0_INT_RX_LEVEL
-    #define BSP_MACNET0_INT_RX_LEVEL            (4)
+	#define BSP_MACNET0_INT_RX_LEVEL            (4)
 #endif
 /*
  * The Ethernet PHY device number 0..31
  */
 #ifndef BSP_ENET0_PHY_ADDR
-    #define BSP_ENET0_PHY_ADDR                  (0)
+	#define BSP_ENET0_PHY_ADDR                  (0)
 #endif
 
 /*
@@ -177,11 +177,11 @@
 ** MGCT: <option type="bool"/>
 */
 #ifndef BSPCFG_ENET_HW_TX_IP_CHECKSUM
-    #if HW_ENET_INSTANCE_COUNT
-        #define BSPCFG_ENET_HW_TX_IP_CHECKSUM           (1)
-    #else
-        #define BSPCFG_ENET_HW_TX_IP_CHECKSUM           (0)
-    #endif
+	#if HW_ENET_INSTANCE_COUNT
+		#define BSPCFG_ENET_HW_TX_IP_CHECKSUM           (1)
+	#else
+		#define BSPCFG_ENET_HW_TX_IP_CHECKSUM           (0)
+	#endif
 #endif
 
 /*
@@ -189,11 +189,11 @@
 ** MGCT: <option type="bool"/>
 */
 #ifndef BSPCFG_ENET_HW_TX_PROTOCOL_CHECKSUM
-    #if HW_ENET_INSTANCE_COUNT
-        #define BSPCFG_ENET_HW_TX_PROTOCOL_CHECKSUM     (1)
-    #else
-        #define BSPCFG_ENET_HW_TX_PROTOCOL_CHECKSUM     (0)
-    #endif
+	#if HW_ENET_INSTANCE_COUNT
+		#define BSPCFG_ENET_HW_TX_PROTOCOL_CHECKSUM     (1)
+	#else
+		#define BSPCFG_ENET_HW_TX_PROTOCOL_CHECKSUM     (0)
+	#endif
 #endif
 
 /*
@@ -201,11 +201,11 @@
 ** MGCT: <option type="bool"/>
 */
 #ifndef BSPCFG_ENET_HW_RX_IP_CHECKSUM
-    #if HW_ENET_INSTANCE_COUNT
-        #define BSPCFG_ENET_HW_RX_IP_CHECKSUM           (1)
-    #else
-        #define BSPCFG_ENET_HW_RX_IP_CHECKSUM           (0)
-    #endif
+	#if HW_ENET_INSTANCE_COUNT
+		#define BSPCFG_ENET_HW_RX_IP_CHECKSUM           (1)
+	#else
+		#define BSPCFG_ENET_HW_RX_IP_CHECKSUM           (0)
+	#endif
 #endif
 
 /*
@@ -213,11 +213,11 @@
 ** MGCT: <option type="bool"/>
 */
 #ifndef BSPCFG_ENET_HW_RX_PROTOCOL_CHECKSUM
-    #if HW_ENET_INSTANCE_COUNT
-        #define BSPCFG_ENET_HW_RX_PROTOCOL_CHECKSUM     (1)
-    #else
-        #define BSPCFG_ENET_HW_RX_PROTOCOL_CHECKSUM     (0)
-    #endif
+	#if HW_ENET_INSTANCE_COUNT
+		#define BSPCFG_ENET_HW_RX_PROTOCOL_CHECKSUM     (1)
+	#else
+		#define BSPCFG_ENET_HW_RX_PROTOCOL_CHECKSUM     (0)
+	#endif
 #endif
 
 /*
@@ -225,11 +225,11 @@
 ** MGCT: <option type="bool"/>
 */
 #ifndef BSPCFG_ENET_HW_RX_MAC_ERR
-    #if HW_ENET_INSTANCE_COUNT
-        #define BSPCFG_ENET_HW_RX_MAC_ERR               (1)
-    #else
-        #define BSPCFG_ENET_HW_RX_MAC_ERR               (0)
-    #endif
+	#if HW_ENET_INSTANCE_COUNT
+		#define BSPCFG_ENET_HW_RX_MAC_ERR               (1)
+	#else
+		#define BSPCFG_ENET_HW_RX_MAC_ERR               (0)
+	#endif
 #endif
 
 /** MGCT: </category> */

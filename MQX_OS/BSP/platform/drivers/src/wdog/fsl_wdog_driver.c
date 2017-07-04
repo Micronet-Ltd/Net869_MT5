@@ -54,10 +54,10 @@ static uint32_t wdogWctInstructionCount;
  *END*********************************************************************/
 static void WDOG_DRV_Unlock(void)
 {
-    WDOG_Type *base = g_wdogBase[0];
-    INT_SYS_DisableIRQGlobal();
-    WDOG_HAL_Unlock(base);
-    INT_SYS_EnableIRQGlobal();
+	WDOG_Type *base = g_wdogBase[0];
+	INT_SYS_DisableIRQGlobal();
+	WDOG_HAL_Unlock(base);
+	INT_SYS_EnableIRQGlobal();
 }
 
 /*FUNCTION****************************************************************
@@ -70,12 +70,12 @@ static void WDOG_DRV_Unlock(void)
  *END*********************************************************************/
 static void WDOG_DRV_WaitWctClose(void)
 {
-    uint32_t count;
-    /* here using nop instruction, otherwise empty code will be optimized in release target */
-    for ( count = 0 ; count < wdogWctInstructionCount; count++ )
-    {
-        __NOP();
-    }
+	uint32_t count;
+	/* here using nop instruction, otherwise empty code will be optimized in release target */
+	for ( count = 0 ; count < wdogWctInstructionCount; count++ )
+	{
+		__NOP();
+	}
 }
 
 
@@ -83,25 +83,25 @@ static void WDOG_DRV_WaitWctClose(void)
  *
  * Function Name : WDOG_DRV_Init
  * Description   : Initialize watchdog
- * This function is used to initialize the WDOG, after called, the WDOG 
+ * This function is used to initialize the WDOG, after called, the WDOG
  * will run immediately according to the configure.
  *
  *END*********************************************************************/
 wdog_status_t WDOG_DRV_Init(const wdog_config_t* userConfigPtr)
 {
-    uint32_t coreClockHz, busClockHz;
-    if(!userConfigPtr)
-    {
-        return kStatus_WDOG_NullArgument;
-    }
-    WDOG_Type *base         = g_wdogBase[0];
-    coreClockHz             = CLOCK_SYS_GetCoreClockFreq();
-    busClockHz              = CLOCK_SYS_GetBusClockFreq();
-    wdogWctInstructionCount = ((coreClockHz/busClockHz) << 8); /* WCT is 256 bus clock */
-    WDOG_DRV_Unlock();
-    WDOG_HAL_SetConfig(base, userConfigPtr);
-    WDOG_DRV_WaitWctClose();
-    return kStatus_WDOG_Success;
+	uint32_t coreClockHz, busClockHz;
+	if(!userConfigPtr)
+	{
+		return kStatus_WDOG_NullArgument;
+	}
+	WDOG_Type *base         = g_wdogBase[0];
+	coreClockHz             = CLOCK_SYS_GetCoreClockFreq();
+	busClockHz              = CLOCK_SYS_GetBusClockFreq();
+	wdogWctInstructionCount = ((coreClockHz/busClockHz) << 8); /* WCT is 256 bus clock */
+	WDOG_DRV_Unlock();
+	WDOG_HAL_SetConfig(base, userConfigPtr);
+	WDOG_DRV_WaitWctClose();
+	return kStatus_WDOG_Success;
 }
 
 /*FUNCTION****************************************************************
@@ -113,11 +113,11 @@ wdog_status_t WDOG_DRV_Init(const wdog_config_t* userConfigPtr)
  *END*********************************************************************/
 wdog_status_t WDOG_DRV_Deinit(void)
 {
-    WDOG_Type *base = g_wdogBase[0];
-    WDOG_DRV_Unlock();
-    WDOG_HAL_Disable(base);
-    WDOG_DRV_WaitWctClose();
-    return kStatus_WDOG_Success;
+	WDOG_Type *base = g_wdogBase[0];
+	WDOG_DRV_Unlock();
+	WDOG_HAL_Disable(base);
+	WDOG_DRV_WaitWctClose();
+	return kStatus_WDOG_Success;
 }
 
 /*FUNCTION****************************************************************
@@ -129,41 +129,40 @@ wdog_status_t WDOG_DRV_Deinit(void)
  *END*********************************************************************/
 bool WDOG_DRV_IsRunning(void)
 {
-    WDOG_Type *base = g_wdogBase[0];
-    return WDOG_HAL_IsEnable(base);
+	WDOG_Type *base = g_wdogBase[0];
+	return WDOG_HAL_IsEnable(base);
 }
 
 /*FUNCTION****************************************************************
  *
  * Function Name : WDOG_DRV_Refresh
  * Description   : Refresh watchdog.
- * This function is used to feed the WDOG, it will set the WDOG timer count to zero and 
+ * This function is used to feed the WDOG, it will set the WDOG timer count to zero and
  * should be called before watchdog timer is timeout, otherwise a RESET will assert.
  *
   *END*********************************************************************/
 void WDOG_DRV_Refresh(void)
 {
-    WDOG_Type *base = g_wdogBase[0];
-    INT_SYS_DisableIRQGlobal();
-    WDOG_HAL_Refresh(base);
-    INT_SYS_EnableIRQGlobal();
+	WDOG_Type *base = g_wdogBase[0];
+	INT_SYS_DisableIRQGlobal();
+	WDOG_HAL_Refresh(base);
+	INT_SYS_EnableIRQGlobal();
 }
 
 /*FUNCTION****************************************************************
  *
  * Function Name : WDOG_DRV_ResetSystem
  * Description   : Reset chip by watchdog
- * This function is used to reset chip using WDOG. 
+ * This function is used to reset chip using WDOG.
  *
  *END*********************************************************************/
 void WDOG_DRV_ResetSystem(void)
 {
-    WDOG_Type *base = g_wdogBase[0];
-    WDOG_HAL_ResetSystem(base);
+	WDOG_Type *base = g_wdogBase[0];
+	WDOG_HAL_ResetSystem(base);
 }
 #endif
 
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

@@ -44,27 +44,27 @@ const
 _WEAK_SYMBOL(MQX_INITIALIZATION_STRUCT MQX_init_struct) =
 /*! \endcond */
 {
-    /* PROCESSOR_NUMBER                */  BSP_DEFAULT_PROCESSOR_NUMBER,
-    /* [KPSDK-2559] Workaround to make TAD happy. With new version of TAD START_OF_KERNEL_MEMORY and END_OF_KERNEL_MEMORY can be removed */
-    /* START_OF_KERNEL_MEMORY          */  &kernel_data_prv,
-    /* END_OF_KERNEL_MEMORY            */  BSP_DEFAULT_END_OF_HEAP,
-    /* INTERRUPT_STACK_SIZE            */  BSP_DEFAULT_INTERRUPT_STACK_SIZE,
+	/* PROCESSOR_NUMBER                */  BSP_DEFAULT_PROCESSOR_NUMBER,
+	/* [KPSDK-2559] Workaround to make TAD happy. With new version of TAD START_OF_KERNEL_MEMORY and END_OF_KERNEL_MEMORY can be removed */
+	/* START_OF_KERNEL_MEMORY          */  &kernel_data_prv,
+	/* END_OF_KERNEL_MEMORY            */  BSP_DEFAULT_END_OF_HEAP,
+	/* INTERRUPT_STACK_SIZE            */  BSP_DEFAULT_INTERRUPT_STACK_SIZE,
 #if MQX_CUSTOM_MAIN
-    /* TASK_TEMPLATE_LIST              */  NULL,
+	/* TASK_TEMPLATE_LIST              */  NULL,
 #else
-    /* TASK_TEMPLATE_LIST              */  MQX_template_list,
+	/* TASK_TEMPLATE_LIST              */  MQX_template_list,
 #endif /* MQX_CUSTOM_MAIN */
-    /* MQX_HARDWARE_INTERRUPT_LEVEL_MAX*/  BSP_DEFAULT_MQX_HARDWARE_INTERRUPT_LEVEL_MAX,
-    /* MAX_MSGPOOLS                    */  BSP_DEFAULT_MAX_MSGPOOLS,
-    /* MAX_MSGQS                       */  BSP_DEFAULT_MAX_MSGQS,
-    /* IO_CHANNEL                      */  BSP_DEFAULT_IO_CHANNEL,
-    /* IO_OPEN_MODE                    */  BSP_DEFAULT_IO_OPEN_MODE,
+	/* MQX_HARDWARE_INTERRUPT_LEVEL_MAX*/  BSP_DEFAULT_MQX_HARDWARE_INTERRUPT_LEVEL_MAX,
+	/* MAX_MSGPOOLS                    */  BSP_DEFAULT_MAX_MSGPOOLS,
+	/* MAX_MSGQS                       */  BSP_DEFAULT_MAX_MSGQS,
+	/* IO_CHANNEL                      */  BSP_DEFAULT_IO_CHANNEL,
+	/* IO_OPEN_MODE                    */  BSP_DEFAULT_IO_OPEN_MODE,
 #if defined(__ICCARM__) /* IAR */
-    /* START_OF_HEAP                   */  NULL, /* The value cannot be computed by preprocessor. */
+	/* START_OF_HEAP                   */  NULL, /* The value cannot be computed by preprocessor. */
 #else
-    /* START_OF_HEAP                   */  BSP_DEFAULT_START_OF_HEAP,
+	/* START_OF_HEAP                   */  BSP_DEFAULT_START_OF_HEAP,
 #endif  /* defined(__ICCARM__) */
-    /* END_OF_HEAP                     */  BSP_DEFAULT_END_OF_HEAP,
+	/* END_OF_HEAP                     */  BSP_DEFAULT_END_OF_HEAP,
 };
 
 /**FUNCTION********************************************************************
@@ -77,21 +77,21 @@ _WEAK_SYMBOL(MQX_INITIALIZATION_STRUCT MQX_init_struct) =
 
 #if !MQX_CUSTOM_MAIN
 int main
-    (
-        void
-    )
+	(
+		void
+	)
 {
 #if defined(__ICCARM__) /* IAR */
 /* Search for last block placed by IAR linker to set heap as big as possible.
 ** See mqx_main.c for details.*/
-    if (NULL == MQX_init_struct.START_OF_HEAP)
-    {
-        MQX_init_struct.START_OF_HEAP = (__RW_END > __ZI_END) ? __RW_END : __ZI_END;
-    }
+	if (NULL == MQX_init_struct.START_OF_HEAP)
+	{
+		MQX_init_struct.START_OF_HEAP = (__RW_END > __ZI_END) ? __RW_END : __ZI_END;
+	}
 #endif  /* defined(__ICCARM__) */
-    /* Start MQX */
+	/* Start MQX */
 
-    _mqx( (MQX_INITIALIZATION_STRUCT_PTR) &MQX_init_struct );
-    return 0;
+	_mqx( (MQX_INITIALIZATION_STRUCT_PTR) &MQX_init_struct );
+	return 0;
 }
 #endif /* MQX_CUSTOM_MAIN */

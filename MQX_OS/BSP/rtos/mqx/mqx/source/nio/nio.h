@@ -46,7 +46,7 @@ _Pragma ("diag_default = Pm098, Pm150")
 #define NIO_EBADF           9               /* Bad file descriptor */
 #define NIO_ECHILD          10              /* No child processes */
 #define NIO_EDEADLK         11              /* Resource deadlock avoided */
-                                        /* 11 was EAGAIN */
+										/* 11 was EAGAIN */
 #define NIO_ENOMEM          12              /* Cannot allocate memory */
 #define NIO_EACCES          13              /* Permission denied */
 #define NIO_EFAULT          14              /* Bad address */
@@ -150,25 +150,25 @@ typedef int (*NIO_DEINIT_FPTR)(void *dev_context, int *error);
 /** io device functions callbacks
  */
 typedef struct nio_dev_fn_struct {
-    NIO_OPEN_FPTR OPEN;            ///< io driver open fn
-    NIO_READ_FPTR READ;            ///< io driver read fn
-    NIO_WRITE_FPTR WRITE;          ///< io driver write fn
-    NIO_LSEEK_FPTR LSEEK;          ///< io driver lseek fn
-    NIO_IOCTL_FPTR IOCTL;          ///< io driver ioctl fn
-    NIO_CLOSE_FPTR CLOSE;          ///< io driver close fn
-    NIO_INIT_FPTR INIT;            ///< io driver initialization fn (call from install)
-    NIO_DEINIT_FPTR DEINIT;        ///< io driver deinitialization fn (call from uninstall)
+	NIO_OPEN_FPTR OPEN;            ///< io driver open fn
+	NIO_READ_FPTR READ;            ///< io driver read fn
+	NIO_WRITE_FPTR WRITE;          ///< io driver write fn
+	NIO_LSEEK_FPTR LSEEK;          ///< io driver lseek fn
+	NIO_IOCTL_FPTR IOCTL;          ///< io driver ioctl fn
+	NIO_CLOSE_FPTR CLOSE;          ///< io driver close fn
+	NIO_INIT_FPTR INIT;            ///< io driver initialization fn (call from install)
+	NIO_DEINIT_FPTR DEINIT;        ///< io driver deinitialization fn (call from uninstall)
 } NIO_DEV_FN_STRUCT;
 
 /** io device
  */
 typedef struct nio_dev_struct {
-    const NIO_DEV_FN_STRUCT *FN;     ///< pointer to io driver fn list
-    void *CONTEXT;              ///< device context - deviced specific allocated data
-    uint32_t USAGE;             ///< usage counter, counting actual  running io driver fn calls (read, write, ioctl)
-    semaphore_t LOCK;          ///< device lock
+	const NIO_DEV_FN_STRUCT *FN;     ///< pointer to io driver fn list
+	void *CONTEXT;              ///< device context - deviced specific allocated data
+	uint32_t USAGE;             ///< usage counter, counting actual  running io driver fn calls (read, write, ioctl)
+	semaphore_t LOCK;          ///< device lock
 
-    struct nio_file *FP;           ///< opened fp list for device
+	struct nio_file *FP;           ///< opened fp list for device
 } NIO_DEV_STRUCT;
 
 /** Initialize io subsystem.

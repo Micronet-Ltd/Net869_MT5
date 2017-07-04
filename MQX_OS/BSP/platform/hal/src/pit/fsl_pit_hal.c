@@ -50,12 +50,12 @@
  *END**************************************************************************/
 uint64_t PIT_HAL_ReadLifetimeTimerCount(PIT_Type * base)
 {
-    uint32_t valueH = 0U, valueL = 0U;
+	uint32_t valueH = 0U, valueL = 0U;
 
-    /* LTMR64H should be read before LTMR64L */
-    valueH = PIT_RD_LTMR64H(base);
-    valueL = PIT_RD_LTMR64L(base);
-    return (((uint64_t)valueH << 32U) + (uint64_t)(valueL));
+	/* LTMR64H should be read before LTMR64L */
+	valueH = PIT_RD_LTMR64H(base);
+	valueL = PIT_RD_LTMR64L(base);
+	return (((uint64_t)valueH << 32U) + (uint64_t)(valueL));
 }
 #endif /* FSL_FEATURE_PIT_HAS_LIFETIME_TIMER*/
 
@@ -63,4 +63,3 @@ uint64_t PIT_HAL_ReadLifetimeTimerCount(PIT_Type * base)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

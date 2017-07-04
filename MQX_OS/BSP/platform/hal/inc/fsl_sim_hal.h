@@ -47,8 +47,8 @@
 
 /*! @brief SIM HAL API return status*/
 typedef enum _sim_hal_status {
-    kSimHalSuccess,  /*!< Success.      */
-    kSimHalFail,     /*!< Error occurs. */
+	kSimHalSuccess,  /*!< Success.      */
+	kSimHalFail,     /*!< Error occurs. */
 } sim_hal_status_t;
 
 /*******************************************************************************
@@ -59,8 +59,8 @@ typedef enum _sim_hal_status {
 * Include the CPU-specific clock API header files.
 */
 #if (defined(K02F12810_SERIES))
-    /* Clock System Level API header file */
-    #include "../src/sim/MK02F12810/fsl_sim_hal_MK02F12810.h"
+	/* Clock System Level API header file */
+	#include "../src/sim/MK02F12810/fsl_sim_hal_MK02F12810.h"
 
 #elif (defined(K20D5_SERIES))
 
@@ -348,4 +348,3 @@ typedef enum _sim_hal_status {
 /*******************************************************************************
 * EOF
 ******************************************************************************/
-

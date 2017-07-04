@@ -53,86 +53,86 @@
  */
 void _int_exception_isr
    (
-      void   *parameter
+	  void   *parameter
    )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR         kernel_data;
-    TD_STRUCT_PTR                  td_ptr;
-    PSP_INT_CONTEXT_STRUCT_PTR     exception_frame_ptr;
-    PSP_INT_CONTEXT_STRUCT_PTR     isr_frame_ptr;
-    INTERRUPT_TABLE_STRUCT_PTR     table_ptr;
-    INT_EXCEPTION_FPTR             exception_handler;
-    _mqx_int                       isr_vector;
+	KERNEL_DATA_STRUCT_PTR         kernel_data;
+	TD_STRUCT_PTR                  td_ptr;
+	PSP_INT_CONTEXT_STRUCT_PTR     exception_frame_ptr;
+	PSP_INT_CONTEXT_STRUCT_PTR     isr_frame_ptr;
+	INTERRUPT_TABLE_STRUCT_PTR     table_ptr;
+	INT_EXCEPTION_FPTR             exception_handler;
+	_mqx_int                       isr_vector;
 
-    _GET_KERNEL_DATA(kernel_data);
-    td_ptr = kernel_data->ACTIVE_PTR;
+	_GET_KERNEL_DATA(kernel_data);
+	td_ptr = kernel_data->ACTIVE_PTR;
 
-    /* Stop all interrupts */
-    _PSP_SET_DISABLE_SR(kernel_data->DISABLE_SR);
-    /*_int_disable(); */
+	/* Stop all interrupts */
+	_PSP_SET_DISABLE_SR(kernel_data->DISABLE_SR);
+	/*_int_disable(); */
 
-    if ( kernel_data->IN_ISR > 1 ) {
-        /* We have entered this function from an exception that happened
-         * while an isr was running.
-         */
+	if ( kernel_data->IN_ISR > 1 ) {
+		/* We have entered this function from an exception that happened
+		 * while an isr was running.
+		 */
 
-        /* Get our current exception frame */
-        exception_frame_ptr = kernel_data->INTERRUPT_CONTEXT_PTR;
+		/* Get our current exception frame */
+		exception_frame_ptr = kernel_data->INTERRUPT_CONTEXT_PTR;
 
-        /* the current context contains a pointer to the next one */
-        isr_frame_ptr = (PSP_INT_CONTEXT_STRUCT_PTR)exception_frame_ptr->PREV_CONTEXT;
-        if (isr_frame_ptr == NULL) {
-            /* This is not allowable */
-            _mqx_fatal_error(MQX_CORRUPT_INTERRUPT_STACK);
-        }
+		/* the current context contains a pointer to the next one */
+		isr_frame_ptr = (PSP_INT_CONTEXT_STRUCT_PTR)exception_frame_ptr->PREV_CONTEXT;
+		if (isr_frame_ptr == NULL) {
+			/* This is not allowable */
+			_mqx_fatal_error(MQX_CORRUPT_INTERRUPT_STACK);
+		}
 
-        isr_vector =  isr_frame_ptr->EXCEPTION_NUMBER;
+		isr_vector =  isr_frame_ptr->EXCEPTION_NUMBER;
 
-        /* Call the isr exception handler for the ISR that WAS running */
-        table_ptr = kernel_data->INTERRUPT_TABLE_PTR;
+		/* Call the isr exception handler for the ISR that WAS running */
+		table_ptr = kernel_data->INTERRUPT_TABLE_PTR;
 #if MQX_CHECK_ERRORS
-        if ((table_ptr != NULL) &&
-            (isr_vector >= kernel_data->FIRST_USER_ISR_VECTOR) &&
-            (isr_vector <= kernel_data->LAST_USER_ISR_VECTOR))
-        {
+		if ((table_ptr != NULL) &&
+			(isr_vector >= kernel_data->FIRST_USER_ISR_VECTOR) &&
+			(isr_vector <= kernel_data->LAST_USER_ISR_VECTOR))
+		{
 #endif
-        /* Call the exception handler for the isr on isr_vector,
-         * passing the isr_vector, the exception_vector, the isr_data and
-         * the basic frame pointer for the exception
-         */
-        exception_handler = _int_get_exception_handler(isr_vector + _PSP_VECTOR_BASE);
+		/* Call the exception handler for the isr on isr_vector,
+		 * passing the isr_vector, the exception_vector, the isr_data and
+		 * the basic frame pointer for the exception
+		 */
+		exception_handler = _int_get_exception_handler(isr_vector + _PSP_VECTOR_BASE);
 
-        if (exception_handler) {
-            (*exception_handler)(isr_vector + _PSP_VECTOR_BASE, (_mqx_uint)parameter, 
-                                _int_get_isr_data(isr_vector + _PSP_VECTOR_BASE), exception_frame_ptr);
-        }
+		if (exception_handler) {
+			(*exception_handler)(isr_vector + _PSP_VECTOR_BASE, (_mqx_uint)parameter,
+								_int_get_isr_data(isr_vector + _PSP_VECTOR_BASE), exception_frame_ptr);
+		}
 
 #if MQX_CHECK_ERRORS
-        } else {
-            /* In this case, the exception occured in this handler */
-            _mqx_fatal_error(MQX_INVALID_VECTORED_INTERRUPT);
-        }
+		} else {
+			/* In this case, the exception occured in this handler */
+			_mqx_fatal_error(MQX_INVALID_VECTORED_INTERRUPT);
+		}
 #endif
 
-        /* Indicate we have popped 1 interrupt stack frame (the exception frame) */
-        --kernel_data->IN_ISR;
+		/* Indicate we have popped 1 interrupt stack frame (the exception frame) */
+		--kernel_data->IN_ISR;
 
-        /* Reset the stack to point to the interrupt frame */
-        /* And off we go. Will never return */
-        _psp_exception_return( (void *)isr_frame_ptr );
+		/* Reset the stack to point to the interrupt frame */
+		/* And off we go. Will never return */
+		_psp_exception_return( (void *)isr_frame_ptr );
 
-    } else {
-        /* We have entered this function from an exception that happened
-         * while a task was running.
-         */
+	} else {
+		/* We have entered this function from an exception that happened
+		 * while a task was running.
+		 */
 
-        if (td_ptr->EXCEPTION_HANDLER_PTR != NULL ) {
-            (*td_ptr->EXCEPTION_HANDLER_PTR)((_mqx_uint)parameter,
-            td_ptr->STACK_PTR);
-        } else {
-            /* Abort the current task */
-            _task_abort(MQX_NULL_TASK_ID);
-        }
+		if (td_ptr->EXCEPTION_HANDLER_PTR != NULL ) {
+			(*td_ptr->EXCEPTION_HANDLER_PTR)((_mqx_uint)parameter,
+			td_ptr->STACK_PTR);
+		} else {
+			/* Abort the current task */
+			_task_abort(MQX_NULL_TASK_ID);
+		}
    }
 }
 

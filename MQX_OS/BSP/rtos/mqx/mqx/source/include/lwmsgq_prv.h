@@ -56,10 +56,10 @@ extern "C" {
  * \cond DOXYGEN_PRIVATE
  */
 _mqx_uint _lwmsgq_init_internal(
-    void *location,
-    _mqx_uint num_messages,
-    _mqx_uint msg_size,
-    bool user
+	void *location,
+	_mqx_uint num_messages,
+	_mqx_uint msg_size,
+	bool user
 );
 /*! \endcond */
 

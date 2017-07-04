@@ -93,26 +93,26 @@
 #define SDHC_HAL_AUTO_CMD12_ERR_INT     SDHC_IRQSTAT_AC12E_MASK
 
 #define SDHC_HAL_CMD_ERR_INT            ((uint32_t)(SDHC_HAL_CMD_TIMEOUT_ERR_INT | \
-                                        SDHC_HAL_CMD_CRC_ERR_INT | \
-                                        SDHC_HAL_CMD_END_BIT_ERR_INT | \
-                                        SDHC_HAL_CMD_INDEX_ERR_INT))
+										SDHC_HAL_CMD_CRC_ERR_INT | \
+										SDHC_HAL_CMD_END_BIT_ERR_INT | \
+										SDHC_HAL_CMD_INDEX_ERR_INT))
 #define SDHC_HAL_DATA_ERR_INT           ((uint32_t)(SDHC_HAL_DATA_TIMEOUT_ERR_INT | \
-                                        SDHC_HAL_DATA_CRC_ERR_INT | \
-                                        SDHC_HAL_DATA_END_BIT_ERR_INT))
+										SDHC_HAL_DATA_CRC_ERR_INT | \
+										SDHC_HAL_DATA_END_BIT_ERR_INT))
 #define SDHC_HAL_DATA_ALL_INT           ((uint32_t)(SDHC_HAL_DATA_ERR_INT | \
-                                        SDHC_HAL_DATA_COMPLETE_INT | \
-                                        SDHC_HAL_BUF_READ_READY_INT | \
-                                        SDHC_HAL_BUF_WRITE_READY_INT | \
-                                        SDHC_HAL_DMA_ERR_INT | SDHC_HAL_DMA_INT))
+										SDHC_HAL_DATA_COMPLETE_INT | \
+										SDHC_HAL_BUF_READ_READY_INT | \
+										SDHC_HAL_BUF_WRITE_READY_INT | \
+										SDHC_HAL_DMA_ERR_INT | SDHC_HAL_DMA_INT))
 #define SDHC_HAL_CMD_ALL_INT            ((uint32_t)(SDHC_HAL_CMD_ERR_INT | \
-                                        SDHC_HAL_CMD_COMPLETE_INT | \
-                                        SDHC_HAL_AUTO_CMD12_ERR_INT))
+										SDHC_HAL_CMD_COMPLETE_INT | \
+										SDHC_HAL_AUTO_CMD12_ERR_INT))
 #define SDHC_HAL_CD_ALL_INT             ((uint32_t)(SDHC_HAL_CARD_INSERTION_INT | \
-                                        SDHC_HAL_CARD_REMOVAL_INT))
+										SDHC_HAL_CARD_REMOVAL_INT))
 #define SDHC_HAL_ALL_ERR_INT            ((uint32_t)(SDHC_HAL_CMD_ERR_INT | \
-                                        SDHC_HAL_DATA_ERR_INT | \
-                                        SDHC_HAL_AUTO_CMD12_ERR_INT | \
-                                        SDHC_HAL_DMA_ERR_INT))
+										SDHC_HAL_DATA_ERR_INT | \
+										SDHC_HAL_AUTO_CMD12_ERR_INT | \
+										SDHC_HAL_DMA_ERR_INT))
 
 /* AC12ERR */
 #define SDHC_HAL_ACMD12_NOT_EXEC_ERR    SDHC_AC12ERR_AC12NE_MASK
@@ -127,7 +127,7 @@
 #define SDHC_HAL_ADMA_STATE_ERR                      SDHC_ADMAES_ADMAES_MASK
 /* ADMA Length Mismatch Error */
 #define SDHC_HAL_ADMA_LEN_MIS_MATCH_FLAG             SDHC_ADMAES_ADMALME_MASK
-/* ADMA Descriptor Error */ 
+/* ADMA Descriptor Error */
 #define SDHC_HAL_ADMA_DESP_ERR_FLAG                  SDHC_ADMAES_ADMADCE_MASK
 
 /* HTCAPBLT */
@@ -159,35 +159,35 @@
 
 /*! @brief MMC card BOOT type */
 typedef enum _sdhc_hal_mmcboot {
-    kSdhcHalMmcbootNormal = 0,
-    kSdhcHalMmcbootAlter = 1,
+	kSdhcHalMmcbootNormal = 0,
+	kSdhcHalMmcbootAlter = 1,
 } sdhc_hal_mmcboot_t;
 
 /*! @brief Led control status */
 typedef enum _sdhc_hal_led {
-    kSdhcHalLedOff = 0,
-    kSdhcHalLedOn = 1,
+	kSdhcHalLedOff = 0,
+	kSdhcHalLedOn = 1,
 } sdhc_hal_led_t;
 
 /*! @brief Data transfer width */
 typedef enum _sdhc_hal_dtw {
-    kSdhcHalDtw1Bit = 0,
-    kSdhcHalDtw4Bit = 1,
-    kSdhcHalDtw8Bit = 2,
+	kSdhcHalDtw1Bit = 0,
+	kSdhcHalDtw4Bit = 1,
+	kSdhcHalDtw8Bit = 2,
 } sdhc_hal_dtw_t;
 
 /*! @brief SDHC endian mode */
 typedef enum _sdhc_hal_endian {
-    kSdhcHalEndianBig = 0,
-    kSdhcHalEndianHalfWordBig = 1,
-    kSdhcHalEndianLittle = 2,
+	kSdhcHalEndianBig = 0,
+	kSdhcHalEndianHalfWordBig = 1,
+	kSdhcHalEndianLittle = 2,
 } sdhc_hal_endian_t;
 
 /*! @brief SDHC DMA mode */
 typedef enum _sdhc_hal_dma_mode {
-    kSdhcHalDmaSimple = 0,
-    kSdhcHalDmaAdma1 = 1,
-    kSdhcHalDmaAdma2 = 2,
+	kSdhcHalDmaSimple = 0,
+	kSdhcHalDmaAdma1 = 1,
+	kSdhcHalDmaAdma2 = 2,
 } sdhc_hal_dma_mode_t;
 
 /*! @brief SDHC ADMA address alignment size and length alignment size */
@@ -260,8 +260,8 @@ typedef uint32_t sdhc_hal_adma1_descriptor_t;
  *
  */
 typedef struct SdhcHalAdma2Descriptor {
-    uint32_t attribute;
-    uint32_t *address;
+	uint32_t attribute;
+	uint32_t *address;
 } sdhc_hal_adma2_descriptor_t;
 
 /* ADMA1 descriptor control and status mask */
@@ -289,7 +289,7 @@ typedef struct SdhcHalAdma2Descriptor {
 #define SDHC_HAL_MAX_BLKLEN_2048B           (2U)
 #define SDHC_HAL_MAX_BLKLEN_4096B           (3U)
 
-/* Voltage Support 3.3 V */ 
+/* Voltage Support 3.3 V */
 #define SDHC_HAL_SUPPORT_V330_FLAG                   (1U << 0)
 /* Voltage Support 3.0 V */
 #define SDHC_HAL_SUPPORT_V300_FLAG                   (1U << 1)
@@ -309,45 +309,45 @@ typedef struct SdhcHalAdma2Descriptor {
 /*! @brief Data structure to get the basic information of SDHC */
 typedef struct SdhcHalBasicInfo
 {
-    uint8_t specVer;               /*!< Save the specification version */
-    uint8_t vendorVer;             /*!< Save the vendor version */
-    uint16_t maxBlkLen;             /*!< Save the maximum block length */
-    uint32_t capability;           /*!< The capability flags */
+	uint8_t specVer;               /*!< Save the specification version */
+	uint8_t vendorVer;             /*!< Save the vendor version */
+	uint16_t maxBlkLen;             /*!< Save the maximum block length */
+	uint32_t capability;           /*!< The capability flags */
 }sdhc_hal_basic_info_t;
 
 /*! @brief SD clock configuration to configure the clock of SD protocol unit */
 typedef struct SdhcHalSdClkConfig
 {
-    bool enable;
-    uint32_t maxHostClk;
-    uint32_t destClk;
+	bool enable;
+	uint32_t maxHostClk;
+	uint32_t destClk;
 }sdhc_hal_sdclk_config_t;
 
 /*! @brief Current SDHC status type */
 typedef enum _sdhc_hal_curstat_type_t {
-    kSdhcHalIsCmdInhibit,          /*!< Checks whether the command inhibit bit is set or not. */
-    kSdhcHalIsDataInhibit,         /*!< Checks whether data inhibit bit is set or not. */
-    kSdhcHalIsDataLineActive,      /*!< Checks whether data line is active. */
-    kSdhcHalIsSdClockStable,       /*!< Checks whether the SD clock is stable or not. */
-    kSdhcHalIsIpgClockOff,         /*!< Checks whether the  IPG clock is off or not. */
-    kSdhcHalIsSysClockOff,         /*!< Checks whether the system clock is off or not. */
-    kSdhcHalIsPeripheralClockOff,  /*!< Checks whether the peripheral clock is off or not. */
-    kSdhcHalIsSdClkOff,            /*!< Checks whether  the  SD clock is off or not. */
-    kSdhcHalIsWriteTransferActive, /*!< Checks whether the write transfer is active or not. */
-    kSdhcHalIsReadTransferActive,  /*!< Checks whether the read transfer is active or not. */
-    kSdhcHalIsBuffWriteEnabled,    /*!< Check whether the buffer write is enabled or not. */
-    kSdhcHalIsBuffReadEnabled,     /*!< Checks whether the buffer read is enabled or not. */
-    kSdhcHalIsCardInserted,        /*!< Checks whether the  card is inserted or not. */
-    kSdhcHalIsCmdLineLevelHigh,    /*!< Checks whether the command line signal is high or not. */
-    kSdhcHalGetDataLine0Level,      /*!< Gets the data line 0 signal level or not. */
-    kSdhcHalGetDataLine1Level,      /*!< Gets the data line 1 signal level or not. */
-    kSdhcHalGetDataLine2Level,      /*!< Gets the data line 2 signal level or not. */
-    kSdhcHalGetDataLine3Level,      /*!< Gets the data line 3 signal level or not. */
-    kSdhcHalGetDataLine4Level,      /*!< Gets the data line 4 signal level or not. */
-    kSdhcHalGetDataLine5Level,      /*!< Gets the data line 5 signal level or not. */
-    kSdhcHalGetDataLine6Level,      /*!< Gets the data line 6 signal level or not. */
-    kSdhcHalGetDataLine7Level,      /*!< Gets the data line 7 signal level or not. */
-    kSdhcHalGetCdTestLevel,        /*!< Gets the card detect test level. */
+	kSdhcHalIsCmdInhibit,          /*!< Checks whether the command inhibit bit is set or not. */
+	kSdhcHalIsDataInhibit,         /*!< Checks whether data inhibit bit is set or not. */
+	kSdhcHalIsDataLineActive,      /*!< Checks whether data line is active. */
+	kSdhcHalIsSdClockStable,       /*!< Checks whether the SD clock is stable or not. */
+	kSdhcHalIsIpgClockOff,         /*!< Checks whether the  IPG clock is off or not. */
+	kSdhcHalIsSysClockOff,         /*!< Checks whether the system clock is off or not. */
+	kSdhcHalIsPeripheralClockOff,  /*!< Checks whether the peripheral clock is off or not. */
+	kSdhcHalIsSdClkOff,            /*!< Checks whether  the  SD clock is off or not. */
+	kSdhcHalIsWriteTransferActive, /*!< Checks whether the write transfer is active or not. */
+	kSdhcHalIsReadTransferActive,  /*!< Checks whether the read transfer is active or not. */
+	kSdhcHalIsBuffWriteEnabled,    /*!< Check whether the buffer write is enabled or not. */
+	kSdhcHalIsBuffReadEnabled,     /*!< Checks whether the buffer read is enabled or not. */
+	kSdhcHalIsCardInserted,        /*!< Checks whether the  card is inserted or not. */
+	kSdhcHalIsCmdLineLevelHigh,    /*!< Checks whether the command line signal is high or not. */
+	kSdhcHalGetDataLine0Level,      /*!< Gets the data line 0 signal level or not. */
+	kSdhcHalGetDataLine1Level,      /*!< Gets the data line 1 signal level or not. */
+	kSdhcHalGetDataLine2Level,      /*!< Gets the data line 2 signal level or not. */
+	kSdhcHalGetDataLine3Level,      /*!< Gets the data line 3 signal level or not. */
+	kSdhcHalGetDataLine4Level,      /*!< Gets the data line 4 signal level or not. */
+	kSdhcHalGetDataLine5Level,      /*!< Gets the data line 5 signal level or not. */
+	kSdhcHalGetDataLine6Level,      /*!< Gets the data line 6 signal level or not. */
+	kSdhcHalGetDataLine7Level,      /*!< Gets the data line 7 signal level or not. */
+	kSdhcHalGetCdTestLevel,        /*!< Gets the card detect test level. */
 }sdhc_hal_curstat_type_t;
 
 /* DAT3 As Card Detection Pin */
@@ -368,7 +368,7 @@ typedef enum _sdhc_hal_curstat_type_t {
 #define SDHC_HAL_EN_WAKEUP_ON_CARD_REM_FLAG             (1U << 7)
 /* Enables the external DMA request. */
 #define SDHC_HAL_EN_EXT_DMA_REQ_FLAG                    (1U << 8)
-/* Enables the exact block number for the SDIO CMD53. */ 
+/* Enables the exact block number for the SDIO CMD53. */
 #define SDHC_HAL_EN_EXACT_BLK_NUM_FLAG                  (1U << 9)
 
 /* Enables the boot ACK. */
@@ -381,39 +381,39 @@ typedef enum _sdhc_hal_curstat_type_t {
 /*! @brief Data structure to configure the MMC boot feature */
 typedef struct SdhcHalMmcBootParam
 {
-    uint32_t ackTimeout;      /*!< Sets the timeout value for the boot ACK. */
-    sdhc_hal_mmcboot_t mode;  /*!< Configures the boot mode. */
-    uint32_t blockCount;      /*!< Configures the the block count for the boot. */
-    uint32_t enFlags;
+	uint32_t ackTimeout;      /*!< Sets the timeout value for the boot ACK. */
+	sdhc_hal_mmcboot_t mode;  /*!< Configures the boot mode. */
+	uint32_t blockCount;      /*!< Configures the the block count for the boot. */
+	uint32_t enFlags;
 }sdhc_mmcboot_param_t;
 
 /*! @brief Data structure to initialize the SDHC */
 typedef struct SdhcHalInitConfig
 {
-    sdhc_hal_led_t ledState;          /*!< Sets the LED state. */ 
-    sdhc_hal_endian_t endianMode;     /*!< Configures the endian mode. */
-    sdhc_hal_dma_mode_t dmaMode;      /*!< Sets the DMA mode. */
-    uint8_t writeWatermarkLevel;      /*!< Sets the watermark for writing. */
-    uint8_t readWatermarkLevel;       /*!< Sets the watermark for reading. */
-    uint32_t enFlags;                 /*!< Enable or disable corresponding feature */
-    sdhc_mmcboot_param_t bootParams;  /*!< Configuration read MMC card boot data feature*/
+	sdhc_hal_led_t ledState;          /*!< Sets the LED state. */
+	sdhc_hal_endian_t endianMode;     /*!< Configures the endian mode. */
+	sdhc_hal_dma_mode_t dmaMode;      /*!< Sets the DMA mode. */
+	uint8_t writeWatermarkLevel;      /*!< Sets the watermark for writing. */
+	uint8_t readWatermarkLevel;       /*!< Sets the watermark for reading. */
+	uint32_t enFlags;                 /*!< Enable or disable corresponding feature */
+	sdhc_mmcboot_param_t bootParams;  /*!< Configuration read MMC card boot data feature*/
 }sdhc_hal_config_t;
 
 /*! @brief Command request structure */
 typedef struct SdhcHalCmdReq
 {
-    uint32_t dataBlkSize;                             /*!< Command data Block size */
-    uint32_t dataBlkCount;                            /*!< Command data Block count */
-    uint32_t arg;                                     /*!< Command argument */
-    uint32_t index;                                   /*!< Command index */
-    uint32_t flags;                                   /*!< Command Flags */
+	uint32_t dataBlkSize;                             /*!< Command data Block size */
+	uint32_t dataBlkCount;                            /*!< Command data Block count */
+	uint32_t arg;                                     /*!< Command argument */
+	uint32_t index;                                   /*!< Command index */
+	uint32_t flags;                                   /*!< Command Flags */
 }sdhc_hal_cmd_req_t;
 
 /*! @brief SDHC error type */
 typedef enum _sdhc_hal_err_type
 {
-    kAc12Err,                 /*!< Auto CMD12 error */
-    kAdmaErr,                 /*!< ADMA error */     
+	kAc12Err,                 /*!< Auto CMD12 error */
+	kAdmaErr,                 /*!< ADMA error */
 }sdhc_hal_err_type_t;
 
 
@@ -445,7 +445,7 @@ void SDHC_HAL_SendCmd(SDHC_Type * base, const sdhc_hal_cmd_req_t* cmdReq);
  */
 static inline void SDHC_HAL_SetData(SDHC_Type * base, uint32_t data)
 {
-    SDHC_WR_DATPORT(base, data);
+	SDHC_WR_DATPORT(base, data);
 }
 
 /*!
@@ -456,7 +456,7 @@ static inline void SDHC_HAL_SetData(SDHC_Type * base, uint32_t data)
  */
 static inline uint32_t SDHC_HAL_GetData(SDHC_Type * base)
 {
-    return SDHC_RD_DATPORT(base);
+	return SDHC_RD_DATPORT(base);
 }
 
 /*!
@@ -478,7 +478,7 @@ bool SDHC_HAL_GetCurState(SDHC_Type * base, sdhc_hal_curstat_type_t stateType);
  */
 static inline void SDHC_HAL_SetDataTransferWidth(SDHC_Type * base, sdhc_hal_dtw_t dtw)
 {
-    SDHC_BWR_PROCTL_DTW(base, dtw);
+	SDHC_BWR_PROCTL_DTW(base, dtw);
 }
 
 /*!
@@ -488,14 +488,14 @@ static inline void SDHC_HAL_SetDataTransferWidth(SDHC_Type * base, sdhc_hal_dtw_
 */
 static inline void SDHC_HAL_SetContinueRequest(SDHC_Type * base)
 {
-    SDHC_BWR_PROCTL_CREQ(base, 1);
+	SDHC_BWR_PROCTL_CREQ(base, 1);
 }
 
 /*!
 * @brief Initialize the SDHC according to the configuration user input.
 *
 * @param base SDHC base address
-* @param initConfig The configuration structure 
+* @param initConfig The configuration structure
 */
 void SDHC_HAL_Config(SDHC_Type * base, const sdhc_hal_config_t* initConfig);
 
@@ -503,7 +503,7 @@ void SDHC_HAL_Config(SDHC_Type * base, const sdhc_hal_config_t* initConfig);
  * @brief Sets SDHC SD protocol unit clock.
  *
  * @param base SDHC base address
- * @param clkConfItms SDHC SD protocol unit clock configuration items. 
+ * @param clkConfItms SDHC SD protocol unit clock configuration items.
  */
 void SDHC_HAL_ConfigSdClock(SDHC_Type * base, sdhc_hal_sdclk_config_t* clkConfItms);
 
@@ -515,7 +515,7 @@ void SDHC_HAL_ConfigSdClock(SDHC_Type * base, sdhc_hal_sdclk_config_t* clkConfIt
 */
 static inline uint32_t SDHC_HAL_GetIntFlags(SDHC_Type * base)
 {
-    return SDHC_RD_IRQSTAT(base);
+	return SDHC_RD_IRQSTAT(base);
 }
 
 /*!
@@ -526,7 +526,7 @@ static inline uint32_t SDHC_HAL_GetIntFlags(SDHC_Type * base)
 */
 static inline void SDHC_HAL_ClearIntFlags(SDHC_Type * base, uint32_t mask)
 {
-    SDHC_WR_IRQSTAT(base, mask);
+	SDHC_WR_IRQSTAT(base, mask);
 }
 
 /*!
@@ -546,7 +546,7 @@ void SDHC_HAL_GetAllErrStatus(SDHC_Type * base, sdhc_hal_err_type_t errType, uin
 */
 static inline void SDHC_HAL_SetForceEventFlags(SDHC_Type * base, uint32_t mask)
 {
-    SDHC_WR_FEVT(base, mask);
+	SDHC_WR_FEVT(base, mask);
 }
 
 /*!
@@ -557,9 +557,9 @@ static inline void SDHC_HAL_SetForceEventFlags(SDHC_Type * base, uint32_t mask)
 */
 static inline void SDHC_HAL_SetAdmaAddress(SDHC_Type * base, uint32_t address)
 {
-    /* When use ADMA, disable simple DMA*/
-    SDHC_WR_DSADDR(base, 0);
-    SDHC_WR_ADSADDR(base, address);
+	/* When use ADMA, disable simple DMA*/
+	SDHC_WR_DSADDR(base, 0);
+	SDHC_WR_ADSADDR(base, address);
 }
 
 /*!
@@ -635,4 +635,3 @@ void SDHC_HAL_GetBasicInfo(SDHC_Type * base, sdhc_hal_basic_info_t* basicInfo);
 /*************************************************************************************************
  * EOF
  ************************************************************************************************/
-

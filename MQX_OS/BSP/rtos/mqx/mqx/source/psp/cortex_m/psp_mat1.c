@@ -27,9 +27,9 @@
 
 
 /*!
- * \brief This function multiplies a 128 bit quantity by a 32 bit quantity and stores 
+ * \brief This function multiplies a 128 bit quantity by a 32 bit quantity and stores
  *  the result in a 128 bit quantity
- * 
+ *
  * \param[in] m_ptr Pointer to a 4 long word array in which the value to be multiplied is stored
  * \param[in] mul The multiplier
  * \param[out] r_ptr Pointer to a 4 long word array where the result will be stored
@@ -38,17 +38,17 @@
  */
 uint32_t _psp_mul_128_by_32
    (
-      /* 
-      ** [IN] Pointer to a 4 long word array in which the value to be multiplied
-      ** is stored 
-      */
-      PSP_128_BIT_UNION_PTR   m_ptr,
+	  /*
+	  ** [IN] Pointer to a 4 long word array in which the value to be multiplied
+	  ** is stored
+	  */
+	  PSP_128_BIT_UNION_PTR   m_ptr,
 
-      /* [IN] The multiplier */
-      uint32_t                 mul,
+	  /* [IN] The multiplier */
+	  uint32_t                 mul,
 
-      /* [OUT] Pointer to a 4 long word array where the result will be stored */
-      PSP_128_BIT_UNION_PTR   r_ptr
+	  /* [OUT] Pointer to a 4 long word array where the result will be stored */
+	  PSP_128_BIT_UNION_PTR   r_ptr
 
    )
 { /* Body */
@@ -61,48 +61,48 @@ uint32_t _psp_mul_128_by_32
    tmp.LLW[0] = 0;
    r = 0;
    if (!mul || (!m_ptr->LLW[0] && !m_ptr->LLW[1])) {
-      tmp.LLW[1] = 0;
+	  tmp.LLW[1] = 0;
    } else if (mul == 1) {
-      *r_ptr = *m_ptr;
-      return r;
+	  *r_ptr = *m_ptr;
+	  return r;
    } else {
-      for ( i = 0; i < 3; i++ ) {
-         w  = (uint64_t)mul * (uint64_t)m_ptr->LW[i];
-         w0 = (uint32_t)w;
-         tmp.LW[i] += w0;
-         tmp.LW[i+1] = (w >> 32) + (tmp.LW[i] < w0);
-      } /* Endfor */
+	  for ( i = 0; i < 3; i++ ) {
+		 w  = (uint64_t)mul * (uint64_t)m_ptr->LW[i];
+		 w0 = (uint32_t)w;
+		 tmp.LW[i] += w0;
+		 tmp.LW[i+1] = (w >> 32) + (tmp.LW[i] < w0);
+	  } /* Endfor */
 
-      w = (uint64_t)mul * (uint64_t)m_ptr->LW[3];
-      w0 = (uint32_t)w;
-      tmp.LW[3] += w0;
-      r = (w >> 32) + (tmp.LW[3] < w0);
+	  w = (uint64_t)mul * (uint64_t)m_ptr->LW[3];
+	  w0 = (uint32_t)w;
+	  tmp.LW[3] += w0;
+	  r = (w >> 32) + (tmp.LW[3] < w0);
    } /* Endif */
-   
+
    *r_ptr = tmp;
    return r;
 #else
    tmp.LLW[1] = 0;
    r = 0;
    if (!mul || (!m_ptr->LLW[0] && !m_ptr->LLW[1])) {
-      tmp.LLW[0] = 0;
+	  tmp.LLW[0] = 0;
    } else if (mul == 1) {
-      *r_ptr = *m_ptr;
-      return r;
+	  *r_ptr = *m_ptr;
+	  return r;
    } else {
-      for ( i = 3; i > 0; i-- ) {
-         w  = (uint64_t)mul * (uint64_t)m_ptr->LW[i];
-         w0 = (uint32_t)w;
-         tmp.LW[i] += w0;
-         tmp.LW[i-1] = (w >> 32) + (tmp.LW[i] < w0);
-      } /* Endfor */
+	  for ( i = 3; i > 0; i-- ) {
+		 w  = (uint64_t)mul * (uint64_t)m_ptr->LW[i];
+		 w0 = (uint32_t)w;
+		 tmp.LW[i] += w0;
+		 tmp.LW[i-1] = (w >> 32) + (tmp.LW[i] < w0);
+	  } /* Endfor */
 
-      w = (uint64_t)mul * (uint64_t)m_ptr->LW[0];
-      w0 = (uint32_t)w;
-      tmp.LW[0] += w0;
-      r = (w >> 32) + (tmp.LW[0] < w0);
+	  w = (uint64_t)mul * (uint64_t)m_ptr->LW[0];
+	  w0 = (uint32_t)w;
+	  tmp.LW[0] += w0;
+	  r = (w >> 32) + (tmp.LW[0] < w0);
    } /* Endif */
-   
+
    *r_ptr = tmp;
    return r;
 #endif

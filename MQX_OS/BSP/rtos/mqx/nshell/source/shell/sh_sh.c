@@ -56,47 +56,47 @@ int32_t  Shell_sh(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc != 2) {
-         fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage=TRUE;
-      } else  {
-        fs = Shell_get_current_filesystem(argv);
+	  if (argc != 2) {
+		 fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage=TRUE;
+	  } else  {
+		fs = Shell_get_current_filesystem(argv);
 
-        /* check if filesystem is mounted */
-        if (0 > fs)  {
-           fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n");
-           return_code = SHELL_EXIT_ERROR;
-        } else {
-          error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[1],sizeof(abs_path),shell_ptr->CURRENT_DEVICE_NAME);
-          if (!error)
-          {
-            f = fopen(abs_path, "r");
-            if (NULL != f)  {
-               shell_ptr = Shell_get_context( argv );
-               if (shell_ptr->COMMAND_FP != stdin)  {
-                 fclose(shell_ptr->COMMAND_FP);
-               }
-               shell_ptr->COMMAND_FP = f;
-            } else  {
-               fprintf(shell_ptr->STDOUT, "Error, unable to open file %s.\n", argv[1] );
-               return_code = SHELL_EXIT_ERROR;
-            }
-         } else  {
-            fprintf(shell_ptr->STDOUT, "Error, unable to open file %s.\n", argv[1] );
-            return_code = SHELL_EXIT_ERROR;
-         }
-        }
-      }
+		/* check if filesystem is mounted */
+		if (0 > fs)  {
+		   fprintf(shell_ptr->STDOUT, "Error, file system not mounted\n");
+		   return_code = SHELL_EXIT_ERROR;
+		} else {
+		  error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[1],sizeof(abs_path),shell_ptr->CURRENT_DEVICE_NAME);
+		  if (!error)
+		  {
+			f = fopen(abs_path, "r");
+			if (NULL != f)  {
+			   shell_ptr = Shell_get_context( argv );
+			   if (shell_ptr->COMMAND_FP != stdin)  {
+				 fclose(shell_ptr->COMMAND_FP);
+			   }
+			   shell_ptr->COMMAND_FP = f;
+			} else  {
+			   fprintf(shell_ptr->STDOUT, "Error, unable to open file %s.\n", argv[1] );
+			   return_code = SHELL_EXIT_ERROR;
+			}
+		 } else  {
+			fprintf(shell_ptr->STDOUT, "Error, unable to open file %s.\n", argv[1] );
+			return_code = SHELL_EXIT_ERROR;
+		 }
+		}
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <filename>\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <filename>\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <filename>   = filename to execute\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <filename>\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <filename>\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <filename>   = filename to execute\n");
+	  }
    }
    return return_code;
 

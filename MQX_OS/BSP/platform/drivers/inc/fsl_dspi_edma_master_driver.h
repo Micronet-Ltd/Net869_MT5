@@ -58,8 +58,8 @@ extern const IRQn_Type g_dspiIrqId[SPI_INSTANCE_COUNT];
  * properly communicate with the SPI device.
  */
 typedef struct DspiEdmaDevice {
-    uint32_t bitsPerSec;                 /*!< @brief Baud rate in bits per second.*/
-    dspi_data_format_config_t dataBusConfig;  /* data format configuration structure*/
+	uint32_t bitsPerSec;                 /*!< @brief Baud rate in bits per second.*/
+	dspi_data_format_config_t dataBusConfig;  /* data format configuration structure*/
 } dspi_edma_device_t;
 
 /*!
@@ -72,22 +72,22 @@ typedef struct DspiEdmaDevice {
  * DSPI master driver  populates the members.
  */
 typedef struct DspiEdmaMasterState {
-    dspi_ctar_selection_t whichCtar; /*!< Desired Clock and Transfer Attributes Register (CTAR)*/
-    uint32_t bitsPerFrame;         /*!< Desired number of bits per frame */
-    dspi_which_pcs_config_t whichPcs; /*!< Desired Peripheral Chip Select (pcs) */
-    bool isChipSelectContinuous;  /*!< Option to enable the continuous assertion of chip select
-                                       between transfers*/
-    uint32_t dspiSourceClock;              /*!< Module source clock*/
-    volatile bool isTransferInProgress;             /*!< True if there is an active transfer.*/
-    volatile bool isTransferBlocking;    /*!< True if transfer is a blocking transaction. */
-    semaphore_t irqSync;                 /*!< Used to wait for ISR to complete its business.*/
-    edma_chn_state_t dmaCmdData2Fifo; /*!< Structure definition for the eDMA channel */
-    edma_chn_state_t dmaSrc2CmdData;  /*!< Structure definition for the eDMA channel */
-    edma_chn_state_t dmaFifo2Receive; /*!< Structure definition for the eDMA channel */
-    edma_software_tcd_t * stcdSrc2CmdDataLast; /*!< Pointer to SW TCD in memory */
-    bool extraByte;    /*!< Flag used for 16-bit transfers with odd byte count */
-    uint8_t * rxBuffer;     /*!< The buffer into which received bytes are placed.*/
-    uint32_t rxTransferByteCnt;  /*!< Number of bytes to receive.*/
+	dspi_ctar_selection_t whichCtar; /*!< Desired Clock and Transfer Attributes Register (CTAR)*/
+	uint32_t bitsPerFrame;         /*!< Desired number of bits per frame */
+	dspi_which_pcs_config_t whichPcs; /*!< Desired Peripheral Chip Select (pcs) */
+	bool isChipSelectContinuous;  /*!< Option to enable the continuous assertion of chip select
+									   between transfers*/
+	uint32_t dspiSourceClock;              /*!< Module source clock*/
+	volatile bool isTransferInProgress;             /*!< True if there is an active transfer.*/
+	volatile bool isTransferBlocking;    /*!< True if transfer is a blocking transaction. */
+	semaphore_t irqSync;                 /*!< Used to wait for ISR to complete its business.*/
+	edma_chn_state_t dmaCmdData2Fifo; /*!< Structure definition for the eDMA channel */
+	edma_chn_state_t dmaSrc2CmdData;  /*!< Structure definition for the eDMA channel */
+	edma_chn_state_t dmaFifo2Receive; /*!< Structure definition for the eDMA channel */
+	edma_software_tcd_t * stcdSrc2CmdDataLast; /*!< Pointer to SW TCD in memory */
+	bool extraByte;    /*!< Flag used for 16-bit transfers with odd byte count */
+	uint8_t * rxBuffer;     /*!< The buffer into which received bytes are placed.*/
+	uint32_t rxTransferByteCnt;  /*!< Number of bytes to receive.*/
 } dspi_edma_master_state_t;
 
 /*!
@@ -97,12 +97,12 @@ typedef struct DspiEdmaMasterState {
  * the most common settings of the DSPI peripheral with a single function call.
  */
 typedef struct DspiEdmaMasterUserConfig {
-    dspi_ctar_selection_t whichCtar; /*!< Desired Clock and Transfer Attributes Register(CTAR)*/
-    bool isSckContinuous;                  /*!< Disable or Enable continuous SCK operation*/
-    bool isChipSelectContinuous;  /*!< Option to enable the continuous assertion of chip select
-                                       between transfers */
-    dspi_which_pcs_config_t whichPcs;        /*!< Desired Peripheral Chip Select (pcs) */
-    dspi_pcs_polarity_config_t pcsPolarity;  /*!< Peripheral Chip Select (pcs) polarity setting.*/
+	dspi_ctar_selection_t whichCtar; /*!< Desired Clock and Transfer Attributes Register(CTAR)*/
+	bool isSckContinuous;                  /*!< Disable or Enable continuous SCK operation*/
+	bool isChipSelectContinuous;  /*!< Option to enable the continuous assertion of chip select
+									   between transfers */
+	dspi_which_pcs_config_t whichPcs;        /*!< Desired Peripheral Chip Select (pcs) */
+	dspi_pcs_polarity_config_t pcsPolarity;  /*!< Peripheral Chip Select (pcs) polarity setting.*/
 } dspi_edma_master_user_config_t;
 
 /*******************************************************************************
@@ -134,15 +134,15 @@ extern "C" {
  * This is an example to set up and call the DSPI_DRV_EdmaMasterInit function by passing
  * in these parameters:
    @code
-    dspi_edma_master_state_t dspiEdmaState; <- the user allocates memory for this structure
-    uint32_t calculatedBaudRate;
-    dspi_edma_master_user_config_t userConfig; <- the user populates members for this structure
-    userConfig.isChipSelectContinuous = false;
-    userConfig.isSckContinuous = false;
-    userConfig.pcsPolarity = kDspiPcs_ActiveLow;
-    userConfig.whichCtar = kDspiCtar0;
-    userConfig.whichPcs = kDspiPcs0;
-    DSPI_DRV_EdmaMasterInit(masterInstance, &dspiEdmaState, &userConfig);
+	dspi_edma_master_state_t dspiEdmaState; <- the user allocates memory for this structure
+	uint32_t calculatedBaudRate;
+	dspi_edma_master_user_config_t userConfig; <- the user populates members for this structure
+	userConfig.isChipSelectContinuous = false;
+	userConfig.isSckContinuous = false;
+	userConfig.pcsPolarity = kDspiPcs_ActiveLow;
+	userConfig.whichCtar = kDspiCtar0;
+	userConfig.whichPcs = kDspiPcs0;
+	DSPI_DRV_EdmaMasterInit(masterInstance, &dspiEdmaState, &userConfig);
    @endcode
  *
  * @param instance The instance number of the DSPI peripheral.
@@ -160,9 +160,9 @@ extern "C" {
  * @return An error code or kStatus_DSPI_Success.
  */
 dspi_status_t DSPI_DRV_EdmaMasterInit(uint32_t instance,
-                                      dspi_edma_master_state_t * dspiEdmaState,
-                                      const dspi_edma_master_user_config_t * userConfig,
-                                      edma_software_tcd_t * stcdSrc2CmdDataLast);
+									  dspi_edma_master_state_t * dspiEdmaState,
+									  const dspi_edma_master_user_config_t * userConfig,
+									  edma_software_tcd_t * stcdSrc2CmdDataLast);
 
 
 /*!
@@ -215,7 +215,7 @@ dspi_status_t DSPI_DRV_EdmaMasterDeinit(uint32_t instance);
  *         the capability of the device.
  */
 dspi_status_t DSPI_DRV_EdmaMasterSetDelay(uint32_t instance, dspi_delay_type_t whichDelay,
-                                          uint32_t delayInNanoSec, uint32_t * calculatedDelay);
+										  uint32_t delayInNanoSec, uint32_t * calculatedDelay);
 
 /*@}*/
 
@@ -234,19 +234,19 @@ dspi_status_t DSPI_DRV_EdmaMasterSetDelay(uint32_t instance, dspi_delay_type_t w
  * DSPI_DRV_EdmaMasterTransferBlocking or DSPI_DRV_EdmaMasterTransfer) or pass it in to the
  * DSPI_DRV_EdmaMasterConfigureBus function.  The user can pass in a device structure to the
  * transfer function which contains the parameters for the bus (the transfer function then calls
- * this function). However, the user has the option to call this function directly 
+ * this function). However, the user has the option to call this function directly
  * to get the calculated baud rate, at which point, the user may pass in NULL for the device
  * structure in the transfer function (assuming they have called this configure bus function
  * first). This is an example to set up the dspi_device_t structure to call
  * the DSPI_DRV_EdmaMasterConfigureBus function by passing in these parameters:
    @code
-    dspi_edma_device_t spiDevice;
-    spiDevice.dataBusConfig.bitsPerFrame = 16;
-    spiDevice.dataBusConfig.clkPhase = kDspiClockPhase_FirstEdge;
-    spiDevice.dataBusConfig.clkPolarity = kDspiClockPolarity_ActiveHigh;
-    spiDevice.dataBusConfig.direction = kDspiMsbFirst;
-    spiDevice.bitsPerSec = 50000;
-    DSPI_DRV_EdmaMasterConfigureBus(instance, &spiDevice, &calculatedBaudRate);
+	dspi_edma_device_t spiDevice;
+	spiDevice.dataBusConfig.bitsPerFrame = 16;
+	spiDevice.dataBusConfig.clkPhase = kDspiClockPhase_FirstEdge;
+	spiDevice.dataBusConfig.clkPolarity = kDspiClockPolarity_ActiveHigh;
+	spiDevice.dataBusConfig.direction = kDspiMsbFirst;
+	spiDevice.bitsPerSec = 50000;
+	DSPI_DRV_EdmaMasterConfigureBus(instance, &spiDevice, &calculatedBaudRate);
    @endcode
  *
  * @param instance The instance number of the DSPI peripheral.
@@ -260,8 +260,8 @@ dspi_status_t DSPI_DRV_EdmaMasterSetDelay(uint32_t instance, dspi_delay_type_t w
  * @return An error code or kStatus_DSPI_Success.
  */
 dspi_status_t DSPI_DRV_EdmaMasterConfigureBus(uint32_t instance,
-                                              const dspi_edma_device_t * device,
-                                              uint32_t * calculatedBaudRate);
+											  const dspi_edma_device_t * device,
+											  uint32_t * calculatedBaudRate);
 
 /*@}*/
 
@@ -295,11 +295,11 @@ dspi_status_t DSPI_DRV_EdmaMasterConfigureBus(uint32_t instance,
  *         kStatus_DSPI_Timeout The transfer timed out and was aborted.
  */
 dspi_status_t DSPI_DRV_EdmaMasterTransferBlocking(uint32_t instance,
-                                                  const dspi_edma_device_t * device,
-                                                  const uint8_t * sendBuffer,
-                                                  uint8_t * receiveBuffer,
-                                                  size_t transferByteCount,
-                                                  uint32_t timeout);
+												  const dspi_edma_device_t * device,
+												  const uint8_t * sendBuffer,
+												  uint8_t * receiveBuffer,
+												  size_t transferByteCount,
+												  uint32_t timeout);
 /*@}*/
 
 /*!
@@ -330,10 +330,10 @@ dspi_status_t DSPI_DRV_EdmaMasterTransferBlocking(uint32_t instance,
  *         kStatus_DSPI_Busy Cannot perform transfer because a transfer is already in progress.
  */
 dspi_status_t DSPI_DRV_EdmaMasterTransfer(uint32_t instance,
-                                          const dspi_edma_device_t * device,
-                                          const uint8_t * sendBuffer,
-                                          uint8_t * receiveBuffer,
-                                          size_t transferByteCount);
+										  const dspi_edma_device_t * device,
+										  const uint8_t * sendBuffer,
+										  uint8_t * receiveBuffer,
+										  size_t transferByteCount);
 
 
 /*!
@@ -388,4 +388,3 @@ void DSPI_DRV_EdmaMasterIRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

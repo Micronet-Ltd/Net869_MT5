@@ -37,16 +37,16 @@ extern const NIO_DEV_FN_STRUCT nio_tfs_dev_fn;
 /** TFS directory entry information
  */
 typedef struct nio_tfs_dir_entry {
-    char *NAME;
-    uint32_t FLAGS;
-    unsigned char *DATA;
-    uint32_t SIZE;
+	char *NAME;
+	uint32_t FLAGS;
+	unsigned char *DATA;
+	uint32_t SIZE;
 } NIO_TFS_DIR_ENTRY;
 
 /** TFS initialization data structure
  */
 typedef struct {
-    const NIO_TFS_DIR_ENTRY *ROOT;
+	const NIO_TFS_DIR_ENTRY *ROOT;
 } NIO_TFS_INIT_DATA_STRUCT;
 
 

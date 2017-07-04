@@ -60,9 +60,9 @@ typedef struct lwtimer_struct
    _mqx_uint                  RELATIVE_TICKS;
 
    /*! \brief When the timer is added to the timer queue, MQX initializes the field.
-    * When the timer or the timer queue that the timer is in is cancelled, MQX
-    * clears the field.
-    */
+	* When the timer or the timer queue that the timer is in is cancelled, MQX
+	* clears the field.
+	*/
    _mqx_uint                  VALID;
 
    /*! \brief Function that is called when the timer expires. */
@@ -95,14 +95,14 @@ typedef struct lwtimer_period_struct
    QUEUE_ELEMENT_STRUCT       LINK;
 
    /*! \brief The period of this group of timers (in ticks), a multiple of
-    * BSP_ALARM_RESOLUTION. */
+	* BSP_ALARM_RESOLUTION. */
    _mqx_uint                  PERIOD;
 
    /*! \brief Number of ticks that have elapsed in this period. */
    _mqx_uint                  EXPIRY;
 
    /*!
-    * \brief Number of ticks to wait before starting to process this queue.*/
+	* \brief Number of ticks to wait before starting to process this queue.*/
    _mqx_uint                  WAIT;
 
    /*! \brief A queue of timers to expire at this periodic rate. */
@@ -112,7 +112,7 @@ typedef struct lwtimer_period_struct
    LWTIMER_STRUCT_PTR         TIMER_PTR;
 
    /*! \brief When the timer queue is created, MQX initializes the field. When
-    * the queue is cancelled, MQX clears the field. */
+	* the queue is cancelled, MQX clears the field. */
    _mqx_uint                  VALID;
 
 } LWTIMER_PERIOD_STRUCT, * LWTIMER_PERIOD_STRUCT_PTR;

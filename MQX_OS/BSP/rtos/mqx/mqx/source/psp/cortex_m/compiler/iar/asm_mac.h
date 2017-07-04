@@ -39,7 +39,7 @@
 #define ASM_LABEL_CONST32(label, value) ASM_LABEL(label) DC32 value
 #define ASM_DATA_SECTION(label)    SECTION label : DATA (4)
 #define ASM_CODE_SECTION(label)    SECTION label : CODE (4)
-#define ASM_CODE_SECTION_NOOPT(label)    SECTION label : CODE (4) : ROOT  
+#define ASM_CODE_SECTION_NOOPT(label)    SECTION label : CODE (4) : ROOT
 #define ASM_END               END
 #define ASM_COMP_SPECIFIC_DIRECTIVES
 #define ASM_EQUATE(label, value) label   EQU  value
@@ -76,7 +76,7 @@
   CFI EndCommon CFICommon0
 
 /* Note that these macros should NOT be on the beggining of line when used
-   in assembler code. Prepend allways by at least one space. 
+   in assembler code. Prepend allways by at least one space.
    (was not an issue in EWARM 6.40.x, space seems to be needed in 6.50.x) */
 #define ASM_PUBLIC_BEGIN(name) CFI Block CFIBlock_##name Using CFICommon0
 #define ASM_PUBLIC_FUNC(name)  CFI Function name

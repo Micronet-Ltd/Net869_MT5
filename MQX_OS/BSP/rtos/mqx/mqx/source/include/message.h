@@ -149,7 +149,7 @@
 /*
  *                    TYPEDEFS FOR _CODE_PTR_ FUNCTIONS
  */
- 
+
 /*! \cond DOXYGEN_IGNORE */
 typedef void (_CODE_PTR_ MSGQ_NOTIFICATION_FPTR)( void *);
 /*! \endcond */
@@ -172,10 +172,10 @@ typedef uint16_t _queue_id;          /* What a queue_id looks like */
 /* MESSAGE HEADER STRUCT */
 /*!
  * \brief This structure defines the first field (header) of any message.
- *  
- * Any pool of messsages must have at least this size and must start with a 
+ *
+ * Any pool of messsages must have at least this size and must start with a
  * message header.
- * 
+ *
  * \see _msg_alloc
  * \see _msg_alloc_system
  * \see _msg_free
@@ -188,36 +188,36 @@ typedef uint16_t _queue_id;          /* What a queue_id looks like */
  */
 typedef struct message_header_struct
 {
-   /*! 
-    * \brief The size of the DATA field in bytes, including the header. The 
-    * maximum value is MAX_MESSAGE_SIZE. This field is set by the application. 
-    */
+   /*!
+	* \brief The size of the DATA field in bytes, including the header. The
+	* maximum value is MAX_MESSAGE_SIZE. This field is set by the application.
+	*/
    _msg_size       SIZE;
 
 #if MQX_USE_32BIT_MESSAGE_QIDS
    uint16_t         PAD;
 #endif
 
-   /*! 
-    * \brief Queue ID of the queue to which MQX is to send the message. This 
-    * field is set by the application. 
-    */
+   /*!
+	* \brief Queue ID of the queue to which MQX is to send the message. This
+	* field is set by the application.
+	*/
    _queue_id       TARGET_QID;
 
    /*!
-    * \brief Queue ID of a message queue that is associated with the sending
-    * task. 
-    * 
-    * When messages are allocated, this field is initialized to MSGQ_NULL_QUEUE_ID. 
-    * If the sending task does not have a message queue associated with it, MQX 
-    * does not use this field.
-    */
+	* \brief Queue ID of a message queue that is associated with the sending
+	* task.
+	*
+	* When messages are allocated, this field is initialized to MSGQ_NULL_QUEUE_ID.
+	* If the sending task does not have a message queue associated with it, MQX
+	* does not use this field.
+	*/
    _queue_id       SOURCE_QID;
 
-   /*! 
-    * \brief Indicates the following for the message: endian format, priority 
-    * and urgency.
-    */
+   /*!
+	* \brief Indicates the following for the message: endian format, priority
+	* and urgency.
+	*/
    unsigned char           CONTROL;
 
 #if MQX_USE_32BIT_MESSAGE_QIDS
@@ -248,7 +248,7 @@ extern void             _msg_swap_endian_data(unsigned char *,
 extern void             _msg_swap_endian_header(MESSAGE_HEADER_STRUCT_PTR);
 
 extern _pool_id         _msgpool_create(uint16_t, uint16_t, uint16_t, uint16_t);
-extern bool          _msgpool_create_system(uint16_t, uint16_t, uint16_t, 
+extern bool          _msgpool_create_system(uint16_t, uint16_t, uint16_t,
    uint16_t);
 extern _mqx_uint        _msgpool_destroy(_pool_id);
 extern _mqx_uint        _msgpool_test(void **, void **);
@@ -260,7 +260,7 @@ extern _task_id         _msgq_get_owner(_queue_id);
 extern _mqx_uint        _msgq_get_notification_function(_queue_id,
    MSGQ_NOTIFICATION_FPTR *, void **);
 extern _queue_id        _msgq_open(_queue_number, uint16_t);
-extern _queue_id        _msgq_open_system(_queue_number, uint16_t, 
+extern _queue_id        _msgq_open_system(_queue_number, uint16_t,
    MSGQ_NOTIFICATION_FPTR, void *);
 extern void            *_msgq_poll(_queue_id);
 extern void            *_msgq_peek(_queue_id);

@@ -43,59 +43,58 @@
 power_manager_error_code_t rtc_pm_callback(power_manager_notify_struct_t * notify,
  power_manager_callback_data_t * dataPtr)
 {
-    power_manager_error_code_t result = kPowerManagerSuccess;
+	power_manager_error_code_t result = kPowerManagerSuccess;
 
-    switch (notify->notifyType)
-    {
-        case kPowerManagerNotifyRecover:
-        /* TODO */
-        /* Add code here. */
-        break;
+	switch (notify->notifyType)
+	{
+		case kPowerManagerNotifyRecover:
+		/* TODO */
+		/* Add code here. */
+		break;
 
-        case kPowerManagerNotifyBefore:
-        /* TODO */
-        /* Add code here. */
-        break;
+		case kPowerManagerNotifyBefore:
+		/* TODO */
+		/* Add code here. */
+		break;
 
-        case kPowerManagerNotifyAfter:
-        /* TODO */
-        /* Add code here. */
-        break;
+		case kPowerManagerNotifyAfter:
+		/* TODO */
+		/* Add code here. */
+		break;
 
-        default:
-            result = kPowerManagerError;
-        break;
-    }
+		default:
+			result = kPowerManagerError;
+		break;
+	}
 
-    return result;
+	return result;
 }
 
 clock_manager_error_code_t rtc_cm_callback(clock_notify_struct_t *notify,
  void* dataPtr)
 {
-    clock_manager_error_code_t result = kClockManagerSuccess;
+	clock_manager_error_code_t result = kClockManagerSuccess;
 
-    switch (notify->notifyType)
-    {
-        case kClockManagerNotifyBefore:
-        /* TODO */
-        /* Add code here. */
-        break;
+	switch (notify->notifyType)
+	{
+		case kClockManagerNotifyBefore:
+		/* TODO */
+		/* Add code here. */
+		break;
 
-        case kClockManagerNotifyRecover:
-        /* TODO */
-        /* Add code here. */
-        break;
+		case kClockManagerNotifyRecover:
+		/* TODO */
+		/* Add code here. */
+		break;
 
-        case kClockManagerNotifyAfter:
-        /* TODO */
-        /* Add code here. */
-        break;
+		case kClockManagerNotifyAfter:
+		/* TODO */
+		/* Add code here. */
+		break;
 
-        default:
-            result = kClockManagerError;
-        break;
-    }
-    return result;
+		default:
+			result = kClockManagerError;
+		break;
+	}
+	return result;
 }
-

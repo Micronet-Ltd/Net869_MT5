@@ -18,7 +18,7 @@
 *
 * Comments:
 *
-*   This file contains functions of the Two Level Segregate Fit, 
+*   This file contains functions of the Two Level Segregate Fit,
 *   based on public domain licensed implementation from http://tlsf.baisoku.org/ .
 *
 *
@@ -52,7 +52,7 @@ extern "C" {
 */
 
 
-/* 
+/*
 ** Please define this constant in user_config.h to optimize your    **
 ** allocator footprint                                              **/
 #ifndef MEM_TLSF_MAX_SINGLE_BLOCK_SIZE
@@ -64,64 +64,64 @@ extern "C" {
 /* Public constants: may be modified. */
 enum tlsf_public
 {
-    /* log2 of number of linear subdivisions of block sizes. */
-    /* Tune this if necessary (for small/large memory device) */
+	/* log2 of number of linear subdivisions of block sizes. */
+	/* Tune this if necessary (for small/large memory device) */
 #if (MEM_TLSF_MAX_SINGLE_BLOCK_SIZE > 0x00008000)
-    SL_INDEX_COUNT_LOG2 = 5,  /* x > 32k */
+	SL_INDEX_COUNT_LOG2 = 5,  /* x > 32k */
 #elif (MEM_TLSF_MAX_SINGLE_BLOCK_SIZE <= 0x00004000)
-        SL_INDEX_COUNT_LOG2 = 3, /* 16k and less*/
+		SL_INDEX_COUNT_LOG2 = 3, /* 16k and less*/
 #else
-        SL_INDEX_COUNT_LOG2 = 4, /* 16k to 32k */
+		SL_INDEX_COUNT_LOG2 = 4, /* 16k to 32k */
 #endif
 };
 
 /* Internal constants, do not modify, read-only */
 enum tlsf_private
 {
-    /* All allocation sizes and addresses needs to be aligned to 4 bytes at least*/	
-        ALIGN_SIZE_LOG2 = 2,
-    ALIGN_SIZE = (1 << ALIGN_SIZE_LOG2),
+	/* All allocation sizes and addresses needs to be aligned to 4 bytes at least*/
+		ALIGN_SIZE_LOG2 = 2,
+	ALIGN_SIZE = (1 << ALIGN_SIZE_LOG2),
 
-    /*
-    ** We support allocations of sizes up to (1 << FL_INDEX_MAX) bits.
-    ** However, because we linearly subdivide the second-level lists, and
-    ** our minimum size granularity is 4 bytes, it doesn't make sense to
-    ** create first-level lists for sizes smaller than SL_INDEX_COUNT * 4,
-    ** or (1 << (SL_INDEX_COUNT_LOG2 + 2)) bytes, as there we will be
-    ** trying to split size ranges into more slots than we have available.
-    ** Instead, we calculate the minimum threshold size, and place all
-    ** blocks below that size into the 0th first-level list.
-    */
+	/*
+	** We support allocations of sizes up to (1 << FL_INDEX_MAX) bits.
+	** However, because we linearly subdivide the second-level lists, and
+	** our minimum size granularity is 4 bytes, it doesn't make sense to
+	** create first-level lists for sizes smaller than SL_INDEX_COUNT * 4,
+	** or (1 << (SL_INDEX_COUNT_LOG2 + 2)) bytes, as there we will be
+	** trying to split size ranges into more slots than we have available.
+	** Instead, we calculate the minimum threshold size, and place all
+	** blocks below that size into the 0th first-level list.
+	*/
 
 
-    /*
-    ** We can increase this to support larger sizes, at the expense
-    ** of more overhead in the TLSF structure.
-    */
-    /* Tune this if necessary (for small/large memory device) */
+	/*
+	** We can increase this to support larger sizes, at the expense
+	** of more overhead in the TLSF structure.
+	*/
+	/* Tune this if necessary (for small/large memory device) */
 #if   (MEM_TLSF_MAX_SINGLE_BLOCK_SIZE <= 0x00004000)
-        FL_INDEX_MAX = 14, /* Max block = 16k */
+		FL_INDEX_MAX = 14, /* Max block = 16k */
 #elif (MEM_TLSF_MAX_SINGLE_BLOCK_SIZE <= 0x00010000)
-        FL_INDEX_MAX = 16, /* Max block = 64k */
+		FL_INDEX_MAX = 16, /* Max block = 64k */
 #elif (MEM_TLSF_MAX_SINGLE_BLOCK_SIZE <= 0x00020000)
-        FL_INDEX_MAX = 17, /* Max block = 128k */
+		FL_INDEX_MAX = 17, /* Max block = 128k */
 #elif (MEM_TLSF_MAX_SINGLE_BLOCK_SIZE <= 0x00040000)
-        FL_INDEX_MAX = 18, /* Max block = 256k */
+		FL_INDEX_MAX = 18, /* Max block = 256k */
 #elif (MEM_TLSF_MAX_SINGLE_BLOCK_SIZE <= 0x00080000)
-        FL_INDEX_MAX = 19,  /* Max block = 512k */
+		FL_INDEX_MAX = 19,  /* Max block = 512k */
 #elif (MEM_TLSF_MAX_SINGLE_BLOCK_SIZE <= 0x00100000)
-        FL_INDEX_MAX = 20,  /* Max block = 1024k */
+		FL_INDEX_MAX = 20,  /* Max block = 1024k */
 #elif (MEM_TLSF_MAX_SINGLE_BLOCK_SIZE <= 0x40000000)
-        FL_INDEX_MAX = 30, /* Max block = 1G */
+		FL_INDEX_MAX = 30, /* Max block = 1G */
 #else
-        FL_INDEX_MAX = 31, /* Max block = 2G */
+		FL_INDEX_MAX = 31, /* Max block = 2G */
 #endif
 
-    SL_INDEX_COUNT = (1 << SL_INDEX_COUNT_LOG2),
-    FL_INDEX_SHIFT = (SL_INDEX_COUNT_LOG2 + ALIGN_SIZE_LOG2),
-    FL_INDEX_COUNT = (FL_INDEX_MAX - FL_INDEX_SHIFT + 1),
+	SL_INDEX_COUNT = (1 << SL_INDEX_COUNT_LOG2),
+	FL_INDEX_SHIFT = (SL_INDEX_COUNT_LOG2 + ALIGN_SIZE_LOG2),
+	FL_INDEX_COUNT = (FL_INDEX_MAX - FL_INDEX_SHIFT + 1),
 
-    SMALL_BLOCK_SIZE = (1 << FL_INDEX_SHIFT),
+	SMALL_BLOCK_SIZE = (1 << FL_INDEX_SHIFT),
 };
 
 /* tlsf_t: a TLSF structure. Can contain 1 to N pools. */
@@ -164,29 +164,29 @@ extern const size_t block_size_max;
 */
 typedef struct block_header_t
 {
-    /* Points to the previous physical block. */
-    struct block_header_t* prev_phys_block;
+	/* Points to the previous physical block. */
+	struct block_header_t* prev_phys_block;
 
-    /* The size of this block, excluding the block header. */
-    size_t size;
+	/* The size of this block, excluding the block header. */
+	size_t size;
 
-    /* Next and previous free blocks. */
-    struct block_header_t* next_free;
-    struct block_header_t* prev_free;
+	/* Next and previous free blocks. */
+	struct block_header_t* next_free;
+	struct block_header_t* prev_free;
 } block_header_t;
 
 /* The TLSF control structure. */
 typedef struct control_t
 {
-    /* Empty lists point at this block to indicate they are free. */
-    block_header_t block_null;
+	/* Empty lists point at this block to indicate they are free. */
+	block_header_t block_null;
 
-    /* Bitmaps for free lists. */
-    unsigned int fl_bitmap;
-    unsigned int sl_bitmap[FL_INDEX_COUNT];
+	/* Bitmaps for free lists. */
+	unsigned int fl_bitmap;
+	unsigned int sl_bitmap[FL_INDEX_COUNT];
 
-    /* Head of free lists. */
-    block_header_t* blocks[FL_INDEX_COUNT][SL_INDEX_COUNT];
+	/* Head of free lists. */
+	block_header_t* blocks[FL_INDEX_COUNT][SL_INDEX_COUNT];
 } control_t;
 
 /*!

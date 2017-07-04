@@ -35,30 +35,30 @@
 #define SHELL_IPCONFIG_DHCPCLN6_WAIT (20)
 
 #define eaddrassign(p,x)   ((p)[0] = (x)[0], \
-                            (p)[1] = (x)[1], \
-                            (p)[2] = (x)[2], \
-                            (p)[3] = (x)[3], \
-                            (p)[4] = (x)[4], \
-                            (p)[5] = (x)[5]  \
-                           )
+							(p)[1] = (x)[1], \
+							(p)[2] = (x)[2], \
+							(p)[3] = (x)[3], \
+							(p)[4] = (x)[4], \
+							(p)[5] = (x)[5]  \
+						   )
 
 #define eaddriszero(p)   ( ((p)[0] == 0) && \
-                           ((p)[1] == 0) && \
-                           ((p)[2] == 0) && \
-                           ((p)[3] == 0) && \
-                           ((p)[4] == 0) && \
-                           ((p)[5] == 0)    \
-                          )
+						   ((p)[1] == 0) && \
+						   ((p)[2] == 0) && \
+						   ((p)[3] == 0) && \
+						   ((p)[4] == 0) && \
+						   ((p)[5] == 0)    \
+						  )
 
 /*
-** Function prototypes 
+** Function prototypes
 */
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #if RTCSCFG_ENABLE_PPP && !PLATFORM_SDK_ENABLED
-typedef struct shell_ppp_link { 
+typedef struct shell_ppp_link {
    char*           device_name;             /* system device name, like "ittyd:" */
   _ppp_handle      PPP_HANDLE;              /* PPP connection handle. */
   _rtcs_if_handle  PPP_IF_HANDLE;           /* PPP interface. */
@@ -78,15 +78,15 @@ typedef struct shell_ppp_link {
 
 #define PPP_PRINT_PREFIX   "PPP: "
 #define PPP_PRINTF( _file, _format, _args... )        \
-    do {fprintf( _file, "%s"_format "%s", PPP_PRINT_PREFIX, ##_args, "\n" );} while( 0 )
+	do {fprintf( _file, "%s"_format "%s", PPP_PRINT_PREFIX, ##_args, "\n" );} while( 0 )
 
 extern bool Shell_parse_ip_address( char *arg, _ip_address  *ipaddr_ptr);
 extern bool Shell_parse_netmask( char *arg, _ip_address  *ipaddr_ptr);
 
 extern int32_t Shell_netstat(int32_t argc, char *argv[] );
-extern int32_t Shell_ping(int32_t argc, char *argv[] ); 
+extern int32_t Shell_ping(int32_t argc, char *argv[] );
 extern int32_t Shell_FTP_client(int32_t argc, char *argv[] );
-extern int32_t Shell_get_host_by_name(int32_t argc, char *argv[] ); 
+extern int32_t Shell_get_host_by_name(int32_t argc, char *argv[] );
 extern int32_t Shell_getname(int32_t argc, char *argv[] );
 extern int32_t Shell_telnetcln(int32_t argc, char *argv[]);
 extern int32_t Shell_telnetsrv(int32_t argc, char *argv[]);
@@ -99,7 +99,7 @@ extern int32_t Shell_tftpsrv(int32_t argc, char *argv[]);
 extern int32_t Shell_llmnrsrv(int32_t argc, char *argv[]);
 extern int32_t Shell_type(int32_t argc, char *argv[] );
 extern int32_t Shell_walkroute(int32_t argc, char *argv[] );
-extern int32_t Shell_gate(int32_t argc, char *argv[] ); 
+extern int32_t Shell_gate(int32_t argc, char *argv[] );
 extern int32_t Shell_getroute(int32_t argc, char *argv[] );
 extern int32_t Shell_smtp (int32_t argc, char *argv[]);
 

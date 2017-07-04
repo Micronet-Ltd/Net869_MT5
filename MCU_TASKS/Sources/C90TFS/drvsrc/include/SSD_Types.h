@@ -4,14 +4,14 @@
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the <organization> nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -40,8 +40,8 @@
 
 /************************** CHANGES *************************************
 1.1.GA      09.25.2014      FPT Team      First version of SDK C90TFS flash driver
-                                          inherited from BM C90TFS flash driver v1.02
-                                          (08.04.2014, FPT Team)
+										  inherited from BM C90TFS flash driver v1.02
+										  (08.04.2014, FPT Team)
 1.3.GA      06.23.2015      ROM Team      Sync function pointers with new updates in SSD_FTFx.h
 *************************************************************************/
 
@@ -106,20 +106,20 @@ typedef bool (* PFLASH_SWAP_CALLBACK)(uint8_t function);
 */
 typedef struct _ssd_config
 {
-    uint32_t      ftfxRegBase;        /*!< The  register  base address of  C90TFS/FTFx */
-    uint32_t      PFlashBase;         /*!< The base address of P-Flash memory */
-    uint32_t      PFlashSize;         /*!< The size in byte of P-Flash memory */
-    uint32_t      DFlashBase;         /*!< For FlexNVM device, this is the base address of D-Flash memory (FlexNVM memory); For non-FlexNVM device, this field is unused */
-    uint32_t      DFlashSize;         /*!< For FlexNVM device, this is the size in byte of area
-                                          which is used as  D-Flash  from FlexNVM
-                                          memory;  For non-FlexNVM device, this field is unused */
-    uint32_t      EERAMBase;          /*!< The base address of  FlexRAM  (for FlexNVM
-                                          device) or acceleration RAM  memory  (for non-FlexNVM device) */
-    uint32_t      EEESize;            /*!< For FlexNVM device, this is the size in byte of
-                                          EEPROM area  which was partitioned from
-                                          FlexRAM; For non-FlexNVM device, this field is unused */
-    bool          DebugEnable;        /*!< Background debug mode enable */
-    PCALLBACK     CallBack;           /*!< Call back function to service the time critical events */
+	uint32_t      ftfxRegBase;        /*!< The  register  base address of  C90TFS/FTFx */
+	uint32_t      PFlashBase;         /*!< The base address of P-Flash memory */
+	uint32_t      PFlashSize;         /*!< The size in byte of P-Flash memory */
+	uint32_t      DFlashBase;         /*!< For FlexNVM device, this is the base address of D-Flash memory (FlexNVM memory); For non-FlexNVM device, this field is unused */
+	uint32_t      DFlashSize;         /*!< For FlexNVM device, this is the size in byte of area
+										  which is used as  D-Flash  from FlexNVM
+										  memory;  For non-FlexNVM device, this field is unused */
+	uint32_t      EERAMBase;          /*!< The base address of  FlexRAM  (for FlexNVM
+										  device) or acceleration RAM  memory  (for non-FlexNVM device) */
+	uint32_t      EEESize;            /*!< For FlexNVM device, this is the size in byte of
+										  EEPROM area  which was partitioned from
+										  FlexRAM; For non-FlexNVM device, this field is unused */
+	bool          DebugEnable;        /*!< Background debug mode enable */
+	PCALLBACK     CallBack;           /*!< Call back function to service the time critical events */
 } FLASH_SSD_CONFIG, *PFLASH_SSD_CONFIG;
 
 /* -------------------- Function Pointer ------------------------------- */
@@ -131,51 +131,51 @@ typedef uint32_t (*pFLASHINIT) (PFLASH_SSD_CONFIG pSSDConfig);
 
 /*! @brief PFlashGetProtection function pointer */
 typedef uint32_t (*pPFLASHGETPROTECTION) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                        uint32_t*  protectStatus);
+										uint32_t*  protectStatus);
 
 /*! @brief PFlashSetProtection function pointer */
 typedef uint32_t (*pPFLASHSETPROTECTION) (PFLASH_SSD_CONFIG  pSSDConfig, \
-                                        uint32_t  protectStatus);
+										uint32_t  protectStatus);
 
 /*! @brief PFlashFacGetXAProtection function pointer */
 typedef uint32_t (*pPFLASHFACGETXAPROTECTION)(PFLASH_SSD_CONFIG pSSDConfig, \
-                                         uint8_t * protectStatus,\
-                                         uint8_t * numberOfSegments,\
-                                         uint32_t * segmentSize);
+										 uint8_t * protectStatus,\
+										 uint8_t * numberOfSegments,\
+										 uint32_t * segmentSize);
 
 /*! @brief PFlashFacGetSAProtection function pointer */
 typedef uint32_t (*pPFLASHFACGETSAPROTECTION)(PFLASH_SSD_CONFIG pSSDConfig, \
-                                         uint8_t * protectStatus,\
-                                         uint8_t * numberOfSegments,\
-                                         uint32_t * segmentSize);
+										 uint8_t * protectStatus,\
+										 uint8_t * numberOfSegments,\
+										 uint32_t * segmentSize);
 
 /*! @brief FlashGetSecurityState function pointer */
 typedef uint32_t (*pFLASHGETSECURITYSTATE) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                          uint8_t* securityState);
+										  uint8_t* securityState);
 
 /*! @brief FlashSecurityByPass function pointer */
 typedef uint32_t (*pFLASHSECURITYBYPASS) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                        uint8_t* keyBuffer, \
-                                        pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+										uint8_t* keyBuffer, \
+										pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief FlashEraseAllBlock function pointer */
 typedef uint32_t (*pFLASHERASEALLBLOCK) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                       pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+									   pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief FlashEraseAllBlockUnsecure function pointer */
 typedef uint32_t (*pFLASHERASEALLBLOCKUNSECURE) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                       pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+									   pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief FlashEraseBlock function pointer */
 typedef uint32_t (*pFLASHERASEBLOCK) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                    uint32_t dest, \
-                                    pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+									uint32_t dest, \
+									pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief FlashEraseSector function pointer */
 typedef uint32_t (*pFLASHERASESECTOR) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                     uint32_t dest, \
-                                     uint32_t size, \
-                                     pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+									 uint32_t dest, \
+									 uint32_t size, \
+									 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*! @brief FlashEraseSuspend function pointer */
 typedef uint32_t (*pFLASHERASESUSPEND) (PFLASH_SSD_CONFIG pSSDConfig);
 
@@ -184,110 +184,110 @@ typedef uint32_t (*pFLASHERASERESUME) (PFLASH_SSD_CONFIG pSSDConfig);
 
 /*! @brief FlashProgramSection function pointer */
 typedef uint32_t (*pFLASHPROGRAMSECTION) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                        uint32_t dest, \
-                                        uint16_t number, \
-                                        pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+										uint32_t dest, \
+										uint16_t number, \
+										pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief FlashChecksum function pointer */
 typedef uint32_t (*pFLASHCHECKSUM) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                  uint32_t dest, \
-                                  uint32_t size, \
-                                  uint32_t* pSum);
+								  uint32_t dest, \
+								  uint32_t size, \
+								  uint32_t* pSum);
 
 /*! @brief FlashVerifyAllBlock function pointer */
 typedef uint32_t (*pFLASHVERIFYALLBLOCK) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                        uint8_t marginLevel, \
-                                        pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+										uint8_t marginLevel, \
+										pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! Flash verify block */
 typedef uint32_t (*pFLASHVERIFYBLOCK) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                     uint32_t dest, \
-                                     uint8_t marginLevel, \
-                                     pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+									 uint32_t dest, \
+									 uint8_t marginLevel, \
+									 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief FlashVerifySection function pointer */
 typedef uint32_t (*pFLASHVERIFYSECTION) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                       uint32_t dest, \
-                                       uint16_t number, \
-                                       uint8_t marginLevel, \
-                                       pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+									   uint32_t dest, \
+									   uint16_t number, \
+									   uint8_t marginLevel, \
+									   pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief FlashReadOnce function pointer */
 typedef uint32_t (*pFLASHREADONCE) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                  uint8_t* pDataArray, \
-                                  uint32_t size, \
-                                  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								  uint8_t* pDataArray, \
+								  uint32_t size, \
+								  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief FlashProgramOnce function pointer */
 typedef uint32_t (*pFLASHPROGRAMONCE) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                     uint8_t* pDataArray, \
-                                     uint32_t size, \
-                                     pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+									 uint8_t* pDataArray, \
+									 uint32_t size, \
+									 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*! @brief FlashProgramCheck function pointer */
 typedef uint32_t (*pFLASHPROGRAMCHECK) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                      uint32_t  dest, \
-                                      uint32_t  size, \
-                                      uint8_t*  pExpectedData, \
-                                      uint32_t* pFailAddr, \
-                                      uint8_t   marginLevel, \
-                                      pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+									  uint32_t  dest, \
+									  uint32_t  size, \
+									  uint8_t*  pExpectedData, \
+									  uint32_t* pFailAddr, \
+									  uint8_t   marginLevel, \
+									  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief FlashReadResource function pointer */
 typedef uint32_t (*pFLASHREADRESOURCE) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                      uint32_t dest, \
-                                      uint8_t* pDataArray, \
-                                      uint8_t  resourceSelectCode, \
-                                      pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+									  uint32_t dest, \
+									  uint8_t* pDataArray, \
+									  uint8_t  resourceSelectCode, \
+									  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief FlashProgram function pointer */
 typedef uint32_t (*pFLASHPROGRAM) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                         uint32_t dest, \
-                                         uint32_t size, \
-                                         uint8_t* pData, \
-                                         pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+										 uint32_t dest, \
+										 uint32_t size, \
+										 uint8_t* pData, \
+										 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief PFlashSwapCtrl function pointer */
 typedef uint32_t (*pPFLASHSWAPCTRL) (PFLASH_SSD_CONFIG pSSDConfig, \
-                             uint32_t addr, \
-                             uint8_t swapcmd, \
-                             uint8_t* pCurrentSwapMode,\
-                             uint8_t* pCurrentSwapBlockStatus, \
-                             uint8_t* pNextSwapBlockStatus, \
-                             pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+							 uint32_t addr, \
+							 uint8_t swapcmd, \
+							 uint8_t* pCurrentSwapMode,\
+							 uint8_t* pCurrentSwapBlockStatus, \
+							 uint8_t* pNextSwapBlockStatus, \
+							 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief PFlashSwap function pointer */
 typedef uint32_t (*pFLASHSWAP)(PFLASH_SSD_CONFIG pSSDConfig, \
-                             uint32_t flashAddress, \
-                             PFLASH_SWAP_CALLBACK pSwapCallback, \
-                             pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+							 uint32_t flashAddress, \
+							 PFLASH_SWAP_CALLBACK pSwapCallback, \
+							 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*! @brief DFlashGetProtection function pointer */
 typedef uint32_t (*pDFLASHGETPROTECTION) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                        uint8_t*  protectStatus);
+										uint8_t*  protectStatus);
 /*! @brief DFlashSetProtection function pointer */
 typedef uint32_t (*pDFLASHSETPROTECTION) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                        uint8_t  protectStatus);
+										uint8_t  protectStatus);
 
 /*! @brief EERAMGetProtection function pointer */
 typedef uint32_t (*pEERAMGETPROTECTION) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                       uint8_t*  protectStatus);
+									   uint8_t*  protectStatus);
 
 /*! @brief EERAMSetProtection function pointer */
 typedef uint32_t (*pEERAMSETPROTECTION) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                       uint8_t  protectStatus);
+									   uint8_t  protectStatus);
 /*! @brief DEFlashParition function pointer */
 typedef uint32_t (*pDEFLASHPARTITION) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                     uint8_t EEEDataSizeCode, \
-                                     uint8_t DEPartitionCode, \
-                                     pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+									 uint8_t EEEDataSizeCode, \
+									 uint8_t DEPartitionCode, \
+									 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*! @brief SetEEEEnable function pointer */
 typedef uint32_t (*pSETEEEENABLE) (PFLASH_SSD_CONFIG pSSDConfig, \
-                                 uint8_t EEEEnable,pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								 uint8_t EEEEnable,pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*! @brief EEEWrite function pointer */
 typedef uint32_t (*pEEEWRITE) (PFLASH_SSD_CONFIG pSSDConfig, \
-                             uint32_t dest, \
-                             uint32_t size, \
-                             uint8_t* pData);
+							 uint32_t dest, \
+							 uint32_t size, \
+							 uint8_t* pData);
 
 /*@}*/
 

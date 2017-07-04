@@ -58,49 +58,49 @@
 /*! @brief FlexTimer clock source selection*/
 typedef enum _ftm_clock_source
 {
-    kClock_source_FTM_None = 0, /*!< @internal gui name="None" */
-    kClock_source_FTM_SystemClk, /*!< @internal gui name="System clock" */
-    kClock_source_FTM_FixedClk, /*!< @internal gui name="Fixed clock" */
-    kClock_source_FTM_ExternalClk /*!< @internal gui name="External clock" */
+	kClock_source_FTM_None = 0, /*!< @internal gui name="None" */
+	kClock_source_FTM_SystemClk, /*!< @internal gui name="System clock" */
+	kClock_source_FTM_FixedClk, /*!< @internal gui name="Fixed clock" */
+	kClock_source_FTM_ExternalClk /*!< @internal gui name="External clock" */
 }ftm_clock_source_t;
 
 /*! @brief FlexTimer counting mode selection */
 typedef enum _ftm_counting_mode
 {
-    kCounting_FTM_UP = 0,
-    kCounting_FTM_UpDown
+	kCounting_FTM_UP = 0,
+	kCounting_FTM_UpDown
 }ftm_counting_mode_t;
 
 /*! @brief FlexTimer pre-scaler factor selection for the clock source*/
 typedef enum _ftm_clock_ps
 {
-    kFtmDividedBy1 = 0, /*!< @internal gui name="Divide by 1" */
-    kFtmDividedBy2 , /*!< @internal gui name="Divide by 2" */
-    kFtmDividedBy4 , /*!< @internal gui name="Divide by 4" */
-    kFtmDividedBy8,  /*!< @internal gui name="Divide by 8" */
-    kFtmDividedBy16, /*!< @internal gui name="Divide by 16" */
-    kFtmDividedBy32, /*!< @internal gui name="Divide by 32" */
-    kFtmDividedBy64, /*!< @internal gui name="Divide by 64" */
-    kFtmDividedBy128 /*!< @internal gui name="Divide by 128" */
+	kFtmDividedBy1 = 0, /*!< @internal gui name="Divide by 1" */
+	kFtmDividedBy2 , /*!< @internal gui name="Divide by 2" */
+	kFtmDividedBy4 , /*!< @internal gui name="Divide by 4" */
+	kFtmDividedBy8,  /*!< @internal gui name="Divide by 8" */
+	kFtmDividedBy16, /*!< @internal gui name="Divide by 16" */
+	kFtmDividedBy32, /*!< @internal gui name="Divide by 32" */
+	kFtmDividedBy64, /*!< @internal gui name="Divide by 64" */
+	kFtmDividedBy128 /*!< @internal gui name="Divide by 128" */
 }ftm_clock_ps_t;
 
 /*! @brief FlexTimer pre-scaler factor for the deadtime insertion*/
 typedef enum _ftm_deadtime_ps
 {
-    kFtmDivided1 = 1, /*!< @internal gui name="Divide by 1" */
-    kFtmDivided4, /*!< @internal gui name="Divide by 4" */
-    kFtmDivided16, /*!< @internal gui name="Divide by 16" */
+	kFtmDivided1 = 1, /*!< @internal gui name="Divide by 1" */
+	kFtmDivided4, /*!< @internal gui name="Divide by 4" */
+	kFtmDivided16, /*!< @internal gui name="Divide by 16" */
 }ftm_deadtime_ps_t;
 
 /*! @brief FlexTimer operation mode, capture, output, dual */
 typedef enum _ftm_config_mode_t
 {
-    kFtmInputCapture, /*!< @internal gui name="Input capture" */
-    kFtmOutputCompare, /*!< @internal gui name="Output compare" */
-    kFtmEdgeAlignedPWM, /*!< @internal gui name="Edge aligned PWM" */
-    kFtmCenterAlignedPWM, /*!< @internal gui name="Center aligned PWM" */
-    kFtmCombinedPWM, /*!< @internal gui name="Combined PWM" */
-    kFtmDualEdgeCapture /*!< @internal gui name="Dual edge capture" */
+	kFtmInputCapture, /*!< @internal gui name="Input capture" */
+	kFtmOutputCompare, /*!< @internal gui name="Output compare" */
+	kFtmEdgeAlignedPWM, /*!< @internal gui name="Edge aligned PWM" */
+	kFtmCenterAlignedPWM, /*!< @internal gui name="Center aligned PWM" */
+	kFtmCombinedPWM, /*!< @internal gui name="Combined PWM" */
+	kFtmDualEdgeCapture /*!< @internal gui name="Dual edge capture" */
 }ftm_config_mode_t;
 
 /*! @brief FlexTimer input capture edge mode, rising edge, or falling edge */
@@ -122,66 +122,66 @@ typedef enum _ftm_output_compare_edge_mode_t
 /*! @brief FlexTimer PWM output pulse mode, high-true or low-true on match up */
 typedef enum _ftm_pwm_edge_mode_t
 {
-    kFtmHighTrue = 0, /*!< @internal gui name="High true" */
-    kFtmLowTrue /*!< @internal gui name="Low true" */
+	kFtmHighTrue = 0, /*!< @internal gui name="High true" */
+	kFtmLowTrue /*!< @internal gui name="Low true" */
 }ftm_pwm_edge_mode_t;
 
 /*! @brief FlexTimer dual capture edge mode, one shot or continuous */
 typedef enum _ftm_dual_capture_edge_mode_t
 {
-    kFtmOneShot = 0,
-    kFtmContinuous
+	kFtmOneShot = 0,
+	kFtmContinuous
 }ftm_dual_capture_edge_mode_t;
 
 /*! @brief FlexTimer quadrature decode modes, phase encode or count and direction mode */
 typedef enum _ftm_quad_decode_mode_t
 {
-    kFtmQuadPhaseEncode = 0,
-    kFtmQuadCountAndDir
+	kFtmQuadPhaseEncode = 0,
+	kFtmQuadCountAndDir
 }ftm_quad_decode_mode_t;
 
 /*! @brief FlexTimer quadrature phase polarities, normal or inverted polarity */
 typedef enum _ftm_quad_phase_polarity_t
 {
-    kFtmQuadPhaseNormal = 0, /*!< Phase A input signal is not inverted before identifying the rising and falling edges of this signal. @internal gui name="Normal polarity" */
-    kFtmQuadPhaseInvert /*!< Phase A input signal is inverted before identifying the rising and falling edges of this signal. @internal gui name="Inverted polarity" */
+	kFtmQuadPhaseNormal = 0, /*!< Phase A input signal is not inverted before identifying the rising and falling edges of this signal. @internal gui name="Normal polarity" */
+	kFtmQuadPhaseInvert /*!< Phase A input signal is inverted before identifying the rising and falling edges of this signal. @internal gui name="Inverted polarity" */
 }ftm_quad_phase_polarity_t;
 
 /*! @brief FlexTimer sync options to update registers with buffer */
 typedef enum _ftm_sync_method_t
 {
-    kFtmUseSoftwareTrig = (1U << FTM_SYNC_SWSYNC_SHIFT),
-    kFtmUseHardwareTrig0 = (1U << FTM_SYNC_TRIG0_SHIFT),
-    kFtmUseHardwareTrig1 = (1U << FTM_SYNC_TRIG1_SHIFT),
-    kFtmUseHardwareTrig2 = (1U << FTM_SYNC_TRIG2_SHIFT)
+	kFtmUseSoftwareTrig = (1U << FTM_SYNC_SWSYNC_SHIFT),
+	kFtmUseHardwareTrig0 = (1U << FTM_SYNC_TRIG0_SHIFT),
+	kFtmUseHardwareTrig1 = (1U << FTM_SYNC_TRIG1_SHIFT),
+	kFtmUseHardwareTrig2 = (1U << FTM_SYNC_TRIG2_SHIFT)
 }ftm_sync_method_t;
 
 /*! @brief Options for the FlexTimer behaviour in BDM Mode */
 typedef enum _ftm_bdm_mode_t
 {
-    kFtmBdmMode_00 = 0,
-    /*!< FTM counter stopped, CH(n)F bit can be set, FTM channels in functional mode, writes to MOD,CNTIN and C(n)V registers bypass the register buffers. @internal gui name="Mode 0" */
-    kFtmBdmMode_01,
-    /*!< FTM counter stopped, CH(n)F bit is not set, FTM channels outputs are forced to their safe value , writes to MOD,CNTIN and C(n)V registers bypass the register buffers. @internal gui name="Mode 1" */
-    kFtmBdmMode_10,
-    /*!< FTM counter stopped, CH(n)F bit is not set, FTM channels outputs are frozen when chip enters in BDM mode, writes to MOD,CNTIN and C(n)V registers bypass the register buffers. @internal gui name="Mode 2" */
-    kFtmBdmMode_11
-    /*!< FTM counter in functional mode, CH(n)F bit can be set, FTM channels in functional mode, writes to MOD,CNTIN and C(n)V registers is in fully functional mode. @internal gui name="Mode 3" */
+	kFtmBdmMode_00 = 0,
+	/*!< FTM counter stopped, CH(n)F bit can be set, FTM channels in functional mode, writes to MOD,CNTIN and C(n)V registers bypass the register buffers. @internal gui name="Mode 0" */
+	kFtmBdmMode_01,
+	/*!< FTM counter stopped, CH(n)F bit is not set, FTM channels outputs are forced to their safe value , writes to MOD,CNTIN and C(n)V registers bypass the register buffers. @internal gui name="Mode 1" */
+	kFtmBdmMode_10,
+	/*!< FTM counter stopped, CH(n)F bit is not set, FTM channels outputs are frozen when chip enters in BDM mode, writes to MOD,CNTIN and C(n)V registers bypass the register buffers. @internal gui name="Mode 2" */
+	kFtmBdmMode_11
+	/*!< FTM counter in functional mode, CH(n)F bit can be set, FTM channels in functional mode, writes to MOD,CNTIN and C(n)V registers is in fully functional mode. @internal gui name="Mode 3" */
 }ftm_bdm_mode_t;
 
 /*! @brief FTM status */
 typedef enum _ftm_status {
-    kStatusFtmSuccess = 0U,                   /*!< FTM success status.*/
-    kStatusFtmError = 1U,                     /*!< FTM error status.*/
+	kStatusFtmSuccess = 0U,                   /*!< FTM success status.*/
+	kStatusFtmError = 1U,                     /*!< FTM error status.*/
 } ftm_status_t;
 
 /*! @brief FlexTimer edge mode*/
 typedef union _ftm_edge_mode_t
 {
-    ftm_input_capture_edge_mode_t  input_capture_edge_mode;
-    ftm_output_compare_edge_mode_t output_compare_edge_mode;
-    ftm_pwm_edge_mode_t            ftm_pwm_edge_mode;
-    ftm_dual_capture_edge_mode_t   ftm_dual_capture_edge_mode;
+	ftm_input_capture_edge_mode_t  input_capture_edge_mode;
+	ftm_output_compare_edge_mode_t output_compare_edge_mode;
+	ftm_pwm_edge_mode_t            ftm_pwm_edge_mode;
+	ftm_dual_capture_edge_mode_t   ftm_dual_capture_edge_mode;
 }ftm_edge_mode_t;
 
 /*!
@@ -190,24 +190,24 @@ typedef union _ftm_edge_mode_t
  */
 typedef struct FtmPwmParam
 {
-    ftm_config_mode_t mode;          /*!< FlexTimer PWM operation mode @internal gui name="Mode" id="ChannelMode" default="2" */
-    ftm_pwm_edge_mode_t edgeMode;    /*!< PWM output mode @internal gui name="Edge mode" id="ChannelEdgeMode" */
-    uint32_t uFrequencyHZ;           /*!< PWM period in Hz @internal gui name="Frequency" id="Frequency" default="1000" */
-    uint32_t uDutyCyclePercent;      /*!< PWM pulse width, value should be between 0 to 100
-                                          0=inactive signal(0% duty cycle)...
-                                          100=active signal (100% duty cycle). @internal gui name="Duty cycle" id="ChannelDuty" default="50" */
-    uint16_t uFirstEdgeDelayPercent; /*!< Used only in combined PWM mode to generate asymmetrical PWM.
-                                          Specifies the delay to the first edge in a PWM period.
-                                          If unsure please leave as 0, should be specified as
-                                          percentage of the PWM period @internal gui name="First edge delay" id="ChannelFirstEdge" */
+	ftm_config_mode_t mode;          /*!< FlexTimer PWM operation mode @internal gui name="Mode" id="ChannelMode" default="2" */
+	ftm_pwm_edge_mode_t edgeMode;    /*!< PWM output mode @internal gui name="Edge mode" id="ChannelEdgeMode" */
+	uint32_t uFrequencyHZ;           /*!< PWM period in Hz @internal gui name="Frequency" id="Frequency" default="1000" */
+	uint32_t uDutyCyclePercent;      /*!< PWM pulse width, value should be between 0 to 100
+										  0=inactive signal(0% duty cycle)...
+										  100=active signal (100% duty cycle). @internal gui name="Duty cycle" id="ChannelDuty" default="50" */
+	uint16_t uFirstEdgeDelayPercent; /*!< Used only in combined PWM mode to generate asymmetrical PWM.
+										  Specifies the delay to the first edge in a PWM period.
+										  If unsure please leave as 0, should be specified as
+										  percentage of the PWM period @internal gui name="First edge delay" id="ChannelFirstEdge" */
 }ftm_pwm_param_t;
 
 /*! @brief FlexTimer Dual Edge Capture parameters */
 typedef struct FtmDualEdgeCaptureParam
 {
-    ftm_dual_capture_edge_mode_t mode;              /*!< Dual Edge Capture mode: one-shot or continuous */
-    ftm_input_capture_edge_mode_t currChanEdgeMode; /*!< Input Edge select for Channel n */
-    ftm_input_capture_edge_mode_t nextChanEdgeMode; /*!< Input Edge select for Channel n + 1 */
+	ftm_dual_capture_edge_mode_t mode;              /*!< Dual Edge Capture mode: one-shot or continuous */
+	ftm_input_capture_edge_mode_t currChanEdgeMode; /*!< Input Edge select for Channel n */
+	ftm_input_capture_edge_mode_t nextChanEdgeMode; /*!< Input Edge select for Channel n + 1 */
 }ftm_dual_edge_capture_param_t;
 
 /*! @brief FlexTimer quadrature decode phase parameters
@@ -215,9 +215,9 @@ typedef struct FtmDualEdgeCaptureParam
  */
 typedef struct FtmPhaseParam
 {
-    bool kFtmPhaseInputFilter;      /*!< false: disable phase filter, true: enable phase filter  @internal gui name="Phase input filter" id="QuadPhaseFilter" */
-    uint32_t kFtmPhaseFilterVal;    /*!< Filter value, used only if phase input filter is enabled  @internal gui name="Phase filter value" id="QuadPhaseValue" */
-    ftm_quad_phase_polarity_t kFtmPhasePolarity; /*!< kFtmQuadPhaseNormal or kFtmQuadPhaseInvert  @internal gui name="Phase polarity" id="QuadPhasePol" */
+	bool kFtmPhaseInputFilter;      /*!< false: disable phase filter, true: enable phase filter  @internal gui name="Phase input filter" id="QuadPhaseFilter" */
+	uint32_t kFtmPhaseFilterVal;    /*!< Filter value, used only if phase input filter is enabled  @internal gui name="Phase filter value" id="QuadPhaseValue" */
+	ftm_quad_phase_polarity_t kFtmPhasePolarity; /*!< kFtmQuadPhaseNormal or kFtmQuadPhaseInvert  @internal gui name="Phase polarity" id="QuadPhasePol" */
 }ftm_phase_params_t;
 
 /*******************************************************************************
@@ -238,7 +238,7 @@ extern "C" {
  */
 static inline void FTM_HAL_SetClockSource(FTM_Type *ftmBase, ftm_clock_source_t clock)
 {
-    FTM_BWR_SC_CLKS(ftmBase, clock);
+	FTM_BWR_SC_CLKS(ftmBase, clock);
 }
 
 /*!
@@ -251,7 +251,7 @@ static inline void FTM_HAL_SetClockSource(FTM_Type *ftmBase, ftm_clock_source_t 
  */
 static inline uint8_t FTM_HAL_GetClockSource(FTM_Type *ftmBase)
 {
-    return FTM_BRD_SC_CLKS(ftmBase);
+	return FTM_BRD_SC_CLKS(ftmBase);
 }
 
 /*!
@@ -262,7 +262,7 @@ static inline uint8_t FTM_HAL_GetClockSource(FTM_Type *ftmBase)
  */
 static inline void FTM_HAL_SetClockPs(FTM_Type *ftmBase, ftm_clock_ps_t ps)
 {
-    FTM_BWR_SC_PS(ftmBase, ps);
+	FTM_BWR_SC_PS(ftmBase, ps);
 }
 
 /*!
@@ -274,7 +274,7 @@ static inline void FTM_HAL_SetClockPs(FTM_Type *ftmBase, ftm_clock_ps_t ps)
  */
 static inline uint8_t FTM_HAL_GetClockPs(FTM_Type *ftmBase)
 {
-    return FTM_BRD_SC_PS(ftmBase);
+	return FTM_BRD_SC_PS(ftmBase);
 }
 
 /*!
@@ -284,7 +284,7 @@ static inline uint8_t FTM_HAL_GetClockPs(FTM_Type *ftmBase)
  */
 static inline void FTM_HAL_EnableTimerOverflowInt(FTM_Type *ftmBase)
 {
-    FTM_BWR_SC_TOIE(ftmBase, 1);
+	FTM_BWR_SC_TOIE(ftmBase, 1);
 }
 
 /*!
@@ -294,7 +294,7 @@ static inline void FTM_HAL_EnableTimerOverflowInt(FTM_Type *ftmBase)
  */
 static inline void FTM_HAL_DisableTimerOverflowInt(FTM_Type *ftmBase)
 {
-     FTM_BWR_SC_TOIE(ftmBase, 0);
+	 FTM_BWR_SC_TOIE(ftmBase, 0);
 }
 
 /*!
@@ -305,7 +305,7 @@ static inline void FTM_HAL_DisableTimerOverflowInt(FTM_Type *ftmBase)
  */
 static inline bool FTM_HAL_IsOverflowIntEnabled(FTM_Type *ftmBase)
 {
-    return (bool)(FTM_BRD_SC_TOIE(ftmBase));
+	return (bool)(FTM_BRD_SC_TOIE(ftmBase));
 }
 
 /*!
@@ -315,7 +315,7 @@ static inline bool FTM_HAL_IsOverflowIntEnabled(FTM_Type *ftmBase)
  */
 static inline void FTM_HAL_ClearTimerOverflow(FTM_Type *ftmBase)
 {
-    FTM_BWR_SC_TOF(ftmBase, 0);
+	FTM_BWR_SC_TOF(ftmBase, 0);
 }
 
 /*!
@@ -326,7 +326,7 @@ static inline void FTM_HAL_ClearTimerOverflow(FTM_Type *ftmBase)
  */
 static inline bool FTM_HAL_HasTimerOverflowed(FTM_Type *ftmBase)
 {
-     return FTM_BRD_SC_TOF(ftmBase);
+	 return FTM_BRD_SC_TOF(ftmBase);
 }
 
 /*!
@@ -337,8 +337,8 @@ static inline bool FTM_HAL_HasTimerOverflowed(FTM_Type *ftmBase)
  */
 static inline void FTM_HAL_SetCpwms(FTM_Type *ftmBase, uint8_t mode)
 {
-    assert(mode < 2);
-    FTM_BWR_SC_CPWMS(ftmBase, mode);
+	assert(mode < 2);
+	FTM_BWR_SC_CPWMS(ftmBase, mode);
 }
 
 /*!
@@ -349,7 +349,7 @@ static inline void FTM_HAL_SetCpwms(FTM_Type *ftmBase, uint8_t mode)
  */
 static inline void  FTM_HAL_SetCounter(FTM_Type *ftmBase, uint16_t val)
 {
-    FTM_WR_CNT_COUNT(ftmBase, val);
+	FTM_WR_CNT_COUNT(ftmBase, val);
 }
 
 /*!
@@ -360,7 +360,7 @@ static inline void  FTM_HAL_SetCounter(FTM_Type *ftmBase, uint16_t val)
  */
 static inline uint16_t  FTM_HAL_GetCounter(FTM_Type *ftmBase)
 {
-    return FTM_RD_CNT_COUNT(ftmBase);
+	return FTM_RD_CNT_COUNT(ftmBase);
 }
 
 /*!
@@ -371,7 +371,7 @@ static inline uint16_t  FTM_HAL_GetCounter(FTM_Type *ftmBase)
  */
 static inline void FTM_HAL_SetMod(FTM_Type *ftmBase, uint16_t val)
 {
-    FTM_WR_MOD_MOD(ftmBase, val);
+	FTM_WR_MOD_MOD(ftmBase, val);
 }
 
 /*!
@@ -382,7 +382,7 @@ static inline void FTM_HAL_SetMod(FTM_Type *ftmBase, uint16_t val)
  */
 static inline uint16_t  FTM_HAL_GetMod(FTM_Type *ftmBase)
 {
-    return FTM_RD_MOD_MOD(ftmBase);
+	return FTM_RD_MOD_MOD(ftmBase);
 }
 
 /*!
@@ -393,7 +393,7 @@ static inline uint16_t  FTM_HAL_GetMod(FTM_Type *ftmBase)
  */
 static inline void FTM_HAL_SetCounterInitVal(FTM_Type *ftmBase, uint16_t val)
 {
-    FTM_WR_CNTIN_INIT(ftmBase, val & FTM_CNTIN_INIT_MASK);
+	FTM_WR_CNTIN_INIT(ftmBase, val & FTM_CNTIN_INIT_MASK);
 }
 
 /*!
@@ -404,7 +404,7 @@ static inline void FTM_HAL_SetCounterInitVal(FTM_Type *ftmBase, uint16_t val)
  */
 static inline uint16_t  FTM_HAL_GetCounterInitVal(FTM_Type *ftmBase)
 {
-    return FTM_RD_CNTIN_INIT(ftmBase);
+	return FTM_RD_CNTIN_INIT(ftmBase);
 }
 
 /*FTM channel operating mode (mode, edge and level selection) for capture, output, PWM, combine, and dual */
@@ -417,9 +417,9 @@ static inline uint16_t  FTM_HAL_GetCounterInitVal(FTM_Type *ftmBase)
  */
 static inline void FTM_HAL_SetChnMSnBAMode(FTM_Type *ftmBase, uint8_t channel, uint8_t selection)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    FTM_BWR_CnSC_MSA(ftmBase, channel, selection & 1);
-    FTM_BWR_CnSC_MSB(ftmBase, channel, selection & 2 ? 1 : 0);
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	FTM_BWR_CnSC_MSA(ftmBase, channel, selection & 1);
+	FTM_BWR_CnSC_MSB(ftmBase, channel, selection & 2 ? 1 : 0);
 }
 
 /*!
@@ -431,9 +431,9 @@ static inline void FTM_HAL_SetChnMSnBAMode(FTM_Type *ftmBase, uint8_t channel, u
  */
 static inline void FTM_HAL_SetChnEdgeLevel(FTM_Type *ftmBase, uint8_t channel, uint8_t level)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    FTM_BWR_CnSC_ELSA(ftmBase, channel, level & 1 ? 1 : 0);
-    FTM_BWR_CnSC_ELSB(ftmBase, channel, level & 2 ? 1 : 0);
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	FTM_BWR_CnSC_ELSA(ftmBase, channel, level & 1 ? 1 : 0);
+	FTM_BWR_CnSC_ELSB(ftmBase, channel, level & 2 ? 1 : 0);
 }
 
 /*!
@@ -445,8 +445,8 @@ static inline void FTM_HAL_SetChnEdgeLevel(FTM_Type *ftmBase, uint8_t channel, u
  */
 static inline uint8_t FTM_HAL_GetChnMode(FTM_Type *ftmBase, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    return (FTM_BRD_CnSC_MSA(ftmBase, channel)|| (FTM_BRD_CnSC_MSB(ftmBase, channel) << 1));
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	return (FTM_BRD_CnSC_MSA(ftmBase, channel)|| (FTM_BRD_CnSC_MSB(ftmBase, channel) << 1));
 }
 
 /*!
@@ -458,8 +458,8 @@ static inline uint8_t FTM_HAL_GetChnMode(FTM_Type *ftmBase, uint8_t channel)
  */
 static inline uint8_t FTM_HAL_GetChnEdgeLevel(FTM_Type *ftmBase, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    return (FTM_BRD_CnSC_ELSA(ftmBase, channel)|| (FTM_BRD_CnSC_ELSB(ftmBase, channel) << 1));
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	return (FTM_BRD_CnSC_ELSA(ftmBase, channel)|| (FTM_BRD_CnSC_ELSB(ftmBase, channel) << 1));
 }
 
 /*!
@@ -471,8 +471,8 @@ static inline uint8_t FTM_HAL_GetChnEdgeLevel(FTM_Type *ftmBase, uint8_t channel
  */
 static inline void FTM_HAL_SetChnDmaCmd(FTM_Type *ftmBase, uint8_t channel, bool val)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    FTM_BWR_CnSC_DMA(ftmBase, channel,(val? 1 : 0));
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	FTM_BWR_CnSC_DMA(ftmBase, channel,(val? 1 : 0));
 }
 
 /*!
@@ -484,8 +484,8 @@ static inline void FTM_HAL_SetChnDmaCmd(FTM_Type *ftmBase, uint8_t channel, bool
  */
 static inline bool FTM_HAL_IsChnDma(FTM_Type *ftmBase, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    return (FTM_BRD_CnSC_DMA(ftmBase, channel) ? true : false);
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	return (FTM_BRD_CnSC_DMA(ftmBase, channel) ? true : false);
 }
 
 /*!
@@ -496,8 +496,8 @@ static inline bool FTM_HAL_IsChnDma(FTM_Type *ftmBase, uint8_t channel)
  */
 static inline bool FTM_HAL_IsChnIntEnabled(FTM_Type *ftmBase, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    return (bool)(FTM_BRD_CnSC_CHIE(ftmBase, channel));
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	return (bool)(FTM_BRD_CnSC_CHIE(ftmBase, channel));
 }
 
 /*!
@@ -508,8 +508,8 @@ static inline bool FTM_HAL_IsChnIntEnabled(FTM_Type *ftmBase, uint8_t channel)
  */
 static inline void FTM_HAL_EnableChnInt(FTM_Type *ftmBase, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    FTM_BWR_CnSC_CHIE(ftmBase, channel, 1);
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	FTM_BWR_CnSC_CHIE(ftmBase, channel, 1);
 }
 /*!
  * @brief Disables the FTM peripheral timer channel(n) interrupt.
@@ -519,8 +519,8 @@ static inline void FTM_HAL_EnableChnInt(FTM_Type *ftmBase, uint8_t channel)
  */
 static inline void FTM_HAL_DisableChnInt(FTM_Type *ftmBase, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    FTM_BWR_CnSC_CHIE(ftmBase, channel, 0);
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	FTM_BWR_CnSC_CHIE(ftmBase, channel, 0);
 }
 
 /*!
@@ -532,8 +532,8 @@ static inline void FTM_HAL_DisableChnInt(FTM_Type *ftmBase, uint8_t channel)
  */
 static inline bool FTM_HAL_HasChnEventOccurred(FTM_Type *ftmBase, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    return (FTM_BRD_CnSC_CHF(ftmBase, channel)) ? true : false;
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	return (FTM_BRD_CnSC_CHF(ftmBase, channel)) ? true : false;
 }
 
 /*!
@@ -544,8 +544,8 @@ static inline bool FTM_HAL_HasChnEventOccurred(FTM_Type *ftmBase, uint8_t channe
  */
 static inline void FTM_HAL_ClearChnEventFlag(FTM_Type *ftmBase, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    FTM_BWR_CnSC_CHF(ftmBase, channel, 0);
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	FTM_BWR_CnSC_CHF(ftmBase, channel, 0);
 }
 
 /*FTM channel control*/
@@ -558,8 +558,8 @@ static inline void FTM_HAL_ClearChnEventFlag(FTM_Type *ftmBase, uint8_t channel)
  */
 static inline void FTM_HAL_SetChnCountVal(FTM_Type *ftmBase, uint8_t channel, uint16_t val)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    FTM_WR_CnV_VAL(ftmBase, channel, val);
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	FTM_WR_CnV_VAL(ftmBase, channel, val);
 }
 
 /*!
@@ -571,8 +571,8 @@ static inline void FTM_HAL_SetChnCountVal(FTM_Type *ftmBase, uint8_t channel, ui
  */
 static inline uint16_t FTM_HAL_GetChnCountVal(FTM_Type *ftmBase, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    return FTM_RD_CnV_VAL(ftmBase, channel);
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	return FTM_RD_CnV_VAL(ftmBase, channel);
 }
 
 /*!
@@ -584,8 +584,8 @@ static inline uint16_t FTM_HAL_GetChnCountVal(FTM_Type *ftmBase, uint8_t channel
  */
 static inline uint32_t FTM_HAL_GetChnEventStatus(FTM_Type *ftmBase, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    return (FTM_RD_STATUS(ftmBase) & (1U << channel)) ? true : false;
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	return (FTM_RD_STATUS(ftmBase) & (1U << channel)) ? true : false;
 }
 
 /*!
@@ -596,8 +596,8 @@ static inline uint32_t FTM_HAL_GetChnEventStatus(FTM_Type *ftmBase, uint8_t chan
  */
 static inline void FTM_HAL_ClearChnEventStatus(FTM_Type *ftmBase, uint8_t channel)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    FTM_CLR_STATUS(ftmBase, 1U << channel);
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	FTM_CLR_STATUS(ftmBase, 1U << channel);
 }
 
 /*!
@@ -610,7 +610,7 @@ static inline void FTM_HAL_ClearChnEventStatus(FTM_Type *ftmBase, uint8_t channe
  */
 static inline void FTM_HAL_SetOutmaskReg(FTM_Type *ftmBase, uint32_t regVal)
 {
-    FTM_WR_OUTMASK(ftmBase, regVal);
+	FTM_WR_OUTMASK(ftmBase, regVal);
 }
 
 /*!
@@ -622,8 +622,8 @@ static inline void FTM_HAL_SetOutmaskReg(FTM_Type *ftmBase, uint32_t regVal)
  */
 static inline void FTM_HAL_SetChnOutputMask(FTM_Type *ftmBase, uint8_t channel, bool  mask)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    mask ? FTM_SET_OUTMASK(ftmBase, 1U << channel) : FTM_CLR_OUTMASK(ftmBase, 1U << channel);
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	mask ? FTM_SET_OUTMASK(ftmBase, 1U << channel) : FTM_CLR_OUTMASK(ftmBase, 1U << channel);
 }
 
 /*!
@@ -635,9 +635,9 @@ static inline void FTM_HAL_SetChnOutputMask(FTM_Type *ftmBase, uint8_t channel, 
  */
 static inline void FTM_HAL_SetChnOutputInitStateCmd(FTM_Type *ftmBase, uint8_t channel, uint8_t state)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    FTM_CLR_OUTINIT(ftmBase, 1U << channel);
-    FTM_SET_OUTINIT(ftmBase, (uint8_t)(state << channel));
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	FTM_CLR_OUTINIT(ftmBase, 1U << channel);
+	FTM_SET_OUTINIT(ftmBase, (uint8_t)(state << channel));
 }
 
 /*!
@@ -649,9 +649,9 @@ static inline void FTM_HAL_SetChnOutputInitStateCmd(FTM_Type *ftmBase, uint8_t c
  */
 static inline void FTM_HAL_SetChnOutputPolarityCmd(FTM_Type *ftmBase, uint8_t channel, uint8_t pol)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    FTM_CLR_POL(ftmBase, 1U << channel);
-    FTM_SET_POL(ftmBase, (uint8_t)(pol << channel));
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	FTM_CLR_POL(ftmBase, 1U << channel);
+	FTM_SET_POL(ftmBase, (uint8_t)(pol << channel));
 }
 /*!
  * @brief Sets the FTM peripheral timer channel input polarity.
@@ -662,14 +662,14 @@ static inline void FTM_HAL_SetChnOutputPolarityCmd(FTM_Type *ftmBase, uint8_t ch
  */
 static inline void FTM_HAL_SetChnFaultInputPolarityCmd(FTM_Type *ftmBase, uint8_t channel, uint8_t pol)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    FTM_CLR_FLTPOL(ftmBase, 1U << channel);
-    FTM_SET_FLTPOL(ftmBase, (uint8_t)(pol << channel));
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	FTM_CLR_FLTPOL(ftmBase, 1U << channel);
+	FTM_SET_FLTPOL(ftmBase, (uint8_t)(pol << channel));
 }
 
 
 /*Feature mode selection HAL*/
-    /*FTM fault control*/
+	/*FTM fault control*/
 /*!
  * @brief Enables the FTM peripheral timer fault interrupt.
  *
@@ -677,7 +677,7 @@ static inline void FTM_HAL_SetChnFaultInputPolarityCmd(FTM_Type *ftmBase, uint8_
  */
 static inline void FTM_HAL_EnableFaultInt(FTM_Type *ftmBase)
 {
-    FTM_BWR_MODE_FAULTIE(ftmBase, 1);
+	FTM_BWR_MODE_FAULTIE(ftmBase, 1);
 }
 
 /*!
@@ -687,7 +687,7 @@ static inline void FTM_HAL_EnableFaultInt(FTM_Type *ftmBase)
  */
 static inline void FTM_HAL_DisableFaultInt(FTM_Type *ftmBase)
 {
-    FTM_BWR_MODE_FAULTIE(ftmBase, 0);
+	FTM_BWR_MODE_FAULTIE(ftmBase, 0);
 }
 
 /*!
@@ -698,7 +698,7 @@ static inline void FTM_HAL_DisableFaultInt(FTM_Type *ftmBase)
  */
 static inline void FTM_HAL_SetFaultControlMode(FTM_Type *ftmBase, uint8_t mode)
 {
-    FTM_BWR_MODE_FAULTM(ftmBase, mode);
+	FTM_BWR_MODE_FAULTM(ftmBase, mode);
 }
 
 /*!
@@ -709,7 +709,7 @@ static inline void FTM_HAL_SetFaultControlMode(FTM_Type *ftmBase, uint8_t mode)
  */
 static inline void FTM_HAL_SetCaptureTestCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_MODE_CAPTEST(ftmBase, enable ? 1 : 0);
+	FTM_BWR_MODE_CAPTEST(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -720,7 +720,7 @@ static inline void FTM_HAL_SetCaptureTestCmd(FTM_Type *ftmBase, bool enable)
  */
 static inline void FTM_HAL_SetWriteProtectionCmd(FTM_Type *ftmBase, bool enable)
 {
-     enable ? FTM_BWR_FMS_WPEN(ftmBase, 1) : FTM_BWR_MODE_WPDIS(ftmBase, 1);
+	 enable ? FTM_BWR_FMS_WPEN(ftmBase, 1) : FTM_BWR_MODE_WPDIS(ftmBase, 1);
 }
 
 /*!
@@ -732,8 +732,8 @@ static inline void FTM_HAL_SetWriteProtectionCmd(FTM_Type *ftmBase, bool enable)
  */
 static inline void FTM_HAL_Enable(FTM_Type *ftmBase, bool enable)
 {
-     assert(FTM_BRD_MODE_WPDIS(ftmBase));
-     FTM_BWR_MODE_FTMEN(ftmBase, enable ? 1 : 0);
+	 assert(FTM_BRD_MODE_WPDIS(ftmBase));
+	 FTM_BWR_MODE_FTMEN(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -745,7 +745,7 @@ static inline void FTM_HAL_Enable(FTM_Type *ftmBase, bool enable)
  */
 static inline void FTM_HAL_SetInitChnOutputCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_MODE_INIT(ftmBase, enable ? 1 : 0);
+	FTM_BWR_MODE_INIT(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -758,7 +758,7 @@ static inline void FTM_HAL_SetInitChnOutputCmd(FTM_Type *ftmBase, bool enable)
  */
 static inline void FTM_HAL_SetPwmSyncMode(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_MODE_PWMSYNC(ftmBase, enable ? 1 : 0);
+	FTM_BWR_MODE_PWMSYNC(ftmBase, enable ? 1 : 0);
 }
 
 /*FTM synchronization control*/
@@ -770,7 +770,7 @@ static inline void FTM_HAL_SetPwmSyncMode(FTM_Type *ftmBase, bool enable)
  */
 static inline void FTM_HAL_SetSoftwareTriggerCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNC_SWSYNC(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNC_SWSYNC(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -792,7 +792,7 @@ void FTM_HAL_SetHardwareSyncTriggerSrc(FTM_Type *ftmBase, uint32_t trigger_num, 
  */
 static inline void FTM_HAL_SetOutmaskPwmSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNC_SYNCHOM(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNC_SYNCHOM(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -804,7 +804,7 @@ static inline void FTM_HAL_SetOutmaskPwmSyncModeCmd(FTM_Type *ftmBase, bool enab
  */
 static inline void FTM_HAL_SetCountReinitSyncCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNC_REINIT(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNC_REINIT(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -815,7 +815,7 @@ static inline void FTM_HAL_SetCountReinitSyncCmd(FTM_Type *ftmBase, bool enable)
  */
 static inline void FTM_HAL_SetMaxLoadingCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNC_CNTMAX(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNC_CNTMAX(ftmBase, enable ? 1 : 0);
 }
 /*!
  * @brief Enables or disables the FTM peripheral timer minimum loading points.
@@ -825,7 +825,7 @@ static inline void FTM_HAL_SetMaxLoadingCmd(FTM_Type *ftmBase, bool enable)
  */
 static inline void FTM_HAL_SetMinLoadingCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNC_CNTMIN(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNC_CNTMIN(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -850,10 +850,10 @@ uint32_t FTM_HAL_GetChnPairIndex(uint8_t channel);
  */
 static inline  void FTM_HAL_SetDualChnFaultCmd(FTM_Type *ftmBase, uint8_t chnlPairNum, bool enable)
 {
-    assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
+	assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
 
-    enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_FAULTEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
-             FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_FAULTEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
+	enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_FAULTEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
+			 FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_FAULTEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
 }
 
 /*!
@@ -865,10 +865,10 @@ static inline  void FTM_HAL_SetDualChnFaultCmd(FTM_Type *ftmBase, uint8_t chnlPa
  */
 static inline void FTM_HAL_SetDualChnPwmSyncCmd(FTM_Type *ftmBase, uint8_t chnlPairNum, bool enable)
 {
-    assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
+	assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
 
-    enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_SYNCEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
-             FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_SYNCEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
+	enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_SYNCEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
+			 FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_SYNCEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
 }
 
 /*!
@@ -880,10 +880,10 @@ static inline void FTM_HAL_SetDualChnPwmSyncCmd(FTM_Type *ftmBase, uint8_t chnlP
  */
 static inline void FTM_HAL_SetDualChnDeadtimeCmd(FTM_Type *ftmBase, uint8_t chnlPairNum, bool enable)
 {
-    assert(chnlPairNum < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	assert(chnlPairNum < FSL_FEATURE_FTM_CHANNEL_COUNT);
 
-    enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_DTEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
-             FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_DTEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
+	enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_DTEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
+			 FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_DTEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
 }
 
 /*!
@@ -895,10 +895,10 @@ static inline void FTM_HAL_SetDualChnDeadtimeCmd(FTM_Type *ftmBase, uint8_t chnl
  */
 static inline void FTM_HAL_SetDualChnDecapCmd(FTM_Type *ftmBase, uint8_t chnlPairNum, bool enable)
 {
-    assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
+	assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
 
-    enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_DECAP0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
-             FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_DECAP0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
+	enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_DECAP0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
+			 FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_DECAP0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
 }
 
 /*!
@@ -910,10 +910,10 @@ static inline void FTM_HAL_SetDualChnDecapCmd(FTM_Type *ftmBase, uint8_t chnlPai
  */
 static inline void FTM_HAL_SetDualEdgeCaptureCmd(FTM_Type *ftmBase, uint8_t chnlPairNum, bool enable)
 {
-    assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
+	assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
 
-    enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_DECAPEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
-             FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_DECAPEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
+	enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_DECAPEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
+			 FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_DECAPEN0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
 }
 
 /*!
@@ -925,10 +925,10 @@ static inline void FTM_HAL_SetDualEdgeCaptureCmd(FTM_Type *ftmBase, uint8_t chnl
  */
 static inline void FTM_HAL_SetDualChnCompCmd(FTM_Type *ftmBase, uint8_t chnlPairNum, bool enable)
 {
-    assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
+	assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
 
-    enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_COMP0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
-             FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_COMP0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
+	enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_COMP0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
+			 FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_COMP0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
 
 }
 
@@ -941,10 +941,10 @@ static inline void FTM_HAL_SetDualChnCompCmd(FTM_Type *ftmBase, uint8_t chnlPair
  */
 static inline void FTM_HAL_SetDualChnCombineCmd(FTM_Type *ftmBase, uint8_t chnlPairNum, bool enable)
 {
-    assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
+	assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
 
-    enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_COMBINE0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
-             FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_COMBINE0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
+	enable ? FTM_SET_COMBINE(ftmBase, FTM_COMBINE_COMBINE0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH)):
+			 FTM_CLR_COMBINE(ftmBase, FTM_COMBINE_COMBINE0_MASK << (chnlPairNum * FTM_COMBINE_CHAN_CTRL_WIDTH));
 }
 
 /*FTM dead time insertion control*/
@@ -957,7 +957,7 @@ static inline void FTM_HAL_SetDualChnCombineCmd(FTM_Type *ftmBase, uint8_t chnlP
  */
 static inline void FTM_HAL_SetDeadtimePrescale(FTM_Type *ftmBase, ftm_deadtime_ps_t divider)
 {
-    FTM_WR_DEADTIME_DTPS(ftmBase, divider);
+	FTM_WR_DEADTIME_DTPS(ftmBase, divider);
 }
 
 /*!
@@ -969,7 +969,7 @@ static inline void FTM_HAL_SetDeadtimePrescale(FTM_Type *ftmBase, ftm_deadtime_p
  */
 static inline void FTM_HAL_SetDeadtimeCount(FTM_Type *ftmBase, uint8_t count)
 {
-    FTM_WR_DEADTIME_DTVAL(ftmBase, count);
+	FTM_WR_DEADTIME_DTVAL(ftmBase, count);
 }
 
 /*!
@@ -980,7 +980,7 @@ static inline void FTM_HAL_SetDeadtimeCount(FTM_Type *ftmBase, uint8_t count)
 */
 static inline void FTM_HAL_SetInitTriggerCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_EXTTRIG_INITTRIGEN(ftmBase, enable ? 1 : 0);
+	FTM_BWR_EXTTRIG_INITTRIGEN(ftmBase, enable ? 1 : 0);
 }
 
 /*FTM external trigger */
@@ -1004,7 +1004,7 @@ void FTM_HAL_SetChnTriggerCmd(FTM_Type *ftmBase, uint8_t channel, bool val);
  */
 static inline bool FTM_HAL_IsChnTriggerGenerated(FTM_Type *ftmBase)
 {
-    return FTM_BRD_EXTTRIG_TRIGF(ftmBase);
+	return FTM_BRD_EXTTRIG_TRIGF(ftmBase);
 }
 
 /*Fault mode status*/
@@ -1018,7 +1018,7 @@ static inline bool FTM_HAL_IsChnTriggerGenerated(FTM_Type *ftmBase)
  */
 static inline uint8_t FTM_HAL_GetDetectedFaultInput(FTM_Type *ftmBase)
 {
-    return (FTM_RD_FMS(ftmBase) & 0x0f);
+	return (FTM_RD_FMS(ftmBase) & 0x0f);
 }
 
 /*!
@@ -1029,7 +1029,7 @@ static inline uint8_t FTM_HAL_GetDetectedFaultInput(FTM_Type *ftmBase)
  */
 static inline bool FTM_HAL_IsWriteProtectionEnabled(FTM_Type *ftmBase)
 {
-    return FTM_BRD_FMS_WPEN(ftmBase) ? true : false;
+	return FTM_BRD_FMS_WPEN(ftmBase) ? true : false;
 }
 
 /*Quadrature decoder control*/
@@ -1042,7 +1042,7 @@ static inline bool FTM_HAL_IsWriteProtectionEnabled(FTM_Type *ftmBase)
  */
 static inline void FTM_HAL_SetQuadDecoderCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_QDCTRL_QUADEN(ftmBase, enable ? 1 : 0);
+	FTM_BWR_QDCTRL_QUADEN(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1053,7 +1053,7 @@ static inline void FTM_HAL_SetQuadDecoderCmd(FTM_Type *ftmBase, bool enable)
  */
 static inline void FTM_HAL_SetQuadPhaseAFilterCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_QDCTRL_PHAFLTREN(ftmBase, enable ? 1 : 0);
+	FTM_BWR_QDCTRL_PHAFLTREN(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1064,7 +1064,7 @@ static inline void FTM_HAL_SetQuadPhaseAFilterCmd(FTM_Type *ftmBase, bool enable
  */
 static inline void FTM_HAL_SetQuadPhaseBFilterCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_QDCTRL_PHBFLTREN(ftmBase, enable ? 1 : 0);
+	FTM_BWR_QDCTRL_PHBFLTREN(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1074,9 +1074,9 @@ static inline void FTM_HAL_SetQuadPhaseBFilterCmd(FTM_Type *ftmBase, bool enable
  * @param mode 0: Normal polarity, 1: Inverted polarity
  */
 static inline void FTM_HAL_SetQuadPhaseAPolarity(FTM_Type *ftmBase,
-                                                           ftm_quad_phase_polarity_t mode)
+														   ftm_quad_phase_polarity_t mode)
 {
-    FTM_BWR_QDCTRL_PHAPOL(ftmBase, mode);
+	FTM_BWR_QDCTRL_PHAPOL(ftmBase, mode);
 }
 
 /*!
@@ -1086,9 +1086,9 @@ static inline void FTM_HAL_SetQuadPhaseAPolarity(FTM_Type *ftmBase,
  * @param mode 0: Normal polarity, 1: Inverted polarity
  */
 static inline void FTM_HAL_SetQuadPhaseBPolarity(FTM_Type *ftmBase,
-                                                           ftm_quad_phase_polarity_t mode)
+														   ftm_quad_phase_polarity_t mode)
 {
-    FTM_BWR_QDCTRL_PHBPOL(ftmBase, mode);
+	FTM_BWR_QDCTRL_PHBPOL(ftmBase, mode);
 }
 
 /*!
@@ -1100,7 +1100,7 @@ static inline void FTM_HAL_SetQuadPhaseBPolarity(FTM_Type *ftmBase,
  */
 static inline void FTM_HAL_SetQuadMode(FTM_Type *ftmBase, ftm_quad_decode_mode_t quadMode)
 {
-    FTM_BWR_QDCTRL_QUADMODE(ftmBase, quadMode);
+	FTM_BWR_QDCTRL_QUADMODE(ftmBase, quadMode);
 }
 
 /*!
@@ -1112,7 +1112,7 @@ static inline void FTM_HAL_SetQuadMode(FTM_Type *ftmBase, ftm_quad_decode_mode_t
  */
 static inline uint8_t FTM_HAL_GetQuadDir(FTM_Type *ftmBase)
 {
-    return FTM_BRD_QDCTRL_QUADMODE(ftmBase);
+	return FTM_BRD_QDCTRL_QUADMODE(ftmBase);
 }
 
 /*!
@@ -1124,7 +1124,7 @@ static inline uint8_t FTM_HAL_GetQuadDir(FTM_Type *ftmBase)
  */
 static inline uint8_t FTM_HAL_GetQuadTimerOverflowDir(FTM_Type *ftmBase)
 {
-    return FTM_BRD_QDCTRL_TOFDIR(ftmBase);
+	return FTM_BRD_QDCTRL_TOFDIR(ftmBase);
 }
 
 /*!
@@ -1143,7 +1143,7 @@ void FTM_HAL_SetChnInputCaptureFilter(FTM_Type *ftmBase, uint8_t channel, uint8_
  */
 static inline void FTM_HAL_SetFaultInputFilterVal(FTM_Type *ftmBase, uint32_t val)
 {
-    FTM_BWR_FLTCTRL_FFVAL(ftmBase, val);
+	FTM_BWR_FLTCTRL_FFVAL(ftmBase, val);
 }
 
 /*!
@@ -1155,9 +1155,9 @@ static inline void FTM_HAL_SetFaultInputFilterVal(FTM_Type *ftmBase, uint32_t va
  */
 static inline void FTM_HAL_SetFaultInputFilterCmd(FTM_Type *ftmBase, uint8_t inputNum, bool val)
 {
-    assert(inputNum < CHAN4_IDX);
-    val ? FTM_SET_FLTCTRL(ftmBase, (1U << (inputNum + 4))) :
-          FTM_CLR_FLTCTRL(ftmBase, (1U << (inputNum + 4)));
+	assert(inputNum < CHAN4_IDX);
+	val ? FTM_SET_FLTCTRL(ftmBase, (1U << (inputNum + 4))) :
+		  FTM_CLR_FLTCTRL(ftmBase, (1U << (inputNum + 4)));
 }
 
 /*!
@@ -1169,9 +1169,9 @@ static inline void FTM_HAL_SetFaultInputFilterCmd(FTM_Type *ftmBase, uint8_t inp
  */
 static inline void FTM_HAL_SetFaultInputCmd(FTM_Type *ftmBase, uint8_t inputNum, bool val)
 {
-    assert(inputNum < CHAN4_IDX);
-    val ? FTM_SET_FLTCTRL(ftmBase, (1U << inputNum)) :
-          FTM_CLR_FLTCTRL(ftmBase, (1U << inputNum));
+	assert(inputNum < CHAN4_IDX);
+	val ? FTM_SET_FLTCTRL(ftmBase, (1U << inputNum)) :
+		  FTM_CLR_FLTCTRL(ftmBase, (1U << inputNum));
 }
 
 /*!
@@ -1183,10 +1183,10 @@ static inline void FTM_HAL_SetFaultInputCmd(FTM_Type *ftmBase, uint8_t inputNum,
  */
 static inline void FTM_HAL_SetDualChnInvertCmd(FTM_Type *ftmBase, uint8_t chnlPairNum, bool val)
 {
-    assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
+	assert(chnlPairNum < (FSL_FEATURE_FTM_CHANNEL_COUNT / 2));
 
-    val ? FTM_SET_INVCTRL(ftmBase, (1U << chnlPairNum)) :
-          FTM_CLR_INVCTRL(ftmBase, (1U << chnlPairNum));
+	val ? FTM_SET_INVCTRL(ftmBase, (1U << chnlPairNum)) :
+		  FTM_CLR_INVCTRL(ftmBase, (1U << chnlPairNum));
 }
 
 /*!
@@ -1199,7 +1199,7 @@ static inline void FTM_HAL_SetDualChnInvertCmd(FTM_Type *ftmBase, uint8_t chnlPa
  */
 static inline void FTM_HAL_SetInvctrlReg(FTM_Type *ftmBase, uint32_t regVal)
 {
-    FTM_WR_INVCTRL(ftmBase, regVal);
+	FTM_WR_INVCTRL(ftmBase, regVal);
 }
 
 /*FTM software output control*/
@@ -1208,13 +1208,13 @@ static inline void FTM_HAL_SetInvctrlReg(FTM_Type *ftmBase, uint32_t regVal)
  * @param ftmBase The FTM base address pointer
  * @param channel Channel to be enabled or disabled
  * @param val  true to enable, channel output will be affected by software output control\n
-                  false to disable, channel output is unaffected
+				  false to disable, channel output is unaffected
  */
 static inline void FTM_HAL_SetChnSoftwareCtrlCmd(FTM_Type *ftmBase, uint8_t channel, bool val)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    val ? FTM_SET_SWOCTRL(ftmBase, (1U << channel)) :
-          FTM_CLR_SWOCTRL(ftmBase, (1U << channel));
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	val ? FTM_SET_SWOCTRL(ftmBase, (1U << channel)) :
+		  FTM_CLR_SWOCTRL(ftmBase, (1U << channel));
 }
 /*!
  * @brief Sets the channel software output control value.
@@ -1225,9 +1225,9 @@ static inline void FTM_HAL_SetChnSoftwareCtrlCmd(FTM_Type *ftmBase, uint8_t chan
  */
 static inline void FTM_HAL_SetChnSoftwareCtrlVal(FTM_Type *ftmBase, uint8_t channel, bool val)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    val ? FTM_SET_SWOCTRL(ftmBase, (1U << (channel + 8))) :
-          FTM_CLR_SWOCTRL(ftmBase, (1U << (channel + 8)));
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	val ? FTM_SET_SWOCTRL(ftmBase, (1U << (channel + 8))) :
+		  FTM_CLR_SWOCTRL(ftmBase, (1U << (channel + 8)));
 }
 
 /*FTM PWM load control*/
@@ -1239,7 +1239,7 @@ static inline void FTM_HAL_SetChnSoftwareCtrlVal(FTM_Type *ftmBase, uint8_t chan
  */
 static inline void FTM_HAL_SetPwmLoadCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_PWMLOAD_LDOK(ftmBase, enable ? 1 : 0);
+	FTM_BWR_PWMLOAD_LDOK(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1252,8 +1252,8 @@ static inline void FTM_HAL_SetPwmLoadCmd(FTM_Type *ftmBase, bool enable)
  */
 static inline void FTM_HAL_SetPwmLoadChnSelCmd(FTM_Type *ftmBase, uint8_t channel, bool val)
 {
-    assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
-    val ? FTM_SET_PWMLOAD(ftmBase, 1U << channel) : FTM_CLR_PWMLOAD(ftmBase, 1U << channel);
+	assert(channel < FSL_FEATURE_FTM_CHANNEL_COUNT);
+	val ? FTM_SET_PWMLOAD(ftmBase, 1U << channel) : FTM_CLR_PWMLOAD(ftmBase, 1U << channel);
 }
 
 /*FTM configuration*/
@@ -1265,7 +1265,7 @@ static inline void FTM_HAL_SetPwmLoadChnSelCmd(FTM_Type *ftmBase, uint8_t channe
  */
 static inline void FTM_HAL_SetGlobalTimeBaseOutputCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_CONF_GTBEOUT(ftmBase, enable ? 1 : 0);
+	FTM_BWR_CONF_GTBEOUT(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1276,7 +1276,7 @@ static inline void FTM_HAL_SetGlobalTimeBaseOutputCmd(FTM_Type *ftmBase, bool en
  */
 static inline void FTM_HAL_SetGlobalTimeBaseCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_CONF_GTBEEN(ftmBase, enable ? 1 : 0);
+	FTM_BWR_CONF_GTBEEN(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1287,7 +1287,7 @@ static inline void FTM_HAL_SetGlobalTimeBaseCmd(FTM_Type *ftmBase, bool enable)
  */
 static inline void FTM_HAL_SetBdmMode(FTM_Type *ftmBase, ftm_bdm_mode_t val)
 {
-    FTM_WR_CONF_BDMMODE(ftmBase, val);
+	FTM_WR_CONF_BDMMODE(ftmBase, val);
 }
 
 /*!
@@ -1298,7 +1298,7 @@ static inline void FTM_HAL_SetBdmMode(FTM_Type *ftmBase, ftm_bdm_mode_t val)
  */
 static inline void FTM_HAL_SetTofFreq(FTM_Type *ftmBase, uint8_t val)
 {
-    FTM_WR_CONF_NUMTOF(ftmBase, val);
+	FTM_WR_CONF_NUMTOF(ftmBase, val);
 }
 
 /*FTM sync configuration*/
@@ -1323,7 +1323,7 @@ void FTM_HAL_SetSyncMode(FTM_Type *ftmBase, uint32_t syncMethod);
  */
 static inline void FTM_HAL_SetSwoctrlHardwareSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_HWSOC(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_HWSOC(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1335,7 +1335,7 @@ static inline void FTM_HAL_SetSwoctrlHardwareSyncModeCmd(FTM_Type *ftmBase, bool
  */
 static inline void FTM_HAL_SetInvctrlHardwareSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_HWINVC(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_HWINVC(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1347,7 +1347,7 @@ static inline void FTM_HAL_SetInvctrlHardwareSyncModeCmd(FTM_Type *ftmBase, bool
  */
 static inline void FTM_HAL_SetOutmaskHardwareSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_HWOM(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_HWOM(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1359,7 +1359,7 @@ static inline void FTM_HAL_SetOutmaskHardwareSyncModeCmd(FTM_Type *ftmBase, bool
  */
 static inline void FTM_HAL_SetModCntinCvHardwareSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_HWWRBUF(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_HWWRBUF(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1371,7 +1371,7 @@ static inline void FTM_HAL_SetModCntinCvHardwareSyncModeCmd(FTM_Type *ftmBase, b
  */
 static inline void FTM_HAL_SetCounterHardwareSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_HWRSTCNT(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_HWRSTCNT(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1383,7 +1383,7 @@ static inline void FTM_HAL_SetCounterHardwareSyncModeCmd(FTM_Type *ftmBase, bool
  */
 static inline void FTM_HAL_SetSwoctrlSoftwareSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_SWSOC(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_SWSOC(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1395,7 +1395,7 @@ static inline void FTM_HAL_SetSwoctrlSoftwareSyncModeCmd(FTM_Type *ftmBase, bool
  */
 static inline void FTM_HAL_SetInvctrlSoftwareSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_SWINVC(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_SWINVC(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1407,7 +1407,7 @@ static inline void FTM_HAL_SetInvctrlSoftwareSyncModeCmd(FTM_Type *ftmBase, bool
  */
 static inline void FTM_HAL_SetOutmaskSoftwareSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_SWOM(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_SWOM(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1419,7 +1419,7 @@ static inline void FTM_HAL_SetOutmaskSoftwareSyncModeCmd(FTM_Type *ftmBase, bool
  */
 static inline void FTM_HAL_SetModCntinCvSoftwareSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_SWWRBUF(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_SWWRBUF(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1431,7 +1431,7 @@ static inline void FTM_HAL_SetModCntinCvSoftwareSyncModeCmd(FTM_Type *ftmBase, b
  */
 static inline void FTM_HAL_SetCounterSoftwareSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_SWRSTCNT(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_SWRSTCNT(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1443,7 +1443,7 @@ static inline void FTM_HAL_SetCounterSoftwareSyncModeCmd(FTM_Type *ftmBase, bool
  */
 static inline void FTM_HAL_SetPwmSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_SYNCMODE(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_SYNCMODE(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1455,7 +1455,7 @@ static inline void FTM_HAL_SetPwmSyncModeCmd(FTM_Type *ftmBase, bool enable)
  */
 static inline void FTM_HAL_SetSwoctrlPwmSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_SWOC(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_SWOC(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1467,7 +1467,7 @@ static inline void FTM_HAL_SetSwoctrlPwmSyncModeCmd(FTM_Type *ftmBase, bool enab
  */
 static inline void FTM_HAL_SetInvctrlPwmSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_INVC(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_INVC(ftmBase, enable ? 1 : 0);
 }
 
 /*!
@@ -1479,7 +1479,7 @@ static inline void FTM_HAL_SetInvctrlPwmSyncModeCmd(FTM_Type *ftmBase, bool enab
  */
 static inline void FTM_HAL_SetCntinPwmSyncModeCmd(FTM_Type *ftmBase, bool enable)
 {
-    FTM_BWR_SYNCONF_CNTINC(ftmBase, enable ? 1 : 0);
+	FTM_BWR_SYNCONF_CNTINC(ftmBase, enable ? 1 : 0);
 }
 
 
@@ -1528,4 +1528,3 @@ void FTM_HAL_DisablePwmMode(FTM_Type *ftmBase, ftm_pwm_param_t *config, uint8_t 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

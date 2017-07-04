@@ -71,23 +71,23 @@
  */
 typedef struct lwevent_struct
 {
-    /*! \brief Queue data structures. */
-    QUEUE_ELEMENT_STRUCT LINK;
+	/*! \brief Queue data structures. */
+	QUEUE_ELEMENT_STRUCT LINK;
 
-    /*! \brief Queue of tasks waiting for event bits to be set. */
-    QUEUE_STRUCT WAITING_TASKS;
+	/*! \brief Queue of tasks waiting for event bits to be set. */
+	QUEUE_STRUCT WAITING_TASKS;
 
-    /*! \brief Validation stamp. */
-    _mqx_uint VALID;
+	/*! \brief Validation stamp. */
+	_mqx_uint VALID;
 
-    /*! \brief Current bit value of the lightweight event. */
-    _mqx_uint VALUE;
+	/*! \brief Current bit value of the lightweight event. */
+	_mqx_uint VALUE;
 
-    /*! \brief Flags associated with the light weight event. */
-    _mqx_uint FLAGS;
+	/*! \brief Flags associated with the light weight event. */
+	_mqx_uint FLAGS;
 
-    /*! \brief Mask specifying lightweight event bits that are configured as auto-clear. */
-    _mqx_uint AUTO;
+	/*! \brief Mask specifying lightweight event bits that are configured as auto-clear. */
+	_mqx_uint AUTO;
 
 }LWEVENT_STRUCT, * LWEVENT_STRUCT_PTR;
 
@@ -105,11 +105,11 @@ extern _mqx_uint _lwevent_set(LWEVENT_STRUCT_PTR, _mqx_uint);
 extern _mqx_uint _lwevent_set_auto_clear(LWEVENT_STRUCT_PTR, _mqx_uint);
 extern _mqx_uint _lwevent_clear(LWEVENT_STRUCT_PTR, _mqx_uint);
 extern _mqx_uint _lwevent_wait_for  (LWEVENT_STRUCT_PTR, _mqx_uint,
-                                     bool, MQX_TICK_STRUCT_PTR);
+									 bool, MQX_TICK_STRUCT_PTR);
 extern _mqx_uint _lwevent_wait_ticks(LWEVENT_STRUCT_PTR, _mqx_uint,
-                                     bool, _mqx_uint);
+									 bool, _mqx_uint);
 extern _mqx_uint _lwevent_wait_until(LWEVENT_STRUCT_PTR, _mqx_uint,
-                                     bool, MQX_TICK_STRUCT_PTR);
+									 bool, MQX_TICK_STRUCT_PTR);
 extern _mqx_uint _lwevent_get_signalled(void);
 extern _mqx_uint _lwevent_test(void **, void **);
 
@@ -121,11 +121,11 @@ extern _mqx_uint _usr_lwevent_set(LWEVENT_STRUCT_PTR, _mqx_uint);
 extern _mqx_uint _usr_lwevent_set_auto_clear(LWEVENT_STRUCT_PTR, _mqx_uint);
 extern _mqx_uint _usr_lwevent_clear(LWEVENT_STRUCT_PTR, _mqx_uint);
 extern _mqx_uint _usr_lwevent_wait_for  (LWEVENT_STRUCT_PTR, _mqx_uint,
-                                         bool, MQX_TICK_STRUCT_PTR);
+										 bool, MQX_TICK_STRUCT_PTR);
 extern _mqx_uint _usr_lwevent_wait_ticks(LWEVENT_STRUCT_PTR, _mqx_uint,
-                                         bool, _mqx_uint);
+										 bool, _mqx_uint);
 extern _mqx_uint _usr_lwevent_wait_until(LWEVENT_STRUCT_PTR, _mqx_uint,
-                                         bool, MQX_TICK_STRUCT_PTR);
+										 bool, MQX_TICK_STRUCT_PTR);
 extern _mqx_uint _usr_lwevent_get_signalled(void);
 extern _mqx_uint _lwevent_usr_check(LWEVENT_STRUCT_PTR);
 #endif /* MQX_ENABLE_USER_MODE */

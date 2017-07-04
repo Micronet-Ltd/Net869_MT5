@@ -231,7 +231,7 @@ void LMEM_DRV_CodeCacheClearMultiLines(uint32_t instance, uint32_t addr, uint32_
  *                                  current cache mode
  */
 lmem_cache_status_t LMEM_DRV_CodeCacheDemoteRegion(uint32_t instance, lmem_cache_region_t region,
-                                                   lmem_cache_mode_t cacheMode);
+												   lmem_cache_mode_t cacheMode);
 
 /*@}*/
 
@@ -416,7 +416,7 @@ void LMEM_DRV_SystemCacheClearMultiLines(uint32_t instance, uint32_t addr, uint3
  *                                  current cache mode
  */
 lmem_cache_status_t LMEM_DRV_SystemCacheDemoteRegion(uint32_t instance, lmem_cache_region_t region,
-                                                     lmem_cache_mode_t cacheMode);
+													 lmem_cache_mode_t cacheMode);
 
 /*@}*/
 #endif /* #if FSL_FEATURE_LMEM_HAS_SYSTEMBUS_CACHE */
@@ -432,4 +432,3 @@ lmem_cache_status_t LMEM_DRV_SystemCacheDemoteRegion(uint32_t instance, lmem_cac
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

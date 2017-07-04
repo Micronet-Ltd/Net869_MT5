@@ -50,9 +50,9 @@
  */
 typedef enum _crc_status
 {
-    kStatus_CRC_Success         = 0U, /*!< Success. */
-    kStatus_CRC_InvalidArgument = 1U, /*!< Invalid argument existed. */
-    kStatus_CRC_Failed          = 2U  /*!< Execution failed. */
+	kStatus_CRC_Success         = 0U, /*!< Success. */
+	kStatus_CRC_InvalidArgument = 1U, /*!< Invalid argument existed. */
+	kStatus_CRC_Failed          = 2U  /*!< Execution failed. */
 } crc_status_t;
 
 /*!
@@ -60,10 +60,10 @@ typedef enum _crc_status
  */
 typedef enum _crc_transpose
 {
-    kCrcNoTranspose    = 0U, /*!< No transposition. @internal gui name="No Transpose" */
-    kCrcTransposeBits  = 1U, /*!< Bits in bytes are transposed; bytes are not transposed. @internal gui name="Transpose Bits" */
-    kCrcTransposeBoth  = 2U, /*!< Both bits in bytes and bytes are transposed. @internal gui name="Transpose Bits in Bytes and Bytes" */
-    kCrcTransposeBytes = 3U  /*!< Only bytes are transposed; no bits in a byte are transposed. @internal gui name="Transpose Bytes" */
+	kCrcNoTranspose    = 0U, /*!< No transposition. @internal gui name="No Transpose" */
+	kCrcTransposeBits  = 1U, /*!< Bits in bytes are transposed; bytes are not transposed. @internal gui name="Transpose Bits" */
+	kCrcTransposeBoth  = 2U, /*!< Both bits in bytes and bytes are transposed. @internal gui name="Transpose Bits in Bytes and Bytes" */
+	kCrcTransposeBytes = 3U  /*!< Only bytes are transposed; no bits in a byte are transposed. @internal gui name="Transpose Bytes" */
 }crc_transpose_t;
 
 /*!
@@ -71,8 +71,8 @@ typedef enum _crc_transpose
  */
 typedef enum _crc_prot_width
 {
-    kCrc16Bits = 0U, /*!< 16-bit CRC protocol. @internal gui name="16 bits" */
-    kCrc32Bits = 1U, /*!< 32-bit CRC protocol. @internal gui name="32 bits" */
+	kCrc16Bits = 0U, /*!< 16-bit CRC protocol. @internal gui name="16 bits" */
+	kCrc32Bits = 1U, /*!< 32-bit CRC protocol. @internal gui name="32 bits" */
 }crc_prot_width_t;
 
 /*!*****************************************************************************
@@ -101,9 +101,9 @@ void CRC_HAL_Init(CRC_Type * base);
 static inline uint32_t CRC_HAL_GetDataReg(CRC_Type * base)
 {
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    return CRC_RD_CRC(base);
+	return CRC_RD_CRC(base);
 #else
-    return CRC_RD_DATA(base);
+	return CRC_RD_DATA(base);
 #endif
 }
 
@@ -116,9 +116,9 @@ static inline uint32_t CRC_HAL_GetDataReg(CRC_Type * base)
 static inline uint16_t CRC_HAL_GetDataHReg(CRC_Type * base)
 {
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    return CRC_RD_CRCH(base);
+	return CRC_RD_CRCH(base);
 #else
-    return CRC_RD_DATAH(base);
+	return CRC_RD_DATAH(base);
 #endif
 }
 
@@ -131,9 +131,9 @@ static inline uint16_t CRC_HAL_GetDataHReg(CRC_Type * base)
 static inline uint16_t CRC_HAL_GetDataLReg(CRC_Type * base)
 {
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    return CRC_RD_CRCL(base);
+	return CRC_RD_CRCL(base);
 #else
-    return CRC_RD_DATAL(base);
+	return CRC_RD_DATAL(base);
 #endif
 }
 
@@ -146,9 +146,9 @@ static inline uint16_t CRC_HAL_GetDataLReg(CRC_Type * base)
 static inline void CRC_HAL_SetDataReg(CRC_Type * base, uint32_t value)
 {
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    CRC_WR_CRC(base, value);
+	CRC_WR_CRC(base, value);
 #else
-    CRC_WR_DATA(base, value);
+	CRC_WR_DATA(base, value);
 #endif
 }
 
@@ -161,9 +161,9 @@ static inline void CRC_HAL_SetDataReg(CRC_Type * base, uint32_t value)
 static inline void CRC_HAL_SetDataHReg(CRC_Type * base, uint16_t value)
 {
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    CRC_WR_CRCH(base, value);
+	CRC_WR_CRCH(base, value);
 #else
-    CRC_WR_DATAH(base, value);
+	CRC_WR_DATAH(base, value);
 #endif
 }
 
@@ -176,9 +176,9 @@ static inline void CRC_HAL_SetDataHReg(CRC_Type * base, uint16_t value)
 static inline void CRC_HAL_SetDataLReg(CRC_Type * base, uint16_t value)
 {
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    CRC_WR_CRCL(base, value);
+	CRC_WR_CRCL(base, value);
 #else
-    CRC_WR_DATAL(base, value);
+	CRC_WR_DATAL(base, value);
 #endif
 }
 
@@ -191,9 +191,9 @@ static inline void CRC_HAL_SetDataLReg(CRC_Type * base, uint16_t value)
 static inline void CRC_HAL_SetDataHLReg(CRC_Type * base, uint8_t value)
 {
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    CRC_WR_CRCHL(base, value);
+	CRC_WR_CRCHL(base, value);
 #else
-    CRC_WR_DATAHL(base, value);
+	CRC_WR_DATAHL(base, value);
 #endif
 }
 
@@ -206,9 +206,9 @@ static inline void CRC_HAL_SetDataHLReg(CRC_Type * base, uint8_t value)
 static inline void CRC_HAL_SetDataHUReg(CRC_Type * base, uint8_t value)
 {
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    CRC_WR_CRCHU(base, value);
+	CRC_WR_CRCHU(base, value);
 #else
-    CRC_WR_DATAHU(base, value);
+	CRC_WR_DATAHU(base, value);
 #endif
 }
 
@@ -221,9 +221,9 @@ static inline void CRC_HAL_SetDataHUReg(CRC_Type * base, uint8_t value)
 static inline void CRC_HAL_SetDataLLReg(CRC_Type * base, uint8_t value)
 {
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    CRC_WR_CRCLL(base, value);
+	CRC_WR_CRCLL(base, value);
 #else
-    CRC_WR_DATALL(base, value);
+	CRC_WR_DATALL(base, value);
 #endif
 }
 
@@ -236,9 +236,9 @@ static inline void CRC_HAL_SetDataLLReg(CRC_Type * base, uint8_t value)
 static inline void CRC_HAL_SetDataLUReg(CRC_Type * base, uint8_t value)
 {
 #if FSL_FEATURE_CRC_HAS_CRC_REG
-    CRC_WR_CRCLU(base, value);
+	CRC_WR_CRCLU(base, value);
 #else
-    CRC_WR_DATALU(base, value);
+	CRC_WR_DATALU(base, value);
 #endif
 }
 
@@ -250,7 +250,7 @@ static inline void CRC_HAL_SetDataLUReg(CRC_Type * base, uint8_t value)
  */
 static inline uint32_t CRC_HAL_GetPolyReg(CRC_Type * base)
 {
-    return CRC_RD_GPOLY(base);
+	return CRC_RD_GPOLY(base);
 }
 
 /*!
@@ -261,7 +261,7 @@ static inline uint32_t CRC_HAL_GetPolyReg(CRC_Type * base)
  */
 static inline uint16_t CRC_HAL_GetPolyHReg(CRC_Type * base)
 {
-    return CRC_RD_GPOLYH(base);
+	return CRC_RD_GPOLYH(base);
 }
 
 /*!
@@ -272,7 +272,7 @@ static inline uint16_t CRC_HAL_GetPolyHReg(CRC_Type * base)
  */
 static inline uint16_t CRC_HAL_GetPolyLReg(CRC_Type * base)
 {
-    return CRC_RD_GPOLYL(base);
+	return CRC_RD_GPOLYL(base);
 }
 
 /*!
@@ -283,7 +283,7 @@ static inline uint16_t CRC_HAL_GetPolyLReg(CRC_Type * base)
  */
 static inline void CRC_HAL_SetPolyReg(CRC_Type * base, uint32_t value)
 {
-    CRC_WR_GPOLY(base, value);
+	CRC_WR_GPOLY(base, value);
 }
 
 /*!
@@ -294,7 +294,7 @@ static inline void CRC_HAL_SetPolyReg(CRC_Type * base, uint32_t value)
  */
 static inline void CRC_HAL_SetPolyHReg(CRC_Type * base, uint16_t value)
 {
-    CRC_WR_GPOLYH(base, value);
+	CRC_WR_GPOLYH(base, value);
 }
 
 /*!
@@ -305,7 +305,7 @@ static inline void CRC_HAL_SetPolyHReg(CRC_Type * base, uint16_t value)
  */
 static inline void CRC_HAL_SetPolyLReg(CRC_Type * base, uint16_t value)
 {
-    CRC_WR_GPOLYL(base, value);
+	CRC_WR_GPOLYL(base, value);
 }
 
 /*!
@@ -316,7 +316,7 @@ static inline void CRC_HAL_SetPolyLReg(CRC_Type * base, uint16_t value)
  */
 static inline uint32_t CRC_HAL_GetCtrlReg(CRC_Type * base)
 {
-    return CRC_RD_CTRL(base);
+	return CRC_RD_CTRL(base);
 }
 
 /*!
@@ -327,7 +327,7 @@ static inline uint32_t CRC_HAL_GetCtrlReg(CRC_Type * base)
  */
 static inline void CRC_HAL_SetCtrlReg(CRC_Type * base, uint32_t value)
 {
-    CRC_WR_CTRL(base, value);
+	CRC_WR_CTRL(base, value);
 }
 
 /*!
@@ -340,7 +340,7 @@ static inline void CRC_HAL_SetCtrlReg(CRC_Type * base, uint32_t value)
  */
 static inline bool CRC_HAL_GetSeedOrDataMode(CRC_Type * base)
 {
-    return (bool)CRC_BRD_CTRL_WAS(base);
+	return (bool)CRC_BRD_CTRL_WAS(base);
 }
 
 /*!
@@ -348,12 +348,12 @@ static inline bool CRC_HAL_GetSeedOrDataMode(CRC_Type * base)
  *
  * @param base The CRC peripheral base address.
  * @param enable Enable or disable seed mode.
-          -true: use CRC data register for seed values
-          -false: use CRC data register for data values
+		  -true: use CRC data register for seed values
+		  -false: use CRC data register for data values
  */
 static inline void CRC_HAL_SetSeedOrDataMode(CRC_Type * base, bool enable)
 {
-    CRC_BWR_CTRL_WAS(base, enable);
+	CRC_BWR_CTRL_WAS(base, enable);
 }
 
 /*!
@@ -364,7 +364,7 @@ static inline void CRC_HAL_SetSeedOrDataMode(CRC_Type * base, bool enable)
  */
 static inline crc_transpose_t CRC_HAL_GetWriteTranspose(CRC_Type * base)
 {
-    return (crc_transpose_t)CRC_BRD_CTRL_TOT(base);
+	return (crc_transpose_t)CRC_BRD_CTRL_TOT(base);
 }
 
 /*!
@@ -375,7 +375,7 @@ static inline crc_transpose_t CRC_HAL_GetWriteTranspose(CRC_Type * base)
  */
 static inline void CRC_HAL_SetWriteTranspose(CRC_Type * base, crc_transpose_t transp)
 {
-    CRC_BWR_CTRL_TOT(base, transp);
+	CRC_BWR_CTRL_TOT(base, transp);
 }
 
 /*!
@@ -386,7 +386,7 @@ static inline void CRC_HAL_SetWriteTranspose(CRC_Type * base, crc_transpose_t tr
  */
 static inline crc_transpose_t CRC_HAL_GetReadTranspose(CRC_Type * base)
 {
-    return (crc_transpose_t)CRC_BRD_CTRL_TOTR(base);
+	return (crc_transpose_t)CRC_BRD_CTRL_TOTR(base);
 }
 
 /*!
@@ -397,7 +397,7 @@ static inline crc_transpose_t CRC_HAL_GetReadTranspose(CRC_Type * base)
  */
 static inline void CRC_HAL_SetReadTranspose(CRC_Type * base, crc_transpose_t transp)
 {
-    CRC_BWR_CTRL_TOTR(base, transp);
+	CRC_BWR_CTRL_TOTR(base, transp);
 }
 
 /*!
@@ -413,7 +413,7 @@ static inline void CRC_HAL_SetReadTranspose(CRC_Type * base, crc_transpose_t tra
  */
 static inline bool CRC_HAL_GetXorMode(CRC_Type * base)
 {
-    return (bool)CRC_BRD_CTRL_FXOR(base);
+	return (bool)CRC_BRD_CTRL_FXOR(base);
 }
 
 /*!
@@ -427,7 +427,7 @@ static inline bool CRC_HAL_GetXorMode(CRC_Type * base)
  */
 static inline void CRC_HAL_SetXorMode(CRC_Type * base, bool enable)
 {
-    CRC_BWR_CTRL_FXOR(base, enable);
+	CRC_BWR_CTRL_FXOR(base, enable);
 }
 
 /*!
@@ -440,7 +440,7 @@ static inline void CRC_HAL_SetXorMode(CRC_Type * base, bool enable)
  */
 static inline crc_prot_width_t CRC_HAL_GetProtocolWidth(CRC_Type * base)
 {
-    return (crc_prot_width_t)CRC_BRD_CTRL_TCRC(base);
+	return (crc_prot_width_t)CRC_BRD_CTRL_TCRC(base);
 }
 
 /*!
@@ -453,7 +453,7 @@ static inline crc_prot_width_t CRC_HAL_GetProtocolWidth(CRC_Type * base)
  */
 static inline void CRC_HAL_SetProtocolWidth(CRC_Type * base, crc_prot_width_t width)
 {
-    CRC_BWR_CTRL_TCRC(base, width);
+	CRC_BWR_CTRL_TCRC(base, width);
 }
 
 /*!

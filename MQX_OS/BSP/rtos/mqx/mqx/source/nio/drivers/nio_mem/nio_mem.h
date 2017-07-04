@@ -30,8 +30,8 @@
 extern const NIO_DEV_FN_STRUCT nio_mem_dev_fn;
 
 typedef struct {
-    uint32_t BASE;
-    uint32_t SIZE;
+	uint32_t BASE;
+	uint32_t SIZE;
 } NIO_MEM_INIT_DATA_STRUCT;
 
 #ifdef __cplusplus

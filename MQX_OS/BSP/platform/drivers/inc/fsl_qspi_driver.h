@@ -40,7 +40,7 @@
 
 /*!
  * @addtogroup qspi_driver
- * @{ 
+ * @{
  */
 
 /*! @file */
@@ -50,102 +50,102 @@ extern const IRQn_Type g_qspiIrqId[QuadSPI_INSTANCE_COUNT];
 /*! @brief QSPI runtime state structure. */
 typedef struct QspiState
 {
-    uint32_t *txAddr;
-    uint32_t *rxAddr;
-    uint32_t txSize;
-    uint32_t rxSize;
-    uint32_t txFinishedBytes;
-    uint32_t rxFinishedBytes;
-    uint8_t txWatermark;
-    uint8_t rxWatermark;
-    bool isTxBusy;
-    bool isRxBusy;
-    bool txUseDma;
-    bool rxUseDma;
-    edma_chn_state_t txEdmaChn;
-    edma_chn_state_t rxEdmaChn;
-    edma_software_tcd_t txEdmaTCD[2];
-    edma_software_tcd_t rxEdmaTCD[2];
-    dma_request_source_t txSource;
-    dma_request_source_t rxSource;
-    uint32_t err;
+	uint32_t *txAddr;
+	uint32_t *rxAddr;
+	uint32_t txSize;
+	uint32_t rxSize;
+	uint32_t txFinishedBytes;
+	uint32_t rxFinishedBytes;
+	uint8_t txWatermark;
+	uint8_t rxWatermark;
+	bool isTxBusy;
+	bool isRxBusy;
+	bool txUseDma;
+	bool rxUseDma;
+	edma_chn_state_t txEdmaChn;
+	edma_chn_state_t rxEdmaChn;
+	edma_software_tcd_t txEdmaTCD[2];
+	edma_software_tcd_t rxEdmaTCD[2];
+	dma_request_source_t txSource;
+	dma_request_source_t rxSource;
+	uint32_t err;
 } qspi_state_t;
 
 /*! @brief Status structure of QSPI.*/
 typedef enum _qspi_status
 {
-    kStatus_QSPI_Success = 0U,
-    kStatus_QSPI_Fail = 1U,
-    kStatus_QSPI_DeviceBusy = 2U
+	kStatus_QSPI_Success = 0U,
+	kStatus_QSPI_Fail = 1U,
+	kStatus_QSPI_DeviceBusy = 2U
 } qspi_status_t;
 
 /*! @brief Serial Flash command ID for the QSPI engine. */
 typedef enum _qspi_flash_command
 {
-    kQspiFlashCommandStop = 0x0U,
-    kQspiFlashCommandCmd = 0x400U,
-    kQspiFlashCommandAddr = 0x800U,
-    kQspiFlashCommandDummy = 0xC00U,
-    kQspiFlashCommandMode = 0x1000U,
-    kQspiFlashCommandMode2 = 0x1400U,
-    kQspiFlashCommandMode4 = 0x1800U,
-    kQspiFlashCommandRead = 0x1C00U,
-    kQspiFlashCommandWrite = 0x2000U,
-    kQspiFlashCommandJmpOnCS = 0x2400U,
-    kQspiFlashCommandAddrDDR = 0x2800U,
-    kQspiFlashCommandModeDDR = 0x2C00U,
-    kQspiFlashCommandMode2DDR = 0x3000U,
-    kQspiFlashCommandMode4DDR = 0x3400U,
-    kQspiFlashCommandReadDDR = 0x3800U,
-    kQspiFlashCommandWriteDDR = 0x3C00U,
-    kQspiFlashCommandDataLearn = 0x4000U,
-    kQspiFlashCommandCmdDDR = 0x4400U,
-    kQspiFlashCommandCaddr = 0x4800U,
-    kQspiFlashCommandCaddrDDR = 0x4C00U
+	kQspiFlashCommandStop = 0x0U,
+	kQspiFlashCommandCmd = 0x400U,
+	kQspiFlashCommandAddr = 0x800U,
+	kQspiFlashCommandDummy = 0xC00U,
+	kQspiFlashCommandMode = 0x1000U,
+	kQspiFlashCommandMode2 = 0x1400U,
+	kQspiFlashCommandMode4 = 0x1800U,
+	kQspiFlashCommandRead = 0x1C00U,
+	kQspiFlashCommandWrite = 0x2000U,
+	kQspiFlashCommandJmpOnCS = 0x2400U,
+	kQspiFlashCommandAddrDDR = 0x2800U,
+	kQspiFlashCommandModeDDR = 0x2C00U,
+	kQspiFlashCommandMode2DDR = 0x3000U,
+	kQspiFlashCommandMode4DDR = 0x3400U,
+	kQspiFlashCommandReadDDR = 0x3800U,
+	kQspiFlashCommandWriteDDR = 0x3C00U,
+	kQspiFlashCommandDataLearn = 0x4000U,
+	kQspiFlashCommandCmdDDR = 0x4400U,
+	kQspiFlashCommandCaddr = 0x4800U,
+	kQspiFlashCommandCaddrDDR = 0x4C00U
 } qspi_flash_command_t;
 
 /*! @brief QSPI command pad type */
 typedef enum _qspi_pad_type
 {
-    kQspiPad1 = 0x0,
-    kQspiPad2 = 0x100U,
-    kQspiPad4 = 0x200U,
-    kQspiPad8 = 0x300U
+	kQspiPad1 = 0x0,
+	kQspiPad2 = 0x100U,
+	kQspiPad4 = 0x200U,
+	kQspiPad8 = 0x300U
 } qspi_pad_type_t;
 
 /*! @brief QSPI command Mode type */
 typedef enum _qspi_command_mode
 {
-    kQspiCommandModeDefault = 0U,
-    kQspiCommandMode2 = 1U,
-    kQspiCommandMode4 = 2U
+	kQspiCommandModeDefault = 0U,
+	kQspiCommandMode2 = 1U,
+	kQspiCommandMode4 = 2U
 } qspi_command_mode_t;
 
 /*! @brief QSPI flash command structure*/
 typedef struct QspiLUTCommand
 {
-    uint32_t addr; /*!< Address used in the serial flash command.*/
-    uint8_t cmd; /*!< Serial flash command number.*/
-    uint8_t param; /*!< Parameter used in the serial flash command. */
-    uint8_t LUTIndex; /*!< Location of the command in the look up table. */
-    uint8_t dummy_cycle;/*!< Dummy cycle number of the instruction. */
-    uint8_t dummy_index; /*!< Dummy instruction index. */
-    qspi_pad_type_t padType; /*!< 1 pad,  4 pad or 8 pad*/
-    qspi_flash_command_t commandType; /*!< command type */
+	uint32_t addr; /*!< Address used in the serial flash command.*/
+	uint8_t cmd; /*!< Serial flash command number.*/
+	uint8_t param; /*!< Parameter used in the serial flash command. */
+	uint8_t LUTIndex; /*!< Location of the command in the look up table. */
+	uint8_t dummy_cycle;/*!< Dummy cycle number of the instruction. */
+	uint8_t dummy_index; /*!< Dummy instruction index. */
+	qspi_pad_type_t padType; /*!< 1 pad,  4 pad or 8 pad*/
+	qspi_flash_command_t commandType; /*!< command type */
 } qspi_lut_command_t;
 
 /*! @brief QSPI configuration structure*/
 typedef struct QspiConfig
 {
-    clock_qspi_src_t clockSrc; /*!< Clock source of QSPI module */
-    uint32_t sclk; /*!< Serial flash clock frequency, which should be smaller than the QSPI source clock. */
-    uint8_t txWatermark; /*!< QSPI transmit watermark value */
-    uint8_t rxWatermark; /*!< QSPI receive watermark value. */
-    uint32_t AHBbufferSize[FSL_FEATURE_QSPI_AHB_BUFFER_COUNT]; /*!< AHB buffer size. */
-    uint8_t AHBbufferMaster[FSL_FEATURE_QSPI_AHB_BUFFER_COUNT]; /*!< AHB buffer master.  */
-    bool AHBbuffer3AllMaster; /*!< Is AHB buffer3 for all master.*/
-    dma_request_source_t txSource; /*!< DMA request source for QSPI transmit.*/
-    dma_request_source_t rxSource; /*!< DMA request source for QSPI receive. */
+	clock_qspi_src_t clockSrc; /*!< Clock source of QSPI module */
+	uint32_t sclk; /*!< Serial flash clock frequency, which should be smaller than the QSPI source clock. */
+	uint8_t txWatermark; /*!< QSPI transmit watermark value */
+	uint8_t rxWatermark; /*!< QSPI receive watermark value. */
+	uint32_t AHBbufferSize[FSL_FEATURE_QSPI_AHB_BUFFER_COUNT]; /*!< AHB buffer size. */
+	uint8_t AHBbufferMaster[FSL_FEATURE_QSPI_AHB_BUFFER_COUNT]; /*!< AHB buffer master.  */
+	bool AHBbuffer3AllMaster; /*!< Is AHB buffer3 for all master.*/
+	dma_request_source_t txSource; /*!< DMA request source for QSPI transmit.*/
+	dma_request_source_t rxSource; /*!< DMA request source for QSPI receive. */
 } qspi_config_t;
 
 #if defined(__cplusplus)
@@ -173,7 +173,7 @@ qspi_status_t QSPI_DRV_Init(uint32_t instance, qspi_state_t *state);
  */
 qspi_status_t QSPI_DRV_Deinit(uint32_t instance);
 
-/*! @brief Configures the QSPI features. 
+/*! @brief Configures the QSPI features.
  *
  * The configuration of QSPI includes configuration of the QSPI module and the configuration
  * of the serial flash connected to the QSPI. This function configures the parameters for
@@ -183,14 +183,14 @@ qspi_status_t QSPI_DRV_Deinit(uint32_t instance);
  */
 qspi_status_t QSPI_DRV_ConfigQspi(uint32_t instance, qspi_config_t * config);
 
-/*! @brief Configures the QSPI clock source. 
+/*! @brief Configures the QSPI clock source.
  *
  * @param instance QSPI module instance.
  * @param clkSrc QSPI clock source.
  */
 static inline void QSPI_DRV_ConfigClockSrc(uint32_t instance, uint32_t clkSrc)
 {
-    QSPI_HAL_SetClockSrc(g_qspiBase[instance],clkSrc);
+	QSPI_HAL_SetClockSrc(g_qspiBase[instance],clkSrc);
 }
 
 /*! @brief Gets  default settings for QSPI.
@@ -209,7 +209,7 @@ void QSPI_DRV_GetDefaultQspiConfig(qspi_config_t * config);
  */
 static inline void QSPI_DRV_ConfigFlash(uint32_t instance, qspi_flash_config_t *flashConfig)
 {
-    QSPI_HAL_ConfigFlash(g_qspiBase[instance], flashConfig);
+	QSPI_HAL_ConfigFlash(g_qspiBase[instance], flashConfig);
 }
 
 /*! @brief Sets the IP command address.
@@ -219,7 +219,7 @@ static inline void QSPI_DRV_ConfigFlash(uint32_t instance, qspi_flash_config_t *
  */
 static inline void QSPI_DRV_SetIPCommandAddr(uint32_t instance, uint32_t addr)
 {
-    QSPI_HAL_SetIPCommandAddr(g_qspiBase[instance], addr);
+	QSPI_HAL_SetIPCommandAddr(g_qspiBase[instance], addr);
 }
 
 /*! @brief Sets the IP command size.
@@ -229,7 +229,7 @@ static inline void QSPI_DRV_SetIPCommandAddr(uint32_t instance, uint32_t addr)
  */
 static inline void QSPI_DRV_SetIPCommandSize(uint32_t instance, uint32_t size)
 {
-    QSPI_HAL_SetIPCommandSize(g_qspiBase[instance], size);
+	QSPI_HAL_SetIPCommandSize(g_qspiBase[instance], size);
 }
 
 /*! @brief Writes data to the QSPI transmit buffer.
@@ -242,7 +242,7 @@ static inline void QSPI_DRV_SetIPCommandSize(uint32_t instance, uint32_t size)
  */
 static inline void QSPI_DRV_WriteDataBlocking(uint32_t instance, uint32_t * addr, uint32_t size)
 {
-    QSPI_HAL_WriteDataBlocking(g_qspiBase[instance], addr, size);
+	QSPI_HAL_WriteDataBlocking(g_qspiBase[instance], addr, size);
 }
 
 /*! @brief Writes data to the QSPI transmit buffer using interrupts.
@@ -273,7 +273,7 @@ qspi_status_t QSPI_DRV_WriteDataEdma(uint32_t instance, uint32_t *addr, uint32_t
  */
 static inline void QSPI_DRV_ReadDataBlocking(uint32_t instance, uint32_t *addr, uint32_t size)
 {
-    QSPI_HAL_ReadDataBlocking(g_qspiBase[instance], addr, size);
+	QSPI_HAL_ReadDataBlocking(g_qspiBase[instance], addr, size);
 }
 
 /*! @brief Reads data from the QSPI receive buffer using interrupts.
@@ -306,7 +306,7 @@ void QSPI_DRV_ReadDataEdma(uint32_t instance, uint32_t * addr, uint32_t size);
  */
 static inline  uint32_t QSPI_DRV_GetQspiStatus(uint32_t instance, uint32_t status)
 {
-    return QSPI_HAL_GetState(g_qspiBase[instance], status);
+	return QSPI_HAL_GetState(g_qspiBase[instance], status);
 }
 
 /*! @brief Clears the QSPI state flags.
@@ -316,7 +316,7 @@ static inline  uint32_t QSPI_DRV_GetQspiStatus(uint32_t instance, uint32_t statu
  */
 static inline void QSPI_DRV_ClearFlag(uint32_t instance, uint32_t flag)
 {
-    QSPI_HAL_ClearStateFlag(g_qspiBase[instance], flag);
+	QSPI_HAL_ClearStateFlag(g_qspiBase[instance], flag);
 }
 
 /*! @brief Clears the QSPI FIFO logic.
@@ -326,7 +326,7 @@ static inline void QSPI_DRV_ClearFlag(uint32_t instance, uint32_t flag)
  */
  static inline void QSPI_DRV_ClearFifo(uint32_t instance, qspi_fifo_t fifo)
 {
-    QSPI_HAL_ClearFifo(g_qspiBase[instance], fifo);
+	QSPI_HAL_ClearFifo(g_qspiBase[instance], fifo);
 }
 
 /*! @brief Software reset for the QSPI logic.
@@ -335,7 +335,7 @@ static inline void QSPI_DRV_ClearFlag(uint32_t instance, uint32_t flag)
  */
  static inline void QSPI_DRV_SoftwareReset(uint32_t instance)
 {
-    QSPI_HAL_SoftwareReset(g_qspiBase[instance]);
+	QSPI_HAL_SoftwareReset(g_qspiBase[instance]);
 }
 
 /*! @brief Gets the status of the transmit transfer.
@@ -398,4 +398,3 @@ void QSPI_DRV_RxIrqHandler(uint32_t instance);
  */
 #endif
 #endif /* __FSL_QSPI_DRIVER_H__ */
-

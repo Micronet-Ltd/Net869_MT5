@@ -46,7 +46,7 @@
  * <b>Table 4: AES set_key Requirements</b>
  */
 void cau_aes_set_key (const unsigned char *key, const int key_size,
-                 unsigned char *key_sch);
+				 unsigned char *key_sch);
 
 /*!
  * @brief AES: Encrypts a single 16‐byte block.
@@ -69,7 +69,7 @@ void cau_aes_set_key (const unsigned char *key, const int key_size,
  * <b>Table 5: AES Encryption Requirements</b>
  */
 void cau_aes_encrypt (const unsigned char *in, const unsigned char *key_sch,
-                 const int nr, unsigned char *out);
+				 const int nr, unsigned char *out);
 
 /*!
  * @brief AES: Decrypts a single 16‐byte block.
@@ -92,7 +92,7 @@ void cau_aes_encrypt (const unsigned char *in, const unsigned char *key_sch,
  * <b>Table 6: AES Decryption Requirements</b>
  */
 void cau_aes_decrypt (const unsigned char *in, const unsigned char *key_sch,
-                 const int nr, unsigned char *out);
+				 const int nr, unsigned char *out);
 
 /*!
  * @brief DES: Checks key parity.
@@ -117,7 +117,7 @@ int cau_des_chk_parity (const unsigned char *key);
  * @note  Input and output blocks may overlap.
  */
 void cau_des_encrypt (const unsigned char *in, const unsigned char *key,
-                 unsigned char *out);
+				 unsigned char *out);
 
 /*!
  * @brief DES: Decrypts a single 8‐byte block.
@@ -131,7 +131,7 @@ void cau_des_encrypt (const unsigned char *in, const unsigned char *key,
  * @note  Input and output blocks may overlap.
  */
 void cau_des_decrypt (const unsigned char *in, const unsigned char *key,
-                 unsigned char *out);
+				 unsigned char *out);
 
 /*!
  * @brief MD5: Initializes the MD5 state variables.
@@ -157,7 +157,7 @@ void cau_md5_initialize_output (const unsigned char *md5_state);
  *        Useful when handling non‐contiguous input message blocks.
  */
 void cau_md5_hash_n (const unsigned char *msg_data, const int num_blks,
-                unsigned char *md5_state);
+				unsigned char *md5_state);
 
 /*!
  * @brief MD5: Updates MD5 state variables.
@@ -173,7 +173,7 @@ void cau_md5_hash_n (const unsigned char *msg_data, const int num_blks,
  *        All input message blocks must be contiguous.
  */
 void cau_md5_update (const unsigned char *msg_data, const int num_blks,
-                unsigned char *md5_state);
+				unsigned char *md5_state);
 
 /*!
  * @brief MD5: Performs MD5 hash algorithm.
@@ -213,7 +213,7 @@ void cau_sha1_initialize_output (const unsigned int *sha1_state);
  *        Useful when handling non‐contiguous input message blocks.
  */
 void cau_sha1_hash_n (const unsigned char *msg_data, const int num_blks,
-                 unsigned int *sha1_state);
+				 unsigned int *sha1_state);
 
 /*!
  * @brief SHA1: Updates SHA1 state variables.
@@ -229,7 +229,7 @@ void cau_sha1_hash_n (const unsigned char *msg_data, const int num_blks,
  *        All input message blocks must be contiguous.
  */
 void cau_sha1_update (const unsigned char *msg_data, const int num_blks,
-                 unsigned int *sha1_state);
+				 unsigned int *sha1_state);
 
 /*!
  * @brief SHA1: Performs SHA1 hash algorithm.
@@ -240,11 +240,11 @@ void cau_sha1_update (const unsigned char *msg_data, const int num_blks,
  * @param [in,out]  *sha1_state pointer to 160‐bit block of SHA1 state variables: a,b,c,d,e
  * @return  None
  * @note  Input message and digest output blocks must not overlap.
-          The cau_sha1_initialize_output() function must be called first.
-          Only works for a single input message block.
+		  The cau_sha1_initialize_output() function must be called first.
+		  Only works for a single input message block.
  */
 void cau_sha1_hash (const unsigned char *msg_data,
-               unsigned int *sha1_state);
+			   unsigned int *sha1_state);
 
 /*!
  * @brief SHA256: Initializes the hash output and checks the CAU hardware revision.
@@ -271,7 +271,7 @@ int cau_sha256_initialize_output (const unsigned int *output);
  *        Useful when handling non‐contiguous input message blocks.
  */
 void cau_sha256_hash_n (const unsigned char *input, const int num_blks,
-                   unsigned int *output);
+				   unsigned int *output);
 
 /*!
  * @brief SHA256: Updates SHA256 state variables.
@@ -287,7 +287,7 @@ void cau_sha256_hash_n (const unsigned char *input, const int num_blks,
  *        All input message blocks must be contiguous.
  */
 void cau_sha256_update (const unsigned char *input, const int num_blks,
-                   unsigned int *output);
+				   unsigned int *output);
 
 /*!
  * @brief SHA256: Performs SHA256 hash algorithm.

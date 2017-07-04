@@ -56,21 +56,21 @@
  *END**************************************************************************/
 mpu_status_t MPU_DRV_Init(uint32_t instance, const mpu_user_config_t *userConfigPtr)
 {
-    assert(instance < MPU_INSTANCE_COUNT);
-    MPU_Type * base = g_mpuBase[instance];
-    if(!userConfigPtr)
-    {
-        return kStatus_MPU_NullArgument;
-    }
-    CLOCK_SYS_EnableMpuClock(instance); 
-    MPU_HAL_Init(base);
-    while(userConfigPtr)
-    {
-        MPU_DRV_SetRegionConfig(instance, &(userConfigPtr->regionConfig));
-        userConfigPtr = userConfigPtr->next;
-    }
-    MPU_HAL_Enable(base);
-    return kStatus_MPU_Success;
+	assert(instance < MPU_INSTANCE_COUNT);
+	MPU_Type * base = g_mpuBase[instance];
+	if(!userConfigPtr)
+	{
+		return kStatus_MPU_NullArgument;
+	}
+	CLOCK_SYS_EnableMpuClock(instance);
+	MPU_HAL_Init(base);
+	while(userConfigPtr)
+	{
+		MPU_DRV_SetRegionConfig(instance, &(userConfigPtr->regionConfig));
+		userConfigPtr = userConfigPtr->next;
+	}
+	MPU_HAL_Enable(base);
+	return kStatus_MPU_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -82,10 +82,10 @@ mpu_status_t MPU_DRV_Init(uint32_t instance, const mpu_user_config_t *userConfig
  *END**************************************************************************/
 void MPU_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < MPU_INSTANCE_COUNT);
-    MPU_Type * base = g_mpuBase[instance];
-    MPU_HAL_Init(base);
-    CLOCK_SYS_DisableMpuClock(instance);
+	assert(instance < MPU_INSTANCE_COUNT);
+	MPU_Type * base = g_mpuBase[instance];
+	MPU_HAL_Init(base);
+	CLOCK_SYS_DisableMpuClock(instance);
 }
 
 /*FUNCTION**********************************************************************
@@ -98,12 +98,12 @@ void MPU_DRV_Deinit(uint32_t instance)
  *END**************************************************************************/
 mpu_status_t MPU_DRV_SetRegionConfig(uint32_t instance, const mpu_region_config_t *regionConfigPtr)
 {
-    assert(instance < MPU_INSTANCE_COUNT);
-    MPU_Type * base = g_mpuBase[instance];
-    
-    MPU_HAL_SetRegionConfig(base, regionConfigPtr);
-    
-    return kStatus_MPU_Success;
+	assert(instance < MPU_INSTANCE_COUNT);
+	MPU_Type * base = g_mpuBase[instance];
+
+	MPU_HAL_SetRegionConfig(base, regionConfigPtr);
+
+	return kStatus_MPU_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -115,15 +115,15 @@ mpu_status_t MPU_DRV_SetRegionConfig(uint32_t instance, const mpu_region_config_
  *END**************************************************************************/
 mpu_status_t MPU_DRV_SetLowMasterAccessRights(uint32_t instance, mpu_region_num_t regionNum, mpu_master_t masterNum, const mpu_low_masters_access_rights_t *accessRightsPtr)
 {
-    assert(instance < MPU_INSTANCE_COUNT);
-    MPU_Type * base = g_mpuBase[instance];
-    if(!accessRightsPtr)
-    {
+	assert(instance < MPU_INSTANCE_COUNT);
+	MPU_Type * base = g_mpuBase[instance];
+	if(!accessRightsPtr)
+	{
 	return kStatus_MPU_NullArgument;
-    }
-    MPU_HAL_SetLowMasterAccessRightsByAlternateReg(base, regionNum, masterNum, accessRightsPtr);
-    
-    return kStatus_MPU_Success;
+	}
+	MPU_HAL_SetLowMasterAccessRightsByAlternateReg(base, regionNum, masterNum, accessRightsPtr);
+
+	return kStatus_MPU_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -135,15 +135,15 @@ mpu_status_t MPU_DRV_SetLowMasterAccessRights(uint32_t instance, mpu_region_num_
  *END**************************************************************************/
 mpu_status_t MPU_DRV_SetHighMasterAccessRights(uint32_t instance, mpu_region_num_t regionNum, mpu_master_t masterNum, const mpu_high_masters_access_rights_t *accessRightsPtr)
 {
-    assert(instance < MPU_INSTANCE_COUNT);
-    MPU_Type * base = g_mpuBase[instance];
-    if(!accessRightsPtr)
-    {
+	assert(instance < MPU_INSTANCE_COUNT);
+	MPU_Type * base = g_mpuBase[instance];
+	if(!accessRightsPtr)
+	{
 	return kStatus_MPU_NullArgument;
-    }
-    MPU_HAL_SetHighMasterAccessRightsByAlternateReg(base, regionNum, masterNum, accessRightsPtr);
-    
-    return kStatus_MPU_Success;
+	}
+	MPU_HAL_SetHighMasterAccessRightsByAlternateReg(base, regionNum, masterNum, accessRightsPtr);
+
+	return kStatus_MPU_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -155,9 +155,9 @@ mpu_status_t MPU_DRV_SetHighMasterAccessRights(uint32_t instance, mpu_region_num
  *END**************************************************************************/
 void MPU_DRV_SetRegionAddr(uint32_t instance, mpu_region_num_t regionNum, uint32_t startAddr, uint32_t endAddr)
 {
-    assert(instance < MPU_INSTANCE_COUNT);
-    MPU_Type * base = g_mpuBase[instance];
-    MPU_HAL_SetRegionAddr(base, regionNum, startAddr, endAddr);
+	assert(instance < MPU_INSTANCE_COUNT);
+	MPU_Type * base = g_mpuBase[instance];
+	MPU_HAL_SetRegionAddr(base, regionNum, startAddr, endAddr);
 }
 
 /*FUNCTION**********************************************************************
@@ -169,9 +169,9 @@ void MPU_DRV_SetRegionAddr(uint32_t instance, mpu_region_num_t regionNum, uint32
  *END**************************************************************************/
 void MPU_DRV_SetRegionValidCmd(uint32_t instance, mpu_region_num_t regionNum, bool enable)
 {
-    assert(instance < MPU_INSTANCE_COUNT);
-    MPU_Type * base = g_mpuBase[instance];
-    MPU_HAL_SetRegionValidCmd(base, regionNum, enable);
+	assert(instance < MPU_INSTANCE_COUNT);
+	MPU_Type * base = g_mpuBase[instance];
+	MPU_HAL_SetRegionValidCmd(base, regionNum, enable);
 }
 
 /*FUNCTION**********************************************************************
@@ -183,19 +183,18 @@ void MPU_DRV_SetRegionValidCmd(uint32_t instance, mpu_region_num_t regionNum, bo
  *END**************************************************************************/
 mpu_status_t MPU_DRV_GetDetailErrorAccessInfo(uint32_t instance,  mpu_access_err_info_t *errInfoArrayPtr)
 {
-    assert(instance < MPU_INSTANCE_COUNT);
-    MPU_Type * base = g_mpuBase[instance];    
-    if(!errInfoArrayPtr)
-    {
-        return kStatus_MPU_NullArgument;
-    }
-    MPU_HAL_GetDetailErrorAccessInfo(base, errInfoArrayPtr);
-    
-    return kStatus_MPU_Success;
+	assert(instance < MPU_INSTANCE_COUNT);
+	MPU_Type * base = g_mpuBase[instance];
+	if(!errInfoArrayPtr)
+	{
+		return kStatus_MPU_NullArgument;
+	}
+	MPU_HAL_GetDetailErrorAccessInfo(base, errInfoArrayPtr);
+
+	return kStatus_MPU_Success;
 }
 #endif
 
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

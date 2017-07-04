@@ -52,16 +52,16 @@
 /*******************************************************************************
  * Definitions
  *******************************************************************************/
-/*! @brief Enables/disables multithread support in the LTC driver. 
+/*! @brief Enables/disables multithread support in the LTC driver.
  *
  *  Enables/disables multithread support in the LTC driver, which is achieved by locking critical sections with a mutex and enabled by default for RTOS. */
 #ifndef LTC_DRV_RTOS_MULTI_THREAD
 #define LTC_DRV_RTOS_MULTI_THREAD  (USE_RTOS)
 #endif
 
-/*! @brief Enables/disables putting the calling task to "sleep" during the LTC blocking operation. 
+/*! @brief Enables/disables putting the calling task to "sleep" during the LTC blocking operation.
  *
- *  Enables/disables putting the calling task to "sleep" during the LTC blocking operation. If enabled, it requires using of LTC IRQ handler. 
+ *  Enables/disables putting the calling task to "sleep" during the LTC blocking operation. If enabled, it requires using of LTC IRQ handler.
  *  It is enabled by default for RTOS. */
 #ifndef LTC_DRV_RTOS_SLEEP
 #define LTC_DRV_RTOS_SLEEP         (USE_RTOS)
@@ -76,7 +76,7 @@ extern const IRQn_Type g_ltcIrqId[];
 /*******************************************************************************
  * API
  ******************************************************************************/
- 
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -114,4 +114,3 @@ void LTC_DRV_IRQHandler(uint32_t instance);
  */
 
 #endif /* __FSL_LTC_DRIVER_H__ */
-

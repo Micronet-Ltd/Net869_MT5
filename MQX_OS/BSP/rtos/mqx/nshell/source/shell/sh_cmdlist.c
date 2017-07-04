@@ -51,26 +51,26 @@ int32_t  Shell_command_list(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc==1)  {
-         for (i=0,command_ptr = shell_ptr->COMMAND_LIST_PTR;
-              command_ptr->COMMAND != NULL;
-              i++,command_ptr++)
-          {
-            fprintf(shell_ptr->STDOUT, "%-8s ", command_ptr->COMMAND);
-            if ((i&7)==7) fprintf(shell_ptr->STDOUT, "\n");
-         } /* Endwhile */
-         if ((i&7)!=0) fprintf(shell_ptr->STDOUT, "\n");
-      } else {
-         print_usage = TRUE;
-      }
+	  if (argc==1)  {
+		 for (i=0,command_ptr = shell_ptr->COMMAND_LIST_PTR;
+			  command_ptr->COMMAND != NULL;
+			  i++,command_ptr++)
+		  {
+			fprintf(shell_ptr->STDOUT, "%-8s ", command_ptr->COMMAND);
+			if ((i&7)==7) fprintf(shell_ptr->STDOUT, "\n");
+		 } /* Endwhile */
+		 if ((i&7)!=0) fprintf(shell_ptr->STDOUT, "\n");
+	  } else {
+		 print_usage = TRUE;
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s\n", argv[0]);
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s\n", argv[0]);
+	  }
    }
    return return_code;
 } /* Endbody */

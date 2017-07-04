@@ -70,11 +70,11 @@ static void Shell_init_current_filesystem(void *argv);
 
 void Shell_getopt_init(SHELL_GETOPT_CONTEXT* ctx)
 {
-    ctx->opterr = 1;
-    ctx->optind = 1;
-    ctx->optopt = 0;
-    ctx->sp = 1;
-    ctx->optarg = NULL;
+	ctx->opterr = 1;
+	ctx->optind = 1;
+	ctx->optopt = 0;
+	ctx->sp = 1;
+	ctx->optarg = NULL;
 }
 
 int32_t  Shell_getopt(int argc, char** argv, char* opts, SHELL_GETOPT_CONTEXT* ctx)
@@ -83,56 +83,56 @@ int32_t  Shell_getopt(int argc, char** argv, char* opts, SHELL_GETOPT_CONTEXT* c
    register char *cp;
    SHELL_CONTEXT_PTR shell_ptr = Shell_get_context(argv);
 
-    if(ctx->sp == 1)
-    {
-        if(ctx->optind >= argc || argv[ctx->optind][0] != '-' || argv[ctx->optind][1] == '\0')
-      {
-           ctx->optind = 1;
-         return(-1);
-      }
-        else if(strcmp(argv[ctx->optind], "--") == 0)
-        {
-            ctx->optind++;
-         return(-1);
-      }
-    }
-    ctx->optopt = c = argv[ctx->optind][ctx->sp];
-    if(c == ':' || (cp=strchr(opts, c)) == NULL)
-    {
-        ERR(": illegal option -- ", c, ctx->opterr);
-        if(argv[ctx->optind][++ctx->sp] == '\0')
-        {
-            ctx->optind++;
-            ctx->sp = 1;
-      }
-      return('?');
+	if(ctx->sp == 1)
+	{
+		if(ctx->optind >= argc || argv[ctx->optind][0] != '-' || argv[ctx->optind][1] == '\0')
+	  {
+		   ctx->optind = 1;
+		 return(-1);
+	  }
+		else if(strcmp(argv[ctx->optind], "--") == 0)
+		{
+			ctx->optind++;
+		 return(-1);
+	  }
+	}
+	ctx->optopt = c = argv[ctx->optind][ctx->sp];
+	if(c == ':' || (cp=strchr(opts, c)) == NULL)
+	{
+		ERR(": illegal option -- ", c, ctx->opterr);
+		if(argv[ctx->optind][++ctx->sp] == '\0')
+		{
+			ctx->optind++;
+			ctx->sp = 1;
+	  }
+	  return('?');
    }
-    if(*++cp == ':')
-    {
-        if(argv[ctx->optind][ctx->sp+1] != '\0')
-        {
-            ctx->optarg = &argv[ctx->optind++][ctx->sp+1];
-        }
-        else if(++ctx->optind >= argc)
-        {
-            ERR(": option requires an argument -- ", c, ctx->opterr);
-            ctx->sp = 1;
-         return('?');
-        }
-        else
-        {
-            ctx->optarg = argv[ctx->optind++];
-        }
-        ctx->sp = 1;
-    }
-    else
-    {
-        if(argv[ctx->optind][++ctx->sp] == '\0')
-        {
-            ctx->sp = 1;
-            ctx->optind++;
-      }
-        ctx->optarg = NULL;
+	if(*++cp == ':')
+	{
+		if(argv[ctx->optind][ctx->sp+1] != '\0')
+		{
+			ctx->optarg = &argv[ctx->optind++][ctx->sp+1];
+		}
+		else if(++ctx->optind >= argc)
+		{
+			ERR(": option requires an argument -- ", c, ctx->opterr);
+			ctx->sp = 1;
+		 return('?');
+		}
+		else
+		{
+			ctx->optarg = argv[ctx->optind++];
+		}
+		ctx->sp = 1;
+	}
+	else
+	{
+		if(argv[ctx->optind][++ctx->sp] == '\0')
+		{
+			ctx->sp = 1;
+			ctx->optind++;
+	  }
+		ctx->optarg = NULL;
    }
    return(c);
 }
@@ -146,38 +146,38 @@ int32_t Shell_parse_command_line(char *command_line_ptr, char *argv[])
 
    for (i = 0; i < SHELL_MAX_ARGS; i++)
    {
-      while (*sptr && !isgraph((unsigned char)*sptr)) sptr++;
-      if (!*sptr)
-      {
-         argv[i] = NULL;
-      }
-      else
-      {
-         char qchar = 0;
-         argc++;
-         if ((*sptr == '\'') || (*sptr == '\"'))
-         {
-            inquotes = 1;
-            qchar = *sptr;
-            sptr++;
-         }
-         argv[i] = sptr;
+	  while (*sptr && !isgraph((unsigned char)*sptr)) sptr++;
+	  if (!*sptr)
+	  {
+		 argv[i] = NULL;
+	  }
+	  else
+	  {
+		 char qchar = 0;
+		 argc++;
+		 if ((*sptr == '\'') || (*sptr == '\"'))
+		 {
+			inquotes = 1;
+			qchar = *sptr;
+			sptr++;
+		 }
+		 argv[i] = sptr;
 
-         if (!inquotes)
-         {
-            while (*sptr && isgraph((unsigned char)(*sptr))) sptr++;
-         }
-         else
-         {
-            while (*sptr && (*sptr != qchar)) sptr++;
-            inquotes = 0;
-         }
+		 if (!inquotes)
+		 {
+			while (*sptr && isgraph((unsigned char)(*sptr))) sptr++;
+		 }
+		 else
+		 {
+			while (*sptr && (*sptr != qchar)) sptr++;
+			inquotes = 0;
+		 }
 
-         if (*sptr)
-         {
-            *sptr++ = '\0';
-         }
-      }
+		 if (*sptr)
+		 {
+			*sptr++ = '\0';
+		 }
+	  }
    }
    return argc;
 }
@@ -190,12 +190,12 @@ bool Shell_parse_number( char *arg, uint32_t *num_ptr)
 
    if (num_ptr == NULL) return FALSE;
    while (isdigit((unsigned char)arg[i]))  {
-      j = j*10 + (arg[i++]-'0');
+	  j = j*10 + (arg[i++]-'0');
    }
    if (arg[i]=='\0')
    {
-      *num_ptr=j;
-      return TRUE;
+	  *num_ptr=j;
+	  return TRUE;
    }
    return FALSE;
 }
@@ -206,12 +206,12 @@ bool Shell_parse_uint_32( char *arg, uint32_t *num_ptr)
 
    if (num_ptr == NULL) return FALSE;
    while (isdigit((unsigned char)arg[i]))  {
-      j = j*10 + (arg[i++]-'0');
+	  j = j*10 + (arg[i++]-'0');
    }
    if (arg[i]=='\0')
    {
-      *num_ptr=j;
-      return TRUE;
+	  *num_ptr=j;
+	  return TRUE;
    }
    return FALSE;
 }
@@ -223,12 +223,12 @@ bool Shell_parse_uint_16( char *arg, uint16_t *num_ptr)
 
    if (num_ptr == NULL) return FALSE;
    while (isdigit((unsigned char)arg[i]))  {
-      j = j*10 + (arg[i++]-'0');
+	  j = j*10 + (arg[i++]-'0');
    }
    if (arg[i]=='\0')
    {
-      *num_ptr=j;
-      return TRUE;
+	  *num_ptr=j;
+	  return TRUE;
    }
    return FALSE;
 }
@@ -240,16 +240,16 @@ bool Shell_parse_int_32( char *arg, int32_t *num_ptr)
 
    if (num_ptr == NULL) return FALSE;
    if (arg[i]=='-')  {
-      sign = -1;
-      i++;
+	  sign = -1;
+	  i++;
    }
    while (isdigit((unsigned char)arg[i]))  {
-      j = j*10 + (arg[i++]-'0');
+	  j = j*10 + (arg[i++]-'0');
    }
    if (arg[i]=='\0')
    {
-      *num_ptr=j * sign;
-      return TRUE;
+	  *num_ptr=j * sign;
+	  return TRUE;
    }
    return FALSE;
 }
@@ -261,18 +261,18 @@ bool Shell_parse_hexnum( char *arg, uint32_t *num_ptr)
    if (num_ptr == NULL) return FALSE;
 
    for (i=0;i<=8;i++) {
-      if (isdigit((unsigned char)arg[i])) {
-         j = j*16 + (arg[i]-'0');
-      } else if ((arg[i] >='a') && (arg[i] <='f') ) {
-         j = j*16 + (arg[i]-'a'+10);
-      } else if ((arg[i] >='A') && (arg[i] <='F') ) {
-         j = j*16 + (arg[i]-'A'+10);
-      } else if (arg[i]==0) {
-         *num_ptr=j;
-         return TRUE;
-      } else {
-         return FALSE;
-      }
+	  if (isdigit((unsigned char)arg[i])) {
+		 j = j*16 + (arg[i]-'0');
+	  } else if ((arg[i] >='a') && (arg[i] <='f') ) {
+		 j = j*16 + (arg[i]-'a'+10);
+	  } else if ((arg[i] >='A') && (arg[i] <='F') ) {
+		 j = j*16 + (arg[i]-'A'+10);
+	  } else if (arg[i]==0) {
+		 *num_ptr=j;
+		 return TRUE;
+	  } else {
+		 return FALSE;
+	  }
    }
    return FALSE;
 }
@@ -281,8 +281,8 @@ bool Shell_parse_hexnum( char *arg, uint32_t *num_ptr)
 bool Shell_check_help_request(int32_t argc, char *argv[], bool  *short_ptr )
 {
    if ((argc == 3) && (strcmp(argv[1], "help") == 0))  {
-      *short_ptr = (strcmp(argv[2], "short")==0)?TRUE:FALSE;
-      return TRUE;
+	  *short_ptr = (strcmp(argv[2], "short")==0)?TRUE:FALSE;
+	  return TRUE;
    }
    return FALSE;
 }
@@ -301,20 +301,20 @@ int Shell_get_current_filesystem(void *argv)
 
    if (0 > shell_ptr->CURRENT_DEVICE_FP)
    {
-      // shell current filesystem is not initialized
-      Shell_init_current_filesystem(argv);
-      return shell_ptr->CURRENT_DEVICE_FP;
+	  // shell current filesystem is not initialized
+	  Shell_init_current_filesystem(argv);
+	  return shell_ptr->CURRENT_DEVICE_FP;
    }
    else if(!_io_is_fs_valid(shell_ptr->CURRENT_DEVICE_FP))
    {
-      // current filesystem was closed
-      Shell_init_current_filesystem(argv);
-      return shell_ptr->CURRENT_DEVICE_FP;
+	  // current filesystem was closed
+	  Shell_init_current_filesystem(argv);
+	  return shell_ptr->CURRENT_DEVICE_FP;
    }
    else
    {
-      // everything is ok, return stored filesystem ptr
-      return shell_ptr->CURRENT_DEVICE_FP;
+	  // everything is ok, return stored filesystem ptr
+	  return shell_ptr->CURRENT_DEVICE_FP;
    }
 }
 
@@ -324,20 +324,20 @@ char *Shell_get_current_filesystem_name(void *argv)
 
    if (0 > shell_ptr->CURRENT_DEVICE_FP)
    {
-      // shell current filesystem is not initialized
-      Shell_init_current_filesystem(argv);
-      return shell_ptr->CURRENT_DEVICE_NAME;
+	  // shell current filesystem is not initialized
+	  Shell_init_current_filesystem(argv);
+	  return shell_ptr->CURRENT_DEVICE_NAME;
    }
    else if(!_io_is_fs_valid(shell_ptr->CURRENT_DEVICE_FP))
    {
-      // current filesystem was closed
-      Shell_init_current_filesystem(argv);
-      return shell_ptr->CURRENT_DEVICE_NAME;
+	  // current filesystem was closed
+	  Shell_init_current_filesystem(argv);
+	  return shell_ptr->CURRENT_DEVICE_NAME;
    }
    else
    {
-      // everything is ok, return stored device name
-      return shell_ptr->CURRENT_DEVICE_NAME;
+	  // everything is ok, return stored device name
+	  return shell_ptr->CURRENT_DEVICE_NAME;
    }
 }
 
@@ -347,19 +347,19 @@ int32_t Shell_set_current_filesystem(void *argv, int fd)
 
    if(0 > fd)
    {
-      shell_ptr->CURRENT_DEVICE_FP = -1;
-      shell_ptr->CURRENT_DEVICE_NAME[0]  = '\0';
-      strcpy(shell_ptr->CURRENT_DIR,"\\");
+	  shell_ptr->CURRENT_DEVICE_FP = -1;
+	  shell_ptr->CURRENT_DEVICE_NAME[0]  = '\0';
+	  strcpy(shell_ptr->CURRENT_DIR,"\\");
    }
    else if(_io_is_fs_valid(fd))
    {
-      _io_get_fs_name(fd, shell_ptr->CURRENT_DEVICE_NAME, sizeof(shell_ptr->CURRENT_DEVICE_NAME));
-      shell_ptr->CURRENT_DEVICE_FP = fd;
-      strcpy(shell_ptr->CURRENT_DIR,"\\");
+	  _io_get_fs_name(fd, shell_ptr->CURRENT_DEVICE_NAME, sizeof(shell_ptr->CURRENT_DEVICE_NAME));
+	  shell_ptr->CURRENT_DEVICE_FP = fd;
+	  strcpy(shell_ptr->CURRENT_DIR,"\\");
    }
    else
    {
-      return MQX_INVALID_POINTER;
+	  return MQX_INVALID_POINTER;
    }
    return MQX_OK;
 }
@@ -372,11 +372,11 @@ int32_t Shell_set_current_filesystem_by_name(void *argv, char *dev_name)
    // if valid filesystem entry is returned, fill in internal variables
    if (0 < fd)
    {
-      Shell_set_current_filesystem(argv, fd);
+	  Shell_set_current_filesystem(argv, fd);
    }
    else
    {
-      return MQX_INVALID_POINTER;
+	  return MQX_INVALID_POINTER;
    }
    return MQX_OK;
 }

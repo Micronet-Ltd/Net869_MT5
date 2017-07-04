@@ -36,11 +36,11 @@
  */
 _mqx_uint _psp_int_init
    (
-      /* [IN] the first (lower) user ISR vector number */
-      _mqx_uint       first_user_isr_vector_number,
+	  /* [IN] the first (lower) user ISR vector number */
+	  _mqx_uint       first_user_isr_vector_number,
 
-      /* [IN] the last user ISR vector number */
-      _mqx_uint       last_user_isr_vector_number
+	  /* [IN] the last user ISR vector number */
+	  _mqx_uint       last_user_isr_vector_number
    )
 {
    uint32_t            error;

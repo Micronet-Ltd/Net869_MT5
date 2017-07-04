@@ -44,26 +44,26 @@
  *
  * Function Name : RCM_HAL_GetSrcStatusCmd
  * Description   : Get the reset source status
- * 
+ *
  * This function will get the current reset source status for specified source
  *
  *END**************************************************************************/
 uint32_t RCM_HAL_GetSrcStatus(RCM_Type * base, uint32_t statusMask)
 {
-    uint32_t regStatus = 0U;  // RCM_SRS register status.
+	uint32_t regStatus = 0U;  // RCM_SRS register status.
 
-    /* There are only SRS0 and SRS1. */
-    regStatus  = ((uint32_t)RCM_RD_SRS0(base));
-    regStatus |= ((uint32_t)RCM_RD_SRS1(base) << 8U);
+	/* There are only SRS0 and SRS1. */
+	regStatus  = ((uint32_t)RCM_RD_SRS0(base));
+	regStatus |= ((uint32_t)RCM_RD_SRS1(base) << 8U);
 
-    if (kRcmSrcAll == statusMask)
-    {
-        return regStatus;
-    }
-    else
-    {
-        return regStatus & statusMask;
-    }
+	if (kRcmSrcAll == statusMask)
+	{
+		return regStatus;
+	}
+	else
+	{
+		return regStatus & statusMask;
+	}
 }
 
 #if FSL_FEATURE_RCM_HAS_SSRS
@@ -78,20 +78,20 @@ uint32_t RCM_HAL_GetSrcStatus(RCM_Type * base, uint32_t statusMask)
  *END**************************************************************************/
 uint32_t RCM_HAL_GetStickySrcStatus(RCM_Type * base, uint32_t statusMask)
 {
-    uint32_t regStatus = 0U;  // RCM_SRS register status.
+	uint32_t regStatus = 0U;  // RCM_SRS register status.
 
-    /* There are only SRS0 and SRS1. */
-    regStatus  = ((uint32_t)RCM_RD_SSRS0(base));
-    regStatus |= ((uint32_t)RCM_RD_SSRS1(base) << 8U);
+	/* There are only SRS0 and SRS1. */
+	regStatus  = ((uint32_t)RCM_RD_SSRS0(base));
+	regStatus |= ((uint32_t)RCM_RD_SSRS1(base) << 8U);
 
-    if (kRcmSrcAll == statusMask)
-    {
-        return regStatus;
-    }
-    else
-    {
-        return regStatus & statusMask;
-    }
+	if (kRcmSrcAll == statusMask)
+	{
+		return regStatus;
+	}
+	else
+	{
+		return regStatus & statusMask;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -104,12 +104,12 @@ uint32_t RCM_HAL_GetStickySrcStatus(RCM_Type * base, uint32_t statusMask)
  *END**************************************************************************/
 void RCM_HAL_ClearStickySrcStatus(RCM_Type * base)
 {
-    uint8_t status;
+	uint8_t status;
 
-    status = RCM_RD_SSRS0(base);
-    RCM_WR_SSRS0(base, status);
-    status = RCM_RD_SSRS1(base);
-    RCM_WR_SSRS1(base, status);
+	status = RCM_RD_SSRS0(base);
+	RCM_WR_SSRS0(base, status);
+	status = RCM_RD_SSRS1(base);
+	RCM_WR_SSRS1(base, status);
 }
 #endif
 
@@ -121,21 +121,20 @@ void RCM_HAL_ClearStickySrcStatus(RCM_Type * base)
  *END**************************************************************************/
 void RCM_HAL_SetResetPinFilterConfig(RCM_Type * base, rcm_reset_pin_filter_config_t *config)
 {
-    // Set filter in stop mode.
-    RCM_BWR_RPFC_RSTFLTSS(base, config->filterInStop);
+	// Set filter in stop mode.
+	RCM_BWR_RPFC_RSTFLTSS(base, config->filterInStop);
 
-    // Set filter width if bus clock is used as filter.
-    if (kRcmFilterBusClk == config->filterInRunWait)
-    {
-        RCM_BWR_RPFW_RSTFLTSEL(base, config->busClockFilterCount);
-    }
+	// Set filter width if bus clock is used as filter.
+	if (kRcmFilterBusClk == config->filterInRunWait)
+	{
+		RCM_BWR_RPFW_RSTFLTSEL(base, config->busClockFilterCount);
+	}
 
-    // Set filter in run and wait mode.
-    RCM_BWR_RPFC_RSTFLTSRW(base, config->filterInRunWait);
+	// Set filter in run and wait mode.
+	RCM_BWR_RPFC_RSTFLTSRW(base, config->filterInRunWait);
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

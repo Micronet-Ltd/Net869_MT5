@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
  * All Rights Reserved
  *
  * Copyright (c) 1989-2008 ARC International;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
  *
  * $FileName: usb_host_hid.h$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
@@ -100,19 +100,19 @@
 /* structure for HID class descriptor */
 typedef struct _hid_descriptor_struct
 {
-    uint8_t blength;
-    uint8_t bdescriptortype;
-    uint8_t bcdhid[2];
-    uint8_t bcountrycode;
-    uint8_t bnumdescriptor;
-    uint8_t bclassdescriptortype;
-    uint8_t bclassdescriptorlength[2];
+	uint8_t blength;
+	uint8_t bdescriptortype;
+	uint8_t bcdhid[2];
+	uint8_t bcountrycode;
+	uint8_t bnumdescriptor;
+	uint8_t bclassdescriptortype;
+	uint8_t bclassdescriptorlength[2];
 } hid_descriptor_struct_t;
 
 typedef struct _hid_class_descriptor
 {
-    uint8_t classdescriptortype;
-    uint8_t descriptorlength[2];
+	uint8_t classdescriptortype;
+	uint8_t descriptorlength[2];
 } hid_class_descriptor_struct_t;
 
 /*
@@ -122,25 +122,25 @@ typedef struct _hid_class_descriptor
 
 typedef struct _usb_hid_class
 {
-    usb_host_handle host_handle;
-    usb_device_instance_handle dev_handle;
-    usb_interface_descriptor_handle intf_handle;
-    /* Only 1 command can be issued at one time */
-    usb_pipe_handle in_pipe;
-    /* Here we store callback and parameter from higher level */
-    tr_callback ctrl_callback;
-    void* ctrl_param;
-    tr_callback recv_callback;
-    void* recv_param;
-    uint32_t running;
-    bool in_setup;
+	usb_host_handle host_handle;
+	usb_device_instance_handle dev_handle;
+	usb_interface_descriptor_handle intf_handle;
+	/* Only 1 command can be issued at one time */
+	usb_pipe_handle in_pipe;
+	/* Here we store callback and parameter from higher level */
+	tr_callback ctrl_callback;
+	void* ctrl_param;
+	tr_callback recv_callback;
+	void* recv_param;
+	uint32_t running;
+	bool in_setup;
 } usb_hid_class_struct_t;
 
 typedef struct _hid_command
 {
-    usb_class_handle class_ptr;
-    tr_callback callback_fn;
-    void* callback_param;
+	usb_class_handle class_ptr;
+	tr_callback callback_fn;
+	void* callback_param;
 } hid_command_t;
 
 /* Class specific functions exported by HID class driver */

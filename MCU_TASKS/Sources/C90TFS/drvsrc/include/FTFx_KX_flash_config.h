@@ -4,14 +4,14 @@
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the <organization> nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -40,8 +40,8 @@
 
 /************************** CHANGES *************************************
 1.1.GA      09.25.2014      FPT Team      First version of SDK C90TFS flash driver
-                                          inherited from BM C90TFS flash driver v1.02
-                                          (08.04.2014, FPT Team)
+										  inherited from BM C90TFS flash driver v1.02
+										  (08.04.2014, FPT Team)
 1.3.GA     06.23.2015       ROM Team      Support FAC presence detection
 
 *************************************************************************/
@@ -64,23 +64,23 @@
 
 /* Flash module */
 #if (FSL_FEATURE_FLASH_IS_FTFA == 1)
-    /*! @brief C90TFS sub-flash module is FTFA_M */
-    #define FTFA_M
+	/*! @brief C90TFS sub-flash module is FTFA_M */
+	#define FTFA_M
 #endif
 #if (FSL_FEATURE_FLASH_IS_FTFE == 1)
-    /*! @brief C90TFS sub-flash module is FTFE_M */
-    #define FTFE_M
+	/*! @brief C90TFS sub-flash module is FTFE_M */
+	#define FTFE_M
 #endif
 
 #if (FSL_FEATURE_FLASH_HAS_PFLASH_BLOCK_SWAP == 1)
   /*! Include Swap control API if the feature is available in the platform */
-    #define SWAP_M
+	#define SWAP_M
 #endif
 
 
 #if (FSL_FEATURE_FLASH_HAS_ERASE_FLASH_BLOCK_CMD == 1)
   /*! @brief Include Read 1s block and erase block API if the feature is available in the platform */
-    #define BLOCK_COMMANDS
+	#define BLOCK_COMMANDS
 #endif
 /*@}*/
 /*!
@@ -189,9 +189,9 @@
 
 /*! @brief Data flash IFR map */
 #if (FSL_FEATURE_FLASH_IS_FTFE == 1)
-    #define DFLASH_IFR_READRESOURCE_ADDRESS                0x8003F8U
+	#define DFLASH_IFR_READRESOURCE_ADDRESS                0x8003F8U
 #else /* FSL_FEATURE_FLASH_IS_FTFL == 1 or FSL_FEATURE_FLASH_IS_FTFA = =1 */
-    #define DFLASH_IFR_READRESOURCE_ADDRESS                0x8000FCU
+	#define DFLASH_IFR_READRESOURCE_ADDRESS                0x8000FCU
 #endif
 
 /* Size for checking alignment of a section */

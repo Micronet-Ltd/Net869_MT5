@@ -18,7 +18,7 @@
 *
 * Comments:
 *
-*   This file contains functions of the Two Level Segregate Fit, 
+*   This file contains functions of the Two Level Segregate Fit,
 *   based on public domain licensed implementation from http://tlsf.baisoku.org/ .
 *
 *
@@ -58,8 +58,8 @@ extern unsigned int tlsf_clz(unsigned int x);
 
 #define tlsf_ffs(_word_) (31 - tlsf_clz((_word_) & (~(_word_) + 1)))
 
-/* CLZ returns 32 if input is 0 */ 
-#define tlsf_fls(_word_) (31 - tlsf_clz(_word_)) 
+/* CLZ returns 32 if input is 0 */
+#define tlsf_fls(_word_) (31 - tlsf_clz(_word_))
 
 #else /* PSP_MQX_CPU_IS_ARM_CORTEX_M0P and others */
 /* Fall back to generic implementation. */
@@ -69,16 +69,16 @@ extern unsigned int tlsf_clz(unsigned int x);
  */
 tlsf_decl int tlsf_fls_generic(unsigned int word)
 {
-    int bit = 32;
+	int bit = 32;
 
-    if (!word) bit -= 1;
-    if (!(word & 0xffff0000)) { word <<= 16; bit -= 16; }
-    if (!(word & 0xff000000)) { word <<= 8; bit -= 8; }
-    if (!(word & 0xf0000000)) { word <<= 4; bit -= 4; }
-    if (!(word & 0xc0000000)) { word <<= 2; bit -= 2; }
-    if (!(word & 0x80000000)) { word <<= 1; bit -= 1; }
+	if (!word) bit -= 1;
+	if (!(word & 0xffff0000)) { word <<= 16; bit -= 16; }
+	if (!(word & 0xff000000)) { word <<= 8; bit -= 8; }
+	if (!(word & 0xf0000000)) { word <<= 4; bit -= 4; }
+	if (!(word & 0xc0000000)) { word <<= 2; bit -= 2; }
+	if (!(word & 0x80000000)) { word <<= 1; bit -= 1; }
 
-    return bit;
+	return bit;
 }
 /*! \endcond */
 
@@ -88,7 +88,7 @@ tlsf_decl int tlsf_fls_generic(unsigned int word)
  */
 tlsf_decl int tlsf_ffs(unsigned int word)
 {
-    return tlsf_fls_generic(word & (~word + 1)) - 1;
+	return tlsf_fls_generic(word & (~word + 1)) - 1;
 }
 /*! \endcond */
 
@@ -97,7 +97,7 @@ tlsf_decl int tlsf_ffs(unsigned int word)
  */
 tlsf_decl int tlsf_fls(unsigned int word)
 {
-    return tlsf_fls_generic(word) - 1;
+	return tlsf_fls_generic(word) - 1;
 }
 /*! \endcond */
 

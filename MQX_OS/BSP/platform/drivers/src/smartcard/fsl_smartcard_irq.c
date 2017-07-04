@@ -47,7 +47,7 @@ extern void SMARTCARD_UART_DRV_ErrIRQHandler(uint32_t instance);
  * Code
  ******************************************************************************/
 
-/* MQX RTOS require installation of interrupt handlers. That's why is added condition 
+/* MQX RTOS require installation of interrupt handlers. That's why is added condition
    FSL_RTOS_MQX */
 #if defined (KL25Z4_SERIES) || defined (KL46Z4_SERIES) || defined (KV10Z7_SERIES)
 /* NOTE: If a sub-family has UART0 separated as another IP, it will be handled by
@@ -64,14 +64,14 @@ void MQX_UART1_IRQHandler(void)
 void UART1_IRQHandler(void)
 #endif
 {
-    if(g_smartcardInstance == 0)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(0);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(0);
-    }
+	if(g_smartcardInstance == 0)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(0);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(0);
+	}
 }
 #endif
 
@@ -83,14 +83,14 @@ void MQX_UART2_IRQHandler(void)
 void UART2_IRQHandler(void)
 #endif
 {
-    if(g_smartcardInstance == 1)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(1);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(1);
-    }
+	if(g_smartcardInstance == 1)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(1);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(1);
+	}
 }
 #endif
 
@@ -104,14 +104,14 @@ void MQX_UART0_IRQHandler(void)
 void UART0_IRQHandler(void)
 #endif
 {
-    if(g_smartcardInstance == 0)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(0);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(0);
-    }
+	if(g_smartcardInstance == 0)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(0);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(0);
+	}
 }
 #endif
 
@@ -123,14 +123,14 @@ void MQX_UART1_IRQHandler(void)
 void UART1_IRQHandler(void)
 #endif
 {
-    if(g_smartcardInstance == 1)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(1);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(1);
-    }
+	if(g_smartcardInstance == 1)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(1);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(1);
+	}
 }
 #endif
 
@@ -142,26 +142,26 @@ void MQX_UART2_IRQHandler(void)
 void UART2_IRQHandler(void)
 #endif
 {
-    if(g_smartcardInstance == 2)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(2);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(2);
-    }
+	if(g_smartcardInstance == 2)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(2);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(2);
+	}
 }
 #endif
 
 #endif /* UART0_INSTANCE_COUNT */
 
 #elif defined (K64F12_SERIES) || defined (K24F12_SERIES) || defined (K63F12_SERIES) || \
-      defined (K22F51212_SERIES) || defined (K22F25612_SERIES) || defined (K22F12810_SERIES) || \
-      defined (KV31F51212_SERIES) || defined (KV31F25612_SERIES) || defined (KV31F12810_SERIES) || \
-      defined (K70F12_SERIES) || defined(K60D10_SERIES) || defined(K24F25612_SERIES) || \
-      defined (KV30F12810_SERIES) || defined (K02F12810_SERIES) || defined (K21DA5_SERIES) || \
-      defined (K21FA12_SERIES) || defined (KW24D5_SERIES) || defined (K26F18_SERIES) || \
-      defined (K65F18_SERIES) || defined (K66F18_SERIES) || defined (KV46F15_SERIES)
+	  defined (K22F51212_SERIES) || defined (K22F25612_SERIES) || defined (K22F12810_SERIES) || \
+	  defined (KV31F51212_SERIES) || defined (KV31F25612_SERIES) || defined (KV31F12810_SERIES) || \
+	  defined (K70F12_SERIES) || defined(K60D10_SERIES) || defined(K24F25612_SERIES) || \
+	  defined (KV30F12810_SERIES) || defined (K02F12810_SERIES) || defined (K21DA5_SERIES) || \
+	  defined (K21FA12_SERIES) || defined (KW24D5_SERIES) || defined (K26F18_SERIES) || \
+	  defined (K65F18_SERIES) || defined (K66F18_SERIES) || defined (KV46F15_SERIES)
 
 #if (UART_INSTANCE_COUNT > 0)
 /* Implementation of UART0 handler named in startup code. */
@@ -171,14 +171,14 @@ void MQX_UART0_RX_TX_IRQHandler(void)
 void UART0_RX_TX_IRQHandler(void)
 #endif
 {
-    if(g_smartcardInstance == 0)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(0);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(0);
-    }
+	if(g_smartcardInstance == 0)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(0);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(0);
+	}
 }
 /* Enabled only for smartcard/uart-iso7826 function */
 #if (FSL_RTOS_MQX)
@@ -187,7 +187,7 @@ void MQX_UART0_ERR_IRQHandler(void)
 void UART0_ERR_IRQHandler(void)
 #endif
 {
-    SMARTCARD_UART_DRV_ErrIRQHandler(0);
+	SMARTCARD_UART_DRV_ErrIRQHandler(0);
 }
 #endif
 
@@ -199,14 +199,14 @@ void MQX_UART1_RX_TX_IRQHandler(void)
 void UART1_RX_TX_IRQHandler(void)
 #endif
 {
-    if(g_smartcardInstance == 1)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(1);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(1);
-    }
+	if(g_smartcardInstance == 1)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(1);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(1);
+	}
 }
 /* Enabled only for smartcard/uart-iso7826 function */
 #if (FSL_RTOS_MQX)
@@ -215,7 +215,7 @@ void MQX_UART1_ERR_IRQHandler(void)
 void UART1_ERR_IRQHandler(void)
 #endif
 {
-    SMARTCARD_UART_DRV_ErrIRQHandler(1);
+	SMARTCARD_UART_DRV_ErrIRQHandler(1);
 }
 #endif
 
@@ -227,14 +227,14 @@ void MQX_UART2_RX_TX_IRQHandler(void)
 void UART2_RX_TX_IRQHandler(void)
 #endif
 {
-    if(g_smartcardInstance == 2)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(2);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(2);
-    }
+	if(g_smartcardInstance == 2)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(2);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(2);
+	}
 }
 /* Enabled only for smartcard/uart-iso7826 function */
 #if (FSL_RTOS_MQX)
@@ -243,7 +243,7 @@ void MQX_UART2_ERR_IRQHandler(void)
 void UART2_ERR_IRQHandler(void)
 #endif
 {
-    SMARTCARD_UART_DRV_ErrIRQHandler(2);
+	SMARTCARD_UART_DRV_ErrIRQHandler(2);
 }
 #endif
 
@@ -255,14 +255,14 @@ void MQX_UART3_RX_TX_IRQHandler(void)
 void UART3_RX_TX_IRQHandler(void)
 #endif
 {
-    if(g_smartcardInstance == 3)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(3);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(3);
-    }
+	if(g_smartcardInstance == 3)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(3);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(3);
+	}
 }
 /* Enabled only for smartcard/uart-iso7826 function */
 #if (FSL_RTOS_MQX)
@@ -271,7 +271,7 @@ void MQX_UART3_ERR_IRQHandler(void)
 void UART3_ERR_IRQHandler(void)
 #endif
 {
-    SMARTCARD_UART_DRV_ErrIRQHandler(3);
+	SMARTCARD_UART_DRV_ErrIRQHandler(3);
 }
 #endif
 
@@ -283,14 +283,14 @@ void MQX_UART4_RX_TX_IRQHandler(void) {
   void UART4_RX_TX_IRQHandler(void) {
 #endif
 
-    if(g_smartcardInstance == 4)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(4);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(4);
-    }
+	if(g_smartcardInstance == 4)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(4);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(4);
+	}
 }
 /* Enabled only for smartcard/uart-iso7826 function */
 #if (FSL_RTOS_MQX)
@@ -299,7 +299,7 @@ void MQX_UART4_ERR_IRQHandler(void)
 void UART4_ERR_IRQHandler(void)
 #endif
 {
-    SMARTCARD_UART_DRV_ErrIRQHandler(5);
+	SMARTCARD_UART_DRV_ErrIRQHandler(5);
 }
 #endif
 
@@ -311,14 +311,14 @@ void MQX_UART5_RX_TX_IRQHandler(void)
 void UART5_RX_TX_IRQHandler(void)
 #endif
 {
-    if(g_smartcardInstance == 5)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(5);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(5);
-    }
+	if(g_smartcardInstance == 5)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(5);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(5);
+	}
 }
 /* Enabled only for smartcard/uart-iso7826 function */
 #if (FSL_RTOS_MQX)
@@ -327,7 +327,7 @@ void MQX_UART5_ERR_IRQHandler(void)
 void UART5_ERR_IRQHandler(void)
 #endif
 {
-    SMARTCARD_UART_DRV_ErrIRQHandler(5);
+	SMARTCARD_UART_DRV_ErrIRQHandler(5);
 }
 #endif
 
@@ -340,19 +340,19 @@ void MQX_UART2_FLEXIO_IRQHandler(void)
 void UART2_FLEXIO_IRQHandler(void)
 #endif
 {
-    if(g_smartcardInstance == 0)
-    {
-        SMARTCARD_UART_DRV_IRQHandler(0);
-    }
-    else
-    {
-        UART_DRV_IRQHandler(0);
-    }
+	if(g_smartcardInstance == 0)
+	{
+		SMARTCARD_UART_DRV_IRQHandler(0);
+	}
+	else
+	{
+		UART_DRV_IRQHandler(0);
+	}
 }
 #endif
 
 #else
-    #error "No valid CPU defined!"
+	#error "No valid CPU defined!"
 #endif
 
 /* gpio IRQ handler with the same name in startup code. */
@@ -362,11 +362,11 @@ void MQX_PORTA_IRQHandler(void)
 void PORTA_IRQHandler(void)
 #endif
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTA_BASE_PTR);
-    
-    /* Invoke PHY IRQ handler specific function */
-    SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTA_BASE_PTR);
+
+	/* Invoke PHY IRQ handler specific function */
+	SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
 }
 
 #if defined (KL43Z4_SERIES)
@@ -377,17 +377,17 @@ void MQX_PORTCD_IRQHandler(void)
 void PORTCD_IRQHandler(void)
 #endif
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTC_BASE_PTR);
-    PORT_HAL_ClearPortIntFlag(PORTD_BASE_PTR);
-    
-    /* Invoke PHY IRQ handler specific function */
-    SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_UART_INSTANCE);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTC_BASE_PTR);
+	PORT_HAL_ClearPortIntFlag(PORTD_BASE_PTR);
+
+	/* Invoke PHY IRQ handler specific function */
+	SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_UART_INSTANCE);
 }
 #endif
 
 #if defined (K22F12810_SERIES) || defined (K22F25612_SERIES) || defined (K22F51212_SERIES) || \
-    defined (K21FA12_SERIES)
+	defined (K21FA12_SERIES)
 /* gpio IRQ handler with the same name in startup code. */
 #if (FSL_RTOS_MQX)
 void MQX_PORTD_IRQHandler(void)
@@ -395,11 +395,11 @@ void MQX_PORTD_IRQHandler(void)
 void PORTD_IRQHandler(void)
 #endif
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTD_BASE_PTR);
-    
-    /* Invoke PHY IRQ handler specific function */
-    SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTD_BASE_PTR);
+
+	/* Invoke PHY IRQ handler specific function */
+	SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
 }
 #endif
 
@@ -411,11 +411,11 @@ void MQX_PORTB_IRQHandler(void)
 void PORTB_IRQHandler(void)
 #endif
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTB_BASE_PTR);
-    
-    /* Invoke PHY IRQ handler specific function */
-    SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTB_BASE_PTR);
+
+	/* Invoke PHY IRQ handler specific function */
+	SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
 }
 
 /* gpio IRQ handler with the same name in startup code. */
@@ -425,11 +425,11 @@ void MQX_PORTC_IRQHandler(void)
 void PORTC_IRQHandler(void)
 #endif
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTC_BASE_PTR);
-    
-    /* Invoke PHY IRQ handler specific function */
-    SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTC_BASE_PTR);
+
+	/* Invoke PHY IRQ handler specific function */
+	SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
 }
 
 /* gpio IRQ handler with the same name in startup code. */
@@ -439,15 +439,14 @@ void MQX_PORTE_IRQHandler(void)
 void PORTE_IRQHandler(void)
 #endif
 {
-    /* Clear interrupt flag.*/
-    PORT_HAL_ClearPortIntFlag(PORTE_BASE_PTR);
-    
-    /* Invoke PHY IRQ handler specific function */
-    SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
+	/* Clear interrupt flag.*/
+	PORT_HAL_ClearPortIntFlag(PORTE_BASE_PTR);
+
+	/* Invoke PHY IRQ handler specific function */
+	SMARTCARD_DRV_NCN8025IRQHandler(BOARD_SMARTCARD_MODULE_INSTANCE);
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

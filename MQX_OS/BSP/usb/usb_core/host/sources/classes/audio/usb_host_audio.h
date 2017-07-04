@@ -128,18 +128,18 @@
 /* audio command struct */
 typedef struct
 {
-    uint8_t control_mask;
-    uint8_t request_type;
-    uint8_t request_code;
-    uint8_t request_value;
-    uint8_t length;
+	uint8_t control_mask;
+	uint8_t request_type;
+	uint8_t request_code;
+	uint8_t request_value;
+	uint8_t length;
 } usb_audio_command_t;
 
 /* Receive interrupt state */
 typedef struct
 {
-    uint8_t status;
-    uint8_t originator;
+	uint8_t status;
+	uint8_t originator;
 } usb_audio_control_status_t;
 
 /* Audio Control Subclass */
@@ -147,55 +147,55 @@ typedef struct
 #define USB_DESC_SUBTYPE_AUDIO_CS_HEADER           0x01
 typedef struct
 {
-    uint8_t bfunctionlength;
-    uint8_t bdescriptortype;
-    uint8_t bdescriptorsubtype;
-    uint8_t bcdcdc[2];
-    uint8_t wtotallength[2];
-    uint8_t bincollection;
+	uint8_t bfunctionlength;
+	uint8_t bdescriptortype;
+	uint8_t bdescriptorsubtype;
+	uint8_t bcdcdc[2];
+	uint8_t wtotallength[2];
+	uint8_t bincollection;
 } usb_audio_ctrl_desc_header_t;
 
 /* Input Terminal descriptor */
 #define USB_DESC_SUBTYPE_AUDIO_CS_IT               0x02
 typedef struct
 {
-    uint8_t bfunctionlength;
-    uint8_t bdescriptortype;
-    uint8_t bdescriptorsubtype;
-    uint8_t bterminalid;
-    uint8_t wterminaltype[2];
-    uint8_t bassocterminal;
-    uint8_t bnrchannels;
-    uint8_t wchannelconfig[2];
-    uint8_t ichannelnames;
-    uint8_t iterminal;
+	uint8_t bfunctionlength;
+	uint8_t bdescriptortype;
+	uint8_t bdescriptorsubtype;
+	uint8_t bterminalid;
+	uint8_t wterminaltype[2];
+	uint8_t bassocterminal;
+	uint8_t bnrchannels;
+	uint8_t wchannelconfig[2];
+	uint8_t ichannelnames;
+	uint8_t iterminal;
 } usb_audio_ctrl_desc_it_t;
 
 /* Output Terminal descriptor */
 #define USB_DESC_SUBTYPE_AUDIO_CS_OT               0x03
 typedef struct
 {
-    uint8_t bfunctionlength;
-    uint8_t bdescriptortype;
-    uint8_t bdescriptorsubtype;
-    uint8_t bterminalid;
-    uint8_t wterminaltype[2];
-    uint8_t bassocterminal;
-    uint8_t bsourceid;
-    uint8_t iterminal;
+	uint8_t bfunctionlength;
+	uint8_t bdescriptortype;
+	uint8_t bdescriptorsubtype;
+	uint8_t bterminalid;
+	uint8_t wterminaltype[2];
+	uint8_t bassocterminal;
+	uint8_t bsourceid;
+	uint8_t iterminal;
 } usb_audio_ctrl_desc_ot_t;
 
 /* Feature Unit descriptor */
 #define USB_DESC_SUBTYPE_AUDIO_CS_FU               0x06
 typedef struct
 {
-    uint8_t blength;
-    uint8_t bdescriptortype;
-    uint8_t bdescriptorsubtype;
-    uint8_t bunitid;
-    uint8_t bsourceid;
-    uint8_t bcontrolsize;
-    #define USB_AUDIO_CTRL_FU_MUTE              0x01
+	uint8_t blength;
+	uint8_t bdescriptortype;
+	uint8_t bdescriptorsubtype;
+	uint8_t bunitid;
+	uint8_t bsourceid;
+	uint8_t bcontrolsize;
+	#define USB_AUDIO_CTRL_FU_MUTE              0x01
 #define USB_AUDIO_CTRL_FU_VOLUME            0x02
 #define USB_AUDIO_CTRL_FU_BASS              0x03
 #define USB_AUDIO_CTRL_FU_MID               0x04
@@ -214,44 +214,44 @@ typedef struct
 #define FU_AGC_MASK                         0x40
 #define FU_DELAY_MASK                       0x80
 #define FU_BASS_BOOST_MASK                  0x01
-    //uint8_t* bmacontrols;
-    //uint8_t      ifeature;
+	//uint8_t* bmacontrols;
+	//uint8_t      ifeature;
 } usb_audio_ctrl_desc_fu_t;
 
 /* Audio Control function descriptor */
 typedef union
 {
-    usb_audio_ctrl_desc_header_t header;
-    usb_audio_ctrl_desc_it_t it;
-    usb_audio_ctrl_desc_ot_t ot;
-    usb_audio_ctrl_desc_fu_t fu;
+	usb_audio_ctrl_desc_header_t header;
+	usb_audio_ctrl_desc_it_t it;
+	usb_audio_ctrl_desc_ot_t ot;
+	usb_audio_ctrl_desc_fu_t fu;
 } usb_audio_ctrl_func_desc_t;
 
 /* Audio control subclass structure */
 typedef struct
 {
-    /* Each audio subclass must start with a USB_AUDIO_GENERAL_CLASS struct */
-    //  USB_AUDIO_GENERAL_CLASS                   AUDIO_G;
-    usb_host_handle host_handle;
-    usb_device_instance_handle dev_handle;
-    usb_interface_descriptor_handle intf_handle;
-    usb_audio_ctrl_desc_header_t* header_desc;
-    usb_audio_ctrl_desc_it_t* it_desc;
-    usb_audio_ctrl_desc_ot_t* ot_desc;
-    usb_audio_ctrl_desc_fu_t* fu_desc;
-    /* Only 1 command can be issued at one time */
-    uint32_t in_setup;
-    tr_callback ctrl_callback;
-    void* ctrl_param;
-    usb_pipe_handle interrupt_pipe;
-    usb_audio_control_status_t interrupt_buffer;
+	/* Each audio subclass must start with a USB_AUDIO_GENERAL_CLASS struct */
+	//  USB_AUDIO_GENERAL_CLASS                   AUDIO_G;
+	usb_host_handle host_handle;
+	usb_device_instance_handle dev_handle;
+	usb_interface_descriptor_handle intf_handle;
+	usb_audio_ctrl_desc_header_t* header_desc;
+	usb_audio_ctrl_desc_it_t* it_desc;
+	usb_audio_ctrl_desc_ot_t* ot_desc;
+	usb_audio_ctrl_desc_fu_t* fu_desc;
+	/* Only 1 command can be issued at one time */
+	uint32_t in_setup;
+	tr_callback ctrl_callback;
+	void* ctrl_param;
+	usb_pipe_handle interrupt_pipe;
+	usb_audio_control_status_t interrupt_buffer;
 
-    tr_callback interrupt_callback;
-    void* interrupt_callback_param;
-    /* here we store callback and parameter from higher level */
-    tr_callback user_callback;
-    void* user_param;
-    uint8_t ifnum;
+	tr_callback interrupt_callback;
+	void* interrupt_callback_param;
+	/* here we store callback and parameter from higher level */
+	tr_callback user_callback;
+	void* user_param;
+	uint8_t ifnum;
 } audio_control_struct_t;
 
 /* Audio Stream Subclass */
@@ -259,98 +259,98 @@ typedef struct
 #define USB_DESC_SUBTYPE_AS_CS_GENERAL         0x01
 typedef struct
 {
-    uint8_t blength;
-    uint8_t bdescriptortype;
-    uint8_t bdescriptorsubtype;
-    uint8_t bterminallink;
-    uint8_t bdelay;
-    uint8_t wformattag[2];
+	uint8_t blength;
+	uint8_t bdescriptortype;
+	uint8_t bdescriptorsubtype;
+	uint8_t bterminallink;
+	uint8_t bdelay;
+	uint8_t wformattag[2];
 } usb_audio_stream_desc_spepific_as_if_t;
 
 /* Format type descriptor */
 #define USB_DESC_SUBTYPE_AS_CS_FORMAT_TYPE       0x02
 typedef struct
 {
-    uint8_t blength;
-    uint8_t bdescriptortype;
-    uint8_t bdescriptorsubtype;
-    uint8_t bformattype;
-    uint8_t bnrchannels;
-    uint8_t bsubframesize;
-    uint8_t bbitresolution;
-    uint8_t bsamfreqtype;
-    uint8_t tsamfreq[1][3];
+	uint8_t blength;
+	uint8_t bdescriptortype;
+	uint8_t bdescriptorsubtype;
+	uint8_t bformattype;
+	uint8_t bnrchannels;
+	uint8_t bsubframesize;
+	uint8_t bbitresolution;
+	uint8_t bsamfreqtype;
+	uint8_t tsamfreq[1][3];
 } usb_audio_stream_desc_format_type_t;
 typedef enum
 {
-    Sam_Continuous = 0,
-    Sam_discrete,
-    NONE
+	Sam_Continuous = 0,
+	Sam_discrete,
+	NONE
 } Sam_Freq_Type;
 
 /* Class-specific Isochronous Audio Data Endpoint Descriptor */
 #define USB_DESC_CLASS_ENDPOINT_GENERAL          0x01
 typedef struct
 {
-    uint8_t blength;
-    uint8_t bdescriptortype;
-    uint8_t bdescriptorsubtype;
-    uint8_t bmattributes;
-    uint8_t blockdlayunits;
-    uint8_t wlockdelay[2];
+	uint8_t blength;
+	uint8_t bdescriptortype;
+	uint8_t bdescriptorsubtype;
+	uint8_t bmattributes;
+	uint8_t blockdlayunits;
+	uint8_t wlockdelay[2];
 } usb_audio_stream_desc_specific_iso_endp_t;
 
 typedef struct
 {
-    uint8_t blength;
-    uint8_t bdescriptortype;
-    uint8_t bendpointaddress;
-    uint8_t bmattributes;
-    uint8_t wmaxpacketsize[2];
-    uint8_t binterval;
-    uint8_t brefresh;
+	uint8_t blength;
+	uint8_t bdescriptortype;
+	uint8_t bendpointaddress;
+	uint8_t bmattributes;
+	uint8_t wmaxpacketsize[2];
+	uint8_t binterval;
+	uint8_t brefresh;
 } usb_audio_stream_desc_synch_endp_t;
 
 /* Audio stream interface descriptor */
 typedef union
 {
-    usb_audio_stream_desc_spepific_as_if_t as_general;
-    usb_audio_stream_desc_format_type_t frm_type;
-    usb_audio_stream_desc_specific_iso_endp_t iso_endp_specific;
+	usb_audio_stream_desc_spepific_as_if_t as_general;
+	usb_audio_stream_desc_format_type_t frm_type;
+	usb_audio_stream_desc_specific_iso_endp_t iso_endp_specific;
 } usb_audio_stream_func_desc_t;
 
 typedef struct
 {
-    /* Each Audio subclass must start with a USB_AUDIO_GENERAL_CLASS struct */
-    usb_host_handle host_handle;
-    usb_device_instance_handle dev_handle;
-    usb_interface_descriptor_handle intf_handle;
-    usb_audio_stream_desc_spepific_as_if_t* as_itf_desc;
-    usb_audio_stream_desc_format_type_t* frm_type_desc;
-    usb_audio_stream_desc_specific_iso_endp_t* iso_endp_spec_desc;
-    usb_pipe_handle iso_in_pipe;
-    usb_pipe_handle iso_out_pipe;
-    tr_callback recv_callback;
-    void* recv_param;
-    tr_callback send_callback;
-    void* send_param;
+	/* Each Audio subclass must start with a USB_AUDIO_GENERAL_CLASS struct */
+	usb_host_handle host_handle;
+	usb_device_instance_handle dev_handle;
+	usb_interface_descriptor_handle intf_handle;
+	usb_audio_stream_desc_spepific_as_if_t* as_itf_desc;
+	usb_audio_stream_desc_format_type_t* frm_type_desc;
+	usb_audio_stream_desc_specific_iso_endp_t* iso_endp_spec_desc;
+	usb_pipe_handle iso_in_pipe;
+	usb_pipe_handle iso_out_pipe;
+	tr_callback recv_callback;
+	void* recv_param;
+	tr_callback send_callback;
+	void* send_param;
 
 #define USB_DATA_DETACH                  0x01
 #define USB_DATA_READ_COMPLETE     0x02
 #define USB_DATA_READ_PIPE_FREE    0x04
 #define USB_DATA_SEND_COMPLETE     0x08
 #define USB_DATA_SEND_PIPE_FREE    0x10
-    os_event_handle stream_event;
-    uint8_t iso_ep_num;
+	os_event_handle stream_event;
+	uint8_t iso_ep_num;
 } audio_stream_struct_t;
 
 /* Audio Command */
 typedef struct
 {
-    usb_class_handle class_control_handle;
-    usb_class_handle class_stream_handle;
-    tr_callback callback_fn;
-    void* callback_param;
+	usb_class_handle class_control_handle;
+	usb_class_handle class_stream_handle;
+	tr_callback callback_fn;
+	void* callback_param;
 } audio_command_t;
 
 #ifdef __cplusplus
@@ -371,82 +371,82 @@ extern usb_status usb_class_audio_control_recv_data(audio_command_t*  audio_ptr,
 
 extern usb_status usb_class_audio_control_get_descriptors
 (
-    /* [IN] pointer to device instance */
-    usb_device_instance_handle                  dev_handle,
+	/* [IN] pointer to device instance */
+	usb_device_instance_handle                  dev_handle,
 
-    /* [IN] pointer to interface descriptor */
-    usb_interface_descriptor_handle             intf_handle,
+	/* [IN] pointer to interface descriptor */
+	usb_interface_descriptor_handle             intf_handle,
 
-    /* [OUT] pointer to header descriptor */
-    usb_audio_ctrl_desc_header_t* *        header_desc,
+	/* [OUT] pointer to header descriptor */
+	usb_audio_ctrl_desc_header_t* *        header_desc,
 
-    /* [OUT] pointer to input terminal descriptor */
-    usb_audio_ctrl_desc_it_t* *         it_desc,
+	/* [OUT] pointer to input terminal descriptor */
+	usb_audio_ctrl_desc_it_t* *         it_desc,
 
-    /* [OUT] pointer to output terminal descriptor */
-    usb_audio_ctrl_desc_ot_t**          ot_desc,
+	/* [OUT] pointer to output terminal descriptor */
+	usb_audio_ctrl_desc_ot_t**          ot_desc,
 
-    /* [OUT] pointer to feature unit descriptor */
-    usb_audio_ctrl_desc_fu_t* *             fu_desc
+	/* [OUT] pointer to feature unit descriptor */
+	usb_audio_ctrl_desc_fu_t* *             fu_desc
 );
 extern usb_status usb_class_audio_stream_get_descriptors
 (
-    /* [IN] pointer to device instance */
-    usb_device_instance_handle      dev_handle,
+	/* [IN] pointer to device instance */
+	usb_device_instance_handle      dev_handle,
 
-    /* [IN] pointer to interface descriptor */
-    usb_interface_descriptor_handle intf_handle,
+	/* [IN] pointer to interface descriptor */
+	usb_interface_descriptor_handle intf_handle,
 
-    /* [OUT] pointer to specific audio stream interface descriptor */
-    usb_audio_stream_desc_spepific_as_if_t* *       as_itf_desc,
+	/* [OUT] pointer to specific audio stream interface descriptor */
+	usb_audio_stream_desc_spepific_as_if_t* *       as_itf_desc,
 
-    /* [OUT] pointer to format type descriptor */
-    usb_audio_stream_desc_format_type_t* *           frm_type_desc,
+	/* [OUT] pointer to format type descriptor */
+	usb_audio_stream_desc_format_type_t* *           frm_type_desc,
 
-    /* [OUT] pointer to specific isochronous endpoint descriptor */
-    usb_audio_stream_desc_specific_iso_endp_t* *        iso_endp_spec_desc
+	/* [OUT] pointer to specific isochronous endpoint descriptor */
+	usb_audio_stream_desc_specific_iso_endp_t* *        iso_endp_spec_desc
 );
 extern usb_status usb_class_audio_stream_set_descriptors
 (
-    /* [IN] Class Interface structure pointer */
-    usb_class_handle                handle,
+	/* [IN] Class Interface structure pointer */
+	usb_class_handle                handle,
 
-    /* [IN] audio stream interface descriptor pointer */
-    usb_audio_stream_desc_spepific_as_if_t*    as_itf_desc,
+	/* [IN] audio stream interface descriptor pointer */
+	usb_audio_stream_desc_spepific_as_if_t*    as_itf_desc,
 
-    /* [IN] format type descriptor pointer */
-    usb_audio_stream_desc_format_type_t*       frm_type_desc,
+	/* [IN] format type descriptor pointer */
+	usb_audio_stream_desc_format_type_t*       frm_type_desc,
 
-    /* [IN] isochronous endpoint specific descriptor pointer */
-    usb_audio_stream_desc_specific_iso_endp_t* iso_endp_spec_desc
+	/* [IN] isochronous endpoint specific descriptor pointer */
+	usb_audio_stream_desc_specific_iso_endp_t* iso_endp_spec_desc
 );
 extern usb_status usb_class_audio_control_set_descriptors
 (
-    /* [IN] Class Interface structure pointer */
-    usb_class_handle            handle,
+	/* [IN] Class Interface structure pointer */
+	usb_class_handle            handle,
 
-    /* [IN] header descriptor pointer */
-    usb_audio_ctrl_desc_header_t*   header_desc,
+	/* [IN] header descriptor pointer */
+	usb_audio_ctrl_desc_header_t*   header_desc,
 
-    /* [IN] input terminal descriptor pointer */
-    usb_audio_ctrl_desc_it_t*       it_desc,
+	/* [IN] input terminal descriptor pointer */
+	usb_audio_ctrl_desc_it_t*       it_desc,
 
-    /* [IN] output terminal descriptor pointer */
-    usb_audio_ctrl_desc_ot_t*       ot_desc,
+	/* [IN] output terminal descriptor pointer */
+	usb_audio_ctrl_desc_ot_t*       ot_desc,
 
-    /* [IN] feature unit descriptor pointer */
-    usb_audio_ctrl_desc_fu_t*       fu_desc
+	/* [IN] feature unit descriptor pointer */
+	usb_audio_ctrl_desc_fu_t*       fu_desc
 );
 extern usb_status usb_class_audio_stream_get_sample_type
 (
-    /* [IN] pointer to device instance */
-    usb_device_instance_handle      dev_handle,
+	/* [IN] pointer to device instance */
+	usb_device_instance_handle      dev_handle,
 
-    /* [IN] pointer to interface descriptor */
-    usb_interface_descriptor_handle intf_handle,
+	/* [IN] pointer to interface descriptor */
+	usb_interface_descriptor_handle intf_handle,
 
-    /* [OUT] pointer to specific audio stream interface descriptor */
-    uint8_t *       type
+	/* [OUT] pointer to specific audio stream interface descriptor */
+	uint8_t *       type
 );
 
 extern usb_status usb_class_audio_recv_data(audio_command_t* audio_ptr,  uint8_t* buffer, uint32_t buf_size);

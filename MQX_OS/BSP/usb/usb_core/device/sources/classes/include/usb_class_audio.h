@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
 * All Rights Reserved
 *
 * Copyright (c) 1989-2008 ARC International;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
 *
 * $FileName: usb_audio.h$
-* $Version : 
-* $Date    : 
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -172,19 +172,19 @@ typedef struct _usb_cntrl_range usb_cntrl_range;
  /*!
   * @brief structure to hold the information of audio app data struct.
   *
-  * Define the structure of the audio app data. 
+  * Define the structure of the audio app data.
   *
   */
 typedef struct _audio_app_data_struct
 {
-    uint8_t*      data_ptr;    /*!< pointer to buffer       */     
-    uint32_t      data_size;   /*!< buffer size of endpoint */
+	uint8_t*      data_ptr;    /*!< pointer to buffer       */
+	uint32_t      data_size;   /*!< buffer size of endpoint */
 }audio_app_data_t;
 
 /*!
  * @brief structure to hold the information of endpoint feature unit type.
  *
- * Define the structure of the endpoint feature unit type. 
+ * Define the structure of the endpoint feature unit type.
  *
  */
 typedef struct _audio_ut_struct
@@ -196,14 +196,14 @@ typedef struct _audio_ut_struct
 /*!
  * @brief structure to hold the information of endpoint unit struct.
  *
- * Define the structure of the endpoint unit struct. 
+ * Define the structure of the endpoint unit struct.
  *
  */
-typedef  struct _audio_units_struct 
+typedef  struct _audio_units_struct
 {
    uint8_t            count;       /*!< Number of terminal or Feature Unit End point */
    audio_ut_struct_t* put;         /*!< Array of terminal or Feature Unit */
-}audio_units_struct_t; 
+}audio_units_struct_t;
 
 /*****************************************************************************
  * Local Functions
@@ -218,16 +218,16 @@ typedef  struct _audio_units_struct
  /*!
   * @brief structure used to configure Audio class by APP.
   *
-  * Define the structure of the audio class configuration. 
+  * Define the structure of the audio class configuration.
   *
   */
  typedef struct audio_config_struct
  {
-    usb_application_callback_struct_t       audio_application_callback;        /*!< application callback function to handle the Device status related event*/      
-    usb_vendor_req_callback_struct_t        vendor_req_callback;               /*!< application callback function to handle the vendor request related event, reserved for future use*/ 
-    usb_class_specific_callback_struct_t    class_specific_callback;           /*!< application callback function to handle all the class related event*/
-    usb_desc_request_notify_struct_t*       desc_callback_ptr;                 /*!< descriptor related callback function data structure*/
-    usb_board_init_callback_struct_t        board_init_callback;               /*!< application callback function to handle board init*/
+	usb_application_callback_struct_t       audio_application_callback;        /*!< application callback function to handle the Device status related event*/
+	usb_vendor_req_callback_struct_t        vendor_req_callback;               /*!< application callback function to handle the vendor request related event, reserved for future use*/
+	usb_class_specific_callback_struct_t    class_specific_callback;           /*!< application callback function to handle all the class related event*/
+	usb_desc_request_notify_struct_t*       desc_callback_ptr;                 /*!< descriptor related callback function data structure*/
+	usb_board_init_callback_struct_t        board_init_callback;               /*!< application callback function to handle board init*/
  }audio_config_struct_t;
 /******************************************************************************
  * Global Functions
@@ -238,7 +238,7 @@ extern "C" {
 /*!
  * @brief The function initializes the Device and Controller layer
  *
- * This function initializes the Audio Class layer and layers it is dependent on 
+ * This function initializes the Audio Class layer and layers it is dependent on
  *
  * @param controller_id       [in] - controller ID, such as USB_CONTROLLER_KHCI_0
  * @param audio_config_ptr    [in] - AUDIO configuration structure, refer to audio_config_struct_t
@@ -248,43 +248,43 @@ extern "C" {
  */
 extern usb_status USB_Class_Audio_Init
 (
-    uint8_t                 controller_id,
-    audio_config_struct_t*  audio_config_ptr,
-    audio_handle_t*         audioHandle
+	uint8_t                 controller_id,
+	audio_config_struct_t*  audio_config_ptr,
+	audio_handle_t*         audioHandle
 );
 
 /*!
  * @brief The function de-initializes the Device and Controller layer
  *
- * This function initializes the Audio Class layer and layers it is dependent on 
+ * This function initializes the Audio Class layer and layers it is dependent on
  *
- * @param handle          :   handle returned by USB_Class_HID_Init   
+ * @param handle          :   handle returned by USB_Class_HID_Init
  *
  * @return USB_OK-Success/Others-Fail
  */
 extern usb_status USB_Class_Audio_Deinit
 (
-    audio_handle_t  handle
+	audio_handle_t  handle
 );
 
 /*!
  * @brief This function is used to send data to the host
  *
- * The function calls this API function to send data specified by buff_ptr and size. 
+ * The function calls this API function to send data specified by buff_ptr and size.
  *
  * @param handle          :   handle returned by USB_Class_Audio_Send_Data
- * @param ep_num          :   endpoint num 
+ * @param ep_num          :   endpoint num
  * @param app_buff        :   buffer to send
- * @param size            :   length of the transfer   
+ * @param size            :   length of the transfer
  *
  * @return USB_OK-Success/Others-Fail
  */
 extern usb_status USB_Class_Audio_Send_Data
 (
-    audio_handle_t       handle,        /* [IN]*/
-    uint8_t              ep_num,        /* [IN]*/
-    uint8_t*             app_buff,      /* [IN] buffer to send */      
-    uint32_t             size           /* [IN] length of the transfer */
+	audio_handle_t       handle,        /* [IN]*/
+	uint8_t              ep_num,        /* [IN]*/
+	uint8_t*             app_buff,      /* [IN] buffer to send */
+	uint32_t             size           /* [IN] length of the transfer */
 );
 
 /*!
@@ -293,18 +293,18 @@ extern usb_status USB_Class_Audio_Send_Data
  * The function calls this API function to receive data from host.
  *
  * @param handle          :   handle returned by USB_Class_Audio_Recv_Data
- * @param ep_num          :   endpoint num 
+ * @param ep_num          :   endpoint num
  * @param app_buff        :   buffer to send
- * @param size            :   length of the transfer   
+ * @param size            :   length of the transfer
  *
  * @return USB_OK-Success/Others-Fail
  */
 extern usb_status USB_Class_Audio_Recv_Data
 (
-    audio_handle_t       audio_handle,
-    uint8_t              ep_num,
-    uint8_t*             buff_ptr,      /* [IN] buffer to recv */      
-    uint32_t             size           /* [IN] length of the transfer */
+	audio_handle_t       audio_handle,
+	uint8_t              ep_num,
+	uint8_t*             buff_ptr,      /* [IN] buffer to recv */
+	uint32_t             size           /* [IN] length of the transfer */
 );
 
 #if USBCFG_DEV_ADVANCED_CANCEL_ENABLE
@@ -312,22 +312,22 @@ extern usb_status USB_Class_Audio_Recv_Data
  *
  * @name  USB_Class_Audio_Cancel
  *
- * @brief 
+ * @brief
  *
  * @param handle          :   handle returned by USB_Class_HID_Init
- * @param ep_num          :   endpoint num 
- * @param direction        :   direction of the endpoint 
+ * @param ep_num          :   endpoint num
+ * @param direction        :   direction of the endpoint
  *
- * @return status       
- *         USB_OK           : When Successfull 
+ * @return status
+ *         USB_OK           : When Successfull
  *         Others           : Errors
  *****************************************************************************/
 
 extern usb_status USB_Class_Audio_Cancel
 (
-    audio_handle_t handle,/*[IN]*/
-    uint8_t ep_num,/*[IN]*/
-    uint8_t direction
+	audio_handle_t handle,/*[IN]*/
+	uint8_t ep_num,/*[IN]*/
+	uint8_t direction
 );
 #endif
 
@@ -340,14 +340,14 @@ extern usb_status USB_Class_Audio_Cancel
  * @param handle          :   handle returned by USB_Class_Audio_Init
  * @param speed           :   speed
  *
- * @return status       
- *         USB_OK         : When Successfull 
+ * @return status
+ *         USB_OK         : When Successfull
  *         Others         : Errors
  *****************************************************************************/
 usb_status USB_Class_Audio_Get_Speed
 (
-    audio_handle_t       audio_handle,
-    uint16_t *           speed/* [OUT] the requested error */
+	audio_handle_t       audio_handle,
+	uint16_t *           speed/* [OUT] the requested error */
 );
 #ifdef __cplusplus
 }

@@ -50,13 +50,13 @@ extern void * g_uartStatePtr[UART_INSTANCE_COUNT];
 static void UART_DRV_DmaCompleteSendData(uint32_t instance);
 static void UART_DRV_DmaTxCallback(void *param, dma_channel_status_t status);
 static uart_status_t UART_DRV_DmaStartSendData(uint32_t instance,
-                                               const uint8_t * txBuff,
-                                               uint32_t txSize);
+											   const uint8_t * txBuff,
+											   uint32_t txSize);
 static void UART_DRV_DmaCompleteReceiveData(uint32_t instance);
 static void UART_DRV_DmaRxCallback(void *param, dma_channel_status_t status);
 static uart_status_t UART_DRV_DmaStartReceiveData(uint32_t instance,
-                                                  uint8_t * rxBuff,
-                                                  uint32_t rxSize);
+												  uint8_t * rxBuff,
+												  uint32_t rxSize);
 /*******************************************************************************
  * Code
  ******************************************************************************/
@@ -82,100 +82,100 @@ static uart_status_t UART_DRV_DmaStartReceiveData(uint32_t instance,
  *
  *END**************************************************************************/
 uart_status_t UART_DRV_DmaInit(uint32_t instance,
-                               uart_dma_state_t * uartDmaStatePtr,
-                               const uart_dma_user_config_t * uartUserConfig)
+							   uart_dma_state_t * uartDmaStatePtr,
+							   const uart_dma_user_config_t * uartUserConfig)
 {
-    assert(uartDmaStatePtr && uartUserConfig);
-    assert(g_uartBase[instance]);
-    assert(instance < UART_INSTANCE_COUNT);
-    /* This driver only support UART instances with separate DMA channels for
-     * both Tx and Rx.*/
-    assert(FSL_FEATURE_UART_HAS_SEPARATE_DMA_RX_TX_REQn(instance) == 1);
+	assert(uartDmaStatePtr && uartUserConfig);
+	assert(g_uartBase[instance]);
+	assert(instance < UART_INSTANCE_COUNT);
+	/* This driver only support UART instances with separate DMA channels for
+	 * both Tx and Rx.*/
+	assert(FSL_FEATURE_UART_HAS_SEPARATE_DMA_RX_TX_REQn(instance) == 1);
 
-    UART_Type * base = g_uartBase[instance];
-    uint32_t uartSourceClock = 0;
-    dma_request_source_t uartTxDmaRequest = kDmaRequestMux0Disable;
-    dma_request_source_t uartRxDmaRequest = kDmaRequestMux0Disable;
+	UART_Type * base = g_uartBase[instance];
+	uint32_t uartSourceClock = 0;
+	dma_request_source_t uartTxDmaRequest = kDmaRequestMux0Disable;
+	dma_request_source_t uartRxDmaRequest = kDmaRequestMux0Disable;
 
-    /* Exit if current instance is already initialized. */
-    if (g_uartStatePtr[instance])
-    {
-        return kStatus_UART_Initialized;
-    }
+	/* Exit if current instance is already initialized. */
+	if (g_uartStatePtr[instance])
+	{
+		return kStatus_UART_Initialized;
+	}
 
-    /* Clear the state structure for this instance. */
-    memset(uartDmaStatePtr, 0, sizeof(uart_dma_state_t));
+	/* Clear the state structure for this instance. */
+	memset(uartDmaStatePtr, 0, sizeof(uart_dma_state_t));
 
-    /* Save runtime structure pointer.*/
-    g_uartStatePtr[instance] = uartDmaStatePtr;
+	/* Save runtime structure pointer.*/
+	g_uartStatePtr[instance] = uartDmaStatePtr;
 
-    /* Un-gate UART module clock */
-    CLOCK_SYS_EnableUartClock(instance);
+	/* Un-gate UART module clock */
+	CLOCK_SYS_EnableUartClock(instance);
 
-    /* Initialize UART to a known state. */
-    UART_HAL_Init(base);
+	/* Initialize UART to a known state. */
+	UART_HAL_Init(base);
 
-    /* Create Semaphore for txIrq and rxIrq. */
-    OSA_SemaCreate(&uartDmaStatePtr->txIrqSync, 0);
-    OSA_SemaCreate(&uartDmaStatePtr->rxIrqSync, 0);
+	/* Create Semaphore for txIrq and rxIrq. */
+	OSA_SemaCreate(&uartDmaStatePtr->txIrqSync, 0);
+	OSA_SemaCreate(&uartDmaStatePtr->rxIrqSync, 0);
 
-    /* UART clock source is either system or bus clock depending on instance */
-    uartSourceClock = CLOCK_SYS_GetUartFreq(instance);
+	/* UART clock source is either system or bus clock depending on instance */
+	uartSourceClock = CLOCK_SYS_GetUartFreq(instance);
 
-    /* Initialize UART baud rate, bit count, parity and stop bit. */
-    UART_HAL_SetBaudRate(base, uartSourceClock, uartUserConfig->baudRate);
-    UART_HAL_SetBitCountPerChar(base, uartUserConfig->bitCountPerChar);
-    UART_HAL_SetParityMode(base, uartUserConfig->parityMode);
+	/* Initialize UART baud rate, bit count, parity and stop bit. */
+	UART_HAL_SetBaudRate(base, uartSourceClock, uartUserConfig->baudRate);
+	UART_HAL_SetBitCountPerChar(base, uartUserConfig->bitCountPerChar);
+	UART_HAL_SetParityMode(base, uartUserConfig->parityMode);
 #if FSL_FEATURE_UART_HAS_STOP_BIT_CONFIG_SUPPORT
-    UART_HAL_SetStopBitCount(base, uartUserConfig->stopBitCount);
+	UART_HAL_SetStopBitCount(base, uartUserConfig->stopBitCount);
 #endif
 
-    /* Enable DMA trigger when transmit data register empty,
-     * and receive data register full. */
-    UART_HAL_SetTxDmaCmd(base, true);
-    UART_HAL_SetRxDmaCmd(base, true);
+	/* Enable DMA trigger when transmit data register empty,
+	 * and receive data register full. */
+	UART_HAL_SetTxDmaCmd(base, true);
+	UART_HAL_SetRxDmaCmd(base, true);
 
-    switch (instance)
-    {
+	switch (instance)
+	{
 #if (FSL_FEATURE_UART_HAS_SEPARATE_DMA_RX_TX_REQn(0) == 1)
-        case 0:
-            uartRxDmaRequest = kDmaRequestMux0UART0Rx;
-            uartTxDmaRequest = kDmaRequestMux0UART0Tx;
-            break;
+		case 0:
+			uartRxDmaRequest = kDmaRequestMux0UART0Rx;
+			uartTxDmaRequest = kDmaRequestMux0UART0Tx;
+			break;
 #endif
 #if (FSL_FEATURE_UART_HAS_SEPARATE_DMA_RX_TX_REQn(1) == 1)
-        case 1:
-            uartRxDmaRequest = kDmaRequestMux0UART1Rx;
-            uartTxDmaRequest = kDmaRequestMux0UART1Tx;
-            break;
+		case 1:
+			uartRxDmaRequest = kDmaRequestMux0UART1Rx;
+			uartTxDmaRequest = kDmaRequestMux0UART1Tx;
+			break;
 #endif
 #if (FSL_FEATURE_UART_HAS_SEPARATE_DMA_RX_TX_REQn(2) == 1)
-        case 2:
-            uartRxDmaRequest = kDmaRequestMux0UART2Rx;
-            uartTxDmaRequest = kDmaRequestMux0UART2Tx;
-            break;
+		case 2:
+			uartRxDmaRequest = kDmaRequestMux0UART2Rx;
+			uartTxDmaRequest = kDmaRequestMux0UART2Tx;
+			break;
 #endif
-        default :
-            break;
-    }
+		default :
+			break;
+	}
 
-    /* Request DMA channels for RX FIFO. */
-    DMA_DRV_RequestChannel(kDmaAnyChannel, uartRxDmaRequest,
-                            &uartDmaStatePtr->dmaUartRx);
-    DMA_DRV_RegisterCallback(&uartDmaStatePtr->dmaUartRx,
-                    UART_DRV_DmaRxCallback, (void *)instance);
+	/* Request DMA channels for RX FIFO. */
+	DMA_DRV_RequestChannel(kDmaAnyChannel, uartRxDmaRequest,
+							&uartDmaStatePtr->dmaUartRx);
+	DMA_DRV_RegisterCallback(&uartDmaStatePtr->dmaUartRx,
+					UART_DRV_DmaRxCallback, (void *)instance);
 
-    /* Request DMA channels for TX FIFO. */
-    DMA_DRV_RequestChannel(kDmaAnyChannel, uartTxDmaRequest,
-                            &uartDmaStatePtr->dmaUartTx);
-    DMA_DRV_RegisterCallback(&uartDmaStatePtr->dmaUartTx,
-                    UART_DRV_DmaTxCallback, (void *)instance);
+	/* Request DMA channels for TX FIFO. */
+	DMA_DRV_RequestChannel(kDmaAnyChannel, uartTxDmaRequest,
+							&uartDmaStatePtr->dmaUartTx);
+	DMA_DRV_RegisterCallback(&uartDmaStatePtr->dmaUartTx,
+					UART_DRV_DmaTxCallback, (void *)instance);
 
-    /* Finally, enable the UART transmitter and receiver*/
-    UART_HAL_EnableTransmitter(base);
-    UART_HAL_EnableReceiver(base);
+	/* Finally, enable the UART transmitter and receiver*/
+	UART_HAL_EnableTransmitter(base);
+	UART_HAL_EnableReceiver(base);
 
-    return kStatus_UART_Success;
+	return kStatus_UART_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -187,43 +187,43 @@ uart_status_t UART_DRV_DmaInit(uint32_t instance,
  *END**************************************************************************/
 uart_status_t UART_DRV_DmaDeinit(uint32_t instance)
 {
-    assert(instance < UART_INSTANCE_COUNT);
-    assert(g_uartBase[instance]);
+	assert(instance < UART_INSTANCE_COUNT);
+	assert(g_uartBase[instance]);
 
-    /* Exit if current instance is already de-initialized or is gated.*/
-    if ((!g_uartStatePtr[instance]) || (!CLOCK_SYS_GetUartGateCmd(instance)))
-    {
-        return kStatus_UART_Fail;
-    }
+	/* Exit if current instance is already de-initialized or is gated.*/
+	if ((!g_uartStatePtr[instance]) || (!CLOCK_SYS_GetUartGateCmd(instance)))
+	{
+		return kStatus_UART_Fail;
+	}
 
-    UART_Type * base = g_uartBase[instance];
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	UART_Type * base = g_uartBase[instance];
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
 
-    /* Wait until the data is completely shifted out of shift register */
-    while(!(UART_BRD_S1_TC(base))) { }
+	/* Wait until the data is completely shifted out of shift register */
+	while(!(UART_BRD_S1_TC(base))) { }
 
-    UART_HAL_SetTxDmaCmd(base, false);
-    UART_HAL_SetRxDmaCmd(base, false);
+	UART_HAL_SetTxDmaCmd(base, false);
+	UART_HAL_SetRxDmaCmd(base, false);
 
-    /* Release DMA channel. */
-    DMA_DRV_FreeChannel(&uartDmaState->dmaUartRx);
-    DMA_DRV_FreeChannel(&uartDmaState->dmaUartTx);
+	/* Release DMA channel. */
+	DMA_DRV_FreeChannel(&uartDmaState->dmaUartRx);
+	DMA_DRV_FreeChannel(&uartDmaState->dmaUartTx);
 
-    /* Disable TX and RX */
-    UART_HAL_DisableTransmitter(base);
-    UART_HAL_DisableReceiver(base);
+	/* Disable TX and RX */
+	UART_HAL_DisableTransmitter(base);
+	UART_HAL_DisableReceiver(base);
 
-    /* Destroy TX and RX sema. */
-    OSA_SemaDestroy(&uartDmaState->txIrqSync);
-    OSA_SemaDestroy(&uartDmaState->rxIrqSync);
+	/* Destroy TX and RX sema. */
+	OSA_SemaDestroy(&uartDmaState->txIrqSync);
+	OSA_SemaDestroy(&uartDmaState->rxIrqSync);
 
-    /* Cleared state pointer. */
-    g_uartStatePtr[instance] = NULL;
+	/* Cleared state pointer. */
+	g_uartStatePtr[instance] = NULL;
 
-    /* Gate UART module clock */
-    CLOCK_SYS_DisableUartClock(instance);
+	/* Gate UART module clock */
+	CLOCK_SYS_DisableUartClock(instance);
 
-    return kStatus_UART_Success;
+	return kStatus_UART_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -234,44 +234,44 @@ uart_status_t UART_DRV_DmaDeinit(uint32_t instance)
  *
  *END**************************************************************************/
 uart_status_t UART_DRV_DmaSendDataBlocking(uint32_t instance,
-                                           const uint8_t * txBuff,
-                                           uint32_t txSize,
-                                           uint32_t timeout)
+										   const uint8_t * txBuff,
+										   uint32_t txSize,
+										   uint32_t timeout)
 {
-    assert(txBuff);
-    assert(instance < UART_INSTANCE_COUNT);
+	assert(txBuff);
+	assert(instance < UART_INSTANCE_COUNT);
 
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
-    uart_status_t retVal = kStatus_UART_Success;
-    osa_status_t syncStatus;
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	uart_status_t retVal = kStatus_UART_Success;
+	osa_status_t syncStatus;
 
-    /* Indicates current transaction is blocking. */
-    uartDmaState->isTxBlocking = true;
+	/* Indicates current transaction is blocking. */
+	uartDmaState->isTxBlocking = true;
 
-    /* Start the transmission process */
-    retVal = UART_DRV_DmaStartSendData(instance, txBuff, txSize);
+	/* Start the transmission process */
+	retVal = UART_DRV_DmaStartSendData(instance, txBuff, txSize);
 
-    if (retVal == kStatus_UART_Success)
-    {
-        /* Wait until the transmit is complete. */
-        do
-        {
-            syncStatus = OSA_SemaWait(&uartDmaState->txIrqSync, timeout);
-        }while(syncStatus == kStatus_OSA_Idle);
+	if (retVal == kStatus_UART_Success)
+	{
+		/* Wait until the transmit is complete. */
+		do
+		{
+			syncStatus = OSA_SemaWait(&uartDmaState->txIrqSync, timeout);
+		}while(syncStatus == kStatus_OSA_Idle);
 
-        if (syncStatus != kStatus_OSA_Success)
-        {
-            /* Stop DMA channel. */
-            DMA_DRV_StopChannel(&uartDmaState->dmaUartTx);
+		if (syncStatus != kStatus_OSA_Success)
+		{
+			/* Stop DMA channel. */
+			DMA_DRV_StopChannel(&uartDmaState->dmaUartTx);
 
-            /* Update the information of the module driver state */
-            uartDmaState->isTxBusy = false;
+			/* Update the information of the module driver state */
+			uartDmaState->isTxBusy = false;
 
-            retVal = kStatus_UART_Timeout;
-        }
-    }
+			retVal = kStatus_UART_Timeout;
+		}
+	}
 
-    return retVal;
+	return retVal;
 }
 
 /*FUNCTION**********************************************************************
@@ -289,22 +289,22 @@ uart_status_t UART_DRV_DmaSendDataBlocking(uint32_t instance,
  *
  *END**************************************************************************/
 uart_status_t UART_DRV_DmaSendData(uint32_t instance,
-                                   const uint8_t * txBuff,
-                                   uint32_t txSize)
+								   const uint8_t * txBuff,
+								   uint32_t txSize)
 {
-    assert(txBuff);
-    assert(instance < UART_INSTANCE_COUNT);
+	assert(txBuff);
+	assert(instance < UART_INSTANCE_COUNT);
 
-    uart_status_t retVal = kStatus_UART_Success;
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	uart_status_t retVal = kStatus_UART_Success;
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
 
-    /* Indicates current transaction is non-blocking. */
-    uartDmaState->isTxBlocking = false;
+	/* Indicates current transaction is non-blocking. */
+	uartDmaState->isTxBlocking = false;
 
-    /* Start the transmission process*/
-    retVal = UART_DRV_DmaStartSendData(instance, txBuff, txSize);
+	/* Start the transmission process*/
+	retVal = UART_DRV_DmaStartSendData(instance, txBuff, txSize);
 
-    return retVal;
+	return retVal;
 }
 
 /*FUNCTION**********************************************************************
@@ -319,19 +319,19 @@ uart_status_t UART_DRV_DmaSendData(uint32_t instance,
  *
  *END**************************************************************************/
 uart_status_t UART_DRV_DmaGetTransmitStatus(uint32_t instance,
-                                            uint32_t * bytesRemaining)
+											uint32_t * bytesRemaining)
 {
-    assert(instance < UART_INSTANCE_COUNT);
+	assert(instance < UART_INSTANCE_COUNT);
 
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
 
-    /* Fill in the bytes transferred. */
-    if (bytesRemaining)
-    {
-        *bytesRemaining = DMA_DRV_GetUnfinishedBytes(&uartDmaState->dmaUartTx);
-    }
+	/* Fill in the bytes transferred. */
+	if (bytesRemaining)
+	{
+		*bytesRemaining = DMA_DRV_GetUnfinishedBytes(&uartDmaState->dmaUartTx);
+	}
 
-    return (uartDmaState->isTxBusy ? kStatus_UART_TxBusy : kStatus_UART_Success);
+	return (uartDmaState->isTxBusy ? kStatus_UART_TxBusy : kStatus_UART_Success);
 }
 
 /*FUNCTION**********************************************************************
@@ -344,20 +344,20 @@ uart_status_t UART_DRV_DmaGetTransmitStatus(uint32_t instance,
  *END**************************************************************************/
 uart_status_t UART_DRV_DmaAbortSendingData(uint32_t instance)
 {
-    assert(instance < UART_INSTANCE_COUNT);
+	assert(instance < UART_INSTANCE_COUNT);
 
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
 
-    /* Check if a transfer is running. */
-    if (!uartDmaState->isTxBusy)
-    {
-        return kStatus_UART_NoTransmitInProgress;
-    }
+	/* Check if a transfer is running. */
+	if (!uartDmaState->isTxBusy)
+	{
+		return kStatus_UART_NoTransmitInProgress;
+	}
 
-    /* Stop the running transfer. */
-    UART_DRV_DmaCompleteSendData(instance);
+	/* Stop the running transfer. */
+	UART_DRV_DmaCompleteSendData(instance);
 
-    return kStatus_UART_Success;
+	return kStatus_UART_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -370,43 +370,43 @@ uart_status_t UART_DRV_DmaAbortSendingData(uint32_t instance)
  *
  *END**************************************************************************/
 uart_status_t UART_DRV_DmaReceiveDataBlocking(uint32_t instance,
-                                              uint8_t * rxBuff,
-                                              uint32_t rxSize,
-                                              uint32_t timeout)
+											  uint8_t * rxBuff,
+											  uint32_t rxSize,
+											  uint32_t timeout)
 {
-    assert(rxBuff);
-    assert(instance < UART_INSTANCE_COUNT);
+	assert(rxBuff);
+	assert(instance < UART_INSTANCE_COUNT);
 
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
-    uart_status_t retVal = kStatus_UART_Success;
-    osa_status_t syncStatus;
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	uart_status_t retVal = kStatus_UART_Success;
+	osa_status_t syncStatus;
 
-    /* Indicates current transaction is blocking. */
-    uartDmaState->isRxBlocking = true;
+	/* Indicates current transaction is blocking. */
+	uartDmaState->isRxBlocking = true;
 
-    retVal = UART_DRV_DmaStartReceiveData(instance, rxBuff, rxSize);
+	retVal = UART_DRV_DmaStartReceiveData(instance, rxBuff, rxSize);
 
-    if (retVal == kStatus_UART_Success)
-    {
-        /* Wait until all the data is received or for timeout.*/
-        do
-        {
-            syncStatus = OSA_SemaWait(&uartDmaState->rxIrqSync, timeout);
-        }while(syncStatus == kStatus_OSA_Idle);
+	if (retVal == kStatus_UART_Success)
+	{
+		/* Wait until all the data is received or for timeout.*/
+		do
+		{
+			syncStatus = OSA_SemaWait(&uartDmaState->rxIrqSync, timeout);
+		}while(syncStatus == kStatus_OSA_Idle);
 
-        if (syncStatus != kStatus_OSA_Success)
-        {
-            /* Stop DMA channel. */
-            DMA_DRV_StopChannel(&uartDmaState->dmaUartRx);
+		if (syncStatus != kStatus_OSA_Success)
+		{
+			/* Stop DMA channel. */
+			DMA_DRV_StopChannel(&uartDmaState->dmaUartRx);
 
-            /* Update the information of the module driver state */
-            uartDmaState->isRxBusy = false;
+			/* Update the information of the module driver state */
+			uartDmaState->isRxBusy = false;
 
-            retVal = kStatus_UART_Timeout;
-        }
-    }
+			retVal = kStatus_UART_Timeout;
+		}
+	}
 
-    return retVal;
+	return retVal;
 }
 
 /*FUNCTION**********************************************************************
@@ -424,21 +424,21 @@ uart_status_t UART_DRV_DmaReceiveDataBlocking(uint32_t instance,
  *
  *END**************************************************************************/
 uart_status_t UART_DRV_DmaReceiveData(uint32_t instance,
-                                      uint8_t * rxBuff,
-                                      uint32_t rxSize)
+									  uint8_t * rxBuff,
+									  uint32_t rxSize)
 {
-    assert(rxBuff);
-    assert(instance < UART_INSTANCE_COUNT);
+	assert(rxBuff);
+	assert(instance < UART_INSTANCE_COUNT);
 
-    uart_status_t retVal = kStatus_UART_Success;
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	uart_status_t retVal = kStatus_UART_Success;
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
 
-    /* Indicates current transaction is non-blocking. */
-    uartDmaState->isRxBlocking = false;
+	/* Indicates current transaction is non-blocking. */
+	uartDmaState->isRxBlocking = false;
 
-    retVal = UART_DRV_DmaStartReceiveData(instance, rxBuff, rxSize);
+	retVal = UART_DRV_DmaStartReceiveData(instance, rxBuff, rxSize);
 
-    return retVal ;
+	return retVal ;
 }
 
 /*FUNCTION**********************************************************************
@@ -452,18 +452,18 @@ uart_status_t UART_DRV_DmaReceiveData(uint32_t instance,
  *
  *END**************************************************************************/
 uart_status_t UART_DRV_DmaGetReceiveStatus(uint32_t instance,
-                                           uint32_t * bytesRemaining)
+										   uint32_t * bytesRemaining)
 {
-    assert(instance < UART_INSTANCE_COUNT);
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	assert(instance < UART_INSTANCE_COUNT);
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
 
-    /* Fill in the bytes transferred. */
-    if (bytesRemaining)
-    {
-        *bytesRemaining = DMA_DRV_GetUnfinishedBytes(&uartDmaState->dmaUartRx);
-    }
+	/* Fill in the bytes transferred. */
+	if (bytesRemaining)
+	{
+		*bytesRemaining = DMA_DRV_GetUnfinishedBytes(&uartDmaState->dmaUartRx);
+	}
 
-    return (uartDmaState->isRxBusy ? kStatus_UART_RxBusy : kStatus_UART_Success);
+	return (uartDmaState->isRxBusy ? kStatus_UART_RxBusy : kStatus_UART_Success);
 }
 
 /*FUNCTION**********************************************************************
@@ -475,19 +475,19 @@ uart_status_t UART_DRV_DmaGetReceiveStatus(uint32_t instance,
  *END**************************************************************************/
 uart_status_t UART_DRV_DmaAbortReceivingData(uint32_t instance)
 {
-    assert(instance < UART_INSTANCE_COUNT);
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	assert(instance < UART_INSTANCE_COUNT);
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
 
-    /* Check if a transfer is running. */
-    if (!uartDmaState->isRxBusy)
-    {
-        return kStatus_UART_NoReceiveInProgress;
-    }
+	/* Check if a transfer is running. */
+	if (!uartDmaState->isRxBusy)
+	{
+		return kStatus_UART_NoReceiveInProgress;
+	}
 
-    /* Stop the running transfer. */
-    UART_DRV_DmaCompleteReceiveData(instance);
+	/* Stop the running transfer. */
+	UART_DRV_DmaCompleteReceiveData(instance);
 
-    return kStatus_UART_Success;
+	return kStatus_UART_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -500,21 +500,21 @@ uart_status_t UART_DRV_DmaAbortReceivingData(uint32_t instance)
  *END**************************************************************************/
 static void UART_DRV_DmaCompleteSendData(uint32_t instance)
 {
-    assert(instance < UART_INSTANCE_COUNT);
+	assert(instance < UART_INSTANCE_COUNT);
 
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
 
-    /* Stop DMA channel. */
-    DMA_DRV_StopChannel(&uartDmaState->dmaUartTx);
+	/* Stop DMA channel. */
+	DMA_DRV_StopChannel(&uartDmaState->dmaUartTx);
 
-    /* Signal the synchronous completion object. */
-    if (uartDmaState->isTxBlocking)
-    {
-        OSA_SemaPost(&uartDmaState->txIrqSync);
-    }
+	/* Signal the synchronous completion object. */
+	if (uartDmaState->isTxBlocking)
+	{
+		OSA_SemaPost(&uartDmaState->txIrqSync);
+	}
 
-    /* Update the information of the module driver state */
-    uartDmaState->isTxBusy = false;
+	/* Update the information of the module driver state */
+	uartDmaState->isTxBusy = false;
 }
 
 /*FUNCTION**********************************************************************
@@ -525,7 +525,7 @@ static void UART_DRV_DmaCompleteSendData(uint32_t instance)
  *END**************************************************************************/
 static void UART_DRV_DmaTxCallback(void *param, dma_channel_status_t status)
 {
-    UART_DRV_DmaCompleteSendData((uint32_t)param);
+	UART_DRV_DmaCompleteSendData((uint32_t)param);
 }
 
 /*FUNCTION**********************************************************************
@@ -535,31 +535,31 @@ static void UART_DRV_DmaTxCallback(void *param, dma_channel_status_t status)
  *
  *END**************************************************************************/
 static uart_status_t UART_DRV_DmaStartSendData(uint32_t instance,
-                                               const uint8_t * txBuff,
-                                               uint32_t txSize)
+											   const uint8_t * txBuff,
+											   uint32_t txSize)
 {
-    assert(instance < UART_INSTANCE_COUNT);
+	assert(instance < UART_INSTANCE_COUNT);
 
-    UART_Type * base = g_uartBase[instance];
-    /* Get current runtime structure. */
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
-    dma_channel_t *chn = &uartDmaState->dmaUartTx;
+	UART_Type * base = g_uartBase[instance];
+	/* Get current runtime structure. */
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	dma_channel_t *chn = &uartDmaState->dmaUartTx;
 
-    /* Check that we're not busy already transmitting data from a previous function call. */
-    if (uartDmaState->isTxBusy)
-    {
-        return kStatus_UART_TxBusy;
-    }
+	/* Check that we're not busy already transmitting data from a previous function call. */
+	if (uartDmaState->isTxBusy)
+	{
+		return kStatus_UART_TxBusy;
+	}
 
-    /* Update UART DMA run-time structure. */
-    uartDmaState->isTxBusy = true;
+	/* Update UART DMA run-time structure. */
+	uartDmaState->isTxBusy = true;
 
-    DMA_DRV_ConfigTransfer(&uartDmaState->dmaUartTx, kDmaMemoryToPeripheral,
-        1u, (uint32_t) txBuff, UART_HAL_GetDataRegAddr(base), txSize);
+	DMA_DRV_ConfigTransfer(&uartDmaState->dmaUartTx, kDmaMemoryToPeripheral,
+		1u, (uint32_t) txBuff, UART_HAL_GetDataRegAddr(base), txSize);
 
-    DMA_DRV_StartChannel(chn);
+	DMA_DRV_StartChannel(chn);
 
-    return kStatus_UART_Success;
+	return kStatus_UART_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -572,21 +572,21 @@ static uart_status_t UART_DRV_DmaStartSendData(uint32_t instance,
  *END**************************************************************************/
 static void UART_DRV_DmaCompleteReceiveData(uint32_t instance)
 {
-    assert(instance < UART_INSTANCE_COUNT);
+	assert(instance < UART_INSTANCE_COUNT);
 
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
 
-    /* Stop DMA channel. */
-    DMA_DRV_StopChannel(&uartDmaState->dmaUartRx);
+	/* Stop DMA channel. */
+	DMA_DRV_StopChannel(&uartDmaState->dmaUartRx);
 
-    /* Signal the synchronous completion object. */
-    if (uartDmaState->isRxBlocking)
-    {
-        OSA_SemaPost(&uartDmaState->rxIrqSync);
-    }
+	/* Signal the synchronous completion object. */
+	if (uartDmaState->isRxBlocking)
+	{
+		OSA_SemaPost(&uartDmaState->rxIrqSync);
+	}
 
-    /* Update the information of the module driver state */
-    uartDmaState->isRxBusy = false;
+	/* Update the information of the module driver state */
+	uartDmaState->isRxBusy = false;
 }
 
 /*FUNCTION**********************************************************************
@@ -597,7 +597,7 @@ static void UART_DRV_DmaCompleteReceiveData(uint32_t instance)
  *END**************************************************************************/
 static void UART_DRV_DmaRxCallback(void *param, dma_channel_status_t status)
 {
-    UART_DRV_DmaCompleteReceiveData((uint32_t)param);
+	UART_DRV_DmaCompleteReceiveData((uint32_t)param);
 }
 
 /*FUNCTION**********************************************************************
@@ -609,31 +609,31 @@ static void UART_DRV_DmaRxCallback(void *param, dma_channel_status_t status)
  *
  *END**************************************************************************/
 static uart_status_t UART_DRV_DmaStartReceiveData(uint32_t instance,
-                                                  uint8_t * rxBuff,
-                                                  uint32_t rxSize)
+												  uint8_t * rxBuff,
+												  uint32_t rxSize)
 {
-    assert(instance < UART_INSTANCE_COUNT);
+	assert(instance < UART_INSTANCE_COUNT);
 
-    UART_Type * base = g_uartBase[instance];
-    /* Get current runtime structure. */
-    uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
-    dma_channel_t *chn = &uartDmaState->dmaUartRx;
+	UART_Type * base = g_uartBase[instance];
+	/* Get current runtime structure. */
+	uart_dma_state_t * uartDmaState = (uart_dma_state_t *)g_uartStatePtr[instance];
+	dma_channel_t *chn = &uartDmaState->dmaUartRx;
 
-    /* Check that we're not busy already receiving data from a previous function call. */
-    if (uartDmaState->isRxBusy)
-    {
-        return kStatus_UART_RxBusy;
-    }
+	/* Check that we're not busy already receiving data from a previous function call. */
+	if (uartDmaState->isRxBusy)
+	{
+		return kStatus_UART_RxBusy;
+	}
 
-    /* Update UART DMA run-time structure. */
-    uartDmaState->isRxBusy = true;
+	/* Update UART DMA run-time structure. */
+	uartDmaState->isRxBusy = true;
 
-    DMA_DRV_ConfigTransfer(&uartDmaState->dmaUartRx, kDmaPeripheralToMemory,
-        1u, UART_HAL_GetDataRegAddr(base), (uint32_t)rxBuff, rxSize);
+	DMA_DRV_ConfigTransfer(&uartDmaState->dmaUartRx, kDmaPeripheralToMemory,
+		1u, UART_HAL_GetDataRegAddr(base), (uint32_t)rxBuff, rxSize);
 
-    DMA_DRV_StartChannel(chn);
+	DMA_DRV_StartChannel(chn);
 
-    return kStatus_UART_Success;
+	return kStatus_UART_Success;
 }
 
 #endif /* FSL_FEATURE_SOC_DMA_COUNT && FSL_FEATURE_SOC_UART_COUNT */
@@ -641,4 +641,3 @@ static uart_status_t UART_DRV_DmaStartReceiveData(uint32_t instance,
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

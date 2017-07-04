@@ -60,55 +60,55 @@
 #elif defined(FSL_FEATURE_SOC_EMVSIM_COUNT)
 #define HW_SMARTCARD_INSTANCE_COUNT  FSL_FEATURE_SOC_EMVSIM_COUNT
 #else
-    #error "No valid Smart Card Module defined!"
+	#error "No valid Smart Card Module defined!"
 #endif
 
 #define INIT_DELAY_CLOCK_CYCLES         (42000)
-#define EMV_ATR_DURATION_ETU            (20160 - 10)   
+#define EMV_ATR_DURATION_ETU            (20160 - 10)
 
 /*! @brief Error codes for the Smart card driver. */
 typedef enum _smartcard_status
 {
-    kStatus_SMARTCARD_Success                  = 0x0U, 
-    kStatus_SMARTCARD_TxBusy                   = 0x1U, 
-    kStatus_SMARTCARD_RxBusy                   = 0x2U,  
-    kStatus_SMARTCARD_NoTransmitInProgress     = 0x3U,
-    kStatus_SMARTCARD_NoReceiveInProgress      = 0x4U, 
-    kStatus_SMARTCARD_Timeout                  = 0x5U,
-    kStatus_SMARTCARD_Initialized              = 0x6U,
-    kStatus_SMARTCARD_PhyInitialized           = 0x7U,
-    kStatus_SMARTCARD_DmaNotInitialized        = 0x8U,
-    kStatus_SMARTCARD_OtherError               = 0x9U
+	kStatus_SMARTCARD_Success                  = 0x0U,
+	kStatus_SMARTCARD_TxBusy                   = 0x1U,
+	kStatus_SMARTCARD_RxBusy                   = 0x2U,
+	kStatus_SMARTCARD_NoTransmitInProgress     = 0x3U,
+	kStatus_SMARTCARD_NoReceiveInProgress      = 0x4U,
+	kStatus_SMARTCARD_Timeout                  = 0x5U,
+	kStatus_SMARTCARD_Initialized              = 0x6U,
+	kStatus_SMARTCARD_PhyInitialized           = 0x7U,
+	kStatus_SMARTCARD_DmaNotInitialized        = 0x8U,
+	kStatus_SMARTCARD_OtherError               = 0x9U
 } smartcard_status_t;
 
 /*! @brief Control codes for the Smart card protocol timers and misc. */
 typedef enum _smartcard_control
 {
-    kSmartcardEnableADT                      = 0x0U,
-    kSmartcardDisableADT                     = 0x1U,
-    kSmartcardEnableGTV                      = 0x2U,
-    kSmartcardDisableGTV                     = 0x3U,
-    kSmartcardResetWWT                       = 0x4U,
-    kSmartcardEnableWWT                      = 0x5U,
-    kSmartcardDisableWWT                     = 0x6U,
-    kSmartcardResetCWT                       = 0x7U,
-    kSmartcardEnableCWT                      = 0x8U,
-    kSmartcardDisableCWT                     = 0x9U,
-    kSmartcardResetBWT                       = 0xAU,
-    kSmartcardEnableBWT                      = 0xBU,
-    kSmartcardDisableBWT                     = 0xCU,
-    kSmartcardEnableInitDetect               = 0xDU,
-    kSmartcardEnableAnack                    = 0xEU,
-    kSmartcardDisableAnack                   = 0xFU,
-    kSmartcardConfigureBaudrate              = 0x10U,
-    kSmartcardSetupATRMode                   = 0x11U,
-    kSmartcardSetupT0Mode                    = 0x12U,
-    kSmartcardSetupT1Mode                    = 0x13U,
-    kSmartcardEnableReceiverMode             = 0x14U,
-    kSmartcardDisableReceiverMode            = 0x15U,
-    kSmartcardEnableTransmitterMode          = 0x16U,
-    kSmartcardDisableTransmitterMode         = 0x17U,
-    kSmartcardResetWaitTimeMultiplier        = 0x18U,
+	kSmartcardEnableADT                      = 0x0U,
+	kSmartcardDisableADT                     = 0x1U,
+	kSmartcardEnableGTV                      = 0x2U,
+	kSmartcardDisableGTV                     = 0x3U,
+	kSmartcardResetWWT                       = 0x4U,
+	kSmartcardEnableWWT                      = 0x5U,
+	kSmartcardDisableWWT                     = 0x6U,
+	kSmartcardResetCWT                       = 0x7U,
+	kSmartcardEnableCWT                      = 0x8U,
+	kSmartcardDisableCWT                     = 0x9U,
+	kSmartcardResetBWT                       = 0xAU,
+	kSmartcardEnableBWT                      = 0xBU,
+	kSmartcardDisableBWT                     = 0xCU,
+	kSmartcardEnableInitDetect               = 0xDU,
+	kSmartcardEnableAnack                    = 0xEU,
+	kSmartcardDisableAnack                   = 0xFU,
+	kSmartcardConfigureBaudrate              = 0x10U,
+	kSmartcardSetupATRMode                   = 0x11U,
+	kSmartcardSetupT0Mode                    = 0x12U,
+	kSmartcardSetupT1Mode                    = 0x13U,
+	kSmartcardEnableReceiverMode             = 0x14U,
+	kSmartcardDisableReceiverMode            = 0x15U,
+	kSmartcardEnableTransmitterMode          = 0x16U,
+	kSmartcardDisableTransmitterMode         = 0x17U,
+	kSmartcardResetWaitTimeMultiplier        = 0x18U,
 } smartcard_control_t;
 
 /*! @brief Smart card interface interrupt callback function type */
@@ -117,122 +117,122 @@ typedef void (* smartcard_interface_callback_t)(uint32_t instance, void * smartc
 /*! @brief Defines Smart card interface voltage class values */
 typedef enum _smartcard_card_voltage_class
 {
-    kSmartcardVoltageClassUnknown              = 0x0U,
-    kSmartcardVoltageClassA5_0V                = 0x1U,
-    kSmartcardVoltageClassB3_3V                = 0x2U,
-    kSmartcardVoltageClassC1_8V                = 0x3U
+	kSmartcardVoltageClassUnknown              = 0x0U,
+	kSmartcardVoltageClassA5_0V                = 0x1U,
+	kSmartcardVoltageClassB3_3V                = 0x2U,
+	kSmartcardVoltageClassC1_8V                = 0x3U
 }smartcard_card_voltage_class_t;
 
 /*! @brief Defines Smart card I/O transfer states */
 typedef enum _smartcard_transfer_state
 {
-    kSmartcardIdleState                 = 0x0U,
-    kSmartcardWaitingForTSState         = 0x1U, 
-    kSmartcardInvalidTSDetecetedState   = 0x2U,  
-    kSmartcardReceivingState            = 0x3U,
-    kSmartcardTransmittingState         = 0x4U,
+	kSmartcardIdleState                 = 0x0U,
+	kSmartcardWaitingForTSState         = 0x1U,
+	kSmartcardInvalidTSDetecetedState   = 0x2U,
+	kSmartcardReceivingState            = 0x3U,
+	kSmartcardTransmittingState         = 0x4U,
 }smartcard_transfer_state_t;
 
 /*! @brief Defines Smart card reset types */
 typedef enum _smartcard_reset_type
 {
-    kSmartcardColdReset                      = 0x0U,
-    kSmartcardWarmReset                      = 0x1U,
-    kSmartcardNoColdReset                    = 0x2U,
-    kSmartcardNoWarmReset                    = 0x3U,
+	kSmartcardColdReset                      = 0x0U,
+	kSmartcardWarmReset                      = 0x1U,
+	kSmartcardNoColdReset                    = 0x2U,
+	kSmartcardNoWarmReset                    = 0x3U,
 }smartcard_reset_type_t;
 
 /*! @brief Defines Smart card transport protocol types */
 typedef enum _smartcard_transport_type
 {
-    kSmartcardT0Transport                    = 0x0U,
-    kSmartcardT1Transport                    = 0x1U
+	kSmartcardT0Transport                    = 0x0U,
+	kSmartcardT1Transport                    = 0x1U
 }smartcard_transport_type_t;
 
 /*! @brief Defines Smart card data parity types */
 typedef enum _smartcard_parity_type
 {
-    kSmartcardEvenParity                       = 0x0U,
-    kSmartcardOddParity                        = 0x1U
+	kSmartcardEvenParity                       = 0x0U,
+	kSmartcardOddParity                        = 0x1U
 }smartcard_parity_type_t;
 
 /*! @brief Defines data transfer mode: CPU or DMA */
 typedef enum _smartcard_xfer_mode
 {
-    kSmartcardCPUXferMode                      = 0x0U,
-    kSmartcardDMAXferMode                      = 0x1U
+	kSmartcardCPUXferMode                      = 0x0U,
+	kSmartcardDMAXferMode                      = 0x1U
 }smartcard_xfer_mode_t;
 
 /*! @brief Defines data convention format */
 typedef enum _smartcard_card_convention
 {
-    kSmartcardDirectConvention                 = 0x0U,
-    kSmartcardInverseConvention
+	kSmartcardDirectConvention                 = 0x0U,
+	kSmartcardInverseConvention
 }smartcard_card_convention_t;
 
 /*! @brief Defines card-specific parameters for Smart card driver */
 typedef struct CardParams {
-    smartcard_card_voltage_class_t vcc;     /*!< Indicates current voltage class of the operation */
-    bool atrComplete;                       /*!< Indicates whether the ATR received from the card was complete or not */
-    bool atrValid;                          /*!< Indicates whether the ATR received from the card was valid or not */
-    uint16_t Fi;                            /*!< 4 bits Fi */
-    uint8_t fMax;                           /*!< Maximum Smart card frequency in MHz */
-    uint8_t WI;                             /*!< 8 bits WI - work wait time integer */
-    uint8_t Di;                             /*!< 4 bits DI - baud rate divisor */
-    uint8_t BWI;                            /*!< 4 bits BWI - block wait time integer */
-    uint8_t CWI;                            /*!< 4 bits CWI - character wait time integer */
-    uint8_t BGI;                            /*!< 4 bits BGI - block guard time integer */
-    uint8_t GTN;                            /*!< 8 bits GTN - extended guard time integer */
-    bool t0Indicated;                       /*!< Indicates ff T=0 indicated in TD1 byte */
-    bool t1Indicated;                       /*!< Indicates if T=1 indicated in TD2 byte */
-    uint8_t IFSC;                           /*!< Indicates IFSC value of the card */
-    uint8_t modeNegotiable;                 /*!< Indicates if the card acts in a negotiable or specific mode. */
-    uint8_t currentD;                       /*!< 4 bits DI - current baud rate divisor*/
-    smartcard_card_convention_t convention; /*!< Card convention, kSmartcardDirectConvention for direct convention, 
-                                                 kSmartcardInverseConvention for inverse convention */
+	smartcard_card_voltage_class_t vcc;     /*!< Indicates current voltage class of the operation */
+	bool atrComplete;                       /*!< Indicates whether the ATR received from the card was complete or not */
+	bool atrValid;                          /*!< Indicates whether the ATR received from the card was valid or not */
+	uint16_t Fi;                            /*!< 4 bits Fi */
+	uint8_t fMax;                           /*!< Maximum Smart card frequency in MHz */
+	uint8_t WI;                             /*!< 8 bits WI - work wait time integer */
+	uint8_t Di;                             /*!< 4 bits DI - baud rate divisor */
+	uint8_t BWI;                            /*!< 4 bits BWI - block wait time integer */
+	uint8_t CWI;                            /*!< 4 bits CWI - character wait time integer */
+	uint8_t BGI;                            /*!< 4 bits BGI - block guard time integer */
+	uint8_t GTN;                            /*!< 8 bits GTN - extended guard time integer */
+	bool t0Indicated;                       /*!< Indicates ff T=0 indicated in TD1 byte */
+	bool t1Indicated;                       /*!< Indicates if T=1 indicated in TD2 byte */
+	uint8_t IFSC;                           /*!< Indicates IFSC value of the card */
+	uint8_t modeNegotiable;                 /*!< Indicates if the card acts in a negotiable or specific mode. */
+	uint8_t currentD;                       /*!< 4 bits DI - current baud rate divisor*/
+	smartcard_card_convention_t convention; /*!< Card convention, kSmartcardDirectConvention for direct convention,
+												 kSmartcardInverseConvention for inverse convention */
 }smartcard_card_params_t;
 
 /*! @brief Defines the state of the EMV timers in the Smart card driver */
 typedef struct TimersState
 {
-    volatile bool adtExpired;   /*!< Indicates whether ADT timer expired */
-    volatile bool wwtExpired;   /*!< Indicates whether WWT timer expired */
-    volatile bool cwtExpired;   /*!< Indicates whether CWT timer expired */
-    volatile bool bwtExpired;   /*!< Indicates whether BWT timer expired */
-    volatile bool initCharTimerExpired;/*!< Indicates whether reception timer for initialization character (TS) after the RST has expired */
+	volatile bool adtExpired;   /*!< Indicates whether ADT timer expired */
+	volatile bool wwtExpired;   /*!< Indicates whether WWT timer expired */
+	volatile bool cwtExpired;   /*!< Indicates whether CWT timer expired */
+	volatile bool bwtExpired;   /*!< Indicates whether BWT timer expired */
+	volatile bool initCharTimerExpired;/*!< Indicates whether reception timer for initialization character (TS) after the RST has expired */
 }smartcard_timers_state_t;
 
 /*! @brief Defines state of user specified configuration of Smart card interface */
 typedef struct SmartcardExtTimerConfig
 {
-    uint32_t tsTimerId;        /*!< Numerical identifier of the hardware timer for initial character detection */
+	uint32_t tsTimerId;        /*!< Numerical identifier of the hardware timer for initial character detection */
 }smartcard_ext_timer_config_t;
 
 /*! @brief Defines state of user specified configuration of Smart card interface */
 typedef struct InterfaceConfig
 {
-    uint32_t interfaceInstance;        /*!< Smart card interface IC no w.r.t. the board */
-    uint32_t cardSoltNo;                /*!< Smart card slot number w.r.t. the interface IC */
-    uint32_t sCClock;                   /*!< Smart card interface clock */
-    uint8_t clockModuleInstance;        /*!< Smart card clock module instance number */
-    uint8_t clockModuleChannel;         /*!< Smart card clock module channel number */
-    uint8_t controlPort;                /*!< Smart card PHY control port instance */
-    uint8_t controlPin;                 /*!< Smart card PHY control pin instance */
-    uint8_t irqPort;                    /*!< Smart card PHY Interrupt port instance */
-    uint8_t irqPin;                     /*!< Smart card PHY Interrupt pin instance */
-    uint8_t resetPort;                  /*!< Smart card reset port instance */
-    uint8_t resetPin;                   /*!< Smart card reset pin instance */
-    uint8_t vsel0Port;                  /*!< Smart card PHY Vsel0 control port instance */
-    uint8_t vsel0Pin;                   /*!< Smart card PHY Vsel0 control pin instance */
-    uint8_t vsel1Port;                  /*!< Smart card PHY Vsel1 control port instance */
-    uint8_t vsel1Pin;                   /*!< Smart card PHY Vsel1 control pin instance */
+	uint32_t interfaceInstance;        /*!< Smart card interface IC no w.r.t. the board */
+	uint32_t cardSoltNo;                /*!< Smart card slot number w.r.t. the interface IC */
+	uint32_t sCClock;                   /*!< Smart card interface clock */
+	uint8_t clockModuleInstance;        /*!< Smart card clock module instance number */
+	uint8_t clockModuleChannel;         /*!< Smart card clock module channel number */
+	uint8_t controlPort;                /*!< Smart card PHY control port instance */
+	uint8_t controlPin;                 /*!< Smart card PHY control pin instance */
+	uint8_t irqPort;                    /*!< Smart card PHY Interrupt port instance */
+	uint8_t irqPin;                     /*!< Smart card PHY Interrupt pin instance */
+	uint8_t resetPort;                  /*!< Smart card reset port instance */
+	uint8_t resetPin;                   /*!< Smart card reset pin instance */
+	uint8_t vsel0Port;                  /*!< Smart card PHY Vsel0 control port instance */
+	uint8_t vsel0Pin;                   /*!< Smart card PHY Vsel0 control pin instance */
+	uint8_t vsel1Port;                  /*!< Smart card PHY Vsel1 control port instance */
+	uint8_t vsel1Pin;                   /*!< Smart card PHY Vsel1 control pin instance */
 }smartcard_interface_config_t;
 
 /*! @brief Defines state of Smart card interface slots */
 typedef struct InterfaceState
 {
-    void *state;                                        /*!< Smart card interface state pointer */     
-    void *slot[HW_SMARTCARD_INTERFACE_SLOT_COUNT];      /*!< Smart card interface card slots state pointers */
+	void *state;                                        /*!< Smart card interface state pointer */
+	void *slot[HW_SMARTCARD_INTERFACE_SLOT_COUNT];      /*!< Smart card interface card slots state pointers */
 } smartcard_interface_state_t;
 
 /*!
@@ -240,45 +240,45 @@ typedef struct InterfaceState
  *
  */
 typedef struct SmartcardState {
-    uint8_t txFifoEntryCount;      /*!< Number of data word entries in transmit FIFO. */
-    const uint8_t * txBuff;        /*!< The buffer of data being sent.*/
-    uint8_t * rxBuff;              /*!< The buffer of received data. */
-    volatile size_t txSize;        /*!< The remaining number of bytes to be transmitted. */
-    volatile size_t rxSize;        /*!< The remaining number of bytes to be received. */
-    volatile bool isTxBusy;        /*!< True if there is an active transmit. */
-    volatile bool isRxBusy;        /*!< True if there is an active receive. */
-    volatile bool isTxBlocking;    /*!< True if transmit is blocking transaction. */
-    volatile bool isRxBlocking;    /*!< True if receive is blocking transaction. */
-    volatile bool bwtActive;       /*!< True if Global Counter 1 is set to wait for min. time before sending data (BWT) */
-    semaphore_t txIrqSync;         /*!< Used to wait for ISR to complete its transmit. */
-    semaphore_t rxIrqSync;         /*!< Used to wait for ISR to complete its receive. */
+	uint8_t txFifoEntryCount;      /*!< Number of data word entries in transmit FIFO. */
+	const uint8_t * txBuff;        /*!< The buffer of data being sent.*/
+	uint8_t * rxBuff;              /*!< The buffer of received data. */
+	volatile size_t txSize;        /*!< The remaining number of bytes to be transmitted. */
+	volatile size_t rxSize;        /*!< The remaining number of bytes to be received. */
+	volatile bool isTxBusy;        /*!< True if there is an active transmit. */
+	volatile bool isRxBusy;        /*!< True if there is an active receive. */
+	volatile bool isTxBlocking;    /*!< True if transmit is blocking transaction. */
+	volatile bool isRxBlocking;    /*!< True if receive is blocking transaction. */
+	volatile bool bwtActive;       /*!< True if Global Counter 1 is set to wait for min. time before sending data (BWT) */
+	semaphore_t txIrqSync;         /*!< Used to wait for ISR to complete its transmit. */
+	semaphore_t rxIrqSync;         /*!< Used to wait for ISR to complete its receive. */
 #if defined(FSL_FEATURE_EDMA_MODULE_CHANNEL)
-    edma_chn_state_t txDmaState; /*!< Structure definition for the eDMA channel */
-    edma_chn_state_t rxDmaState; /*!< Structure definition for the eDMA channel */
+	edma_chn_state_t txDmaState; /*!< Structure definition for the eDMA channel */
+	edma_chn_state_t rxDmaState; /*!< Structure definition for the eDMA channel */
 #endif
 #if defined(FSL_FEATURE_DMA_DMAMUX_CHANNELS)
-    dma_channel_t txDmaState; /*!< Structure definition for the DMA channel */
-    dma_channel_t rxDmaState; /*!< Structure definition for the DMA channel */
-#endif    
-    smartcard_interface_callback_t interfaceCallback; /*!< Callback to invoke after interface IC raised interrupt.*/
-    void * interfaceCallbackParam;        /*!< Interface callback parameter pointer.*/
-    uint32_t sCClock;              /*!< Smart card clock set in Hz */    
-    smartcard_transport_type_t tType;        /*!< Transfer type */
-    bool useDMA;       /*!< Indicates whether to use DMA mode */
-    smartcard_reset_type_t resetType;    /*!< Indicates whether a Cold reset or Warm reset was requested. */
-    smartcard_transfer_state_t transState;   /*!< Indicates the current transfer state */
-    uint8_t IFSD;         /*!< Indicates IFSD value of the terminal */ 
-    smartcard_parity_type_t parity;       /*!< Indicates current parity even/odd */ 
-    volatile bool rxtCrossed;     /*!< Indicates whether RXT thresholds has been crossed */
-    volatile bool txtCrossed;     /*!< Indicates whether TXT thresholds has been crossed */
-    volatile bool wtxRequested;   /*!< Indicates whether WTX has been requested or not*/
-    volatile bool parityError;     /*!< Indicates whether a parity error has been detected */
-    uint8_t statusBytes[2]; /*!< Used to store Status bytes SW1, SW2 of the last executed card command response */
-    smartcard_interface_state_t *interfaceState;    /*!< Holds a pointer to the working state of the Interface IC */ 
-    smartcard_interface_config_t interfaceConfig ;     /*!< Indicates the card slot number of the interface IC */
-    smartcard_ext_timer_config_t extTimerConfig; /*!< Indicates the id of TS detection and ATR timers */
-    smartcard_timers_state_t timersState; /*!< Indicates the state of different protocol timers used in driver */
-    smartcard_card_params_t cardParams;    /*!< Indicates the card parameters (ATR and current) */
+	dma_channel_t txDmaState; /*!< Structure definition for the DMA channel */
+	dma_channel_t rxDmaState; /*!< Structure definition for the DMA channel */
+#endif
+	smartcard_interface_callback_t interfaceCallback; /*!< Callback to invoke after interface IC raised interrupt.*/
+	void * interfaceCallbackParam;        /*!< Interface callback parameter pointer.*/
+	uint32_t sCClock;              /*!< Smart card clock set in Hz */
+	smartcard_transport_type_t tType;        /*!< Transfer type */
+	bool useDMA;       /*!< Indicates whether to use DMA mode */
+	smartcard_reset_type_t resetType;    /*!< Indicates whether a Cold reset or Warm reset was requested. */
+	smartcard_transfer_state_t transState;   /*!< Indicates the current transfer state */
+	uint8_t IFSD;         /*!< Indicates IFSD value of the terminal */
+	smartcard_parity_type_t parity;       /*!< Indicates current parity even/odd */
+	volatile bool rxtCrossed;     /*!< Indicates whether RXT thresholds has been crossed */
+	volatile bool txtCrossed;     /*!< Indicates whether TXT thresholds has been crossed */
+	volatile bool wtxRequested;   /*!< Indicates whether WTX has been requested or not*/
+	volatile bool parityError;     /*!< Indicates whether a parity error has been detected */
+	uint8_t statusBytes[2]; /*!< Used to store Status bytes SW1, SW2 of the last executed card command response */
+	smartcard_interface_state_t *interfaceState;    /*!< Holds a pointer to the working state of the Interface IC */
+	smartcard_interface_config_t interfaceConfig ;     /*!< Indicates the card slot number of the interface IC */
+	smartcard_ext_timer_config_t extTimerConfig; /*!< Indicates the id of TS detection and ATR timers */
+	smartcard_timers_state_t timersState; /*!< Indicates the state of different protocol timers used in driver */
+	smartcard_card_params_t cardParams;    /*!< Indicates the card parameters (ATR and current) */
 } smartcard_state_t;
 
 /*!
@@ -286,96 +286,96 @@ typedef struct SmartcardState {
  *
  * Use an instance of this structure with the SMARTCARD_DRV_Init()function. This enables configuration of the
  * most common settings of the UART peripheral with a single function call. Settings include:
- * Smart card clock, Smart card interface configuration: interface instance no, slot no; 
+ * Smart card clock, Smart card interface configuration: interface instance no, slot no;
  * Smart card operating voltage request: 1.8V, 3.3V, 5V.
  */
 typedef struct SmartcardUserConfig {
-    uint32_t sCClock;                   /*!< Smart card Clock set in Hz */
-    smartcard_xfer_mode_t xferMode;     /*!< Smart card driver transfer mode */
-    smartcard_interface_config_t interfaceConfig;       /*!< Smart card interface configuration */
-    smartcard_ext_timer_config_t extTimerConfig; /*!< Indicates the id of TS detection and ATR timers */
-    smartcard_card_voltage_class_t vcc;  /*!< Smart card requested operating voltage */
+	uint32_t sCClock;                   /*!< Smart card Clock set in Hz */
+	smartcard_xfer_mode_t xferMode;     /*!< Smart card driver transfer mode */
+	smartcard_interface_config_t interfaceConfig;       /*!< Smart card interface configuration */
+	smartcard_ext_timer_config_t extTimerConfig; /*!< Indicates the id of TS detection and ATR timers */
+	smartcard_card_voltage_class_t vcc;  /*!< Smart card requested operating voltage */
 } smartcard_user_config_t;
 
 /*!
  * @brief Smart card driver interface, which holds function pointers for implementation-specific functions.
  *
  * Use an instance of this structure initialized with implementation specific driver functions.
- * 
+ *
  */
 typedef struct SmartcardDriverInterface {
-    smartcard_status_t (* smartcardDrvInit)(uint32_t instance, 
-                                smartcard_state_t * smartcardStatePtr,
-                                const smartcard_user_config_t * smartcardUserConfig); /*!< Function pointer to 
-                                Smart card implementation-specific initialization function */
-    void (* smartcardDrvDeinit) (uint32_t instance);             /*!< Function pointer to 
-                                Smart card implementation-specific de-initialization function */
-    smartcard_status_t (* smartcardDrvSendDataBlocking) (uint32_t instance, 
-                                        const uint8_t * txBuff,
-                                        uint32_t txSize, 
-                                        uint32_t timeout);      /*!< Function pointer to 
-                                Smart card implementation-specific function to send data bytes 
-                                in a blocking operation */
-    smartcard_status_t (* smartcardDrvSendData) (uint32_t instance, 
-                                     const uint8_t * txBuff, 
-                                     uint32_t txSize);          /*!< Function pointer to 
-                                Smart card implementation-specific function to send data bytes 
-                                in a non-blocking operation */
-    smartcard_status_t (* smartcardDrvGetTransmitStatus) (uint32_t instance, 
-                                              uint32_t * bytesRemaining); /*!< Function pointer to 
-                                Smart card implementation-specific function to get 
-                                transmission status */
-    smartcard_status_t (* smartcardDrvAbortSendingData) (uint32_t instance); /*!< Function pointer to 
-                                Smart card implementation-specific function to abort
-                                current transmission  */
-    smartcard_status_t (* smartcardDrvReceiveDataBlocking) (uint32_t instance,
-                                           uint8_t * rxBuff,
-                                           uint32_t rxSize,
-                                           uint32_t * rcvdSize,
-                                           uint32_t timeout);           /*!< Function pointer to 
-                                Smart card implementation-specific function to receive data in 
-                                blocking operation */
-    smartcard_status_t (* smartcardDrvReceiveData) (uint32_t instance, 
-                                        uint8_t * rxBuff, 
-                                        uint32_t rxSize);               /*!< Function pointer to 
-                                Smart card implementation-specific function to receive data in 
-                                non-blocking operation */
-    smartcard_status_t (* smartcardDrvGetReceiveStatus) (uint32_t instance, 
-                                             uint32_t * bytesRemaining);/*!< Function pointer to 
-                                Smart card implementation specific function to get status of 
-                                ongoing reception  */
-    smartcard_status_t (* smartcardDrvAbortReceivingData) (uint32_t instance);  /*!< Function pointer to 
-                                Smart card implementation specific function to abort 
-                                ongoing reception */
-    smartcard_status_t (* smartcardDrvControl)(uint32_t instance, 
-                                         smartcard_control_t control, 
-                                         void *controlBuff);            /*!< Function pointer to 
-                                Smart card implementation-specific function to control different 
-                                protocol parameters, and so on  */
-    smartcard_status_t (* smartcardDrvInterfaceInit)(uint32_t interfaceInstance, 
-                               smartcard_state_t * smartcardStatePtr,
-                               const smartcard_interface_config_t * interfaceUserConfig);       /*!< Function pointer to 
-                                Smart card implementation-specific physical interface initialization 
-                                function */
-    void (* smartcardDrvInterfaceDeInit)(uint32_t cardSoltNo);          /*!< Function pointer to 
-                                Smart card implementation-specific physical interface de-initialization 
-                                function */
-    smartcard_interface_callback_t (* smartcardDrvInstallInterfaceCallback)(uint32_t interfaceInstance, 
-                                        smartcard_interface_callback_t function, 
-                                        void * callbackParam);          /*!< Function pointer to 
-                                Smart card implementation-specific function to register a callback 
-                                function to be called after physical interface device ISR is invoked */
-    void (* smartcardDrvInterfaceActivate) (uint32_t interfaceInstance, 
-                                      smartcard_reset_type_t resetType);               /*!< Function pointer to 
-                                Smart card implementation-specific physical interface activation
-                                function */
-    void (* smartcardDrvInterfaceDeactivate) (uint32_t interfaceInstance);       /*!< Function pointer to 
-                                Smart card implementation-specific physical interface deactivation
-                                function */
-    void (* smartcardDrvInterfaceControl) (uint32_t interfaceInstance,
-                                           void * interfaceControlPtr,
-                                           void * param);            /*!< Function pointer to 
-                                Smart card implementation-specific function to read status information */
+	smartcard_status_t (* smartcardDrvInit)(uint32_t instance,
+								smartcard_state_t * smartcardStatePtr,
+								const smartcard_user_config_t * smartcardUserConfig); /*!< Function pointer to
+								Smart card implementation-specific initialization function */
+	void (* smartcardDrvDeinit) (uint32_t instance);             /*!< Function pointer to
+								Smart card implementation-specific de-initialization function */
+	smartcard_status_t (* smartcardDrvSendDataBlocking) (uint32_t instance,
+										const uint8_t * txBuff,
+										uint32_t txSize,
+										uint32_t timeout);      /*!< Function pointer to
+								Smart card implementation-specific function to send data bytes
+								in a blocking operation */
+	smartcard_status_t (* smartcardDrvSendData) (uint32_t instance,
+									 const uint8_t * txBuff,
+									 uint32_t txSize);          /*!< Function pointer to
+								Smart card implementation-specific function to send data bytes
+								in a non-blocking operation */
+	smartcard_status_t (* smartcardDrvGetTransmitStatus) (uint32_t instance,
+											  uint32_t * bytesRemaining); /*!< Function pointer to
+								Smart card implementation-specific function to get
+								transmission status */
+	smartcard_status_t (* smartcardDrvAbortSendingData) (uint32_t instance); /*!< Function pointer to
+								Smart card implementation-specific function to abort
+								current transmission  */
+	smartcard_status_t (* smartcardDrvReceiveDataBlocking) (uint32_t instance,
+										   uint8_t * rxBuff,
+										   uint32_t rxSize,
+										   uint32_t * rcvdSize,
+										   uint32_t timeout);           /*!< Function pointer to
+								Smart card implementation-specific function to receive data in
+								blocking operation */
+	smartcard_status_t (* smartcardDrvReceiveData) (uint32_t instance,
+										uint8_t * rxBuff,
+										uint32_t rxSize);               /*!< Function pointer to
+								Smart card implementation-specific function to receive data in
+								non-blocking operation */
+	smartcard_status_t (* smartcardDrvGetReceiveStatus) (uint32_t instance,
+											 uint32_t * bytesRemaining);/*!< Function pointer to
+								Smart card implementation specific function to get status of
+								ongoing reception  */
+	smartcard_status_t (* smartcardDrvAbortReceivingData) (uint32_t instance);  /*!< Function pointer to
+								Smart card implementation specific function to abort
+								ongoing reception */
+	smartcard_status_t (* smartcardDrvControl)(uint32_t instance,
+										 smartcard_control_t control,
+										 void *controlBuff);            /*!< Function pointer to
+								Smart card implementation-specific function to control different
+								protocol parameters, and so on  */
+	smartcard_status_t (* smartcardDrvInterfaceInit)(uint32_t interfaceInstance,
+							   smartcard_state_t * smartcardStatePtr,
+							   const smartcard_interface_config_t * interfaceUserConfig);       /*!< Function pointer to
+								Smart card implementation-specific physical interface initialization
+								function */
+	void (* smartcardDrvInterfaceDeInit)(uint32_t cardSoltNo);          /*!< Function pointer to
+								Smart card implementation-specific physical interface de-initialization
+								function */
+	smartcard_interface_callback_t (* smartcardDrvInstallInterfaceCallback)(uint32_t interfaceInstance,
+										smartcard_interface_callback_t function,
+										void * callbackParam);          /*!< Function pointer to
+								Smart card implementation-specific function to register a callback
+								function to be called after physical interface device ISR is invoked */
+	void (* smartcardDrvInterfaceActivate) (uint32_t interfaceInstance,
+									  smartcard_reset_type_t resetType);               /*!< Function pointer to
+								Smart card implementation-specific physical interface activation
+								function */
+	void (* smartcardDrvInterfaceDeactivate) (uint32_t interfaceInstance);       /*!< Function pointer to
+								Smart card implementation-specific physical interface deactivation
+								function */
+	void (* smartcardDrvInterfaceControl) (uint32_t interfaceInstance,
+										   void * interfaceControlPtr,
+										   void * param);            /*!< Function pointer to
+								Smart card implementation-specific function to read status information */
 } smartcard_driver_interface_t;
 
 /*******************************************************************************
@@ -426,9 +426,9 @@ void SMARTCARD_DRV_InstallInterfaceFunctions(smartcard_driver_interface_t *smart
  *  into this function.
  * @return An error code or kStatus_SMARTCARD_Success.
  */
-smartcard_status_t SMARTCARD_DRV_Init(uint32_t instance, 
-                                      smartcard_state_t * smartcardStatePtr,
-                                      const smartcard_user_config_t * smartcardUserConfig);
+smartcard_status_t SMARTCARD_DRV_Init(uint32_t instance,
+									  smartcard_state_t * smartcardStatePtr,
+									  const smartcard_user_config_t * smartcardUserConfig);
 
 /*!
  * @brief Shuts down the Smart card by disabling interrupts and the transmitter/receiver.
@@ -453,9 +453,9 @@ void SMARTCARD_DRV_Deinit(uint32_t instance);
  * @return An error code or kStatus_SMARTCARD_Success.
  */
 smartcard_status_t SMARTCARD_DRV_SendDataBlocking(uint32_t instance,
-                                      const uint8_t * txBuff,
-                                      uint32_t txSize,
-                                      uint32_t timeout);
+									  const uint8_t * txBuff,
+									  uint32_t txSize,
+									  uint32_t timeout);
 
 /*!
  * @brief Sends (transmits) data through the Smart card module using a non-blocking method.
@@ -474,8 +474,8 @@ smartcard_status_t SMARTCARD_DRV_SendDataBlocking(uint32_t instance,
  * @return An error code or kStatus_SMARTCARD_Success.
  */
 smartcard_status_t SMARTCARD_DRV_SendData(uint32_t instance,
-                                      const uint8_t * txBuff,
-                                      uint32_t txSize);
+									  const uint8_t * txBuff,
+									  uint32_t txSize);
 
 /*!
  * @brief Returns whether the previous Smart card transmit has finished.
@@ -492,8 +492,8 @@ smartcard_status_t SMARTCARD_DRV_SendData(uint32_t instance,
  * @retval kStatus_SMARTCARD_TxBusy The transmit is still in progress. bytesTransmitted is
  *     filled with the number of bytes which are transmitted up to that point.
  */
-smartcard_status_t SMARTCARD_DRV_GetTransmitStatus(uint32_t instance, 
-                                      uint32_t * bytesRemaining);
+smartcard_status_t SMARTCARD_DRV_GetTransmitStatus(uint32_t instance,
+									  uint32_t * bytesRemaining);
 
 /*!
  * @brief Terminates an asynchronous Smart card transmission early.
@@ -520,11 +520,11 @@ smartcard_status_t SMARTCARD_DRV_AbortSendingData(uint32_t instance);
  * @param timeout A timeout value for RTOS abstraction sync control in milliseconds (ms).
  * @return An error code or kStatus_SMARTCARD_Success.
  */
-smartcard_status_t SMARTCARD_DRV_ReceiveDataBlocking(uint32_t instance, 
-                                      uint8_t * rxBuff,
-                                      uint32_t rxSize, 
-                                      uint32_t *rcvdSize,
-                                      uint32_t timeout);
+smartcard_status_t SMARTCARD_DRV_ReceiveDataBlocking(uint32_t instance,
+									  uint8_t * rxBuff,
+									  uint32_t rxSize,
+									  uint32_t *rcvdSize,
+									  uint32_t timeout);
 
 /*!
  * @brief Gets (receives) data from the Smart card module using a non-blocking method.
@@ -543,8 +543,8 @@ smartcard_status_t SMARTCARD_DRV_ReceiveDataBlocking(uint32_t instance,
  * @return An error code or kStatus_SMARTCARD_Success.
  */
 smartcard_status_t SMARTCARD_DRV_ReceiveData(uint32_t instance,
-                                    uint8_t * rxBuff,
-                                    uint32_t rxSize);
+									uint8_t * rxBuff,
+									uint32_t rxSize);
 
 /*!
  * @brief Returns whether the previous Smart card receive is complete.
@@ -563,7 +563,7 @@ smartcard_status_t SMARTCARD_DRV_ReceiveData(uint32_t instance,
  *     filled with the number of bytes which are received up to that point.
  */
 smartcard_status_t SMARTCARD_DRV_GetReceiveStatus(uint32_t instance,
-                                    uint32_t * bytesRemaining);
+									uint32_t * bytesRemaining);
 
 /*!
  * @brief Terminates an asynchronous Smart card receive early.
@@ -587,12 +587,12 @@ smartcard_status_t SMARTCARD_DRV_AbortReceivingData(uint32_t instance);
  *
  * @retval An error code as per operation execution.
  */
-smartcard_status_t SMARTCARD_DRV_Control(uint32_t instance, 
-                                    smartcard_control_t control, 
-                                    void *controlBuff);
+smartcard_status_t SMARTCARD_DRV_Control(uint32_t instance,
+									smartcard_control_t control,
+									void *controlBuff);
 
 /*!
- * @brief Installs a user callback function to be called after any interface interrupt 
+ * @brief Installs a user callback function to be called after any interface interrupt
  * is serviced.
  *
  * @param instance The Smart card module instance number.
@@ -601,15 +601,15 @@ smartcard_status_t SMARTCARD_DRV_Control(uint32_t instance,
  *
  * @retval Function pointer of the last installed callback function.
  */
-smartcard_interface_callback_t SMARTCARD_DRV_InstallInterfaceCallback(uint32_t instance, 
-                                    smartcard_interface_callback_t function, 
-                                    void * callbackParam);
+smartcard_interface_callback_t SMARTCARD_DRV_InstallInterfaceCallback(uint32_t instance,
+									smartcard_interface_callback_t function,
+									void * callbackParam);
 
 /*!
  * @brief Resets the Smart card interface/card slot for the given reset type.
  *
  * @param instance The Smart card module instance number.
- * @param resetType type of reset to be performed, possible values 
+ * @param resetType type of reset to be performed, possible values
  *                       = kSmartcardColdReset, kSmartcardWarmReset
  *
  */
@@ -642,4 +642,3 @@ void SMARTCARD_DRV_InterfaceControl(uint32_t instance, void *interfaceControl, v
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

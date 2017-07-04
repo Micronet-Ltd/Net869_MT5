@@ -40,14 +40,14 @@
 /* LPTMR IRQ handler that would cover the same name's APIs in startup code */
 void LPTMR0_LPTMR1_IRQHandler(void)
 {
-    if (g_lptmrStatePtr[0] != NULL)
-    {
-        LPTMR_DRV_IRQHandler(0U);
-    }
-    if (g_lptmrStatePtr[1] != NULL)
-    {
-        LPTMR_DRV_IRQHandler(1U);
-    }
+	if (g_lptmrStatePtr[0] != NULL)
+	{
+		LPTMR_DRV_IRQHandler(0U);
+	}
+	if (g_lptmrStatePtr[1] != NULL)
+	{
+		LPTMR_DRV_IRQHandler(1U);
+	}
 }
 
 #else
@@ -55,14 +55,14 @@ void LPTMR0_LPTMR1_IRQHandler(void)
 #if (FSL_FEATURE_SOC_LPTMR_COUNT > 0U)
 void LPTMR0_IRQHandler(void)
 {
-    LPTMR_DRV_IRQHandler(0U);
+	LPTMR_DRV_IRQHandler(0U);
 }
 #endif
 
 #if (FSL_FEATURE_SOC_LPTMR_COUNT > 1U)
 void LPTMR1_IRQHandler(void)
 {
-    LPTMR_DRV_IRQHandler(1U);
+	LPTMR_DRV_IRQHandler(1U);
 }
 #endif
 
@@ -71,4 +71,3 @@ void LPTMR1_IRQHandler(void)
 /******************************************************************************
  * EOF
  *****************************************************************************/
-

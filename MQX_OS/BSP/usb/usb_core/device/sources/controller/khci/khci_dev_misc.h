@@ -23,8 +23,8 @@
 **************************************************************************
 *
 * $FileName: khci_dev_misc.h$
-* $Version : 
-* $Date    : 
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -34,7 +34,7 @@
 *END************************************************************************/
 
 #ifndef __khci_dev_misc_h__
-#define __khci_dev_misc_h__ 1 
+#define __khci_dev_misc_h__ 1
 
 #define EP_DISABLE                      (0)
 #define ASSERT_RESUME_DELAY_COUNT       (8000)/* Delay for assert resume */
@@ -77,56 +77,56 @@
 
 typedef struct _usb_ep_info_struct
 {
-    //USB_XD_QUEUE         xd_queue_send;  /* FIFO queue for all XDs on this endpoint */   
-    //USB_XD_QUEUE         xd_queue_recv;
-    struct xd_struct*    send_xd;
-    struct xd_struct*    recv_xd;
-    uint16_t             max_packet_size;
-    uint8_t              endpoint_status;
-    uint8_t              stall_flag;
-    /* Endpoint initialization flag for both direction */
-    uint8_t              ep_init_flag[2];
-    uint8_t              type;
-    uint8_t              direction; /* for usb_device_call_service */
-    uint8_t              tx_data0;
-    uint8_t              rx_data0;
-    uint8_t              tx_buf_odd;
-    uint8_t              rx_buf_odd;   /* next buffer is odd */
+	//USB_XD_QUEUE         xd_queue_send;  /* FIFO queue for all XDs on this endpoint */
+	//USB_XD_QUEUE         xd_queue_recv;
+	struct xd_struct*    send_xd;
+	struct xd_struct*    recv_xd;
+	uint16_t             max_packet_size;
+	uint8_t              endpoint_status;
+	uint8_t              stall_flag;
+	/* Endpoint initialization flag for both direction */
+	uint8_t              ep_init_flag[2];
+	uint8_t              type;
+	uint8_t              direction; /* for usb_device_call_service */
+	uint8_t              tx_data0;
+	uint8_t              rx_data0;
+	uint8_t              tx_buf_odd;
+	uint8_t              rx_buf_odd;   /* next buffer is odd */
 } usb_ep_info_struct_t;
 
 /* The USB Device State Structure */
-typedef struct _usb_khci_device_state_struct 
+typedef struct _usb_khci_device_state_struct
 {
-    uint32_t              controller_id;       /* Device controller ID */
-    usb_device_handle     upper_layer_handle;
-    void*                 dev_ptr;             /* Device Controller Register base address */
-    struct xd_struct*     xd_base;
-    struct xd_struct*     xd_head;             /* Head Transaction descriptors */
-    struct xd_struct*     xd_tail;             /* Tail Transaction descriptors */
-    uint32_t              xd_entries;
-    os_mutex_handle       mutex;
-    uint32_t              usbRegBase;
+	uint32_t              controller_id;       /* Device controller ID */
+	usb_device_handle     upper_layer_handle;
+	void*                 dev_ptr;             /* Device Controller Register base address */
+	struct xd_struct*     xd_base;
+	struct xd_struct*     xd_head;             /* Head Transaction descriptors */
+	struct xd_struct*     xd_tail;             /* Tail Transaction descriptors */
+	uint32_t              xd_entries;
+	os_mutex_handle       mutex;
+	uint32_t              usbRegBase;
 
-    /* These fields are kept only for USB_shutdown() */
-    uint16_t              usb_state;
-    uint16_t              usb_device_status;
-    uint16_t              usb_sof_count;
-    uint16_t              errors;
-    uint16_t              usb_dev_state_b4_suspend;
-    uint16_t              usb_curr_config;
-    uint8_t               dev_vec;             /* Interrupt vector number for USB OTG */
-    uint8_t               speed;               /* Low Speed, High Speed, Full Speed */
-    uint8_t               max_endpoints;       /* Max endpoints supported by this device */
-    uint8_t               device_address;                                     
-    uint8_t *             setup_buff;
-    usb_ep_info_struct_t  ep_info[USBCFG_DEV_MAX_ENDPOINTS];
+	/* These fields are kept only for USB_shutdown() */
+	uint16_t              usb_state;
+	uint16_t              usb_device_status;
+	uint16_t              usb_sof_count;
+	uint16_t              errors;
+	uint16_t              usb_dev_state_b4_suspend;
+	uint16_t              usb_curr_config;
+	uint8_t               dev_vec;             /* Interrupt vector number for USB OTG */
+	uint8_t               speed;               /* Low Speed, High Speed, Full Speed */
+	uint8_t               max_endpoints;       /* Max endpoints supported by this device */
+	uint8_t               device_address;
+	uint8_t *             setup_buff;
+	usb_ep_info_struct_t  ep_info[USBCFG_DEV_MAX_ENDPOINTS];
 #ifdef USBCFG_OTG
-    uint16_t              usb_otg_status;
-    usb_otg_handle        otg_handle; 
-    uint8_t               otg_attr_srp;
-    uint8_t               otg_attr_hnp;
+	uint16_t              usb_otg_status;
+	usb_otg_handle        otg_handle;
+	uint8_t               otg_attr_srp;
+	uint8_t               otg_attr_hnp;
 #endif
-    uint8_t               is_reseting;
+	uint8_t               is_reseting;
 } usb_khci_dev_state_struct_t;
 
 /***************************************

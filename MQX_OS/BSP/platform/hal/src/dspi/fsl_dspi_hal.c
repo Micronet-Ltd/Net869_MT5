@@ -54,33 +54,33 @@
  *END**************************************************************************/
 void DSPI_HAL_Init(SPI_Type * base)
 {
-    /* first, make sure the module is enabled to allow writes to certain registers*/
-    SPI_BWR_MCR_MDIS(base, 0);
+	/* first, make sure the module is enabled to allow writes to certain registers*/
+	SPI_BWR_MCR_MDIS(base, 0);
 
-    /* Halt all transfers*/
-    SPI_BWR_MCR_HALT(base, 1);
+	/* Halt all transfers*/
+	SPI_BWR_MCR_HALT(base, 1);
 
-    /* set the registers to their default states*/
-    /* clear the status bits (write-1-to-clear)*/
-    SPI_WR_SR(base, SPI_SR_TCF_MASK | SPI_SR_EOQF_MASK | SPI_SR_TFUF_MASK | SPI_SR_TFFF_MASK |
-              SPI_SR_RFOF_MASK | SPI_SR_RFDF_MASK);
+	/* set the registers to their default states*/
+	/* clear the status bits (write-1-to-clear)*/
+	SPI_WR_SR(base, SPI_SR_TCF_MASK | SPI_SR_EOQF_MASK | SPI_SR_TFUF_MASK | SPI_SR_TFFF_MASK |
+			  SPI_SR_RFOF_MASK | SPI_SR_RFDF_MASK);
 
-    SPI_WR_TCR(base, 0);
-    SPI_WR_CTAR(base, 0, 0x78000000); /* CTAR0 */
-    SPI_WR_CTAR(base, 1, 0x78000000); /* CTAR1 */
-    SPI_WR_RSER(base, 0);
+	SPI_WR_TCR(base, 0);
+	SPI_WR_CTAR(base, 0, 0x78000000); /* CTAR0 */
+	SPI_WR_CTAR(base, 1, 0x78000000); /* CTAR1 */
+	SPI_WR_RSER(base, 0);
 
-    /* Clear out PUSHR register. Since DSPI is halted, nothing should be transmitted. Be
-     * sure the flush the FIFOs afterwards
-     */
-    SPI_WR_PUSHR(base, 0);
+	/* Clear out PUSHR register. Since DSPI is halted, nothing should be transmitted. Be
+	 * sure the flush the FIFOs afterwards
+	 */
+	SPI_WR_PUSHR(base, 0);
 
-    /* flush the fifos*/
-    SPI_BWR_MCR_CLR_TXF(base, true);
-    SPI_BWR_MCR_CLR_RXF(base, true);
+	/* flush the fifos*/
+	SPI_BWR_MCR_CLR_TXF(base, true);
+	SPI_BWR_MCR_CLR_RXF(base, true);
 
-    /* Now set MCR to default value, which disables module: set MDIS and HALT, clear other bits */
-    SPI_WR_MCR(base, SPI_MCR_MDIS_MASK | SPI_MCR_HALT_MASK);
+	/* Now set MCR to default value, which disables module: set MDIS and HALT, clear other bits */
+	SPI_WR_MCR(base, SPI_MCR_MDIS_MASK | SPI_MCR_HALT_MASK);
 }
 
 /*FUNCTION**********************************************************************
@@ -94,67 +94,67 @@ void DSPI_HAL_Init(SPI_Type * base)
  *
  *END**************************************************************************/
 uint32_t DSPI_HAL_SetBaudRate(SPI_Type * base, dspi_ctar_selection_t whichCtar,
-                              uint32_t bitsPerSec, uint32_t sourceClockInHz)
+							  uint32_t bitsPerSec, uint32_t sourceClockInHz)
 {
-    /* for master mode configuration, if slave mode detected, return 0*/
-    if (!DSPI_HAL_IsMaster(base))
-    {
-        return 0;
-    }
+	/* for master mode configuration, if slave mode detected, return 0*/
+	if (!DSPI_HAL_IsMaster(base))
+	{
+		return 0;
+	}
 
-    uint32_t prescaler, bestPrescaler;
-    uint32_t scaler, bestScaler;
-    uint32_t dbr, bestDbr;
-    uint32_t realBaudrate, bestBaudrate;
-    uint32_t diff, min_diff;
-    uint32_t baudrate = bitsPerSec;
+	uint32_t prescaler, bestPrescaler;
+	uint32_t scaler, bestScaler;
+	uint32_t dbr, bestDbr;
+	uint32_t realBaudrate, bestBaudrate;
+	uint32_t diff, min_diff;
+	uint32_t baudrate = bitsPerSec;
 
-    /* find combination of prescaler and scaler resulting in baudrate closest to the
-     * requested value
-     */
-    min_diff = 0xFFFFFFFFU;
-    bestPrescaler = 0;
-    bestScaler = 0;
-    bestDbr = 1;
-    bestBaudrate = 0; /* required to avoid compilation warning */
+	/* find combination of prescaler and scaler resulting in baudrate closest to the
+	 * requested value
+	 */
+	min_diff = 0xFFFFFFFFU;
+	bestPrescaler = 0;
+	bestScaler = 0;
+	bestDbr = 1;
+	bestBaudrate = 0; /* required to avoid compilation warning */
 
-    /* In all for loops, if min_diff = 0, the exit for loop*/
-    for (prescaler = 0; (prescaler < 4) && min_diff; prescaler++)
-    {
-        for (scaler = 0; (scaler < 16) && min_diff; scaler++)
-        {
-            for (dbr = 1; (dbr < 3) && min_diff; dbr++)
-            {
-                realBaudrate = ((sourceClockInHz * dbr) /
-                                (s_baudratePrescaler[prescaler] * (s_baudrateScaler[scaler])));
+	/* In all for loops, if min_diff = 0, the exit for loop*/
+	for (prescaler = 0; (prescaler < 4) && min_diff; prescaler++)
+	{
+		for (scaler = 0; (scaler < 16) && min_diff; scaler++)
+		{
+			for (dbr = 1; (dbr < 3) && min_diff; dbr++)
+			{
+				realBaudrate = ((sourceClockInHz * dbr) /
+								(s_baudratePrescaler[prescaler] * (s_baudrateScaler[scaler])));
 
-                /* calculate the baud rate difference based on the conditional statement
-                 * that states that the calculated baud rate must not exceed the desired baud rate
-                 */
-                if (baudrate >= realBaudrate)
-                {
-                    diff = baudrate-realBaudrate;
-                    if (min_diff > diff)
-                    {
-                        /* a better match found */
-                        min_diff = diff;
-                        bestPrescaler = prescaler;
-                        bestScaler = scaler;
-                        bestBaudrate = realBaudrate;
-                        bestDbr = dbr;
-                    }
-                }
-            }
-        }
-    }
+				/* calculate the baud rate difference based on the conditional statement
+				 * that states that the calculated baud rate must not exceed the desired baud rate
+				 */
+				if (baudrate >= realBaudrate)
+				{
+					diff = baudrate-realBaudrate;
+					if (min_diff > diff)
+					{
+						/* a better match found */
+						min_diff = diff;
+						bestPrescaler = prescaler;
+						bestScaler = scaler;
+						bestBaudrate = realBaudrate;
+						bestDbr = dbr;
+					}
+				}
+			}
+		}
+	}
 
-    /* write the best dbr, prescalar, and baud rate scalar to the CTAR */
-    SPI_BWR_CTAR_DBR(base, whichCtar, (bestDbr - 1));
-    SPI_BWR_CTAR_PBR(base, whichCtar, bestPrescaler);
-    SPI_BWR_CTAR_BR(base, whichCtar, bestScaler);
+	/* write the best dbr, prescalar, and baud rate scalar to the CTAR */
+	SPI_BWR_CTAR_DBR(base, whichCtar, (bestDbr - 1));
+	SPI_BWR_CTAR_PBR(base, whichCtar, bestPrescaler);
+	SPI_BWR_CTAR_BR(base, whichCtar, bestScaler);
 
-    /* return the actual calculated baud rate */
-    return bestBaudrate;
+	/* return the actual calculated baud rate */
+	return bestBaudrate;
 }
 
 /*FUNCTION**********************************************************************
@@ -166,16 +166,16 @@ uint32_t DSPI_HAL_SetBaudRate(SPI_Type * base, dspi_ctar_selection_t whichCtar,
  *
  *END**************************************************************************/
 void DSPI_HAL_SetBaudDivisors(SPI_Type * base,
-                              dspi_ctar_selection_t whichCtar,
-                              const dspi_baud_rate_divisors_t * divisors)
+							  dspi_ctar_selection_t whichCtar,
+							  const dspi_baud_rate_divisors_t * divisors)
 {
-    /* these settings are only relevant in master mode */
-    if (DSPI_HAL_IsMaster(base))
-    {
-        SPI_BWR_CTAR_DBR(base, whichCtar, divisors->doubleBaudRate);
-        SPI_BWR_CTAR_PBR(base, whichCtar, divisors->prescaleDivisor);
-        SPI_BWR_CTAR_BR(base, whichCtar, divisors->baudRateDivisor);
-    }
+	/* these settings are only relevant in master mode */
+	if (DSPI_HAL_IsMaster(base))
+	{
+		SPI_BWR_CTAR_DBR(base, whichCtar, divisors->doubleBaudRate);
+		SPI_BWR_CTAR_PBR(base, whichCtar, divisors->prescaleDivisor);
+		SPI_BWR_CTAR_BR(base, whichCtar, divisors->baudRateDivisor);
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -188,22 +188,22 @@ void DSPI_HAL_SetBaudDivisors(SPI_Type * base,
  *
  *END**************************************************************************/
 void DSPI_HAL_SetPcsPolarityMode(SPI_Type * base, dspi_which_pcs_config_t pcs,
-                                 dspi_pcs_polarity_config_t activeLowOrHigh)
+								 dspi_pcs_polarity_config_t activeLowOrHigh)
 {
-    uint32_t temp;
+	uint32_t temp;
 
-    temp = SPI_RD_MCR_PCSIS(base);
+	temp = SPI_RD_MCR_PCSIS(base);
 
-    if (activeLowOrHigh == kDspiPcs_ActiveLow)
-    {
-        temp |= pcs;
-    }
-    else  /* kDspiPcsPolarity_ActiveHigh */
-    {
-        temp &= ~(unsigned)pcs;
-    }
+	if (activeLowOrHigh == kDspiPcs_ActiveLow)
+	{
+		temp |= pcs;
+	}
+	else  /* kDspiPcsPolarity_ActiveHigh */
+	{
+		temp &= ~(unsigned)pcs;
+	}
 
-    SPI_BWR_MCR_PCSIS(base, temp);
+	SPI_BWR_MCR_PCSIS(base, temp);
 }
 
 /*FUNCTION**********************************************************************
@@ -217,27 +217,27 @@ void DSPI_HAL_SetPcsPolarityMode(SPI_Type * base, dspi_which_pcs_config_t pcs,
  *END**************************************************************************/
 void DSPI_HAL_SetFifoCmd(SPI_Type * base, bool enableTxFifo, bool enableRxFifo)
 {
-    /* first see if MDIS is set or cleared */
-    uint32_t isMdisSet = SPI_RD_MCR_MDIS(base);
+	/* first see if MDIS is set or cleared */
+	uint32_t isMdisSet = SPI_RD_MCR_MDIS(base);
 
-    if (isMdisSet)
-    {
-        /* clear the MDIS bit (enable DSPI) to allow us to write to the fifo disables */
-        DSPI_HAL_Enable(base);
-    }
+	if (isMdisSet)
+	{
+		/* clear the MDIS bit (enable DSPI) to allow us to write to the fifo disables */
+		DSPI_HAL_Enable(base);
+	}
 
-    /* Note, the bit definition is "disable FIFO", so a "1" would disable. If user wants to enable
-     * the FIFOs, they pass in true, which we must logically negate (turn to false) to enable the
-     * FIFO
-     */
-    SPI_BWR_MCR_DIS_TXF(base, !(enableTxFifo == true));
-    SPI_BWR_MCR_DIS_RXF(base, !(enableRxFifo == true));
+	/* Note, the bit definition is "disable FIFO", so a "1" would disable. If user wants to enable
+	 * the FIFOs, they pass in true, which we must logically negate (turn to false) to enable the
+	 * FIFO
+	 */
+	SPI_BWR_MCR_DIS_TXF(base, !(enableTxFifo == true));
+	SPI_BWR_MCR_DIS_RXF(base, !(enableRxFifo == true));
 
-    /* set MDIS (disable DSPI) if it was set to begin with */
-    if (isMdisSet)
-    {
-        DSPI_HAL_Disable(base);
-    }
+	/* set MDIS (disable DSPI) if it was set to begin with */
+	if (isMdisSet)
+	{
+		DSPI_HAL_Disable(base);
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -248,8 +248,8 @@ void DSPI_HAL_SetFifoCmd(SPI_Type * base, bool enableTxFifo, bool enableRxFifo)
  *END**************************************************************************/
 void DSPI_HAL_SetFlushFifoCmd(SPI_Type * base, bool enableFlushTxFifo, bool enableFlushRxFifo)
 {
-    SPI_BWR_MCR_CLR_TXF(base, (enableFlushTxFifo == true));
-    SPI_BWR_MCR_CLR_RXF(base, (enableFlushRxFifo == true));
+	SPI_BWR_MCR_CLR_TXF(base, (enableFlushTxFifo == true));
+	SPI_BWR_MCR_CLR_RXF(base, (enableFlushRxFifo == true));
 }
 
 /*FUNCTION**********************************************************************
@@ -267,38 +267,38 @@ void DSPI_HAL_SetFlushFifoCmd(SPI_Type * base, bool enableFlushTxFifo, bool enab
  *
  *END**************************************************************************/
 dspi_status_t DSPI_HAL_SetDataFormat(SPI_Type * base,
-                                     dspi_ctar_selection_t whichCtar,
-                                     const dspi_data_format_config_t * config)
+									 dspi_ctar_selection_t whichCtar,
+									 const dspi_data_format_config_t * config)
 {
-    /* check bits-per-frame value to make sure it it within the proper range
-     * in either master or slave mode
-     */
-    if ((config->bitsPerFrame < 4) ||
-        ((config->bitsPerFrame > 16) && (SPI_RD_MCR_MSTR(base) == 1)) ||
+	/* check bits-per-frame value to make sure it it within the proper range
+	 * in either master or slave mode
+	 */
+	if ((config->bitsPerFrame < 4) ||
+		((config->bitsPerFrame > 16) && (SPI_RD_MCR_MSTR(base) == 1)) ||
 #if FSL_FEATURE_DSPI_HAS_SEPARATE_TXDATA_CMD_FIFO
-        ((config->bitsPerFrame > 16) && (SPI_RD_MCR_MSTR(base) == 0)))
+		((config->bitsPerFrame > 16) && (SPI_RD_MCR_MSTR(base) == 0)))
 #else
-        ((config->bitsPerFrame > 32) && (SPI_RD_MCR_MSTR(base) == 0)))
+		((config->bitsPerFrame > 32) && (SPI_RD_MCR_MSTR(base) == 0)))
 #endif
-    {
-        return kStatus_DSPI_InvalidBitCount;
-    }
+	{
+		return kStatus_DSPI_InvalidBitCount;
+	}
 
-    /* for master mode configuration */
-    if (DSPI_HAL_IsMaster(base))
-    {
-        SPI_BWR_CTAR_FMSZ(base, whichCtar, (config->bitsPerFrame - 1));
-        SPI_BWR_CTAR_CPOL(base, whichCtar, config->clkPolarity);
-        SPI_BWR_CTAR_CPHA(base, whichCtar, config->clkPhase);
-        SPI_BWR_CTAR_LSBFE(base, whichCtar, config->direction);
-    }
-    else /* for slave mode configuration */
-    {
-        SPI_BWR_CTAR_SLAVE_FMSZ(base, whichCtar, (config->bitsPerFrame - 1));
-        SPI_BWR_CTAR_SLAVE_CPOL(base, whichCtar, config->clkPolarity);
-        SPI_BWR_CTAR_SLAVE_CPHA(base, whichCtar, config->clkPhase);
-    }
-    return kStatus_DSPI_Success;
+	/* for master mode configuration */
+	if (DSPI_HAL_IsMaster(base))
+	{
+		SPI_BWR_CTAR_FMSZ(base, whichCtar, (config->bitsPerFrame - 1));
+		SPI_BWR_CTAR_CPOL(base, whichCtar, config->clkPolarity);
+		SPI_BWR_CTAR_CPHA(base, whichCtar, config->clkPhase);
+		SPI_BWR_CTAR_LSBFE(base, whichCtar, config->direction);
+	}
+	else /* for slave mode configuration */
+	{
+		SPI_BWR_CTAR_SLAVE_FMSZ(base, whichCtar, (config->bitsPerFrame - 1));
+		SPI_BWR_CTAR_SLAVE_CPOL(base, whichCtar, config->clkPolarity);
+		SPI_BWR_CTAR_SLAVE_CPHA(base, whichCtar, config->clkPhase);
+	}
+	return kStatus_DSPI_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -317,29 +317,29 @@ dspi_status_t DSPI_HAL_SetDataFormat(SPI_Type * base,
  * pre-calculated them or if they simply wish to manually increment either value.
  *END**************************************************************************/
 void DSPI_HAL_SetDelay(SPI_Type * base, dspi_ctar_selection_t whichCtar, uint32_t prescaler,
-                       uint32_t scaler, dspi_delay_type_t whichDelay)
+					   uint32_t scaler, dspi_delay_type_t whichDelay)
 {
-    /* these settings are only relevant in master mode */
-    if ((bool)SPI_RD_MCR_MSTR(base))
-    {
-        if (whichDelay == kDspiPcsToSck)
-        {
-            SPI_BWR_CTAR_PCSSCK(base, whichCtar, prescaler);
-            SPI_BWR_CTAR_CSSCK(base, whichCtar, scaler);
-        }
+	/* these settings are only relevant in master mode */
+	if ((bool)SPI_RD_MCR_MSTR(base))
+	{
+		if (whichDelay == kDspiPcsToSck)
+		{
+			SPI_BWR_CTAR_PCSSCK(base, whichCtar, prescaler);
+			SPI_BWR_CTAR_CSSCK(base, whichCtar, scaler);
+		}
 
-        if (whichDelay == kDspiLastSckToPcs)
-        {
-            SPI_BWR_CTAR_PASC(base, whichCtar, prescaler);
-            SPI_BWR_CTAR_ASC(base, whichCtar, scaler);
-        }
+		if (whichDelay == kDspiLastSckToPcs)
+		{
+			SPI_BWR_CTAR_PASC(base, whichCtar, prescaler);
+			SPI_BWR_CTAR_ASC(base, whichCtar, scaler);
+		}
 
-        if (whichDelay == kDspiAfterTransfer)
-        {
-            SPI_BWR_CTAR_PDT(base, whichCtar, prescaler);
-            SPI_BWR_CTAR_DT(base, whichCtar, scaler);
-        }
-    }
+		if (whichDelay == kDspiAfterTransfer)
+		{
+			SPI_BWR_CTAR_PDT(base, whichCtar, prescaler);
+			SPI_BWR_CTAR_DT(base, whichCtar, scaler);
+		}
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -364,76 +364,76 @@ void DSPI_HAL_SetDelay(SPI_Type * base, dspi_ctar_selection_t whichCtar, uint32_
  * peripheral driver to alert the user of an out of range delay input.
  *END**************************************************************************/
 uint32_t DSPI_HAL_CalculateDelay(SPI_Type * base, dspi_ctar_selection_t whichCtar,
-                                 dspi_delay_type_t whichDelay, uint32_t sourceClockInHz,
-                                 uint32_t delayInNanoSec)
+								 dspi_delay_type_t whichDelay, uint32_t sourceClockInHz,
+								 uint32_t delayInNanoSec)
 {
-    /* for master mode configuration, if slave mode detected, return 0 */
-    if (!(bool)SPI_RD_MCR_MSTR(base))
-    {
-        return 0;
-    }
+	/* for master mode configuration, if slave mode detected, return 0 */
+	if (!(bool)SPI_RD_MCR_MSTR(base))
+	{
+		return 0;
+	}
 
-    uint32_t prescaler, bestPrescaler;
-    uint32_t scaler, bestScaler;
-    uint32_t realDelay, bestDelay;
-    uint32_t diff, min_diff;
-    uint32_t initialDelayNanoSec;
+	uint32_t prescaler, bestPrescaler;
+	uint32_t scaler, bestScaler;
+	uint32_t realDelay, bestDelay;
+	uint32_t diff, min_diff;
+	uint32_t initialDelayNanoSec;
 
-    /* find combination of prescaler and scaler resulting in the delay closest to the
-     * requested value
-     */
-    min_diff = 0xFFFFFFFFU;
-    /* Initialize prescaler and scaler to their max values to generate the max delay */
-    bestPrescaler = 0x3;
-    bestScaler = 0xF;
-    bestDelay = (1000000000/sourceClockInHz) * s_delayPrescaler[bestPrescaler] *
-                 s_delayScaler[bestScaler];
+	/* find combination of prescaler and scaler resulting in the delay closest to the
+	 * requested value
+	 */
+	min_diff = 0xFFFFFFFFU;
+	/* Initialize prescaler and scaler to their max values to generate the max delay */
+	bestPrescaler = 0x3;
+	bestScaler = 0xF;
+	bestDelay = (1000000000/sourceClockInHz) * s_delayPrescaler[bestPrescaler] *
+				 s_delayScaler[bestScaler];
 
-    /* First calculate the initial, default delay */
-    initialDelayNanoSec = 1000000000/sourceClockInHz * 2;
+	/* First calculate the initial, default delay */
+	initialDelayNanoSec = 1000000000/sourceClockInHz * 2;
 
-    /* If the initial, default delay is already greater than the desired delay, then
-     * set the delays to their initial value (0) and return the delay. In other words,
-     * there is no way to decrease the delay value further.
-     */
-    if (initialDelayNanoSec >= delayInNanoSec)
-    {
-        DSPI_HAL_SetDelay(base, whichCtar, 0, 0, whichDelay);
-        return initialDelayNanoSec;
-    }
+	/* If the initial, default delay is already greater than the desired delay, then
+	 * set the delays to their initial value (0) and return the delay. In other words,
+	 * there is no way to decrease the delay value further.
+	 */
+	if (initialDelayNanoSec >= delayInNanoSec)
+	{
+		DSPI_HAL_SetDelay(base, whichCtar, 0, 0, whichDelay);
+		return initialDelayNanoSec;
+	}
 
 
-    /* In all for loops, if min_diff = 0, the exit for loop */
-    for (prescaler = 0; (prescaler < 4) && min_diff; prescaler++)
-    {
-        for (scaler = 0; (scaler < 16) && min_diff; scaler++)
-        {
-            realDelay = (1000000000/sourceClockInHz) * s_delayPrescaler[prescaler] *
-                         s_delayScaler[scaler];
+	/* In all for loops, if min_diff = 0, the exit for loop */
+	for (prescaler = 0; (prescaler < 4) && min_diff; prescaler++)
+	{
+		for (scaler = 0; (scaler < 16) && min_diff; scaler++)
+		{
+			realDelay = (1000000000/sourceClockInHz) * s_delayPrescaler[prescaler] *
+						 s_delayScaler[scaler];
 
-            /* calculate the delay difference based on the conditional statement
-             * that states that the calculated delay must not be less then the desired delay
-             */
-            if (realDelay >= delayInNanoSec)
-            {
-                diff = realDelay-delayInNanoSec;
-                if (min_diff > diff)
-                {
-                    /* a better match found */
-                    min_diff = diff;
-                    bestPrescaler = prescaler;
-                    bestScaler = scaler;
-                    bestDelay = realDelay;
-                }
-            }
-        }
-    }
+			/* calculate the delay difference based on the conditional statement
+			 * that states that the calculated delay must not be less then the desired delay
+			 */
+			if (realDelay >= delayInNanoSec)
+			{
+				diff = realDelay-delayInNanoSec;
+				if (min_diff > diff)
+				{
+					/* a better match found */
+					min_diff = diff;
+					bestPrescaler = prescaler;
+					bestScaler = scaler;
+					bestDelay = realDelay;
+				}
+			}
+		}
+	}
 
-    /* write the best dbr, prescalar, and baud rate scalar to the CTAR */
-    DSPI_HAL_SetDelay(base, whichCtar, bestPrescaler, bestScaler, whichDelay);
+	/* write the best dbr, prescalar, and baud rate scalar to the CTAR */
+	DSPI_HAL_SetDelay(base, whichCtar, bestPrescaler, bestScaler, whichDelay);
 
-    /* return the actual calculated baud rate */
-    return bestDelay;
+	/* return the actual calculated baud rate */
+	return bestDelay;
 }
 
 /*FUNCTION**********************************************************************
@@ -452,8 +452,8 @@ uint32_t DSPI_HAL_CalculateDelay(SPI_Type * base, dspi_ctar_selection_t whichCta
  *END**************************************************************************/
 void DSPI_HAL_SetTxFifoFillDmaIntMode(SPI_Type * base, dspi_dma_or_int_mode_t mode, bool enable)
 {
-    SPI_BWR_RSER_TFFF_DIRS(base, mode);  /* Configure as DMA or interrupt */
-    SPI_BWR_RSER_TFFF_RE(base, (enable == true));  /* Enable or disable the request */
+	SPI_BWR_RSER_TFFF_DIRS(base, mode);  /* Configure as DMA or interrupt */
+	SPI_BWR_RSER_TFFF_RE(base, (enable == true));  /* Enable or disable the request */
 }
 
 /*FUNCTION**********************************************************************
@@ -472,8 +472,8 @@ void DSPI_HAL_SetTxFifoFillDmaIntMode(SPI_Type * base, dspi_dma_or_int_mode_t mo
  *END**************************************************************************/
 void DSPI_HAL_SetRxFifoDrainDmaIntMode(SPI_Type * base, dspi_dma_or_int_mode_t mode, bool enable)
 {
-    SPI_BWR_RSER_RFDF_DIRS(base, mode);  /* Configure as DMA or interrupt */
-    SPI_BWR_RSER_RFDF_RE(base, (enable == true));  /* Enable or disable the request */
+	SPI_BWR_RSER_RFDF_DIRS(base, mode);  /* Configure as DMA or interrupt */
+	SPI_BWR_RSER_RFDF_RE(base, (enable == true));  /* Enable or disable the request */
 }
 
 /*FUNCTION**********************************************************************
@@ -496,13 +496,13 @@ void DSPI_HAL_SetRxFifoDrainDmaIntMode(SPI_Type * base, dspi_dma_or_int_mode_t m
  *
  *END**************************************************************************/
 void DSPI_HAL_SetIntMode(SPI_Type * base,
-                                  dspi_status_and_interrupt_request_t interruptSrc,
-                                  bool enable)
+								  dspi_status_and_interrupt_request_t interruptSrc,
+								  bool enable)
 {
-    uint32_t temp;
+	uint32_t temp;
 
-    temp = (SPI_RD_RSER(base) & ~(0x1U << interruptSrc)) | ((uint32_t)enable << interruptSrc);
-    SPI_WR_RSER(base, temp);
+	temp = (SPI_RD_RSER(base) & ~(0x1U << interruptSrc)) | ((uint32_t)enable << interruptSrc);
+	SPI_WR_RSER(base, temp);
 }
 
 /*FUNCTION**********************************************************************
@@ -525,22 +525,22 @@ void DSPI_HAL_SetIntMode(SPI_Type * base,
  *
  *END**************************************************************************/
 void DSPI_HAL_WriteDataMastermode(SPI_Type * base,
-                                  dspi_command_config_t * command,
-                                  uint16_t data)
+								  dspi_command_config_t * command,
+								  uint16_t data)
 {
-    uint32_t temp;
+	uint32_t temp;
 
-    /* First, build up the 32-bit word then write it to the PUSHR.
-     * Note, to work around MISRA warnings typecast each variable before the shift
-     */
-    temp = ((uint32_t)(command->isChipSelectContinuous) << SPI_PUSHR_CONT_SHIFT) |
-           ((uint32_t)(command->whichCtar) << SPI_PUSHR_CTAS_SHIFT) |
-           ((uint32_t)(command->whichPcs) << SPI_PUSHR_PCS_SHIFT) |
-           ((uint32_t)(command->isEndOfQueue) << SPI_PUSHR_EOQ_SHIFT) |
-           ((uint32_t)(command->clearTransferCount) << SPI_PUSHR_CTCNT_SHIFT) |
-           ((uint32_t)(data) << SPI_PUSHR_TXDATA_SHIFT);
+	/* First, build up the 32-bit word then write it to the PUSHR.
+	 * Note, to work around MISRA warnings typecast each variable before the shift
+	 */
+	temp = ((uint32_t)(command->isChipSelectContinuous) << SPI_PUSHR_CONT_SHIFT) |
+		   ((uint32_t)(command->whichCtar) << SPI_PUSHR_CTAS_SHIFT) |
+		   ((uint32_t)(command->whichPcs) << SPI_PUSHR_PCS_SHIFT) |
+		   ((uint32_t)(command->isEndOfQueue) << SPI_PUSHR_EOQ_SHIFT) |
+		   ((uint32_t)(command->clearTransferCount) << SPI_PUSHR_CTCNT_SHIFT) |
+		   ((uint32_t)(data) << SPI_PUSHR_TXDATA_SHIFT);
 
-    SPI_WR_PUSHR(base, temp);
+	SPI_WR_PUSHR(base, temp);
 }
 
 /*FUNCTION**********************************************************************
@@ -555,12 +555,12 @@ void DSPI_HAL_WriteDataMastermode(SPI_Type * base,
  *END**************************************************************************/
 void DSPI_HAL_WriteDataSlavemodeBlocking(SPI_Type * base, uint32_t data)
 {
-    /* Firstly, clear transmit complete flag */
-    SPI_BWR_SR_TCF(base, 1);
-    /* Write data into register */
-    SPI_WR_PUSHR_SLAVE(base, data);
-    /* Wait tills the data is transmitted */
-    while(SPI_RD_SR_TCF(base) == 0) { }
+	/* Firstly, clear transmit complete flag */
+	SPI_BWR_SR_TCF(base, 1);
+	/* Write data into register */
+	SPI_WR_PUSHR_SLAVE(base, data);
+	/* Wait tills the data is transmitted */
+	while(SPI_RD_SR_TCF(base) == 0) { }
 }
 
 /*FUNCTION**********************************************************************
@@ -587,28 +587,28 @@ void DSPI_HAL_WriteDataSlavemodeBlocking(SPI_Type * base, uint32_t data)
  *
  *END**************************************************************************/
 void DSPI_HAL_WriteDataMastermodeBlocking(SPI_Type * base,
-                                          dspi_command_config_t * command,
-                                          uint16_t data)
+										  dspi_command_config_t * command,
+										  uint16_t data)
 {
-    uint32_t temp;
+	uint32_t temp;
 
-    /* First, clear Transmit Complete Flag (TCF) */
-    SPI_BWR_SR_TCF(base, 1);
+	/* First, clear Transmit Complete Flag (TCF) */
+	SPI_BWR_SR_TCF(base, 1);
 
-    /* First, build up the 32-bit word then write it to the PUSHR
-     * Note, to work around MISRA warnings typecast each variable before the shift
-     */
-    temp = ((uint32_t)(command->isChipSelectContinuous) << SPI_PUSHR_CONT_SHIFT) |
-           ((uint32_t)(command->whichCtar) << SPI_PUSHR_CTAS_SHIFT) |
-           ((uint32_t)(command->whichPcs) << SPI_PUSHR_PCS_SHIFT) |
-           ((uint32_t)(command->isEndOfQueue) << SPI_PUSHR_EOQ_SHIFT) |
-           ((uint32_t)(command->clearTransferCount) << SPI_PUSHR_CTCNT_SHIFT) |
-           ((uint32_t)(data) << SPI_PUSHR_TXDATA_SHIFT);
+	/* First, build up the 32-bit word then write it to the PUSHR
+	 * Note, to work around MISRA warnings typecast each variable before the shift
+	 */
+	temp = ((uint32_t)(command->isChipSelectContinuous) << SPI_PUSHR_CONT_SHIFT) |
+		   ((uint32_t)(command->whichCtar) << SPI_PUSHR_CTAS_SHIFT) |
+		   ((uint32_t)(command->whichPcs) << SPI_PUSHR_PCS_SHIFT) |
+		   ((uint32_t)(command->isEndOfQueue) << SPI_PUSHR_EOQ_SHIFT) |
+		   ((uint32_t)(command->clearTransferCount) << SPI_PUSHR_CTCNT_SHIFT) |
+		   ((uint32_t)(data) << SPI_PUSHR_TXDATA_SHIFT);
 
-    SPI_WR_PUSHR(base, temp);
+	SPI_WR_PUSHR(base, temp);
 
-    /* Wait till TCF sets */
-    while(SPI_RD_SR_TCF(base) == 0) { }
+	/* Wait till TCF sets */
+	while(SPI_RD_SR_TCF(base) == 0) { }
 }
 
 /*FUNCTION**********************************************************************
@@ -636,13 +636,13 @@ void DSPI_HAL_WriteDataMastermodeBlocking(SPI_Type * base,
  *END**************************************************************************/
 void DSPI_HAL_WriteCmdDataMastermodeBlocking(SPI_Type * base, uint32_t data)
 {
-    /* First, clear Transmit Complete Flag (TCF) */
-    SPI_BWR_SR_TCF(base, 1);
+	/* First, clear Transmit Complete Flag (TCF) */
+	SPI_BWR_SR_TCF(base, 1);
 
-    SPI_WR_PUSHR(base, data);
+	SPI_WR_PUSHR(base, data);
 
-    /* Wait till TCF sets */
-    while(SPI_RD_SR_TCF(base) == 0) { }
+	/* Wait till TCF sets */
+	while(SPI_RD_SR_TCF(base) == 0) { }
 }
 
 /*FUNCTION**********************************************************************
@@ -664,22 +664,21 @@ void DSPI_HAL_WriteCmdDataMastermodeBlocking(SPI_Type * base, uint32_t data)
  *END**************************************************************************/
 uint32_t DSPI_HAL_GetFormattedCommand(SPI_Type * base, dspi_command_config_t * command)
 {
-    uint32_t temp;
+	uint32_t temp;
 
-    /* Format the 16-bit command word according to the PUSHR data register bit field
-     * Note, to work around MISRA warnings typecast each variable before the shift
-     */
-    temp = ((uint32_t)(command->isChipSelectContinuous) << SPI_PUSHR_CONT_SHIFT) |
-           ((uint32_t)(command->whichCtar) << SPI_PUSHR_CTAS_SHIFT) |
-           ((uint32_t)(command->whichPcs) << SPI_PUSHR_PCS_SHIFT) |
-           ((uint32_t)(command->isEndOfQueue) << SPI_PUSHR_EOQ_SHIFT) |
-           ((uint32_t)(command->clearTransferCount) << SPI_PUSHR_CTCNT_SHIFT);
+	/* Format the 16-bit command word according to the PUSHR data register bit field
+	 * Note, to work around MISRA warnings typecast each variable before the shift
+	 */
+	temp = ((uint32_t)(command->isChipSelectContinuous) << SPI_PUSHR_CONT_SHIFT) |
+		   ((uint32_t)(command->whichCtar) << SPI_PUSHR_CTAS_SHIFT) |
+		   ((uint32_t)(command->whichPcs) << SPI_PUSHR_PCS_SHIFT) |
+		   ((uint32_t)(command->isEndOfQueue) << SPI_PUSHR_EOQ_SHIFT) |
+		   ((uint32_t)(command->clearTransferCount) << SPI_PUSHR_CTCNT_SHIFT);
 
-    return temp;
+	return temp;
 }
 
 #endif /* FSL_FEATURE_SOC_DSPI_COUNT */
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

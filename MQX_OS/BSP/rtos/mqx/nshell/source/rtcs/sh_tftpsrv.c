@@ -49,79 +49,79 @@ static uint32_t tftpsrv_handle;
 
 int32_t Shell_tftpsrv(int32_t argc, char *argv[])
 {
-    uint32_t  result;
-    bool      print_usage;
-    bool      shorthelp = FALSE;
-    bool      print_status = FALSE;
-    int32_t   return_code = SHELL_EXIT_SUCCESS;
-    char      *status_string = NULL;
-    SHELL_CONTEXT_PTR shell_ptr;
-    FILE*             fout;
+	uint32_t  result;
+	bool      print_usage;
+	bool      shorthelp = FALSE;
+	bool      print_status = FALSE;
+	int32_t   return_code = SHELL_EXIT_SUCCESS;
+	char      *status_string = NULL;
+	SHELL_CONTEXT_PTR shell_ptr;
+	FILE*             fout;
 
-    shell_ptr = Shell_get_context(argv);
-    fout = shell_ptr->STDOUT;
-    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
+	shell_ptr = Shell_get_context(argv);
+	fout = shell_ptr->STDOUT;
+	print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
-    if (print_usage)
-    {
-        if (shorthelp)
-        {
-            fprintf(fout, "%s [start|stop]\n", argv[0]);
-        }
-        else
-        {
-            fprintf(fout, "Usage: %s [start|stop]\n",argv[0]);
-        }
-        goto EXIT;
-    }
-    
-    if (argc != 2)
-    {
-        fprintf(fout, "Error, %s invoked with incorrect number of arguments.\n", argv[0]);
-        goto EXIT;
-    }
+	if (print_usage)
+	{
+		if (shorthelp)
+		{
+			fprintf(fout, "%s [start|stop]\n", argv[0]);
+		}
+		else
+		{
+			fprintf(fout, "Usage: %s [start|stop]\n",argv[0]);
+		}
+		goto EXIT;
+	}
 
-    if (strcmp(argv[1], "start") == 0)
-    {
-        TFTPSRV_PARAM_STRUCT params = {0};
-        
-        params.root_dir = "a:";
-        if (tftpsrv_handle == 0)
-        {
-            tftpsrv_handle = TFTPSRV_init(&params);
-            status_string = (tftpsrv_handle == 0) ? "failed" : "successful";
-        }
-        else
-        {
-            status_string = "aborted. TFTP server already running";
-        }
-        print_status = TRUE;
-    }
-    else if (strcmp(argv[1], "stop") == 0)
-    {
-        if (tftpsrv_handle != 0)
-        {
-            result = TFTPSRV_release(tftpsrv_handle);
-            status_string = (result == RTCS_OK) ? "successful" : "failed";
-            tftpsrv_handle = 0;
-        }
-        else
-        {
-            status_string = "aborted. TFTP server is not running";
-        }
-        print_status = TRUE;
-    }
-    else
-    {
-        fprintf(fout, "Error, %s invoked with incorrect option.\n", argv[0]);
-    }
+	if (argc != 2)
+	{
+		fprintf(fout, "Error, %s invoked with incorrect number of arguments.\n", argv[0]);
+		goto EXIT;
+	}
 
-    if (print_status)
-    {
-        fprintf(fout, "TFTP server %s %s.\n", argv[1], status_string);
-    }
+	if (strcmp(argv[1], "start") == 0)
+	{
+		TFTPSRV_PARAM_STRUCT params = {0};
 
-    EXIT:
-    return return_code;
+		params.root_dir = "a:";
+		if (tftpsrv_handle == 0)
+		{
+			tftpsrv_handle = TFTPSRV_init(&params);
+			status_string = (tftpsrv_handle == 0) ? "failed" : "successful";
+		}
+		else
+		{
+			status_string = "aborted. TFTP server already running";
+		}
+		print_status = TRUE;
+	}
+	else if (strcmp(argv[1], "stop") == 0)
+	{
+		if (tftpsrv_handle != 0)
+		{
+			result = TFTPSRV_release(tftpsrv_handle);
+			status_string = (result == RTCS_OK) ? "successful" : "failed";
+			tftpsrv_handle = 0;
+		}
+		else
+		{
+			status_string = "aborted. TFTP server is not running";
+		}
+		print_status = TRUE;
+	}
+	else
+	{
+		fprintf(fout, "Error, %s invoked with incorrect option.\n", argv[0]);
+	}
+
+	if (print_status)
+	{
+		fprintf(fout, "TFTP server %s %s.\n", argv[1], status_string);
+	}
+
+	EXIT:
+	return return_code;
 }
 #endif /* SHELLCFG_USES_RTCS */

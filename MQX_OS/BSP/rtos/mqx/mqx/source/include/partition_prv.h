@@ -39,7 +39,7 @@
 #if MQX_CHECK_VALIDITY
 #define CALC_PARTITION_CHECKSUM(block) \
    (block)->CHECKSUM = (_mqx_uint)((block)->LINK.PARTITION_PTR) + \
-      (_mqx_uint)((block)->TASK_ID);
+	  (_mqx_uint)((block)->TASK_ID);
 #else
 #define CALC_PARTITION_CHECKSUM(block)
 #endif
@@ -47,7 +47,7 @@
 #if MQX_CHECK_VALIDITY
 #define VALID_PARTITION_CHECKSUM(block) \
    ( (block)->CHECKSUM == ((_mqx_uint)((block)->LINK.PARTITION_PTR) + \
-          (_mqx_uint)((block)->TASK_ID)) )
+		  (_mqx_uint)((block)->TASK_ID)) )
 #else
 #define VALID_PARTITION_CHECKSUM(block) TRUE
 #endif
@@ -65,14 +65,14 @@
 struct internal_partition_block_struct;
 
 /* PARTPOOL BLOCK STRUCT */
-/*! 
+/*!
  * \cond DOXYGEN_PRIVATE
- *  
- * \brief This structure is used at the beginning of each memory area where 
+ *
+ * \brief This structure is used at the beginning of each memory area where
  * blocks have been created for a partition.
  */
 typedef struct partpool_block_struct
-{                  
+{
    /*! \brief The next memory area where blocks are for this partition. */
    struct partpool_block_struct                  *NEXT_POOL_PTR;
 
@@ -81,39 +81,39 @@ typedef struct partpool_block_struct
 
    /*! \brief Number of blocks in this memory area. */
    _mqx_uint                                      NUMBER_OF_BLOCKS;
-   
+
    /*! \brief The address of the first internal block of the pool. */
    struct internal_partition_block_struct        *FIRST_IBLOCK_PTR;
-   
+
 } PARTPOOL_BLOCK_STRUCT, * PARTPOOL_BLOCK_STRUCT_PTR;
 /*! \endcond */
 
 /* PARTPOOL_STRUCT */
 /*!
  * \cond DOXYGEN_PRIVATE
- *   
+ *
  * \brief This structure defines what a partition pool looks like.
- *  
+ *
  * It overlays the beginning of the memory area used for a partition, when
  * the partition is created.
- * \n All of the partition pools in the kernel are linked together via the 
+ * \n All of the partition pools in the kernel are linked together via the
  * NEXT_PARITION_PTR field.
- * \n When a new memory area is added (to extend the partition), the new memory 
- * area begins with a PARTPOOL_BLOCK structure. All of these are linked together 
+ * \n When a new memory area is added (to extend the partition), the new memory
+ * area begins with a PARTPOOL_BLOCK structure. All of these are linked together
  * via the NEXT_POOL_PTR field of the partpool block struct.
- * \n All of the Partition Blocks are individually linked together onto a free list.      
+ * \n All of the Partition Blocks are individually linked together onto a free list.
  */
 typedef struct partpool_struct
 {
-   /*! 
-    * \brief Pointer to the next partition to maintain a list of partitions in
-    * the kernel. 
-    */   
+   /*!
+	* \brief Pointer to the next partition to maintain a list of partitions in
+	* the kernel.
+	*/
    void                                         *NEXT;
-   /*! 
-    * \brief Pointer to the previous partition to maintain a list of partitions 
-    * in the kernel. 
-    */
+   /*!
+	* \brief Pointer to the previous partition to maintain a list of partitions
+	* in the kernel.
+	*/
    void                                         *PREV;
 
    /*! \brief The actual size each block in the partition. */
@@ -127,7 +127,7 @@ typedef struct partpool_struct
 
    /*! \brief The total number of blocks in the partition. */
    _mem_size                                     TOTAL_BLOCKS;
- 
+
    /*! \brief The maximum number of blocks that have been in use at one time. */
    _mem_size                                     MAX_BLOCKS_USED;
 
@@ -142,32 +142,32 @@ typedef struct partpool_struct
 
    /*! \brief A context pointer used by the partition test function. */
    struct internal_partition_block_struct volatile       *TEST_FREE_PTR;
-   
+
    /*! \brief The first set of blocks in the partition. */
    PARTPOOL_BLOCK_STRUCT                         POOL;
-   
+
 } PARTPOOL_STRUCT, * PARTPOOL_STRUCT_PTR;
 /*! \endcond */
 
 /* INTERNAL PARTITION BLOCK STRUCT */
-/*! 
+/*!
  * \cond DOXYGEN_PRIVATE
- *   
- * \brief Each block in the partition has this structure overlaid onto the 
- * beginning of the block. 
- * 
- * The address provided to the application for the block is the memory address 
+ *
+ * \brief Each block in the partition has this structure overlaid onto the
+ * beginning of the block.
+ *
+ * The address provided to the application for the block is the memory address
  * following this header.
  */
 typedef struct internal_partition_block_struct
 {
-   /*! 
-    * \brief When on the free list, this pointer links blocks together. When 
-    * allocated, this field points back to the original partition.
-    */
+   /*!
+	* \brief When on the free list, this pointer links blocks together. When
+	* allocated, this field points back to the original partition.
+	*/
    union  {
-      struct internal_partition_block_struct      *NEXT_BLOCK_PTR;
-      PARTPOOL_STRUCT_PTR                          PARTITION_PTR;      
+	  struct internal_partition_block_struct      *NEXT_BLOCK_PTR;
+	  PARTPOOL_STRUCT_PTR                          PARTITION_PTR;
    } LINK;
 
    /*! \brief The block checksum. */
@@ -182,8 +182,8 @@ typedef struct internal_partition_block_struct
 /* PARTITION COMPONENT STRUCT */
 /*!
  * \cond DOXYGEN_PRIVATE
- *  
- * \brief This structure is used to store information required for partition 
+ *
+ * \brief This structure is used to store information required for partition
  * component.
  */
 typedef struct partition_component_struct
@@ -210,9 +210,9 @@ extern "C" {
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _partition_create_internal(
-    PARTPOOL_STRUCT_PTR partpool_ptr,
-    _mem_size actual_size,
-    _mqx_uint initial_blocks
+	PARTPOOL_STRUCT_PTR partpool_ptr,
+	_mem_size actual_size,
+	_mqx_uint initial_blocks
 );
 /*! \endcond */
 
@@ -220,9 +220,9 @@ extern _mqx_uint _partition_create_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _partition_extend_internal(
-    PARTPOOL_STRUCT_PTR partpool_ptr,
-    PARTPOOL_BLOCK_STRUCT_PTR partpool_block_ptr,
-    _mqx_uint number_of_blocks
+	PARTPOOL_STRUCT_PTR partpool_ptr,
+	PARTPOOL_BLOCK_STRUCT_PTR partpool_block_ptr,
+	_mqx_uint number_of_blocks
 );
 /*! \endcond */
 
@@ -230,8 +230,8 @@ extern void _partition_extend_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void *_partition_alloc_internal(
-    PARTPOOL_STRUCT_PTR partpool_ptr,
-    TD_STRUCT_PTR       td_ptr
+	PARTPOOL_STRUCT_PTR partpool_ptr,
+	TD_STRUCT_PTR       td_ptr
 );
 /*! \endcond */
 
@@ -239,7 +239,7 @@ extern void *_partition_alloc_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _partition_cleanup(
-    TD_STRUCT_PTR td_ptr
+	TD_STRUCT_PTR td_ptr
 );
 /*! \endcond */
 

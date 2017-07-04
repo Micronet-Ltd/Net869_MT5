@@ -421,11 +421,11 @@
 ** MGCT: <option type="bool"/>
 */
 #ifndef MQX_USE_UNCACHED_MEM
-    #if MQXCFG_ALLOCATOR == MQX_ALLOCATOR_LWMEM
-        #define MQX_USE_UNCACHED_MEM         0
-    #else
-        #define MQX_USE_UNCACHED_MEM         1
-    #endif
+	#if MQXCFG_ALLOCATOR == MQX_ALLOCATOR_LWMEM
+		#define MQX_USE_UNCACHED_MEM         0
+	#else
+		#define MQX_USE_UNCACHED_MEM         1
+	#endif
 #endif
 
 /*
@@ -1044,17 +1044,17 @@
 ** MGCT: <option type="bool"/>
 */
 #ifndef MQX_SUPPRESS_STRINGH_MACROS
-    #if defined(__ICCARM__) /* IAR */
-        #if __VER__ >= 6000000
-            #define MQX_SUPPRESS_STRINGH_MACROS 1
-        #else
-            #define MQX_SUPPRESS_STRINGH_MACROS 0
-        #endif
-    #elif defined(__CC_ARM)
-            #define MQX_SUPPRESS_STRINGH_MACROS 1
-    #else
-        #define MQX_SUPPRESS_STRINGH_MACROS 0
-    #endif
+	#if defined(__ICCARM__) /* IAR */
+		#if __VER__ >= 6000000
+			#define MQX_SUPPRESS_STRINGH_MACROS 1
+		#else
+			#define MQX_SUPPRESS_STRINGH_MACROS 0
+		#endif
+	#elif defined(__CC_ARM)
+			#define MQX_SUPPRESS_STRINGH_MACROS 1
+	#else
+		#define MQX_SUPPRESS_STRINGH_MACROS 0
+	#endif
 #endif
 
 /** MGCT: </category> */
@@ -1272,8 +1272,8 @@
 ** Any MQX component used?
 */
 #define MQX_USE_COMPONENTS MQX_USE_NAME || MQX_USE_SEMAPHORES  || MQX_USE_EVENTS || MQX_USE_MUTEXES || MQX_USE_TIMER || \
-    MQX_USE_LOGS || MQX_USE_SW_WATCHDOGS || MQX_USE_MESSAGES || MQX_USE_PARTITIONS ||        \
-    MQX_USE_IPC || MQX_IS_MULTI_PROCESSOR || MQX_USE_LWLOGS
+	MQX_USE_LOGS || MQX_USE_SW_WATCHDOGS || MQX_USE_MESSAGES || MQX_USE_PARTITIONS ||        \
+	MQX_USE_IPC || MQX_IS_MULTI_PROCESSOR || MQX_USE_LWLOGS
 
 /*
 ** Check for dependencies.
@@ -1325,24 +1325,24 @@
 #endif
 
 #if (MQXCFG_ENABLE_FP == 1)&&(MQXCFG_ALLOCATOR == MQX_ALLOCATOR_NONE)
-    #error FP tasks need enabled allocator. Please enable allocator or disable MQXCFG_ENABLE_FP.
+	#error FP tasks need enabled allocator. Please enable allocator or disable MQXCFG_ENABLE_FP.
 #endif
 
 /* CHECK DELETED MACROS */
 #if MQX_USE_MEM
-    #error Macro MQX_USE_MEM is not used anymore, define MQXCFG_ALLOCATOR to MQX_ALLOCATOR_MEM for selection of MEM allocator.
+	#error Macro MQX_USE_MEM is not used anymore, define MQXCFG_ALLOCATOR to MQX_ALLOCATOR_MEM for selection of MEM allocator.
 #endif
 
 #if MQX_USE_LWMEM_ALLOCATOR
-    #error Macro MQX_USE_LWMEM_ALLOCATOR is not used anymore, define MQXCFG_ALLOCATOR to MQX_ALLOCATOR_LWMEM for selection of LWMEM allocator.
+	#error Macro MQX_USE_LWMEM_ALLOCATOR is not used anymore, define MQXCFG_ALLOCATOR to MQX_ALLOCATOR_LWMEM for selection of LWMEM allocator.
 #endif
 
 #if MQX_USE_LWMEM
-    #error Macro MQX_USE_LWMEM is not used anymore, define MQXCFG_ALLOCATOR to MQX_ALLOCATOR_LWMEM for selection of LWMEM allocator.
+	#error Macro MQX_USE_LWMEM is not used anymore, define MQXCFG_ALLOCATOR to MQX_ALLOCATOR_LWMEM for selection of LWMEM allocator.
 #endif
 
 #if MQX_USE_TLSF_ALLOCATOR
-    #error Macro MQX_USE_TLSF_ALLOCATOR is not used anymore, define MQXCFG_ALLOCATOR to MQX_ALLOCATOR_TLSF for selection of TLSF allocator.
+	#error Macro MQX_USE_TLSF_ALLOCATOR is not used anymore, define MQXCFG_ALLOCATOR to MQX_ALLOCATOR_TLSF for selection of TLSF allocator.
 #endif
 
 #endif

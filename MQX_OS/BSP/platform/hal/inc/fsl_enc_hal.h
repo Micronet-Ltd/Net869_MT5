@@ -7,7 +7,7 @@
 * Use of this software is governed by the Freescale License
 * distributed with this Material.
 * See the LICENSE file distributed for more details.
-* 
+*
 *
 *******************************************************************************/
 
@@ -31,39 +31,39 @@
 
 /*! @brief Encoder status */
 typedef enum _enc_status_t {
-    kStatus_ENC_Success = 0U,           /*!< Encoder success status.*/
-    kStatus_ENC_Error = 1U,             /*!< Encoder error status.*/
-    kStatus_ENC_InvalidArgument = 2U    /*!< Encoder invalid argument.*/
+	kStatus_ENC_Success = 0U,           /*!< Encoder success status.*/
+	kStatus_ENC_Error = 1U,             /*!< Encoder error status.*/
+	kStatus_ENC_InvalidArgument = 2U    /*!< Encoder invalid argument.*/
 } enc_status_t;
 
 /*! @brief Encoder operation modes*/
 typedef enum _enc_operation_mode_t {
-    kEncNormalMode = 0U,                     /*!< Normal mode (transition signal counting).*/
-    kEncModuloCountingMode = 1U,             /*!< Modulo counting mode.*/
-    kEncSignalPhaseCountMode = 2U            /*!< Signal phase count mode (pulse counting).*/
+	kEncNormalMode = 0U,                     /*!< Normal mode (transition signal counting).*/
+	kEncModuloCountingMode = 1U,             /*!< Modulo counting mode.*/
+	kEncSignalPhaseCountMode = 2U            /*!< Signal phase count mode (pulse counting).*/
 } enc_operation_mode_t;
 
 /*! @brief Encoder status flags */
 typedef enum _enc_status_flag {
-    kEncCmpFlag = 0U,                        /*!< Encoder Compare status flag.*/
-    kEncHomeSignalFlag = 1U,                 /*!< Encoder HOME Signal transition status flag.*/
-    kEncWatchdogTimeoutFlag = 2U,            /*!< Encoder Watchdog timeout status flag.*/
-    kEncIndexPulseFlag = 3U,                 /*!< Encoder INDEX Pulse transition status flag.*/
-    kEncRollunderFlag = 4U,                  /*!< Encoder Roll-under status flag.*/
-    kEncRolloverFlag = 5U,                   /*!< Encoder Roll-over status flag.*/
-    kEncSimultaneousFlag = 6U,               /*!< Encoder Simultaneous PHA and PHB change status flag.*/
-    kEncCountDirectionFlag = 7U              /*!< Encoder Last count direction status flag.*/
+	kEncCmpFlag = 0U,                        /*!< Encoder Compare status flag.*/
+	kEncHomeSignalFlag = 1U,                 /*!< Encoder HOME Signal transition status flag.*/
+	kEncWatchdogTimeoutFlag = 2U,            /*!< Encoder Watchdog timeout status flag.*/
+	kEncIndexPulseFlag = 3U,                 /*!< Encoder INDEX Pulse transition status flag.*/
+	kEncRollunderFlag = 4U,                  /*!< Encoder Roll-under status flag.*/
+	kEncRolloverFlag = 5U,                   /*!< Encoder Roll-over status flag.*/
+	kEncSimultaneousFlag = 6U,               /*!< Encoder Simultaneous PHA and PHB change status flag.*/
+	kEncCountDirectionFlag = 7U              /*!< Encoder Last count direction status flag.*/
 } enc_status_flag_t;
 
 /*! @brief Encoder interrupts*/
 typedef enum _enc_int_source_t {
-    kEncIntCmp = 0U,                         /*!< Compare interrupt source.*/
-    kEncIntHomeSignal = 1U,                  /*!< HOME signal interrupt source.*/
-    kEncIntWatchdogTimeout = 2U,             /*!< Watchdog timeout interrupt source.*/
-    kEncIntIndexPulse = 3U,                  /*!< INDEX pulse interrupt source.*/
-    kEncIntRollunder = 4U,                   /*!< Roll-under position counter interrupt source.*/
-    kEncIntRollover = 5U,                    /*!< Roll-over position counter interrupt source.*/
-    kEncIntSimultaneous = 6U                 /*!< Simultaneous PHASEA and PHASEB change interrupt source.*/
+	kEncIntCmp = 0U,                         /*!< Compare interrupt source.*/
+	kEncIntHomeSignal = 1U,                  /*!< HOME signal interrupt source.*/
+	kEncIntWatchdogTimeout = 2U,             /*!< Watchdog timeout interrupt source.*/
+	kEncIntIndexPulse = 3U,                  /*!< INDEX pulse interrupt source.*/
+	kEncIntRollunder = 4U,                   /*!< Roll-under position counter interrupt source.*/
+	kEncIntRollover = 5U,                    /*!< Roll-over position counter interrupt source.*/
+	kEncIntSimultaneous = 6U                 /*!< Simultaneous PHASEA and PHASEB change interrupt source.*/
 } enc_int_source_t;
 
 /*******************************************************************************
@@ -88,7 +88,7 @@ extern "C" {
  * @param   base    The ENC peripheral base address.
  */
 void ENC_HAL_Init(ENC_Type* base);
-  
+
 /*!
  * @brief Switches to enable the Compare interrupt.
  *
@@ -99,7 +99,7 @@ void ENC_HAL_Init(ENC_Type* base);
  */
 static inline void ENC_HAL_SetCmpIntCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL_CMPIE(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL_CMPIE(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -113,7 +113,7 @@ static inline void ENC_HAL_SetCmpIntCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetCmpIntCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_CMPIE(base);
+	return (bool) ENC_BRD_CTRL_CMPIE(base);
 }
 
 /*!
@@ -128,7 +128,7 @@ static inline bool ENC_HAL_GetCmpIntCmd(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetCmpIntFlag(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_CMPIRQ(base);
+	return (bool) ENC_BRD_CTRL_CMPIRQ(base);
 }
 
 /*!
@@ -140,7 +140,7 @@ static inline bool ENC_HAL_GetCmpIntFlag(ENC_Type* base)
  */
 static inline void ENC_HAL_ClearCmpIntFlag(ENC_Type* base)
 {
-    ENC_BWR_CTRL_CMPIRQ(base, 1U);
+	ENC_BWR_CTRL_CMPIRQ(base, 1U);
 }
 
 /*!
@@ -150,12 +150,12 @@ static inline void ENC_HAL_ClearCmpIntFlag(ENC_Type* base)
  * of the watchdog timer monitoring the PHESEA and PHASEB inputs for motor
  * movement.
  *
- * @param   base    The ENC module base address. 
+ * @param   base    The ENC module base address.
  * @param   enable      Bool parameter to enable/disable.
  */
 static inline void ENC_HAL_SetWatchdogCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL_WDE(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL_WDE(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -168,20 +168,20 @@ static inline void ENC_HAL_SetWatchdogCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetWatchdogCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_WDE(base);
+	return (bool) ENC_BRD_CTRL_WDE(base);
 }
- 
+
 /*!
  * @brief Switches to enable the Watchdog Timeout Interrupt.
  *
  * This function allows the user to enable watchdog timeout interrupt.
  *
- * @param   base    The ENC module base address.  
+ * @param   base    The ENC module base address.
  * @param   enable      Bool parameter to enable/disable.
  */
 static inline void ENC_HAL_SetWatchdogIntCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL_DIE(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL_DIE(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -195,7 +195,7 @@ static inline void ENC_HAL_SetWatchdogIntCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetWatchdogIntCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_DIE(base);
+	return (bool) ENC_BRD_CTRL_DIE(base);
 }
 
 /*!
@@ -211,7 +211,7 @@ static inline bool ENC_HAL_GetWatchdogIntCmd(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetWatchdogIntFlag(ENC_Type* base)
 {
-    return (bool)ENC_BRD_CTRL_DIRQ(base);
+	return (bool)ENC_BRD_CTRL_DIRQ(base);
 }
 
 /*!
@@ -223,7 +223,7 @@ static inline bool ENC_HAL_GetWatchdogIntFlag(ENC_Type* base)
  */
 static inline void ENC_HAL_ClearWatchdogIntFlag(ENC_Type* base)
 {
-    ENC_BWR_CTRL_DIRQ(base, 1U);
+	ENC_BWR_CTRL_DIRQ(base, 1U);
 }
 
 /*!
@@ -238,7 +238,7 @@ static inline void ENC_HAL_ClearWatchdogIntFlag(ENC_Type* base)
 static inline void ENC_HAL_SetIndexPulseNegativeEdgeCmd
   (ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL_XNE(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL_XNE(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -251,7 +251,7 @@ static inline void ENC_HAL_SetIndexPulseNegativeEdgeCmd
  */
 static inline bool ENC_HAL_GetIndexPulseNegativeEdgeCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_XNE(base);
+	return (bool) ENC_BRD_CTRL_XNE(base);
 }
 
 /*!
@@ -260,12 +260,12 @@ static inline bool ENC_HAL_GetIndexPulseNegativeEdgeCmd(ENC_Type* base)
  * This function allows the user to enable INDEX pulse to initialize position
  * counters UPOS and LPOS.
  *
- * @param   base    The ENC module base address.  
+ * @param   base    The ENC module base address.
  * @param   enable      Bool parameter to enable/disable.
  */
 static inline void ENC_HAL_SetIndexInitPosCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL_XIP(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL_XIP(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -279,7 +279,7 @@ static inline void ENC_HAL_SetIndexInitPosCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetIndexInitPosCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_XIP(base);
+	return (bool) ENC_BRD_CTRL_XIP(base);
 }
 
 /*!
@@ -292,7 +292,7 @@ static inline bool ENC_HAL_GetIndexInitPosCmd(ENC_Type* base)
  */
 static inline void ENC_HAL_SetIndexPulseIntCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL_XIE(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL_XIE(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -306,7 +306,7 @@ static inline void ENC_HAL_SetIndexPulseIntCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetIndexPulseIntCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_XIE(base);
+	return (bool) ENC_BRD_CTRL_XIE(base);
 }
 
 /*!
@@ -321,7 +321,7 @@ static inline bool ENC_HAL_GetIndexPulseIntCmd(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetIndexPulseIntFlag(ENC_Type* base)
 {
-    return (bool)ENC_BRD_CTRL_XIRQ(base);
+	return (bool)ENC_BRD_CTRL_XIRQ(base);
 }
 
 /*!
@@ -333,7 +333,7 @@ static inline bool ENC_HAL_GetIndexPulseIntFlag(ENC_Type* base)
  */
 static inline void ENC_HAL_ClearIndexPulseIntFlag(ENC_Type* base)
 {
-    ENC_BWR_CTRL_XIRQ(base, 1U);
+	ENC_BWR_CTRL_XIRQ(base, 1U);
 }
 
 /*!
@@ -349,7 +349,7 @@ static inline void ENC_HAL_ClearIndexPulseIntFlag(ENC_Type* base)
  */
 static inline void ENC_HAL_SetSignalPhaseCountModeCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL_PH1(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL_PH1(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -363,7 +363,7 @@ static inline void ENC_HAL_SetSignalPhaseCountModeCmd(ENC_Type* base, bool enabl
  */
 static inline bool ENC_HAL_GetSignalPhaseCountModeCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_PH1(base);
+	return (bool) ENC_BRD_CTRL_PH1(base);
 }
 
 /*!
@@ -378,7 +378,7 @@ static inline bool ENC_HAL_GetSignalPhaseCountModeCmd(ENC_Type* base)
  */
 static inline void ENC_HAL_SetReverseCountingCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL_REV(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL_REV(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -392,7 +392,7 @@ static inline void ENC_HAL_SetReverseCountingCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetReverseCountingCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_REV(base);
+	return (bool) ENC_BRD_CTRL_REV(base);
 }
 
 /*!
@@ -407,7 +407,7 @@ static inline bool ENC_HAL_GetReverseCountingCmd(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetLastCountDirectionFlag(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_DIR(base);
+	return (bool) ENC_BRD_CTRL2_DIR(base);
 }
 
 /*!
@@ -420,7 +420,7 @@ static inline bool ENC_HAL_GetLastCountDirectionFlag(ENC_Type* base)
  */
 static inline void ENC_HAL_InitPosCounter(ENC_Type* base)
 {
-    ENC_BWR_CTRL_SWIP(base, 1U);
+	ENC_BWR_CTRL_SWIP(base, 1U);
 }
 
 /*!
@@ -436,7 +436,7 @@ static inline void ENC_HAL_InitPosCounter(ENC_Type* base)
 static inline void ENC_HAL_SetHomeSignalNegativeEdgeCmd
   (ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL_HNE(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL_HNE(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -450,7 +450,7 @@ static inline void ENC_HAL_SetHomeSignalNegativeEdgeCmd
  */
 static inline bool ENC_HAL_GetHomeSignalNegativeEdgeCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_HNE(base);
+	return (bool) ENC_BRD_CTRL_HNE(base);
 }
 
 /*!
@@ -459,12 +459,12 @@ static inline bool ENC_HAL_GetHomeSignalNegativeEdgeCmd(ENC_Type* base)
  * This function allows the user to enable HOME signal to initialize position
  * counters UPOS and LPOS.
  *
- * @param   base    The ENC module base address.  
+ * @param   base    The ENC module base address.
  * @param   enable      Bool parameter to enable/disable.
  */
 static inline void ENC_HAL_SetHomeInitPosCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL_HIP(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL_HIP(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -478,7 +478,7 @@ static inline void ENC_HAL_SetHomeInitPosCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetHomeInitPosCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_HIP(base);
+	return (bool) ENC_BRD_CTRL_HIP(base);
 }
 
 /*!
@@ -486,12 +486,12 @@ static inline bool ENC_HAL_GetHomeInitPosCmd(ENC_Type* base)
  *
  * This function allows the user to enable the HOME signal interrupt.
  *
- * @param   base    The ENC module base address 
+ * @param   base    The ENC module base address
  * @param   enable      Bool parameter to enable/disable.
  */
 static inline void ENC_HAL_SetHomeSignalIntCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL_HIE(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL_HIE(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -505,7 +505,7 @@ static inline void ENC_HAL_SetHomeSignalIntCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetHomeSignalIntCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_HIE(base);
+	return (bool) ENC_BRD_CTRL_HIE(base);
 }
 
 /*!
@@ -520,7 +520,7 @@ static inline bool ENC_HAL_GetHomeSignalIntCmd(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetHomeSignalIntFlag(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL_HIRQ(base);
+	return (bool) ENC_BRD_CTRL_HIRQ(base);
 }
 
 /*!
@@ -532,14 +532,14 @@ static inline bool ENC_HAL_GetHomeSignalIntFlag(ENC_Type* base)
  */
 static inline void ENC_HAL_ClearHomeSignalIntFlag(ENC_Type* base)
 {
-    ENC_BWR_CTRL_HIRQ(base, 1U);
+	ENC_BWR_CTRL_HIRQ(base, 1U);
 }
 
 /*!
  * @brief Sets the Input Filter Sample Count.
  *
- * This function allows the user to set the input filter sample counts. 
- * The value represents the number of consecutive samples that must agree 
+ * This function allows the user to set the input filter sample counts.
+ * The value represents the number of consecutive samples that must agree
  * prior to the input filter accepting an input transition.
  * A value of 0x0 represents 3 samples. A value of 0x7 represents 10 samples.
  * A value of sampleCount affects the input latency.
@@ -550,8 +550,8 @@ static inline void ENC_HAL_ClearHomeSignalIntFlag(ENC_Type* base)
 static inline void ENC_HAL_SetInputFilterSampleCount
   (ENC_Type* base, uint8_t sampleCount)
 {
-    assert(sampleCount < 0x08);
-    ENC_BWR_FILT_FILT_CNT(base, sampleCount);
+	assert(sampleCount < 0x08);
+	ENC_BWR_FILT_FILT_CNT(base, sampleCount);
 }
 
 /*!
@@ -566,7 +566,7 @@ static inline void ENC_HAL_SetInputFilterSampleCount
  */
 static inline uint8_t ENC_HAL_GetInputFilterSampleCount(ENC_Type* base)
 {
-    return (uint8_t)ENC_BRD_FILT_FILT_CNT(base);
+	return (uint8_t)ENC_BRD_FILT_FILT_CNT(base);
 }
 
 /*!
@@ -596,7 +596,7 @@ void ENC_HAL_SetInputFilterSamplePeriod(ENC_Type* base, uint8_t samplePeriod);
  */
 static inline uint8_t ENC_HAL_GetInputFilterSamplePeriod(ENC_Type* base)
 {
-    return (uint8_t) ENC_BRD_FILT_FILT_PER(base);
+	return (uint8_t) ENC_BRD_FILT_FILT_PER(base);
 }
 
 /*!
@@ -612,7 +612,7 @@ static inline uint8_t ENC_HAL_GetInputFilterSamplePeriod(ENC_Type* base)
  */
 static inline void ENC_HAL_SetWatchdogTimeout(ENC_Type* base, uint16_t wdtTimeout)
 {
-    ENC_WR_WTR(base, wdtTimeout);
+	ENC_WR_WTR(base, wdtTimeout);
 }
 
 /*!
@@ -628,7 +628,7 @@ static inline void ENC_HAL_SetWatchdogTimeout(ENC_Type* base, uint16_t wdtTimeou
  */
 static inline uint16_t ENC_HAL_GetWatchdogTimeout(ENC_Type* base)
 {
-    return (uint16_t) ENC_RD_WTR(base);
+	return (uint16_t) ENC_RD_WTR(base);
 }
 
 /*!
@@ -636,7 +636,7 @@ static inline uint16_t ENC_HAL_GetWatchdogTimeout(ENC_Type* base)
  *
  * This function allows the user to write the POSD register. It contains the
  * position change in value occuring between each read of the position register.
- * The value of the position difference counter register can be used 
+ * The value of the position difference counter register can be used
  * to calculate velocity.
  *
  * @param   base    The ENC module base address.
@@ -645,7 +645,7 @@ static inline uint16_t ENC_HAL_GetWatchdogTimeout(ENC_Type* base)
 static inline void ENC_HAL_SetPosDiffCounterReg
   (ENC_Type* base, uint16_t diffPosition)
 {
-    ENC_WR_POSD(base, diffPosition);
+	ENC_WR_POSD(base, diffPosition);
 }
 
 /*!
@@ -653,7 +653,7 @@ static inline void ENC_HAL_SetPosDiffCounterReg
  *
  * This function allows the user to read the POSD register. It contains the
  * position change in value occurring between each read of the position register.
- * The value of the position difference counter register can be used 
+ * The value of the position difference counter register can be used
  * to calculate velocity.
  * The 16-bit position difference counter computes up or down on every count pulse.
  * This counter acts as a differentiator whose count value is proportional
@@ -669,7 +669,7 @@ static inline void ENC_HAL_SetPosDiffCounterReg
 static inline uint16_t ENC_HAL_GetPosDiffCounterReg
   (ENC_Type* base)
 {
-    return (uint16_t) ENC_RD_POSD(base);
+	return (uint16_t) ENC_RD_POSD(base);
 }
 
 /*!
@@ -685,7 +685,7 @@ static inline uint16_t ENC_HAL_GetPosDiffCounterReg
  */
 static inline uint16_t ENC_HAL_GetPosDiffHoldReg(ENC_Type* base)
 {
-    return (uint16_t) ENC_RD_POSDH(base);
+	return (uint16_t) ENC_RD_POSDH(base);
 }
 
 /*!
@@ -699,7 +699,7 @@ static inline uint16_t ENC_HAL_GetPosDiffHoldReg(ENC_Type* base)
 static inline void ENC_HAL_SetRevolutionCounterReg
   (ENC_Type* base, uint16_t revValue)
 {
-    ENC_WR_REV(base, revValue);
+	ENC_WR_REV(base, revValue);
 }
 
 /*!
@@ -712,7 +712,7 @@ static inline void ENC_HAL_SetRevolutionCounterReg
  */
 static inline uint16_t ENC_HAL_GetRevolutionCounterReg(ENC_Type* base)
 {
-    return (uint16_t) ENC_RD_REV(base);
+	return (uint16_t) ENC_RD_REV(base);
 }
 
 /*!
@@ -726,7 +726,7 @@ static inline uint16_t ENC_HAL_GetRevolutionCounterReg(ENC_Type* base)
  */
 static inline uint16_t ENC_HAL_GetRevolutionHoldReg(ENC_Type* base)
 {
-    return (uint16_t) ENC_RD_REVH(base);
+	return (uint16_t) ENC_RD_REVH(base);
 }
 
 /*!
@@ -790,7 +790,7 @@ uint32_t ENC_HAL_GetInitReg(ENC_Type* base);
  */
 static inline bool ENC_HAL_GetRawHomeInput(ENC_Type* base)
 {
-    return (bool) ENC_BRD_IMR_HOME(base);
+	return (bool) ENC_BRD_IMR_HOME(base);
 }
 
 /*!
@@ -803,7 +803,7 @@ static inline bool ENC_HAL_GetRawHomeInput(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetRawIndexInput(ENC_Type* base)
 {
-    return (bool) ENC_BRD_IMR_INDEX(base);
+	return (bool) ENC_BRD_IMR_INDEX(base);
 }
 
 /*!
@@ -816,7 +816,7 @@ static inline bool ENC_HAL_GetRawIndexInput(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetRawPhaseBInput(ENC_Type* base)
 {
-    return (bool) ENC_BRD_IMR_PHB(base);
+	return (bool) ENC_BRD_IMR_PHB(base);
 }
 
 /*!
@@ -829,7 +829,7 @@ static inline bool ENC_HAL_GetRawPhaseBInput(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetRawPhaseAInput(ENC_Type* base)
 {
-    return (bool) ENC_BRD_IMR_PHA(base);
+	return (bool) ENC_BRD_IMR_PHA(base);
 }
 
 /*!
@@ -842,7 +842,7 @@ static inline bool ENC_HAL_GetRawPhaseAInput(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetFilteredHomeInput(ENC_Type* base)
 {
-    return (bool) ENC_BRD_IMR_FHOM(base);
+	return (bool) ENC_BRD_IMR_FHOM(base);
 }
 
 /*!
@@ -855,7 +855,7 @@ static inline bool ENC_HAL_GetFilteredHomeInput(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetFilteredIndexInput(ENC_Type* base)
 {
-    return (bool) ENC_BRD_IMR_FIND(base);
+	return (bool) ENC_BRD_IMR_FIND(base);
 }
 
 /*!
@@ -868,7 +868,7 @@ static inline bool ENC_HAL_GetFilteredIndexInput(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetFilteredPhaseBInput(ENC_Type* base)
 {
-    return (bool) ENC_BRD_IMR_FPHB(base);
+	return (bool) ENC_BRD_IMR_FPHB(base);
 }
 
 /*!
@@ -881,13 +881,13 @@ static inline bool ENC_HAL_GetFilteredPhaseBInput(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetFilteredPhaseAInput(ENC_Type* base)
 {
-    return (bool) ENC_BRD_IMR_FPHA(base);
+	return (bool) ENC_BRD_IMR_FPHA(base);
 }
 
 /*!
  * @brief Gets the ENC Test Count.
  *
- * This function allows the user to read the test count value 
+ * This function allows the user to read the test count value
  * of the test register.
  * This value holds the number of quadrature advances to generate.
  *
@@ -896,13 +896,13 @@ static inline bool ENC_HAL_GetFilteredPhaseAInput(ENC_Type* base)
  */
 static inline uint8_t ENC_HAL_GetTestCount(ENC_Type* base)
 {
-    return (uint8_t) ENC_BRD_TST_TEST_COUNT(base);
+	return (uint8_t) ENC_BRD_TST_TEST_COUNT(base);
 }
 
 /*!
  * @brief Sets the ENC Test Count.
  *
- * This function allows the user to write the test count value 
+ * This function allows the user to write the test count value
  * of the test register.
  * This value holds the number of quadrature advances to generate.
  *
@@ -911,13 +911,13 @@ static inline uint8_t ENC_HAL_GetTestCount(ENC_Type* base)
  */
 static inline void ENC_HAL_SetTestCount(ENC_Type* base, uint8_t testCount)
 {
-    ENC_BWR_TST_TEST_COUNT(base, testCount);
+	ENC_BWR_TST_TEST_COUNT(base, testCount);
 }
 
 /*!
  * @brief Gets the ENC Test Period.
  *
- * This function allows the user to read the test period value 
+ * This function allows the user to read the test period value
  * of the test register.
  * This value holds the period of quadrature phase in IPBus clock cycles.
  *
@@ -926,13 +926,13 @@ static inline void ENC_HAL_SetTestCount(ENC_Type* base, uint8_t testCount)
  */
 static inline uint8_t ENC_HAL_GetTestPeriod(ENC_Type* base)
 {
-    return (uint8_t) (ENC_BRD_TST_TEST_PERIOD(base) & 0x1F);
+	return (uint8_t) (ENC_BRD_TST_TEST_PERIOD(base) & 0x1F);
 }
 
 /*!
  * @brief Sets the ENC Test Period.
  *
- * This function allows the user to write the test period value 
+ * This function allows the user to write the test period value
  * of the test register.
  * This value holds the period of quadrature phase in IPBus clock cycles.
  *
@@ -941,15 +941,15 @@ static inline uint8_t ENC_HAL_GetTestPeriod(ENC_Type* base)
  */
 static inline void ENC_HAL_SetTestPeriod(ENC_Type* base, uint8_t testPeriod)
 {
-    assert(testPeriod < 0x20);
-    ENC_BWR_TST_TEST_PERIOD(base, testPeriod);
+	assert(testPeriod < 0x20);
+	ENC_BWR_TST_TEST_PERIOD(base, testPeriod);
 }
 
 /*!
  * @brief Sets the Quadrature Decoder Test Signal.
  *
  * This function allows the user to set the quadrature decoder test signal.
- * Test module can generates quadrature decoder signal in a positive 
+ * Test module can generates quadrature decoder signal in a positive
  * or negative direction.
  *
  * @param   base    The ENC module base address.
@@ -957,7 +957,7 @@ static inline void ENC_HAL_SetTestPeriod(ENC_Type* base, uint8_t testPeriod)
  */
 static inline void ENC_HAL_SetNegativeTestSignalCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_TST_QDN(base, (enable ? 1U : 0U));
+	ENC_BWR_TST_QDN(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -970,7 +970,7 @@ static inline void ENC_HAL_SetNegativeTestSignalCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetNegativeTestSignalCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_TST_QDN(base);
+	return (bool) ENC_BRD_TST_QDN(base);
 }
 
 /*!
@@ -979,26 +979,26 @@ static inline bool ENC_HAL_GetNegativeTestSignalCmd(ENC_Type* base)
  * This function allows the user to enable test counter. It connects the test
  * counter to inputs of the quadrature decoder module.
  *
- * @param   base    The ENC module base address. 
+ * @param   base    The ENC module base address.
  * @param   enable      Bool parameter to enable/disable.
  */
 static inline void ENC_HAL_SetTestCounterCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_TST_TCE(base, (enable ? 1U : 0U));
+	ENC_BWR_TST_TCE(base, (enable ? 1U : 0U));
 }
 
 /*!
  * @brief Tests the Test Counter Enable bit.
  *
- * This function returns the configuration setting of the test 
+ * This function returns the configuration setting of the test
  * counter enable bit.
  *
  * @param   base    The ENC module base address.
- * @return              Bit setting of the test counter enable. 
+ * @return              Bit setting of the test counter enable.
  */
 static inline bool ENC_HAL_GetTestCounterCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_TST_TCE(base);
+	return (bool) ENC_BRD_TST_TCE(base);
 }
 
 /*!
@@ -1012,21 +1012,21 @@ static inline bool ENC_HAL_GetTestCounterCmd(ENC_Type* base)
  */
 static inline void ENC_HAL_SetTestModuleCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_TST_TEN(base, (enable ? 1U : 0U));
+	ENC_BWR_TST_TEN(base, (enable ? 1U : 0U));
 }
 
 /*!
  * @brief Tests the Test Module Enable bit.
  *
- * This function returns the configuration setting of the test 
+ * This function returns the configuration setting of the test
  * module enable bit.
  *
  * @param   base    The ENC module base address.
- * @return              Bit setting of the test module enable. 
+ * @return              Bit setting of the test module enable.
  */
 static inline bool ENC_HAL_GetTestModuleCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_TST_TEN(base);
+	return (bool) ENC_BRD_TST_TEN(base);
 }
 
 /*!
@@ -1057,7 +1057,7 @@ uint32_t ENC_HAL_GetModulusReg(ENC_Type* base);
  * @brief Sets the ENC Compare Register.
  *
  * This function allows the user to write the ENC compare register. When the
- * value of Position counter matches the value of Compare register 
+ * value of Position counter matches the value of Compare register
  * the CTRL[CMPIRQ] flag is set and the POSMATCH output is asserted.
  *
  * @param   base    The ENC module base address.
@@ -1069,7 +1069,7 @@ void ENC_HAL_SetCmpReg(ENC_Type* base, uint32_t cmpValue);
  * @brief Gets the ENC Compare Register.
  *
  * This function allows the user to read the ENC compare register. When the
- * value of Position counter matches the value of Compare register 
+ * value of Position counter matches the value of Compare register
  * the CTRL[CMPIRQ] flag is set and the POSMATCH output is asserted.
  *
  * @param   base    The ENC module base address.
@@ -1080,7 +1080,7 @@ uint32_t ENC_HAL_GetCmpReg(ENC_Type* base);
 /*!
  * @brief Switches to enable the Update Hold Registers.
  *
- * This function allows the user to enable the update hold registers 
+ * This function allows the user to enable the update hold registers
  * on external trigger input. Updating POSDH register will also cause
  * the POSD register to be cleared.
  *
@@ -1089,7 +1089,7 @@ uint32_t ENC_HAL_GetCmpReg(ENC_Type* base);
  */
 static inline void ENC_HAL_SetTriggerUpdateHoldRegCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL2_UPDHLD(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL2_UPDHLD(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -1103,13 +1103,13 @@ static inline void ENC_HAL_SetTriggerUpdateHoldRegCmd(ENC_Type* base, bool enabl
  */
 static inline bool ENC_HAL_GetTriggerUpdateHoldRegCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_UPDHLD(base);
+	return (bool) ENC_BRD_CTRL2_UPDHLD(base);
 }
 
 /*!
  * @brief Enables Update Position Registers.
  *
- * This function allows the user to enable the update of position registers 
+ * This function allows the user to enable the update of position registers
  * on external trigger input. Allows the TRIGGER input to clear POSD, REV,
  * UPOS and LPOS registers on rising edge.
  *
@@ -1118,7 +1118,7 @@ static inline bool ENC_HAL_GetTriggerUpdateHoldRegCmd(ENC_Type* base)
  */
 static inline void ENC_HAL_SetTriggerClearPosRegCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL2_UPDPOS(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL2_UPDPOS(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -1132,7 +1132,7 @@ static inline void ENC_HAL_SetTriggerClearPosRegCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetTriggerClearPosRegCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_UPDPOS(base);
+	return (bool) ENC_BRD_CTRL2_UPDPOS(base);
 }
 
 /*!
@@ -1147,7 +1147,7 @@ static inline bool ENC_HAL_GetTriggerClearPosRegCmd(ENC_Type* base)
  */
 static inline void ENC_HAL_SetModuloCountingCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL2_MOD(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL2_MOD(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -1161,7 +1161,7 @@ static inline void ENC_HAL_SetModuloCountingCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetModuloCountingCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_MOD(base);
+	return (bool) ENC_BRD_CTRL2_MOD(base);
 }
 
 /*!
@@ -1174,7 +1174,7 @@ static inline bool ENC_HAL_GetModuloCountingCmd(ENC_Type* base)
  */
 static inline void ENC_HAL_SetRollunderIntCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL2_RUIE(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL2_RUIE(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -1188,7 +1188,7 @@ static inline void ENC_HAL_SetRollunderIntCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetRollunderIntCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_RUIE(base);
+	return (bool) ENC_BRD_CTRL2_RUIE(base);
 }
 
 /*!
@@ -1204,7 +1204,7 @@ static inline bool ENC_HAL_GetRollunderIntCmd(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetRollunderIntFlag(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_RUIRQ(base);
+	return (bool) ENC_BRD_CTRL2_RUIRQ(base);
 }
 
 /*!
@@ -1216,7 +1216,7 @@ static inline bool ENC_HAL_GetRollunderIntFlag(ENC_Type* base)
  */
 static inline void ENC_HAL_ClearRollunderIntFlag(ENC_Type* base)
 {
-    ENC_BWR_CTRL2_RUIRQ(base, 1U);
+	ENC_BWR_CTRL2_RUIRQ(base, 1U);
 }
 
 /*!
@@ -1229,7 +1229,7 @@ static inline void ENC_HAL_ClearRollunderIntFlag(ENC_Type* base)
  */
 static inline void ENC_HAL_SetRolloverIntCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL2_ROIE(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL2_ROIE(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -1243,7 +1243,7 @@ static inline void ENC_HAL_SetRolloverIntCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetRolloverIntCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_ROIE(base);
+	return (bool) ENC_BRD_CTRL2_ROIE(base);
 }
 
 /*!
@@ -1259,7 +1259,7 @@ static inline bool ENC_HAL_GetRolloverIntCmd(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetRolloverIntFlag(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_ROIRQ(base);
+	return (bool) ENC_BRD_CTRL2_ROIRQ(base);
 }
 
 /*!
@@ -1271,7 +1271,7 @@ static inline bool ENC_HAL_GetRolloverIntFlag(ENC_Type* base)
  */
 static inline void ENC_HAL_ClearRolloverIntFlag(ENC_Type* base)
 {
-    ENC_BWR_CTRL2_ROIRQ(base, 1U);
+	ENC_BWR_CTRL2_ROIRQ(base, 1U);
 }
 
 /*!
@@ -1288,7 +1288,7 @@ static inline void ENC_HAL_ClearRolloverIntFlag(ENC_Type* base)
  */
 static inline void ENC_HAL_SetModulusRevCounterCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL2_REVMOD(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL2_REVMOD(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -1302,13 +1302,13 @@ static inline void ENC_HAL_SetModulusRevCounterCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetModulusRevCounterCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_REVMOD(base);
+	return (bool) ENC_BRD_CTRL2_REVMOD(base);
 }
 
 /*!
  * @brief Switches to enable the POSMATCH to pulse on Counters registers reading.
- * 
- * This function allows the user to config control of the POSMATCH output. 
+ *
+ * This function allows the user to config control of the POSMATCH output.
  * POSMATCH pulses when the UPOS, LPOS, REV or POSD registers are read - when set true
  * or when match occurred between position register and Compare value register (false).
  *
@@ -1317,7 +1317,7 @@ static inline bool ENC_HAL_GetModulusRevCounterCmd(ENC_Type* base)
  */
 static inline void ENC_HAL_SetPosmatchOnReadingCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL2_OUTCTL(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL2_OUTCTL(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -1331,7 +1331,7 @@ static inline void ENC_HAL_SetPosmatchOnReadingCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetPosmatchOnReadingCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_OUTCTL(base);
+	return (bool) ENC_BRD_CTRL2_OUTCTL(base);
 }
 
 /*!
@@ -1344,7 +1344,7 @@ static inline bool ENC_HAL_GetPosmatchOnReadingCmd(ENC_Type* base)
  */
 static inline void ENC_HAL_SetSimultaneousIntCmd(ENC_Type* base, bool enable)
 {
-    ENC_BWR_CTRL2_SABIE(base, (enable ? 1U : 0U));
+	ENC_BWR_CTRL2_SABIE(base, (enable ? 1U : 0U));
 }
 
 /*!
@@ -1358,7 +1358,7 @@ static inline void ENC_HAL_SetSimultaneousIntCmd(ENC_Type* base, bool enable)
  */
 static inline bool ENC_HAL_GetSimultaneousIntCmd(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_SABIE(base);
+	return (bool) ENC_BRD_CTRL2_SABIE(base);
 }
 
 /*!
@@ -1375,7 +1375,7 @@ static inline bool ENC_HAL_GetSimultaneousIntCmd(ENC_Type* base)
  */
 static inline bool ENC_HAL_GetSimultaneousIntFlag(ENC_Type* base)
 {
-    return (bool) ENC_BRD_CTRL2_SABIRQ(base);
+	return (bool) ENC_BRD_CTRL2_SABIRQ(base);
 }
 
 /*!
@@ -1387,7 +1387,7 @@ static inline bool ENC_HAL_GetSimultaneousIntFlag(ENC_Type* base)
  */
 static inline void ENC_HAL_ClearSimultaneousIntFlag(ENC_Type* base)
 {
-    ENC_BWR_CTRL2_SABIRQ(base, 1U);
+	ENC_BWR_CTRL2_SABIRQ(base, 1U);
 }
 
 /*@}*/

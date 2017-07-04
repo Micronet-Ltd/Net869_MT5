@@ -44,24 +44,24 @@
  */
 flexbus_status_t FLEXBUS_DRV_Init(uint32_t instance, const flexbus_user_config_t *fb_config)
 {
-    assert(instance < FB_INSTANCE_COUNT);
+	assert(instance < FB_INSTANCE_COUNT);
 
-    FB_Type* fbbase = g_fbBase[instance];
+	FB_Type* fbbase = g_fbBase[instance];
 
-    if(!fb_config)
-    {
-        return kStatus_FLEXBUS_InvalidArgument;
-    }
+	if(!fb_config)
+	{
+		return kStatus_FLEXBUS_InvalidArgument;
+	}
 
-    /* clock setting initialization.*/
-    CLOCK_SYS_EnableFlexbusClock(instance);
+	/* clock setting initialization.*/
+	CLOCK_SYS_EnableFlexbusClock(instance);
 
-    /* Reset all the register to default state.*/
-    FLEXBUS_HAL_Init(fbbase);
-    /* Configure all the register to a known state */
-    FLEXBUS_HAL_Configure(fbbase, fb_config);
+	/* Reset all the register to default state.*/
+	FLEXBUS_HAL_Init(fbbase);
+	/* Configure all the register to a known state */
+	FLEXBUS_HAL_Configure(fbbase, fb_config);
 
-    return kStatus_FLEXBUS_Success;
+	return kStatus_FLEXBUS_Success;
 }
 
 /*!
@@ -71,16 +71,15 @@ flexbus_status_t FLEXBUS_DRV_Init(uint32_t instance, const flexbus_user_config_t
  */
 flexbus_status_t FLEXBUS_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < FB_INSTANCE_COUNT);
+	assert(instance < FB_INSTANCE_COUNT);
 
-    /* disable clock for Flexbus.*/
-    CLOCK_SYS_DisableFlexbusClock(instance);
+	/* disable clock for Flexbus.*/
+	CLOCK_SYS_DisableFlexbusClock(instance);
 
-    return kStatus_FLEXBUS_Success;
+	return kStatus_FLEXBUS_Success;
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

@@ -44,39 +44,39 @@
  ******************************************************************************/
 /*! @brief I2C status return codes.*/
 typedef enum _i2c_status {
-    kStatus_I2C_Success            = 0x0U,  /*!< I2C operation has no error. */
-    kStatus_I2C_Initialized        = 0x1U,  /*!< Current I2C is already initialized by one task.*/
-    kStatus_I2C_Fail               = 0x2U,  /*!< I2C operation failed. */
-    kStatus_I2C_Busy               = 0x3U,  /*!< The master is already performing a transfer.*/
-    kStatus_I2C_Timeout            = 0x4U,  /*!< The transfer timed out.*/
-    kStatus_I2C_ReceivedNak        = 0x5U,  /*!< The slave device sent a NAK in response to a byte.*/
-    kStatus_I2C_SlaveTxUnderrun    = 0x6U,  /*!< I2C Slave TX Underrun error.*/
-    kStatus_I2C_SlaveRxOverrun     = 0x7U,  /*!< I2C Slave RX Overrun error.*/
-    kStatus_I2C_AribtrationLost    = 0x8U,  /*!< I2C Arbitration Lost error.*/
-    kStatus_I2C_StopSignalFail     = 0x9U,  /*!< I2C STOP signal could not release bus. */
-    kStatus_I2C_Idle               = 0xAU, /*!< I2C Slave Bus is Idle. */
-    kStatus_I2C_NoReceiveInProgress= 0xBU, /*!< Attempt to abort a receiving when no transfer
-                                                was in progress */
-    kStatus_I2C_NoSendInProgress   = 0xCU /*!< Attempt to abort a sending when no transfer
-                                                was in progress */
+	kStatus_I2C_Success            = 0x0U,  /*!< I2C operation has no error. */
+	kStatus_I2C_Initialized        = 0x1U,  /*!< Current I2C is already initialized by one task.*/
+	kStatus_I2C_Fail               = 0x2U,  /*!< I2C operation failed. */
+	kStatus_I2C_Busy               = 0x3U,  /*!< The master is already performing a transfer.*/
+	kStatus_I2C_Timeout            = 0x4U,  /*!< The transfer timed out.*/
+	kStatus_I2C_ReceivedNak        = 0x5U,  /*!< The slave device sent a NAK in response to a byte.*/
+	kStatus_I2C_SlaveTxUnderrun    = 0x6U,  /*!< I2C Slave TX Underrun error.*/
+	kStatus_I2C_SlaveRxOverrun     = 0x7U,  /*!< I2C Slave RX Overrun error.*/
+	kStatus_I2C_AribtrationLost    = 0x8U,  /*!< I2C Arbitration Lost error.*/
+	kStatus_I2C_StopSignalFail     = 0x9U,  /*!< I2C STOP signal could not release bus. */
+	kStatus_I2C_Idle               = 0xAU, /*!< I2C Slave Bus is Idle. */
+	kStatus_I2C_NoReceiveInProgress= 0xBU, /*!< Attempt to abort a receiving when no transfer
+												was in progress */
+	kStatus_I2C_NoSendInProgress   = 0xCU /*!< Attempt to abort a sending when no transfer
+												was in progress */
 } i2c_status_t;
 
 /*! @brief I2C status flags. */
 typedef enum _i2c_status_flag {
-    kI2CTransferComplete = I2C_S_TCF_SHIFT,
-    kI2CAddressAsSlave   = I2C_S_IAAS_SHIFT,
-    kI2CBusBusy          = I2C_S_BUSY_SHIFT,
-    kI2CArbitrationLost  = I2C_S_ARBL_SHIFT,
-    kI2CAddressMatch     = I2C_S_RAM_SHIFT,
-    kI2CSlaveTransmit    = I2C_S_SRW_SHIFT,
-    kI2CInterruptPending = I2C_S_IICIF_SHIFT,
-    kI2CReceivedNak      = I2C_S_RXAK_SHIFT 
+	kI2CTransferComplete = I2C_S_TCF_SHIFT,
+	kI2CAddressAsSlave   = I2C_S_IAAS_SHIFT,
+	kI2CBusBusy          = I2C_S_BUSY_SHIFT,
+	kI2CArbitrationLost  = I2C_S_ARBL_SHIFT,
+	kI2CAddressMatch     = I2C_S_RAM_SHIFT,
+	kI2CSlaveTransmit    = I2C_S_SRW_SHIFT,
+	kI2CInterruptPending = I2C_S_IICIF_SHIFT,
+	kI2CReceivedNak      = I2C_S_RXAK_SHIFT
 } i2c_status_flag_t;
 
 /*! @brief Direction of master and slave transfers.*/
 typedef enum _i2c_direction {
-    kI2CReceive = 0U,   /*!< Master transmit, slave receive.*/
-    kI2CSend    = 1U    /*!< Master receive, slave transmit.*/
+	kI2CReceive = 0U,   /*!< Master transmit, slave receive.*/
+	kI2CSend    = 1U    /*!< Master receive, slave transmit.*/
 } i2c_direction_t;
 
 /*******************************************************************************
@@ -106,7 +106,7 @@ void I2C_HAL_Init(I2C_Type * base);
  */
 static inline void I2C_HAL_Enable(I2C_Type * base)
 {
-    I2C_BWR_C1_IICEN(base, 0x1U);
+	I2C_BWR_C1_IICEN(base, 0x1U);
 }
 
 /*!
@@ -116,7 +116,7 @@ static inline void I2C_HAL_Enable(I2C_Type * base)
  */
 static inline void I2C_HAL_Disable(I2C_Type * base)
 {
-    I2C_BWR_C1_IICEN(base, 0x0U);
+	I2C_BWR_C1_IICEN(base, 0x0U);
 }
 
 /*@}*/
@@ -135,7 +135,7 @@ static inline void I2C_HAL_Disable(I2C_Type * base)
  */
 static inline void I2C_HAL_SetDmaCmd(I2C_Type * base, bool enable)
 {
-    I2C_BWR_C1_DMAEN(base, (uint8_t)enable);
+	I2C_BWR_C1_DMAEN(base, (uint8_t)enable);
 }
 
 /*!
@@ -146,7 +146,7 @@ static inline void I2C_HAL_SetDmaCmd(I2C_Type * base, bool enable)
  */
 static inline bool I2C_HAL_GetDmaCmd(I2C_Type * base)
 {
-    return I2C_BRD_C1_DMAEN(base);
+	return I2C_BRD_C1_DMAEN(base);
 }
 
 /*@}*/
@@ -157,7 +157,7 @@ static inline bool I2C_HAL_GetDmaCmd(I2C_Type * base)
  * @{
  */
 
-#if FSL_FEATURE_I2C_HAS_HIGH_DRIVE_SELECTION 
+#if FSL_FEATURE_I2C_HAS_HIGH_DRIVE_SELECTION
 /*!
  * @brief Controls the drive capability of the I2C pads.
  *
@@ -167,7 +167,7 @@ static inline bool I2C_HAL_GetDmaCmd(I2C_Type * base)
  */
 static inline void I2C_HAL_SetHighDriveCmd(I2C_Type * base, bool enable)
 {
-    I2C_BWR_C2_HDRS(base, (uint8_t)enable);
+	I2C_BWR_C2_HDRS(base, (uint8_t)enable);
 }
 #endif /* FSL_FEATURE_I2C_HAS_HIGH_DRIVE_SELECTION */
 
@@ -175,7 +175,7 @@ static inline void I2C_HAL_SetHighDriveCmd(I2C_Type * base, bool enable)
  * @brief Controls the width of the programmable glitch filter.
  *
  * Controls the width of the glitch, in terms of bus clock cycles, that the filter must absorb.
- * The filter does not allow any glitch whose size is less than or equal to this width setting, 
+ * The filter does not allow any glitch whose size is less than or equal to this width setting,
  * to pass.
  *
  * @param base The I2C peripheral base pointer
@@ -184,8 +184,8 @@ static inline void I2C_HAL_SetHighDriveCmd(I2C_Type * base, bool enable)
  */
 static inline void I2C_HAL_SetGlitchWidth(I2C_Type * base, uint8_t glitchWidth)
 {
-    assert(glitchWidth < FSL_FEATURE_I2C_MAX_GLITCH_FILTER_WIDTH);
-    I2C_BWR_FLT_FLT(base, glitchWidth);
+	assert(glitchWidth < FSL_FEATURE_I2C_MAX_GLITCH_FILTER_WIDTH);
+	I2C_BWR_FLT_FLT(base, glitchWidth);
 }
 
 /*@}*/
@@ -199,7 +199,7 @@ static inline void I2C_HAL_SetGlitchWidth(I2C_Type * base, uint8_t glitchWidth)
  * @brief Controls the I2C wakeup enable.
  *
  * The I2C module can wake the MCU from low power mode with no peripheral bus running when
- * slave address matching occurs. 
+ * slave address matching occurs.
  *
  * @param base The I2C peripheral base pointer.
  * @param enable true - Enables the wakeup function in low power mode.<br>
@@ -208,7 +208,7 @@ static inline void I2C_HAL_SetGlitchWidth(I2C_Type * base, uint8_t glitchWidth)
  */
 static inline void I2C_HAL_SetWakeupCmd(I2C_Type * base, bool enable)
 {
-    I2C_BWR_C1_WUEN(base, (uint8_t)enable);
+	I2C_BWR_C1_WUEN(base, (uint8_t)enable);
 }
 
 #if FSL_FEATURE_I2C_HAS_STOP_HOLD_OFF
@@ -225,7 +225,7 @@ static inline void I2C_HAL_SetWakeupCmd(I2C_Type * base, bool enable)
 
 static inline void I2C_HAL_SetStopHoldoffCmd(I2C_Type * base, bool enable)
 {
-    I2C_BWR_FLT_SHEN(base, (uint8_t)enable);
+	I2C_BWR_FLT_SHEN(base, (uint8_t)enable);
 }
 #endif /* FSL_FEATURE_I2C_HAS_STOP_HOLD_OFF*/
 
@@ -247,9 +247,9 @@ static inline void I2C_HAL_SetStopHoldoffCmd(I2C_Type * base, bool enable)
  *     possible given available divider values.
  */
 void I2C_HAL_SetBaudRate(I2C_Type * base,
-                         uint32_t sourceClockInHz,
-                         uint32_t kbps,
-                         uint32_t * absoluteError_Hz);
+						 uint32_t sourceClockInHz,
+						 uint32_t kbps,
+						 uint32_t * absoluteError_Hz);
 
 /*!
  * @brief Sets the I2C baud rate multiplier and table entry.
@@ -258,13 +258,13 @@ void I2C_HAL_SetBaudRate(I2C_Type * base,
  * known in advance.
  *
  * @param base The I2C peripheral base pointer
- * @param mult Value of the MULT bitfield, ranging from 0-2. 
+ * @param mult Value of the MULT bitfield, ranging from 0-2.
  * @param icr The ICR bitfield value, which is the index into an internal table in the I2C
  *     hardware that selects the baud rate divisor and SCL hold time.
  */
 static inline void I2C_HAL_SetFreqDiv(I2C_Type * base, uint8_t mult, uint8_t icr)
 {
-    I2C_WR_F(base, I2C_F_MULT(mult) | I2C_F_ICR(icr));
+	I2C_WR_F(base, I2C_F_MULT(mult) | I2C_F_ICR(icr));
 }
 
 /*!
@@ -279,7 +279,7 @@ static inline void I2C_HAL_SetFreqDiv(I2C_Type * base, uint8_t mult, uint8_t icr
  */
 static inline void I2C_HAL_SetSlaveBaudCtrlCmd(I2C_Type * base, bool enable)
 {
-    I2C_BWR_C2_SBRC(base, (uint8_t)enable);
+	I2C_BWR_C2_SBRC(base, (uint8_t)enable);
 }
 
 /*@}*/
@@ -322,7 +322,7 @@ i2c_status_t I2C_HAL_SendStop(I2C_Type * base);
  */
 static inline void I2C_HAL_SendAck(I2C_Type * base)
 {
-    I2C_BWR_C1_TXAK(base, 0x0U);
+	I2C_BWR_C1_TXAK(base, 0x0U);
 }
 
 /*!
@@ -338,7 +338,7 @@ static inline void I2C_HAL_SendAck(I2C_Type * base)
  */
 static inline void I2C_HAL_SendNak(I2C_Type * base)
 {
-    I2C_BWR_C1_TXAK(base, 0x1U);
+	I2C_BWR_C1_TXAK(base, 0x1U);
 }
 
 /*!
@@ -351,7 +351,7 @@ static inline void I2C_HAL_SendNak(I2C_Type * base)
  */
 static inline void I2C_HAL_SetDirMode(I2C_Type * base, i2c_direction_t direction)
 {
-    I2C_BWR_C1_TX(base, (uint8_t)direction);
+	I2C_BWR_C1_TX(base, (uint8_t)direction);
 }
 
 /*!
@@ -364,7 +364,7 @@ static inline void I2C_HAL_SetDirMode(I2C_Type * base, i2c_direction_t direction
  */
 static inline i2c_direction_t I2C_HAL_GetDirMode(I2C_Type * base)
 {
-    return (i2c_direction_t)I2C_BRD_C1_TX(base);
+	return (i2c_direction_t)I2C_BRD_C1_TX(base);
 }
 
 /*@}*/
@@ -385,7 +385,7 @@ static inline i2c_direction_t I2C_HAL_GetDirMode(I2C_Type * base)
  */
 static inline uint8_t I2C_HAL_ReadByte(I2C_Type * base)
 {
-    return I2C_RD_D(base);
+	return I2C_RD_D(base);
 }
 
 /*!
@@ -404,11 +404,11 @@ static inline uint8_t I2C_HAL_ReadByte(I2C_Type * base)
 static inline void I2C_HAL_WriteByte(I2C_Type * base, uint8_t byte)
 {
 #if FSL_FEATURE_I2C_HAS_DOUBLE_BUFFERING
-    while (!I2C_BRD_S2_EMPTY(base))
-    {}
-#endif 
+	while (!I2C_BRD_S2_EMPTY(base))
+	{}
+#endif
 
-    I2C_WR_D(base, byte);
+	I2C_WR_D(base, byte);
 }
 
 /*!
@@ -416,7 +416,7 @@ static inline void I2C_HAL_WriteByte(I2C_Type * base, uint8_t byte)
  * It will wait till the transfer is actually completed.
  *
  * @param base The I2C peripheral base pointer
- * @return Returns the last byte received 
+ * @return Returns the last byte received
  */
 uint8_t I2C_HAL_ReadByteBlocking(I2C_Type * base);
 
@@ -442,11 +442,11 @@ bool I2C_HAL_WriteByteBlocking(I2C_Type * base, uint8_t byte);
  * @return Error or success status returned by API.
  */
 i2c_status_t I2C_HAL_MasterReceiveDataPolling(I2C_Type * base,
-                                              uint16_t slaveAddr,
-                                              const uint8_t * cmdBuff,
-                                              uint32_t cmdSize,
-                                              uint8_t * rxBuff,
-                                              uint32_t rxSize);
+											  uint16_t slaveAddr,
+											  const uint8_t * cmdBuff,
+											  uint32_t cmdSize,
+											  uint8_t * rxBuff,
+											  uint32_t rxSize);
 
 /*!
  * @brief Performs a polling send transaction on the I2C bus.
@@ -460,11 +460,11 @@ i2c_status_t I2C_HAL_MasterReceiveDataPolling(I2C_Type * base,
  * @return Error or success status returned by API.
  */
 i2c_status_t I2C_HAL_MasterSendDataPolling(I2C_Type * base,
-                                           uint16_t slaveAddr,
-                                           const uint8_t * cmdBuff,
-                                           uint32_t cmdSize,
-                                           const uint8_t * txBuff,
-                                           uint32_t txSize);
+										   uint16_t slaveAddr,
+										   const uint8_t * cmdBuff,
+										   uint32_t cmdSize,
+										   const uint8_t * txBuff,
+										   uint32_t txSize);
 
 /*!
 * @brief Send out multiple bytes of data using polling method.
@@ -520,7 +520,7 @@ void I2C_HAL_SetAddress10bit(I2C_Type * base, uint16_t address);
  */
 static inline void I2C_HAL_SetExtensionAddrCmd(I2C_Type * base, bool enable)
 {
-    I2C_BWR_C2_ADEXT(base, (uint8_t)enable);
+	I2C_BWR_C2_ADEXT(base, (uint8_t)enable);
 }
 
 /*!
@@ -532,7 +532,7 @@ static inline void I2C_HAL_SetExtensionAddrCmd(I2C_Type * base, bool enable)
  */
 static inline bool I2C_HAL_GetExtensionAddrCmd(I2C_Type * base)
 {
-    return I2C_BRD_C2_ADEXT(base);
+	return I2C_BRD_C2_ADEXT(base);
 }
 
 /*!
@@ -543,7 +543,7 @@ static inline bool I2C_HAL_GetExtensionAddrCmd(I2C_Type * base)
  */
 static inline void I2C_HAL_SetGeneralCallCmd(I2C_Type * base, bool enable)
 {
-    I2C_BWR_C2_GCAEN(base, (uint8_t)enable);
+	I2C_BWR_C2_GCAEN(base, (uint8_t)enable);
 }
 
 /*!
@@ -555,7 +555,7 @@ static inline void I2C_HAL_SetGeneralCallCmd(I2C_Type * base, bool enable)
  */
 static inline void I2C_HAL_SetRangeMatchCmd(I2C_Type * base, bool enable)
 {
-    I2C_BWR_C2_RMEN(base, (uint8_t)enable);
+	I2C_BWR_C2_RMEN(base, (uint8_t)enable);
 }
 
 /*!
@@ -578,9 +578,9 @@ static inline void I2C_HAL_SetRangeMatchCmd(I2C_Type * base, bool enable)
  */
 static inline void I2C_HAL_SetUpperAddress7bit(I2C_Type * base, uint8_t address)
 {
-    assert((address & 1) == 0);
-    assert((address == 0) || (address > I2C_RD_A1(base)));
-    I2C_WR_RA(base, address);
+	assert((address & 1) == 0);
+	assert((address == 0) || (address > I2C_RD_A1(base)));
+	I2C_WR_RA(base, address);
 }
 
 /*@}*/
@@ -601,7 +601,7 @@ static inline void I2C_HAL_SetUpperAddress7bit(I2C_Type * base, uint8_t address)
  */
 static inline bool I2C_HAL_GetStatusFlag(I2C_Type * base, i2c_status_flag_t statusFlag)
 {
-    return (bool)((I2C_RD_S(base) >> statusFlag) & 0x1U);
+	return (bool)((I2C_RD_S(base) >> statusFlag) & 0x1U);
 }
 
 /*!
@@ -614,7 +614,7 @@ static inline bool I2C_HAL_GetStatusFlag(I2C_Type * base, i2c_status_flag_t stat
  */
 static inline bool I2C_HAL_IsMaster(I2C_Type * base)
 {
-    return (bool)I2C_BRD_C1_MST(base);
+	return (bool)I2C_BRD_C1_MST(base);
 }
 
 /*!
@@ -624,7 +624,7 @@ static inline bool I2C_HAL_IsMaster(I2C_Type * base)
  */
 static inline void I2C_HAL_ClearArbitrationLost(I2C_Type * base)
 {
-    I2C_WR_S(base, I2C_S_ARBL_MASK);
+	I2C_WR_S(base, I2C_S_ARBL_MASK);
 }
 
 /*@}*/
@@ -642,7 +642,7 @@ static inline void I2C_HAL_ClearArbitrationLost(I2C_Type * base)
  */
 static inline void I2C_HAL_SetIntCmd(I2C_Type * base, bool enable)
 {
-    I2C_BWR_C1_IICIE(base, (uint8_t)enable);
+	I2C_BWR_C1_IICIE(base, (uint8_t)enable);
 }
 
 /*!
@@ -653,7 +653,7 @@ static inline void I2C_HAL_SetIntCmd(I2C_Type * base, bool enable)
  */
 static inline bool I2C_HAL_GetIntCmd(I2C_Type * base)
 {
-    return (bool)I2C_BRD_C1_IICIE(base);
+	return (bool)I2C_BRD_C1_IICIE(base);
 }
 
 /*!
@@ -664,7 +664,7 @@ static inline bool I2C_HAL_GetIntCmd(I2C_Type * base)
  */
 static inline bool I2C_HAL_IsIntPending(I2C_Type * base)
 {
-    return (bool)I2C_BRD_S_IICIF(base);
+	return (bool)I2C_BRD_S_IICIF(base);
 }
 
 /*!
@@ -674,7 +674,7 @@ static inline bool I2C_HAL_IsIntPending(I2C_Type * base)
  */
 static inline void I2C_HAL_ClearInt(I2C_Type * base)
 {
-    I2C_WR_S(base, I2C_S_IICIF_MASK);
+	I2C_WR_S(base, I2C_S_IICIF_MASK);
 }
 
 /*@}*/
@@ -682,7 +682,7 @@ static inline void I2C_HAL_ClearInt(I2C_Type * base)
 #if FSL_FEATURE_I2C_HAS_START_STOP_DETECT || FSL_FEATURE_I2C_HAS_STOP_DETECT
 
 /*!
- * @name Bus stop detection flag 
+ * @name Bus stop detection flag
  * @{
  */
 
@@ -694,7 +694,7 @@ static inline void I2C_HAL_ClearInt(I2C_Type * base)
  */
 static inline bool I2C_HAL_GetStopFlag(I2C_Type * base)
 {
-    return (bool)I2C_BRD_FLT_STOPF(base);
+	return (bool)I2C_BRD_FLT_STOPF(base);
 }
 
 /*!
@@ -704,7 +704,7 @@ static inline bool I2C_HAL_GetStopFlag(I2C_Type * base)
  */
 static inline void I2C_HAL_ClearStopFlag(I2C_Type * base)
 {
-    I2C_BWR_FLT_STOPF(base, 0x1U);
+	I2C_BWR_FLT_STOPF(base, 0x1U);
 }
 
 /*@}*/
@@ -725,7 +725,7 @@ static inline void I2C_HAL_ClearStopFlag(I2C_Type * base)
  */
 static inline void I2C_HAL_SetStopIntCmd(I2C_Type * base, bool enable)
 {
-    I2C_BWR_FLT_STOPIE(base, enable);
+	I2C_BWR_FLT_STOPIE(base, enable);
 }
 
 /*!
@@ -736,7 +736,7 @@ static inline void I2C_HAL_SetStopIntCmd(I2C_Type * base, bool enable)
  */
 static inline bool I2C_HAL_GetStopIntCmd(I2C_Type * base)
 {
-    return (bool)I2C_BRD_FLT_STOPIE(base);
+	return (bool)I2C_BRD_FLT_STOPIE(base);
 }
 
 /*@}*/
@@ -758,7 +758,7 @@ static inline bool I2C_HAL_GetStopIntCmd(I2C_Type * base)
  */
 static inline void I2C_HAL_SetStartStopIntCmd(I2C_Type * base, bool enable)
 {
-    I2C_BWR_FLT_SSIE(base, enable);
+	I2C_BWR_FLT_SSIE(base, enable);
 }
 
 /*!
@@ -769,7 +769,7 @@ static inline void I2C_HAL_SetStartStopIntCmd(I2C_Type * base, bool enable)
  */
 static inline bool I2C_HAL_GetStartStopIntCmd(I2C_Type * base)
 {
-    return (bool)I2C_BRD_FLT_SSIE(base);
+	return (bool)I2C_BRD_FLT_SSIE(base);
 }
 
 /*!
@@ -780,7 +780,7 @@ static inline bool I2C_HAL_GetStartStopIntCmd(I2C_Type * base)
  */
 static inline bool I2C_HAL_GetStartFlag(I2C_Type * base)
 {
-    return (bool)I2C_BRD_FLT_STARTF(base);
+	return (bool)I2C_BRD_FLT_STARTF(base);
 }
 
 /*!
@@ -790,7 +790,7 @@ static inline bool I2C_HAL_GetStartFlag(I2C_Type * base)
  */
 static inline void I2C_HAL_ClearStartFlag(I2C_Type * base)
 {
-    I2C_BWR_FLT_STARTF(base, 0x1U);
+	I2C_BWR_FLT_STARTF(base, 0x1U);
 }
 
 /*@}*/
@@ -800,14 +800,14 @@ static inline void I2C_HAL_ClearStartFlag(I2C_Type * base)
 #if FSL_FEATURE_I2C_HAS_SMBUS
 /*! @brief SMBus timeout status flags. */
 typedef enum _smb_timeout_status_flag {
-    kSMBCLKLowTimeout    = I2C_SMB_SLTF_MASK,
-    kSMBCLKHighTimeout   = I2C_SMB_SHTF1_MASK,
-    kSMBDATLowTimeout    = I2C_SMB_SHTF2_MASK
+	kSMBCLKLowTimeout    = I2C_SMB_SLTF_MASK,
+	kSMBCLKHighTimeout   = I2C_SMB_SHTF1_MASK,
+	kSMBDATLowTimeout    = I2C_SMB_SHTF2_MASK
 } smb_timeout_status_flag_t;
 /*! @brief SMBus timeout counter clock. */
 typedef enum _smb_timeout_counter_sel {
-    kSrcBusClockDividBy64   = 0,
-    kSrcBusClock            = 1
+	kSrcBusClockDividBy64   = 0,
+	kSrcBusClock            = 1
 } smb_timeout_counter_sel_t;
 /*!
  * @brief Fast NACK/ACK enable, if disable, an ACK/NACK will be automatically sent.
@@ -820,7 +820,7 @@ typedef enum _smb_timeout_counter_sel {
 
 static inline void I2C_HAL_SetManualACKCmd(I2C_Type *base, bool enable)
 {
-    I2C_BWR_SMB_FACK(base,enable);
+	I2C_BWR_SMB_FACK(base,enable);
 }
 
 /*!
@@ -834,7 +834,7 @@ static inline void I2C_HAL_SetManualACKCmd(I2C_Type *base, bool enable)
 
 static inline void I2C_HAL_SetSMBusARACmd(I2C_Type *base, bool enable)
 {
-    I2C_BWR_SMB_ALERTEN(base, enable);
+	I2C_BWR_SMB_ALERTEN(base, enable);
 }
 /*!
  * @brief Selects the clock source of the timeout counter.
@@ -845,7 +845,7 @@ static inline void I2C_HAL_SetSMBusARACmd(I2C_Type *base, bool enable)
 
 static inline void I2C_HAL_SelectSMBTimeoutCounter(I2C_Type *base, smb_timeout_counter_sel_t counterSel)
 {
-    I2C_BWR_SMB_TCKSEL(base, counterSel);
+	I2C_BWR_SMB_TCKSEL(base, counterSel);
 }
 /*!
  * @brief Enables/Disables SCL high and SDA low timeout interrupt.
@@ -856,7 +856,7 @@ static inline void I2C_HAL_SelectSMBTimeoutCounter(I2C_Type *base, smb_timeout_c
 
 static inline void I2C_HAL_SetSMBDATLowTimeoutIntCmd(I2C_Type *base, bool enable)
 {
-    I2C_BWR_SMB_SHTF2IE(base, enable);
+	I2C_BWR_SMB_SHTF2IE(base, enable);
 }
 /*!
  * @brief Get SMBus timeout status.
@@ -868,7 +868,7 @@ static inline void I2C_HAL_SetSMBDATLowTimeoutIntCmd(I2C_Type *base, bool enable
 
 static inline bool I2C_HAL_GetTimeoutStatus(I2C_Type *base, smb_timeout_status_flag_t status)
 {
-    return (bool) I2C_RD_SMB(base) & status;
+	return (bool) I2C_RD_SMB(base) & status;
 }
 /*!
  * @brief Clear SMBus timeout status.
@@ -907,5 +907,3 @@ void I2C_HAL_ConfigSMBCLKLowTimeout(I2C_Type *base, uint16_t timeout);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-
-

@@ -43,16 +43,16 @@
 /*! @brief Error codes for the FLEXIO UART driver. */
 typedef enum flexio_uart_status
 {
-    kStatus_FlexIO_UART_Success                  = 0x00U, 
-    kStatus_FlexIO_UART_TxBusy                   = 0x01U, 
-    kStatus_FlexIO_UART_RxBusy                   = 0x02U,  
-    kStatus_FlexIO_UART_NoTransmitInProgress     = 0x03U,
-    kStatus_FlexIO_UART_NoReceiveInProgress      = 0x04U, 
-    kStatus_FlexIO_UART_Timeout                  = 0x05U,
-    kStatus_FlexIO_UART_NoDataToDeal             = 0x06U,   
-    kStatus_FlexIO_UART_TxUnderRun               = 0x07U,
-    kStatus_FlexIO_UART_RxOverRun                = 0x08U,
-    kStatus_FlexIO_UART_InvalidParam             = 0x09U  
+	kStatus_FlexIO_UART_Success                  = 0x00U,
+	kStatus_FlexIO_UART_TxBusy                   = 0x01U,
+	kStatus_FlexIO_UART_RxBusy                   = 0x02U,
+	kStatus_FlexIO_UART_NoTransmitInProgress     = 0x03U,
+	kStatus_FlexIO_UART_NoReceiveInProgress      = 0x04U,
+	kStatus_FlexIO_UART_Timeout                  = 0x05U,
+	kStatus_FlexIO_UART_NoDataToDeal             = 0x06U,
+	kStatus_FlexIO_UART_TxUnderRun               = 0x07U,
+	kStatus_FlexIO_UART_RxOverRun                = 0x08U,
+	kStatus_FlexIO_UART_InvalidParam             = 0x09U
 } flexio_uart_status_t;
 /*!
  * @brief FlexIO UART number of bits in a character.
@@ -62,22 +62,22 @@ typedef enum flexio_uart_status
  * of data bits per UART character.
  */
 typedef enum  flexio_uart_bit_count_per_char {
-    kFlexIOUart5BitsPerChar = 5U,   /*!< 5-bit data characters @internal gui name="5" */
-    kFlexIOUart6BitsPerChar = 6U,   /*!< 6-bit data characters @internal gui name="6" */
-    kFlexIOUart7BitsPerChar = 7U,   /*!< 7-bit data characters @internal gui name="7" */
-    kFlexIOUart8BitsPerChar = 8U    /*!< 8-bit data characters @internal gui name="8" */
+	kFlexIOUart5BitsPerChar = 5U,   /*!< 5-bit data characters @internal gui name="5" */
+	kFlexIOUart6BitsPerChar = 6U,   /*!< 6-bit data characters @internal gui name="6" */
+	kFlexIOUart7BitsPerChar = 7U,   /*!< 7-bit data characters @internal gui name="7" */
+	kFlexIOUart8BitsPerChar = 8U    /*!< 8-bit data characters @internal gui name="8" */
 } flexio_uart_bit_count_per_char_t;
 /*!
  * @brief FlexIO UART mode.
  *
  * These constants define the operation mode of FlexIO UART: Only enable transmit, only enable receive,
- * or use both. 
+ * or use both.
  */
 typedef enum flexio_uart_mode
 {
-    flexioUART_TxOnly = 0x0U, /*!< Transmit mode only @internal gui name="Tx" */
-    flexioUART_RxOnly = 0x1U, /*!< Receive mode only @internal gui name="Rx" */
-    flexioUART_TxRx   = 0x2U /*!< Both modes @internal gui name="Tx+Rx" */
+	flexioUART_TxOnly = 0x0U, /*!< Transmit mode only @internal gui name="Tx" */
+	flexioUART_RxOnly = 0x1U, /*!< Receive mode only @internal gui name="Rx" */
+	flexioUART_TxRx   = 0x2U /*!< Both modes @internal gui name="Tx+Rx" */
 }flexio_uart_mode_t;
 /*!
  * @brief FlexIO UART hardware resource configuration.
@@ -87,9 +87,9 @@ typedef enum flexio_uart_mode
  * @internal gui name="UART hardware configuration" id="uartHwCfg"
  */
 typedef struct flexio_uart_hwconfig{
-    uint32_t pinIdx; /*!< Data line pin. @internal gui name="Data pin" id="uartPin" */
-    uint32_t shifterIdx; /*!< Shifter @internal gui name="Shifter" id="uartShifter" */
-    uint32_t timerIdx; /*!< Timer @internal gui name="Timer" id="uartTimer" */
+	uint32_t pinIdx; /*!< Data line pin. @internal gui name="Data pin" id="uartPin" */
+	uint32_t shifterIdx; /*!< Shifter @internal gui name="Shifter" id="uartShifter" */
+	uint32_t timerIdx; /*!< Timer @internal gui name="Timer" id="uartTimer" */
 }flexio_uart_hwconfig_t;
 
 /*! @}*/

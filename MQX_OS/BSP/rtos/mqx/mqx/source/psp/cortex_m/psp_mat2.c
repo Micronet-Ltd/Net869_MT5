@@ -28,7 +28,7 @@
 
 /*!
  * \brief This function divides a 4 32 bit quantity by a 32 bit quantity.
- * 
+ *
  * \param[in] n_ptr Pointer to the numerator array (4 long words)
  * \param[in] div The divisor
  * \param[out] r_ptr Pointer to a 4 long word array where the result will be stored
@@ -37,14 +37,14 @@
  */
 uint32_t _psp_div_128_by_32
    (
-      /* [IN] Pointer to the numerator array (4 long words) */
-      PSP_128_BIT_UNION_PTR  n_ptr,
+	  /* [IN] Pointer to the numerator array (4 long words) */
+	  PSP_128_BIT_UNION_PTR  n_ptr,
 
-      /* [IN] The divisor */
-      uint32_t                div,
+	  /* [IN] The divisor */
+	  uint32_t                div,
 
-      /* [OUT] Pointer to a 4 long word array where the result will be stored */
-      PSP_128_BIT_UNION_PTR  r_ptr
+	  /* [OUT] Pointer to a 4 long word array where the result will be stored */
+	  PSP_128_BIT_UNION_PTR  r_ptr
 
    )
 { /* Body */
@@ -54,35 +54,35 @@ uint32_t _psp_div_128_by_32
    _mqx_int              i;
 
    if (!div) {
-      return MAX_UINT_32;
+	  return MAX_UINT_32;
    } /* Endif */
-   
+
    if (div == 1) {
-      *r_ptr = *n_ptr;
-      return 0;
+	  *r_ptr = *n_ptr;
+	  return 0;
    } /* Endif */
 
    if (n_ptr->LLW[0] || n_ptr->LLW[1]) {
-      tmp.LLW[0] = tmp.LLW[1] = 0;
+	  tmp.LLW[0] = tmp.LLW[1] = 0;
 #if PSP_ENDIAN == MQX_LITTLE_ENDIAN
-      for ( i = 2, r = n_ptr->LW[3]; i >= 0; i-- ) {
-         w     = (r << 32) + n_ptr->LW[i];
-         r     = w % div;
-         d.LLW = w / div;
-         tmp.LW[i+1] += d.LW[1];
-         tmp.LW[i]   += d.LW[0];
-      } /* Endfor */
+	  for ( i = 2, r = n_ptr->LW[3]; i >= 0; i-- ) {
+		 w     = (r << 32) + n_ptr->LW[i];
+		 r     = w % div;
+		 d.LLW = w / div;
+		 tmp.LW[i+1] += d.LW[1];
+		 tmp.LW[i]   += d.LW[0];
+	  } /* Endfor */
 #else
-      for ( i = 1, r = n_ptr->LW[0]; i <= 3; i++ ) {
-         w     = (r << 32) + n_ptr->LW[i];
-         r     = w % div;
-         d.LLW = w / div;
-         tmp.LW[i-1] += d.LW[0];
-         tmp.LW[i]   += d.LW[1];
-      } /* Endfor */
+	  for ( i = 1, r = n_ptr->LW[0]; i <= 3; i++ ) {
+		 w     = (r << 32) + n_ptr->LW[i];
+		 r     = w % div;
+		 d.LLW = w / div;
+		 tmp.LW[i-1] += d.LW[0];
+		 tmp.LW[i]   += d.LW[1];
+	  } /* Endfor */
 #endif
-      *r_ptr = tmp;
-      return (uint32_t)r;
+	  *r_ptr = tmp;
+	  return (uint32_t)r;
    } /* Endif */
 
    *r_ptr = *n_ptr;

@@ -4,14 +4,14 @@
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the <organization> nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -40,10 +40,10 @@
 
 /************************** CHANGES *************************************
 1.1.GA      09.25.2014      FPT Team      First version of SDK C90TFS Flash driver
-                                          inherited from BM C90TFS Flash driver v1.02
-                                          (08.04.2014, FPT Team)
+										  inherited from BM C90TFS Flash driver v1.02
+										  (08.04.2014, FPT Team)
 1.3.GA      06.23.2015      ROM Team      Added new features: check FAC protection status,
-                                          program FAC IFR and Erase All Blocks Unsecure command.
+										  program FAC IFR and Erase All Blocks Unsecure command.
 *************************************************************************/
 #ifndef _SSD_FTFx_INTERNAL_H_
 #define _SSD_FTFx_INTERNAL_H_
@@ -56,8 +56,8 @@
 #define FTFx_SSD_FSTAT_FPVIOL               0x10U
 #define FTFx_SSD_FSTAT_MGSTAT0              0x01U
 #define FTFx_SSD_FSTAT_ERROR_BITS           (FTFx_SSD_FSTAT_ACCERR \
-                                            |FTFx_SSD_FSTAT_FPVIOL \
-                                            |FTFx_SSD_FSTAT_MGSTAT0)
+											|FTFx_SSD_FSTAT_FPVIOL \
+											|FTFx_SSD_FSTAT_MGSTAT0)
 
 #define FTFx_SSD_FCNFG_CCIE                 0x80U
 #define FTFx_SSD_FCNFG_RDCOLLIE             0x40U
@@ -72,91 +72,91 @@
 
 /*--------------- FTFx Flash Module Memory Offset Map -----------------*/
 #if(BIG_ENDIAN == ENDIANNESS)    /* Big Endian - coldfire CPU */
-    /* Flash Status Register (FSTAT)*/
-    #define FTFx_SSD_FSTAT_OFFSET               0x00000003U
-    /* Flash configuration register (FCNFG)*/
-    #define FTFx_SSD_FCNFG_OFFSET               0x00000002U
-    /* Flash security register (FSEC) */
-    #define FTFx_SSD_FSEC_OFFSET                0x00000001U
-    /* Flash Option Register (FOPT) */
-    #define FTFx_SSD_FOPT_OFFSET                0x00000000U
-    /* Flash common command object registers (FCCOB0-B) */
-    #define FTFx_SSD_FCCOB0_OFFSET              0x00000004U
-    #define FTFx_SSD_FCCOB1_OFFSET              0x00000005U
-    #define FTFx_SSD_FCCOB2_OFFSET              0x00000006U
-    #define FTFx_SSD_FCCOB3_OFFSET              0x00000007U
-    #define FTFx_SSD_FCCOB4_OFFSET              0x00000008U
-    #define FTFx_SSD_FCCOB5_OFFSET              0x00000009U
-    #define FTFx_SSD_FCCOB6_OFFSET              0x0000000AU
-    #define FTFx_SSD_FCCOB7_OFFSET              0x0000000BU
-    #define FTFx_SSD_FCCOB8_OFFSET              0x0000000CU
-    #define FTFx_SSD_FCCOB9_OFFSET              0x0000000DU
-    #define FTFx_SSD_FCCOBA_OFFSET              0x0000000EU
-    #define FTFx_SSD_FCCOBB_OFFSET              0x0000000FU
-    /* P-Flash protection registers (FPROT0-3) */
-    #define FTFx_SSD_FPROT0_OFFSET              0x00000010U
-    #define FTFx_SSD_FPROT1_OFFSET              0x00000011U
-    #define FTFx_SSD_FPROT2_OFFSET              0x00000012U
-    #define FTFx_SSD_FPROT3_OFFSET              0x00000013U
-    /* D-Flash protection registers (FDPROT) */
-    #define FTFx_SSD_FDPROT_OFFSET              0x00000014U
-    /* EERAM Protection Register (FEPROT)  */
-    #define FTFx_SSD_FEPROT_OFFSET              0x00000015U
+	/* Flash Status Register (FSTAT)*/
+	#define FTFx_SSD_FSTAT_OFFSET               0x00000003U
+	/* Flash configuration register (FCNFG)*/
+	#define FTFx_SSD_FCNFG_OFFSET               0x00000002U
+	/* Flash security register (FSEC) */
+	#define FTFx_SSD_FSEC_OFFSET                0x00000001U
+	/* Flash Option Register (FOPT) */
+	#define FTFx_SSD_FOPT_OFFSET                0x00000000U
+	/* Flash common command object registers (FCCOB0-B) */
+	#define FTFx_SSD_FCCOB0_OFFSET              0x00000004U
+	#define FTFx_SSD_FCCOB1_OFFSET              0x00000005U
+	#define FTFx_SSD_FCCOB2_OFFSET              0x00000006U
+	#define FTFx_SSD_FCCOB3_OFFSET              0x00000007U
+	#define FTFx_SSD_FCCOB4_OFFSET              0x00000008U
+	#define FTFx_SSD_FCCOB5_OFFSET              0x00000009U
+	#define FTFx_SSD_FCCOB6_OFFSET              0x0000000AU
+	#define FTFx_SSD_FCCOB7_OFFSET              0x0000000BU
+	#define FTFx_SSD_FCCOB8_OFFSET              0x0000000CU
+	#define FTFx_SSD_FCCOB9_OFFSET              0x0000000DU
+	#define FTFx_SSD_FCCOBA_OFFSET              0x0000000EU
+	#define FTFx_SSD_FCCOBB_OFFSET              0x0000000FU
+	/* P-Flash protection registers (FPROT0-3) */
+	#define FTFx_SSD_FPROT0_OFFSET              0x00000010U
+	#define FTFx_SSD_FPROT1_OFFSET              0x00000011U
+	#define FTFx_SSD_FPROT2_OFFSET              0x00000012U
+	#define FTFx_SSD_FPROT3_OFFSET              0x00000013U
+	/* D-Flash protection registers (FDPROT) */
+	#define FTFx_SSD_FDPROT_OFFSET              0x00000014U
+	/* EERAM Protection Register (FEPROT)  */
+	#define FTFx_SSD_FEPROT_OFFSET              0x00000015U
 
 #else /* Little Endian - kinetis CPU + Nevis2 CPU */
-    /* Flash Status Register (FSTAT)*/
-    #define FTFx_SSD_FSTAT_OFFSET               0x00000000U
-    /* Flash configuration register (FCNFG)*/
-    #define FTFx_SSD_FCNFG_OFFSET               0x00000001U
-    /* Flash security register (FSEC) */
-    #define FTFx_SSD_FSEC_OFFSET                0x00000002U
-    /* Flash Option Register (FOPT) */
-    #define FTFx_SSD_FOPT_OFFSET                0x00000003U
-    /* Flash common command object registers (FCCOB0-B) */
-    #define FTFx_SSD_FCCOB0_OFFSET              0x00000007U
-    #define FTFx_SSD_FCCOB1_OFFSET              0x00000006U
-    #define FTFx_SSD_FCCOB2_OFFSET              0x00000005U
-    #define FTFx_SSD_FCCOB3_OFFSET              0x00000004U
-    #define FTFx_SSD_FCCOB4_OFFSET              0x0000000BU
-    #define FTFx_SSD_FCCOB5_OFFSET              0x0000000AU
-    #define FTFx_SSD_FCCOB6_OFFSET              0x00000009U
-    #define FTFx_SSD_FCCOB7_OFFSET              0x00000008U
-    #define FTFx_SSD_FCCOB8_OFFSET              0x0000000FU
-    #define FTFx_SSD_FCCOB9_OFFSET              0x0000000EU
-    #define FTFx_SSD_FCCOBA_OFFSET              0x0000000DU
-    #define FTFx_SSD_FCCOBB_OFFSET              0x0000000CU
-    /* P-Flash protection registers (FPROT0-3) */
-    #define FTFx_SSD_FPROT0_OFFSET              0x00000013U
-    #define FTFx_SSD_FPROT1_OFFSET              0x00000012U
-    #define FTFx_SSD_FPROT2_OFFSET              0x00000011U
-    #define FTFx_SSD_FPROT3_OFFSET              0x00000010U
-    /* D-Flash protection registers (FDPROT) */
-    #define FTFx_SSD_FDPROT_OFFSET              0x00000017U
-    /* EERAM Protection Register (FEPROT)  */
-    #define FTFx_SSD_FEPROT_OFFSET              0x00000016U
-    /* P-Flash Flash Access Controller XAC regisers (XACCH0-3, XACCL0-3) */
-    #define FTFx_SSD_XACCH0_OFFSET              0x0000001BU
-    #define FTFx_SSD_XACCH1_OFFSET              0x0000001AU
-    #define FTFx_SSD_XACCH2_OFFSET              0x00000019U
-    #define FTFx_SSD_XACCH3_OFFSET              0x00000018U
-    #define FTFx_SSD_XACCL0_OFFSET              0x0000001FU
-    #define FTFx_SSD_XACCL1_OFFSET              0x0000001EU
-    #define FTFx_SSD_XACCL2_OFFSET              0x0000001DU
-    #define FTFx_SSD_XACCL3_OFFSET              0x0000001CU
-    /* P-Flash Flash Access Controller SAC regisers (SACCH0-3, SACCL0-3) */
-    #define FTFx_SSD_SACCH0_OFFSET              0x00000023U
-    #define FTFx_SSD_SACCH1_OFFSET              0x00000022U
-    #define FTFx_SSD_SACCH2_OFFSET              0x00000021U
-    #define FTFx_SSD_SACCH3_OFFSET              0x00000020U
-    #define FTFx_SSD_SACCL0_OFFSET              0x00000027U
-    #define FTFx_SSD_SACCL1_OFFSET              0x00000026U
-    #define FTFx_SSD_SACCL2_OFFSET              0x00000025U
-    #define FTFx_SSD_SACCL3_OFFSET              0x00000024U
+	/* Flash Status Register (FSTAT)*/
+	#define FTFx_SSD_FSTAT_OFFSET               0x00000000U
+	/* Flash configuration register (FCNFG)*/
+	#define FTFx_SSD_FCNFG_OFFSET               0x00000001U
+	/* Flash security register (FSEC) */
+	#define FTFx_SSD_FSEC_OFFSET                0x00000002U
+	/* Flash Option Register (FOPT) */
+	#define FTFx_SSD_FOPT_OFFSET                0x00000003U
+	/* Flash common command object registers (FCCOB0-B) */
+	#define FTFx_SSD_FCCOB0_OFFSET              0x00000007U
+	#define FTFx_SSD_FCCOB1_OFFSET              0x00000006U
+	#define FTFx_SSD_FCCOB2_OFFSET              0x00000005U
+	#define FTFx_SSD_FCCOB3_OFFSET              0x00000004U
+	#define FTFx_SSD_FCCOB4_OFFSET              0x0000000BU
+	#define FTFx_SSD_FCCOB5_OFFSET              0x0000000AU
+	#define FTFx_SSD_FCCOB6_OFFSET              0x00000009U
+	#define FTFx_SSD_FCCOB7_OFFSET              0x00000008U
+	#define FTFx_SSD_FCCOB8_OFFSET              0x0000000FU
+	#define FTFx_SSD_FCCOB9_OFFSET              0x0000000EU
+	#define FTFx_SSD_FCCOBA_OFFSET              0x0000000DU
+	#define FTFx_SSD_FCCOBB_OFFSET              0x0000000CU
+	/* P-Flash protection registers (FPROT0-3) */
+	#define FTFx_SSD_FPROT0_OFFSET              0x00000013U
+	#define FTFx_SSD_FPROT1_OFFSET              0x00000012U
+	#define FTFx_SSD_FPROT2_OFFSET              0x00000011U
+	#define FTFx_SSD_FPROT3_OFFSET              0x00000010U
+	/* D-Flash protection registers (FDPROT) */
+	#define FTFx_SSD_FDPROT_OFFSET              0x00000017U
+	/* EERAM Protection Register (FEPROT)  */
+	#define FTFx_SSD_FEPROT_OFFSET              0x00000016U
+	/* P-Flash Flash Access Controller XAC regisers (XACCH0-3, XACCL0-3) */
+	#define FTFx_SSD_XACCH0_OFFSET              0x0000001BU
+	#define FTFx_SSD_XACCH1_OFFSET              0x0000001AU
+	#define FTFx_SSD_XACCH2_OFFSET              0x00000019U
+	#define FTFx_SSD_XACCH3_OFFSET              0x00000018U
+	#define FTFx_SSD_XACCL0_OFFSET              0x0000001FU
+	#define FTFx_SSD_XACCL1_OFFSET              0x0000001EU
+	#define FTFx_SSD_XACCL2_OFFSET              0x0000001DU
+	#define FTFx_SSD_XACCL3_OFFSET              0x0000001CU
+	/* P-Flash Flash Access Controller SAC regisers (SACCH0-3, SACCL0-3) */
+	#define FTFx_SSD_SACCH0_OFFSET              0x00000023U
+	#define FTFx_SSD_SACCH1_OFFSET              0x00000022U
+	#define FTFx_SSD_SACCH2_OFFSET              0x00000021U
+	#define FTFx_SSD_SACCH3_OFFSET              0x00000020U
+	#define FTFx_SSD_SACCL0_OFFSET              0x00000027U
+	#define FTFx_SSD_SACCL1_OFFSET              0x00000026U
+	#define FTFx_SSD_SACCL2_OFFSET              0x00000025U
+	#define FTFx_SSD_SACCL3_OFFSET              0x00000024U
 
-    /* P-Flash Access Segment Size register (FACSS) */
-    #define FTFx_SSD_FACSS_OFFSET               0x00000028U
-    /* P-Flash Access Segment Number register (FACSN) */
-    #define FTFx_SSD_FACSN_OFFSET               0x0000002BU
+	/* P-Flash Access Segment Size register (FACSS) */
+	#define FTFx_SSD_FACSS_OFFSET               0x00000028U
+	/* P-Flash Access Segment Number register (FACSN) */
+	#define FTFx_SSD_FACSN_OFFSET               0x0000002BU
 #endif
 
 /* fccob offset address to store resource code */
@@ -241,14 +241,14 @@
 *                       to read collision error interrupt.
 */
 #define SET_FLASH_INT_BITS(ftfxRegBase, value)  REG_WRITE((ftfxRegBase) + FTFx_SSD_FCNFG_OFFSET,\
-                                                ((value)&(FTFx_SSD_FCNFG_CCIE | FTFx_SSD_FCNFG_RDCOLLIE)))
+												((value)&(FTFx_SSD_FCNFG_CCIE | FTFx_SSD_FCNFG_RDCOLLIE)))
 /*!
 * @brief  Returns the Flash interrupt enable bits in the FCNFG register.
 *
 * @param ftfxRegBase:   Specifies register base address of the Flash module.
 */
 #define GET_FLASH_INT_BITS(ftfxRegBase)         REG_READ((ftfxRegBase) + FTFx_SSD_FCNFG_OFFSET) &\
-                                                (FTFx_SSD_FCNFG_CCIE | FTFx_SSD_FCNFG_RDCOLLIE)
+												(FTFx_SSD_FCNFG_CCIE | FTFx_SSD_FCNFG_RDCOLLIE)
 
 /*!
  * @name C90TFS Flash driver APIs
@@ -311,7 +311,7 @@ extern uint32_t FlashCommandSequence(PFLASH_SSD_CONFIG pSSDConfig);
  * @return Successful completion (FTFx_OK)
  */
 extern uint32_t PFlashGetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
-                                  uint32_t*  protectStatus);
+								  uint32_t*  protectStatus);
 
 /*!
  * @brief P-Flash set protection.
@@ -335,7 +335,7 @@ extern uint32_t PFlashGetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value (FTFx_ERR_CHANGEPROT)
  */
 extern uint32_t PFlashSetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
-                                  uint32_t  protectStatus);
+								  uint32_t  protectStatus);
 
 #if PFLASH_FAC_PRESENCE
 /*!
@@ -363,9 +363,9 @@ extern uint32_t PFlashSetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Successful completion (FTFx_OK)
  */
 extern uint32_t PFlashFacGetXAProtection(PFLASH_SSD_CONFIG pSSDConfig, \
-                                  uint8_t *protectStatus,\
-                                  uint8_t *numberOfSegments,\
-                                  uint32_t *segmentSize);
+								  uint8_t *protectStatus,\
+								  uint8_t *numberOfSegments,\
+								  uint32_t *segmentSize);
 
 /*!
  * @brief P-Flash Get FAC Supervisor Access protection.
@@ -392,9 +392,9 @@ extern uint32_t PFlashFacGetXAProtection(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Successful completion (FTFx_OK)
  */
 extern uint32_t PFlashFacGetSAProtection(PFLASH_SSD_CONFIG pSSDConfig,\
-                                  uint8_t *protectStatus,\
-                                  uint8_t *numberOfSegments,\
-                                  uint32_t *segmentSize);
+								  uint8_t *protectStatus,\
+								  uint8_t *numberOfSegments,\
+								  uint32_t *segmentSize);
 #endif // PFLASH_FAC_PRESENCE
 
 /*!
@@ -413,7 +413,7 @@ extern uint32_t PFlashFacGetSAProtection(PFLASH_SSD_CONFIG pSSDConfig,\
  * @return Successful completion (FTFx_OK)
  */
 extern uint32_t FlashGetSecurityState(PFLASH_SSD_CONFIG pSSDConfig, \
-                                    uint8_t* securityState);
+									uint8_t* securityState);
 /*!
  * @brief Flash security bypass.
  *
@@ -429,8 +429,8 @@ extern uint32_t FlashGetSecurityState(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_ACCERR)
  */
 extern uint32_t FlashSecurityBypass(PFLASH_SSD_CONFIG pSSDConfig, \
-                                  uint8_t* keyBuffer, \
-                                  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								  uint8_t* keyBuffer, \
+								  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*!
  * @brief Flash erase all Blocks.
@@ -444,7 +444,7 @@ extern uint32_t FlashSecurityBypass(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_PVIOL, FTFx_ERR_MGSTAT0, FTFx_ERR_ACCERR)
  */
 extern uint32_t FlashEraseAllBlock(PFLASH_SSD_CONFIG pSSDConfig, \
-                                 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*!
  * @brief Flash erase all Blocks unsecure.
@@ -461,7 +461,7 @@ extern uint32_t FlashEraseAllBlock(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_MGSTAT0, FTFx_ERR_ACCERR)
  */
 extern uint32_t FlashEraseAllBlockUnsecure(PFLASH_SSD_CONFIG pSSDConfig, \
-                                 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*!
  * @brief Flash verify all Blocks.
@@ -480,8 +480,8 @@ extern uint32_t FlashEraseAllBlockUnsecure(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_MGSTAT0, FTFx_ERR_ACCERR)
  */
 extern uint32_t FlashVerifyAllBlock(PFLASH_SSD_CONFIG pSSDConfig, \
-                                  uint8_t marginLevel, \
-                                  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								  uint8_t marginLevel, \
+								  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*!
  * @brief Flash erase sector.
  *
@@ -498,9 +498,9 @@ extern uint32_t FlashVerifyAllBlock(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_MGSTAT0, FTFx_ERR_ACCERR, FTFx_ERR_PVIOL,FTFx_ERR_SIZE)
  */
 extern uint32_t FlashEraseSector(PFLASH_SSD_CONFIG pSSDConfig, \
-                               uint32_t dest, \
-                               uint32_t size, \
-                               pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+							   uint32_t dest, \
+							   uint32_t size, \
+							   pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*!
  * @brief Flash verify sector.
  *
@@ -521,10 +521,10 @@ extern uint32_t FlashEraseSector(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_MGSTAT0, FTFx_ERR_ACCERR)
  */
 extern uint32_t FlashVerifySection(PFLASH_SSD_CONFIG pSSDConfig, \
-                                 uint32_t dest, \
-                                 uint16_t number, \
-                                 uint8_t marginLevel, \
-                                 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								 uint32_t dest, \
+								 uint16_t number, \
+								 uint8_t marginLevel, \
+								 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*!
  * @brief Flash erase suspend.
  *
@@ -564,10 +564,10 @@ extern uint32_t FlashEraseResume(PFLASH_SSD_CONFIG pSSDConfig);
  * @return Error value  (FTFx_ERR_ACCERR)
  */
 extern uint32_t FlashReadOnce(PFLASH_SSD_CONFIG pSSDConfig, \
-                            uint8_t recordIndex,\
-                            uint8_t* pDataArray, \
-                            uint32_t size, \
-                            pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+							uint8_t recordIndex,\
+							uint8_t* pDataArray, \
+							uint32_t size, \
+							pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*!
  * @brief Flash program once.
  *
@@ -587,10 +587,10 @@ extern uint32_t FlashReadOnce(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_ACCERR,FTFx_ERR_MGSTAT0)
  */
 extern uint32_t FlashProgramOnce(PFLASH_SSD_CONFIG pSSDConfig, \
-                               uint8_t recordIndex,\
-                               uint8_t* pDataArray, \
-                               uint32_t size,\
-                               pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+							   uint8_t recordIndex,\
+							   uint8_t* pDataArray, \
+							   uint32_t size,\
+							   pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*!
  * @brief Flash read resource.
  *
@@ -608,10 +608,10 @@ extern uint32_t FlashProgramOnce(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_ACCERR)
  */
 extern uint32_t FlashReadResource(PFLASH_SSD_CONFIG pSSDConfig, \
-                                uint32_t dest, \
-                                uint8_t* pDataArray, \
-                                uint8_t  resourceSelectCode, \
-                                pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								uint32_t dest, \
+								uint8_t* pDataArray, \
+								uint8_t  resourceSelectCode, \
+								pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*!
  * @brief Flash program
  *
@@ -630,10 +630,10 @@ extern uint32_t FlashReadResource(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_ACCERR, FTFx_ERR_PVIOL, FTFx_ERR_SIZE, FTFx_ERR_MGSTAT0)
  */
 extern uint32_t FlashProgram(PFLASH_SSD_CONFIG pSSDConfig, \
-                                   uint32_t dest, \
-                                   uint32_t size, \
-                                   uint8_t* pData, \
-                                   pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								   uint32_t dest, \
+								   uint32_t size, \
+								   uint8_t* pData, \
+								   pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*!
  * @brief Flash program check
@@ -656,12 +656,12 @@ extern uint32_t FlashProgram(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_ACCERR, FTFx_ERR_MGSTAT0)
  */
 extern uint32_t FlashProgramCheck(PFLASH_SSD_CONFIG pSSDConfig, \
-                                uint32_t  dest, \
-                                uint32_t  size, \
-                                uint8_t*  pExpectedData, \
-                                uint32_t* pFailAddr, \
-                                uint8_t   marginLevel, \
-                                pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								uint32_t  dest, \
+								uint32_t  size, \
+								uint8_t*  pExpectedData, \
+								uint32_t* pFailAddr, \
+								uint8_t   marginLevel, \
+								pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 /*!
  * @brief Calculates check sum.
@@ -683,9 +683,9 @@ extern uint32_t FlashProgramCheck(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_RANGE)
  */
 extern uint32_t FlashCheckSum(PFLASH_SSD_CONFIG pSSDConfig, \
-                            uint32_t dest, \
-                            uint32_t size, \
-                            uint32_t* pSum);
+							uint32_t dest, \
+							uint32_t size, \
+							uint32_t* pSum);
 
 #ifndef FTFA_M
 /*!
@@ -711,9 +711,9 @@ extern uint32_t FlashCheckSum(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_ACCERR, FTFx_ERR_PVIOL, FTFx_ERR_MGSTAT0, FTFx_ERR_RAMRDY)
  */
 extern uint32_t FlashProgramSection(PFLASH_SSD_CONFIG pSSDConfig, \
-                                  uint32_t dest, \
-                                  uint16_t number, \
-                                  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								  uint32_t dest, \
+								  uint16_t number, \
+								  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 #endif
 
 #if (!(defined(FTFA_M)) || (defined(BLOCK_COMMANDS)))
@@ -731,8 +731,8 @@ extern uint32_t FlashProgramSection(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_ACCERR, FTFx_ERR_PVIOL, FTFx_ERR_MGSTAT0)
  */
 extern uint32_t FlashEraseBlock(PFLASH_SSD_CONFIG pSSDConfig, \
-                                   uint32_t dest, \
-                                   pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+								   uint32_t dest, \
+								   pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*!
  * @brief Flash verify block
  *
@@ -752,9 +752,9 @@ extern uint32_t FlashEraseBlock(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_ACCERR, FTFx_ERR_MGSTAT0)
  */
 extern uint32_t FlashVerifyBlock(PFLASH_SSD_CONFIG pSSDConfig, \
-                               uint32_t dest, \
-                               uint8_t marginLevel, \
-                               pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+							   uint32_t dest, \
+							   uint8_t marginLevel, \
+							   pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 
 #endif
 
@@ -782,7 +782,7 @@ extern uint32_t FlashVerifyBlock(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_NOEEE)
  */
 extern uint32_t EERAMGetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
-                                 uint8_t*  protectStatus);
+								 uint8_t*  protectStatus);
 /*!
  * @brief EERAM set protection
  *
@@ -807,7 +807,7 @@ extern uint32_t EERAMGetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_NOEEE,FTFx_ERR_CHANGEPROT)
  */
 extern uint32_t EERAMSetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
-                                 uint8_t  protectStatus);
+								 uint8_t  protectStatus);
 /*!
  * @brief Flash Set EEEEnable
  *
@@ -828,7 +828,7 @@ extern uint32_t EERAMSetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_ACCERR)
  */
 extern uint32_t SetEEEEnable(PFLASH_SSD_CONFIG pSSDConfig, \
-                           uint8_t EEEEnable,pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+						   uint8_t EEEEnable,pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*!
  * @brief EEPROM Emulator Write
  *
@@ -854,9 +854,9 @@ extern uint32_t SetEEEEnable(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return Error value  (FTFx_ERR_RANGE, FTFx_ERR_NOEEE, FTFx_ERR_PVIOL)
  */
 extern uint32_t EEEWrite(PFLASH_SSD_CONFIG pSSDConfig, \
-                       uint32_t dest, \
-                       uint32_t size, \
-                       uint8_t* pData);
+					   uint32_t dest, \
+					   uint32_t size, \
+					   uint8_t* pData);
 /*!
  * @brief Flash D/E-Flash Partition.
  *
@@ -876,9 +876,9 @@ extern uint32_t EEEWrite(PFLASH_SSD_CONFIG pSSDConfig, \
  */
 
 extern uint32_t DEFlashPartition(PFLASH_SSD_CONFIG pSSDConfig, \
-                               uint8_t EEEDataSizeCode, \
-                               uint8_t DEPartitionCode, \
-                               pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+							   uint8_t EEEDataSizeCode, \
+							   uint8_t DEPartitionCode, \
+							   pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*!
  * @brief D-Flash get protection.
  *
@@ -900,7 +900,7 @@ extern uint32_t DEFlashPartition(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return  Error value(FTFx_ERR_EFLASHONLY)
  */
 extern uint32_t DFlashGetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
-                                  uint8_t*  protectStatus);
+								  uint8_t*  protectStatus);
 
 /*!
  * @brief D-Flash set protection.
@@ -923,7 +923,7 @@ extern uint32_t DFlashGetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return  Error value(FTFx_ERR_EFLASHONLY,FTFx_ERR_CHANGEPROT)
  */
 extern uint32_t DFlashSetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
-                                  uint8_t  protectStatus);
+								  uint8_t  protectStatus);
 #endif /* End of DEBLOCK_SIZE */
 
 #ifdef SWAP_M
@@ -988,9 +988,9 @@ extern uint32_t DFlashSetProtection(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return  Error value(FTFx_ERR_ACCERR,FTFx_ERR_MGSTAT0)
  */
 extern uint32_t PFlashSwap(PFLASH_SSD_CONFIG pSSDConfig, \
-                  uint32_t addr, \
-                  PFLASH_SWAP_CALLBACK pSwapCallback, \
-                  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+				  uint32_t addr, \
+				  PFLASH_SWAP_CALLBACK pSwapCallback, \
+				  pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 /*!
  * @brief  Implements swap control command corresponding with the swap control code provided via the swapcmd parameter.
  *
@@ -1021,12 +1021,12 @@ extern uint32_t PFlashSwap(PFLASH_SSD_CONFIG pSSDConfig, \
  * @return  Error value(FTFx_ERR_ACCERR,FTFx_ERR_MGSTAT0)
  */
 extern uint32_t PFlashSwapCtl(PFLASH_SSD_CONFIG pSSDConfig, \
-                             uint32_t addr, \
-                             uint8_t swapcmd, \
-                             uint8_t* pCurrentSwapMode,\
-                             uint8_t* pCurrentSwapBlockStatus, \
-                             uint8_t* pNextSwapBlockStatus, \
-                             pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
+							 uint32_t addr, \
+							 uint8_t swapcmd, \
+							 uint8_t* pCurrentSwapMode,\
+							 uint8_t* pCurrentSwapBlockStatus, \
+							 uint8_t* pNextSwapBlockStatus, \
+							 pFLASHCOMMANDSEQUENCE pFlashCommandSequence);
 #endif /* End of SWAP_M */
 /*@}*/
 

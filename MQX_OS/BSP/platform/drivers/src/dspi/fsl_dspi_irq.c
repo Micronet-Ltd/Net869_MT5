@@ -54,7 +54,7 @@
  */
 void SPI0_IRQHandler(void)
 {
-    DSPI_DRV_IRQHandler(SPI0_IDX);
+	DSPI_DRV_IRQHandler(SPI0_IDX);
 }
 
 #elif (SPI_INSTANCE_COUNT == 2)
@@ -65,7 +65,7 @@ void SPI0_IRQHandler(void)
  */
 void SPI0_IRQHandler(void)
 {
-    DSPI_DRV_IRQHandler(SPI0_IDX);
+	DSPI_DRV_IRQHandler(SPI0_IDX);
 }
 
 /*!
@@ -75,7 +75,7 @@ void SPI0_IRQHandler(void)
  */
 void SPI1_IRQHandler(void)
 {
-    DSPI_DRV_IRQHandler(SPI1_IDX);
+	DSPI_DRV_IRQHandler(SPI1_IDX);
 }
 
 #else
@@ -86,7 +86,7 @@ void SPI1_IRQHandler(void)
  */
 void SPI0_IRQHandler(void)
 {
-    DSPI_DRV_IRQHandler(SPI0_IDX);
+	DSPI_DRV_IRQHandler(SPI0_IDX);
 }
 
 /*!
@@ -96,7 +96,7 @@ void SPI0_IRQHandler(void)
  */
 void SPI1_IRQHandler(void)
 {
-    DSPI_DRV_IRQHandler(SPI1_IDX);
+	DSPI_DRV_IRQHandler(SPI1_IDX);
 }
 
 /*!
@@ -106,7 +106,7 @@ void SPI1_IRQHandler(void)
  */
 void SPI2_IRQHandler(void)
 {
-    DSPI_DRV_IRQHandler(SPI2_IDX);
+	DSPI_DRV_IRQHandler(SPI2_IDX);
 }
 
 #endif
@@ -116,4 +116,3 @@ void SPI2_IRQHandler(void)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

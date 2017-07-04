@@ -53,156 +53,156 @@
  */
 void *_lwmem_alloc_internal
 (
-    _mem_size      requested_size,
-    TD_STRUCT_PTR  td_ptr,
-    _lwmem_pool_id pool_id,
-    bool        zero
+	_mem_size      requested_size,
+	TD_STRUCT_PTR  td_ptr,
+	_lwmem_pool_id pool_id,
+	bool        zero
 )
 { /* Body */
-    LWMEM_BLOCK_STRUCT_PTR block_ptr;
-    LWMEM_BLOCK_STRUCT_PTR next_block_ptr;
-    LWMEM_BLOCK_STRUCT_PTR prev_block_ptr = NULL;
-    _mem_size              block_size;
-    _mem_size              next_block_size;
-    LWMEM_POOL_STRUCT_PTR  mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) pool_id;
-    uint32_t               highwater;
-    void*                  retval = NULL;
+	LWMEM_BLOCK_STRUCT_PTR block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR next_block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR prev_block_ptr = NULL;
+	_mem_size              block_size;
+	_mem_size              next_block_size;
+	LWMEM_POOL_STRUCT_PTR  mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) pool_id;
+	uint32_t               highwater;
+	void*                  retval = NULL;
 
 #if MQX_CHECK_VALIDITY
-    if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
-    {
-        _task_set_error(MQX_LWMEM_POOL_INVALID);
-        return (NULL);
-    } /* Endif */
+	if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
+	{
+		_task_set_error(MQX_LWMEM_POOL_INVALID);
+		return (NULL);
+	} /* Endif */
 #endif
 
-    /*
-     * Adjust message size to allow for block management overhead
-     * and force size to be aligned.
-     */
-    requested_size += (_mem_size) sizeof(LWMEM_BLOCK_STRUCT);
-    if (requested_size < LWMEM_MIN_MEMORY_STORAGE_SIZE)
-    {
-        requested_size = LWMEM_MIN_MEMORY_STORAGE_SIZE;
-    } /* Endif */
+	/*
+	 * Adjust message size to allow for block management overhead
+	 * and force size to be aligned.
+	 */
+	requested_size += (_mem_size) sizeof(LWMEM_BLOCK_STRUCT);
+	if (requested_size < LWMEM_MIN_MEMORY_STORAGE_SIZE)
+	{
+		requested_size = LWMEM_MIN_MEMORY_STORAGE_SIZE;
+	} /* Endif */
 
-    _MEMORY_ALIGN_VAL_LARGER(requested_size);
+	_MEMORY_ALIGN_VAL_LARGER(requested_size);
 
-    _int_disable();
-    /* Start search for block from the beginning of list of free memory blocks */
-    block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	_int_disable();
+	/* Start search for block from the beginning of list of free memory blocks */
+	block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
 
-    prev_block_ptr =  mem_pool_ptr->POOL_FREE_LIST_PTR;
-    while (block_ptr != NULL)
-    {
-        /* Provide window for higher priority tasks */
-        mem_pool_ptr->POOL_ALLOC_PTR = block_ptr;
+	prev_block_ptr =  mem_pool_ptr->POOL_FREE_LIST_PTR;
+	while (block_ptr != NULL)
+	{
+		/* Provide window for higher priority tasks */
+		mem_pool_ptr->POOL_ALLOC_PTR = block_ptr;
 
-        _int_enable();
-        _int_disable();
-
-
-
-        /* Reset to the start if we were preempted
-           and the preempting task did finish its free/malloc operation,
-           a safe solution, even with time-slicing. */
-        if(block_ptr != mem_pool_ptr->POOL_ALLOC_PTR)
-        {
-            block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-            prev_block_ptr = block_ptr;
-        }
-
-        if (block_ptr == NULL)
-        {
-            /* The pool became full during preemption, no free block exists anymore */
-            break;
-
-        }
-
-        block_size = block_ptr->BLOCKSIZE;
-        if (block_size >= requested_size)
-        {
+		_int_enable();
+		_int_disable();
 
 
-            /* request fits into this block */
-            next_block_size = block_size - requested_size;
-            if (next_block_size >= LWMEM_MIN_MEMORY_STORAGE_SIZE)
-            {
-                /*
-                 * The current block is big enough to split.
-                 * into 2 blocks.... the part to be allocated is one block,
-                 * and the rest remains as a free block on the free list.
-                 */
-                next_block_ptr = (LWMEM_BLOCK_STRUCT_PTR) (void *) ((unsigned char *) block_ptr + requested_size);
-                /* Initialize the new physical block values */
-                next_block_ptr->BLOCKSIZE = next_block_size;
-                /* Link new block into the free list */
-                next_block_ptr->POOL = (void *) mem_pool_ptr;
-                next_block_ptr->U.NEXTBLOCK = block_ptr->U.NEXTBLOCK;
 
-                /* Modify the current block, to point to this newly created block*/
-                block_ptr->BLOCKSIZE = requested_size;
-            }
-            else
-            {
-                /* Take the entire block */
-                requested_size = block_size;
-                next_block_ptr = block_ptr->U.NEXTBLOCK;
-            } /* Endif */
+		/* Reset to the start if we were preempted
+		   and the preempting task did finish its free/malloc operation,
+		   a safe solution, even with time-slicing. */
+		if(block_ptr != mem_pool_ptr->POOL_ALLOC_PTR)
+		{
+			block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+			prev_block_ptr = block_ptr;
+		}
 
-            if (block_ptr == mem_pool_ptr->POOL_FREE_LIST_PTR)
-            {
-                /* At the head of the free list */
-                mem_pool_ptr->POOL_FREE_LIST_PTR = next_block_ptr;
-            }
-            else
-            {
-                prev_block_ptr->U.NEXTBLOCK = next_block_ptr;
-            } /* Endif */
+		if (block_ptr == NULL)
+		{
+			/* The pool became full during preemption, no free block exists anymore */
+			break;
 
-            /* Indicate the block is in use */
-            block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(td_ptr->TASK_ID);
-            block_ptr->U.S.MEM_TYPE = 0;
-            block_ptr->POOL = (_lwmem_pool_id) mem_pool_ptr;
+		}
 
-            /* Indicate the highest memory address used */
-            highwater = ((uint32_t) block_ptr) + block_ptr->BLOCKSIZE - 1;
-            if (highwater > (uint32_t) mem_pool_ptr->HIGHWATER)
-            {
-                mem_pool_ptr->HIGHWATER = (void*) highwater;
-            }
+		block_size = block_ptr->BLOCKSIZE;
+		if (block_size >= requested_size)
+		{
 
-            if (zero)
-            {
-                _mem_zero((void *) ((unsigned char *) block_ptr + sizeof(LWMEM_BLOCK_STRUCT)), requested_size
-                                - sizeof(LWMEM_BLOCK_STRUCT));
-            } /* Endif */
-            retval = (void *) ((unsigned char *) block_ptr + sizeof(LWMEM_BLOCK_STRUCT));
-            break;
-        }
-        else
-        {
-            prev_block_ptr = block_ptr;
-            block_ptr = block_ptr->U.NEXTBLOCK;
-        } /* Endif */
-    } /* Endwhile */
 
-    mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
-    #if MQX_TASK_DESTRUCTION
-    mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
-    #endif
+			/* request fits into this block */
+			next_block_size = block_size - requested_size;
+			if (next_block_size >= LWMEM_MIN_MEMORY_STORAGE_SIZE)
+			{
+				/*
+				 * The current block is big enough to split.
+				 * into 2 blocks.... the part to be allocated is one block,
+				 * and the rest remains as a free block on the free list.
+				 */
+				next_block_ptr = (LWMEM_BLOCK_STRUCT_PTR) (void *) ((unsigned char *) block_ptr + requested_size);
+				/* Initialize the new physical block values */
+				next_block_ptr->BLOCKSIZE = next_block_size;
+				/* Link new block into the free list */
+				next_block_ptr->POOL = (void *) mem_pool_ptr;
+				next_block_ptr->U.NEXTBLOCK = block_ptr->U.NEXTBLOCK;
 
-    _int_enable();
+				/* Modify the current block, to point to this newly created block*/
+				block_ptr->BLOCKSIZE = requested_size;
+			}
+			else
+			{
+				/* Take the entire block */
+				requested_size = block_size;
+				next_block_ptr = block_ptr->U.NEXTBLOCK;
+			} /* Endif */
 
-    if (retval == NULL)
-    {
-        _task_set_error(MQX_OUT_OF_MEMORY);
-    }
+			if (block_ptr == mem_pool_ptr->POOL_FREE_LIST_PTR)
+			{
+				/* At the head of the free list */
+				mem_pool_ptr->POOL_FREE_LIST_PTR = next_block_ptr;
+			}
+			else
+			{
+				prev_block_ptr->U.NEXTBLOCK = next_block_ptr;
+			} /* Endif */
 
-    return (retval);
+			/* Indicate the block is in use */
+			block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(td_ptr->TASK_ID);
+			block_ptr->U.S.MEM_TYPE = 0;
+			block_ptr->POOL = (_lwmem_pool_id) mem_pool_ptr;
+
+			/* Indicate the highest memory address used */
+			highwater = ((uint32_t) block_ptr) + block_ptr->BLOCKSIZE - 1;
+			if (highwater > (uint32_t) mem_pool_ptr->HIGHWATER)
+			{
+				mem_pool_ptr->HIGHWATER = (void*) highwater;
+			}
+
+			if (zero)
+			{
+				_mem_zero((void *) ((unsigned char *) block_ptr + sizeof(LWMEM_BLOCK_STRUCT)), requested_size
+								- sizeof(LWMEM_BLOCK_STRUCT));
+			} /* Endif */
+			retval = (void *) ((unsigned char *) block_ptr + sizeof(LWMEM_BLOCK_STRUCT));
+			break;
+		}
+		else
+		{
+			prev_block_ptr = block_ptr;
+			block_ptr = block_ptr->U.NEXTBLOCK;
+		} /* Endif */
+	} /* Endwhile */
+
+	mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	#if MQX_TASK_DESTRUCTION
+	mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	#endif
+
+	_int_enable();
+
+	if (retval == NULL)
+	{
+		_task_set_error(MQX_OUT_OF_MEMORY);
+	}
+
+	return (retval);
 
 } /* Endbody */
 /*! \endcond */
@@ -228,159 +228,159 @@ void *_lwmem_alloc_internal
  */
 void *_lwmem_alloc_at_internal
 (
-    _mem_size      requested_size,
-    void          *requested_addr,
-    TD_STRUCT_PTR  td_ptr,
-    _lwmem_pool_id pool_id,
-    bool        zero
+	_mem_size      requested_size,
+	void          *requested_addr,
+	TD_STRUCT_PTR  td_ptr,
+	_lwmem_pool_id pool_id,
+	bool        zero
 )
 { /* Body */
-    LWMEM_BLOCK_STRUCT_PTR  block_ptr;
-    LWMEM_BLOCK_STRUCT_PTR  requested_block_ptr;
-    LWMEM_BLOCK_STRUCT_PTR  next_block_ptr;
-    LWMEM_BLOCK_STRUCT_PTR  prev_block_ptr = NULL;
-    (void)                  prev_block_ptr; /* disable 'unused variable' warning */
-    _mem_size               block_size;
-    _mem_size               next_block_size, free_block_size;
-    LWMEM_POOL_STRUCT_PTR   mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) pool_id;
-    uint32_t                highwater;
-    void*                   retval = NULL;
+	LWMEM_BLOCK_STRUCT_PTR  block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR  requested_block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR  next_block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR  prev_block_ptr = NULL;
+	(void)                  prev_block_ptr; /* disable 'unused variable' warning */
+	_mem_size               block_size;
+	_mem_size               next_block_size, free_block_size;
+	LWMEM_POOL_STRUCT_PTR   mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) pool_id;
+	uint32_t                highwater;
+	void*                   retval = NULL;
 
 #if MQX_CHECK_VALIDITY
-    if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
-    {
-        _task_set_error(MQX_LWMEM_POOL_INVALID);
-        return (NULL);
-    } /* Endif */
+	if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
+	{
+		_task_set_error(MQX_LWMEM_POOL_INVALID);
+		return (NULL);
+	} /* Endif */
 #endif
 
-    /*
-     * Adjust message size to allow for block management overhead
-     * and force size to be aligned.
-     */
-    requested_size += (_mem_size) sizeof(LWMEM_BLOCK_STRUCT);
-    if (requested_size < LWMEM_MIN_MEMORY_STORAGE_SIZE)
-    {
-        requested_size = LWMEM_MIN_MEMORY_STORAGE_SIZE;
-    } /* Endif */
+	/*
+	 * Adjust message size to allow for block management overhead
+	 * and force size to be aligned.
+	 */
+	requested_size += (_mem_size) sizeof(LWMEM_BLOCK_STRUCT);
+	if (requested_size < LWMEM_MIN_MEMORY_STORAGE_SIZE)
+	{
+		requested_size = LWMEM_MIN_MEMORY_STORAGE_SIZE;
+	} /* Endif */
 
-    _MEMORY_ALIGN_VAL_LARGER(requested_size);
+	_MEMORY_ALIGN_VAL_LARGER(requested_size);
 
-    _int_disable();
-    block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    while (block_ptr != NULL)
-    {
-        /* Provide window for higher priority tasks */
-        mem_pool_ptr->POOL_ALLOC_PTR = block_ptr;
+	_int_disable();
+	block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	while (block_ptr != NULL)
+	{
+		/* Provide window for higher priority tasks */
+		mem_pool_ptr->POOL_ALLOC_PTR = block_ptr;
 
-        _int_enable();
-        _int_disable();
+		_int_enable();
+		_int_disable();
 
 
 
-        /* Reset to the start if we were preempted
-           and the preempting task did finish its free/malloc operation,
-           a safe solution, even with time-slicing. */
-        if(block_ptr != mem_pool_ptr->POOL_ALLOC_PTR)
-        {
-            block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-            prev_block_ptr = block_ptr;
-        }
+		/* Reset to the start if we were preempted
+		   and the preempting task did finish its free/malloc operation,
+		   a safe solution, even with time-slicing. */
+		if(block_ptr != mem_pool_ptr->POOL_ALLOC_PTR)
+		{
+			block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+			prev_block_ptr = block_ptr;
+		}
 
-        if (block_ptr == NULL)
-        {
-            /* The pool became full during preemption, no free block exists anymore */
-            break;
-        }
+		if (block_ptr == NULL)
+		{
+			/* The pool became full during preemption, no free block exists anymore */
+			break;
+		}
 
-        block_size = block_ptr->BLOCKSIZE;
-        if ((unsigned char *) block_ptr + LWMEM_MIN_MEMORY_STORAGE_SIZE <= (unsigned char *) requested_addr
-                        - sizeof(LWMEM_BLOCK_STRUCT) && (unsigned char *) block_ptr + block_size
-                        >= (unsigned char *) requested_addr - sizeof(LWMEM_BLOCK_STRUCT) + requested_size)
-        {
-            /* request fits into this block */
+		block_size = block_ptr->BLOCKSIZE;
+		if ((unsigned char *) block_ptr + LWMEM_MIN_MEMORY_STORAGE_SIZE <= (unsigned char *) requested_addr
+						- sizeof(LWMEM_BLOCK_STRUCT) && (unsigned char *) block_ptr + block_size
+						>= (unsigned char *) requested_addr - sizeof(LWMEM_BLOCK_STRUCT) + requested_size)
+		{
+			/* request fits into this block */
 
-            requested_block_ptr = (LWMEM_BLOCK_STRUCT_PTR)((unsigned char *) requested_addr - sizeof(LWMEM_BLOCK_STRUCT));
+			requested_block_ptr = (LWMEM_BLOCK_STRUCT_PTR)((unsigned char *) requested_addr - sizeof(LWMEM_BLOCK_STRUCT));
 
-            free_block_size = (unsigned char *) requested_block_ptr - (unsigned char *) block_ptr;
-            /* requested block size is known */
-            next_block_size = block_size - requested_size - free_block_size;
+			free_block_size = (unsigned char *) requested_block_ptr - (unsigned char *) block_ptr;
+			/* requested block size is known */
+			next_block_size = block_size - requested_size - free_block_size;
 
-            /* free_block_size is always > LWMEM_MIN_MEMORY_STORAGE_SIZE */
-            block_ptr->BLOCKSIZE = free_block_size;
+			/* free_block_size is always > LWMEM_MIN_MEMORY_STORAGE_SIZE */
+			block_ptr->BLOCKSIZE = free_block_size;
 
-            /* chek and prepare free block after requested block */
-            if (next_block_size >= LWMEM_MIN_MEMORY_STORAGE_SIZE)
-            {
-                /*
-                 * The current block is big enough to split.
-                 * into 2 blocks.... the part to be allocated is one block,
-                 * and the rest remains as a free block on the free list.
-                 */
-                next_block_ptr = (LWMEM_BLOCK_STRUCT_PTR) (void *) ((unsigned char *) requested_block_ptr + requested_size);
-                /* Initialize the new physical block values */
-                next_block_ptr->BLOCKSIZE = next_block_size;
-                /* Link new block into the free list */
-                next_block_ptr->POOL = (void *) mem_pool_ptr;
-                next_block_ptr->U.NEXTBLOCK = block_ptr->U.NEXTBLOCK;
-                block_ptr->U.NEXTBLOCK = (void *) next_block_ptr;
-            }
-            else
-            {
-                /* Take the entire block */
-                requested_size += next_block_size;
-                next_block_ptr = block_ptr->U.NEXTBLOCK;
-            }
+			/* chek and prepare free block after requested block */
+			if (next_block_size >= LWMEM_MIN_MEMORY_STORAGE_SIZE)
+			{
+				/*
+				 * The current block is big enough to split.
+				 * into 2 blocks.... the part to be allocated is one block,
+				 * and the rest remains as a free block on the free list.
+				 */
+				next_block_ptr = (LWMEM_BLOCK_STRUCT_PTR) (void *) ((unsigned char *) requested_block_ptr + requested_size);
+				/* Initialize the new physical block values */
+				next_block_ptr->BLOCKSIZE = next_block_size;
+				/* Link new block into the free list */
+				next_block_ptr->POOL = (void *) mem_pool_ptr;
+				next_block_ptr->U.NEXTBLOCK = block_ptr->U.NEXTBLOCK;
+				block_ptr->U.NEXTBLOCK = (void *) next_block_ptr;
+			}
+			else
+			{
+				/* Take the entire block */
+				requested_size += next_block_size;
+				next_block_ptr = block_ptr->U.NEXTBLOCK;
+			}
 
-            /* first free block always stay first */
+			/* first free block always stay first */
 
-            /* add next free block to list */
-            //prev_block_ptr->U.NEXTBLOCK = next_block_ptr;
+			/* add next free block to list */
+			//prev_block_ptr->U.NEXTBLOCK = next_block_ptr;
 
-            /* Modify the allocated block information to point to next block */
-            requested_block_ptr->BLOCKSIZE = requested_size;
-            requested_block_ptr->U.NEXTBLOCK = next_block_ptr;
+			/* Modify the allocated block information to point to next block */
+			requested_block_ptr->BLOCKSIZE = requested_size;
+			requested_block_ptr->U.NEXTBLOCK = next_block_ptr;
 
-            /* Indicate the block is in use */
-            requested_block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(td_ptr->TASK_ID);
-            requested_block_ptr->U.S.MEM_TYPE = 0;
-            requested_block_ptr->POOL = (_lwmem_pool_id) mem_pool_ptr;
+			/* Indicate the block is in use */
+			requested_block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(td_ptr->TASK_ID);
+			requested_block_ptr->U.S.MEM_TYPE = 0;
+			requested_block_ptr->POOL = (_lwmem_pool_id) mem_pool_ptr;
 
-            /* Indicate the highest memory address used */
-            highwater = ((uint32_t) block_ptr) + block_ptr->BLOCKSIZE - 1;
-            if (highwater > (uint32_t) mem_pool_ptr->HIGHWATER)
-            {
-                mem_pool_ptr->HIGHWATER = (void*) highwater;
-            }
+			/* Indicate the highest memory address used */
+			highwater = ((uint32_t) block_ptr) + block_ptr->BLOCKSIZE - 1;
+			if (highwater > (uint32_t) mem_pool_ptr->HIGHWATER)
+			{
+				mem_pool_ptr->HIGHWATER = (void*) highwater;
+			}
 
-            if (zero)
-            {
-                _mem_zero((void *) requested_addr, requested_size - sizeof(LWMEM_BLOCK_STRUCT));
-            } /* Endif */
-            retval = requested_addr;
-            break;
-        }
-        else
-        {
-            prev_block_ptr = block_ptr;
-            block_ptr = block_ptr->U.NEXTBLOCK;
-        } /* Endif */
-    } /* Endwhile */
+			if (zero)
+			{
+				_mem_zero((void *) requested_addr, requested_size - sizeof(LWMEM_BLOCK_STRUCT));
+			} /* Endif */
+			retval = requested_addr;
+			break;
+		}
+		else
+		{
+			prev_block_ptr = block_ptr;
+			block_ptr = block_ptr->U.NEXTBLOCK;
+		} /* Endif */
+	} /* Endwhile */
 
-    mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
-    #if MQX_TASK_DESTRUCTION
-    mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
-    #endif
-    _int_enable();
+	mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	#if MQX_TASK_DESTRUCTION
+	mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	#endif
+	_int_enable();
 
-    if (retval == NULL)
-    {
-        _task_set_error(MQX_OUT_OF_MEMORY);
-    }
-    return (retval);
+	if (retval == NULL)
+	{
+		_task_set_error(MQX_OUT_OF_MEMORY);
+	}
+	return (retval);
 }
 
 /*!
@@ -406,182 +406,182 @@ void *_lwmem_alloc_at_internal
  */
 void *_lwmem_alloc_align_internal
 (
-    _mem_size      requested_size,
-    _mem_size      req_align,
-    TD_STRUCT_PTR  td_ptr,
-    _lwmem_pool_id pool_id,
-    bool        zero
+	_mem_size      requested_size,
+	_mem_size      req_align,
+	TD_STRUCT_PTR  td_ptr,
+	_lwmem_pool_id pool_id,
+	bool        zero
 )
 { /* Body */
-    LWMEM_BLOCK_STRUCT_PTR block_ptr;
-    LWMEM_BLOCK_STRUCT_PTR next_block_ptr;
-    LWMEM_BLOCK_STRUCT_PTR prev_block_ptr;
-    _mem_size              block_size;
-    _mem_size              next_block_size;
-    _mem_size              shift;
-    LWMEM_POOL_STRUCT_PTR  mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) pool_id;
-    uint32_t               highwater;
-    void*                  retval = NULL;
+	LWMEM_BLOCK_STRUCT_PTR block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR next_block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR prev_block_ptr;
+	_mem_size              block_size;
+	_mem_size              next_block_size;
+	_mem_size              shift;
+	LWMEM_POOL_STRUCT_PTR  mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) pool_id;
+	uint32_t               highwater;
+	void*                  retval = NULL;
 
 #if MQX_CHECK_ERRORS
-    if (requested_size < LWMEM_MIN_MEMORY_STORAGE_SIZE) {
-        requested_size = LWMEM_MIN_MEMORY_STORAGE_SIZE;
-    }
-    /* Check if reg_align is power of 2 */
-    if ((req_align != 0) && (req_align & (req_align - 1))) {
-        _task_set_error(MQX_INVALID_PARAMETER);
-        return (NULL); /* request failed */
-    }
-    /* If aligment is less than PSP_MEMORY_ALIGNMENT correction is needed. */
-    if (req_align <= PSP_MEMORY_ALIGNMENT) {
-        req_align = (PSP_MEMORY_ALIGNMENT + 1);
-    }
+	if (requested_size < LWMEM_MIN_MEMORY_STORAGE_SIZE) {
+		requested_size = LWMEM_MIN_MEMORY_STORAGE_SIZE;
+	}
+	/* Check if reg_align is power of 2 */
+	if ((req_align != 0) && (req_align & (req_align - 1))) {
+		_task_set_error(MQX_INVALID_PARAMETER);
+		return (NULL); /* request failed */
+	}
+	/* If aligment is less than PSP_MEMORY_ALIGNMENT correction is needed. */
+	if (req_align <= PSP_MEMORY_ALIGNMENT) {
+		req_align = (PSP_MEMORY_ALIGNMENT + 1);
+	}
 #endif
 
 #if MQX_CHECK_VALIDITY
-    if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
-    {
-        _task_set_error(MQX_LWMEM_POOL_INVALID);
-        return (NULL);
-    }
+	if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
+	{
+		_task_set_error(MQX_LWMEM_POOL_INVALID);
+		return (NULL);
+	}
 #endif
 
-    /*
-     * Adjust message size to allow for block management overhead
-     * and force size to be aligned.
-     */
-    requested_size += (_mem_size) sizeof(LWMEM_BLOCK_STRUCT);
-    if (requested_size < LWMEM_MIN_MEMORY_STORAGE_SIZE)
-    {
-        requested_size = LWMEM_MIN_MEMORY_STORAGE_SIZE;
-    }
+	/*
+	 * Adjust message size to allow for block management overhead
+	 * and force size to be aligned.
+	 */
+	requested_size += (_mem_size) sizeof(LWMEM_BLOCK_STRUCT);
+	if (requested_size < LWMEM_MIN_MEMORY_STORAGE_SIZE)
+	{
+		requested_size = LWMEM_MIN_MEMORY_STORAGE_SIZE;
+	}
 
-    _MEMORY_ALIGN_VAL_LARGER(requested_size);
+	_MEMORY_ALIGN_VAL_LARGER(requested_size);
 
-    _int_disable();
-    block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    while (block_ptr != NULL)
-    {
-        /* Provide window for higher priority tasks */
-        mem_pool_ptr->POOL_ALLOC_PTR = block_ptr;
-        _int_enable();
-        _int_disable();
+	_int_disable();
+	block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	while (block_ptr != NULL)
+	{
+		/* Provide window for higher priority tasks */
+		mem_pool_ptr->POOL_ALLOC_PTR = block_ptr;
+		_int_enable();
+		_int_disable();
 
 
-        /* Reset to the start if we were preempted
-           and the preempting task did finish its free/malloc operation,
-           a safe solution, even with time-slicing. */
-        if(block_ptr != mem_pool_ptr->POOL_ALLOC_PTR)
-        {
-            block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-            prev_block_ptr = block_ptr;
-        }
+		/* Reset to the start if we were preempted
+		   and the preempting task did finish its free/malloc operation,
+		   a safe solution, even with time-slicing. */
+		if(block_ptr != mem_pool_ptr->POOL_ALLOC_PTR)
+		{
+			block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+			prev_block_ptr = block_ptr;
+		}
 
-        if (block_ptr == NULL)
-        {
-            /* The pool became full during preemption, no free block exists anymore */
-            break;
-        }
+		if (block_ptr == NULL)
+		{
+			/* The pool became full during preemption, no free block exists anymore */
+			break;
+		}
 
-        shift = (((_mem_size) block_ptr + sizeof(LWMEM_BLOCK_STRUCT) + req_align) & ~(req_align - 1))
-                        - ((_mem_size) block_ptr + sizeof(LWMEM_BLOCK_STRUCT));
+		shift = (((_mem_size) block_ptr + sizeof(LWMEM_BLOCK_STRUCT) + req_align) & ~(req_align - 1))
+						- ((_mem_size) block_ptr + sizeof(LWMEM_BLOCK_STRUCT));
 
-        if (shift < (2 * LWMEM_MIN_MEMORY_STORAGE_SIZE))
-        {
-            shift = (((_mem_size) block_ptr + sizeof(LWMEM_BLOCK_STRUCT) + (3 * LWMEM_MIN_MEMORY_STORAGE_SIZE)
-                            + req_align) & ~(req_align - 1)) - ((_mem_size) block_ptr + sizeof(LWMEM_BLOCK_STRUCT));
-        }
+		if (shift < (2 * LWMEM_MIN_MEMORY_STORAGE_SIZE))
+		{
+			shift = (((_mem_size) block_ptr + sizeof(LWMEM_BLOCK_STRUCT) + (3 * LWMEM_MIN_MEMORY_STORAGE_SIZE)
+							+ req_align) & ~(req_align - 1)) - ((_mem_size) block_ptr + sizeof(LWMEM_BLOCK_STRUCT));
+		}
 
-        block_size = block_ptr->BLOCKSIZE;
-        /* request fits into this block */
-        if (block_size >= requested_size + shift)
-        {
-            /* create new free block */
-            prev_block_ptr = block_ptr;
-            block_ptr = (LWMEM_BLOCK_STRUCT_PTR)(((unsigned char *) block_ptr) + shift);
-            block_size -= shift;
-            prev_block_ptr->BLOCKSIZE = shift;
-            block_ptr->U.NEXTBLOCK = prev_block_ptr->U.NEXTBLOCK;
+		block_size = block_ptr->BLOCKSIZE;
+		/* request fits into this block */
+		if (block_size >= requested_size + shift)
+		{
+			/* create new free block */
+			prev_block_ptr = block_ptr;
+			block_ptr = (LWMEM_BLOCK_STRUCT_PTR)(((unsigned char *) block_ptr) + shift);
+			block_size -= shift;
+			prev_block_ptr->BLOCKSIZE = shift;
+			block_ptr->U.NEXTBLOCK = prev_block_ptr->U.NEXTBLOCK;
 
-            next_block_size = block_size - requested_size;
-            if (next_block_size >= LWMEM_MIN_MEMORY_STORAGE_SIZE)
-            {
-                /*
-                 * The current block is big enough to split.
-                 * into 2 blocks.... the part to be allocated is one block,
-                 * and the rest remains as a free block on the free list.
-                 */
-                next_block_ptr = (LWMEM_BLOCK_STRUCT_PTR) (void *) ((unsigned char *) block_ptr + requested_size);
-                /* Initialize the new physical block values */
-                next_block_ptr->BLOCKSIZE = next_block_size;
-                /* Link new block into the free list */
-                next_block_ptr->POOL = (void *) mem_pool_ptr;
-                next_block_ptr->U.NEXTBLOCK = block_ptr->U.NEXTBLOCK;
-                block_ptr->U.NEXTBLOCK = (void *) next_block_ptr;
-            }
-            else
-            {
-                /* Take the entire block */
-                requested_size = block_size;
-                next_block_ptr = block_ptr->U.NEXTBLOCK;
-            } /* Endif */
+			next_block_size = block_size - requested_size;
+			if (next_block_size >= LWMEM_MIN_MEMORY_STORAGE_SIZE)
+			{
+				/*
+				 * The current block is big enough to split.
+				 * into 2 blocks.... the part to be allocated is one block,
+				 * and the rest remains as a free block on the free list.
+				 */
+				next_block_ptr = (LWMEM_BLOCK_STRUCT_PTR) (void *) ((unsigned char *) block_ptr + requested_size);
+				/* Initialize the new physical block values */
+				next_block_ptr->BLOCKSIZE = next_block_size;
+				/* Link new block into the free list */
+				next_block_ptr->POOL = (void *) mem_pool_ptr;
+				next_block_ptr->U.NEXTBLOCK = block_ptr->U.NEXTBLOCK;
+				block_ptr->U.NEXTBLOCK = (void *) next_block_ptr;
+			}
+			else
+			{
+				/* Take the entire block */
+				requested_size = block_size;
+				next_block_ptr = block_ptr->U.NEXTBLOCK;
+			} /* Endif */
 
-            /* Modify the current block, to point to this newly created block*/
-            block_ptr->BLOCKSIZE = requested_size;
+			/* Modify the current block, to point to this newly created block*/
+			block_ptr->BLOCKSIZE = requested_size;
 
-            if (block_ptr == mem_pool_ptr->POOL_FREE_LIST_PTR)
-            {
-                /* At the head of the free list */
-                mem_pool_ptr->POOL_FREE_LIST_PTR = next_block_ptr;
-            }
-            else
-            {
-                prev_block_ptr->U.NEXTBLOCK = next_block_ptr;
-            } /* Endif */
+			if (block_ptr == mem_pool_ptr->POOL_FREE_LIST_PTR)
+			{
+				/* At the head of the free list */
+				mem_pool_ptr->POOL_FREE_LIST_PTR = next_block_ptr;
+			}
+			else
+			{
+				prev_block_ptr->U.NEXTBLOCK = next_block_ptr;
+			} /* Endif */
 
-            /* Indicate the block is in use */
-            block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(td_ptr->TASK_ID);
-            block_ptr->U.S.MEM_TYPE = 0;
-            block_ptr->POOL = (_lwmem_pool_id) mem_pool_ptr;
+			/* Indicate the block is in use */
+			block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(td_ptr->TASK_ID);
+			block_ptr->U.S.MEM_TYPE = 0;
+			block_ptr->POOL = (_lwmem_pool_id) mem_pool_ptr;
 
-            /* Indicate the highest memory address used */
-            highwater = ((uint32_t) block_ptr) + block_ptr->BLOCKSIZE - 1;
-            if (highwater > (uint32_t) mem_pool_ptr->HIGHWATER)
-            {
-                mem_pool_ptr->HIGHWATER = (void*) highwater;
-            }
+			/* Indicate the highest memory address used */
+			highwater = ((uint32_t) block_ptr) + block_ptr->BLOCKSIZE - 1;
+			if (highwater > (uint32_t) mem_pool_ptr->HIGHWATER)
+			{
+				mem_pool_ptr->HIGHWATER = (void*) highwater;
+			}
 
-            if (zero)
-            {
-                _mem_zero((void *) ((unsigned char *) block_ptr + sizeof(LWMEM_BLOCK_STRUCT)), requested_size
-                                - sizeof(LWMEM_BLOCK_STRUCT));
-            }
+			if (zero)
+			{
+				_mem_zero((void *) ((unsigned char *) block_ptr + sizeof(LWMEM_BLOCK_STRUCT)), requested_size
+								- sizeof(LWMEM_BLOCK_STRUCT));
+			}
 
-            retval = (void *) ((unsigned char *) block_ptr + sizeof(LWMEM_BLOCK_STRUCT));
-            break;
-        }
-        else
-        {
-            prev_block_ptr = block_ptr;
-            block_ptr = block_ptr->U.NEXTBLOCK;
-        }
-    }
+			retval = (void *) ((unsigned char *) block_ptr + sizeof(LWMEM_BLOCK_STRUCT));
+			break;
+		}
+		else
+		{
+			prev_block_ptr = block_ptr;
+			block_ptr = block_ptr->U.NEXTBLOCK;
+		}
+	}
 
-    mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
-    #if MQX_TASK_DESTRUCTION
-    mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
-    #endif
-    _int_enable();
+	mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	#if MQX_TASK_DESTRUCTION
+	mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	#endif
+	_int_enable();
 
-    if (retval == NULL)
-    {
-        _task_set_error(MQX_OUT_OF_MEMORY);
-    }
+	if (retval == NULL)
+	{
+		_task_set_error(MQX_OUT_OF_MEMORY);
+	}
 
-    return (retval);
+	return (retval);
 }
 /*! \endcond */
 
@@ -604,20 +604,20 @@ void *_lwmem_alloc_align_internal
  */
 void *_usr_lwmem_alloc_internal
 (
-    _mem_size requested_size
+	_mem_size requested_size
 )
 {
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE2(KLOG_usr_lwmem_alloc, requested_size);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE2(KLOG_usr_lwmem_alloc, requested_size);
 
-    result = _lwmem_alloc_internal(requested_size, kernel_data->ACTIVE_PTR,
-                    (_lwmem_pool_id)kernel_data->KD_USER_POOL, FALSE);
+	result = _lwmem_alloc_internal(requested_size, kernel_data->ACTIVE_PTR,
+					(_lwmem_pool_id)kernel_data->KD_USER_POOL, FALSE);
 
-    _KLOGX2(KLOG_usr_lwmem_alloc, result);
-    return(result);
+	_KLOGX2(KLOG_usr_lwmem_alloc, result);
+	return(result);
 }
 /*! \endcond */
 
@@ -718,27 +718,27 @@ void *_usr_lwmem_alloc_internal
  */
 void *_lwmem_alloc
 (
-    _mem_size requested_size
+	_mem_size requested_size
 )
 {
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
 #if MQX_ENABLE_USER_MODE && MQX_ENABLE_USER_STDAPI
-    if (MQX_RUN_IN_USER_MODE)
-    {
-        return _usr_lwmem_alloc(requested_size);
-    }
+	if (MQX_RUN_IN_USER_MODE)
+	{
+		return _usr_lwmem_alloc(requested_size);
+	}
 #endif
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE2(KLOG_lwmem_alloc, requested_size);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE2(KLOG_lwmem_alloc, requested_size);
 
-    result = _lwmem_alloc_internal(requested_size, kernel_data->ACTIVE_PTR,
-                    (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, FALSE);
+	result = _lwmem_alloc_internal(requested_size, kernel_data->ACTIVE_PTR,
+					(_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, FALSE);
 
-    _KLOGX2(KLOG_lwmem_alloc, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_alloc, result);
+	return (result);
 }
 
 #if MQX_ENABLE_USER_MODE
@@ -768,12 +768,12 @@ void *_lwmem_alloc
  */
 void *_usr_lwmem_alloc
 (
-    _mem_size requested_size
+	_mem_size requested_size
 )
 {
-    MQX_API_CALL_PARAMS params =
-    {   (uint32_t)requested_size, 0, 0, 0, 0};
-    return (void *)_mqx_api_call(MQX_API_LWMEM_ALLOC, &params);
+	MQX_API_CALL_PARAMS params =
+	{   (uint32_t)requested_size, 0, 0, 0, 0};
+	return (void *)_mqx_api_call(MQX_API_LWMEM_ALLOC, &params);
 }
 
 #endif /* MQX_ENABLE_USER_MODE */
@@ -819,21 +819,21 @@ void *_usr_lwmem_alloc
  */
 void *_lwmem_alloc_at
 (
-    _mem_size requested_size,
-    void     *requested_addr
+	_mem_size requested_size,
+	void     *requested_addr
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE2(KLOG_lwmem_alloc_at, requested_size);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE2(KLOG_lwmem_alloc_at, requested_size);
 
-    result = _lwmem_alloc_at_internal(requested_size, requested_addr, kernel_data->ACTIVE_PTR,
-                    (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, FALSE);
+	result = _lwmem_alloc_at_internal(requested_size, requested_addr, kernel_data->ACTIVE_PTR,
+					(_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, FALSE);
 
-    _KLOGX2(KLOG_lwmem_alloc_at, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_alloc_at, result);
+	return (result);
 }
 
 /*!
@@ -878,22 +878,22 @@ void *_lwmem_alloc_at
  */
 void *_lwmem_alloc_align
 (
-    _mem_size requested_size,
-    _mem_size req_align
+	_mem_size requested_size,
+	_mem_size req_align
 )
 {
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE3(KLOG_lwmem_alloc_align, requested_size, req_align);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE3(KLOG_lwmem_alloc_align, requested_size, req_align);
 
-    result = _lwmem_alloc_align_internal(requested_size, req_align, kernel_data->ACTIVE_PTR,
-                    (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, FALSE);
+	result = _lwmem_alloc_align_internal(requested_size, req_align, kernel_data->ACTIVE_PTR,
+					(_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, FALSE);
 
-    _KLOGX2(KLOG_lwmem_alloc_align, result);
+	_KLOGX2(KLOG_lwmem_alloc_align, result);
 
-    return (result);
+	return (result);
 }
 
 /*!
@@ -904,11 +904,11 @@ void *_lwmem_alloc_align
  */
 _lwmem_pool_id _lwmem_get_system_pool_id(void)
 {
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    return (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL;
+	return (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL;
 }
 
 /*!
@@ -996,27 +996,27 @@ _lwmem_pool_id _lwmem_get_system_pool_id(void)
  */
 void *_lwmem_alloc_from
 (
-    _lwmem_pool_id pool_id,
-    _mem_size      requested_size
+	_lwmem_pool_id pool_id,
+	_mem_size      requested_size
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
 #if MQX_ENABLE_USER_MODE && MQX_ENABLE_USER_STDAPI
-    if (MQX_RUN_IN_USER_MODE)
-    {
-        return _usr_lwmem_alloc_from(pool_id, requested_size);
-    }
+	if (MQX_RUN_IN_USER_MODE)
+	{
+		return _usr_lwmem_alloc_from(pool_id, requested_size);
+	}
 #endif
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE3(KLOG_lwmem_alloc_from, pool_id, requested_size);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE3(KLOG_lwmem_alloc_from, pool_id, requested_size);
 
-    result = _lwmem_alloc_internal(requested_size, kernel_data->ACTIVE_PTR, pool_id, FALSE);
+	result = _lwmem_alloc_internal(requested_size, kernel_data->ACTIVE_PTR, pool_id, FALSE);
 
-    _KLOGX2(KLOG_lwmem_alloc_from, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_alloc_from, result);
+	return (result);
 }
 
 #if MQX_ENABLE_USER_MODE
@@ -1051,13 +1051,13 @@ void *_lwmem_alloc_from
  */
 void *_usr_lwmem_alloc_from
 (
-    _lwmem_pool_id pool_id,
-    _mem_size      requested_size
+	_lwmem_pool_id pool_id,
+	_mem_size      requested_size
 )
 {
-    MQX_API_CALL_PARAMS params =
-    {   (uint32_t)pool_id, (uint32_t)requested_size, 0, 0, 0};
-    return (void *)_mqx_api_call(MQX_API_LWMEM_ALLOC_FROM, &params);
+	MQX_API_CALL_PARAMS params =
+	{   (uint32_t)pool_id, (uint32_t)requested_size, 0, 0, 0};
+	return (void *)_mqx_api_call(MQX_API_LWMEM_ALLOC_FROM, &params);
 }
 
 #endif /* MQX_ENABLE_USER_MODE */
@@ -1104,22 +1104,22 @@ void *_usr_lwmem_alloc_from
  */
 void *_lwmem_alloc_align_from
 (
-    _lwmem_pool_id pool_id,
-    _mem_size      requested_size,
-    _mem_size      req_align
+	_lwmem_pool_id pool_id,
+	_mem_size      requested_size,
+	_mem_size      req_align
 )
 {
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE4(KLOG_lwmem_alloc_align_from, pool_id, requested_size, req_align);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE4(KLOG_lwmem_alloc_align_from, pool_id, requested_size, req_align);
 
-    result = _lwmem_alloc_align_internal(requested_size, req_align, kernel_data->ACTIVE_PTR, pool_id, FALSE);
+	result = _lwmem_alloc_align_internal(requested_size, req_align, kernel_data->ACTIVE_PTR, pool_id, FALSE);
 
-    _KLOGX2(KLOG_lwmem_alloc_align_from, result);
+	_KLOGX2(KLOG_lwmem_alloc_align_from, result);
 
-    return (result);
+	return (result);
 }
 
 /*!
@@ -1162,21 +1162,21 @@ void *_lwmem_alloc_align_from
  */
 void *_lwmem_alloc_zero
 (
-    _mem_size size
+	_mem_size size
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE2(KLOG_lwmem_alloc_zero, size);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE2(KLOG_lwmem_alloc_zero, size);
 
-    result = _lwmem_alloc_internal(
-        size, kernel_data->ACTIVE_PTR, (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, TRUE
-    );
+	result = _lwmem_alloc_internal(
+		size, kernel_data->ACTIVE_PTR, (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, TRUE
+	);
 
-    _KLOGX2(KLOG_lwmem_alloc_zero, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_alloc_zero, result);
+	return (result);
 
 } /* Endbody */
 
@@ -1220,20 +1220,20 @@ void *_lwmem_alloc_zero
  */
 void *_lwmem_alloc_zero_from
 (
-    void     *pool_id,
-    _mem_size size
+	void     *pool_id,
+	_mem_size size
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE3(KLOG_lwmem_alloc_zero_from, pool_id, size);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE3(KLOG_lwmem_alloc_zero_from, pool_id, size);
 
-    result = _lwmem_alloc_internal(size, kernel_data->ACTIVE_PTR, pool_id, TRUE);
+	result = _lwmem_alloc_internal(size, kernel_data->ACTIVE_PTR, pool_id, TRUE);
 
-    _KLOGX2(KLOG_lwmem_alloc_zero_from, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_alloc_zero_from, result);
+	return (result);
 
 } /* Endbody */
 
@@ -1267,66 +1267,66 @@ void *_lwmem_alloc_zero_from
  */
 _lwmem_pool_id _lwmem_create_pool
 (
-    LWMEM_POOL_STRUCT_PTR mem_pool_ptr,
-    void                 *start,
-    _mem_size             size
+	LWMEM_POOL_STRUCT_PTR mem_pool_ptr,
+	void                 *start,
+	_mem_size             size
 )
 { /* Body */
-    #define CORTEX_MEMORY_BARRIER_ADDR ((unsigned char*)0x20000000)
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    LWMEM_BLOCK_STRUCT_PTR block_ptr;
-    unsigned char              *end;
+	#define CORTEX_MEMORY_BARRIER_ADDR ((unsigned char*)0x20000000)
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	LWMEM_BLOCK_STRUCT_PTR block_ptr;
+	unsigned char              *end;
 
 #if MQX_ENABLE_USER_MODE && MQX_ENABLE_USER_STDAPI
-    if (MQX_RUN_IN_USER_MODE)
-    {
-        return _usr_lwmem_create_pool(mem_pool_ptr, start, size);
-    }
+	if (MQX_RUN_IN_USER_MODE)
+	{
+		return _usr_lwmem_create_pool(mem_pool_ptr, start, size);
+	}
 #endif
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE3(KLOG_lwmem_create_pool, start, size);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE3(KLOG_lwmem_create_pool, start, size);
 
-    /* Set the end of memory (aligned) */
-    end = (unsigned char *) start + size;
-    mem_pool_ptr->POOL_ALLOC_END_PTR = (void *) _ALIGN_ADDR_TO_LOWER_MEM(end);
+	/* Set the end of memory (aligned) */
+	end = (unsigned char *) start + size;
+	mem_pool_ptr->POOL_ALLOC_END_PTR = (void *) _ALIGN_ADDR_TO_LOWER_MEM(end);
 
-    /* Align the start of the pool */
-    block_ptr = (LWMEM_BLOCK_STRUCT_PTR)_ALIGN_ADDR_TO_HIGHER_MEM(start);
-    mem_pool_ptr->POOL_ALLOC_START_PTR = (void *) block_ptr;
-    mem_pool_ptr->HIGHWATER = (void *) block_ptr;
+	/* Align the start of the pool */
+	block_ptr = (LWMEM_BLOCK_STRUCT_PTR)_ALIGN_ADDR_TO_HIGHER_MEM(start);
+	mem_pool_ptr->POOL_ALLOC_START_PTR = (void *) block_ptr;
+	mem_pool_ptr->HIGHWATER = (void *) block_ptr;
 
-    /* Set up the first block as an idle block */
-    block_ptr->BLOCKSIZE = (unsigned char *) mem_pool_ptr->POOL_ALLOC_END_PTR - (unsigned char *) block_ptr;
-    block_ptr->U.NEXTBLOCK = NULL;
-    block_ptr->POOL = (void *) mem_pool_ptr;
-    mem_pool_ptr->POOL_FREE_LIST_PTR = block_ptr;
-    mem_pool_ptr->POOL_ALLOC_PTR = block_ptr;
-    mem_pool_ptr->POOL_FREE_PTR = block_ptr;
-    mem_pool_ptr->POOL_TEST_PTR = block_ptr;
+	/* Set up the first block as an idle block */
+	block_ptr->BLOCKSIZE = (unsigned char *) mem_pool_ptr->POOL_ALLOC_END_PTR - (unsigned char *) block_ptr;
+	block_ptr->U.NEXTBLOCK = NULL;
+	block_ptr->POOL = (void *) mem_pool_ptr;
+	mem_pool_ptr->POOL_FREE_LIST_PTR = block_ptr;
+	mem_pool_ptr->POOL_ALLOC_PTR = block_ptr;
+	mem_pool_ptr->POOL_FREE_PTR = block_ptr;
+	mem_pool_ptr->POOL_TEST_PTR = block_ptr;
 
-    /* Protect the list of pools while adding new pool */
-    _int_disable();
-    if (kernel_data->LWMEM_POOLS.NEXT == NULL)
-    {
-        /* Initialize the light weight memory */
-        _QUEUE_INIT(&kernel_data->LWMEM_POOLS, 0);
-    } /* Endif */
-    _QUEUE_ENQUEUE(&kernel_data->LWMEM_POOLS, &mem_pool_ptr->LINK);
-    _int_enable();
-    mem_pool_ptr->VALID = LWMEM_POOL_VALID;
-
-
-    /* ARM-Cortex specific boundary check */
-    if(((unsigned char*)start < CORTEX_MEMORY_BARRIER_ADDR)&&(((unsigned char*)start + size) >= CORTEX_MEMORY_BARRIER_ADDR))
-    {
-        _lwmem_alloc_at_internal(0, CORTEX_MEMORY_BARRIER_ADDR, kernel_data->ACTIVE_PTR,
-                                (_lwmem_pool_id) mem_pool_ptr, FALSE);
-    }
+	/* Protect the list of pools while adding new pool */
+	_int_disable();
+	if (kernel_data->LWMEM_POOLS.NEXT == NULL)
+	{
+		/* Initialize the light weight memory */
+		_QUEUE_INIT(&kernel_data->LWMEM_POOLS, 0);
+	} /* Endif */
+	_QUEUE_ENQUEUE(&kernel_data->LWMEM_POOLS, &mem_pool_ptr->LINK);
+	_int_enable();
+	mem_pool_ptr->VALID = LWMEM_POOL_VALID;
 
 
-    _KLOGX2(KLOG_lwmem_create_pool, mem_pool_ptr);
-    return ((_lwmem_pool_id) mem_pool_ptr);
+	/* ARM-Cortex specific boundary check */
+	if(((unsigned char*)start < CORTEX_MEMORY_BARRIER_ADDR)&&(((unsigned char*)start + size) >= CORTEX_MEMORY_BARRIER_ADDR))
+	{
+		_lwmem_alloc_at_internal(0, CORTEX_MEMORY_BARRIER_ADDR, kernel_data->ACTIVE_PTR,
+								(_lwmem_pool_id) mem_pool_ptr, FALSE);
+	}
+
+
+	_KLOGX2(KLOG_lwmem_create_pool, mem_pool_ptr);
+	return ((_lwmem_pool_id) mem_pool_ptr);
 
 }
 
@@ -1351,19 +1351,19 @@ _lwmem_pool_id _lwmem_create_pool
 
 _mqx_uint _mem_set_pool_access
 (
-    _lwmem_pool_id mem_pool_id,
-    uint32_t        access
+	_lwmem_pool_id mem_pool_id,
+	uint32_t        access
 )
 {
-    _mqx_uint res = MQX_LWMEM_POOL_INVALID;
-    LWMEM_POOL_STRUCT_PTR mem_pool_ptr = (_lwmem_pool_id)mem_pool_id;
+	_mqx_uint res = MQX_LWMEM_POOL_INVALID;
+	LWMEM_POOL_STRUCT_PTR mem_pool_ptr = (_lwmem_pool_id)mem_pool_id;
 
-    if (LWMEM_POOL_VALID == mem_pool_ptr->VALID)
-    {
-        res = _psp_mpu_add_region(mem_pool_ptr->POOL_ALLOC_START_PTR, mem_pool_ptr->POOL_ALLOC_END_PTR, access);
-    }
+	if (LWMEM_POOL_VALID == mem_pool_ptr->VALID)
+	{
+		res = _psp_mpu_add_region(mem_pool_ptr->POOL_ALLOC_START_PTR, mem_pool_ptr->POOL_ALLOC_END_PTR, access);
+	}
 
-    return res;
+	return res;
 }
 
 /*!
@@ -1388,14 +1388,14 @@ _mqx_uint _mem_set_pool_access
  */
 _lwmem_pool_id _usr_lwmem_create_pool
 (
-    LWMEM_POOL_STRUCT_PTR mem_pool_ptr,
-    void                 *start,
-    _mem_size             size
+	LWMEM_POOL_STRUCT_PTR mem_pool_ptr,
+	void                 *start,
+	_mem_size             size
 )
 {
-    MQX_API_CALL_PARAMS params =
-    {   (uint32_t)mem_pool_ptr, (uint32_t)start, (uint32_t)size, 0, 0};
-    return (_lwmem_pool_id)_mqx_api_call(MQX_API_LWMEM_CREATE_POOL, &params);
+	MQX_API_CALL_PARAMS params =
+	{   (uint32_t)mem_pool_ptr, (uint32_t)start, (uint32_t)size, 0, 0};
+	return (_lwmem_pool_id)_mqx_api_call(MQX_API_LWMEM_CREATE_POOL, &params);
 }
 
 #endif /* MQX_ENABLE_USER_MODE */
@@ -1411,19 +1411,19 @@ _lwmem_pool_id _usr_lwmem_create_pool
  */
 _lwmem_pool_id _lwmem_create_pool_mapped
 (
-    void     *start,
-    _mem_size size
+	void     *start,
+	_mem_size size
 )
 { /* Body */
-    LWMEM_POOL_STRUCT_PTR mem_pool_ptr;
+	LWMEM_POOL_STRUCT_PTR mem_pool_ptr;
 
-    mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR)_ALIGN_ADDR_TO_HIGHER_MEM(start);
-    _mem_zero((void *) mem_pool_ptr, (_mem_size) sizeof(LWMEM_POOL_STRUCT));
+	mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR)_ALIGN_ADDR_TO_HIGHER_MEM(start);
+	_mem_zero((void *) mem_pool_ptr, (_mem_size) sizeof(LWMEM_POOL_STRUCT));
 
-    start = (void *) ((unsigned char *) mem_pool_ptr + sizeof(LWMEM_POOL_STRUCT));
-    _lwmem_create_pool(mem_pool_ptr, start, size - sizeof(LWMEM_POOL_STRUCT)); /* real pool size is decreased by pool header struct (must be - memory overwrite) */
+	start = (void *) ((unsigned char *) mem_pool_ptr + sizeof(LWMEM_POOL_STRUCT));
+	_lwmem_create_pool(mem_pool_ptr, start, size - sizeof(LWMEM_POOL_STRUCT)); /* real pool size is decreased by pool header struct (must be - memory overwrite) */
 
-    return ((_mem_pool_id) mem_pool_ptr);
+	return ((_mem_pool_id) mem_pool_ptr);
 
 } /* Endbody */
 /*! \endcond */
@@ -1484,145 +1484,145 @@ _lwmem_pool_id _lwmem_create_pool_mapped
  */
 _mqx_uint _lwmem_free
 (
-    void   *mem_ptr
+	void   *mem_ptr
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
-    (void)                  kernel_data; /* suppress 'unused variable' warning */
-    LWMEM_BLOCK_STRUCT_PTR  block_ptr;
-    LWMEM_BLOCK_STRUCT_PTR  free_list_ptr;
-    LWMEM_POOL_STRUCT_PTR   mem_pool_ptr;
-    bool                    insert;
+	KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
+	(void)                  kernel_data; /* suppress 'unused variable' warning */
+	LWMEM_BLOCK_STRUCT_PTR  block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR  free_list_ptr;
+	LWMEM_POOL_STRUCT_PTR   mem_pool_ptr;
+	bool                    insert;
 
 #if MQX_ENABLE_USER_MODE && MQX_ENABLE_USER_STDAPI
-    if (MQX_RUN_IN_USER_MODE)
-    {
-        return _usr_lwmem_free(mem_ptr);
-    }
+	if (MQX_RUN_IN_USER_MODE)
+	{
+		return _usr_lwmem_free(mem_ptr);
+	}
 #endif
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    _KLOGE2(KLOG_lwmem_free, mem_ptr);
+	_KLOGE2(KLOG_lwmem_free, mem_ptr);
 
 #if MQX_CHECK_ERRORS
-    /* Verify the passed in parameter */
-    if (mem_ptr == NULL)
-    {
-        _task_set_error(MQX_INVALID_POINTER);
-        _KLOGX2(KLOG_lwmem_free, MQX_INVALID_POINTER);
-        return (MQX_INVALID_POINTER);
-    } /* Endif */
+	/* Verify the passed in parameter */
+	if (mem_ptr == NULL)
+	{
+		_task_set_error(MQX_INVALID_POINTER);
+		_KLOGX2(KLOG_lwmem_free, MQX_INVALID_POINTER);
+		return (MQX_INVALID_POINTER);
+	} /* Endif */
 #endif
 
-    block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
-    mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) block_ptr->POOL;
+	block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
+	mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) block_ptr->POOL;
 #if MQX_CHECK_VALIDITY
-    if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
-    {
-        _task_set_error(MQX_LWMEM_POOL_INVALID);
-        _KLOGX2(KLOG_lwmem_free, MQX_LWMEM_POOL_INVALID);
-        return (MQX_LWMEM_POOL_INVALID);
-    } /* Endif */
+	if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
+	{
+		_task_set_error(MQX_LWMEM_POOL_INVALID);
+		_KLOGX2(KLOG_lwmem_free, MQX_LWMEM_POOL_INVALID);
+		return (MQX_LWMEM_POOL_INVALID);
+	} /* Endif */
 #endif
 
 #if MQX_CHECK_ERRORS
-    /* Verify the passed in parameter */
-    if (!((block_ptr->U.S.TASK_NUMBER == TASK_NUMBER_FROM_TASKID(kernel_data->ACTIVE_PTR->TASK_ID))
-                    || (block_ptr->U.S.TASK_NUMBER == SYSTEM_TASK_NUMBER)))
-    {
-        _task_set_error(MQX_NOT_RESOURCE_OWNER);
-        return (MQX_NOT_RESOURCE_OWNER);
-    } /* Endif */
+	/* Verify the passed in parameter */
+	if (!((block_ptr->U.S.TASK_NUMBER == TASK_NUMBER_FROM_TASKID(kernel_data->ACTIVE_PTR->TASK_ID))
+					|| (block_ptr->U.S.TASK_NUMBER == SYSTEM_TASK_NUMBER)))
+	{
+		_task_set_error(MQX_NOT_RESOURCE_OWNER);
+		return (MQX_NOT_RESOURCE_OWNER);
+	} /* Endif */
 #endif
 
-    _int_disable();
-    free_list_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    while (TRUE)
-    {
-        /*  We are at the beginning */
-        if ((mem_pool_ptr->POOL_FREE_LIST_PTR == NULL) || ((void *) block_ptr < mem_pool_ptr->POOL_FREE_LIST_PTR))
-        {
-            free_list_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-            /* Working with block just before the free list? */
-            if (((unsigned char *) block_ptr + block_ptr->BLOCKSIZE) == (unsigned char *) free_list_ptr)
-            {
-                /* Join with the next block on the list */
-                block_ptr->BLOCKSIZE += free_list_ptr->BLOCKSIZE;
-                block_ptr->U.NEXTBLOCK = free_list_ptr->U.NEXTBLOCK;
-                /* The merged block should have cleared header to assure failure at multiple freeing with the same pointer */
-                _mem_zero(free_list_ptr, sizeof(LWMEM_BLOCK_STRUCT));
-            }
-            else
-            {
-                block_ptr->U.NEXTBLOCK = free_list_ptr;
-            } /* Endif */
-            mem_pool_ptr->POOL_FREE_LIST_PTR = block_ptr;
-            insert = FALSE;
-            break;
-        }/* Endif */
-        if (((void *) block_ptr < free_list_ptr->U.NEXTBLOCK) || (free_list_ptr->U.NEXTBLOCK == NULL))
-        {
-            insert = TRUE;
-            break;
-        }/* Endif */
-        free_list_ptr = free_list_ptr->U.NEXTBLOCK;
-        /* Provide window for higher priority tasks */
-        mem_pool_ptr->POOL_FREE_PTR = free_list_ptr;
-        _int_enable();
-        _int_disable();
-        if(free_list_ptr != mem_pool_ptr->POOL_FREE_PTR)
-        {
-           free_list_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-        }
-    } /* Endwhile */
+	_int_disable();
+	free_list_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	while (TRUE)
+	{
+		/*  We are at the beginning */
+		if ((mem_pool_ptr->POOL_FREE_LIST_PTR == NULL) || ((void *) block_ptr < mem_pool_ptr->POOL_FREE_LIST_PTR))
+		{
+			free_list_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+			/* Working with block just before the free list? */
+			if (((unsigned char *) block_ptr + block_ptr->BLOCKSIZE) == (unsigned char *) free_list_ptr)
+			{
+				/* Join with the next block on the list */
+				block_ptr->BLOCKSIZE += free_list_ptr->BLOCKSIZE;
+				block_ptr->U.NEXTBLOCK = free_list_ptr->U.NEXTBLOCK;
+				/* The merged block should have cleared header to assure failure at multiple freeing with the same pointer */
+				_mem_zero(free_list_ptr, sizeof(LWMEM_BLOCK_STRUCT));
+			}
+			else
+			{
+				block_ptr->U.NEXTBLOCK = free_list_ptr;
+			} /* Endif */
+			mem_pool_ptr->POOL_FREE_LIST_PTR = block_ptr;
+			insert = FALSE;
+			break;
+		}/* Endif */
+		if (((void *) block_ptr < free_list_ptr->U.NEXTBLOCK) || (free_list_ptr->U.NEXTBLOCK == NULL))
+		{
+			insert = TRUE;
+			break;
+		}/* Endif */
+		free_list_ptr = free_list_ptr->U.NEXTBLOCK;
+		/* Provide window for higher priority tasks */
+		mem_pool_ptr->POOL_FREE_PTR = free_list_ptr;
+		_int_enable();
+		_int_disable();
+		if(free_list_ptr != mem_pool_ptr->POOL_FREE_PTR)
+		{
+		   free_list_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+		}
+	} /* Endwhile */
 
-    if (insert)
-    {
-        /*
-         * We are between the two blocks where we are to be inserted,
-         * free_list_ptr is before block_ptr,
-         * block_ptr may be at end of list.
-         */
-        if (((unsigned char *) block_ptr + block_ptr->BLOCKSIZE) == free_list_ptr->U.NEXTBLOCK)
-        {
-            /* Join with the next block on the list */
-            block_ptr->BLOCKSIZE += ((LWMEM_BLOCK_STRUCT_PTR)(free_list_ptr->U.NEXTBLOCK))->BLOCKSIZE;
-            block_ptr->U.NEXTBLOCK = ((LWMEM_BLOCK_STRUCT_PTR)(free_list_ptr->U.NEXTBLOCK))->U.NEXTBLOCK;
-            /* The merged block should have cleared header to assure failure at multiple freeing with the same pointer */
-            _mem_zero(free_list_ptr->U.NEXTBLOCK, sizeof(LWMEM_BLOCK_STRUCT));
-        }
-        else
-        {
-            /* this block is to be inserted */
-            block_ptr->U.NEXTBLOCK = free_list_ptr->U.NEXTBLOCK;
-        } /* Endif */
+	if (insert)
+	{
+		/*
+		 * We are between the two blocks where we are to be inserted,
+		 * free_list_ptr is before block_ptr,
+		 * block_ptr may be at end of list.
+		 */
+		if (((unsigned char *) block_ptr + block_ptr->BLOCKSIZE) == free_list_ptr->U.NEXTBLOCK)
+		{
+			/* Join with the next block on the list */
+			block_ptr->BLOCKSIZE += ((LWMEM_BLOCK_STRUCT_PTR)(free_list_ptr->U.NEXTBLOCK))->BLOCKSIZE;
+			block_ptr->U.NEXTBLOCK = ((LWMEM_BLOCK_STRUCT_PTR)(free_list_ptr->U.NEXTBLOCK))->U.NEXTBLOCK;
+			/* The merged block should have cleared header to assure failure at multiple freeing with the same pointer */
+			_mem_zero(free_list_ptr->U.NEXTBLOCK, sizeof(LWMEM_BLOCK_STRUCT));
+		}
+		else
+		{
+			/* this block is to be inserted */
+			block_ptr->U.NEXTBLOCK = free_list_ptr->U.NEXTBLOCK;
+		} /* Endif */
 
-        if (((unsigned char *) free_list_ptr + free_list_ptr->BLOCKSIZE == (unsigned char *) block_ptr))
-        {
-            free_list_ptr->BLOCKSIZE += block_ptr->BLOCKSIZE;
-            free_list_ptr->U.NEXTBLOCK = block_ptr->U.NEXTBLOCK;
-            /* The merged block should have cleared header to assure failure at multiple freeing with the same pointer */
-            _mem_zero(block_ptr, sizeof(LWMEM_BLOCK_STRUCT));
-        }
-        else
-        {
-            free_list_ptr->U.NEXTBLOCK = block_ptr;
-        } /* Endif */
+		if (((unsigned char *) free_list_ptr + free_list_ptr->BLOCKSIZE == (unsigned char *) block_ptr))
+		{
+			free_list_ptr->BLOCKSIZE += block_ptr->BLOCKSIZE;
+			free_list_ptr->U.NEXTBLOCK = block_ptr->U.NEXTBLOCK;
+			/* The merged block should have cleared header to assure failure at multiple freeing with the same pointer */
+			_mem_zero(block_ptr, sizeof(LWMEM_BLOCK_STRUCT));
+		}
+		else
+		{
+			free_list_ptr->U.NEXTBLOCK = block_ptr;
+		} /* Endif */
 
-    } /* Endif */
+	} /* Endif */
 
-    mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
 #if MQX_TASK_DESTRUCTION
-    mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
 #endif
-    _int_enable();
+	_int_enable();
 
-    _KLOGX2(KLOG_lwmem_free, MQX_OK);
-    return (MQX_OK);
+	_KLOGX2(KLOG_lwmem_free, MQX_OK);
+	return (MQX_OK);
 
 } /* Endbody */
 
@@ -1657,12 +1657,12 @@ _mqx_uint _lwmem_free
  */
 _mqx_uint _usr_lwmem_free
 (
-    void   *mem_ptr
+	void   *mem_ptr
 )
 {
-    MQX_API_CALL_PARAMS params =
-    {   (uint32_t)mem_ptr, 0, 0, 0, 0};
-    return _mqx_api_call(MQX_API_LWMEM_FREE, &params);
+	MQX_API_CALL_PARAMS params =
+	{   (uint32_t)mem_ptr, 0, 0, 0, 0};
+	return _mqx_api_call(MQX_API_LWMEM_FREE, &params);
 }
 
 #endif /* MQX_ENABLE_USER_MODE */
@@ -1678,16 +1678,16 @@ _mqx_uint _usr_lwmem_free
  */
 _mem_size _lwmem_get_free()
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    _mem_size              result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	_mem_size              result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE1(KLOG_lwmem_get_free);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE1(KLOG_lwmem_get_free);
 
-    result = _lwmem_get_free_internal((_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL);
+	result = _lwmem_get_free_internal((_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL);
 
-    _KLOGX2(KLOG_lwmem_get_free, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_get_free, result);
+	return (result);
 
 } /* Endbody */
 
@@ -1704,19 +1704,19 @@ _mem_size _lwmem_get_free()
  */
 _mem_size _lwmem_get_free_from
 (
-    void   *pool_id
+	void   *pool_id
 )
 { /* Body */
-    _KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
-    _mem_size              result;
+	_KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
+	_mem_size              result;
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
-    _KLOGE2(KLOG_lwmem_get_free_from, pool_id);
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGE2(KLOG_lwmem_get_free_from, pool_id);
 
-    result = _lwmem_get_free_internal((_lwmem_pool_id) pool_id);
+	result = _lwmem_get_free_internal((_lwmem_pool_id) pool_id);
 
-    _KLOGX2(KLOG_lwmem_get_free_from, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_get_free_from, result);
+	return (result);
 
 } /* Endbody */
 
@@ -1736,47 +1736,47 @@ _mem_size _lwmem_get_free_from
  */
 _mem_size _lwmem_get_free_internal
 (
-    _lwmem_pool_id pool_id
+	_lwmem_pool_id pool_id
 )
 { /* Body */
-    LWMEM_BLOCK_STRUCT_PTR block_ptr;
-    _mem_size              total_size = 0;
-    LWMEM_POOL_STRUCT_PTR  mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) pool_id;
+	LWMEM_BLOCK_STRUCT_PTR block_ptr;
+	_mem_size              total_size = 0;
+	LWMEM_POOL_STRUCT_PTR  mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) pool_id;
 
 #if MQX_CHECK_VALIDITY
-    if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
-    {
-        _task_set_error(MQX_LWMEM_POOL_INVALID);
-        return (0);
-    } /* Endif */
+	if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
+	{
+		_task_set_error(MQX_LWMEM_POOL_INVALID);
+		return (0);
+	} /* Endif */
 #endif
 
-    _int_disable();
-    block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    while (block_ptr != NULL)
-    {
-        /* Provide window for higher priority tasks */
-        mem_pool_ptr->POOL_ALLOC_PTR = block_ptr;
-        _int_enable();
-        _int_disable();
+	_int_disable();
+	block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	while (block_ptr != NULL)
+	{
+		/* Provide window for higher priority tasks */
+		mem_pool_ptr->POOL_ALLOC_PTR = block_ptr;
+		_int_enable();
+		_int_disable();
 
-        /* Reset to the start if we were preempted
-           and the preempting task did finish its free/malloc operation,
-           a safe solution, even with time-slicing. */
-        if (block_ptr != mem_pool_ptr->POOL_ALLOC_PTR)
-        {
-            total_size = 0; /* some task with higher priority did reset our loop pointer */
-            block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR; /* Restart, the free-list has changed! */
-            continue;
+		/* Reset to the start if we were preempted
+		   and the preempting task did finish its free/malloc operation,
+		   a safe solution, even with time-slicing. */
+		if (block_ptr != mem_pool_ptr->POOL_ALLOC_PTR)
+		{
+			total_size = 0; /* some task with higher priority did reset our loop pointer */
+			block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR; /* Restart, the free-list has changed! */
+			continue;
 
-        }
+		}
 
-        total_size += block_ptr->BLOCKSIZE;
-        block_ptr = block_ptr->U.NEXTBLOCK;
-    } /* Endwhile */
+		total_size += block_ptr->BLOCKSIZE;
+		block_ptr = block_ptr->U.NEXTBLOCK;
+	} /* Endwhile */
 
-    _int_enable();
-    return (total_size);
+	_int_enable();
+	return (total_size);
 } /* Endbody */
 /*! \endcond */
 
@@ -1820,20 +1820,20 @@ _mem_size _lwmem_get_free_internal
  */
 void *_lwmem_alloc_system_from
 (
-    _lwmem_pool_id pool_id,
-    _mem_size      size
+	_lwmem_pool_id pool_id,
+	_mem_size      size
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE2(KLOG_lwmem_alloc_system_from, size);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE2(KLOG_lwmem_alloc_system_from, size);
 
-    result = _lwmem_alloc_internal(size, SYSTEM_TD_PTR(kernel_data), pool_id, FALSE);
+	result = _lwmem_alloc_internal(size, SYSTEM_TD_PTR(kernel_data), pool_id, FALSE);
 
-    _KLOGX2(KLOG_lwmem_alloc_system_from, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_alloc_system_from, result);
+	return (result);
 
 } /* Endbody */
 
@@ -1877,21 +1877,21 @@ void *_lwmem_alloc_system_from
  */
 void *_lwmem_alloc_system
 (
-    _mem_size size
+	_mem_size size
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE2(KLOG_lwmem_alloc_system, size);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE2(KLOG_lwmem_alloc_system, size);
 
-    result = _lwmem_alloc_internal(
-        size, SYSTEM_TD_PTR(kernel_data), (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, FALSE
-    );
+	result = _lwmem_alloc_internal(
+		size, SYSTEM_TD_PTR(kernel_data), (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, FALSE
+	);
 
-    _KLOGX2(KLOG_lwmem_alloc_system, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_alloc_system, result);
+	return (result);
 
 } /* Endbody */
 
@@ -1936,22 +1936,22 @@ void *_lwmem_alloc_system
  */
 void *_lwmem_alloc_system_align
 (
-    _mem_size size,
-    _mem_size req_align
+	_mem_size size,
+	_mem_size req_align
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE3(KLOG_lwmem_alloc_system_align, size, req_align);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE3(KLOG_lwmem_alloc_system_align, size, req_align);
 
-    result = _lwmem_alloc_align_internal(
-        size, req_align, SYSTEM_TD_PTR(kernel_data), (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, FALSE
-    );
+	result = _lwmem_alloc_align_internal(
+		size, req_align, SYSTEM_TD_PTR(kernel_data), (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, FALSE
+	);
 
-    _KLOGX2(KLOG_lwmem_alloc_system_align, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_alloc_system_align, result);
+	return (result);
 
 } /* Endbody */
 
@@ -1999,21 +1999,21 @@ void *_lwmem_alloc_system_align
  */
 void *_lwmem_alloc_system_align_from
 (
-    _lwmem_pool_id pool_id,
-    _mem_size      requested_size,
-    _mem_size      req_align
+	_lwmem_pool_id pool_id,
+	_mem_size      requested_size,
+	_mem_size      req_align
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE4(KLOG_lwmem_alloc_system_align_from, pool_id, requested_size, req_align);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE4(KLOG_lwmem_alloc_system_align_from, pool_id, requested_size, req_align);
 
-    result = _lwmem_alloc_align_internal(requested_size, req_align, SYSTEM_TD_PTR(kernel_data), pool_id, FALSE);
+	result = _lwmem_alloc_align_internal(requested_size, req_align, SYSTEM_TD_PTR(kernel_data), pool_id, FALSE);
 
-    _KLOGX2(KLOG_lwmem_alloc_system_align_from, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_alloc_system_align_from, result);
+	return (result);
 
 } /* Endbody */
 
@@ -2027,21 +2027,21 @@ void *_lwmem_alloc_system_align_from
  */
 _mqx_uint _lwmem_init_internal(void)
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    LWMEM_POOL_STRUCT_PTR  lwmem_pool_ptr;
-    unsigned char              *start;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	LWMEM_POOL_STRUCT_PTR  lwmem_pool_ptr;
+	unsigned char              *start;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    start = (void *) ((unsigned char *) kernel_data->INIT.START_OF_HEAP);
-    lwmem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) start;
-    kernel_data->KERNEL_LWMEM_POOL = (void *) lwmem_pool_ptr;
+	start = (void *) ((unsigned char *) kernel_data->INIT.START_OF_HEAP);
+	lwmem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) start;
+	kernel_data->KERNEL_LWMEM_POOL = (void *) lwmem_pool_ptr;
 
-    start = (void *) ((unsigned char *) start + sizeof(LWMEM_POOL_STRUCT));
+	start = (void *) ((unsigned char *) start + sizeof(LWMEM_POOL_STRUCT));
 
-    _lwmem_create_pool(lwmem_pool_ptr, start, (unsigned char *) kernel_data->INIT.END_OF_HEAP - (unsigned char *) start);
+	_lwmem_create_pool(lwmem_pool_ptr, start, (unsigned char *) kernel_data->INIT.END_OF_HEAP - (unsigned char *) start);
 
-    return (MQX_OK);
+	return (MQX_OK);
 
 } /* Endbody */
 /*! \endcond */
@@ -2060,67 +2060,67 @@ _mqx_uint _lwmem_init_internal(void)
  */
 void *_lwmem_get_next_block_internal
 (
-    TD_STRUCT_PTR td_ptr,
-    void         *in_block_ptr
+	TD_STRUCT_PTR td_ptr,
+	void         *in_block_ptr
 )
 {
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    LWMEM_POOL_STRUCT_PTR  lwmem_pool_ptr;
-    LWMEM_BLOCK_STRUCT_PTR block_ptr = in_block_ptr;
-    LWMEM_BLOCK_STRUCT_PTR free_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	LWMEM_POOL_STRUCT_PTR  lwmem_pool_ptr;
+	LWMEM_BLOCK_STRUCT_PTR block_ptr = in_block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR free_ptr;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    if (block_ptr == NULL)
-    {
-        /* first item, start on first item in first pool */
-        lwmem_pool_ptr = (LWMEM_POOL_STRUCT*)kernel_data->LWMEM_POOLS.NEXT;
-        block_ptr = lwmem_pool_ptr->POOL_ALLOC_START_PTR;
-    }
-    else
-    {
-        /* continued, get lwmem pool from provided in_block_ptr */
-        block_ptr = GET_LWMEMBLOCK_PTR(in_block_ptr);
-        lwmem_pool_ptr = block_ptr->POOL;
+	if (block_ptr == NULL)
+	{
+		/* first item, start on first item in first pool */
+		lwmem_pool_ptr = (LWMEM_POOL_STRUCT*)kernel_data->LWMEM_POOLS.NEXT;
+		block_ptr = lwmem_pool_ptr->POOL_ALLOC_START_PTR;
+	}
+	else
+	{
+		/* continued, get lwmem pool from provided in_block_ptr */
+		block_ptr = GET_LWMEMBLOCK_PTR(in_block_ptr);
+		lwmem_pool_ptr = block_ptr->POOL;
 
-        block_ptr = (LWMEM_BLOCK_STRUCT_PTR)((unsigned char *) block_ptr + block_ptr->BLOCKSIZE);
-    }
+		block_ptr = (LWMEM_BLOCK_STRUCT_PTR)((unsigned char *) block_ptr + block_ptr->BLOCKSIZE);
+	}
 
-    _int_disable();
+	_int_disable();
 
-    do
-    {
-        free_ptr = lwmem_pool_ptr->POOL_FREE_LIST_PTR;
+	do
+	{
+		free_ptr = lwmem_pool_ptr->POOL_FREE_LIST_PTR;
 
-        while ((unsigned char *) block_ptr < (unsigned char *) lwmem_pool_ptr->POOL_ALLOC_END_PTR)
-        {
-            if (block_ptr->U.S.TASK_NUMBER == TASK_NUMBER_FROM_TASKID(td_ptr->TASK_ID))
-            {
-                /* check for block is not free block */
-                while (free_ptr && free_ptr < block_ptr)
-                {
-                    free_ptr = free_ptr->U.NEXTBLOCK;
-                }
+		while ((unsigned char *) block_ptr < (unsigned char *) lwmem_pool_ptr->POOL_ALLOC_END_PTR)
+		{
+			if (block_ptr->U.S.TASK_NUMBER == TASK_NUMBER_FROM_TASKID(td_ptr->TASK_ID))
+			{
+				/* check for block is not free block */
+				while (free_ptr && free_ptr < block_ptr)
+				{
+					free_ptr = free_ptr->U.NEXTBLOCK;
+				}
 
-                if (free_ptr != block_ptr)
-                {
-                    /* This block is owned by the target task and it's not free block*/
-                    _int_enable();
+				if (free_ptr != block_ptr)
+				{
+					/* This block is owned by the target task and it's not free block*/
+					_int_enable();
 
-                    return ((void *) ((unsigned char *) block_ptr + sizeof(LWMEM_BLOCK_STRUCT)));
-                }
-            }
-            block_ptr = (LWMEM_BLOCK_STRUCT_PTR)((unsigned char *) block_ptr + block_ptr->BLOCKSIZE);
-        }
+					return ((void *) ((unsigned char *) block_ptr + sizeof(LWMEM_BLOCK_STRUCT)));
+				}
+			}
+			block_ptr = (LWMEM_BLOCK_STRUCT_PTR)((unsigned char *) block_ptr + block_ptr->BLOCKSIZE);
+		}
 
-        /* continue in next lwmem pool */
-        lwmem_pool_ptr = (LWMEM_POOL_STRUCT_PTR)(lwmem_pool_ptr->LINK.NEXT);
-        block_ptr = lwmem_pool_ptr->POOL_ALLOC_START_PTR;
-    } while ((QUEUE_ELEMENT_STRUCT**)lwmem_pool_ptr != &kernel_data->LWMEM_POOLS.NEXT); /* repeat until processed lwmem pool is not first pool (pool list is circular list) */
+		/* continue in next lwmem pool */
+		lwmem_pool_ptr = (LWMEM_POOL_STRUCT_PTR)(lwmem_pool_ptr->LINK.NEXT);
+		block_ptr = lwmem_pool_ptr->POOL_ALLOC_START_PTR;
+	} while ((QUEUE_ELEMENT_STRUCT**)lwmem_pool_ptr != &kernel_data->LWMEM_POOLS.NEXT); /* repeat until processed lwmem pool is not first pool (pool list is circular list) */
 
-    _int_enable();
+	_int_enable();
 
-    return (NULL);
+	return (NULL);
 }
 /*! \endcond */
 
@@ -2160,17 +2160,17 @@ void *_lwmem_get_next_block_internal
  */
 _lwmem_pool_id _lwmem_set_default_pool
 (
-    _lwmem_pool_id pool_id
+	_lwmem_pool_id pool_id
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    _lwmem_pool_id         old_pool_id;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	_lwmem_pool_id         old_pool_id;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    old_pool_id = kernel_data->KERNEL_LWMEM_POOL;
-    kernel_data->KERNEL_LWMEM_POOL = pool_id;
-    return (old_pool_id);
+	old_pool_id = kernel_data->KERNEL_LWMEM_POOL;
+	kernel_data->KERNEL_LWMEM_POOL = pool_id;
+	return (old_pool_id);
 
 } /* Endbody */
 
@@ -2187,34 +2187,34 @@ _lwmem_pool_id _lwmem_set_default_pool
  */
 _mem_size _lwmem_get_size
 (
-    void   *mem_ptr
+	void   *mem_ptr
 )
 { /* Body */
-    LWMEM_BLOCK_STRUCT_PTR block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR block_ptr;
 
 #if MQX_CHECK_ERRORS
-    if (mem_ptr == NULL)
-    {
-        _task_set_error(MQX_INVALID_POINTER);
-        return (0);
-    } /* Endif */
+	if (mem_ptr == NULL)
+	{
+		_task_set_error(MQX_INVALID_POINTER);
+		return (0);
+	} /* Endif */
 #endif
 
-    /* Compute the start of the block  */
-    block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
-    /* The size includes the block overhead, which the user is not
-     * interested in. If the size is less than the overhead,
-     * then there is a bad block or bad block pointer.
-     */
+	/* Compute the start of the block  */
+	block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
+	/* The size includes the block overhead, which the user is not
+	 * interested in. If the size is less than the overhead,
+	 * then there is a bad block or bad block pointer.
+	 */
 #if MQX_CHECK_ERRORS
-    if (block_ptr->BLOCKSIZE <= (_mem_size) sizeof(LWMEM_BLOCK_STRUCT))
-    {
-        _task_set_error(MQX_INVALID_POINTER);
-        return (0);
-    } /* Endif */
+	if (block_ptr->BLOCKSIZE <= (_mem_size) sizeof(LWMEM_BLOCK_STRUCT))
+	{
+		_task_set_error(MQX_INVALID_POINTER);
+		return (0);
+	} /* Endif */
 #endif
 
-    return (block_ptr->BLOCKSIZE - (_mem_size) sizeof(LWMEM_BLOCK_STRUCT));
+	return (block_ptr->BLOCKSIZE - (_mem_size) sizeof(LWMEM_BLOCK_STRUCT));
 
 } /* Endbody */
 
@@ -2230,13 +2230,13 @@ _mem_size _lwmem_get_size
  */
 _mem_type _lwmem_get_type
 (
-    void   *mem_ptr
+	void   *mem_ptr
 )
 {
-    LWMEM_BLOCK_STRUCT_PTR block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR block_ptr;
 
-    block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
-    return block_ptr->U.S.MEM_TYPE;
+	block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
+	return block_ptr->U.S.MEM_TYPE;
 }
 
 /*!
@@ -2249,22 +2249,22 @@ _mem_type _lwmem_get_type
  */
 bool _lwmem_set_type
 (
-    void     *mem_ptr,
-    _mem_type mem_type
+	void     *mem_ptr,
+	_mem_type mem_type
 )
 {
-    LWMEM_BLOCK_STRUCT_PTR block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR block_ptr;
 
-    if (mem_ptr != NULL)
-    {
-        block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
-        block_ptr->U.S.MEM_TYPE = mem_type;
-        return TRUE;
-    }
-    else
-    {
-        return FALSE;
-    }
+	if (mem_ptr != NULL)
+	{
+		block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
+		block_ptr->U.S.MEM_TYPE = mem_type;
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
 }
 #endif
 
@@ -2275,11 +2275,11 @@ bool _lwmem_set_type
  */
 void *_lwmem_get_highwater(void)
 {
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    return (((LWMEM_POOL_STRUCT_PTR)(kernel_data->KERNEL_LWMEM_POOL))->HIGHWATER);
+	return (((LWMEM_POOL_STRUCT_PTR)(kernel_data->KERNEL_LWMEM_POOL))->HIGHWATER);
 
 }
 
@@ -2322,94 +2322,94 @@ void *_lwmem_get_highwater(void)
  */
 _mqx_uint _lwmem_test
 (
-    _lwmem_pool_id  *pool_error_ptr,
-    void           **block_error_ptr
+	_lwmem_pool_id  *pool_error_ptr,
+	void           **block_error_ptr
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR  kernel_data;
-    LWMEM_POOL_STRUCT_PTR   mem_pool_ptr;
-    LWMEM_BLOCK_STRUCT_PTR  queue_ptr = NULL;
-    (void)                  queue_ptr; /* disable 'unused variable' warning */
-    LWMEM_BLOCK_STRUCT_PTR  block_ptr;
-    _mqx_uint               i;
-    _mqx_uint               result;
+	KERNEL_DATA_STRUCT_PTR  kernel_data;
+	LWMEM_POOL_STRUCT_PTR   mem_pool_ptr;
+	LWMEM_BLOCK_STRUCT_PTR  queue_ptr = NULL;
+	(void)                  queue_ptr; /* disable 'unused variable' warning */
+	LWMEM_BLOCK_STRUCT_PTR  block_ptr;
+	_mqx_uint               i;
+	_mqx_uint               result;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    /*
-     * It is not considered an error if the lwmem component has not been
-     * created yet
-     */
-    if (kernel_data->LWMEM_POOLS.NEXT == NULL)
-    {
-        return (MQX_OK);
-    } /* Endif */
+	/*
+	 * It is not considered an error if the lwmem component has not been
+	 * created yet
+	 */
+	if (kernel_data->LWMEM_POOLS.NEXT == NULL)
+	{
+		return (MQX_OK);
+	} /* Endif */
 
-    result = _queue_test(&kernel_data->LWMEM_POOLS, pool_error_ptr);
-    if (result != MQX_OK)
-    {
-        return (result);
-    } /* Endif */
-    _int_disable();
-    i = _QUEUE_GET_SIZE(&kernel_data->LWMEM_POOLS);
-    mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) (void *) kernel_data->LWMEM_POOLS.NEXT;
-    while (i--)
-    {
-        if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
-        {
-            _int_enable();
-            *pool_error_ptr = (void *) mem_pool_ptr;
-            *block_error_ptr = NULL;
-            return (MQX_LWMEM_POOL_INVALID);
-        } /* Endif */
+	result = _queue_test(&kernel_data->LWMEM_POOLS, pool_error_ptr);
+	if (result != MQX_OK)
+	{
+		return (result);
+	} /* Endif */
+	_int_disable();
+	i = _QUEUE_GET_SIZE(&kernel_data->LWMEM_POOLS);
+	mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) (void *) kernel_data->LWMEM_POOLS.NEXT;
+	while (i--)
+	{
+		if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
+		{
+			_int_enable();
+			*pool_error_ptr = (void *) mem_pool_ptr;
+			*block_error_ptr = NULL;
+			return (MQX_LWMEM_POOL_INVALID);
+		} /* Endif */
 
-        /* Make sure pool is ok */
-        block_ptr = mem_pool_ptr->POOL_ALLOC_START_PTR;
-        while ((unsigned char *) block_ptr < (unsigned char *) mem_pool_ptr->POOL_ALLOC_END_PTR)
-        {
-            mem_pool_ptr->POOL_TEST2_PTR = block_ptr;
-            _int_enable();
-            _int_disable();
-            block_ptr = mem_pool_ptr->POOL_TEST2_PTR;
-            if (block_ptr->POOL != mem_pool_ptr)
-            {
-                _int_enable();
-                *pool_error_ptr = (void *) mem_pool_ptr;
-                *block_error_ptr = (void *) block_ptr;
-                return (MQX_CORRUPT_STORAGE_POOL);
-            } /* Endif */
-            block_ptr = (LWMEM_BLOCK_STRUCT_PTR)((unsigned char *) block_ptr + block_ptr->BLOCKSIZE);
-        } /* Endwhile */
+		/* Make sure pool is ok */
+		block_ptr = mem_pool_ptr->POOL_ALLOC_START_PTR;
+		while ((unsigned char *) block_ptr < (unsigned char *) mem_pool_ptr->POOL_ALLOC_END_PTR)
+		{
+			mem_pool_ptr->POOL_TEST2_PTR = block_ptr;
+			_int_enable();
+			_int_disable();
+			block_ptr = mem_pool_ptr->POOL_TEST2_PTR;
+			if (block_ptr->POOL != mem_pool_ptr)
+			{
+				_int_enable();
+				*pool_error_ptr = (void *) mem_pool_ptr;
+				*block_error_ptr = (void *) block_ptr;
+				return (MQX_CORRUPT_STORAGE_POOL);
+			} /* Endif */
+			block_ptr = (LWMEM_BLOCK_STRUCT_PTR)((unsigned char *) block_ptr + block_ptr->BLOCKSIZE);
+		} /* Endwhile */
 
-        /* Make sure Freelist is ok */
-        block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-        while (block_ptr)
-        {
-            /* Provide window for higher priority tasks */
-            mem_pool_ptr->POOL_TEST_PTR = block_ptr;
-            _int_enable();
-            _int_disable();
-            block_ptr = mem_pool_ptr->POOL_TEST_PTR;
-            if (((void *) block_ptr < mem_pool_ptr->POOL_ALLOC_START_PTR) || ((void *) block_ptr
-                            > mem_pool_ptr->POOL_ALLOC_END_PTR) || (block_ptr->POOL != mem_pool_ptr)
-                            || (block_ptr->U.NEXTBLOCK && (block_ptr->U.NEXTBLOCK <= (void *) ((unsigned char *) block_ptr
-                                            + block_ptr->BLOCKSIZE))))
-            {
-                /* This block is in error */
-                _int_enable();
-                *pool_error_ptr = (void *) mem_pool_ptr;
-                *block_error_ptr = block_ptr;
-                return (MQX_CORRUPT_STORAGE_POOL_FREE_LIST);
-            } /* Endif */
-            block_ptr = block_ptr->U.NEXTBLOCK;
-        } /* Endwhile */
-        mem_pool_ptr = (void *) mem_pool_ptr->LINK.NEXT;
-    } /* Endwhile */
-    _int_enable();
+		/* Make sure Freelist is ok */
+		block_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+		while (block_ptr)
+		{
+			/* Provide window for higher priority tasks */
+			mem_pool_ptr->POOL_TEST_PTR = block_ptr;
+			_int_enable();
+			_int_disable();
+			block_ptr = mem_pool_ptr->POOL_TEST_PTR;
+			if (((void *) block_ptr < mem_pool_ptr->POOL_ALLOC_START_PTR) || ((void *) block_ptr
+							> mem_pool_ptr->POOL_ALLOC_END_PTR) || (block_ptr->POOL != mem_pool_ptr)
+							|| (block_ptr->U.NEXTBLOCK && (block_ptr->U.NEXTBLOCK <= (void *) ((unsigned char *) block_ptr
+											+ block_ptr->BLOCKSIZE))))
+			{
+				/* This block is in error */
+				_int_enable();
+				*pool_error_ptr = (void *) mem_pool_ptr;
+				*block_error_ptr = block_ptr;
+				return (MQX_CORRUPT_STORAGE_POOL_FREE_LIST);
+			} /* Endif */
+			block_ptr = block_ptr->U.NEXTBLOCK;
+		} /* Endwhile */
+		mem_pool_ptr = (void *) mem_pool_ptr->LINK.NEXT;
+	} /* Endwhile */
+	_int_enable();
 
-    *pool_error_ptr = NULL;
-    *block_error_ptr = NULL;
-    return (MQX_OK);
+	*pool_error_ptr = NULL;
+	*block_error_ptr = NULL;
+	return (MQX_OK);
 
 } /* Endbody */
 
@@ -2452,62 +2452,62 @@ _mqx_uint _lwmem_test
  */
 _mqx_uint _lwmem_transfer
 (
-    void    *memory_ptr,
-    _task_id source_id,
-    _task_id target_id
+	void    *memory_ptr,
+	_task_id source_id,
+	_task_id target_id
 )
 { /* Body */
 #if MQX_ALLOCATOR_GARBAGE_COLLECTING
-    _KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
-    LWMEM_BLOCK_STRUCT_PTR block_ptr;
-    TD_STRUCT_PTR          source_td;
-    TD_STRUCT_PTR          target_td;
+	_KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
+	LWMEM_BLOCK_STRUCT_PTR block_ptr;
+	TD_STRUCT_PTR          source_td;
+	TD_STRUCT_PTR          target_td;
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
 
-    _KLOGE4(KLOG_lwmem_transfer, memory_ptr, source_id, target_id);
+	_KLOGE4(KLOG_lwmem_transfer, memory_ptr, source_id, target_id);
 
 #if MQX_CHECK_ERRORS
-    if (memory_ptr == NULL)
-    {
-        _task_set_error(MQX_INVALID_POINTER);
-        _KLOGX2(KLOG_lwmem_transfer, MQX_INVALID_POINTER);
-        return (MQX_INVALID_POINTER);
-    } /* Endif */
+	if (memory_ptr == NULL)
+	{
+		_task_set_error(MQX_INVALID_POINTER);
+		_KLOGX2(KLOG_lwmem_transfer, MQX_INVALID_POINTER);
+		return (MQX_INVALID_POINTER);
+	} /* Endif */
 #endif
 
-    /* Verify the block */
-    block_ptr = GET_LWMEMBLOCK_PTR(memory_ptr);
+	/* Verify the block */
+	block_ptr = GET_LWMEMBLOCK_PTR(memory_ptr);
 
-    source_td = (TD_STRUCT_PTR) _task_get_td(source_id);
-    target_td = (TD_STRUCT_PTR) _task_get_td(target_id);
+	source_td = (TD_STRUCT_PTR) _task_get_td(source_id);
+	target_td = (TD_STRUCT_PTR) _task_get_td(target_id);
 #if MQX_CHECK_ERRORS
-    if ((source_td == NULL) || (target_td == NULL))
-    {
-        _task_set_error(MQX_INVALID_TASK_ID);
-        _KLOGX2(KLOG_lwmem_transfer, MQX_INVALID_TASK_ID);
-        return (MQX_INVALID_TASK_ID);
-    } /* Endif */
+	if ((source_td == NULL) || (target_td == NULL))
+	{
+		_task_set_error(MQX_INVALID_TASK_ID);
+		_KLOGX2(KLOG_lwmem_transfer, MQX_INVALID_TASK_ID);
+		return (MQX_INVALID_TASK_ID);
+	} /* Endif */
 #endif
 #if MQX_CHECK_ERRORS
-    if (block_ptr->U.S.TASK_NUMBER != TASK_NUMBER_FROM_TASKID(source_td->TASK_ID))
-    {
-        _task_set_error(MQX_NOT_RESOURCE_OWNER);
-        return (MQX_NOT_RESOURCE_OWNER);
-    } /* Endif */
+	if (block_ptr->U.S.TASK_NUMBER != TASK_NUMBER_FROM_TASKID(source_td->TASK_ID))
+	{
+		_task_set_error(MQX_NOT_RESOURCE_OWNER);
+		return (MQX_NOT_RESOURCE_OWNER);
+	} /* Endif */
 #endif
 
-    block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(target_td->TASK_ID);
+	block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(target_td->TASK_ID);
 
-    _KLOGX2(KLOG_lwmem_transfer, MQX_OK);
+	_KLOGX2(KLOG_lwmem_transfer, MQX_OK);
 
 #else
-    (void)memory_ptr;
-    (void)source_id;
-    (void)target_id;
+	(void)memory_ptr;
+	(void)source_id;
+	(void)target_id;
 #endif /* MQX_ALLOCATOR_GARBAGE_COLLECTING */
 
-    return (MQX_OK);
+	return (MQX_OK);
 
 } /* Endbody */
 
@@ -2523,16 +2523,16 @@ _mqx_uint _lwmem_transfer
  */
 void _lwmem_transfer_internal
 (
-    void         *memory_ptr,
-    TD_STRUCT_PTR target_td
+	void         *memory_ptr,
+	TD_STRUCT_PTR target_td
 )
 { /* Body */
 #if MQX_ALLOCATOR_GARBAGE_COLLECTING
-    LWMEM_BLOCK_STRUCT_PTR block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR block_ptr;
 
-    /* Verify the block */
-    block_ptr = GET_LWMEMBLOCK_PTR(memory_ptr);
-    block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(target_td->TASK_ID);
+	/* Verify the block */
+	block_ptr = GET_LWMEMBLOCK_PTR(memory_ptr);
+	block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(target_td->TASK_ID);
 #endif /* MQX_ALLOCATOR_GARBAGE_COLLECTING */
 } /* Endbody */
 /*! \endcond */
@@ -2552,24 +2552,24 @@ void _lwmem_transfer_internal
  */
 _mqx_uint _lwmem_transfer_td_internal
 (
-    void         *memory_ptr,
-    TD_STRUCT_PTR source_td,
-    TD_STRUCT_PTR target_td
+	void         *memory_ptr,
+	TD_STRUCT_PTR source_td,
+	TD_STRUCT_PTR target_td
 )
 { /* Body */
 #if MQX_ALLOCATOR_GARBAGE_COLLECTING
-    LWMEM_BLOCK_STRUCT_PTR block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR block_ptr;
 
-    block_ptr = GET_LWMEMBLOCK_PTR(memory_ptr);
-    block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(target_td->TASK_ID);
+	block_ptr = GET_LWMEMBLOCK_PTR(memory_ptr);
+	block_ptr->U.S.TASK_NUMBER = TASK_NUMBER_FROM_TASKID(target_td->TASK_ID);
 
 #else
-    (void)memory_ptr;
-    (void)source_td;
-    (void)target_td;
+	(void)memory_ptr;
+	(void)source_td;
+	(void)target_td;
 #endif  /* MQX_ALLOCATOR_GARBAGE_COLLECTING */
 
-    return (MQX_OK);
+	return (MQX_OK);
 } /* Endbody */
 /*! \endcond */
 
@@ -2613,20 +2613,20 @@ _mqx_uint _lwmem_transfer_td_internal
  */
 void *_lwmem_alloc_system_zero_from
 (
-    _lwmem_pool_id pool_id,
-    _mem_size      size
+	_lwmem_pool_id pool_id,
+	_mem_size      size
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE2(KLOG_lwmem_alloc_system_zero_from, size);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE2(KLOG_lwmem_alloc_system_zero_from, size);
 
-    result = _lwmem_alloc_internal(size, SYSTEM_TD_PTR(kernel_data), pool_id, TRUE);
+	result = _lwmem_alloc_internal(size, SYSTEM_TD_PTR(kernel_data), pool_id, TRUE);
 
-    _KLOGX2(KLOG_lwmem_alloc_system_zero_from, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_alloc_system_zero_from, result);
+	return (result);
 
 } /* Endbody */
 
@@ -2670,21 +2670,21 @@ void *_lwmem_alloc_system_zero_from
  */
 void *_lwmem_alloc_system_zero
 (
-    _mem_size size
+	_mem_size size
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    void                  *result;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	void                  *result;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE2(KLOG_lwmem_alloc_system_zero, size);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE2(KLOG_lwmem_alloc_system_zero, size);
 
-    result = _lwmem_alloc_internal(
-        size, SYSTEM_TD_PTR(kernel_data), (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, TRUE
-    );
+	result = _lwmem_alloc_internal(
+		size, SYSTEM_TD_PTR(kernel_data), (_lwmem_pool_id) kernel_data->KERNEL_LWMEM_POOL, TRUE
+	);
 
-    _KLOGX2(KLOG_lwmem_alloc_system_zero, result);
-    return (result);
+	_KLOGX2(KLOG_lwmem_alloc_system_zero, result);
+	return (result);
 
 } /* Endbody */
 
@@ -2713,154 +2713,154 @@ void *_lwmem_alloc_system_zero
  */
 _mqx_uint _lwmem_free_part_internal
 (
-    void*    mem_ptr,
-    _mem_size size
+	void*    mem_ptr,
+	_mem_size size
 )
 {
-    KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
-    LWMEM_BLOCK_STRUCT_PTR  block_ptr;
-    volatile LWMEM_BLOCK_STRUCT_PTR  free_ptr;
-    LWMEM_BLOCK_STRUCT_PTR  next_ptr;
-    LWMEM_BLOCK_STRUCT_PTR  next_block_ptr;
-    LWMEM_BLOCK_STRUCT_PTR  prev_block_ptr = NULL; /* If free list is damaged, the NULL value is used for easier debugging. */
-    LWMEM_POOL_STRUCT_PTR   mem_pool_ptr;
-    bool                    insert;
-    _mqx_uint               request_block_size;
-    _mqx_uint               result_code;
+	KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
+	LWMEM_BLOCK_STRUCT_PTR  block_ptr;
+	volatile LWMEM_BLOCK_STRUCT_PTR  free_ptr;
+	LWMEM_BLOCK_STRUCT_PTR  next_ptr;
+	LWMEM_BLOCK_STRUCT_PTR  next_block_ptr;
+	LWMEM_BLOCK_STRUCT_PTR  prev_block_ptr = NULL; /* If free list is damaged, the NULL value is used for easier debugging. */
+	LWMEM_POOL_STRUCT_PTR   mem_pool_ptr;
+	bool                    insert;
+	_mqx_uint               request_block_size;
+	_mqx_uint               result_code;
 
-    _KLOGE3(KLOG_lwmem_free_part_internal, mem_ptr, size);
-
-#if MQX_CHECK_ERRORS
-    /* Verify the passed in parameter */
-    if (mem_ptr == NULL)
-    {
-        _task_set_error(MQX_INVALID_POINTER);
-        _KLOGX2(KLOG_lwmem_free_part_internal, MQX_INVALID_POINTER);
-        return (MQX_INVALID_POINTER);
-    } /* Endif */
-#endif
-
-    block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
-    request_block_size = size + (_mem_size) sizeof(LWMEM_BLOCK_STRUCT);
+	_KLOGE3(KLOG_lwmem_free_part_internal, mem_ptr, size);
 
 #if MQX_CHECK_ERRORS
-    /* Verify the passed in parameter */
-    if (request_block_size > block_ptr->BLOCKSIZE)
-    {
-        _KLOGX2(KLOG_lwmem_free_part_internal, MQX_INVALID_SIZE);
-        return (MQX_INVALID_SIZE);
-    } /* Endif */
+	/* Verify the passed in parameter */
+	if (mem_ptr == NULL)
+	{
+		_task_set_error(MQX_INVALID_POINTER);
+		_KLOGX2(KLOG_lwmem_free_part_internal, MQX_INVALID_POINTER);
+		return (MQX_INVALID_POINTER);
+	} /* Endif */
 #endif
 
-    if(LWMEM_MIN_MEMORY_STORAGE_SIZE>request_block_size){
-      request_block_size=LWMEM_MIN_MEMORY_STORAGE_SIZE;
-    }/* Endif */
+	block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
+	request_block_size = size + (_mem_size) sizeof(LWMEM_BLOCK_STRUCT);
 
-     _MEMORY_ALIGN_VAL_LARGER(request_block_size);
+#if MQX_CHECK_ERRORS
+	/* Verify the passed in parameter */
+	if (request_block_size > block_ptr->BLOCKSIZE)
+	{
+		_KLOGX2(KLOG_lwmem_free_part_internal, MQX_INVALID_SIZE);
+		return (MQX_INVALID_SIZE);
+	} /* Endif */
+#endif
 
-     /* No need freed part of memory */
-    if(request_block_size >= block_ptr->BLOCKSIZE){
-      _KLOGX2(KLOG_lwmem_free_part_internal, MQX_OK);
-      return MQX_OK;
-    }/* Endif */
+	if(LWMEM_MIN_MEMORY_STORAGE_SIZE>request_block_size){
+	  request_block_size=LWMEM_MIN_MEMORY_STORAGE_SIZE;
+	}/* Endif */
 
-    _GET_KERNEL_DATA(kernel_data);
+	 _MEMORY_ALIGN_VAL_LARGER(request_block_size);
 
-    _int_disable();
-    mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) block_ptr->POOL;
+	 /* No need freed part of memory */
+	if(request_block_size >= block_ptr->BLOCKSIZE){
+	  _KLOGX2(KLOG_lwmem_free_part_internal, MQX_OK);
+	  return MQX_OK;
+	}/* Endif */
+
+	_GET_KERNEL_DATA(kernel_data);
+
+	_int_disable();
+	mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) block_ptr->POOL;
 
 #if MQX_CHECK_VALIDITY
-    if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
-    {
-        _int_enable();
-        _KLOGX2(KLOG_lwmem_free_part_internal, MQX_LWMEM_POOL_INVALID);
-        return (MQX_LWMEM_POOL_INVALID);
-    } /* Endif */
+	if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
+	{
+		_int_enable();
+		_KLOGX2(KLOG_lwmem_free_part_internal, MQX_LWMEM_POOL_INVALID);
+		return (MQX_LWMEM_POOL_INVALID);
+	} /* Endif */
 #endif
 
 #if MQX_CHECK_ERRORS
-    /* Verify the passed in parameter */
-    if (!((block_ptr->U.S.TASK_NUMBER == TASK_NUMBER_FROM_TASKID(kernel_data->ACTIVE_PTR->TASK_ID))
-                    || (block_ptr->U.S.TASK_NUMBER == SYSTEM_TASK_NUMBER)))
-    {
-        _int_enable();
-        _KLOGX2(KLOG_lwmem_free_part_internal, MQX_NOT_RESOURCE_OWNER);
-        return (MQX_NOT_RESOURCE_OWNER);
-    } /* Endif */
+	/* Verify the passed in parameter */
+	if (!((block_ptr->U.S.TASK_NUMBER == TASK_NUMBER_FROM_TASKID(kernel_data->ACTIVE_PTR->TASK_ID))
+					|| (block_ptr->U.S.TASK_NUMBER == SYSTEM_TASK_NUMBER)))
+	{
+		_int_enable();
+		_KLOGX2(KLOG_lwmem_free_part_internal, MQX_NOT_RESOURCE_OWNER);
+		return (MQX_NOT_RESOURCE_OWNER);
+	} /* Endif */
 #endif
 
-    free_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    /* Searching for free memory block behind allocated memory block */
-    while (TRUE){
+	free_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	/* Searching for free memory block behind allocated memory block */
+	while (TRUE){
 
-      if (free_ptr == NULL || ((void *) block_ptr < (void *) free_ptr)){
+	  if (free_ptr == NULL || ((void *) block_ptr < (void *) free_ptr)){
 
-         size = block_ptr->BLOCKSIZE-request_block_size;
-         if(((unsigned char *) block_ptr + block_ptr->BLOCKSIZE) == (unsigned char *) free_ptr){
+		 size = block_ptr->BLOCKSIZE-request_block_size;
+		 if(((unsigned char *) block_ptr + block_ptr->BLOCKSIZE) == (unsigned char *) free_ptr){
 
-            /* Freed part join with the next block on the list */
-            /* back up */
-            next_ptr = free_ptr->U.NEXTBLOCK;
-            size += free_ptr->BLOCKSIZE;
+			/* Freed part join with the next block on the list */
+			/* back up */
+			next_ptr = free_ptr->U.NEXTBLOCK;
+			size += free_ptr->BLOCKSIZE;
 
 
-            /* The merged block should have cleared header to assure failure at multiple freeing with the same pointer */
-            _mem_zero(free_ptr, sizeof(LWMEM_BLOCK_STRUCT));
-         }
-         else if(size >= LWMEM_MIN_MEMORY_STORAGE_SIZE){
-          /* back up */
-            next_ptr = free_ptr;
-         }/* Endif */
-         else{
-            insert = FALSE;
-            break;
-         }
-         insert = TRUE;
-         break;
-      }/* Endif */
+			/* The merged block should have cleared header to assure failure at multiple freeing with the same pointer */
+			_mem_zero(free_ptr, sizeof(LWMEM_BLOCK_STRUCT));
+		 }
+		 else if(size >= LWMEM_MIN_MEMORY_STORAGE_SIZE){
+		  /* back up */
+			next_ptr = free_ptr;
+		 }/* Endif */
+		 else{
+			insert = FALSE;
+			break;
+		 }
+		 insert = TRUE;
+		 break;
+	  }/* Endif */
 
-      /* Provide window for higher priority tasks */
-      prev_block_ptr=free_ptr;
-      free_ptr = free_ptr->U.NEXTBLOCK;
-      mem_pool_ptr->POOL_FREE_PTR = free_ptr;
-      _int_enable();
-      _int_disable();
-      if(free_ptr != mem_pool_ptr->POOL_FREE_PTR){
-        free_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
-      }
-    }/* Endwhile */
+	  /* Provide window for higher priority tasks */
+	  prev_block_ptr=free_ptr;
+	  free_ptr = free_ptr->U.NEXTBLOCK;
+	  mem_pool_ptr->POOL_FREE_PTR = free_ptr;
+	  _int_enable();
+	  _int_disable();
+	  if(free_ptr != mem_pool_ptr->POOL_FREE_PTR){
+		free_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	  }
+	}/* Endwhile */
 
-    if(insert){
-      block_ptr->BLOCKSIZE = request_block_size;
-      next_block_ptr = (LWMEM_BLOCK_STRUCT_PTR) (void *) ((unsigned char *) block_ptr + request_block_size);
-      next_block_ptr->BLOCKSIZE = size;
-      next_block_ptr->POOL = (void *) mem_pool_ptr;
-      next_block_ptr->U.NEXTBLOCK = next_ptr;
-      if(free_ptr == mem_pool_ptr->POOL_FREE_LIST_PTR){
-          mem_pool_ptr->POOL_FREE_LIST_PTR = next_block_ptr;
-      }
-      else{
-          assert(prev_block_ptr != NULL);
-          prev_block_ptr->U.NEXTBLOCK = next_block_ptr;
-      }/* Endif */
-      result_code = MQX_OK;
-    }
-    else {
-      result_code = MQX_INVALID_SIZE;
-    }/* Endif */
+	if(insert){
+	  block_ptr->BLOCKSIZE = request_block_size;
+	  next_block_ptr = (LWMEM_BLOCK_STRUCT_PTR) (void *) ((unsigned char *) block_ptr + request_block_size);
+	  next_block_ptr->BLOCKSIZE = size;
+	  next_block_ptr->POOL = (void *) mem_pool_ptr;
+	  next_block_ptr->U.NEXTBLOCK = next_ptr;
+	  if(free_ptr == mem_pool_ptr->POOL_FREE_LIST_PTR){
+		  mem_pool_ptr->POOL_FREE_LIST_PTR = next_block_ptr;
+	  }
+	  else{
+		  assert(prev_block_ptr != NULL);
+		  prev_block_ptr->U.NEXTBLOCK = next_block_ptr;
+	  }/* Endif */
+	  result_code = MQX_OK;
+	}
+	else {
+	  result_code = MQX_INVALID_SIZE;
+	}/* Endif */
 
-    mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
 #if MQX_TASK_DESTRUCTION
-    mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
 #endif
-    _int_enable();
+	_int_enable();
 
-    _KLOGX2(KLOG_lwmem_free_part_internal, result_code);
+	_KLOGX2(KLOG_lwmem_free_part_internal, result_code);
 
-    return result_code;
+	return result_code;
 }
 /*! \endcond */
 
@@ -2910,154 +2910,154 @@ _mqx_uint _lwmem_alloc_extend_internal
   _KLOGE3(KLOG_lwmem_alloc_extend_internal, mem_ptr, size);
 
 #if MQX_CHECK_ERRORS
-    /* Verify the passed in parameter */
-    if (mem_ptr == NULL)
-    {
-      _KLOGX2(KLOG_lwmem_alloc_extend_internal, MQX_INVALID_POINTER);
-      return (MQX_INVALID_POINTER);
-    } /* Endif */
+	/* Verify the passed in parameter */
+	if (mem_ptr == NULL)
+	{
+	  _KLOGX2(KLOG_lwmem_alloc_extend_internal, MQX_INVALID_POINTER);
+	  return (MQX_INVALID_POINTER);
+	} /* Endif */
 #endif
 
-    block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
-    request_block_size = size + (_mem_size) sizeof(LWMEM_BLOCK_STRUCT);
+	block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
+	request_block_size = size + (_mem_size) sizeof(LWMEM_BLOCK_STRUCT);
 
 #if MQX_CHECK_ERRORS
-    /* Verify the passed in parameter */
-    if (request_block_size < block_ptr->BLOCKSIZE)
-    {
-        _KLOGX2(KLOG_lwmem_alloc_extend_internal, MQX_INVALID_SIZE);
-        return (MQX_INVALID_SIZE);
-    } /* Endif */
+	/* Verify the passed in parameter */
+	if (request_block_size < block_ptr->BLOCKSIZE)
+	{
+		_KLOGX2(KLOG_lwmem_alloc_extend_internal, MQX_INVALID_SIZE);
+		return (MQX_INVALID_SIZE);
+	} /* Endif */
 #endif
 
-    _MEMORY_ALIGN_VAL_LARGER(request_block_size);
+	_MEMORY_ALIGN_VAL_LARGER(request_block_size);
 
-    /* No need extend */
-    if(request_block_size == block_ptr->BLOCKSIZE){
-      _KLOGX2(KLOG_lwmem_alloc_extend_internal, MQX_OK);
-      return MQX_OK;
-    }/* Endif */
+	/* No need extend */
+	if(request_block_size == block_ptr->BLOCKSIZE){
+	  _KLOGX2(KLOG_lwmem_alloc_extend_internal, MQX_OK);
+	  return MQX_OK;
+	}/* Endif */
 
-    _int_disable();
-    mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) block_ptr->POOL;
+	_int_disable();
+	mem_pool_ptr = (LWMEM_POOL_STRUCT_PTR) block_ptr->POOL;
 
 #if MQX_CHECK_VALIDITY
-    /* Verify the passed in parameter */
-    if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
-    {
-        _int_enable();
-        _KLOGX2(KLOG_lwmem_alloc_extend_internal, MQX_LWMEM_POOL_INVALID);
-        return (MQX_LWMEM_POOL_INVALID);
-    } /* Endif */
+	/* Verify the passed in parameter */
+	if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
+	{
+		_int_enable();
+		_KLOGX2(KLOG_lwmem_alloc_extend_internal, MQX_LWMEM_POOL_INVALID);
+		return (MQX_LWMEM_POOL_INVALID);
+	} /* Endif */
 #endif
 
 #if MQX_CHECK_ERRORS
-    /* Verify the passed in parameter */
-    if (!((block_ptr->U.S.TASK_NUMBER == TASK_NUMBER_FROM_TASKID(kernel_data->ACTIVE_PTR->TASK_ID))
-                    || (block_ptr->U.S.TASK_NUMBER == SYSTEM_TASK_NUMBER)))
-    {
-        _int_enable();
-        _KLOGX2(KLOG_lwmem_alloc_extend_internal, MQX_NOT_RESOURCE_OWNER);
-        return(MQX_NOT_RESOURCE_OWNER);
-    } /* Endif */
+	/* Verify the passed in parameter */
+	if (!((block_ptr->U.S.TASK_NUMBER == TASK_NUMBER_FROM_TASKID(kernel_data->ACTIVE_PTR->TASK_ID))
+					|| (block_ptr->U.S.TASK_NUMBER == SYSTEM_TASK_NUMBER)))
+	{
+		_int_enable();
+		_KLOGX2(KLOG_lwmem_alloc_extend_internal, MQX_NOT_RESOURCE_OWNER);
+		return(MQX_NOT_RESOURCE_OWNER);
+	} /* Endif */
 #endif
 
-    free_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	free_ptr = mem_pool_ptr->POOL_FREE_LIST_PTR;
 
-    while (TRUE){
+	while (TRUE){
 
-      /* Searching for free memory block behind allocated memory block */
-      if (free_ptr == NULL || ((void *) block_ptr < (void *) free_ptr)){
+	  /* Searching for free memory block behind allocated memory block */
+	  if (free_ptr == NULL || ((void *) block_ptr < (void *) free_ptr)){
 
-        /* Check if free block is behind allocated block */
-        if (((unsigned char *) block_ptr + block_ptr->BLOCKSIZE) == (unsigned char *) free_ptr){
+		/* Check if free block is behind allocated block */
+		if (((unsigned char *) block_ptr + block_ptr->BLOCKSIZE) == (unsigned char *) free_ptr){
 
-          /* If free memory block is not big enough set block_ptr as NULL */
-          size = request_block_size-block_ptr->BLOCKSIZE;
-          if(size > free_ptr->BLOCKSIZE){
-            block_ptr = NULL;
-          }/* Endif */
-        }
-        else{
-          block_ptr = NULL;
-        }/* Endif */
+		  /* If free memory block is not big enough set block_ptr as NULL */
+		  size = request_block_size-block_ptr->BLOCKSIZE;
+		  if(size > free_ptr->BLOCKSIZE){
+			block_ptr = NULL;
+		  }/* Endif */
+		}
+		else{
+		  block_ptr = NULL;
+		}/* Endif */
 
-        break;
-      }/* Endif */
+		break;
+	  }/* Endif */
 
-      prev_block_ptr = free_ptr;
-      /* Provide window for higher priority tasks */
-      free_ptr = free_ptr->U.NEXTBLOCK;
-      mem_pool_ptr->POOL_ALLOC_PTR = free_ptr;
-      _int_enable();
-      _int_disable();
-      if(free_ptr != mem_pool_ptr->POOL_ALLOC_PTR){
-        free_ptr=mem_pool_ptr->POOL_FREE_LIST_PTR;
-      }/* Endif */
+	  prev_block_ptr = free_ptr;
+	  /* Provide window for higher priority tasks */
+	  free_ptr = free_ptr->U.NEXTBLOCK;
+	  mem_pool_ptr->POOL_ALLOC_PTR = free_ptr;
+	  _int_enable();
+	  _int_disable();
+	  if(free_ptr != mem_pool_ptr->POOL_ALLOC_PTR){
+		free_ptr=mem_pool_ptr->POOL_FREE_LIST_PTR;
+	  }/* Endif */
 
-    }/* Endwhile */
+	}/* Endwhile */
 
-    /* Extend memory block*/
-    if(block_ptr != NULL) {
+	/* Extend memory block*/
+	if(block_ptr != NULL) {
 
-      /* If free memory can split */
-      next_block_size = free_ptr->BLOCKSIZE-size;
-      if (next_block_size >= LWMEM_MIN_MEMORY_STORAGE_SIZE){
-         /* back up */
-         next_ptr = free_ptr->U.NEXTBLOCK;
-         /*
-           * The current block is big enough to split.
-           * into 2 blocks.... the part to be allocated is one block,
-           * and the rest remains as a free block on the free list.
-           */
-         next_block_ptr = (LWMEM_BLOCK_STRUCT_PTR) (void *) ((unsigned char *) free_ptr + size);
-         /* Initialize the new physical block values */
-         next_block_ptr->BLOCKSIZE = next_block_size;
-         /* Link new block into the free list */
-         next_block_ptr->POOL = (void *) mem_pool_ptr;
-         next_block_ptr->U.NEXTBLOCK = next_ptr;
+	  /* If free memory can split */
+	  next_block_size = free_ptr->BLOCKSIZE-size;
+	  if (next_block_size >= LWMEM_MIN_MEMORY_STORAGE_SIZE){
+		 /* back up */
+		 next_ptr = free_ptr->U.NEXTBLOCK;
+		 /*
+		   * The current block is big enough to split.
+		   * into 2 blocks.... the part to be allocated is one block,
+		   * and the rest remains as a free block on the free list.
+		   */
+		 next_block_ptr = (LWMEM_BLOCK_STRUCT_PTR) (void *) ((unsigned char *) free_ptr + size);
+		 /* Initialize the new physical block values */
+		 next_block_ptr->BLOCKSIZE = next_block_size;
+		 /* Link new block into the free list */
+		 next_block_ptr->POOL = (void *) mem_pool_ptr;
+		 next_block_ptr->U.NEXTBLOCK = next_ptr;
 
-       }
-       else{
-          /* Take the entire block */
-          size = free_ptr->BLOCKSIZE;
-          next_block_ptr = free_ptr->U.NEXTBLOCK;
-       }/* Endif */
+	   }
+	   else{
+		  /* Take the entire block */
+		  size = free_ptr->BLOCKSIZE;
+		  next_block_ptr = free_ptr->U.NEXTBLOCK;
+	   }/* Endif */
 
-      if (free_ptr == mem_pool_ptr->POOL_FREE_LIST_PTR)
-      {
-          /* At the head of the free list */
-          mem_pool_ptr->POOL_FREE_LIST_PTR = next_block_ptr;
-      }
-      else
-      {
-          prev_block_ptr->U.NEXTBLOCK = next_block_ptr;
-      } /* Endif */
-      block_ptr->BLOCKSIZE += size;
+	  if (free_ptr == mem_pool_ptr->POOL_FREE_LIST_PTR)
+	  {
+		  /* At the head of the free list */
+		  mem_pool_ptr->POOL_FREE_LIST_PTR = next_block_ptr;
+	  }
+	  else
+	  {
+		  prev_block_ptr->U.NEXTBLOCK = next_block_ptr;
+	  } /* Endif */
+	  block_ptr->BLOCKSIZE += size;
 
-      /* Indicate the highest memory address used */
-      highwater = ((uint32_t) block_ptr) + block_ptr->BLOCKSIZE - 1;
-      if (highwater > (uint32_t) mem_pool_ptr->HIGHWATER)
-      {
-          mem_pool_ptr->HIGHWATER = (void*) highwater;
-      }/* Endif */
-      result_code = MQX_OK;
-    }
-    else {
-      result_code = MQX_INVALID_SIZE;
-    }/* Endif */
+	  /* Indicate the highest memory address used */
+	  highwater = ((uint32_t) block_ptr) + block_ptr->BLOCKSIZE - 1;
+	  if (highwater > (uint32_t) mem_pool_ptr->HIGHWATER)
+	  {
+		  mem_pool_ptr->HIGHWATER = (void*) highwater;
+	  }/* Endif */
+	  result_code = MQX_OK;
+	}
+	else {
+	  result_code = MQX_INVALID_SIZE;
+	}/* Endif */
 
-    mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
-    mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
-    #if MQX_TASK_DESTRUCTION
-    mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
-    #endif
+	mem_pool_ptr->POOL_ALLOC_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_FREE_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST_PTR = mem_pool_ptr->POOL_FREE_LIST_PTR;
+	mem_pool_ptr->POOL_TEST2_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	#if MQX_TASK_DESTRUCTION
+	mem_pool_ptr->POOL_DESTROY_PTR = mem_pool_ptr->POOL_ALLOC_START_PTR;
+	#endif
 
-    _int_enable();
+	_int_enable();
 
-    _KLOGX2(KLOG_lwmem_alloc_extend_internal, result_code);
+	_KLOGX2(KLOG_lwmem_alloc_extend_internal, result_code);
 
   return result_code;
 
@@ -3093,14 +3093,14 @@ _mqx_uint _lwmem_alloc_extend_internal
  */
 void *_usr_lwmem_realloc
 (
-    void *mem_ptr,
-    _mem_size size
+	void *mem_ptr,
+	_mem_size size
 )
 {
-    MQX_API_CALL_PARAMS params =
-    { (uint32_t) mem_ptr ,(uint32_t)size, 0, 0, 0};
+	MQX_API_CALL_PARAMS params =
+	{ (uint32_t) mem_ptr ,(uint32_t)size, 0, 0, 0};
 
-    return (void *)_mqx_api_call(MQX_API_LWMEM_REALLOC, &params);
+	return (void *)_mqx_api_call(MQX_API_LWMEM_REALLOC, &params);
 }
 /*! \endcond */
 
@@ -3153,8 +3153,8 @@ void *_usr_lwmem_realloc
  */
 void *_lwmem_realloc
 (
-    void         *mem_ptr,
-    _mem_size    size
+	void         *mem_ptr,
+	_mem_size    size
 )
 {/* Body */
   void                   *result = NULL;
@@ -3170,10 +3170,10 @@ void *_lwmem_realloc
 
 
 #if MQX_ENABLE_USER_MODE && MQX_ENABLE_USER_STDAPI
-    if (MQX_RUN_IN_USER_MODE)
-    {
-        return _usr_lwmem_realloc(mem_ptr, size);
-    }/* Endif */
+	if (MQX_RUN_IN_USER_MODE)
+	{
+		return _usr_lwmem_realloc(mem_ptr, size);
+	}/* Endif */
 #endif
 
   _GET_KERNEL_DATA(kernel_data);
@@ -3181,8 +3181,8 @@ void *_lwmem_realloc
 
   /* Behavior as malloc */
   if(mem_ptr == NULL){
-    result = (TASK_NUMBER_FROM_TASKID(_task_get_id()) == SYSTEM_TASK_NUMBER) ? _lwmem_alloc_system(size) : _lwmem_alloc(size);
-    return result;
+	result = (TASK_NUMBER_FROM_TASKID(_task_get_id()) == SYSTEM_TASK_NUMBER) ? _lwmem_alloc_system(size) : _lwmem_alloc(size);
+	return result;
   }/* Endif */
 
   block_ptr = GET_LWMEMBLOCK_PTR(mem_ptr);
@@ -3193,33 +3193,33 @@ void *_lwmem_realloc
   /* Verify the passed in parameter */
   if (mem_pool_ptr->VALID != LWMEM_POOL_VALID)
   {
-      _int_enable();
-      _task_set_error(MQX_LWMEM_POOL_INVALID);
-      _KLOGX2(KLOG_lwmem_realloc, MQX_LWMEM_POOL_INVALID);
-      return NULL;
+	  _int_enable();
+	  _task_set_error(MQX_LWMEM_POOL_INVALID);
+	  _KLOGX2(KLOG_lwmem_realloc, MQX_LWMEM_POOL_INVALID);
+	  return NULL;
   } /* Endif */
 #endif
 
 #if MQX_CHECK_ERRORS
   /* Verify the passed in parameter */
   if (!((block_ptr->U.S.TASK_NUMBER == TASK_NUMBER_FROM_TASKID(kernel_data->ACTIVE_PTR->TASK_ID))
-                  || (block_ptr->U.S.TASK_NUMBER == SYSTEM_TASK_NUMBER)))
+				  || (block_ptr->U.S.TASK_NUMBER == SYSTEM_TASK_NUMBER)))
   {
-      _int_enable();
-      _task_set_error(MQX_NOT_RESOURCE_OWNER);
-      _KLOGX2(KLOG_lwmem_realloc, MQX_NOT_RESOURCE_OWNER);
-      return NULL;
+	  _int_enable();
+	  _task_set_error(MQX_NOT_RESOURCE_OWNER);
+	  _KLOGX2(KLOG_lwmem_realloc, MQX_NOT_RESOURCE_OWNER);
+	  return NULL;
   } /* Endif */
 #endif
 
 #if MQX_CHECK_ERRORS
-    if (block_ptr->BLOCKSIZE <= (_mem_size) sizeof(LWMEM_BLOCK_STRUCT))
-    {
-        _int_enable();
-        _task_set_error(MQX_INVALID_POINTER);
-        _KLOGX2(KLOG_lwmem_realloc, MQX_INVALID_POINTER);
-        return NULL;
-    } /* Endif */
+	if (block_ptr->BLOCKSIZE <= (_mem_size) sizeof(LWMEM_BLOCK_STRUCT))
+	{
+		_int_enable();
+		_task_set_error(MQX_INVALID_POINTER);
+		_KLOGX2(KLOG_lwmem_realloc, MQX_INVALID_POINTER);
+		return NULL;
+	} /* Endif */
 #endif
 
   /* size of given memory block */
@@ -3229,44 +3229,44 @@ void *_lwmem_realloc
 
   if(size > 0){
 
-    realloc_error = (size < old_size) ? _lwmem_free_part_internal(mem_ptr, size) : _lwmem_alloc_extend_internal(mem_ptr, size);
+	realloc_error = (size < old_size) ? _lwmem_free_part_internal(mem_ptr, size) : _lwmem_alloc_extend_internal(mem_ptr, size);
 
 #if MQX_CHECK_ERRORS
-    if(realloc_error != MQX_OK && realloc_error != MQX_INVALID_SIZE){
-      _task_set_error(realloc_error);
-      _KLOGX2(KLOG_lwmem_realloc, realloc_error);
-      return result;
-    }
+	if(realloc_error != MQX_OK && realloc_error != MQX_INVALID_SIZE){
+	  _task_set_error(realloc_error);
+	  _KLOGX2(KLOG_lwmem_realloc, realloc_error);
+	  return result;
+	}
 #endif
 
-    if(realloc_error == MQX_OK){
-        result = mem_ptr;
-    }
-    else{
-      copy_size = (size < old_size) ? size : old_size;
-    }/* Endif */
+	if(realloc_error == MQX_OK){
+		result = mem_ptr;
+	}
+	else{
+	  copy_size = (size < old_size) ? size : old_size;
+	}/* Endif */
   }
   else{
-    copy_size=size;
+	copy_size=size;
   }/* Endif */
 
   /* Create new memory block, copy data from given memory block to new memory block and free given memory block */
   if(result != mem_ptr){
-    result = (block_ptr->U.S.TASK_NUMBER == SYSTEM_TASK_NUMBER) ? _lwmem_alloc_system(size) : _lwmem_alloc(size);
+	result = (block_ptr->U.S.TASK_NUMBER == SYSTEM_TASK_NUMBER) ? _lwmem_alloc_system(size) : _lwmem_alloc(size);
 
 #if MQX_CHECK_ERRORS
   if(result == NULL){
-    _KLOGX2(KLOG_lwmem_realloc, result);
-    return result;
+	_KLOGX2(KLOG_lwmem_realloc, result);
+	return result;
   }/* Endif */
 #endif
 
-    _mem_copy(mem_ptr, result, copy_size);
+	_mem_copy(mem_ptr, result, copy_size);
 #if MQX_CHECK_ERRORS && !NDEBUG
-    error = _lwmem_free(mem_ptr);
-    assert(error == MQX_OK);
+	error = _lwmem_free(mem_ptr);
+	assert(error == MQX_OK);
 #else
-    _lwmem_free(mem_ptr);
+	_lwmem_free(mem_ptr);
 #endif
 
   }/* Endif */

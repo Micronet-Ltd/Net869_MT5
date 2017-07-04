@@ -48,20 +48,20 @@
 /*! @brief MCG_Lite clock mode definitions */
 typedef enum _mcglite_mode
 {
-    kMcgliteModeHirc48M,                     /*!< clock mode is HIRC 48M*/
-    kMcgliteModeLirc8M,                      /*!< clock mode is LIRC 8M  */
-    kMcgliteModeLirc2M,                      /*!< clock mode is LIRC 2M  */
-    kMcgliteModeExt,                         /*!< clock mode is EXT  */
-    kMcgliteModeLirc,                        /*!< clock mode is LIRC 2M or 8M */
-    kMcgliteModeStop,                        /*!< clock mode is STOP  */
-    kMcgliteModeError                        /*!< Unknown mode */
+	kMcgliteModeHirc48M,                     /*!< clock mode is HIRC 48M*/
+	kMcgliteModeLirc8M,                      /*!< clock mode is LIRC 8M  */
+	kMcgliteModeLirc2M,                      /*!< clock mode is LIRC 2M  */
+	kMcgliteModeExt,                         /*!< clock mode is EXT  */
+	kMcgliteModeLirc,                        /*!< clock mode is LIRC 2M or 8M */
+	kMcgliteModeStop,                        /*!< clock mode is STOP  */
+	kMcgliteModeError                        /*!< Unknown mode */
 } mcglite_mode_t;
 
 /*! @brief MCG_Lite mode transition API error code definitions */
 typedef enum McgliteModeErrorCode {
-    /* MCG_Lite mode error codes */
-    kMcgliteModeErrNone = 0x00,    /*!< - No error */
-    kMcgliteModeErrExt  = 0x01,    /*!< - External clock source not available. */
+	/* MCG_Lite mode error codes */
+	kMcgliteModeErrNone = 0x00,    /*!< - No error */
+	kMcgliteModeErrExt  = 0x01,    /*!< - External clock source not available. */
 } mcglite_mode_error_t;
 
 /*******************************************************************************
@@ -112,8 +112,8 @@ mcglite_mode_error_t CLOCK_HAL_SetHircMode(MCG_Type * base);
  * @return Error code.
  */
 mcglite_mode_error_t CLOCK_HAL_SetLircMode(MCG_Type * base,
-                               mcglite_lirc_select_t lirc,
-                               mcglite_lirc_div_t div1);
+							   mcglite_lirc_select_t lirc,
+							   mcglite_lirc_div_t div1);
 
 /*!
  * @brief Sets the MCG_Lite to EXT mode.
@@ -141,4 +141,3 @@ mcglite_mode_error_t CLOCK_HAL_SetExtMode(MCG_Type * base);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

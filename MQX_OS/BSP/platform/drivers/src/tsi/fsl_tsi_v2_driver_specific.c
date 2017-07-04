@@ -45,99 +45,99 @@ extern void TSI_DRV_IRQHandler0(void);
 
 const tsi_parameter_limits_t g_tsiParamLimits[tsi_OpModeCnt] =
 {
-    /* Normal operation mode. */
-    {
-        /* consNumberOfScan */
-        {
-            /* upper */
-            kTsiConsecutiveScansNumber_32time,
-            /* lower */
-            kTsiConsecutiveScansNumber_1time
-        },
-        /* refOscChargeCurrent */
-        {
-            /* upper */
-            kTsiRefOscChargeCurrent_32uA,
-            /* lower */
-            kTsiRefOscChargeCurrent_2uA
-        },
-        /* extOscChargeCurrent */
-        {
-            /* upper */
-            kTsiExtOscChargeCurrent_32uA,
-            /* lower */
-            kTsiExtOscChargeCurrent_2uA
-        },
-        /* activeModePrescaler */
-        {
-            /* upper */
-            kTsiActiveModePrescaler_1div,
-            /* lower */
-            kTsiActiveModePrescaler_128div
-        }
-    },
-    /* Proximity operation mode. */
-    {
-        /* consNumberOfScan */
-        {
-            /* upper */
-            kTsiConsecutiveScansNumber_32time,
-            /* lower */
-            kTsiConsecutiveScansNumber_1time
-        },
-        /* refOscChargeCurrent */
-        {
-            /* upper */
-            kTsiRefOscChargeCurrent_32uA,
-            /* lower */
-            kTsiRefOscChargeCurrent_2uA
-        },
-        /* extOscChargeCurrent */
-        {
-            /* upper */
-            kTsiExtOscChargeCurrent_32uA,
-            /* lower */
-            kTsiExtOscChargeCurrent_2uA
-        },
-        /* activeModePrescaler */
-        {
-            /* upper */
-            kTsiActiveModePrescaler_1div,
-            /* lower */
-            kTsiActiveModePrescaler_128div
-        }
-    },
-    /* Low Power operation mode. */
-    {
-        /* consNumberOfScan */
-        {
-            /* upper */
-            kTsiConsecutiveScansNumber_32time,
-            /* lower */
-            kTsiConsecutiveScansNumber_1time
-        },
-        /* refOscChargeCurrent */
-        {
-            /* upper */
-            kTsiRefOscChargeCurrent_32uA,
-            /* lower */
-            kTsiRefOscChargeCurrent_2uA
-        },
-        /*extOscChargeCurrent */
-        {
-            /* upper */
-            kTsiExtOscChargeCurrent_32uA,
-            /* lower */
-            kTsiExtOscChargeCurrent_2uA
-        },
-        /* activeModePrescaler */
-        {
-            /* upper */
-            kTsiActiveModePrescaler_1div,
-            /* lower */
-            kTsiActiveModePrescaler_128div
-        }
-    }
+	/* Normal operation mode. */
+	{
+		/* consNumberOfScan */
+		{
+			/* upper */
+			kTsiConsecutiveScansNumber_32time,
+			/* lower */
+			kTsiConsecutiveScansNumber_1time
+		},
+		/* refOscChargeCurrent */
+		{
+			/* upper */
+			kTsiRefOscChargeCurrent_32uA,
+			/* lower */
+			kTsiRefOscChargeCurrent_2uA
+		},
+		/* extOscChargeCurrent */
+		{
+			/* upper */
+			kTsiExtOscChargeCurrent_32uA,
+			/* lower */
+			kTsiExtOscChargeCurrent_2uA
+		},
+		/* activeModePrescaler */
+		{
+			/* upper */
+			kTsiActiveModePrescaler_1div,
+			/* lower */
+			kTsiActiveModePrescaler_128div
+		}
+	},
+	/* Proximity operation mode. */
+	{
+		/* consNumberOfScan */
+		{
+			/* upper */
+			kTsiConsecutiveScansNumber_32time,
+			/* lower */
+			kTsiConsecutiveScansNumber_1time
+		},
+		/* refOscChargeCurrent */
+		{
+			/* upper */
+			kTsiRefOscChargeCurrent_32uA,
+			/* lower */
+			kTsiRefOscChargeCurrent_2uA
+		},
+		/* extOscChargeCurrent */
+		{
+			/* upper */
+			kTsiExtOscChargeCurrent_32uA,
+			/* lower */
+			kTsiExtOscChargeCurrent_2uA
+		},
+		/* activeModePrescaler */
+		{
+			/* upper */
+			kTsiActiveModePrescaler_1div,
+			/* lower */
+			kTsiActiveModePrescaler_128div
+		}
+	},
+	/* Low Power operation mode. */
+	{
+		/* consNumberOfScan */
+		{
+			/* upper */
+			kTsiConsecutiveScansNumber_32time,
+			/* lower */
+			kTsiConsecutiveScansNumber_1time
+		},
+		/* refOscChargeCurrent */
+		{
+			/* upper */
+			kTsiRefOscChargeCurrent_32uA,
+			/* lower */
+			kTsiRefOscChargeCurrent_2uA
+		},
+		/*extOscChargeCurrent */
+		{
+			/* upper */
+			kTsiExtOscChargeCurrent_32uA,
+			/* lower */
+			kTsiExtOscChargeCurrent_2uA
+		},
+		/* activeModePrescaler */
+		{
+			/* upper */
+			kTsiActiveModePrescaler_1div,
+			/* lower */
+			kTsiActiveModePrescaler_128div
+		}
+	}
 };
 
 /*******************************************************************************
@@ -152,53 +152,53 @@ const tsi_parameter_limits_t g_tsiParamLimits[tsi_OpModeCnt] =
 *END**************************************************************************/
 tsi_status_t TSI_DRV_EnableElectrode(uint32_t instance, const uint32_t channel, const bool enable)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
-    assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
+	assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);
 
-    TSI_Type * base = g_tsiBase[instance];
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	TSI_Type * base = g_tsiBase[instance];
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    /* Critical section. Access to global variable */
-    if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
-    {
-        return kStatus_TSI_Error;
-    }
+	/* Critical section. Access to global variable */
+	if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
+	{
+		return kStatus_TSI_Error;
+	}
 
-    if (tsiState->status != kStatus_TSI_Initialized)
-    {
-        /* End of critical section. */
-        OSA_MutexUnlock(&tsiState->lock);
+	if (tsiState->status != kStatus_TSI_Initialized)
+	{
+		/* End of critical section. */
+		OSA_MutexUnlock(&tsiState->lock);
 
-        return tsiState->status;
-    }
+		return tsiState->status;
+	}
 
-    /* Check the condition for low power mode. */
-    if((tsiState->opMode == tsi_OpModeLowPower) || (tsiState->opMode == tsi_OpModeProximity))
-    {
-      if(tsiState->opModesData[tsi_OpModeLowPower].enabledElectrodes != 0)
-      {
-          /* Only one elctrode can be enabled in low power mode and proximity. */
+	/* Check the condition for low power mode. */
+	if((tsiState->opMode == tsi_OpModeLowPower) || (tsiState->opMode == tsi_OpModeProximity))
+	{
+	  if(tsiState->opModesData[tsi_OpModeLowPower].enabledElectrodes != 0)
+	  {
+		  /* Only one elctrode can be enabled in low power mode and proximity. */
 
-          /* Disable al previous enabled. */
-          TSI_HAL_DisableChannels(base, 0xffffffff);
-      }
-    }
+		  /* Disable al previous enabled. */
+		  TSI_HAL_DisableChannels(base, 0xffffffff);
+	  }
+	}
 
-    if(enable)
-    {
-        tsiState->opModesData[tsiState->opMode].enabledElectrodes |= (1U << channel);
-        TSI_HAL_EnableChannel(base, channel);
-    }
-    else
-    {
-        tsiState->opModesData[tsiState->opMode].enabledElectrodes &= ~(1U << channel);
-        TSI_HAL_DisableChannel(base, channel);
-    }
+	if(enable)
+	{
+		tsiState->opModesData[tsiState->opMode].enabledElectrodes |= (1U << channel);
+		TSI_HAL_EnableChannel(base, channel);
+	}
+	else
+	{
+		tsiState->opModesData[tsiState->opMode].enabledElectrodes &= ~(1U << channel);
+		TSI_HAL_DisableChannel(base, channel);
+	}
 
-    /* End of critical section. */
-    OSA_MutexUnlock(&tsiState->lock);
+	/* End of critical section. */
+	OSA_MutexUnlock(&tsiState->lock);
 
-    return kStatus_TSI_Success;
+	return kStatus_TSI_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -209,21 +209,21 @@ tsi_status_t TSI_DRV_EnableElectrode(uint32_t instance, const uint32_t channel, 
 *END**************************************************************************/
 tsi_status_t TSI_DRV_GetCounter(uint32_t instance, const uint32_t channel, uint16_t * counter)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
-    assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);
-    assert(counter);
+	assert(instance < TSI_INSTANCE_COUNT);
+	assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);
+	assert(counter);
 
-    TSI_Type * base = g_tsiBase[instance];
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	TSI_Type * base = g_tsiBase[instance];
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    if(!TSI_HAL_GetEnabledChannel(base, channel))
-    {
-        return kStatus_TSI_InvalidChannel;
-    }
+	if(!TSI_HAL_GetEnabledChannel(base, channel))
+	{
+		return kStatus_TSI_InvalidChannel;
+	}
 
-    *counter = tsiState->counters[channel];
+	*counter = tsiState->counters[channel];
 
-    return kStatus_TSI_Success;
+	return kStatus_TSI_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -235,36 +235,36 @@ tsi_status_t TSI_DRV_GetCounter(uint32_t instance, const uint32_t channel, uint1
 *END**************************************************************************/
 tsi_status_t TSI_DRV_Measure(uint32_t instance)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
 
-    TSI_Type * base = g_tsiBase[instance];
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	TSI_Type * base = g_tsiBase[instance];
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    /* Critical section. Access to global variable */
-    if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
-    {
-        return kStatus_TSI_Error;
-    }
+	/* Critical section. Access to global variable */
+	if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
+	{
+		return kStatus_TSI_Error;
+	}
 
-    if (tsiState->status != kStatus_TSI_Initialized)
-    {
-        /* End of critical section. */
-        OSA_MutexUnlock(&tsiState->lock);
+	if (tsiState->status != kStatus_TSI_Initialized)
+	{
+		/* End of critical section. */
+		OSA_MutexUnlock(&tsiState->lock);
 
-        return tsiState->status;
-    }
+		return tsiState->status;
+	}
 
-    tsiState->status = kStatus_TSI_Busy;
+	tsiState->status = kStatus_TSI_Busy;
 
-    /* End of critical section. */
-    OSA_MutexUnlock(&tsiState->lock);
+	/* End of critical section. */
+	OSA_MutexUnlock(&tsiState->lock);
 
-    TSI_HAL_DisableModule(base);
-    TSI_HAL_EnableSoftwareTriggerScan(base);
-    TSI_HAL_EnableModule(base);
-    TSI_HAL_StartSoftwareTrigger(base);
+	TSI_HAL_DisableModule(base);
+	TSI_HAL_EnableSoftwareTriggerScan(base);
+	TSI_HAL_EnableModule(base);
+	TSI_HAL_StartSoftwareTrigger(base);
 
-    return kStatus_TSI_Success;
+	return kStatus_TSI_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -275,75 +275,75 @@ tsi_status_t TSI_DRV_Measure(uint32_t instance)
 *END**************************************************************************/
 tsi_status_t TSI_DRV_EnableLowPower(uint32_t instance)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
 
-    TSI_Type * base = g_tsiBase[instance];
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
-    tsi_status_t status;
-    uint32_t i;
-    int32_t channel = -1;
+	TSI_Type * base = g_tsiBase[instance];
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	tsi_status_t status;
+	uint32_t i;
+	int32_t channel = -1;
 
-    /* Critical section. Access to global variable */
-    if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
-    {
-        return kStatus_TSI_Error;
-    }
+	/* Critical section. Access to global variable */
+	if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
+	{
+		return kStatus_TSI_Error;
+	}
 
    if((tsiState->opModesData[tsiState->opMode].config.thresl == 0) || (tsiState->opModesData[tsiState->opMode].config.thresh == 0))
-    {
-        /* End of critical section. */
-        OSA_MutexUnlock(&tsiState->lock);
+	{
+		/* End of critical section. */
+		OSA_MutexUnlock(&tsiState->lock);
 
-        return kStatus_TSI_Error;
-    }
+		return kStatus_TSI_Error;
+	}
 
-    if ((status = TSI_DRV_ChangeMode(instance, tsi_OpModeLowPower)) != kStatus_TSI_Success)
-    {
-        /* End of critical section. */
-        OSA_MutexUnlock(&tsiState->lock);
+	if ((status = TSI_DRV_ChangeMode(instance, tsi_OpModeLowPower)) != kStatus_TSI_Success)
+	{
+		/* End of critical section. */
+		OSA_MutexUnlock(&tsiState->lock);
 
-        return status;
-    }
+		return status;
+	}
 
-    if(tsiState->opModesData[tsiState->opMode].enabledElectrodes == 0)
-    {
-        /* End of critical section. */
-        OSA_MutexUnlock(&tsiState->lock);
+	if(tsiState->opModesData[tsiState->opMode].enabledElectrodes == 0)
+	{
+		/* End of critical section. */
+		OSA_MutexUnlock(&tsiState->lock);
 
-        return kStatus_TSI_InvalidChannel;
-    }
+		return kStatus_TSI_InvalidChannel;
+	}
 
-    for(i = 0; i < FSL_FEATURE_TSI_CHANNEL_COUNT; i++)
-    {
-        if((uint32_t)(1 << i) & tsiState->opModesData[tsiState->opMode].enabledElectrodes)
-        {
-            channel = i;
-            break;
-        }
-    }
-    
-    if(channel == -1)
-    {
-        /* End of critical section. */
-        OSA_MutexUnlock(&tsiState->lock);
+	for(i = 0; i < FSL_FEATURE_TSI_CHANNEL_COUNT; i++)
+	{
+		if((uint32_t)(1 << i) & tsiState->opModesData[tsiState->opMode].enabledElectrodes)
+		{
+			channel = i;
+			break;
+		}
+	}
 
-        return kStatus_TSI_InvalidChannel;  
-    }
-    
-    tsiState->status = kStatus_TSI_LowPower;
-    
-    /* Configurate the peripheral for next use */
-    TSI_HAL_EnableOutOfRangeInterrupt(base);
-    TSI_HAL_EnablePeriodicalScan(base);
-    TSI_HAL_SetLowPowerChannel(base, channel);
-    TSI_HAL_EnableLowPower(base);
-    TSI_HAL_EnableInterrupt(base);
-    TSI_HAL_EnableModule(base);
+	if(channel == -1)
+	{
+		/* End of critical section. */
+		OSA_MutexUnlock(&tsiState->lock);
 
-    /* End of critical section. */
-    OSA_MutexUnlock(&tsiState->lock);
+		return kStatus_TSI_InvalidChannel;
+	}
 
-    return kStatus_TSI_Success;
+	tsiState->status = kStatus_TSI_LowPower;
+
+	/* Configurate the peripheral for next use */
+	TSI_HAL_EnableOutOfRangeInterrupt(base);
+	TSI_HAL_EnablePeriodicalScan(base);
+	TSI_HAL_SetLowPowerChannel(base, channel);
+	TSI_HAL_EnableLowPower(base);
+	TSI_HAL_EnableInterrupt(base);
+	TSI_HAL_EnableModule(base);
+
+	/* End of critical section. */
+	OSA_MutexUnlock(&tsiState->lock);
+
+	return kStatus_TSI_Success;
 }
 
 
@@ -355,48 +355,48 @@ tsi_status_t TSI_DRV_EnableLowPower(uint32_t instance)
 *END**************************************************************************/
 tsi_status_t TSI_DRV_ChangeMode(uint32_t instance, const tsi_modes_t mode)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
+	assert(instance < TSI_INSTANCE_COUNT);
 
-    TSI_Type * base = g_tsiBase[instance];
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	TSI_Type * base = g_tsiBase[instance];
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    if((mode == tsiState->opMode) || (mode == tsi_OpModeNoChange))
-    {
-        return  kStatus_TSI_Success;
-    }
+	if((mode == tsiState->opMode) || (mode == tsi_OpModeNoChange))
+	{
+		return  kStatus_TSI_Success;
+	}
 
-    if(mode >= tsi_OpModeNoise) /* Neither the noise mode is not supported in TSIv1&2 revision. */
-    {
-        return kStatus_TSI_InvalidMode;
-    }
+	if(mode >= tsi_OpModeNoise) /* Neither the noise mode is not supported in TSIv1&2 revision. */
+	{
+		return kStatus_TSI_InvalidMode;
+	}
 
-    /* Critical section. Access to global variable */
-    if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lockChangeMode, OSA_WAIT_FOREVER))
-    {
-        return kStatus_TSI_Error;
-    }
+	/* Critical section. Access to global variable */
+	if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lockChangeMode, OSA_WAIT_FOREVER))
+	{
+		return kStatus_TSI_Error;
+	}
 
-    if (tsiState->status != kStatus_TSI_Initialized)
-    {
-        /* End of critical section. */
-        OSA_MutexUnlock(&tsiState->lockChangeMode);
-        return tsiState->status;
-    }
+	if (tsiState->status != kStatus_TSI_Initialized)
+	{
+		/* End of critical section. */
+		OSA_MutexUnlock(&tsiState->lockChangeMode);
+		return tsiState->status;
+	}
 
-    tsiState->opMode = mode;
+	tsiState->opMode = mode;
 
-    TSI_HAL_SetConfiguration(base, &tsiState->opModesData[mode].config);
+	TSI_HAL_SetConfiguration(base, &tsiState->opModesData[mode].config);
 
-    /* Disable all electrodes */
-    TSI_HAL_DisableChannels(base, 0xffff);
+	/* Disable all electrodes */
+	TSI_HAL_DisableChannels(base, 0xffff);
 
-    /* Enable the set electrodes for current operation mode */
-    TSI_HAL_EnableChannels(base, tsiState->opModesData[mode].enabledElectrodes);
+	/* Enable the set electrodes for current operation mode */
+	TSI_HAL_EnableChannels(base, tsiState->opModesData[mode].enabledElectrodes);
 
-    /* End of critical section. */
-    OSA_MutexUnlock(&tsiState->lockChangeMode);
+	/* End of critical section. */
+	OSA_MutexUnlock(&tsiState->lockChangeMode);
 
-    return  kStatus_TSI_Success;
+	return  kStatus_TSI_Success;
 }
 
 
@@ -408,45 +408,45 @@ tsi_status_t TSI_DRV_ChangeMode(uint32_t instance, const tsi_modes_t mode)
 *END**************************************************************************/
 tsi_status_t TSI_DRV_LoadConfiguration(uint32_t instance, const tsi_modes_t mode, const tsi_operation_mode_t * operationMode)
 {
-    assert(instance < TSI_INSTANCE_COUNT);
-    assert(operationMode);
-    TSI_Type * base;
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
-    
-    if(mode >= tsi_OpModeCnt)
-    {
-        return kStatus_TSI_InvalidMode;
-    }
+	assert(instance < TSI_INSTANCE_COUNT);
+	assert(operationMode);
+	TSI_Type * base;
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
 
-    /* Critical section. Access to global variable */
-    if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
-    {
-        return kStatus_TSI_Error;
-    }
+	if(mode >= tsi_OpModeCnt)
+	{
+		return kStatus_TSI_InvalidMode;
+	}
 
-    tsiState->opModesData[mode] = *operationMode;
+	/* Critical section. Access to global variable */
+	if (kStatus_OSA_Success != OSA_MutexLock(&tsiState->lock, OSA_WAIT_FOREVER))
+	{
+		return kStatus_TSI_Error;
+	}
 
-    /* In case that the loaded configuration is active one, update the HW also. */
-    if(mode == tsiState->opMode)
-    {
-        base = g_tsiBase[instance];
+	tsiState->opModesData[mode] = *operationMode;
 
-        TSI_HAL_SetConfiguration(base, &tsiState->opModesData[mode].config);
+	/* In case that the loaded configuration is active one, update the HW also. */
+	if(mode == tsiState->opMode)
+	{
+		base = g_tsiBase[instance];
 
-        /* Disable all electrodes */
-        TSI_HAL_DisableChannels(base, 0xffff);
+		TSI_HAL_SetConfiguration(base, &tsiState->opModesData[mode].config);
 
-        /* Enable the set electrodes for current operation mode */
-        TSI_HAL_EnableChannels(base, tsiState->opModesData[mode].enabledElectrodes);
+		/* Disable all electrodes */
+		TSI_HAL_DisableChannels(base, 0xffff);
 
-        TSI_HAL_EnableInterrupt(base);
-        TSI_HAL_EnableEndOfScanInterrupt(base);
-    }
+		/* Enable the set electrodes for current operation mode */
+		TSI_HAL_EnableChannels(base, tsiState->opModesData[mode].enabledElectrodes);
 
-    /* End of critical section. */
-    OSA_MutexUnlock(&tsiState->lock);
+		TSI_HAL_EnableInterrupt(base);
+		TSI_HAL_EnableEndOfScanInterrupt(base);
+	}
 
-    return  kStatus_TSI_Success;
+	/* End of critical section. */
+	OSA_MutexUnlock(&tsiState->lock);
+
+	return  kStatus_TSI_Success;
 }
 
 /*!
@@ -456,45 +456,45 @@ tsi_status_t TSI_DRV_LoadConfiguration(uint32_t instance, const tsi_modes_t mode
  */
 void TSI_DRV_IRQHandler(uint32_t instance)
 {
-    TSI_Type * base = g_tsiBase[instance];
-    uint32_t channels = TSI_HAL_GetEnabledChannels(base);
-    uint32_t i;
-    tsi_state_t * tsiState = g_tsiStatePtr[instance];
-    /* Check if a measure is running and wanted. */
+	TSI_Type * base = g_tsiBase[instance];
+	uint32_t channels = TSI_HAL_GetEnabledChannels(base);
+	uint32_t i;
+	tsi_state_t * tsiState = g_tsiStatePtr[instance];
+	/* Check if a measure is running and wanted. */
 
-    if(tsiState->status != kStatus_TSI_Busy)
-    {
-        return;
-    }
+	if(tsiState->status != kStatus_TSI_Busy)
+	{
+		return;
+	}
 
-    TSI_HAL_ClearOutOfRangeFlag(base);
-    TSI_HAL_ClearEndOfScanFlag(base);
+	TSI_HAL_ClearOutOfRangeFlag(base);
+	TSI_HAL_ClearEndOfScanFlag(base);
 
-    for(i = 0; i < FSL_FEATURE_TSI_CHANNEL_COUNT; i++)
-    {
-        if((uint32_t)(1 << i) & channels)
-        {
-            tsiState->counters[i] = TSI_HAL_GetCounter(base, i);
-        }
-    }
+	for(i = 0; i < FSL_FEATURE_TSI_CHANNEL_COUNT; i++)
+	{
+		if((uint32_t)(1 << i) & channels)
+		{
+			tsiState->counters[i] = TSI_HAL_GetCounter(base, i);
+		}
+	}
 
 
-    if(tsiState->isBlockingMeasure)
-    {
-        /* Signal the synchronous completion object. */
-        OSA_SemaPost(&tsiState->irqSync);
-        tsiState->isBlockingMeasure = false;
-    }
-    else if(tsiState->pCallBackFunc)
-    {
-        tsiState->pCallBackFunc(instance, tsiState->usrData);
-    }
+	if(tsiState->isBlockingMeasure)
+	{
+		/* Signal the synchronous completion object. */
+		OSA_SemaPost(&tsiState->irqSync);
+		tsiState->isBlockingMeasure = false;
+	}
+	else if(tsiState->pCallBackFunc)
+	{
+		tsiState->pCallBackFunc(instance, tsiState->usrData);
+	}
 
-    if(tsiState->status != kStatus_TSI_LowPower)
-    {
-        /* Return status of the driver to initialized state */
-        tsiState->status = kStatus_TSI_Initialized;
-    }
+	if(tsiState->status != kStatus_TSI_LowPower)
+	{
+		/* Return status of the driver to initialized state */
+		tsiState->status = kStatus_TSI_Initialized;
+	}
 }
 
 #endif
@@ -502,4 +502,3 @@ void TSI_DRV_IRQHandler(uint32_t instance)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

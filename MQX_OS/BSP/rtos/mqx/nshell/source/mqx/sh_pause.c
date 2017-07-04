@@ -44,7 +44,7 @@
 
 int32_t  Shell_pause(int32_t argc, char *argv[] )
 {
-    SHELL_CONTEXT_PTR shell_ptr = Shell_get_context(argv);
+	SHELL_CONTEXT_PTR shell_ptr = Shell_get_context(argv);
    bool              print_usage, shorthelp = FALSE;
    int32_t               return_code = SHELL_EXIT_SUCCESS;
    uint32_t              pause=10*60*1000;
@@ -52,32 +52,32 @@ int32_t  Shell_pause(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc == 1)  {
-         fprintf(shell_ptr->STDOUT, "Pausing for 5 minutes...\n");
-        _time_delay(5*60*1000);
-          fprintf(shell_ptr->STDOUT, "Done\n");
-      } else if (argc==2) {
-         if (!Shell_parse_uint_32(argv[1], &pause  )) {
-            fprintf(shell_ptr->STDOUT, "Error, invalid rule priority\n");
-            return_code = SHELL_EXIT_ERROR;
-         }
-          fprintf(shell_ptr->STDOUT, "Pausing for %d minutes...\n", (unsigned int)pause);
-          _time_delay(pause*60*1000);
-          fprintf(shell_ptr->STDOUT, "Done\n");
-      } else {
-         fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
-         return_code = SHELL_EXIT_ERROR;
-         print_usage = TRUE;
-      }
+	  if (argc == 1)  {
+		 fprintf(shell_ptr->STDOUT, "Pausing for 5 minutes...\n");
+		_time_delay(5*60*1000);
+		  fprintf(shell_ptr->STDOUT, "Done\n");
+	  } else if (argc==2) {
+		 if (!Shell_parse_uint_32(argv[1], &pause  )) {
+			fprintf(shell_ptr->STDOUT, "Error, invalid rule priority\n");
+			return_code = SHELL_EXIT_ERROR;
+		 }
+		  fprintf(shell_ptr->STDOUT, "Pausing for %d minutes...\n", (unsigned int)pause);
+		  _time_delay(pause*60*1000);
+		  fprintf(shell_ptr->STDOUT, "Done\n");
+	  } else {
+		 fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage = TRUE;
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s [<minutes>]\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <minutes>\n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <minutes>   = minutes to pause for\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s [<minutes>]\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <minutes>\n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <minutes>   = minutes to pause for\n");
+	  }
    }
    return return_code;
 } /* Endbody */

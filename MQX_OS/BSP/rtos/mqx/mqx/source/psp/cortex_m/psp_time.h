@@ -35,10 +35,10 @@
 /* Macro to retrieve the least significant _mqx_uint from a tick struct */
 #if PSP_ENDIAN == MQX_LITTLE_ENDIAN
    #define PSP_GET_LS_TICK_FROM_TICK_STRUCT(t_ptr) \
-      (((MQX_TICK_STRUCT_PTR)(t_ptr))->TICKS[0])
+	  (((MQX_TICK_STRUCT_PTR)(t_ptr))->TICKS[0])
 #else
    #define PSP_GET_LS_TICK_FROM_TICK_STRUCT(t_ptr) \
-      (((MQX_TICK_STRUCT_PTR)(t_ptr))->TICKS[MQX_NUM_TICK_FIELDS-1])
+	  (((MQX_TICK_STRUCT_PTR)(t_ptr))->TICKS[MQX_NUM_TICK_FIELDS-1])
 #endif
 
 /* Macro to retrieve a _mqx_uint from a tick struct */
@@ -47,23 +47,23 @@
 
 /* Macro increments to incrment tick structure */
 #define PSP_INC_TICKS(t_ptr)  (++(((volatile PSP_TICK_STRUCT *)(t_ptr))->TICKS[0]))
-   
+
 #define PSP_NORMALIZE_TICKS(tick_ptr)	_psp_normalize_ticks((PSP_TICK_STRUCT_PTR)(tick_ptr))
 
 /* Macro to add two tick structures including hw ticks */
 #define PSP_ADD_TICKS(a_ptr, b_ptr, r_ptr)                                    \
    _psp_add_ticks((PSP_TICK_STRUCT_PTR)(a_ptr), (PSP_TICK_STRUCT_PTR)(b_ptr), \
-      (PSP_TICK_STRUCT_PTR)(r_ptr))
+	  (PSP_TICK_STRUCT_PTR)(r_ptr))
 
 /* Macro to subtract two tick structures NOT including hw ticks */
 #define PSP_SUB_TICKS(a_ptr, b_ptr, r_ptr)    \
    _psp_subtract_ticks((PSP_TICK_STRUCT_PTR)(a_ptr), (PSP_TICK_STRUCT_PTR)(b_ptr), \
-      (PSP_TICK_STRUCT_PTR)(r_ptr))
+	  (PSP_TICK_STRUCT_PTR)(r_ptr))
 
 /* Macro to subtract two tick structures NOT including hw ticks and clamp into int32 interval */
 #define PSP_SUB_TICKS_INT32(a_ptr, b_ptr, o_ptr)    \
    _psp_subtract_ticks_int32((PSP_TICK_STRUCT_PTR)(a_ptr), (PSP_TICK_STRUCT_PTR)(b_ptr), \
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 
 /* Macro to add a single quantity of ticks to a tick structure */
 #define PSP_ADD_TICKS_TO_TICK_STRUCT(a_ptr, v, r_ptr) \
@@ -79,59 +79,59 @@
 #define PSP_MULTIPLY_TICKS_BY_UINT_32(m_ptr, m, r_ptr) \
    ((volatile PSP_TICK_STRUCT *)(r_ptr))->TICKS[0] = ((volatile PSP_TICK_STRUCT *)(m_ptr))->TICKS[0] * (uint32_t)(m)
 
-/* 
+/*
 ** Returns  1 if a >  b
 ** Returns -1 if a <  b
 ** Returns  0 if a == b
 */
 #define PSP_CMP_TICKS(a_ptr, b_ptr) \
-     ((((volatile PSP_TICK_STRUCT *)(a_ptr))->TICKS[0] > ((volatile PSP_TICK_STRUCT *)(b_ptr))->TICKS[0]) ?  1 : \
-     (((volatile PSP_TICK_STRUCT *)(a_ptr))->TICKS[0] < ((volatile PSP_TICK_STRUCT *)(b_ptr))->TICKS[0]) ? -1 : \
-     0 )
+	 ((((volatile PSP_TICK_STRUCT *)(a_ptr))->TICKS[0] > ((volatile PSP_TICK_STRUCT *)(b_ptr))->TICKS[0]) ?  1 : \
+	 (((volatile PSP_TICK_STRUCT *)(a_ptr))->TICKS[0] < ((volatile PSP_TICK_STRUCT *)(b_ptr))->TICKS[0]) ? -1 : \
+	 0 )
 
 #define PSP_TICKS_TO_TIME(tick_ptr, time_ptr) \
    _psp_ticks_to_time((PSP_TICK_STRUCT_PTR)(tick_ptr), \
-      (TIME_STRUCT_PTR)(time_ptr))
+	  (TIME_STRUCT_PTR)(time_ptr))
 #define PSP_TIME_TO_TICKS(time_ptr, tick_ptr) \
    _psp_time_to_ticks((TIME_STRUCT_PTR)(time_ptr), \
-      (PSP_TICK_STRUCT_PTR)(tick_ptr))
+	  (PSP_TICK_STRUCT_PTR)(tick_ptr))
 
 #define PSP_TICKS_TO_DAYS(tick_ptr, o_ptr) \
    _psp_ticks_to_days((PSP_TICK_STRUCT_PTR)(tick_ptr), \
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 #define PSP_TICKS_TO_HOURS(tick_ptr, o_ptr) \
    _psp_ticks_to_hours((PSP_TICK_STRUCT_PTR)(tick_ptr),\
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 #define PSP_TICKS_TO_MINUTES(tick_ptr, o_ptr) \
    _psp_ticks_to_minutes((PSP_TICK_STRUCT_PTR)(tick_ptr),\
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 #define PSP_TICKS_TO_SECONDS(tick_ptr, o_ptr) \
    _psp_ticks_to_seconds((PSP_TICK_STRUCT_PTR)(tick_ptr),\
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 #define PSP_TICKS_TO_MILLISECONDS(tick_ptr, o_ptr) \
    _psp_ticks_to_milliseconds((PSP_TICK_STRUCT_PTR)(tick_ptr),\
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 #define PSP_TICKS_TO_MILLISECONDS_TRUNCATE(tick_ptr, o_ptr) \
    _psp_ticks_to_milliseconds_truncate((PSP_TICK_STRUCT_PTR)(tick_ptr),\
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 #define PSP_TICKS_TO_MICROSECONDS(tick_ptr, o_ptr) \
    _psp_ticks_to_microseconds((PSP_TICK_STRUCT_PTR)(tick_ptr),\
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 #define PSP_TICKS_TO_MICROSECONDS_TRUNCATE(tick_ptr, o_ptr) \
    _psp_ticks_to_microseconds_truncate((PSP_TICK_STRUCT_PTR)(tick_ptr),\
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 #define PSP_TICKS_TO_NANOSECONDS(tick_ptr, o_ptr) \
    _psp_ticks_to_nanoseconds((PSP_TICK_STRUCT_PTR)(tick_ptr),\
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 #define PSP_TICKS_TO_NANOSECONDS_TRUNCATE(tick_ptr, o_ptr) \
    _psp_ticks_to_nanoseconds_truncate((PSP_TICK_STRUCT_PTR)(tick_ptr),\
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 #define PSP_TICKS_TO_PICOSECONDS(tick_ptr, o_ptr) \
    _psp_ticks_to_picoseconds((PSP_TICK_STRUCT_PTR)(tick_ptr),\
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 #define PSP_TICKS_TO_PICOSECONDS_TRUNCATE(tick_ptr, o_ptr) \
    _psp_ticks_to_picoseconds_truncate((PSP_TICK_STRUCT_PTR)(tick_ptr),\
-      (bool *)(o_ptr))
+	  (bool *)(o_ptr))
 
 #define PSP_GET_ELAPSED_MILLISECONDS() \
    _psp_get_elapsed_milliseconds()
@@ -169,7 +169,7 @@
 ** view
 **
 */
-/* 
+/*
 ** The _Packed keyword is specific to the MetaWare compiler. It will force the
 ** the PSP_TICK_STRUCT to be aligned on 32 bit boundaries instead of 64. This
 ** will allow casting between the PSP_TICK_STRUCT and the MQX_TICK_STRUCT
@@ -196,11 +196,11 @@ struct time_struct;
 extern "C" {
 #endif
 
-void      _psp_add_ticks(PSP_TICK_STRUCT_PTR, PSP_TICK_STRUCT_PTR, 
+void      _psp_add_ticks(PSP_TICK_STRUCT_PTR, PSP_TICK_STRUCT_PTR,
    PSP_TICK_STRUCT_PTR);
-void      _psp_subtract_ticks(PSP_TICK_STRUCT_PTR, PSP_TICK_STRUCT_PTR, 
+void      _psp_subtract_ticks(PSP_TICK_STRUCT_PTR, PSP_TICK_STRUCT_PTR,
    PSP_TICK_STRUCT_PTR);
-int32_t    _psp_subtract_ticks_int32(PSP_TICK_STRUCT_PTR, PSP_TICK_STRUCT_PTR, 
+int32_t    _psp_subtract_ticks_int32(PSP_TICK_STRUCT_PTR, PSP_TICK_STRUCT_PTR,
    bool *);
 void      _psp_mul_ticks_by_32(PSP_TICK_STRUCT_PTR, uint32_t,
    PSP_TICK_STRUCT_PTR);

@@ -59,141 +59,141 @@ enum _mcg_constant
 /*! @brief MCG internal reference clock source select */
 typedef enum _mcg_fll_src
 {
-    kMcgFllSrcExternal,    /*!< External reference clock is selected */
-    kMcgFllSrcInternal     /*!< The slow internal reference clock is selected */
+	kMcgFllSrcExternal,    /*!< External reference clock is selected */
+	kMcgFllSrcInternal     /*!< The slow internal reference clock is selected */
 } mcg_fll_src_t;
 
 /*! @brief MCG OSC frequency range select */
 typedef enum _osc_range
 {
-    kOscRangeLow,         /*!< Low frequency range selected for the crystal OSC */
-    kOscRangeHigh,        /*!< High frequency range selected for the crystal OSC */
-    kOscRangeVeryHigh,    /*!< Very High frequency range selected for the crystal OSC */
-    kOscRangeVeryHigh1    /*!< Very High frequency range selected for the crystal OSC */
+	kOscRangeLow,         /*!< Low frequency range selected for the crystal OSC */
+	kOscRangeHigh,        /*!< High frequency range selected for the crystal OSC */
+	kOscRangeVeryHigh,    /*!< Very High frequency range selected for the crystal OSC */
+	kOscRangeVeryHigh1    /*!< Very High frequency range selected for the crystal OSC */
 } osc_range_t;
 
 /*! @brief MCG high gain oscillator select */
 typedef enum _osc_gain
 {
-    kOscGainLow,          /*!< Configure crystal oscillator for low-power operation */
-    kOscGainHigh          /*!< Configure crystal oscillator for high-gain operation */
+	kOscGainLow,          /*!< Configure crystal oscillator for low-power operation */
+	kOscGainHigh          /*!< Configure crystal oscillator for high-gain operation */
 } osc_gain_t;
 
 /*! @brief MCG external reference clock select */
 typedef enum _osc_src
 {
-    kOscSrcExt,    /*!< External reference clock requested */
-    kOscSrcOsc     /*!< Oscillator requested */
+	kOscSrcExt,    /*!< External reference clock requested */
+	kOscSrcOsc     /*!< Oscillator requested */
 } osc_src_t;
 
 /*! @brief MCG internal reference clock select */
 typedef enum _mcg_irc_mode
 {
-    kMcgIrcSlow,        /*!< Slow internal reference clock selected */
-    kMcgIrcFast         /*!< Fast internal reference clock selected */
+	kMcgIrcSlow,        /*!< Slow internal reference clock selected */
+	kMcgIrcFast         /*!< Fast internal reference clock selected */
 } mcg_irc_mode_t;
 
 /*! @brief MCG DCO Maximum Frequency with 32.768 kHz Reference */
 typedef enum _mcg_dmx32_select
 {
-    kMcgDmx32Default, /*!< DCO has a default range of 25% */
-    kMcgDmx32Fine     /*!< DCO is fine-tuned for maximum frequency with 32.768 kHz reference */
+	kMcgDmx32Default, /*!< DCO has a default range of 25% */
+	kMcgDmx32Fine     /*!< DCO is fine-tuned for maximum frequency with 32.768 kHz reference */
 } mcg_dmx32_select_t;
 
 /*! @brief MCG DCO range select */
 typedef enum _mcg_dco_range_select
 {
-    kMcgDcoRangeSelLow,          /*!< Low frequency range */
-    kMcgDcoRangeSelMid,          /*!< Mid frequency range*/
-    kMcgDcoRangeSelMidHigh,      /*!< Mid-High frequency range */
-    kMcgDcoRangeSelHigh          /*!< High frequency range */
+	kMcgDcoRangeSelLow,          /*!< Low frequency range */
+	kMcgDcoRangeSelMid,          /*!< Mid frequency range*/
+	kMcgDcoRangeSelMidHigh,      /*!< Mid-High frequency range */
+	kMcgDcoRangeSelHigh          /*!< High frequency range */
 } mcg_dco_range_select_t;
 
 /*! @brief MCG PLL external reference clock select */
 typedef enum _mcg_pll_ref_mode
 {
-    kMcgPllRefOsc0,    /*!< Selects OSC0 clock source as its external reference clock */
-    kMcgPllRefOsc1     /*!< Selects OSC1 clock source as its external reference clock */
+	kMcgPllRefOsc0,    /*!< Selects OSC0 clock source as its external reference clock */
+	kMcgPllRefOsc1     /*!< Selects OSC1 clock source as its external reference clock */
 } mcg_pll_ref_mode_t;
 
 /*! @brief MCGOUT clock source. */
 typedef enum _mcg_clkout_src
 {
-    kMcgClkOutSrcOut,                   /*!< Output of the FLL is selected (reset default) */
-    kMcgClkOutSrcInternal,              /*!< Internal reference clock is selected */
-    kMcgClkOutSrcExternal,              /*!< External reference clock is selected */
+	kMcgClkOutSrcOut,                   /*!< Output of the FLL is selected (reset default) */
+	kMcgClkOutSrcInternal,              /*!< Internal reference clock is selected */
+	kMcgClkOutSrcExternal,              /*!< External reference clock is selected */
 } mcg_clkout_src_t;
 
 #if (defined(FSL_FEATURE_MCG_HAS_PLL_INTERNAL_MODE) && FSL_FEATURE_MCG_HAS_PLL_INTERNAL_MODE)
 /*! @brief MCG PLL reference clock source select MCG_C7[PLL32KREFSEL]*/
 typedef enum _mcg_pll_ref_clock_source
 {
-    kMcgPllRefClkSrcRtc       = 0U,  /* External RTC OSC reference clock is selected  */
-    kMcgPllRefClkSrcSlowIrc   = 1U,  /* The slow internal reference clock is selected */
-    kMcgPllRefClkSrcFllExtRef = 2U   /* The FLL FRDIV output clock is selected        */
+	kMcgPllRefClkSrcRtc       = 0U,  /* External RTC OSC reference clock is selected  */
+	kMcgPllRefClkSrcSlowIrc   = 1U,  /* The slow internal reference clock is selected */
+	kMcgPllRefClkSrcFllExtRef = 2U   /* The FLL FRDIV output clock is selected        */
 } mcg_pll_ref_clock_source_t;
 #endif
 
 /*! @brief MCG clock mode status */
 typedef enum _mcg_clkout_stat
 {
-    kMcgClkOutStatFll,                   /*!< Output of the FLL is selected (reset default) */
-    kMcgClkOutStatInternal,              /*!< Internal reference clock is selected */
-    kMcgClkOutStatExternal,              /*!< External reference clock is selected */
-    kMcgClkOutStatPll                    /*!< Output of the PLL is selected */
+	kMcgClkOutStatFll,                   /*!< Output of the FLL is selected (reset default) */
+	kMcgClkOutStatInternal,              /*!< Internal reference clock is selected */
+	kMcgClkOutStatExternal,              /*!< External reference clock is selected */
+	kMcgClkOutStatPll                    /*!< Output of the PLL is selected */
 } mcg_clkout_stat_t;
 
 /*! @brief MCG Automatic Trim Machine Select */
 typedef enum _mcg_atm_select
 {
-    kMcgAtmSel32k,   /*!< 32 kHz Internal Reference Clock selected */
-    kMcgAtmSel4m     /*!< 4 MHz Internal Reference Clock selected */
+	kMcgAtmSel32k,   /*!< 32 kHz Internal Reference Clock selected */
+	kMcgAtmSel4m     /*!< 4 MHz Internal Reference Clock selected */
 } mcg_atm_select_t;
 
 /*! @brief MCG OSC Clock Select */
 typedef enum _mcg_oscsel_select
 {
-    kMcgOscselOsc,                  /*!< Selects System Oscillator (OSCCLK) */
-    kMcgOscselRtc,                  /*!< Selects 32 kHz RTC Oscillator */
+	kMcgOscselOsc,                  /*!< Selects System Oscillator (OSCCLK) */
+	kMcgOscselRtc,                  /*!< Selects 32 kHz RTC Oscillator */
 #if FSL_FEATURE_MCG_HAS_IRC_48M
-    kMcgOscselIrc                   /*!< Selects 48 MHz IRC Oscillator */
+	kMcgOscselIrc                   /*!< Selects 48 MHz IRC Oscillator */
 #endif
 } mcg_oscsel_select_t;
 
 /*! @brief MCG OSC monitor mode */
 typedef enum _mcg_osc_monitor_mode
 {
-    kMcgOscMonitorInt,     /*!< Generate interrupt when clock lost. */
-    kMcgOscMonitorReset    /*!< Generate reset when clock lost.     */
+	kMcgOscMonitorInt,     /*!< Generate interrupt when clock lost. */
+	kMcgOscMonitorReset    /*!< Generate reset when clock lost.     */
 } mcg_osc_monitor_mode_t;
 
 /*! @brief MCG PLLCS select */
 typedef enum _mcg_pll_clk_select
 {
-    kMcgPllClkSelPll0,            /*!< PLL0 output clock is selected */
-#if FSL_FEATURE_MCG_HAS_EXTERNAL_PLL    
-    kMcgPllClkSelExtPll,          /* External PLL clock is selected */
+	kMcgPllClkSelPll0,            /*!< PLL0 output clock is selected */
+#if FSL_FEATURE_MCG_HAS_EXTERNAL_PLL
+	kMcgPllClkSelExtPll,          /* External PLL clock is selected */
 #else
-    kMcgPllClkSelPll1,            /* PLL1 output clock is selected */
+	kMcgPllClkSelPll1,            /* PLL1 output clock is selected */
 #endif
 } mcg_pll_clk_select_t;
 
 /*! @brief MCG auto trim machine error code. */
 typedef enum _mcg_atm_error
 {
-    kMcgAtmErrorNone,               /*!< No error. */
-    kMcgAtmErrorBusClockRange,      /*!< Bus clock frequency is not in 8MHz to 16 MHz. */
-    kMcgAtmErrorDesireFreqRange,    /*!< Desired frequency is out of range. */
-    kMcgAtmErrorIrcUsed,            /*!< IRC clock is used to generate system clock.  */
-    kMcgAtmErrorTrimValueInvalid,   /*!< The auto trim compare value ACT is invalid. */
-    kMcgAtmErrorHardwareFail        /*!< ATC[ATMF] fail flag asserts. */
+	kMcgAtmErrorNone,               /*!< No error. */
+	kMcgAtmErrorBusClockRange,      /*!< Bus clock frequency is not in 8MHz to 16 MHz. */
+	kMcgAtmErrorDesireFreqRange,    /*!< Desired frequency is out of range. */
+	kMcgAtmErrorIrcUsed,            /*!< IRC clock is used to generate system clock.  */
+	kMcgAtmErrorTrimValueInvalid,   /*!< The auto trim compare value ACT is invalid. */
+	kMcgAtmErrorHardwareFail        /*!< ATC[ATMF] fail flag asserts. */
 } mcg_atm_error_t;
 
 /*! @brief MCG status. */
 typedef enum _mcg_status
 {
-    kStatus_MCG_Success = 0U, /*!< Success.          */
-    kStatus_MCG_Fail    = 1U, /*!< Execution failed. */
+	kStatus_MCG_Success = 0U, /*!< Success.          */
+	kStatus_MCG_Fail    = 1U, /*!< Execution failed. */
 } mcg_status_t;
 
 extern uint32_t g_xtal0ClkFreq;           /* EXTAL0 clock */
@@ -257,10 +257,10 @@ uint32_t CLOCK_HAL_TestOscFreq(MCG_Type * base, mcg_oscsel_select_t oscselVal);
  * @return MCG FLL external reference clock frequency.
  */
 uint32_t CLOCK_HAL_TestFllExternalRefFreq(MCG_Type * base,
-                                          uint32_t extFreq,
-                                          uint8_t  frdivVal,
-                                          osc_range_t range0,
-                                          mcg_oscsel_select_t oscsel);
+										  uint32_t extFreq,
+										  uint8_t  frdivVal,
+										  osc_range_t range0,
+										  mcg_oscsel_select_t oscsel);
 /*!
  * @brief Gets the current MCG FLL clock.
  *
@@ -285,9 +285,9 @@ uint32_t CLOCK_HAL_GetFllRefClk(MCG_Type * base);
  * @return Frequency value in Hertz of the mcgfllclk.
  */
 uint32_t CLOCK_HAL_TestFllFreq(MCG_Type * base,
-                               uint32_t fllRef,
-                               mcg_dmx32_select_t dmx32,
-                               mcg_dco_range_select_t drs);
+							   uint32_t fllRef,
+							   mcg_dmx32_select_t dmx32,
+							   mcg_dco_range_select_t drs);
 
 /*!
  * @brief Gets the current MCG FLL clock.
@@ -318,16 +318,16 @@ uint32_t CLOCK_HAL_GetFllClk(MCG_Type * base);
  * @return Closest frequency PLL could generate.
  */
 uint32_t CLOCK_HAL_CalculatePllDiv(uint32_t refFreq,
-                                   uint32_t desireFreq,
-                                   uint8_t *prdiv,
-                                   uint8_t *vdiv);
+								   uint32_t desireFreq,
+								   uint8_t *prdiv,
+								   uint8_t *vdiv);
 #endif
 
 /*!
  * @brief Gets the current MCG PLL/PLL0 clock.
  *
  * This function  returns the mcgpllclk/mcgpll0 value in frequency(Hertz) based
- * on the current MCG configurations and settings. PLL/PLL0 should be properly 
+ * on the current MCG configurations and settings. PLL/PLL0 should be properly
  * configured in order to get the valid value.
  *
  * @param base  Base address for current MCG instance.
@@ -417,7 +417,7 @@ uint32_t CLOCK_HAL_GetOutClk(MCG_Type * base);
  */
 static inline void CLOCK_HAL_SetClkOutSrc(MCG_Type * base, mcg_clkout_src_t select)
 {
-    MCG_BWR_C1_CLKS(base, select);
+	MCG_BWR_C1_CLKS(base, select);
 }
 
 /*!
@@ -432,17 +432,17 @@ static inline void CLOCK_HAL_SetClkOutSrc(MCG_Type * base, mcg_clkout_src_t sele
  * @param irefs MCG_C1[IREFS].
  */
 static inline void CLOCK_HAL_SetClksFrdivIrefs(MCG_Type * base,
-                                               mcg_clkout_src_t clks,
-                                               uint8_t frdiv,
-                                               mcg_fll_src_t irefs)
+											   mcg_clkout_src_t clks,
+											   uint8_t frdiv,
+											   mcg_fll_src_t irefs)
 {
-    MCG_WR_C1(base, (MCG_RD_C1(base)
-                 & ~(MCG_C1_CLKS_MASK  |
-                     MCG_C1_FRDIV_MASK |
-                     MCG_C1_IREFS_MASK))
-                 |  (MCG_C1_CLKS(clks)    |
-                     MCG_C1_FRDIV(frdiv)  |
-                     MCG_C1_IREFS(irefs)));
+	MCG_WR_C1(base, (MCG_RD_C1(base)
+				 & ~(MCG_C1_CLKS_MASK  |
+					 MCG_C1_FRDIV_MASK |
+					 MCG_C1_IREFS_MASK))
+				 |  (MCG_C1_CLKS(clks)    |
+					 MCG_C1_FRDIV(frdiv)  |
+					 MCG_C1_IREFS(irefs)));
 }
 
 /*!
@@ -461,7 +461,7 @@ static inline void CLOCK_HAL_SetClksFrdivIrefs(MCG_Type * base,
  */
 static inline mcg_clkout_stat_t CLOCK_HAL_GetClkOutStat(MCG_Type * base)
 {
-    return (mcg_clkout_stat_t)MCG_BRD_S_CLKST(base);
+	return (mcg_clkout_stat_t)MCG_BRD_S_CLKST(base);
 }
 
 /*!
@@ -479,7 +479,7 @@ static inline mcg_clkout_stat_t CLOCK_HAL_GetClkOutStat(MCG_Type * base)
  */
 static inline void CLOCK_HAL_SetLowPowerModeCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C2_LP(base, enable);
+	MCG_BWR_C2_LP(base, enable);
 }
 
 #if FSL_FEATURE_MCG_USE_OSCSEL
@@ -495,7 +495,7 @@ static inline void CLOCK_HAL_SetLowPowerModeCmd(MCG_Type * base, bool enable)
  */
 static inline void CLOCK_HAL_SetOscselMode(MCG_Type * base, mcg_oscsel_select_t setting)
 {
-    MCG_WR_C7_OSCSEL(base, setting);
+	MCG_WR_C7_OSCSEL(base, setting);
 }
 #endif
 
@@ -531,7 +531,7 @@ void CLOCK_HAL_PrepareOsc(MCG_Type * base, mcg_oscsel_select_t setting);
  */
 static inline mcg_fll_src_t CLOCK_HAL_GetFllSrc(MCG_Type * base)
 {
-    return (mcg_fll_src_t)MCG_BRD_S_IREFST(base);
+	return (mcg_fll_src_t)MCG_BRD_S_IREFST(base);
 }
 
 /*!
@@ -539,21 +539,21 @@ static inline mcg_fll_src_t CLOCK_HAL_GetFllSrc(MCG_Type * base)
  *
  * This function  sets the FLL Filter Preserve Enable. This bit  prevents the
  * FLL filter values from resetting allowing the FLL output frequency to remain the
- * same during the clock mode changes where the FLL/DCO output is still valid. 
- * (Note: This requires that the FLL reference frequency  remain the same as 
- *  the value prior to the new clock mode switch. Otherwise, the FLL filter and the frequency 
+ * same during the clock mode changes where the FLL/DCO output is still valid.
+ * (Note: This requires that the FLL reference frequency  remain the same as
+ *  the value prior to the new clock mode switch. Otherwise, the FLL filter and the frequency
  * values  change.)
  *
  * @param base  Base address for current MCG instance.
  * @param enable  FLL Filter Preserve Enable Setting
- *                 - true: FLL filter and FLL frequency retain their previous values 
+ *                 - true: FLL filter and FLL frequency retain their previous values
  *                       during new clock mode change
- *                 - false: FLL filter and FLL frequency will reset on changes to correct 
+ *                 - false: FLL filter and FLL frequency will reset on changes to correct
  *                       clock mode
  */
 static inline void CLOCK_HAL_SetFllFilterPreserveCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_SC_FLTPRSRV(base, enable);
+	MCG_BWR_SC_FLTPRSRV(base, enable);
 }
 
 /*!
@@ -572,9 +572,9 @@ static inline void CLOCK_HAL_SetFllFilterPreserveCmd(MCG_Type * base, bool enabl
  * @retval kStatus_MCG_Fail Could not get proper FRDIV.
  */
 mcg_status_t CLOCK_HAL_GetAvailableFrdiv(osc_range_t range0,
-                                    mcg_oscsel_select_t oscsel,
-                                    uint32_t inputFreq,
-                                    uint8_t  *frdiv);
+									mcg_oscsel_select_t oscsel,
+									uint32_t inputFreq,
+									uint8_t  *frdiv);
 
 /*@}*/
 
@@ -593,13 +593,13 @@ mcg_status_t CLOCK_HAL_GetAvailableFrdiv(osc_range_t range0,
  */
 static inline void CLOCK_HAL_SetInternalRefClkEnableCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C1_IRCLKEN(base, enable);
+	MCG_BWR_C1_IRCLKEN(base, enable);
 }
 
 /*!
  * @brief Sets the internal reference clock enable or nor in stop mode.
  *
- * This function  controls whether or not the internal reference clock remains 
+ * This function  controls whether or not the internal reference clock remains
  * enabled when the MCG enters Stop mode.
  *
  * @param base  Base address for current MCG instance.
@@ -610,7 +610,7 @@ static inline void CLOCK_HAL_SetInternalRefClkEnableCmd(MCG_Type * base, bool en
  */
 static inline void CLOCK_HAL_SetInternalRefClkEnableInStopCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C1_IREFSTEN(base, enable);
+	MCG_BWR_C1_IREFSTEN(base, enable);
 }
 
 /*!
@@ -624,9 +624,9 @@ static inline void CLOCK_HAL_SetInternalRefClkEnableInStopCmd(MCG_Type * base, b
  *                 - 1: Fast internal reference clock selected.
  */
 static inline void CLOCK_HAL_SetInternalRefClkMode(MCG_Type * base,
-                                                   mcg_irc_mode_t mode)
+												   mcg_irc_mode_t mode)
 {
-    MCG_BWR_C2_IRCS(base, mode);
+	MCG_BWR_C2_IRCS(base, mode);
 }
 
 /*!
@@ -634,8 +634,8 @@ static inline void CLOCK_HAL_SetInternalRefClkMode(MCG_Type * base,
  *
  * This function  gets the Internal Reference Clock Status. The IRCST bit indicates the
  * current source for the internal reference clock select clock (IRCSCLK). The IRCST bit
- * does not update immediately after a write to the IRCS bit due to the internal 
- * synchronization between clock domains. The IRCST bit is only  updated if the 
+ * does not update immediately after a write to the IRCS bit due to the internal
+ * synchronization between clock domains. The IRCST bit is only  updated if the
  * internal reference clock is enabled, either by the MCG being in a mode that uses the
  * IRC or by setting the C1[IRCLKEN] bit.
  *
@@ -646,14 +646,14 @@ static inline void CLOCK_HAL_SetInternalRefClkMode(MCG_Type * base,
  */
 static inline mcg_irc_mode_t CLOCK_HAL_GetInternalRefClkMode(MCG_Type * base)
 {
-    return (mcg_irc_mode_t)MCG_BRD_S_IRCST(base);
+	return (mcg_irc_mode_t)MCG_BRD_S_IRCST(base);
 }
 
 /*!
  * @brief Updates the Fast Clock Internal Reference Divider Setting.
  *
  * This function sets FCRDIV to a new value. FCRDIV cannot be
- * changed when fast internal reference is enabled. 
+ * changed when fast internal reference is enabled.
  * If it is enabled, disable it , then set FCRDIV, and finally re enable
  * it.
  *
@@ -675,9 +675,9 @@ void CLOCK_HAL_UpdateFastClkInternalRefDiv(MCG_Type * base, uint8_t fcrdiv);
  * @param enableInStop MCGIRCLK enable in stop mode or not.
  */
 void CLOCK_HAL_UpdateInternalRefClk(MCG_Type      *base,
-                                    mcg_irc_mode_t ircs,
-                                    uint8_t        fcrdiv,
-                                    bool           enableInStop);
+									mcg_irc_mode_t ircs,
+									uint8_t        fcrdiv,
+									bool           enableInStop);
 
 /*@}*/
 
@@ -691,7 +691,7 @@ void CLOCK_HAL_UpdateInternalRefClk(MCG_Type      *base,
  * This function  enables/disables the PLL0 independent of the PLLS and enables the PLL0
  * clock to use as the MCGPLL0CLK and the MCGPLL0CLK2X. (PRDIV0 needs to be programmed to
  * the correct divider to generate a PLL1 reference clock in a valid reference range
- * prior to setting the PLLCLKEN0 bit). Setting PLLCLKEN0  enables the external 
+ * prior to setting the PLLCLKEN0 bit). Setting PLLCLKEN0  enables the external
  * oscillator selected by REFSEL if not already enabled. Whenever the PLL0 is being
  * enabled with the PLLCLKEN0 bit, and the external oscillator is being used
  * as the reference clock, the OSCINIT 0 bit should be checked to make sure it is set.
@@ -703,7 +703,7 @@ void CLOCK_HAL_UpdateInternalRefClk(MCG_Type      *base,
  */
 static inline void CLOCK_HAL_SetPll0EnableCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C5_PLLCLKEN0(base, enable);
+	MCG_BWR_C5_PLLCLKEN0(base, enable);
 }
 
 /*!
@@ -711,26 +711,26 @@ static inline void CLOCK_HAL_SetPll0EnableCmd(MCG_Type * base, bool enable)
  *
  * This function  enables/disables the PLL0 Clock during a Normal Stop (In Low
  * Power Stop mode, the PLL0 clock gets disabled even if PLLSTEN0=1). In all other
- * power modes, the PLLSTEN0 bit has no affect and does not enable the PLL0 Clock 
+ * power modes, the PLLSTEN0 bit has no affect and does not enable the PLL0 Clock
  * to run if it is written to 1.
  *
  * @param base  Base address for current MCG instance.
  * @param enable   PLL0 Stop Enable Setting
  *                  - true: MCGPLL0CLK and MCGPLL0CLK2X are enabled if system is in
  *                       Normal Stop mode.
- *                  - false: MCGPLL0CLK and MCGPLL0CLK2X are disabled in any of the 
+ *                  - false: MCGPLL0CLK and MCGPLL0CLK2X are disabled in any of the
  *                       Stop modes.
  */
 static inline void CLOCK_HAL_SetPll0EnableInStopCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C5_PLLSTEN0(base, enable);
+	MCG_BWR_C5_PLLSTEN0(base, enable);
 }
 
 /*!
  * @brief Gets the Loss of the Lock Status.
  *
  * This function  gets the Loss of Lock Status. This bit is a sticky bit indicating
- * the lock status for the PLL. LOLS 0 is set if after acquiring lock, the PLL 
+ * the lock status for the PLL. LOLS 0 is set if after acquiring lock, the PLL
  * output frequency has fallen outside the lock exit frequency tolerance.
  *
  * @param base  Base address for current MCG instance.
@@ -738,7 +738,7 @@ static inline void CLOCK_HAL_SetPll0EnableInStopCmd(MCG_Type * base, bool enable
  */
 static inline bool CLOCK_HAL_IsPll0LostLock(MCG_Type * base)
 {
-    return (bool)MCG_BRD_S_LOLS0(base);
+	return (bool)MCG_BRD_S_LOLS0(base);
 }
 
 /*!
@@ -750,7 +750,7 @@ static inline bool CLOCK_HAL_IsPll0LostLock(MCG_Type * base)
  */
 static inline void CLOCK_HAL_ClearPll0LostLock(MCG_Type * base)
 {
-    MCG_BWR_S_LOLS0(base, 1U);
+	MCG_BWR_S_LOLS0(base, 1U);
 }
 
 /*!
@@ -766,7 +766,7 @@ static inline void CLOCK_HAL_ClearPll0LostLock(MCG_Type * base)
  */
 static inline void CLOCK_HAL_SetPll0LostLockIntCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C6_LOLIE0(base, enable);
+	MCG_BWR_C6_LOLIE0(base, enable);
 }
 
 #if FSL_FEATURE_MCG_HAS_LOLRE
@@ -785,22 +785,22 @@ static inline void CLOCK_HAL_SetPll0LostLockIntCmd(MCG_Type * base, bool enable)
  */
 static inline void CLOCK_HAL_SetPllLostLockResetCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C8_LOLRE(base, enable);
+	MCG_BWR_C8_LOLRE(base, enable);
 }
 #endif /* FSL_FEATURE_MCG_HAS_LOLRE */
 
 /*!
  * @brief Gets the Lock Status.
  *
- * This function  gets the Lock Status. This bit indicates whether the PLL0 has 
+ * This function  gets the Lock Status. This bit indicates whether the PLL0 has
  * acquired the lock. Lock detection is disabled when not operating in either the PBE or the
  * PEE mode unless PLLCLKEN0=1 and the MCG is not configured in the BLPI or the BLPE mode.
- * While the PLL0 clock is locking to the desired frequency, MCGPLL0CLK and 
+ * While the PLL0 clock is locking to the desired frequency, MCGPLL0CLK and
  * MCGPLL0CLK2X are  gated off until the LOCK0 bit gets asserted. If the lock
  * status bit is set, changing the value of the PRDIV0[2:0] bits in the C5 register
- * or the VDIV0[4:0] bits in the C6 register causes the lock status bit to clear 
- * and stay cleared until the PLL0 has reacquired the lock. The loss of the PLL0 reference 
- * clock  also causes the LOCK0 bit to clear until the PLL0 has an entry into the LLS, 
+ * or the VDIV0[4:0] bits in the C6 register causes the lock status bit to clear
+ * and stay cleared until the PLL0 has reacquired the lock. The loss of the PLL0 reference
+ * clock  also causes the LOCK0 bit to clear until the PLL0 has an entry into the LLS,
  * VLPS, or a regular Stop with PLLSTEN0=0 also causes the lock status bit to clear
  * and stay cleared until the stop mode is exited and the PLL0 has reacquired the lock.
  * Any time the PLL0 is enabled and the LOCK0 bit is cleared, the MCGPLL0CLK and
@@ -811,7 +811,7 @@ static inline void CLOCK_HAL_SetPllLostLockResetCmd(MCG_Type * base, bool enable
  */
 static inline bool CLOCK_HAL_IsPll0Locked(MCG_Type * base)
 {
-    return (bool)MCG_BRD_S_LOCK0(base);
+	return (bool)MCG_BRD_S_LOCK0(base);
 }
 
 /*!
@@ -826,7 +826,7 @@ static inline bool CLOCK_HAL_IsPll0Locked(MCG_Type * base)
  */
 static inline void CLOCK_HAL_SetPllSelectCmd(MCG_Type * base, bool select)
 {
-    MCG_BWR_C6_PLLS(base, select);
+	MCG_BWR_C6_PLLS(base, select);
 }
 
 /*!
@@ -841,7 +841,7 @@ static inline void CLOCK_HAL_SetPllSelectCmd(MCG_Type * base, bool select)
  */
 static inline bool CLOCK_HAL_IsPllSelected(MCG_Type * base)
 {
-    return (bool)MCG_BRD_S_PLLST(base);
+	return (bool)MCG_BRD_S_PLLST(base);
 }
 
 #if (FSL_FEATURE_MCG_HAS_PLL_PRDIV ) && ( FSL_FEATURE_MCG_HAS_PLL_VDIV )
@@ -860,9 +860,9 @@ static inline bool CLOCK_HAL_IsPllSelected(MCG_Type * base)
  * @param enableInStop  PLL enable or not in STOP mode.
  */
 void CLOCK_HAL_EnablePll0InFllMode(MCG_Type * base,
-                                   uint8_t prdiv,
-                                   uint8_t vdiv,
-                                   bool enableInStop);
+								   uint8_t prdiv,
+								   uint8_t vdiv,
+								   bool enableInStop);
 #else
 /*!
  * @brief Enables the PLL0 not in the PLL mode.
@@ -876,7 +876,7 @@ void CLOCK_HAL_EnablePll0InFllMode(MCG_Type * base,
  * @param enableInStop  PLL enable or not in STOP mode.
  */
 void CLOCK_HAL_EnablePll0InFllMode(MCG_Type * base,
-                                   bool enableInStop);
+								   bool enableInStop);
 #endif
 #endif
 
@@ -885,11 +885,11 @@ void CLOCK_HAL_EnablePll0InFllMode(MCG_Type * base,
  * @brief Sets the PLL1 Clock Enable Setting.
  *
  * This function  enables/disables the PLL1 independent of PLLS and enables the
- * PLL clocks for use as MCGPLL1CLK, MCGPLL1CLK2X, and MCGDDRCLK2X. (PRDIV1 needs 
+ * PLL clocks for use as MCGPLL1CLK, MCGPLL1CLK2X, and MCGDDRCLK2X. (PRDIV1 needs
  * to be programmed to the correct divider to generate a PLL1 reference clock in a
- * valid reference range prior to setting the PLLCLKEN1 bit.) Setting PLLCLKEN1 
- *  enables the PLL1 selected external oscillator if not already enabled. 
- * Whenever the PLL1 is  enabled with the PLLCLKEN1 bit, and the 
+ * valid reference range prior to setting the PLLCLKEN1 bit.) Setting PLLCLKEN1
+ *  enables the PLL1 selected external oscillator if not already enabled.
+ * Whenever the PLL1 is  enabled with the PLLCLKEN1 bit, and the
  * external oscillator is  used as the reference clock, the OSCINIT1 bit should
  * be checked to make sure it is set.
  *
@@ -901,33 +901,33 @@ void CLOCK_HAL_EnablePll0InFllMode(MCG_Type * base,
  */
 static inline void CLOCK_HAL_SetPll1EnableCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C11_PLLCLKEN1(base, enable);
+	MCG_BWR_C11_PLLCLKEN1(base, enable);
 }
 
 /*!
  * @brief Sets the PLL1 enable or not in STOP mode.
  *
  * This function  enables/disables the PLL1 Clock during the Normal Stop (In Low
- * Power Stop modes, the PLL1 clock gets disabled even if PLLSTEN1=1. In all other 
+ * Power Stop modes, the PLL1 clock gets disabled even if PLLSTEN1=1. In all other
  * power modes, PLLSTEN1 bit has no affect and does not enable the PLL1 Clock to
  * run if it is written to 1.
  *
  * @param base  Base address for current MCG instance.
  * @param enable   PLL1 Stop Enable Setting
- *                  - true: PLL1 and its clocks (MCGPLL1CLK, MCGPLL1CLK2X, and 
+ *                  - true: PLL1 and its clocks (MCGPLL1CLK, MCGPLL1CLK2X, and
  *                       MCGDDRCLK2X) are enabled if system is in Normal Stop mode.
- *                  - false: PLL1 clocks (MCGPLL1CLK, MCGPLL1CLK2X, and MCGDDRCLK2X) 
+ *                  - false: PLL1 clocks (MCGPLL1CLK, MCGPLL1CLK2X, and MCGDDRCLK2X)
  *                       are disabled in any of the Stop modes.
  */
 static inline void CLOCK_HAL_SetPll1EnableInStopCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C11_PLLSTEN1(base, enable);
+	MCG_BWR_C11_PLLSTEN1(base, enable);
 }
 
 /*!
  * @brief Sets the PLL1 Loss of Lock Interrupt Enable Setting.
  *
- * This function  determines whether an interrupt request is made following a 
+ * This function  determines whether an interrupt request is made following a
  * loss of lock indication for PLL1. This bit only has an affect when LOLS1 is set.
  *
  * @param base  Base address for current MCG instance.
@@ -937,15 +937,15 @@ static inline void CLOCK_HAL_SetPll1EnableInStopCmd(MCG_Type * base, bool enable
  */
 static inline void CLOCK_HAL_SetPll1LostLockIntCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C12_LOLIE1(base, enable);
+	MCG_BWR_C12_LOLIE1(base, enable);
 }
 
 /*!
  * @brief Gets the Loss of the Lock2 Status.
  *
  * This function  gets the Loss of the Lock2 Status. This bit  indicates
- * the lock status for the PLL1. LOLS1 is set if after acquiring lock, the PLL1 
- * output frequency has fallen outside the lock exit frequency tolerance, D unl. 
+ * the lock status for the PLL1. LOLS1 is set if after acquiring lock, the PLL1
+ * output frequency has fallen outside the lock exit frequency tolerance, D unl.
  * LOLIE1 determines whether an interrupt request is made when LOLS1 is set. This
  * bit is cleared by reset or by writing a logic 1 to it when set. Writing a logic 0
  * to this bit has no effect.
@@ -955,7 +955,7 @@ static inline void CLOCK_HAL_SetPll1LostLockIntCmd(MCG_Type * base, bool enable)
  */
 static inline bool CLOCK_HAL_IsPll1LostLock(MCG_Type * base)
 {
-    return (bool)MCG_BRD_S2_LOLS1(base);
+	return (bool)MCG_BRD_S2_LOLS1(base);
 }
 
 /*!
@@ -967,25 +967,25 @@ static inline bool CLOCK_HAL_IsPll1LostLock(MCG_Type * base)
  */
 static inline void CLOCK_HAL_ClearPll1LostLock(MCG_Type * base)
 {
-    MCG_BWR_S2_LOLS1(base, 1U);
+	MCG_BWR_S2_LOLS1(base, 1U);
 }
 
 /*!
  * @brief Gets the Lock1 Status.
  *
- * This function  gets the Lock1 Status. This bit indicates whether PLL1 has 
+ * This function  gets the Lock1 Status. This bit indicates whether PLL1 has
  * acquired the lock. PLL1 Lock detection is disabled when not operating in either
  * PBE or PEE mode unless the PLLCLKEN1=1 and the the MCG is not configured in the BLPI or the
  * BLPE mode. While the PLL1 clock is locking to the desired frequency, MCGPLL1CLK,
- * MCGPLL1CLK2X, and MCGDDRCLK2X  are gated off until the LOCK1 bit gets 
- * asserted. If the lock status bit is set, changing the value of the PRDIV1[2:0] 
+ * MCGPLL1CLK2X, and MCGDDRCLK2X  are gated off until the LOCK1 bit gets
+ * asserted. If the lock status bit is set, changing the value of the PRDIV1[2:0]
  * bits in the C8 register or the VDIV2[4:0] bits in the C9 register causes the
- * lock status bit to clear and stay cleared until the PLL1 has reacquired lock. 
- * Loss of PLL1 reference clock also causes the LOCK1 bit to clear until the PLL1 
+ * lock status bit to clear and stay cleared until the PLL1 has reacquired lock.
+ * Loss of PLL1 reference clock also causes the LOCK1 bit to clear until the PLL1
  * has reacquired the lock. Entry into the LLS, VLPS, or a regular Stop with the PLLSTEN1=0 also
  * causes the lock status bit to clear and stay cleared until the Stop mode is exited
  * and the PLL1 has reacquired the lock. Any time the PLL1 is enabled and the LOCK1 bit
- * is cleared, the MCGPLL1CLK, MCGPLL1CLK2X, and MCGDDRCLK2X  are gated off 
+ * is cleared, the MCGPLL1CLK, MCGPLL1CLK2X, and MCGDDRCLK2X  are gated off
  * until the LOCK1 bit is asserted again.
  *
  * @param base  Base address for current MCG instance.
@@ -993,7 +993,7 @@ static inline void CLOCK_HAL_ClearPll1LostLock(MCG_Type * base)
  */
 static inline bool CLOCK_HAL_IsPll1Locked(MCG_Type * base)
 {
-    return (bool)MCG_BRD_S2_LOCK1(base);
+	return (bool)MCG_BRD_S2_LOCK1(base);
 }
 #endif /* FSL_FEATURE_MCG_HAS_PLL1 */
 
@@ -1002,7 +1002,7 @@ static inline bool CLOCK_HAL_IsPll1Locked(MCG_Type * base)
  * @brief Sets the PLL Clock Select Setting.
  *
  * This function  controls  whether the PLL0 or PLL1/ExtPLL output is selected as the
- * MCG source when CLKS are programmed in PLL Engaged External (PEE) mode 
+ * MCG source when CLKS are programmed in PLL Engaged External (PEE) mode
  * (CLKS[1:0]=00 and IREFS=0 and PLLS=1).
  *
  * @param base  Base address for current MCG instance.
@@ -1012,7 +1012,7 @@ static inline bool CLOCK_HAL_IsPll1Locked(MCG_Type * base)
  */
 static inline void CLOCK_HAL_SetPllClkSelMode(MCG_Type * base, mcg_pll_clk_select_t setting)
 {
-    MCG_BWR_C11_PLLCS(base, setting);
+	MCG_BWR_C11_PLLCS(base, setting);
 }
 
 /*!
@@ -1029,7 +1029,7 @@ static inline void CLOCK_HAL_SetPllClkSelMode(MCG_Type * base, mcg_pll_clk_selec
  */
 static inline mcg_pll_clk_select_t CLOCK_HAL_GetPllClkSelMode(MCG_Type * base)
 {
-    return (mcg_pll_clk_select_t)MCG_BRD_S2_PLLCST(base);
+	return (mcg_pll_clk_select_t)MCG_BRD_S2_PLLCST(base);
 }
 #endif /* FSL_FEATURE_MCG_HAS_PLL1 || FSL_FEATURE_MCG_HAS_EXTERNAL_PLL */
 
@@ -1049,9 +1049,9 @@ static inline mcg_pll_clk_select_t CLOCK_HAL_GetPllClkSelMode(MCG_Type * base)
  * @param enbleInStop  PLL enable or not in STOP mode.
  */
 void CLOCK_HAL_EnablePll1InFllMode(MCG_Type * base,
-                                   uint8_t prdiv,
-                                   uint8_t vdiv,
-                                   bool enableInStop);
+								   uint8_t prdiv,
+								   uint8_t vdiv,
+								   bool enableInStop);
 
 #if FSL_FEATURE_MCG_USE_PLLREFSEL
 /*!
@@ -1065,9 +1065,9 @@ void CLOCK_HAL_EnablePll1InFllMode(MCG_Type * base,
  *                  - 1: Selects OSC1 clock source as its external reference clock
  */
 static inline void CLOCK_HAL_SetPll0RefMode(MCG_Type * base,
-                                            mcg_pll_ref_mode_t setting)
+											mcg_pll_ref_mode_t setting)
 {
-    BW_MCG_C5_PLLREFSEL0(base, setting);
+	BW_MCG_C5_PLLREFSEL0(base, setting);
 }
 
 /*!
@@ -1081,9 +1081,9 @@ static inline void CLOCK_HAL_SetPll0RefMode(MCG_Type * base,
  *                  - 1: Selects OSC1 clock source as its external reference clock.
  */
 static inline void CLOCK_HAL_SetPll1RefMode(MCG_Type * base,
-                                            mcg_pll_ref_mode_t setting)
+											mcg_pll_ref_mode_t setting)
 {
-    BW_MCG_C11_PLLREFSEL1(base, setting);
+	BW_MCG_C11_PLLREFSEL1(base, setting);
 }
 #endif /* FSL_FEATURE_MCG_USE_PLLREFSEL */
 
@@ -1106,9 +1106,9 @@ static inline void CLOCK_HAL_SetPll1RefMode(MCG_Type * base,
  * @param erefs     External reference select.
  */
 void CLOCK_HAL_SetOsc0Mode(MCG_Type * base,
-                           osc_range_t range,
-                           osc_gain_t hgo,
-                           osc_src_t erefs);
+						   osc_range_t range,
+						   osc_gain_t hgo,
+						   osc_src_t erefs);
 
 #if FSL_FEATURE_MCG_HAS_PLL_INTERNAL_MODE
 /*!
@@ -1123,9 +1123,9 @@ void CLOCK_HAL_SetOsc0Mode(MCG_Type * base,
  *                  - 2: Selects FLL external ref clock source as its ref clock
  */
 static inline void CLOCK_HAL_SetPllRefSel0Mode(MCG_Type * base,
-                                                mcg_pll_ref_clock_source_t setting)
+												mcg_pll_ref_clock_source_t setting)
 {
-    MCG_WR_C7_PLL32KREFSEL(base, setting);
+	MCG_WR_C7_PLL32KREFSEL(base, setting);
 }
 #endif
 
@@ -1142,7 +1142,7 @@ static inline void CLOCK_HAL_SetPllRefSel0Mode(MCG_Type * base,
  */
 static inline bool CLOCK_HAL_IsOsc0Stable(MCG_Type * base)
 {
-    return (bool)MCG_BRD_S_OSCINIT0(base);
+	return (bool)MCG_BRD_S_OSCINIT0(base);
 }
 
 /*!
@@ -1174,7 +1174,7 @@ void CLOCK_HAL_EnableOsc0Monitor(MCG_Type * base, mcg_osc_monitor_mode_t mode);
  */
 static inline void CLOCK_HAL_DisableOsc0Monitor(MCG_Type * base)
 {
-    MCG_BWR_C6_CME0(base, 0U);
+	MCG_BWR_C6_CME0(base, 0U);
 }
 
 /*!
@@ -1188,7 +1188,7 @@ static inline void CLOCK_HAL_DisableOsc0Monitor(MCG_Type * base)
  */
 static inline bool CLOCK_HAL_IsOsc0MonitorEnabled(MCG_Type * base)
 {
-    return (bool)MCG_BRD_C6_CME0(base);
+	return (bool)MCG_BRD_C6_CME0(base);
 }
 
 /*!
@@ -1202,7 +1202,7 @@ static inline bool CLOCK_HAL_IsOsc0MonitorEnabled(MCG_Type * base)
  */
 static inline bool CLOCK_HAL_IsOsc0LostLock(MCG_Type * base)
 {
-    return (bool)MCG_BRD_SC_LOCS0(base);
+	return (bool)MCG_BRD_SC_LOCS0(base);
 }
 
 /*!
@@ -1214,7 +1214,7 @@ static inline bool CLOCK_HAL_IsOsc0LostLock(MCG_Type * base)
  */
 static inline void CLOCK_HAL_ClearOsc0LostLock(MCG_Type * base)
 {
-    MCG_BWR_SC_LOCS0(base, 1U);
+	MCG_BWR_SC_LOCS0(base, 1U);
 }
 
 #if FSL_FEATURE_MCG_HAS_RTC_32K
@@ -1245,7 +1245,7 @@ void CLOCK_HAL_EnableRtcOscMonitor(MCG_Type * base, mcg_osc_monitor_mode_t mode)
  */
 static inline void CLOCK_HAL_DisableRTCOscMonitor(MCG_Type * base)
 {
-    MCG_BWR_C8_CME1(base, 0U);
+	MCG_BWR_C8_CME1(base, 0U);
 }
 
 /*!
@@ -1259,7 +1259,7 @@ static inline void CLOCK_HAL_DisableRTCOscMonitor(MCG_Type * base)
  */
 static inline bool CLOCK_HAL_IsRtcOscMonitorEnabled(MCG_Type * base)
 {
-    return (bool)MCG_BRD_C8_CME1(base);
+	return (bool)MCG_BRD_C8_CME1(base);
 }
 
 /*!
@@ -1273,7 +1273,7 @@ static inline bool CLOCK_HAL_IsRtcOscMonitorEnabled(MCG_Type * base)
  */
 static inline bool CLOCK_HAL_IsRtcOscLostLock(MCG_Type * base)
 {
-    return (bool)MCG_BRD_C8_LOCS1(base);
+	return (bool)MCG_BRD_C8_LOCS1(base);
 }
 
 /*!
@@ -1285,7 +1285,7 @@ static inline bool CLOCK_HAL_IsRtcOscLostLock(MCG_Type * base)
  */
 static inline void CLOCK_HAL_ClearRtcOscLostLock(MCG_Type * base)
 {
-    MCG_BWR_C8_LOCS1(base, 1U);
+	MCG_BWR_C8_LOCS1(base, 1U);
 }
 #endif /* FSL_FEATURE_MCG_HAS_RTC_32K */
 
@@ -1302,9 +1302,9 @@ static inline void CLOCK_HAL_ClearRtcOscLostLock(MCG_Type * base)
  * @param erefs     External reference select.
  */
 void CLOCK_HAL_SetOsc1Mode(MCG_Type * base,
-                           osc_range_t range,
-                           osc_gain_t hgo,
-                           osc_src_t erefs);
+						   osc_range_t range,
+						   osc_gain_t hgo,
+						   osc_src_t erefs);
 
 /*!
  * @brief Gets the OSC1 Initialization Status.
@@ -1318,7 +1318,7 @@ void CLOCK_HAL_SetOsc1Mode(MCG_Type * base,
  */
 static inline bool CLOCK_HAL_IsOsc1Stable(MCG_Type * base)
 {
-    return (bool)MCG_BRD_S2_OSCINIT1(base);
+	return (bool)MCG_BRD_S2_OSCINIT1(base);
 }
 
 /*!
@@ -1348,7 +1348,7 @@ void CLOCK_HAL_EnableOsc1Monitor(MCG_Type * base, mcg_osc_monitor_mode_t mode);
  */
 static inline void CLOCK_HAL_DisableOsc1Monitor(MCG_Type * base)
 {
-    MCG_BWR_C12_CME2(base, 0U);
+	MCG_BWR_C12_CME2(base, 0U);
 }
 
 /*!
@@ -1362,7 +1362,7 @@ static inline void CLOCK_HAL_DisableOsc1Monitor(MCG_Type * base)
  */
 static inline bool CLOCK_HAL_IsOsc1MonitorEnabled(MCG_Type * base)
 {
-    return (bool)MCG_BRD_C12_CME2(base);
+	return (bool)MCG_BRD_C12_CME2(base);
 }
 
 
@@ -1377,7 +1377,7 @@ static inline bool CLOCK_HAL_IsOsc1MonitorEnabled(MCG_Type * base)
  */
 static inline bool CLOCK_HAL_IsOsc1LostLock(MCG_Type * base)
 {
-    return (bool)MCG_BRD_S2_LOCS2(base);
+	return (bool)MCG_BRD_S2_LOCS2(base);
 }
 
 /*!
@@ -1389,7 +1389,7 @@ static inline bool CLOCK_HAL_IsOsc1LostLock(MCG_Type * base)
  */
 static inline void CLOCK_HAL_ClearOsc1LostLock(MCG_Type * base)
 {
-    MCG_BWR_S2_LOCS2(base, 1U);
+	MCG_BWR_S2_LOCS2(base, 1U);
 }
 #endif
 
@@ -1418,7 +1418,7 @@ void CLOCK_HAL_EnableExtPllMonitor(MCG_Type * base, mcg_osc_monitor_mode_t mode)
  */
 static inline void CLOCK_HAL_DisableExtPllMonitor(MCG_Type * base)
 {
-    MCG_BWR_C9_PLL_CME(base, 0U);
+	MCG_BWR_C9_PLL_CME(base, 0U);
 }
 
 /*!
@@ -1432,7 +1432,7 @@ static inline void CLOCK_HAL_DisableExtPllMonitor(MCG_Type * base)
  */
 static inline bool CLOCK_HAL_IsExtPllMonitorEnabled(MCG_Type * base)
 {
-    return (bool)MCG_BRD_C9_PLL_CME(base);
+	return (bool)MCG_BRD_C9_PLL_CME(base);
 }
 
 
@@ -1447,7 +1447,7 @@ static inline bool CLOCK_HAL_IsExtPllMonitorEnabled(MCG_Type * base)
  */
 static inline bool CLOCK_HAL_IsExtPllLostLock(MCG_Type * base)
 {
-    return (bool)MCG_BRD_C9_EXT_PLL_LOCS(base);
+	return (bool)MCG_BRD_C9_EXT_PLL_LOCS(base);
 }
 
 /*!
@@ -1459,7 +1459,7 @@ static inline bool CLOCK_HAL_IsExtPllLostLock(MCG_Type * base)
  */
 static inline void CLOCK_HAL_ClearExtPllLostLock(MCG_Type * base)
 {
-    MCG_BWR_C9_EXT_PLL_LOCS(base, 1U);
+	MCG_BWR_C9_EXT_PLL_LOCS(base, 1U);
 }
 #endif
 /*@}*/
@@ -1482,15 +1482,15 @@ static inline void CLOCK_HAL_ClearExtPllLostLock(MCG_Type * base)
  * @return  Return kMcgAtmErrorNone if success, otherwise return error code.
  */
 mcg_atm_error_t CLOCK_HAL_TrimInternalRefClk(MCG_Type* base,
-                                             uint32_t  extFreq,
-                                             uint32_t  desireFreq,
-                                             uint32_t* actualFreq,
-                                             mcg_atm_select_t atms);
+											 uint32_t  extFreq,
+											 uint32_t  desireFreq,
+											 uint32_t* actualFreq,
+											 mcg_atm_select_t atms);
 
 /*!
  * @brief Gets the Automatic Trim machine Fail Flag.
  *
- * This function  gets the Automatic Trim machine Fail Flag. This bit asserts when the 
+ * This function  gets the Automatic Trim machine Fail Flag. This bit asserts when the
  * Automatic Trim Machine is
  * enabled (ATME=1) and a write to the C1, C3, C4, and SC registers is detected or the MCG
  * enters into a Stop mode. Writing to ATMF clears the flag.
@@ -1500,7 +1500,7 @@ mcg_atm_error_t CLOCK_HAL_TrimInternalRefClk(MCG_Type* base,
  */
 static inline bool CLOCK_HAL_IsAutoTrimMachineFailed(MCG_Type * base)
 {
-    return (bool)MCG_BRD_SC_ATMF(base);
+	return (bool)MCG_BRD_SC_ATMF(base);
 }
 
 /*!
@@ -1512,7 +1512,7 @@ static inline bool CLOCK_HAL_IsAutoTrimMachineFailed(MCG_Type * base)
  */
 static inline void CLOCK_HAL_ClearAutoTrimMachineFailed(MCG_Type * base)
 {
-    MCG_BWR_SC_ATMF(base, 1U);
+	MCG_BWR_SC_ATMF(base, 1U);
 }
 
 /*@}*/
@@ -1528,4 +1528,3 @@ static inline void CLOCK_HAL_ClearAutoTrimMachineFailed(MCG_Type * base)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

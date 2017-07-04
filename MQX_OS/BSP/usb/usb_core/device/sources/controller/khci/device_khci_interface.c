@@ -20,8 +20,8 @@
  **************************************************************************
  *
  * $FileName: khci_interface.c$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
@@ -46,30 +46,30 @@ extern const usb_dev_interface_functions_struct_t _usb_khci_dev_function_table =
 const usb_dev_interface_functions_struct_t _usb_khci_dev_function_table =
 #endif
 {
-    usb_dci_khci_preinit,
-    usb_dci_khci_init,
-    usb_dci_khci_postinit,
-    usb_dci_khci_send,
-    usb_dci_khci_recv,
+	usb_dci_khci_preinit,
+	usb_dci_khci_init,
+	usb_dci_khci_postinit,
+	usb_dci_khci_send,
+	usb_dci_khci_recv,
 #if USBCFG_DEV_ADVANCED_CANCEL_ENABLE
-    usb_dci_khci_cancel,
+	usb_dci_khci_cancel,
 #endif
-    usb_dci_khci_init_endpoint,
-    usb_dci_khci_deinit_endpoint,
-    usb_dci_khci_unstall_endpoint,
-    usb_dci_khci_get_endpoint_status,
-    usb_dci_khci_set_endpoint_status,
-    NULL,
-    usb_dci_khci_set_addr,
-    usb_dci_khci_shutdown,
-    NULL,
+	usb_dci_khci_init_endpoint,
+	usb_dci_khci_deinit_endpoint,
+	usb_dci_khci_unstall_endpoint,
+	usb_dci_khci_get_endpoint_status,
+	usb_dci_khci_set_endpoint_status,
+	NULL,
+	usb_dci_khci_set_addr,
+	usb_dci_khci_shutdown,
+	NULL,
 #if USBCFG_DEV_ADVANCED_SUSPEND_RESUME
-    usb_dci_khci_assert_resume,
+	usb_dci_khci_assert_resume,
 #endif
-    usb_dci_khci_stall_endpoint,
-    usb_dci_khci_set_status,
-    usb_dci_khci_get_status,
-    usb_dci_khci_get_xd,
-    usb_dci_khci_reset,
+	usb_dci_khci_stall_endpoint,
+	usb_dci_khci_set_status,
+	usb_dci_khci_get_status,
+	usb_dci_khci_get_xd,
+	usb_dci_khci_reset,
 };
 #endif

@@ -59,22 +59,22 @@
  * These constants define the tsi low power scan intervals in a TSI instance.
  */
 typedef enum _tsi_low_power_interval {
-    kTsiLowPowerInterval_1ms = 0,   /*!< 1ms scan interval */
-    kTsiLowPowerInterval_5ms = 1,   /*!< 5ms scan interval */
-    kTsiLowPowerInterval_10ms = 2,  /*!< 10ms scan interval */
-    kTsiLowPowerInterval_15ms = 3,  /*!< 15ms scan interval */
-    kTsiLowPowerInterval_20ms = 4,  /*!< 20ms scan interval */
-    kTsiLowPowerInterval_30ms = 5,  /*!< 30ms scan interval */
-    kTsiLowPowerInterval_40ms = 6,  /*!< 40ms scan interval */
-    kTsiLowPowerInterval_50ms = 7,  /*!< 50ms scan interval */
-    kTsiLowPowerInterval_75ms = 8,  /*!< 75ms scan interval */
-    kTsiLowPowerInterval_100ms = 9, /*!< 100ms scan interval */
-    kTsiLowPowerInterval_125ms = 10, /*!< 125ms scan interval */
-    kTsiLowPowerInterval_150ms = 11, /*!< 150ms scan interval */
-    kTsiLowPowerInterval_200ms = 12, /*!< 200ms scan interval */
-    kTsiLowPowerInterval_300ms = 13, /*!< 300ms scan interval */
-    kTsiLowPowerInterval_400ms = 14, /*!< 400ms scan interval */
-    kTsiLowPowerInterval_500ms = 15, /*!< 500ms scan interval */
+	kTsiLowPowerInterval_1ms = 0,   /*!< 1ms scan interval */
+	kTsiLowPowerInterval_5ms = 1,   /*!< 5ms scan interval */
+	kTsiLowPowerInterval_10ms = 2,  /*!< 10ms scan interval */
+	kTsiLowPowerInterval_15ms = 3,  /*!< 15ms scan interval */
+	kTsiLowPowerInterval_20ms = 4,  /*!< 20ms scan interval */
+	kTsiLowPowerInterval_30ms = 5,  /*!< 30ms scan interval */
+	kTsiLowPowerInterval_40ms = 6,  /*!< 40ms scan interval */
+	kTsiLowPowerInterval_50ms = 7,  /*!< 50ms scan interval */
+	kTsiLowPowerInterval_75ms = 8,  /*!< 75ms scan interval */
+	kTsiLowPowerInterval_100ms = 9, /*!< 100ms scan interval */
+	kTsiLowPowerInterval_125ms = 10, /*!< 125ms scan interval */
+	kTsiLowPowerInterval_150ms = 11, /*!< 150ms scan interval */
+	kTsiLowPowerInterval_200ms = 12, /*!< 200ms scan interval */
+	kTsiLowPowerInterval_300ms = 13, /*!< 300ms scan interval */
+	kTsiLowPowerInterval_400ms = 14, /*!< 400ms scan interval */
+	kTsiLowPowerInterval_500ms = 15, /*!< 500ms scan interval */
 } tsi_low_power_interval_t;
 
 /*!
@@ -83,22 +83,22 @@ typedef enum _tsi_low_power_interval {
  * These constants define the tsi Reference oscillator charge current select in a TSI instance.
  */
 typedef enum _tsi_reference_osc_charge_current {
-    kTsiRefOscChargeCurrent_2uA = 0,        /*!< Reference oscillator charge current is 2uA */
-    kTsiRefOscChargeCurrent_4uA = 1,        /*!< Reference oscillator charge current is 4uA */
-    kTsiRefOscChargeCurrent_6uA = 2,        /*!< Reference oscillator charge current is 6uA */
-    kTsiRefOscChargeCurrent_8uA = 3,        /*!< Reference oscillator charge current is 8uA */
-    kTsiRefOscChargeCurrent_10uA = 4,       /*!< Reference oscillator charge current is 10uA */
-    kTsiRefOscChargeCurrent_12uA = 5,       /*!< Reference oscillator charge current is 12uA */
-    kTsiRefOscChargeCurrent_14uA = 6,       /*!< Reference oscillator charge current is 14uA */
-    kTsiRefOscChargeCurrent_16uA = 7,       /*!< Reference oscillator charge current is 16uA */
-    kTsiRefOscChargeCurrent_18uA = 8,       /*!< Reference oscillator charge current is 18uA */
-    kTsiRefOscChargeCurrent_20uA = 9,       /*!< Reference oscillator charge current is 20uA */
-    kTsiRefOscChargeCurrent_22uA = 10,      /*!< Reference oscillator charge current is 22uA */
-    kTsiRefOscChargeCurrent_24uA = 11,      /*!< Reference oscillator charge current is 24uA */
-    kTsiRefOscChargeCurrent_26uA = 12,      /*!< Reference oscillator charge current is 26uA */
-    kTsiRefOscChargeCurrent_28uA = 13,      /*!< Reference oscillator charge current is 28uA */
-    kTsiRefOscChargeCurrent_30uA = 14,      /*!< Reference oscillator charge current is 30uA */
-    kTsiRefOscChargeCurrent_32uA = 15,      /*!< Reference oscillator charge current is 32uA */
+	kTsiRefOscChargeCurrent_2uA = 0,        /*!< Reference oscillator charge current is 2uA */
+	kTsiRefOscChargeCurrent_4uA = 1,        /*!< Reference oscillator charge current is 4uA */
+	kTsiRefOscChargeCurrent_6uA = 2,        /*!< Reference oscillator charge current is 6uA */
+	kTsiRefOscChargeCurrent_8uA = 3,        /*!< Reference oscillator charge current is 8uA */
+	kTsiRefOscChargeCurrent_10uA = 4,       /*!< Reference oscillator charge current is 10uA */
+	kTsiRefOscChargeCurrent_12uA = 5,       /*!< Reference oscillator charge current is 12uA */
+	kTsiRefOscChargeCurrent_14uA = 6,       /*!< Reference oscillator charge current is 14uA */
+	kTsiRefOscChargeCurrent_16uA = 7,       /*!< Reference oscillator charge current is 16uA */
+	kTsiRefOscChargeCurrent_18uA = 8,       /*!< Reference oscillator charge current is 18uA */
+	kTsiRefOscChargeCurrent_20uA = 9,       /*!< Reference oscillator charge current is 20uA */
+	kTsiRefOscChargeCurrent_22uA = 10,      /*!< Reference oscillator charge current is 22uA */
+	kTsiRefOscChargeCurrent_24uA = 11,      /*!< Reference oscillator charge current is 24uA */
+	kTsiRefOscChargeCurrent_26uA = 12,      /*!< Reference oscillator charge current is 26uA */
+	kTsiRefOscChargeCurrent_28uA = 13,      /*!< Reference oscillator charge current is 28uA */
+	kTsiRefOscChargeCurrent_30uA = 14,      /*!< Reference oscillator charge current is 30uA */
+	kTsiRefOscChargeCurrent_32uA = 15,      /*!< Reference oscillator charge current is 32uA */
 } tsi_reference_osc_charge_current_t;
 
 /*!
@@ -118,22 +118,22 @@ typedef struct _tsi_reference_osc_charge_current_limits
  * These constants define the tsi External oscillator charge current select in a TSI instance.
  */
 typedef enum _tsi_external_osc_charge_current {
-    kTsiExtOscChargeCurrent_2uA = 0,        /*!< External oscillator charge current is 2uA */
-    kTsiExtOscChargeCurrent_4uA = 1,        /*!< External oscillator charge current is 4uA */
-    kTsiExtOscChargeCurrent_6uA = 2,        /*!< External oscillator charge current is 6uA */
-    kTsiExtOscChargeCurrent_8uA = 3,        /*!< External oscillator charge current is 8uA */
-    kTsiExtOscChargeCurrent_10uA = 4,       /*!< External oscillator charge current is 10uA */
-    kTsiExtOscChargeCurrent_12uA = 5,       /*!< External oscillator charge current is 12uA */
-    kTsiExtOscChargeCurrent_14uA = 6,       /*!< External oscillator charge current is 14uA */
-    kTsiExtOscChargeCurrent_16uA = 7,       /*!< External oscillator charge current is 16uA */
-    kTsiExtOscChargeCurrent_18uA = 8,       /*!< External oscillator charge current is 18uA */
-    kTsiExtOscChargeCurrent_20uA = 9,       /*!< External oscillator charge current is 20uA */
-    kTsiExtOscChargeCurrent_22uA = 10,      /*!< External oscillator charge current is 22uA */
-    kTsiExtOscChargeCurrent_24uA = 11,      /*!< External oscillator charge current is 24uA */
-    kTsiExtOscChargeCurrent_26uA = 12,      /*!< External oscillator charge current is 26uA */
-    kTsiExtOscChargeCurrent_28uA = 13,      /*!< External oscillator charge current is 28uA */
-    kTsiExtOscChargeCurrent_30uA = 14,      /*!< External oscillator charge current is 30uA */
-    kTsiExtOscChargeCurrent_32uA = 15,      /*!< External oscillator charge current is 32uA */
+	kTsiExtOscChargeCurrent_2uA = 0,        /*!< External oscillator charge current is 2uA */
+	kTsiExtOscChargeCurrent_4uA = 1,        /*!< External oscillator charge current is 4uA */
+	kTsiExtOscChargeCurrent_6uA = 2,        /*!< External oscillator charge current is 6uA */
+	kTsiExtOscChargeCurrent_8uA = 3,        /*!< External oscillator charge current is 8uA */
+	kTsiExtOscChargeCurrent_10uA = 4,       /*!< External oscillator charge current is 10uA */
+	kTsiExtOscChargeCurrent_12uA = 5,       /*!< External oscillator charge current is 12uA */
+	kTsiExtOscChargeCurrent_14uA = 6,       /*!< External oscillator charge current is 14uA */
+	kTsiExtOscChargeCurrent_16uA = 7,       /*!< External oscillator charge current is 16uA */
+	kTsiExtOscChargeCurrent_18uA = 8,       /*!< External oscillator charge current is 18uA */
+	kTsiExtOscChargeCurrent_20uA = 9,       /*!< External oscillator charge current is 20uA */
+	kTsiExtOscChargeCurrent_22uA = 10,      /*!< External oscillator charge current is 22uA */
+	kTsiExtOscChargeCurrent_24uA = 11,      /*!< External oscillator charge current is 24uA */
+	kTsiExtOscChargeCurrent_26uA = 12,      /*!< External oscillator charge current is 26uA */
+	kTsiExtOscChargeCurrent_28uA = 13,      /*!< External oscillator charge current is 28uA */
+	kTsiExtOscChargeCurrent_30uA = 14,      /*!< External oscillator charge current is 30uA */
+	kTsiExtOscChargeCurrent_32uA = 15,      /*!< External oscillator charge current is 32uA */
 } tsi_external_osc_charge_current_t;
 
 /*!
@@ -153,14 +153,14 @@ typedef struct _tsi_external_osc_charge_current_limits
  * These constants define the tsi Internal capacitance trim value in a TSI instance.
  */
 typedef enum _tsi_internal_cap_trim {
-    kTsiIntCapTrim_0_5pF = 0,        /*!< 0.5 pF internal reference capacitance */
-    kTsiIntCapTrim_0_6pF = 1,        /*!< 0.6 pF internal reference capacitance */
-    kTsiIntCapTrim_0_7pF = 2,        /*!< 0.7 pF internal reference capacitance */
-    kTsiIntCapTrim_0_8pF = 3,        /*!< 0.8 pF internal reference capacitance */
-    kTsiIntCapTrim_0_9pF = 4,        /*!< 0.9 pF internal reference capacitance */
-    kTsiIntCapTrim_1_0pF = 5,        /*!< 1.0 pF internal reference capacitance */
-    kTsiIntCapTrim_1_1pF = 6,        /*!< 1.1 pF internal reference capacitance */
-    kTsiIntCapTrim_1_2pF = 7,        /*!< 1.2 pF internal reference capacitance */
+	kTsiIntCapTrim_0_5pF = 0,        /*!< 0.5 pF internal reference capacitance */
+	kTsiIntCapTrim_0_6pF = 1,        /*!< 0.6 pF internal reference capacitance */
+	kTsiIntCapTrim_0_7pF = 2,        /*!< 0.7 pF internal reference capacitance */
+	kTsiIntCapTrim_0_8pF = 3,        /*!< 0.8 pF internal reference capacitance */
+	kTsiIntCapTrim_0_9pF = 4,        /*!< 0.9 pF internal reference capacitance */
+	kTsiIntCapTrim_1_0pF = 5,        /*!< 1.0 pF internal reference capacitance */
+	kTsiIntCapTrim_1_1pF = 6,        /*!< 1.1 pF internal reference capacitance */
+	kTsiIntCapTrim_1_2pF = 7,        /*!< 1.2 pF internal reference capacitance */
 } tsi_internal_cap_trim_t;
 
 /*!
@@ -169,14 +169,14 @@ typedef enum _tsi_internal_cap_trim {
  * These constants define the tsi Delta voltage applied to analog oscillators in a TSI instance.
  */
 typedef enum _tsi_osc_delta_voltage {
-    kTsiOscDeltaVoltage_100mV = 0,        /*!< 100 mV delta voltage is applied */
-    kTsiOscDeltaVoltage_150mV = 1,        /*!< 150 mV delta voltage is applied */
-    kTsiOscDeltaVoltage_200mV = 2,        /*!< 200 mV delta voltage is applied */
-    kTsiOscDeltaVoltage_250mV = 3,        /*!< 250 mV delta voltage is applied */
-    kTsiOscDeltaVoltage_300mV = 4,        /*!< 300 mV delta voltage is applied */
-    kTsiOscDeltaVoltage_400mV = 5,        /*!< 400 mV delta voltage is applied */
-    kTsiOscDeltaVoltage_500mV = 6,        /*!< 500 mV delta voltage is applied */
-    kTsiOscDeltaVoltage_600mV = 7,        /*!< 600 mV delta voltage is applied */
+	kTsiOscDeltaVoltage_100mV = 0,        /*!< 100 mV delta voltage is applied */
+	kTsiOscDeltaVoltage_150mV = 1,        /*!< 150 mV delta voltage is applied */
+	kTsiOscDeltaVoltage_200mV = 2,        /*!< 200 mV delta voltage is applied */
+	kTsiOscDeltaVoltage_250mV = 3,        /*!< 250 mV delta voltage is applied */
+	kTsiOscDeltaVoltage_300mV = 4,        /*!< 300 mV delta voltage is applied */
+	kTsiOscDeltaVoltage_400mV = 5,        /*!< 400 mV delta voltage is applied */
+	kTsiOscDeltaVoltage_500mV = 6,        /*!< 500 mV delta voltage is applied */
+	kTsiOscDeltaVoltage_600mV = 7,        /*!< 600 mV delta voltage is applied */
 } tsi_osc_delta_voltage_t;
 
 /*!
@@ -185,8 +185,8 @@ typedef enum _tsi_osc_delta_voltage {
  * These constants define the active mode clock divider in a TSI instance.
  */
 typedef enum _tsi_active_mode_clock_divider {
-    kTsiActiveClkDiv_1div = 0,          /*!< Active mode clock divider is set to 1 */
-    kTsiActiveClkDiv_2048div = 1,       /*!< Active mode clock divider is set to 2048 */
+	kTsiActiveClkDiv_1div = 0,          /*!< Active mode clock divider is set to 1 */
+	kTsiActiveClkDiv_2048div = 1,       /*!< Active mode clock divider is set to 2048 */
 } tsi_active_mode_clock_divider_t;
 
 /*!
@@ -195,9 +195,9 @@ typedef enum _tsi_active_mode_clock_divider {
  * These constants define the active mode clock source in a TSI instance.
  */
 typedef enum _tsi_active_mode_clock_source {
-    kTsiActiveClkSource_BusClock = 0,      /*!< Active mode clock source is set to Bus Clock */
-    kTsiActiveClkSource_MCGIRCLK = 1,      /*!< Active mode clock source is set to MCG Internal reference clock */
-    kTsiActiveClkSource_OSCERCLK = 2,      /*!< Active mode clock source is set to System oscillator output */
+	kTsiActiveClkSource_BusClock = 0,      /*!< Active mode clock source is set to Bus Clock */
+	kTsiActiveClkSource_MCGIRCLK = 1,      /*!< Active mode clock source is set to MCG Internal reference clock */
+	kTsiActiveClkSource_OSCERCLK = 2,      /*!< Active mode clock source is set to System oscillator output */
 } tsi_active_mode_clock_source_t;
 
 /*!
@@ -206,14 +206,14 @@ typedef enum _tsi_active_mode_clock_source {
  * These constants define the tsi active mode prescaler in a TSI instance.
  */
 typedef enum _tsi_active_mode_prescaler {
-    kTsiActiveModePrescaler_1div = 0,          /*!< Input clock source divided by 1 */
-    kTsiActiveModePrescaler_2div = 1,          /*!< Input clock source divided by 2 */
-    kTsiActiveModePrescaler_4div = 2,          /*!< Input clock source divided by 4 */
-    kTsiActiveModePrescaler_8div = 3,          /*!< Input clock source divided by 8 */
-    kTsiActiveModePrescaler_16div = 4,         /*!< Input clock source divided by 16 */
-    kTsiActiveModePrescaler_32div = 5,         /*!< Input clock source divided by 32 */
-    kTsiActiveModePrescaler_64div = 6,         /*!< Input clock source divided by 64 */
-    kTsiActiveModePrescaler_128div = 7,        /*!< Input clock source divided by 128 */
+	kTsiActiveModePrescaler_1div = 0,          /*!< Input clock source divided by 1 */
+	kTsiActiveModePrescaler_2div = 1,          /*!< Input clock source divided by 2 */
+	kTsiActiveModePrescaler_4div = 2,          /*!< Input clock source divided by 4 */
+	kTsiActiveModePrescaler_8div = 3,          /*!< Input clock source divided by 8 */
+	kTsiActiveModePrescaler_16div = 4,         /*!< Input clock source divided by 16 */
+	kTsiActiveModePrescaler_32div = 5,         /*!< Input clock source divided by 32 */
+	kTsiActiveModePrescaler_64div = 6,         /*!< Input clock source divided by 64 */
+	kTsiActiveModePrescaler_128div = 7,        /*!< Input clock source divided by 128 */
 } tsi_active_mode_prescaler_t;
 
 /*!
@@ -247,19 +247,19 @@ typedef struct _tsi_parameter_limits {
  * the TSI module charge currents, number of scans, thresholds, trimming etc.
  */
 typedef struct TsiConfig {
-    tsi_electrode_osc_prescaler_t ps;       /*!< Prescaler */
-    tsi_external_osc_charge_current_t extchrg;  /*!< Electrode charge current */
-    tsi_reference_osc_charge_current_t refchrg;  /*!< Reference charge current */
-    tsi_n_consecutive_scans_t nscn;     /*!< Number of scans. */
-    uint8_t lpclks;   /*!< Low power clock. */
-    tsi_active_mode_clock_source_t amclks;   /*!< Active mode clock source. */
-    tsi_active_mode_clock_divider_t amclkdiv; /*!< Active mode prescaler. */
-    tsi_active_mode_prescaler_t ampsc;    /*!< Active mode prescaler. */
-    tsi_low_power_interval_t lpscnitv; /*!< Low power scan interval. */
-    tsi_osc_delta_voltage_t delvol;   /*!< Delta voltage. */
-    tsi_internal_cap_trim_t captrm;   /*!< Internal capacitence trimmer. */
-    uint16_t thresh;   /*!< High threshold. */
-    uint16_t thresl;   /*!< Low threshold. */
+	tsi_electrode_osc_prescaler_t ps;       /*!< Prescaler */
+	tsi_external_osc_charge_current_t extchrg;  /*!< Electrode charge current */
+	tsi_reference_osc_charge_current_t refchrg;  /*!< Reference charge current */
+	tsi_n_consecutive_scans_t nscn;     /*!< Number of scans. */
+	uint8_t lpclks;   /*!< Low power clock. */
+	tsi_active_mode_clock_source_t amclks;   /*!< Active mode clock source. */
+	tsi_active_mode_clock_divider_t amclkdiv; /*!< Active mode prescaler. */
+	tsi_active_mode_prescaler_t ampsc;    /*!< Active mode prescaler. */
+	tsi_low_power_interval_t lpscnitv; /*!< Low power scan interval. */
+	tsi_osc_delta_voltage_t delvol;   /*!< Delta voltage. */
+	tsi_internal_cap_trim_t captrm;   /*!< Internal capacitence trimmer. */
+	uint16_t thresh;   /*!< High threshold. */
+	uint16_t thresl;   /*!< Low threshold. */
 }tsi_config_t;
 
 #elif (FSL_FEATURE_TSI_VERSION == 2)
@@ -270,16 +270,16 @@ typedef struct TsiConfig {
  * the TSI module charge currents, number of scans, thresholds, trimming etc.
  */
 typedef struct TsiConfig {
-    tsi_electrode_osc_prescaler_t ps;       /*!< Prescaler */
-    tsi_external_osc_charge_current_t extchrg;  /*!< Electrode charge current */
-    tsi_reference_osc_charge_current_t refchrg;  /*!< Reference charge current */
-    tsi_n_consecutive_scans_t nscn;     /*!< Number of scans. */
-    uint8_t lpclks;   /*!< Low power clock. */
-    tsi_active_mode_clock_source_t amclks;   /*!< Active mode clock source. */
-    tsi_active_mode_prescaler_t ampsc;    /*!< Active mode prescaler. */
-    tsi_low_power_interval_t lpscnitv; /*!< Low power scan interval. */
-    uint16_t thresh;   /*!< High threshold. */
-    uint16_t thresl;   /*!< Low threshold. */
+	tsi_electrode_osc_prescaler_t ps;       /*!< Prescaler */
+	tsi_external_osc_charge_current_t extchrg;  /*!< Electrode charge current */
+	tsi_reference_osc_charge_current_t refchrg;  /*!< Reference charge current */
+	tsi_n_consecutive_scans_t nscn;     /*!< Number of scans. */
+	uint8_t lpclks;   /*!< Low power clock. */
+	tsi_active_mode_clock_source_t amclks;   /*!< Active mode clock source. */
+	tsi_active_mode_prescaler_t ampsc;    /*!< Active mode prescaler. */
+	tsi_low_power_interval_t lpscnitv; /*!< Low power scan interval. */
+	uint16_t thresh;   /*!< High threshold. */
+	uint16_t thresl;   /*!< Low threshold. */
 }tsi_config_t;
 
 #else
@@ -298,7 +298,7 @@ extern "C" {
 */
 static inline void TSI_HAL_EnableModule(TSI_Type * base)
 {
-    TSI_BWR_GENCS_TSIEN(base, 1);
+	TSI_BWR_GENCS_TSIEN(base, 1);
 }
 
 /*!
@@ -309,7 +309,7 @@ static inline void TSI_HAL_EnableModule(TSI_Type * base)
 */
 static inline void TSI_HAL_DisableModule(TSI_Type * base)
 {
-    TSI_BWR_GENCS_TSIEN(base, 0);
+	TSI_BWR_GENCS_TSIEN(base, 0);
 }
 
 /*!
@@ -320,7 +320,7 @@ static inline void TSI_HAL_DisableModule(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableStop(TSI_Type * base)
 {
-    TSI_BWR_GENCS_STPE(base, 1);
+	TSI_BWR_GENCS_STPE(base, 1);
 }
 
 /*!
@@ -331,7 +331,7 @@ static inline void TSI_HAL_EnableStop(TSI_Type * base)
 */
 static inline void TSI_HAL_DisableStop(TSI_Type * base)
 {
-    TSI_BWR_GENCS_STPE(base, 0);
+	TSI_BWR_GENCS_STPE(base, 0);
 }
 
 /*!
@@ -342,7 +342,7 @@ static inline void TSI_HAL_DisableStop(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableOutOfRangeInterrupt(TSI_Type * base)
 {
-    TSI_BWR_GENCS_ESOR(base, 0);
+	TSI_BWR_GENCS_ESOR(base, 0);
 }
 
 /*!
@@ -353,9 +353,9 @@ static inline void TSI_HAL_EnableOutOfRangeInterrupt(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableEndOfScanInterrupt(TSI_Type * base)
 {
-    TSI_BWR_GENCS_ESOR(base, 1);
+	TSI_BWR_GENCS_ESOR(base, 1);
 }
-  
+
 /*!
 * @brief Enable periodical (hardware) trigger scan.
 *
@@ -364,9 +364,9 @@ static inline void TSI_HAL_EnableEndOfScanInterrupt(TSI_Type * base)
 */
 static inline void TSI_HAL_EnablePeriodicalScan(TSI_Type * base)
 {
-    TSI_BWR_GENCS_STM(base, 1);
+	TSI_BWR_GENCS_STM(base, 1);
 }
-  
+
 /*!
 * @brief Enable software trigger scan.
 *
@@ -375,7 +375,7 @@ static inline void TSI_HAL_EnablePeriodicalScan(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableSoftwareTriggerScan(TSI_Type * base)
 {
-    TSI_BWR_GENCS_STM(base, 0);
+	TSI_BWR_GENCS_STM(base, 0);
 }
 
 /*!
@@ -386,7 +386,7 @@ static inline void TSI_HAL_EnableSoftwareTriggerScan(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableErrorInterrupt(TSI_Type * base)
 {
-    TSI_BWR_GENCS_ERIE(base, 1);
+	TSI_BWR_GENCS_ERIE(base, 1);
 }
 
 /*!
@@ -397,7 +397,7 @@ static inline void TSI_HAL_EnableErrorInterrupt(TSI_Type * base)
 */
 static inline void TSI_HAL_DisableErrorInterrupt(TSI_Type * base)
 {
-    TSI_BWR_GENCS_ERIE(base, 0);
+	TSI_BWR_GENCS_ERIE(base, 0);
 }
 
 /*!
@@ -408,7 +408,7 @@ static inline void TSI_HAL_DisableErrorInterrupt(TSI_Type * base)
 */
 static inline void TSI_HAL_ClearOutOfRangeFlag(TSI_Type * base)
 {
-    TSI_BWR_GENCS_OUTRGF(base, 1);
+	TSI_BWR_GENCS_OUTRGF(base, 1);
 }
 
 /*!
@@ -419,7 +419,7 @@ static inline void TSI_HAL_ClearOutOfRangeFlag(TSI_Type * base)
 */
 static inline void TSI_HAL_ClearEndOfScanFlag(TSI_Type * base)
 {
-    TSI_BWR_GENCS_EOSF(base, 1);
+	TSI_BWR_GENCS_EOSF(base, 1);
 }
 
 /*!
@@ -430,7 +430,7 @@ static inline void TSI_HAL_ClearEndOfScanFlag(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableInterrupt(TSI_Type * base)
 {
-    TSI_BWR_GENCS_TSIIE(base, 1);
+	TSI_BWR_GENCS_TSIIE(base, 1);
 }
 
 /*!
@@ -441,7 +441,7 @@ static inline void TSI_HAL_EnableInterrupt(TSI_Type * base)
 */
 static inline void TSI_HAL_DisableInterrupt(TSI_Type * base)
 {
-    TSI_BWR_GENCS_TSIIE(base, 0);
+	TSI_BWR_GENCS_TSIIE(base, 0);
 }
 
 /*!
@@ -452,7 +452,7 @@ static inline void TSI_HAL_DisableInterrupt(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_IsInterruptEnabled(TSI_Type * base)
 {
-    return TSI_BRD_GENCS_TSIIE(base);
+	return TSI_BRD_GENCS_TSIIE(base);
 }
 
 /*!
@@ -463,7 +463,7 @@ static inline uint32_t TSI_HAL_IsInterruptEnabled(TSI_Type * base)
 */
 static inline void TSI_HAL_StartSoftwareTrigger(TSI_Type * base)
 {
-    TSI_SET_GENCS(base, TSI_GENCS_SWTS(1));
+	TSI_SET_GENCS(base, TSI_GENCS_SWTS(1));
 }
 
 /*!
@@ -474,7 +474,7 @@ static inline void TSI_HAL_StartSoftwareTrigger(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_IsOverrun(TSI_Type * base)
 {
-    return (uint32_t)TSI_BRD_GENCS_OVRF(base);
+	return (uint32_t)TSI_BRD_GENCS_OVRF(base);
 }
 
 /*!
@@ -485,7 +485,7 @@ static inline uint32_t TSI_HAL_IsOverrun(TSI_Type * base)
 */
 static inline void TSI_HAL_ClearOverrunFlag(TSI_Type * base)
 {
-    TSI_BWR_GENCS_OVRF(base, 1);
+	TSI_BWR_GENCS_OVRF(base, 1);
 }
 
 /*!
@@ -496,7 +496,7 @@ static inline void TSI_HAL_ClearOverrunFlag(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_GetExternalElectrodeErrorFlag(TSI_Type * base)
 {
-    return (uint32_t)TSI_BRD_GENCS_EXTERF(base);
+	return (uint32_t)TSI_BRD_GENCS_EXTERF(base);
 }
 
 /*!
@@ -507,7 +507,7 @@ static inline uint32_t TSI_HAL_GetExternalElectrodeErrorFlag(TSI_Type * base)
 */
 static inline void TSI_HAL_ClearExternalElectrodeErrorFlag(TSI_Type * base)
 {
-    TSI_BWR_GENCS_EXTERF(base, 1);
+	TSI_BWR_GENCS_EXTERF(base, 1);
 }
 
 /*!
@@ -519,7 +519,7 @@ static inline void TSI_HAL_ClearExternalElectrodeErrorFlag(TSI_Type * base)
 */
 static inline void TSI_HAL_SetPrescaler(TSI_Type * base, tsi_electrode_osc_prescaler_t prescaler)
 {
-    TSI_BWR_GENCS_PS(base, prescaler);
+	TSI_BWR_GENCS_PS(base, prescaler);
 }
 
 /*!
@@ -531,7 +531,7 @@ static inline void TSI_HAL_SetPrescaler(TSI_Type * base, tsi_electrode_osc_presc
 */
 static inline void TSI_HAL_SetNumberOfScans(TSI_Type * base, tsi_n_consecutive_scans_t number)
 {
-    TSI_BWR_GENCS_NSCN(base, number);
+	TSI_BWR_GENCS_NSCN(base, number);
 }
 
 /*!
@@ -543,7 +543,7 @@ static inline void TSI_HAL_SetNumberOfScans(TSI_Type * base, tsi_n_consecutive_s
 */
 static inline void TSI_HAL_SetLowPowerScanInterval(TSI_Type * base, tsi_low_power_interval_t interval)
 {
-    TSI_BWR_GENCS_LPSCNITV(base, interval);
+	TSI_BWR_GENCS_LPSCNITV(base, interval);
 }
 
 /*!
@@ -554,7 +554,7 @@ static inline void TSI_HAL_SetLowPowerScanInterval(TSI_Type * base, tsi_low_powe
 */
 static inline tsi_low_power_interval_t TSI_HAL_GetLowPowerScanInterval(TSI_Type * base)
 {
-    return (tsi_low_power_interval_t)TSI_BRD_GENCS_LPSCNITV(base);
+	return (tsi_low_power_interval_t)TSI_BRD_GENCS_LPSCNITV(base);
 }
 
 /*!
@@ -565,7 +565,7 @@ static inline tsi_low_power_interval_t TSI_HAL_GetLowPowerScanInterval(TSI_Type 
 */
 static inline void TSI_HAL_SetLowPowerClock(TSI_Type * base, uint32_t clock)
 {
-    TSI_BWR_GENCS_LPCLKS(base, clock);
+	TSI_BWR_GENCS_LPCLKS(base, clock);
 }
 
 /*!
@@ -576,7 +576,7 @@ static inline void TSI_HAL_SetLowPowerClock(TSI_Type * base, uint32_t clock)
 */
 static inline uint32_t TSI_HAL_GetLowPowerClock(TSI_Type * base)
 {
-    return TSI_BRD_GENCS_LPCLKS(base);
+	return TSI_BRD_GENCS_LPCLKS(base);
 }
 
 /*!
@@ -588,7 +588,7 @@ static inline uint32_t TSI_HAL_GetLowPowerClock(TSI_Type * base)
 */
 static inline void TSI_HAL_SetReferenceChargeCurrent(TSI_Type * base, tsi_reference_osc_charge_current_t current)
 {
-    TSI_BWR_SCANC_REFCHRG(base, current);
+	TSI_BWR_SCANC_REFCHRG(base, current);
 }
 
 /*!
@@ -599,7 +599,7 @@ static inline void TSI_HAL_SetReferenceChargeCurrent(TSI_Type * base, tsi_refere
 */
 static inline tsi_reference_osc_charge_current_t TSI_HAL_GetReferenceChargeCurrent(TSI_Type * base)
 {
-    return (tsi_reference_osc_charge_current_t)TSI_BRD_SCANC_REFCHRG(base);
+	return (tsi_reference_osc_charge_current_t)TSI_BRD_SCANC_REFCHRG(base);
 }
 
 #if (FSL_FEATURE_TSI_VERSION == 1)
@@ -612,7 +612,7 @@ static inline tsi_reference_osc_charge_current_t TSI_HAL_GetReferenceChargeCurre
 */
 static inline void TSI_HAL_SetInternalCapacitanceTrim(TSI_Type * base, tsi_internal_cap_trim_t trim)
 {
-    TSI_BWR_SCANC_CAPTRM(base, trim);
+	TSI_BWR_SCANC_CAPTRM(base, trim);
 }
 
 /*!
@@ -623,7 +623,7 @@ static inline void TSI_HAL_SetInternalCapacitanceTrim(TSI_Type * base, tsi_inter
 */
 static inline tsi_internal_cap_trim_t TSI_HAL_GetInternalCapacitanceTrim(TSI_Type * base)
 {
-    return (tsi_internal_cap_trim_t)TSI_BRD_SCANC_CAPTRM(base);
+	return (tsi_internal_cap_trim_t)TSI_BRD_SCANC_CAPTRM(base);
 }
 
 #endif
@@ -637,7 +637,7 @@ static inline tsi_internal_cap_trim_t TSI_HAL_GetInternalCapacitanceTrim(TSI_Typ
 */
 static inline void TSI_HAL_SetElectrodeChargeCurrent(TSI_Type * base, tsi_external_osc_charge_current_t current)
 {
-    TSI_BWR_SCANC_EXTCHRG(base, current);
+	TSI_BWR_SCANC_EXTCHRG(base, current);
 }
 
 /*!
@@ -648,7 +648,7 @@ static inline void TSI_HAL_SetElectrodeChargeCurrent(TSI_Type * base, tsi_extern
 */
 static inline tsi_external_osc_charge_current_t TSI_HAL_GetElectrodeChargeCurrent(TSI_Type * base)
 {
-    return (tsi_external_osc_charge_current_t)TSI_BRD_SCANC_EXTCHRG(base);
+	return (tsi_external_osc_charge_current_t)TSI_BRD_SCANC_EXTCHRG(base);
 }
 
 #if (FSL_FEATURE_TSI_VERSION == 1)
@@ -661,7 +661,7 @@ static inline tsi_external_osc_charge_current_t TSI_HAL_GetElectrodeChargeCurren
 */
 static inline void TSI_HAL_SetDeltaVoltage(TSI_Type * base, uint32_t voltage)
 {
-    TSI_BWR_SCANC_DELVOL(base, voltage);
+	TSI_BWR_SCANC_DELVOL(base, voltage);
 }
 
 /*!
@@ -672,7 +672,7 @@ static inline void TSI_HAL_SetDeltaVoltage(TSI_Type * base, uint32_t voltage)
 */
 static inline uint32_t TSI_HAL_GetDeltaVoltage(TSI_Type * base)
 {
-    return TSI_BRD_SCANC_DELVOL(base);
+	return TSI_BRD_SCANC_DELVOL(base);
 }
 
 #endif
@@ -686,7 +686,7 @@ static inline uint32_t TSI_HAL_GetDeltaVoltage(TSI_Type * base)
 */
 static inline void TSI_HAL_SetScanModulo(TSI_Type * base, uint32_t modulo)
 {
-    TSI_BWR_SCANC_SMOD(base, modulo);
+	TSI_BWR_SCANC_SMOD(base, modulo);
 }
 
 /*!
@@ -697,7 +697,7 @@ static inline void TSI_HAL_SetScanModulo(TSI_Type * base, uint32_t modulo)
 */
 static inline uint32_t TSI_HAL_GetScanModulo(TSI_Type * base)
 {
-    return TSI_BRD_SCANC_SMOD(base);
+	return TSI_BRD_SCANC_SMOD(base);
 }
 
 #if (FSL_FEATURE_TSI_VERSION == 1)
@@ -710,7 +710,7 @@ static inline uint32_t TSI_HAL_GetScanModulo(TSI_Type * base)
 */
 static inline void TSI_HAL_SetActiveModeClockDivider(TSI_Type * base, uint32_t divider)
 {
-    TSI_BWR_SCANC_AMCLKDIV(base, divider);
+	TSI_BWR_SCANC_AMCLKDIV(base, divider);
 }
 
 /*!
@@ -721,7 +721,7 @@ static inline void TSI_HAL_SetActiveModeClockDivider(TSI_Type * base, uint32_t d
 */
 static inline uint32_t TSI_HAL_GetActiveModeClockDivider(TSI_Type * base)
 {
-    return TSI_BRD_SCANC_AMCLKDIV(base);
+	return TSI_BRD_SCANC_AMCLKDIV(base);
 }
 #endif
 
@@ -734,7 +734,7 @@ static inline uint32_t TSI_HAL_GetActiveModeClockDivider(TSI_Type * base)
 */
 static inline void TSI_HAL_SetActiveModeSource(TSI_Type * base, uint32_t source)
 {
-    TSI_BWR_SCANC_AMCLKS(base, source);
+	TSI_BWR_SCANC_AMCLKS(base, source);
 }
 
 /*!
@@ -745,7 +745,7 @@ static inline void TSI_HAL_SetActiveModeSource(TSI_Type * base, uint32_t source)
 */
 static inline uint32_t TSI_HAL_GetActiveModeSource(TSI_Type * base)
 {
-    return TSI_BRD_SCANC_AMCLKS(base);
+	return TSI_BRD_SCANC_AMCLKS(base);
 }
 
 /*!
@@ -757,7 +757,7 @@ static inline uint32_t TSI_HAL_GetActiveModeSource(TSI_Type * base)
 */
 static inline void TSI_HAL_SetActiveModePrescaler(TSI_Type * base, tsi_active_mode_prescaler_t prescaler)
 {
-    TSI_BWR_SCANC_AMPSC(base, prescaler);
+	TSI_BWR_SCANC_AMPSC(base, prescaler);
 }
 
 /*!
@@ -768,7 +768,7 @@ static inline void TSI_HAL_SetActiveModePrescaler(TSI_Type * base, tsi_active_mo
 */
 static inline uint32_t TSI_HAL_GetActiveModePrescaler(TSI_Type * base)
 {
-    return TSI_BRD_SCANC_AMPSC(base);
+	return TSI_BRD_SCANC_AMPSC(base);
 }
 
 /*!
@@ -780,8 +780,8 @@ static inline uint32_t TSI_HAL_GetActiveModePrescaler(TSI_Type * base)
 */
 static inline void TSI_HAL_SetLowPowerChannel(TSI_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);  
-    TSI_BWR_PEN_LPSP(base, channel);
+	assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);
+	TSI_BWR_PEN_LPSP(base, channel);
 }
 
 /*!
@@ -792,7 +792,7 @@ static inline void TSI_HAL_SetLowPowerChannel(TSI_Type * base, uint32_t channel)
  */
 static inline uint32_t TSI_HAL_GetLowPowerChannel(TSI_Type * base)
 {
-    return TSI_BRD_PEN_LPSP(base);
+	return TSI_BRD_PEN_LPSP(base);
 }
 
 /*!
@@ -804,8 +804,8 @@ static inline uint32_t TSI_HAL_GetLowPowerChannel(TSI_Type * base)
 */
 static inline void TSI_HAL_EnableChannel(TSI_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);  
-    TSI_SET_PEN(base, (1U << channel));
+	assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);
+	TSI_SET_PEN(base, (1U << channel));
 }
 
 /*!
@@ -818,7 +818,7 @@ static inline void TSI_HAL_EnableChannel(TSI_Type * base, uint32_t channel)
 */
 static inline void TSI_HAL_EnableChannels(TSI_Type * base, uint32_t channelsMask)
 {
-    TSI_SET_PEN(base, (uint16_t)channelsMask);
+	TSI_SET_PEN(base, (uint16_t)channelsMask);
 }
 
 /*!
@@ -830,7 +830,7 @@ static inline void TSI_HAL_EnableChannels(TSI_Type * base, uint32_t channelsMask
 */
 static inline void TSI_HAL_DisableChannel(TSI_Type * base, uint32_t channel)
 {
-    TSI_CLR_PEN(base, (1U << channel));
+	TSI_CLR_PEN(base, (1U << channel));
 }
 
 /*!
@@ -843,7 +843,7 @@ static inline void TSI_HAL_DisableChannel(TSI_Type * base, uint32_t channel)
 */
 static inline void TSI_HAL_DisableChannels(TSI_Type * base, uint32_t channelsMask)
 {
-    TSI_CLR_PEN(base, channelsMask);
+	TSI_CLR_PEN(base, channelsMask);
 }
 
 /*!
@@ -856,8 +856,8 @@ static inline void TSI_HAL_DisableChannels(TSI_Type * base, uint32_t channelsMas
  */
 static inline uint32_t TSI_HAL_GetEnabledChannel(TSI_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);  
-    return (TSI_RD_PEN(base) & (1U << channel));
+	assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);
+	return (TSI_RD_PEN(base) & (1U << channel));
 }
 
 /*!
@@ -868,7 +868,7 @@ static inline uint32_t TSI_HAL_GetEnabledChannel(TSI_Type * base, uint32_t chann
 */
 static inline uint32_t TSI_HAL_GetEnabledChannels(TSI_Type * base)
 {
-    return (uint32_t)TSI_RD_PEN(base);
+	return (uint32_t)TSI_RD_PEN(base);
 }
 
 /*!
@@ -892,9 +892,9 @@ static inline uint16_t TSI_HAL_GetWakeUpChannelCounter(TSI_Type * base)
 */
 static inline uint32_t TSI_HAL_GetCounter(TSI_Type * base, uint32_t channel)
 {
-    assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);  
-    uint16_t *counter =  (uint16_t *)((uint32_t)(&(TSI_CNTR1_REG(base))) + (channel * 2U));
-    return (uint32_t)(*counter);
+	assert(channel < FSL_FEATURE_TSI_CHANNEL_COUNT);
+	uint16_t *counter =  (uint16_t *)((uint32_t)(&(TSI_CNTR1_REG(base))) + (channel * 2U));
+	return (uint32_t)(*counter);
 }
 
 /*!
@@ -906,7 +906,7 @@ static inline uint32_t TSI_HAL_GetCounter(TSI_Type * base, uint32_t channel)
 */
 static inline void TSI_HAL_SetLowThreshold(TSI_Type * base, uint32_t low_threshold)
 {
-    TSI_BWR_THRESHOLD_LTHH(base, low_threshold);
+	TSI_BWR_THRESHOLD_LTHH(base, low_threshold);
 }
 
 /*!
@@ -918,7 +918,7 @@ static inline void TSI_HAL_SetLowThreshold(TSI_Type * base, uint32_t low_thresho
 */
 static inline void TSI_HAL_SetHighThreshold(TSI_Type * base, uint32_t high_threshold)
 {
-    TSI_BWR_THRESHOLD_HTHH(base, high_threshold);
+	TSI_BWR_THRESHOLD_HTHH(base, high_threshold);
 }
 
 #ifdef __cplusplus
@@ -933,4 +933,3 @@ static inline void TSI_HAL_SetHighThreshold(TSI_Type * base, uint32_t high_thres
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

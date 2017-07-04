@@ -58,24 +58,24 @@ extern LPUART_Type * const g_lpuartBase[LPUART_INSTANCE_COUNT];
  * @brief Runtime state structure for UART driver with DMA.
  */
 typedef struct LpuartDmaState {
-    volatile bool isTxBusy;     /*!< True if there is an active transmit. */
-    volatile bool isRxBusy;     /*!< True if there is an active receive. */
-    volatile bool isTxBlocking; /*!< True if transmit is blocking transaction. */
-    volatile bool isRxBlocking; /*!< True if receive is blocking transaction. */
-    semaphore_t txIrqSync;      /*!< Used to wait for ISR to complete its TX business. */
-    semaphore_t rxIrqSync;      /*!< Used to wait for ISR to complete its RX business. */
-    dma_channel_t dmaLpuartTx; /*!< Structure definition for the DMA channel */
-    dma_channel_t dmaLpuartRx; /*!< Structure definition for the DMA channel */
+	volatile bool isTxBusy;     /*!< True if there is an active transmit. */
+	volatile bool isRxBusy;     /*!< True if there is an active receive. */
+	volatile bool isTxBlocking; /*!< True if transmit is blocking transaction. */
+	volatile bool isRxBlocking; /*!< True if receive is blocking transaction. */
+	semaphore_t txIrqSync;      /*!< Used to wait for ISR to complete its TX business. */
+	semaphore_t rxIrqSync;      /*!< Used to wait for ISR to complete its RX business. */
+	dma_channel_t dmaLpuartTx; /*!< Structure definition for the DMA channel */
+	dma_channel_t dmaLpuartRx; /*!< Structure definition for the DMA channel */
 } lpuart_dma_state_t;
 
 /*! @brief LPUART configuration structure*/
 typedef struct LpuartDmaUserConfig {
-    clock_lpuart_src_t clockSource;      /*!< LPUART clock source in fsl_sim_hal_<device>.h */
-    uint32_t baudRate;                   /*!< LPUART baud rate*/
-    lpuart_parity_mode_t parityMode;     /*!< parity mode, disabled (default), even, odd */
-    lpuart_stop_bit_count_t stopBitCount;/*!< number of stop bits, 1 stop bit (default) or 2 stop bits*/
-    lpuart_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in a
-                                                   char (up to 10-bits in some LPUART instances.*/
+	clock_lpuart_src_t clockSource;      /*!< LPUART clock source in fsl_sim_hal_<device>.h */
+	uint32_t baudRate;                   /*!< LPUART baud rate*/
+	lpuart_parity_mode_t parityMode;     /*!< parity mode, disabled (default), even, odd */
+	lpuart_stop_bit_count_t stopBitCount;/*!< number of stop bits, 1 stop bit (default) or 2 stop bits*/
+	lpuart_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 8-bit (default) or 9-bit in a
+												   char (up to 10-bits in some LPUART instances.*/
 } lpuart_dma_user_config_t;
 
 /*******************************************************************************
@@ -102,13 +102,13 @@ extern "C" {
  * lpuart_user_config_t parameters and how to call the LPUART_DRV_DmaInit function by passing
  * in these parameters:
    @code
-    lpuart_user_config_t lpuartConfig;
-    lpuartConfig.baudRate = 9600;
-    lpuartConfig.bitCountPerChar = kLpuart8BitsPerChar;
-    lpuartConfig.parityMode = kLpuartParityDisabled;
-    lpuartConfig.stopBitCount = kLpuartOneStopBit;
-    lpuart_dma_state_t lpuartDmaState;
-    LPUART_DRV_DmaInit(instance, &lpuartDmaState, &lpuartConfig);
+	lpuart_user_config_t lpuartConfig;
+	lpuartConfig.baudRate = 9600;
+	lpuartConfig.bitCountPerChar = kLpuart8BitsPerChar;
+	lpuartConfig.parityMode = kLpuartParityDisabled;
+	lpuartConfig.stopBitCount = kLpuartOneStopBit;
+	lpuart_dma_state_t lpuartDmaState;
+	LPUART_DRV_DmaInit(instance, &lpuartDmaState, &lpuartConfig);
    @endcode
  *
  * @param instance The LPUART instance number.
@@ -122,7 +122,7 @@ extern "C" {
  * @return An error code or kStatus_LPUART_Success.
  */
 lpuart_status_t LPUART_DRV_DmaInit(uint32_t instance, lpuart_dma_state_t * lpuartDmaStatePtr,
-                               const lpuart_dma_user_config_t * lpuartUserConfig);
+							   const lpuart_dma_user_config_t * lpuartUserConfig);
 /*!
  * @brief Shuts down the LPUART.
  *
@@ -143,9 +143,9 @@ lpuart_status_t LPUART_DRV_DmaDeinit(uint32_t instance);
  * @return An error code or kStatus_LPUART_Success.
  */
 lpuart_status_t LPUART_DRV_DmaSendDataBlocking(uint32_t instance,
-                                        const uint8_t * txBuff,
-                                        uint32_t txSize,
-                                        uint32_t timeout);
+										const uint8_t * txBuff,
+										uint32_t txSize,
+										uint32_t timeout);
 
 /*!
  * @brief Sends (transmits) data through the LPUART-DMA module using a non-blocking method.
@@ -156,8 +156,8 @@ lpuart_status_t LPUART_DRV_DmaSendDataBlocking(uint32_t instance,
  * @return An error code or kStatus_LPUART_Success.
  */
 lpuart_status_t LPUART_DRV_DmaSendData(uint32_t instance,
-                                const uint8_t * txBuff,
-                                uint32_t txSize);
+								const uint8_t * txBuff,
+								uint32_t txSize);
 /*!
  * @brief Returns whether the previous LPUART-DMA transmit has finished.
  *
@@ -191,7 +191,7 @@ lpuart_status_t LPUART_DRV_DmaAbortSendingData(uint32_t instance);
  * @return An error code or kStatus_LPUART_Success.
  */
 lpuart_status_t LPUART_DRV_DmaReceiveDataBlocking(uint32_t instance, uint8_t * rxBuff,
-                                              uint32_t rxSize, uint32_t timeout);
+											  uint32_t rxSize, uint32_t timeout);
 /*!
  * @brief Gets (receives) data from the LPUART-DMA module using a non-blocking method.
  *
@@ -238,4 +238,3 @@ lpuart_status_t LPUART_DRV_DmaAbortReceivingData(uint32_t instance);
 /******************************************************************************/
 /* EOF */
 /******************************************************************************/
-

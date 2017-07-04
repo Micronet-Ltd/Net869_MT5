@@ -46,7 +46,7 @@
 *  Function Name :  Shell_SNMPd
 *  Returned Value:  none
 *  Comments  :  SHELL utility to TFTP to or from a host
-*  Usage:  tftp host get source [destination] [mode] 
+*  Usage:  tftp host get source [destination] [mode]
 *
 *END*-----------------------------------------------------------------*/
 
@@ -60,44 +60,44 @@ int32_t  Shell_SNMPd(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc == 2)  {
-         if (strcmp(argv[1], "start") == 0)  {
-         
-            result = SNMP_init("SNMP_agent", SHELL_SNMP_PRIO, SHELL_SNMP_STACK );
-            if (result ==  0)  {
-               fprintf(shell_ptr->STDOUT, "SNMP Agent Started.\n");
-               
-               /* Install some MIBs for the SNMP agent */
-               MIB1213_init();
-               MIBMQX_init();
-            } else  {
-               fprintf(shell_ptr->STDOUT, "Unable to start SNMP Agent, error = 0x%x\n",result);
-               return_code = SHELL_EXIT_ERROR;
-            }
-         } else if (strcmp(argv[1], "stop") == 0)  {
-            result = SNMP_stop();
-            if (result ==  0)  {
-               fprintf(shell_ptr->STDOUT, "SNMP Agent Stopped.\n");
-            } else  {
-               fprintf(shell_ptr->STDOUT, "Unable to stop SNMP Agent, error = 0x%x\n",result);
-               return_code = SHELL_EXIT_ERROR;
-            }
-         } else  {
-         fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect option\n", argv[0]);
-            print_usage = TRUE;
-         }
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
-         print_usage = TRUE;
-      }
+	  if (argc == 2)  {
+		 if (strcmp(argv[1], "start") == 0)  {
+
+			result = SNMP_init("SNMP_agent", SHELL_SNMP_PRIO, SHELL_SNMP_STACK );
+			if (result ==  0)  {
+			   fprintf(shell_ptr->STDOUT, "SNMP Agent Started.\n");
+
+			   /* Install some MIBs for the SNMP agent */
+			   MIB1213_init();
+			   MIBMQX_init();
+			} else  {
+			   fprintf(shell_ptr->STDOUT, "Unable to start SNMP Agent, error = 0x%x\n",result);
+			   return_code = SHELL_EXIT_ERROR;
+			}
+		 } else if (strcmp(argv[1], "stop") == 0)  {
+			result = SNMP_stop();
+			if (result ==  0)  {
+			   fprintf(shell_ptr->STDOUT, "SNMP Agent Stopped.\n");
+			} else  {
+			   fprintf(shell_ptr->STDOUT, "Unable to stop SNMP Agent, error = 0x%x\n",result);
+			   return_code = SHELL_EXIT_ERROR;
+			}
+		 } else  {
+		 fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect option\n", argv[0]);
+			print_usage = TRUE;
+		 }
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
+		 print_usage = TRUE;
+	  }
    }
-   
+
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s [start|stop]\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s [start|stop]\n",argv[0]);
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s [start|stop]\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s [start|stop]\n",argv[0]);
+	  }
    }
    return return_code;
 } /* Endbody */

@@ -4,14 +4,14 @@
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the <organization> nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -39,8 +39,8 @@
 
 /************************** CHANGES *************************************
 1.1.GA      09.25.2014      FPT Team      First version of SDK C90TFS flash driver
-                                          inherited from BM C90TFS flash driver v1.02
-                                          (08.04.2014, FPT Team)
+										  inherited from BM C90TFS flash driver v1.02
+										  (08.04.2014, FPT Team)
 *************************************************************************/
 /* include the header files */
 #include "SSD_FTFx.h"
@@ -63,44 +63,44 @@
 
 uint32_t SIZE_OPTIMIZATION FlashGetSecurityState(PFLASH_SSD_CONFIG pSSDConfig, uint8_t* securityState)
 {
-    /* store data read from flash register */
-    uint8_t  regValue;
-    uint32_t temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FSEC_OFFSET;
+	/* store data read from flash register */
+	uint8_t  regValue;
+	uint32_t temp = pSSDConfig->ftfxRegBase + FTFx_SSD_FSEC_OFFSET;
 
-    /*Get flash security register value */
-    regValue = REG_READ(temp);
+	/*Get flash security register value */
+	regValue = REG_READ(temp);
 
-    /* check the status of the flash security bits in the security register */
-    if(FLASH_SECURITY_STATE_UNSECURED == (regValue & FTFx_SSD_FSEC_SEC))
-    {
-        /* Flash in unsecured state */
-        *securityState = FLASH_NOT_SECURE;
-    }
-    else
-    {
-        /* Flash in secured state */
-        /* check for backdoor key security enable bit */
-        if(FLASH_SECURITY_STATE_KEYEN == (regValue & FTFx_SSD_FSEC_KEYEN))
-        {
-            /* Backdoor key security enabled */
-            *securityState = FLASH_SECURE_BACKDOOR_ENABLED;
-        }
-        else
-        {
-            /* Backdoor key security disabled */
-            *securityState = FLASH_SECURE_BACKDOOR_DISABLED;
-        }
-    }
+	/* check the status of the flash security bits in the security register */
+	if(FLASH_SECURITY_STATE_UNSECURED == (regValue & FTFx_SSD_FSEC_SEC))
+	{
+		/* Flash in unsecured state */
+		*securityState = FLASH_NOT_SECURE;
+	}
+	else
+	{
+		/* Flash in secured state */
+		/* check for backdoor key security enable bit */
+		if(FLASH_SECURITY_STATE_KEYEN == (regValue & FTFx_SSD_FSEC_KEYEN))
+		{
+			/* Backdoor key security enabled */
+			*securityState = FLASH_SECURE_BACKDOOR_ENABLED;
+		}
+		else
+		{
+			/* Backdoor key security disabled */
+			*securityState = FLASH_SECURE_BACKDOOR_DISABLED;
+		}
+	}
 
 #if C90TFS_ENABLE_DEBUG
-    /* Enter Debug state if enabled */
-    if (TRUE == (pSSDConfig->DebugEnable))
-    {
-        ENTER_DEBUG_MODE;
-    }
+	/* Enter Debug state if enabled */
+	if (TRUE == (pSSDConfig->DebugEnable))
+	{
+		ENTER_DEBUG_MODE;
+	}
 #endif
 
-    return(FTFx_OK);
+	return(FTFx_OK);
 }
 
 /* End of file */

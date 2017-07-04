@@ -42,9 +42,9 @@ smartcard_driver_interface_t smartcardDrvInterface = {NULL};
 /*******************************************************************************
  * Private Functions
  ******************************************************************************/
-static smartcard_status_t SMARTCARD_DRV_InterfaceInit(uint32_t interfaceInsatance, 
-                               smartcard_state_t * smartcardStatePtr,
-                               smartcard_interface_config_t * interfaceUserConfig);
+static smartcard_status_t SMARTCARD_DRV_InterfaceInit(uint32_t interfaceInsatance,
+							   smartcard_state_t * smartcardStatePtr,
+							   smartcard_interface_config_t * interfaceUserConfig);
 static void SMARTCARD_DRV_InterfaceDeInit(uint32_t instance);
 /*******************************************************************************
  * Code
@@ -57,8 +57,8 @@ static void SMARTCARD_DRV_InterfaceDeInit(uint32_t instance);
  * This function will initialize the run-time state structure to keep track of
  * the on-going transfers, ungate the clock to the SMARTCARD module, initialize the
  * module to user defined settings and default settings, configure the IRQ state
- * structure and enable the module-level interrupt to the core, initialize DMA, 
- * interface/PHY specific initialization, and enable the SMARTCARD module 
+ * structure and enable the module-level interrupt to the core, initialize DMA,
+ * interface/PHY specific initialization, and enable the SMARTCARD module
  * transmitter and receiver.
  * The following is an example of how to set up the uart_state_t and the
  * uart_user_config_t parameters and how to call the SMARTCARD_DRV_Init function by
@@ -66,7 +66,7 @@ static void SMARTCARD_DRV_InterfaceDeInit(uint32_t instance);
  *    edma_user_config_t edmaUserConfig;
  *    edmaUserConfig.chnArbitration = kEDMAChnArbitrationRoundrobin;
  *    edmaUserConfig.notHaltOnError = false;
- *   
+ *
  *    smartcard_user_config_t smartcardConfig;
  *    smartcardConfig.interfaceConfig.sCClock = 5000000;
  *    smartcardConfig.interfaceConfig.interfaceInsatance = 0;
@@ -80,55 +80,55 @@ static void SMARTCARD_DRV_InterfaceDeInit(uint32_t instance);
  *
  *END**************************************************************************/
 smartcard_status_t SMARTCARD_DRV_Init(uint32_t instance, smartcard_state_t * smartcardStatePtr,
-                            const smartcard_user_config_t * smartcardUserConfig)
+							const smartcard_user_config_t * smartcardUserConfig)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    assert(smartcardStatePtr && smartcardUserConfig);
-    
-    smartcard_status_t smartcardStatus;
-    
-    /* Install Peripheral driver functions */
-    SMARTCARD_DRV_InstallDriverFunctions(&smartcardDrvInterface);
-    
-    /* Install PHY/Interface driver functions */
-    SMARTCARD_DRV_InstallInterfaceFunctions(&smartcardDrvInterface);
-    
-    /* Invoke smartcard IP driver specific peripheral driver initialization */
-    smartcardStatus = smartcardDrvInterface.smartcardDrvInit(instance, smartcardStatePtr, smartcardUserConfig);
-    
-    if(smartcardStatus != kStatus_SMARTCARD_Success)
-    {
-        return smartcardStatus;
-    }
-    
-    /* Invoke interface/PHY driver specific peripheral driver initialization */
-    smartcardStatus = SMARTCARD_DRV_InterfaceInit(smartcardStatePtr->interfaceConfig.interfaceInstance, smartcardStatePtr, &smartcardStatePtr->interfaceConfig);
-    
-    return smartcardStatus;
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+	assert(smartcardStatePtr && smartcardUserConfig);
+
+	smartcard_status_t smartcardStatus;
+
+	/* Install Peripheral driver functions */
+	SMARTCARD_DRV_InstallDriverFunctions(&smartcardDrvInterface);
+
+	/* Install PHY/Interface driver functions */
+	SMARTCARD_DRV_InstallInterfaceFunctions(&smartcardDrvInterface);
+
+	/* Invoke smartcard IP driver specific peripheral driver initialization */
+	smartcardStatus = smartcardDrvInterface.smartcardDrvInit(instance, smartcardStatePtr, smartcardUserConfig);
+
+	if(smartcardStatus != kStatus_SMARTCARD_Success)
+	{
+		return smartcardStatus;
+	}
+
+	/* Invoke interface/PHY driver specific peripheral driver initialization */
+	smartcardStatus = SMARTCARD_DRV_InterfaceInit(smartcardStatePtr->interfaceConfig.interfaceInstance, smartcardStatePtr, &smartcardStatePtr->interfaceConfig);
+
+	return smartcardStatus;
 }
 
 /*FUNCTION**********************************************************************
  *
  * Function Name : SMARTCARD_DRV_Deinit
- * Description   : This function shuts down the SMARTCARD driver by invoking module 
+ * Description   : This function shuts down the SMARTCARD driver by invoking module
  *                 IP and interface/PHY specific de-init functions.
  *
  *END**************************************************************************/
 void SMARTCARD_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    
-    /* Invoke smartcard interface/PHY specific peripheral driver de-initialization */
-    SMARTCARD_DRV_InterfaceDeInit(instance);
-    
-    /* Invoke smartcard IP specific peripheral driver de-initialization */
-    smartcardDrvInterface.smartcardDrvDeinit(instance);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+
+	/* Invoke smartcard interface/PHY specific peripheral driver de-initialization */
+	SMARTCARD_DRV_InterfaceDeInit(instance);
+
+	/* Invoke smartcard IP specific peripheral driver de-initialization */
+	smartcardDrvInterface.smartcardDrvDeinit(instance);
 }
 
 /*FUNCTION**********************************************************************
  *
  * Function Name : SMARTCARD_DRV_SendDataBlocking
- * Description   : This function sends (transmits) data out through the SMARTCARD 
+ * Description   : This function sends (transmits) data out through the SMARTCARD
  * module using a blocking method.
  * A blocking (also known as synchronous) function means that the function does
  * not return until the transmit is complete. This blocking function is used to
@@ -136,15 +136,15 @@ void SMARTCARD_DRV_Deinit(uint32_t instance)
  *
  *END**************************************************************************/
 smartcard_status_t SMARTCARD_DRV_SendDataBlocking(uint32_t instance,
-                                        const uint8_t * txBuff,
-                                        uint32_t txSize,
-                                        uint32_t timeout)
+										const uint8_t * txBuff,
+										uint32_t txSize,
+										uint32_t timeout)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    assert(txBuff);
-    
-    /* Invoke SMARTCARD IP specific function */
-    return smartcardDrvInterface.smartcardDrvSendDataBlocking(instance, txBuff, txSize, timeout);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+	assert(txBuff);
+
+	/* Invoke SMARTCARD IP specific function */
+	return smartcardDrvInterface.smartcardDrvSendDataBlocking(instance, txBuff, txSize, timeout);
 }
 
 /*FUNCTION**********************************************************************
@@ -162,14 +162,14 @@ smartcard_status_t SMARTCARD_DRV_SendDataBlocking(uint32_t instance,
  *
  *END**************************************************************************/
 smartcard_status_t SMARTCARD_DRV_SendData(uint32_t instance,
-                                const uint8_t * txBuff,
-                                uint32_t txSize)
+								const uint8_t * txBuff,
+								uint32_t txSize)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    assert(txBuff);
-    
-    /* Invoke SMARTCARD IP specific function */
-    return smartcardDrvInterface.smartcardDrvSendData(instance, txBuff, txSize);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+	assert(txBuff);
+
+	/* Invoke SMARTCARD IP specific function */
+	return smartcardDrvInterface.smartcardDrvSendData(instance, txBuff, txSize);
 }
 
 /*FUNCTION**********************************************************************
@@ -185,10 +185,10 @@ smartcard_status_t SMARTCARD_DRV_SendData(uint32_t instance,
  *END**************************************************************************/
 smartcard_status_t SMARTCARD_DRV_GetTransmitStatus(uint32_t instance, uint32_t * bytesRemaining)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    
-    /* Invoke SMARTCARD IP specific function */
-    return smartcardDrvInterface.smartcardDrvGetTransmitStatus(instance, bytesRemaining);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+
+	/* Invoke SMARTCARD IP specific function */
+	return smartcardDrvInterface.smartcardDrvGetTransmitStatus(instance, bytesRemaining);
 }
 
 /*FUNCTION**********************************************************************
@@ -201,10 +201,10 @@ smartcard_status_t SMARTCARD_DRV_GetTransmitStatus(uint32_t instance, uint32_t *
  *END**************************************************************************/
 smartcard_status_t SMARTCARD_DRV_AbortSendingData(uint32_t instance)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    
-    /* Invoke SMARTCARD IP specific function */
-    return smartcardDrvInterface.smartcardDrvAbortSendingData(instance);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+
+	/* Invoke SMARTCARD IP specific function */
+	return smartcardDrvInterface.smartcardDrvAbortSendingData(instance);
 }
 
 /*FUNCTION**********************************************************************
@@ -217,14 +217,14 @@ smartcard_status_t SMARTCARD_DRV_AbortSendingData(uint32_t instance)
  *
  *END**************************************************************************/
 smartcard_status_t SMARTCARD_DRV_ReceiveDataBlocking(uint32_t instance, uint8_t * rxBuff,
-                                           uint32_t rxSize, uint32_t *rcvdSize, uint32_t timeout)
+										   uint32_t rxSize, uint32_t *rcvdSize, uint32_t timeout)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    assert(rxBuff);
-    assert(rcvdSize);
-    
-    /* Invoke SMARTCARD IP specific function */
-    return smartcardDrvInterface.smartcardDrvReceiveDataBlocking(instance, rxBuff, rxSize, rcvdSize, timeout);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+	assert(rxBuff);
+	assert(rcvdSize);
+
+	/* Invoke SMARTCARD IP specific function */
+	return smartcardDrvInterface.smartcardDrvReceiveDataBlocking(instance, rxBuff, rxSize, rcvdSize, timeout);
 }
 
 /*FUNCTION**********************************************************************
@@ -235,21 +235,21 @@ smartcard_status_t SMARTCARD_DRV_ReceiveDataBlocking(uint32_t instance, uint8_t 
  * A non-blocking (also known as synchronous) function means that the function
  * returns immediately after initiating the receive function. The application
  * has to get the receive status to see when the receive is complete. In other
- * words, after calling non-blocking (asynchronous) get function, the 
+ * words, after calling non-blocking (asynchronous) get function, the
  * application must get the receive status to check if receive is completed or
  * not. The asynchronous method of transmitting and receiving allows the SMARTCARD
  * to perform a full duplex operation (simultaneously transmit and receive).
  *
  *END**************************************************************************/
 smartcard_status_t SMARTCARD_DRV_ReceiveData(uint32_t instance,
-                                   uint8_t * rxBuff,
-                                   uint32_t rxSize)
+								   uint8_t * rxBuff,
+								   uint32_t rxSize)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    assert(rxBuff);
-    
-    /* Invoke SMARTCARD IP specific function */
-    return smartcardDrvInterface.smartcardDrvReceiveData(instance, rxBuff, rxSize);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+	assert(rxBuff);
+
+	/* Invoke SMARTCARD IP specific function */
+	return smartcardDrvInterface.smartcardDrvReceiveData(instance, rxBuff, rxSize);
 }
 
 /*FUNCTION**********************************************************************
@@ -264,12 +264,12 @@ smartcard_status_t SMARTCARD_DRV_ReceiveData(uint32_t instance,
  *
  *END**************************************************************************/
 smartcard_status_t SMARTCARD_DRV_GetReceiveStatus(uint32_t instance,
-                                        uint32_t * bytesRemaining)
+										uint32_t * bytesRemaining)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    
-    /* Invoke SMARTCARD IP specific function */
-    return smartcardDrvInterface.smartcardDrvGetReceiveStatus(instance, bytesRemaining);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+
+	/* Invoke SMARTCARD IP specific function */
+	return smartcardDrvInterface.smartcardDrvGetReceiveStatus(instance, bytesRemaining);
 }
 
 /*FUNCTION**********************************************************************
@@ -283,10 +283,10 @@ smartcard_status_t SMARTCARD_DRV_GetReceiveStatus(uint32_t instance,
  *END**************************************************************************/
 smartcard_status_t SMARTCARD_DRV_AbortReceivingData(uint32_t instance)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    
-    /* Invoke SMARTCARD IP specific function */
-    return smartcardDrvInterface.smartcardDrvAbortReceivingData(instance);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+
+	/* Invoke SMARTCARD IP specific function */
+	return smartcardDrvInterface.smartcardDrvAbortReceivingData(instance);
 }
 
 /*FUNCTION**********************************************************************
@@ -298,55 +298,55 @@ smartcard_status_t SMARTCARD_DRV_AbortReceivingData(uint32_t instance)
  *END**************************************************************************/
 smartcard_status_t SMARTCARD_DRV_Control(uint32_t instance, smartcard_control_t control, void *controlBuff)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    
-    /* Invoke SMARTCARD IP specific function */
-    return smartcardDrvInterface.smartcardDrvControl(instance, control, controlBuff);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+
+	/* Invoke SMARTCARD IP specific function */
+	return smartcardDrvInterface.smartcardDrvControl(instance, control, controlBuff);
 }
 
 /*FUNCTION**********************************************************************
  *
  * Function Name : SMARTCARD_DRV_InstallInterfaceCallback
- * Description   : This function installs a user callback function to be called 
+ * Description   : This function installs a user callback function to be called
  * after any interface interrupt is serviced.
  *
  *END**************************************************************************/
-smartcard_interface_callback_t SMARTCARD_DRV_InstallInterfaceCallback(uint32_t instance, 
-                                              smartcard_interface_callback_t function, 
-                                              void * callbackParam)
+smartcard_interface_callback_t SMARTCARD_DRV_InstallInterfaceCallback(uint32_t instance,
+											  smartcard_interface_callback_t function,
+											  void * callbackParam)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    
-    if(smartcardDrvInterface.smartcardDrvInstallInterfaceCallback)
-    {
-        /* Invoke SMARTCARD IP specific function */
-        return smartcardDrvInterface.smartcardDrvInstallInterfaceCallback(instance, function, callbackParam);
-    }
-    else
-    {
-        return NULL;
-    }
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+
+	if(smartcardDrvInterface.smartcardDrvInstallInterfaceCallback)
+	{
+		/* Invoke SMARTCARD IP specific function */
+		return smartcardDrvInterface.smartcardDrvInstallInterfaceCallback(instance, function, callbackParam);
+	}
+	else
+	{
+		return NULL;
+	}
 }
 
 /*FUNCTION**********************************************************************
  *
  * Function Name : SMARTCARD_DRV_InstallInterfaceCallback
- * Description   : This function resets the SMARTCARD interface/card slot for 
+ * Description   : This function resets the SMARTCARD interface/card slot for
  * the given reset type.
  *
  *END**************************************************************************/
 void SMARTCARD_DRV_Reset(uint32_t instance, smartcard_reset_type_t resetType)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    
-    /* Enable Initial character detectio first */
-    smartcardDrvInterface.smartcardDrvControl(instance, kSmartcardEnableInitDetect, NULL);
-    
-    /* Invoke SMARTCARD IP specific function to activate the card */
-    smartcardDrvInterface.smartcardDrvInterfaceActivate(instance, resetType);
-    
-    /* Invoke SMARTCARD IP specific function to enable reception */
-    smartcardDrvInterface.smartcardDrvControl(instance, kSmartcardEnableReceiverMode, 0);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+
+	/* Enable Initial character detectio first */
+	smartcardDrvInterface.smartcardDrvControl(instance, kSmartcardEnableInitDetect, NULL);
+
+	/* Invoke SMARTCARD IP specific function to activate the card */
+	smartcardDrvInterface.smartcardDrvInterfaceActivate(instance, resetType);
+
+	/* Invoke SMARTCARD IP specific function to enable reception */
+	smartcardDrvInterface.smartcardDrvControl(instance, kSmartcardEnableReceiverMode, 0);
 }
 
 /*FUNCTION**********************************************************************
@@ -357,13 +357,13 @@ void SMARTCARD_DRV_Reset(uint32_t instance, smartcard_reset_type_t resetType)
  *END**************************************************************************/
 void SMARTCARD_DRV_Deactivate(uint32_t instance)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    
-    /* Invoke SMARTCARD IP specific function to deactivate the card */
-    smartcardDrvInterface.smartcardDrvInterfaceDeactivate(instance);
-    
-    /*Wait for 100 ms*/
-    OSA_TimeDelay(100);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+
+	/* Invoke SMARTCARD IP specific function to deactivate the card */
+	smartcardDrvInterface.smartcardDrvInterfaceDeactivate(instance);
+
+	/*Wait for 100 ms*/
+	OSA_TimeDelay(100);
 }
 
 /*FUNCTION**********************************************************************
@@ -372,14 +372,14 @@ void SMARTCARD_DRV_Deactivate(uint32_t instance)
  * Description   : This function invokes interface initilization routine
  *
  *END**************************************************************************/
-static smartcard_status_t SMARTCARD_DRV_InterfaceInit(uint32_t interfaceInsatance, 
-                               smartcard_state_t * smartcardStatePtr,
-                               smartcard_interface_config_t * interfaceUserConfig)
+static smartcard_status_t SMARTCARD_DRV_InterfaceInit(uint32_t interfaceInsatance,
+							   smartcard_state_t * smartcardStatePtr,
+							   smartcard_interface_config_t * interfaceUserConfig)
 {
-    /* Invoke interface/PHY specific initialization function */
-    return smartcardDrvInterface.smartcardDrvInterfaceInit(interfaceInsatance, 
-                               smartcardStatePtr,
-                               interfaceUserConfig);
+	/* Invoke interface/PHY specific initialization function */
+	return smartcardDrvInterface.smartcardDrvInterfaceInit(interfaceInsatance,
+							   smartcardStatePtr,
+							   interfaceUserConfig);
 }
 
 /*FUNCTION**********************************************************************
@@ -390,10 +390,10 @@ static smartcard_status_t SMARTCARD_DRV_InterfaceInit(uint32_t interfaceInsatanc
  *END**************************************************************************/
 static void SMARTCARD_DRV_InterfaceDeInit(uint32_t instance)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    
-    /* Invoke interface/PHY specific de-initialization function */
-    smartcardDrvInterface.smartcardDrvInterfaceDeInit(instance);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+
+	/* Invoke interface/PHY specific de-initialization function */
+	smartcardDrvInterface.smartcardDrvInterfaceDeInit(instance);
 }
 
 /*FUNCTION**********************************************************************
@@ -404,14 +404,13 @@ static void SMARTCARD_DRV_InterfaceDeInit(uint32_t instance)
  *END**************************************************************************/
 void SMARTCARD_DRV_InterfaceControl(uint32_t instance, void *interfaceControl, void *param)
 {
-    assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
-    assert(interfaceControl);
-    
-    /* Invoke interface/PHY specific control function */
-    smartcardDrvInterface.smartcardDrvInterfaceControl(instance, interfaceControl, param);
+	assert(instance < HW_SMARTCARD_INSTANCE_COUNT);
+	assert(interfaceControl);
+
+	/* Invoke interface/PHY specific control function */
+	smartcardDrvInterface.smartcardDrvInterfaceControl(instance, interfaceControl, param);
 }
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

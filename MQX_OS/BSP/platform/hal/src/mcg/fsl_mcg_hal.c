@@ -62,32 +62,32 @@ uint32_t g_slowInternalRefClkFreq = 32768U;
  *END**************************************************************************/
 uint32_t CLOCK_HAL_TestOscFreq(MCG_Type * base, mcg_oscsel_select_t oscselVal)
 {
-    uint32_t extFreq;
+	uint32_t extFreq;
 
 #if FSL_FEATURE_MCG_USE_OSCSEL
-    switch (oscselVal)
-    {
-        case kMcgOscselOsc:         /* Selects System Oscillator (OSCCLK) */
-            extFreq = g_xtal0ClkFreq;
-            break;
+	switch (oscselVal)
+	{
+		case kMcgOscselOsc:         /* Selects System Oscillator (OSCCLK) */
+			extFreq = g_xtal0ClkFreq;
+			break;
 #if FSL_FEATURE_MCG_HAS_RTC_32K
-        case kMcgOscselRtc:         /* Selects 32 kHz RTC Oscillator */
-            extFreq = g_xtalRtcClkFreq;
-            break;
+		case kMcgOscselRtc:         /* Selects 32 kHz RTC Oscillator */
+			extFreq = g_xtalRtcClkFreq;
+			break;
 #endif
 #if FSL_FEATURE_MCG_HAS_IRC_48M
-        case kMcgOscselIrc:         /* Selects 48 MHz IRC Oscillator */
-            extFreq = CPU_INTERNAL_IRC_48M;
-            break;
+		case kMcgOscselIrc:         /* Selects 48 MHz IRC Oscillator */
+			extFreq = CPU_INTERNAL_IRC_48M;
+			break;
 #endif
-        default:
-            extFreq = 0U;
-            break;
-    }
+		default:
+			extFreq = 0U;
+			break;
+	}
 #else
-    extFreq = g_xtal0ClkFreq;
+	extFreq = g_xtal0ClkFreq;
 #endif
-    return extFreq;
+	return extFreq;
 }
 
 /*FUNCTION******************************************************************************
@@ -100,17 +100,17 @@ uint32_t CLOCK_HAL_TestOscFreq(MCG_Type * base, mcg_oscsel_select_t oscselVal)
 void CLOCK_HAL_PrepareOsc(MCG_Type * base, mcg_oscsel_select_t setting)
 {
 #if FSL_FEATURE_MCG_USE_OSCSEL
-    MCG_BWR_C7_OSCSEL(base, setting);
-    if (kMcgOscselOsc == setting)
+	MCG_BWR_C7_OSCSEL(base, setting);
+	if (kMcgOscselOsc == setting)
 #endif
-    {
-#if FSL_FEATURE_SOC_OSC_COUNT 
-        if (MCG_BRD_C2_EREFS(base))
-        {
-            while(!CLOCK_HAL_IsOsc0Stable(base)){}
-        }
-#endif        
-    }
+	{
+#if FSL_FEATURE_SOC_OSC_COUNT
+		if (MCG_BRD_C2_EREFS(base))
+		{
+			while(!CLOCK_HAL_IsOsc0Stable(base)){}
+		}
+#endif
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -124,11 +124,11 @@ void CLOCK_HAL_PrepareOsc(MCG_Type * base, mcg_oscsel_select_t setting)
 static uint32_t CLOCK_HAL_GetMcgExternalClkFreq(MCG_Type * base)
 {
 #if FSL_FEATURE_MCG_USE_OSCSEL
-    /* OSC frequency selected by OSCSEL. */
-    return CLOCK_HAL_TestOscFreq(base, (mcg_oscsel_select_t)MCG_BRD_C7_OSCSEL(base));
+	/* OSC frequency selected by OSCSEL. */
+	return CLOCK_HAL_TestOscFreq(base, (mcg_oscsel_select_t)MCG_BRD_C7_OSCSEL(base));
 #else
-    /* Use default osc0*/
-    return g_xtal0ClkFreq;
+	/* Use default osc0*/
+	return g_xtal0ClkFreq;
 #endif
 }
 
@@ -140,45 +140,45 @@ static uint32_t CLOCK_HAL_GetMcgExternalClkFreq(MCG_Type * base)
  *
  *END**************************************************************************/
 uint32_t CLOCK_HAL_TestFllExternalRefFreq(MCG_Type * base,
-                                          uint32_t extFreq,
-                                          uint8_t  frdivVal,
-                                          osc_range_t range0,
-                                          mcg_oscsel_select_t oscsel)
+										  uint32_t extFreq,
+										  uint8_t  frdivVal,
+										  osc_range_t range0,
+										  mcg_oscsel_select_t oscsel)
 {
-    extFreq >>= frdivVal;
+	extFreq >>= frdivVal;
 
-    if ((kOscRangeLow != range0)
+	if ((kOscRangeLow != range0)
 #if FSL_FEATURE_MCG_USE_OSCSEL
-      && (kMcgOscselRtc != oscsel)
+	  && (kMcgOscselRtc != oscsel)
 #endif
-        )
-    {
-        switch (frdivVal)
-        {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-                extFreq >>= 5U;
-                break;
+		)
+	{
+		switch (frdivVal)
+		{
+			case 0:
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+				extFreq >>= 5U;
+				break;
 #if FSL_FEATURE_MCG_FRDIV_SUPPORT_1280
-            case 6:
-                extFreq /= 20U; /* 64*20=1280 */
-                break;
+			case 6:
+				extFreq /= 20U; /* 64*20=1280 */
+				break;
 #endif
 #if FSL_FEATURE_MCG_FRDIV_SUPPORT_1536
-            case 7:
-                extFreq /= 12U; /* 128*12=1536 */
-                break;
+			case 7:
+				extFreq /= 12U; /* 128*12=1536 */
+				break;
 #endif
-            default:
-                extFreq = 0U; /* Reserved. */
-                break;
-        }
-    }
-    return extFreq;
+			default:
+				extFreq = 0U; /* Reserved. */
+				break;
+		}
+	}
+	return extFreq;
 }
 
 /*FUNCTION**********************************************************************
@@ -191,31 +191,31 @@ uint32_t CLOCK_HAL_TestFllExternalRefFreq(MCG_Type * base,
  *END**************************************************************************/
 uint32_t CLOCK_HAL_GetFllRefClk(MCG_Type * base)
 {
-    uint32_t mcgffclk;
-    uint8_t frdiv;
-    osc_range_t range;
-    mcg_oscsel_select_t oscsel;
+	uint32_t mcgffclk;
+	uint8_t frdiv;
+	osc_range_t range;
+	mcg_oscsel_select_t oscsel;
 
-    if (MCG_BRD_C1_IREFS(base) == kMcgFllSrcExternal)
-    {
-        /* External reference clock is selected */
-        mcgffclk = CLOCK_HAL_GetMcgExternalClkFreq(base);
-        frdiv = MCG_BRD_C1_FRDIV(base);
-        range = (osc_range_t)MCG_BRD_C2_RANGE(base);
+	if (MCG_BRD_C1_IREFS(base) == kMcgFllSrcExternal)
+	{
+		/* External reference clock is selected */
+		mcgffclk = CLOCK_HAL_GetMcgExternalClkFreq(base);
+		frdiv = MCG_BRD_C1_FRDIV(base);
+		range = (osc_range_t)MCG_BRD_C2_RANGE(base);
 #if FSL_FEATURE_MCG_USE_OSCSEL
-        oscsel = (mcg_oscsel_select_t)MCG_BRD_C7_OSCSEL(base);
+		oscsel = (mcg_oscsel_select_t)MCG_BRD_C7_OSCSEL(base);
 #else
-        oscsel = kMcgOscselOsc;
+		oscsel = kMcgOscselOsc;
 #endif
 
-        mcgffclk = CLOCK_HAL_TestFllExternalRefFreq(base, mcgffclk, frdiv, range, oscsel);
-    }
-    else
-    {
-        /* The slow internal reference clock is selected */
-        mcgffclk = g_slowInternalRefClkFreq;
-    }
-    return mcgffclk;
+		mcgffclk = CLOCK_HAL_TestFllExternalRefFreq(base, mcgffclk, frdiv, range, oscsel);
+	}
+	else
+	{
+		/* The slow internal reference clock is selected */
+		mcgffclk = g_slowInternalRefClkFreq;
+	}
+	return mcgffclk;
 }
 
 /*FUNCTION**********************************************************************
@@ -225,34 +225,34 @@ uint32_t CLOCK_HAL_GetFllRefClk(MCG_Type * base)
  *
  *END**************************************************************************/
 uint32_t CLOCK_HAL_TestFllFreq(MCG_Type * base,
-                               uint32_t fllRef,
-                               mcg_dmx32_select_t dmx32,
-                               mcg_dco_range_select_t drs)
+							   uint32_t fllRef,
+							   mcg_dmx32_select_t dmx32,
+							   mcg_dco_range_select_t drs)
 {
-    static const uint16_t fllFactorTable[4][2] = {
-        {640,  732},
-        {1280, 1464},
-        {1920, 2197},
-        {2560, 2929}
-    };
+	static const uint16_t fllFactorTable[4][2] = {
+		{640,  732},
+		{1280, 1464},
+		{1920, 2197},
+		{2560, 2929}
+	};
 
-    /* if DMX32 set */
-    if (dmx32)
-    {
-        if (fllRef > kMcgConstant32768)
-        {
-            return 0U;
-        }
-    }
-    else
-    {
-        if ((fllRef < kMcgConstant31250) || (fllRef > kMcgConstant39063))
-        {
-            return 0U;
-        }
-    }
+	/* if DMX32 set */
+	if (dmx32)
+	{
+		if (fllRef > kMcgConstant32768)
+		{
+			return 0U;
+		}
+	}
+	else
+	{
+		if ((fllRef < kMcgConstant31250) || (fllRef > kMcgConstant39063))
+		{
+			return 0U;
+		}
+	}
 
-    return fllRef * fllFactorTable[drs][dmx32];
+	return fllRef * fllFactorTable[drs][dmx32];
 }
 
 /*FUNCTION**********************************************************************
@@ -266,32 +266,32 @@ uint32_t CLOCK_HAL_TestFllFreq(MCG_Type * base,
  *END**************************************************************************/
 uint32_t CLOCK_HAL_GetFllClk(MCG_Type * base)
 {
-    uint32_t mcgfllclk;
-    mcg_dmx32_select_t dmx32;
-    mcg_dco_range_select_t drs;
+	uint32_t mcgfllclk;
+	mcg_dmx32_select_t dmx32;
+	mcg_dco_range_select_t drs;
 
 #if FSL_FEATURE_MCG_HAS_PLL
-    /* If FLL is not enabled, return 0. */
-    if (CLOCK_HAL_IsPllSelected(base))
-    {
-        return 0U;
-    }
+	/* If FLL is not enabled, return 0. */
+	if (CLOCK_HAL_IsPllSelected(base))
+	{
+		return 0U;
+	}
 #endif
 
-    mcgfllclk = CLOCK_HAL_GetFllRefClk(base);
+	mcgfllclk = CLOCK_HAL_GetFllRefClk(base);
 
-    if (0U == mcgfllclk)
-    {
-        return 0U;
-    }
+	if (0U == mcgfllclk)
+	{
+		return 0U;
+	}
 
-    dmx32 = (mcg_dmx32_select_t)MCG_BRD_C4_DMX32(base);
-    drs   = (mcg_dco_range_select_t)MCG_BRD_C4_DRST_DRS(base);
+	dmx32 = (mcg_dmx32_select_t)MCG_BRD_C4_DMX32(base);
+	drs   = (mcg_dco_range_select_t)MCG_BRD_C4_DRST_DRS(base);
 
 
-    mcgfllclk = CLOCK_HAL_TestFllFreq(base, mcgfllclk, dmx32, drs);
+	mcgfllclk = CLOCK_HAL_TestFllFreq(base, mcgfllclk, dmx32, drs);
 
-    return mcgfllclk;
+	return mcgfllclk;
 }
 
 /*FUNCTION**********************************************************************
@@ -306,26 +306,26 @@ uint32_t CLOCK_HAL_GetFllClk(MCG_Type * base)
  *END**************************************************************************/
 void CLOCK_HAL_UpdateFastClkInternalRefDiv(MCG_Type * base, uint8_t fcrdiv)
 {
-    /* If new value equals current value, do not update. */
-    if (MCG_BRD_SC_FCRDIV(base) != fcrdiv)
-    {
-        /* If fast internal reference clock is not used, change directly. */
-        if (kMcgIrcSlow == MCG_BRD_C2_IRCS(base))
-        {
-            MCG_WR_SC_FCRDIV(base, fcrdiv);
-        }
-        else /* If it is used, swith to slow IRC, then change FCRDIV. */
-        {
-            /* Switch to slow IRC. */
-            CLOCK_HAL_SetInternalRefClkMode(base, kMcgIrcSlow);
-            while (kMcgIrcSlow != CLOCK_HAL_GetInternalRefClkMode(base)) {}
-            /* Set new value. */
-            MCG_WR_SC_FCRDIV(base, fcrdiv);
-            /* Switch to fast IRC. */
-            CLOCK_HAL_SetInternalRefClkMode(base, kMcgIrcFast);
-            while (kMcgIrcFast != CLOCK_HAL_GetInternalRefClkMode(base)) {}
-        }
-    }
+	/* If new value equals current value, do not update. */
+	if (MCG_BRD_SC_FCRDIV(base) != fcrdiv)
+	{
+		/* If fast internal reference clock is not used, change directly. */
+		if (kMcgIrcSlow == MCG_BRD_C2_IRCS(base))
+		{
+			MCG_WR_SC_FCRDIV(base, fcrdiv);
+		}
+		else /* If it is used, swith to slow IRC, then change FCRDIV. */
+		{
+			/* Switch to slow IRC. */
+			CLOCK_HAL_SetInternalRefClkMode(base, kMcgIrcSlow);
+			while (kMcgIrcSlow != CLOCK_HAL_GetInternalRefClkMode(base)) {}
+			/* Set new value. */
+			MCG_WR_SC_FCRDIV(base, fcrdiv);
+			/* Switch to fast IRC. */
+			CLOCK_HAL_SetInternalRefClkMode(base, kMcgIrcFast);
+			while (kMcgIrcFast != CLOCK_HAL_GetInternalRefClkMode(base)) {}
+		}
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -335,28 +335,28 @@ void CLOCK_HAL_UpdateFastClkInternalRefDiv(MCG_Type * base, uint8_t fcrdiv)
  *
  *END**************************************************************************/
 void CLOCK_HAL_UpdateInternalRefClk(MCG_Type      *base,
-                                    mcg_irc_mode_t ircs,
-                                    uint8_t        fcrdiv,
-                                    bool           enableInStop)
+									mcg_irc_mode_t ircs,
+									uint8_t        fcrdiv,
+									bool           enableInStop)
 {
-    if (kMcgIrcFast == ircs)
-    {
-        CLOCK_HAL_UpdateFastClkInternalRefDiv(base, fcrdiv);
-        /* Switch to fast IRC. */
-        CLOCK_HAL_SetInternalRefClkMode(base, kMcgIrcFast);
-        while (kMcgIrcFast != CLOCK_HAL_GetInternalRefClkMode(base)) {}
-    }
-    else
-    {
-        /* Switch to slow IRC. */
-        CLOCK_HAL_SetInternalRefClkMode(base, kMcgIrcSlow);
-        while (kMcgIrcSlow != CLOCK_HAL_GetInternalRefClkMode(base)) {}
-    }
+	if (kMcgIrcFast == ircs)
+	{
+		CLOCK_HAL_UpdateFastClkInternalRefDiv(base, fcrdiv);
+		/* Switch to fast IRC. */
+		CLOCK_HAL_SetInternalRefClkMode(base, kMcgIrcFast);
+		while (kMcgIrcFast != CLOCK_HAL_GetInternalRefClkMode(base)) {}
+	}
+	else
+	{
+		/* Switch to slow IRC. */
+		CLOCK_HAL_SetInternalRefClkMode(base, kMcgIrcSlow);
+		while (kMcgIrcSlow != CLOCK_HAL_GetInternalRefClkMode(base)) {}
+	}
 
-    // Enable MCGIRCLK.
-    MCG_WR_C1(base, (MCG_RD_C1(base) & ~MCG_C1_IREFSTEN_MASK)
-                                     |  MCG_C1_IRCLKEN_MASK
-                                     |  MCG_C1_IREFSTEN(enableInStop));
+	// Enable MCGIRCLK.
+	MCG_WR_C1(base, (MCG_RD_C1(base) & ~MCG_C1_IREFSTEN_MASK)
+									 |  MCG_C1_IRCLKEN_MASK
+									 |  MCG_C1_IREFSTEN(enableInStop));
 }
 
 /*FUNCTION**********************************************************************
@@ -367,67 +367,67 @@ void CLOCK_HAL_UpdateInternalRefClk(MCG_Type      *base,
  *
  *END**************************************************************************/
 mcg_status_t CLOCK_HAL_GetAvailableFrdiv(osc_range_t range0,
-                                    mcg_oscsel_select_t oscsel,
-                                    uint32_t inputFreq,
-                                    uint8_t  *frdiv)
+									mcg_oscsel_select_t oscsel,
+									uint32_t inputFreq,
+									uint8_t  *frdiv)
 {
-    *frdiv = 0U;
-    static const uint16_t freq_kHz[] = {
-        1250U, 2500U, 5000U, 10000U, 20000U, 40000U,
+	*frdiv = 0U;
+	static const uint16_t freq_kHz[] = {
+		1250U, 2500U, 5000U, 10000U, 20000U, 40000U,
 #if FSL_FEATURE_MCG_FRDIV_SUPPORT_1280
-        50000U,
+		50000U,
 #endif
 #if FSL_FEATURE_MCG_FRDIV_SUPPORT_1536
-        60000U
+		60000U
 #endif
-    };
+	};
 
-    static const uint16_t freqLow_kHz[] = {
-        1000U, 2000U, 4000U, 8000U, 16000U, 32000U,
+	static const uint16_t freqLow_kHz[] = {
+		1000U, 2000U, 4000U, 8000U, 16000U, 32000U,
 #if FSL_FEATURE_MCG_FRDIV_SUPPORT_1280
-        40000U,
+		40000U,
 #endif
 #if FSL_FEATURE_MCG_FRDIV_SUPPORT_1536
-        48000U
+		48000U
 #endif
-    };
+	};
 
-    if ((kOscRangeLow != range0)
+	if ((kOscRangeLow != range0)
 #if FSL_FEATURE_MCG_USE_OSCSEL
-        && (kMcgOscselRtc != oscsel)
+		&& (kMcgOscselRtc != oscsel)
 #endif
-       )
-    {
-        inputFreq /= 1000U;
-        while (*frdiv < (sizeof(freq_kHz)/sizeof(freq_kHz[0])))
-        {
-            if (inputFreq <= freq_kHz[*frdiv])
-            {
-                if (inputFreq >= freqLow_kHz[*frdiv])
-                {
-                    return kStatus_MCG_Success;
-                }
-                else
-                {
-                    return kStatus_MCG_Fail;
-                }
-            }
-            (*frdiv)++;
-        }
-    }
-    else
-    {
-        while (inputFreq > 39063U)
-        {
-            inputFreq >>= 1U;
-            (*frdiv)++;
-        }
-        if (((*frdiv) < 8U) && (inputFreq >= 31250U))
-        {
-            return kStatus_MCG_Success;
-        }
-    }
-    return kStatus_MCG_Fail;
+	   )
+	{
+		inputFreq /= 1000U;
+		while (*frdiv < (sizeof(freq_kHz)/sizeof(freq_kHz[0])))
+		{
+			if (inputFreq <= freq_kHz[*frdiv])
+			{
+				if (inputFreq >= freqLow_kHz[*frdiv])
+				{
+					return kStatus_MCG_Success;
+				}
+				else
+				{
+					return kStatus_MCG_Fail;
+				}
+			}
+			(*frdiv)++;
+		}
+	}
+	else
+	{
+		while (inputFreq > 39063U)
+		{
+			inputFreq >>= 1U;
+			(*frdiv)++;
+		}
+		if (((*frdiv) < 8U) && (inputFreq >= 31250U))
+		{
+			return kStatus_MCG_Success;
+		}
+	}
+	return kStatus_MCG_Fail;
 }
 
 #if FSL_FEATURE_MCG_HAS_PLL
@@ -443,98 +443,98 @@ mcg_status_t CLOCK_HAL_GetAvailableFrdiv(osc_range_t range0,
  *
  *END**************************************************************************/
 uint32_t CLOCK_HAL_CalculatePllDiv(uint32_t refFreq,
-                                   uint32_t desireFreq,
-                                   uint8_t *prdiv,
-                                   uint8_t *vdiv)
+								   uint32_t desireFreq,
+								   uint8_t *prdiv,
+								   uint8_t *vdiv)
 {
-    uint8_t ret_prdiv, ret_vdiv;
-    uint8_t prdiv_min, prdiv_max, prdiv_cur;
-    uint8_t vdiv_cur;
-    uint32_t ret_freq = 0U;
-    uint32_t diff = 0xFFFFFFFFU; // Difference between desireFreq and return frequency.
-    uint32_t ref_div; // Reference frequency after PRDIV.
+	uint8_t ret_prdiv, ret_vdiv;
+	uint8_t prdiv_min, prdiv_max, prdiv_cur;
+	uint8_t vdiv_cur;
+	uint32_t ret_freq = 0U;
+	uint32_t diff = 0xFFFFFFFFU; // Difference between desireFreq and return frequency.
+	uint32_t ref_div; // Reference frequency after PRDIV.
 
-    /* Reference frequency is out of range. */
-    if ((refFreq < FSL_FEATURE_MCG_PLL_REF_MIN) ||
-        (refFreq > (FSL_FEATURE_MCG_PLL_REF_MAX *
-                   (FSL_FEATURE_MCG_PLL_PRDIV_MAX + FSL_FEATURE_MCG_PLL_PRDIV_BASE))))
-    {
-        return 0U;
-    }
+	/* Reference frequency is out of range. */
+	if ((refFreq < FSL_FEATURE_MCG_PLL_REF_MIN) ||
+		(refFreq > (FSL_FEATURE_MCG_PLL_REF_MAX *
+				   (FSL_FEATURE_MCG_PLL_PRDIV_MAX + FSL_FEATURE_MCG_PLL_PRDIV_BASE))))
+	{
+		return 0U;
+	}
 
-    /* refFreq/PRDIV must in a range. First get the allowed PRDIV range. */
-    prdiv_max = refFreq / FSL_FEATURE_MCG_PLL_REF_MIN;
-    prdiv_min = (refFreq + FSL_FEATURE_MCG_PLL_REF_MAX - 1U) / FSL_FEATURE_MCG_PLL_REF_MAX;
+	/* refFreq/PRDIV must in a range. First get the allowed PRDIV range. */
+	prdiv_max = refFreq / FSL_FEATURE_MCG_PLL_REF_MIN;
+	prdiv_min = (refFreq + FSL_FEATURE_MCG_PLL_REF_MAX - 1U) / FSL_FEATURE_MCG_PLL_REF_MAX;
 
 #if FSL_FEATURE_MCG_HAS_PLL_INTERNAL_DIV
-    desireFreq *= 2U;
+	desireFreq *= 2U;
 #endif
 
-    /* PRDIV traversal. */
-    for (prdiv_cur=prdiv_max; prdiv_cur>=prdiv_min; prdiv_cur--)
-    {
-        // Reference frequency after PRDIV.
-        ref_div = refFreq / prdiv_cur;
+	/* PRDIV traversal. */
+	for (prdiv_cur=prdiv_max; prdiv_cur>=prdiv_min; prdiv_cur--)
+	{
+		// Reference frequency after PRDIV.
+		ref_div = refFreq / prdiv_cur;
 
-        vdiv_cur = desireFreq / ref_div;
+		vdiv_cur = desireFreq / ref_div;
 
-        if ((vdiv_cur < FSL_FEATURE_MCG_PLL_VDIV_BASE-1U) ||
-            (vdiv_cur > FSL_FEATURE_MCG_PLL_VDIV_BASE+31U))
-        {
-            /* No VDIV is available with this PRDIV. */
-            continue;
-        }
+		if ((vdiv_cur < FSL_FEATURE_MCG_PLL_VDIV_BASE-1U) ||
+			(vdiv_cur > FSL_FEATURE_MCG_PLL_VDIV_BASE+31U))
+		{
+			/* No VDIV is available with this PRDIV. */
+			continue;
+		}
 
-        ret_freq = vdiv_cur * ref_div;
+		ret_freq = vdiv_cur * ref_div;
 
-        if (vdiv_cur >= FSL_FEATURE_MCG_PLL_VDIV_BASE)
-        {
-            if (ret_freq == desireFreq) // If desire frequency is got.
-            {
-                *prdiv = prdiv_cur  - FSL_FEATURE_MCG_PLL_PRDIV_BASE;
-                *vdiv  = vdiv_cur   - FSL_FEATURE_MCG_PLL_VDIV_BASE;
+		if (vdiv_cur >= FSL_FEATURE_MCG_PLL_VDIV_BASE)
+		{
+			if (ret_freq == desireFreq) // If desire frequency is got.
+			{
+				*prdiv = prdiv_cur  - FSL_FEATURE_MCG_PLL_PRDIV_BASE;
+				*vdiv  = vdiv_cur   - FSL_FEATURE_MCG_PLL_VDIV_BASE;
 #if FSL_FEATURE_MCG_HAS_PLL_INTERNAL_DIV
-                return ret_freq / 2U;
+				return ret_freq / 2U;
 #else
-                return ret_freq;
+				return ret_freq;
 #endif
-            }
-            if (diff > desireFreq - ret_freq) // New PRDIV/VDIV is closer.
-            {
-                diff = desireFreq - ret_freq;
-                ret_prdiv = prdiv_cur;
-                ret_vdiv  = vdiv_cur;
-            }
-        }
-        vdiv_cur ++;
-        if (vdiv_cur <= (FSL_FEATURE_MCG_PLL_VDIV_BASE+31U))
-        {
-            ret_freq += ref_div;
-            if (diff > ret_freq - desireFreq) // New PRDIV/VDIV is closer.
-            {
-                diff = ret_freq - desireFreq;
-                ret_prdiv = prdiv_cur;
-                ret_vdiv  = vdiv_cur;
-            }
-        }
-    }
+			}
+			if (diff > desireFreq - ret_freq) // New PRDIV/VDIV is closer.
+			{
+				diff = desireFreq - ret_freq;
+				ret_prdiv = prdiv_cur;
+				ret_vdiv  = vdiv_cur;
+			}
+		}
+		vdiv_cur ++;
+		if (vdiv_cur <= (FSL_FEATURE_MCG_PLL_VDIV_BASE+31U))
+		{
+			ret_freq += ref_div;
+			if (diff > ret_freq - desireFreq) // New PRDIV/VDIV is closer.
+			{
+				diff = ret_freq - desireFreq;
+				ret_prdiv = prdiv_cur;
+				ret_vdiv  = vdiv_cur;
+			}
+		}
+	}
 
-    if (0xFFFFFFFFU != diff)
-    {
-        /* PRDIV/VDIV found. */
-        *prdiv = ret_prdiv - FSL_FEATURE_MCG_PLL_PRDIV_BASE;
-        *vdiv  = ret_vdiv  - FSL_FEATURE_MCG_PLL_VDIV_BASE;
-        ret_freq = (refFreq / ret_prdiv) * ret_vdiv;
+	if (0xFFFFFFFFU != diff)
+	{
+		/* PRDIV/VDIV found. */
+		*prdiv = ret_prdiv - FSL_FEATURE_MCG_PLL_PRDIV_BASE;
+		*vdiv  = ret_vdiv  - FSL_FEATURE_MCG_PLL_VDIV_BASE;
+		ret_freq = (refFreq / ret_prdiv) * ret_vdiv;
 #if FSL_FEATURE_MCG_HAS_PLL_INTERNAL_DIV
-        return ret_freq / 2U;
+		return ret_freq / 2U;
 #else
-        return ret_freq;
+		return ret_freq;
 #endif
-    }
-    else
-    {
-        return 0U; // No proper PRDIV/VDIV found.
-    }
+	}
+	else
+	{
+		return 0U; // No proper PRDIV/VDIV found.
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -547,18 +547,18 @@ uint32_t CLOCK_HAL_CalculatePllDiv(uint32_t refFreq,
 uint32_t CLOCK_HAL_GetPll0RefFreq(MCG_Type * base)
 {
 #if FSL_FEATURE_MCG_HAS_PLL1
-    /* Use dedicate source. */
-    if (kMcgPllExternalRefClkSelOsc0 == CLOCK_HAL_GetPllRefSel0Mode(base))
-    {
-        return g_xtal0ClkFreq;
-    }
-    else
-    {
-        return g_xtal1ClkFreq;
-    }
+	/* Use dedicate source. */
+	if (kMcgPllExternalRefClkSelOsc0 == CLOCK_HAL_GetPllRefSel0Mode(base))
+	{
+		return g_xtal0ClkFreq;
+	}
+	else
+	{
+		return g_xtal1ClkFreq;
+	}
 #else
-    /* Use OSCSEL frequency. */
-    return CLOCK_HAL_GetMcgExternalClkFreq(base);
+	/* Use OSCSEL frequency. */
+	return CLOCK_HAL_GetMcgExternalClkFreq(base);
 #endif
 }
 
@@ -573,30 +573,30 @@ uint32_t CLOCK_HAL_GetPll0RefFreq(MCG_Type * base)
  *END**************************************************************************/
 uint32_t CLOCK_HAL_GetPll0Clk(MCG_Type * base)
 {
-    uint32_t mcgpll0clk;
-    uint8_t  divider;
+	uint32_t mcgpll0clk;
+	uint8_t  divider;
 
-    /* If PLL0 is not enabled, return 0. */
-    if (!(MCG_BRD_S_PLLST(base) || MCG_BRD_C5_PLLCLKEN0(base)))
-    {
-        return 0U;
-    }
+	/* If PLL0 is not enabled, return 0. */
+	if (!(MCG_BRD_S_PLLST(base) || MCG_BRD_C5_PLLCLKEN0(base)))
+	{
+		return 0U;
+	}
 
-    mcgpll0clk = CLOCK_HAL_GetPll0RefFreq(base);
+	mcgpll0clk = CLOCK_HAL_GetPll0RefFreq(base);
 
-    divider = (FSL_FEATURE_MCG_PLL_PRDIV_BASE + MCG_BRD_C5_PRDIV0(base));
+	divider = (FSL_FEATURE_MCG_PLL_PRDIV_BASE + MCG_BRD_C5_PRDIV0(base));
 
-    /* Calculate the PLL reference clock*/
-    mcgpll0clk /= divider;
-    divider = (MCG_BRD_C6_VDIV0(base) + FSL_FEATURE_MCG_PLL_VDIV_BASE);
+	/* Calculate the PLL reference clock*/
+	mcgpll0clk /= divider;
+	divider = (MCG_BRD_C6_VDIV0(base) + FSL_FEATURE_MCG_PLL_VDIV_BASE);
 
-    /* Calculate the MCG output clock*/
-    mcgpll0clk = (mcgpll0clk * divider);
+	/* Calculate the MCG output clock*/
+	mcgpll0clk = (mcgpll0clk * divider);
 
 #if FSL_FEATURE_MCG_HAS_PLL_INTERNAL_DIV
-    mcgpll0clk >>= 1U;
+	mcgpll0clk >>= 1U;
 #endif
-    return mcgpll0clk;
+	return mcgpll0clk;
 }
 
 /*FUNCTION**********************************************************************
@@ -606,17 +606,17 @@ uint32_t CLOCK_HAL_GetPll0Clk(MCG_Type * base)
  *
  *END**************************************************************************/
 void CLOCK_HAL_EnablePll0InFllMode(MCG_Type * base,
-                                   uint8_t prdiv,
-                                   uint8_t vdiv,
-                                   bool enableInStop)
+								   uint8_t prdiv,
+								   uint8_t vdiv,
+								   bool enableInStop)
 {
-    MCG_WR_C6_VDIV0(base, vdiv);
-    MCG_WR_C5(base, (MCG_RD_C5(base)
-                 & ~(MCG_C5_PLLSTEN0_MASK | MCG_C5_PRDIV0_MASK))
-                 |   MCG_C5_PLLCLKEN0_MASK
-                 |   MCG_C5_PLLSTEN0(enableInStop)
-                 |   MCG_C5_PRDIV0(prdiv));
-    while(!CLOCK_HAL_IsPll0Locked(base)) {} // Wait until locked.
+	MCG_WR_C6_VDIV0(base, vdiv);
+	MCG_WR_C5(base, (MCG_RD_C5(base)
+				 & ~(MCG_C5_PLLSTEN0_MASK | MCG_C5_PRDIV0_MASK))
+				 |   MCG_C5_PLLCLKEN0_MASK
+				 |   MCG_C5_PLLSTEN0(enableInStop)
+				 |   MCG_C5_PRDIV0(prdiv));
+	while(!CLOCK_HAL_IsPll0Locked(base)) {} // Wait until locked.
 }
 
 #else
@@ -629,36 +629,36 @@ void CLOCK_HAL_EnablePll0InFllMode(MCG_Type * base,
  *END**************************************************************************/
 uint32_t CLOCK_HAL_GetPll0RefFreq(MCG_Type * base)
 {
-    uint32_t pll0RefFreq;
-    mcg_pll_ref_clock_source_t pll0RefSrc;
+	uint32_t pll0RefFreq;
+	mcg_pll_ref_clock_source_t pll0RefSrc;
 
-    pll0RefSrc = (mcg_pll_ref_clock_source_t)MCG_RD_C7_PLL32KREFSEL(base);
+	pll0RefSrc = (mcg_pll_ref_clock_source_t)MCG_RD_C7_PLL32KREFSEL(base);
 
-    switch(pll0RefSrc)
-    {
-    case kMcgPllRefClkSrcRtc:
-          pll0RefFreq = g_xtalRtcClkFreq;
-          break;
-    case kMcgPllRefClkSrcSlowIrc:
-          pll0RefFreq = g_xtalRtcClkFreq;
-          break;
-    case kMcgPllRefClkSrcFllExtRef:
-          /* Note: Before enter PEE or PBE mode, the IREFS shall be set to 0 */
-          pll0RefFreq = CLOCK_HAL_GetFllRefClk(base); /* SELECT EXT REF FOR FLL */
-          break;
-    default:
-          pll0RefFreq = 0;
-          break;
-    }
+	switch(pll0RefSrc)
+	{
+	case kMcgPllRefClkSrcRtc:
+		  pll0RefFreq = g_xtalRtcClkFreq;
+		  break;
+	case kMcgPllRefClkSrcSlowIrc:
+		  pll0RefFreq = g_xtalRtcClkFreq;
+		  break;
+	case kMcgPllRefClkSrcFllExtRef:
+		  /* Note: Before enter PEE or PBE mode, the IREFS shall be set to 0 */
+		  pll0RefFreq = CLOCK_HAL_GetFllRefClk(base); /* SELECT EXT REF FOR FLL */
+		  break;
+	default:
+		  pll0RefFreq = 0;
+		  break;
+	}
 
-    if((pll0RefFreq < kMcgConstant31250) || (pll0RefFreq > kMcgConstant39063))
-    {
-        return 0;
-    }
-    else
-    {
-        return pll0RefFreq;
-    }
+	if((pll0RefFreq < kMcgConstant31250) || (pll0RefFreq > kMcgConstant39063))
+	{
+		return 0;
+	}
+	else
+	{
+		return pll0RefFreq;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -672,15 +672,15 @@ uint32_t CLOCK_HAL_GetPll0RefFreq(MCG_Type * base)
  *END**************************************************************************/
 uint32_t CLOCK_HAL_GetPll0Clk(MCG_Type * base)
 {
-    uint32_t mcgpll0clk;
+	uint32_t mcgpll0clk;
 
-    mcgpll0clk = CLOCK_HAL_GetPll0RefFreq(base);
-    mcgpll0clk *= 375U;
+	mcgpll0clk = CLOCK_HAL_GetPll0RefFreq(base);
+	mcgpll0clk *= 375U;
 
 #if FSL_FEATURE_MCG_HAS_PLL_INTERNAL_DIV
-    mcgpll0clk >>= 1U;
+	mcgpll0clk >>= 1U;
 #endif
-    return mcgpll0clk;
+	return mcgpll0clk;
 }
 
 /*FUNCTION**********************************************************************
@@ -690,14 +690,14 @@ uint32_t CLOCK_HAL_GetPll0Clk(MCG_Type * base)
  *
  *END**************************************************************************/
 void CLOCK_HAL_EnablePll0InFllMode(MCG_Type * base,
-                                   bool enableInStop)
+								   bool enableInStop)
 {
-    MCG_WR_C5(base, (MCG_RD_C5(base)
-                 & ~(MCG_C5_PLLSTEN0_MASK))
-                 |   MCG_C5_PLLCLKEN0_MASK
-                 |   MCG_C5_PLLSTEN0(enableInStop)
-              );
-    while(!CLOCK_HAL_IsPll0Locked(base)) {} // Wait until locked.
+	MCG_WR_C5(base, (MCG_RD_C5(base)
+				 & ~(MCG_C5_PLLSTEN0_MASK))
+				 |   MCG_C5_PLLCLKEN0_MASK
+				 |   MCG_C5_PLLSTEN0(enableInStop)
+			  );
+	while(!CLOCK_HAL_IsPll0Locked(base)) {} // Wait until locked.
 }
 #endif
 #endif
@@ -712,14 +712,14 @@ void CLOCK_HAL_EnablePll0InFllMode(MCG_Type * base,
  *END**************************************************************************/
 uint32_t CLOCK_HAL_GetPll1RefFreq(MCG_Type * base)
 {
-    if (kMcgPllExternalRefClkSelOsc0 == CLOCK_HAL_GetPllRefSel1Mode(base))
-    {
-        return g_xtal0ClkFreq;
-    }
-    else
-    {
-        return g_xtal1ClkFreq;
-    }
+	if (kMcgPllExternalRefClkSelOsc0 == CLOCK_HAL_GetPllRefSel1Mode(base))
+	{
+		return g_xtal0ClkFreq;
+	}
+	else
+	{
+		return g_xtal1ClkFreq;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -733,29 +733,29 @@ uint32_t CLOCK_HAL_GetPll1RefFreq(MCG_Type * base)
  *END**************************************************************************/
 uint32_t CLOCK_HAL_GetPll1Clk(MCG_Type * base)
 {
-    uint32_t mcgpll1clk;
-    uint8_t  divider;
+	uint32_t mcgpll1clk;
+	uint8_t  divider;
 
-    /* If PLL1 is not enabled, return 0. */
-    if (!(MCG_BRD_S_PLLST(base) || MCG_BRD_C11_PLLCLKEN1(base)))
-    {
-        return 0U;
-    }
+	/* If PLL1 is not enabled, return 0. */
+	if (!(MCG_BRD_S_PLLST(base) || MCG_BRD_C11_PLLCLKEN1(base)))
+	{
+		return 0U;
+	}
 
-    mcgpll1clk = CLOCK_HAL_GetPll1RefFreq(base);
+	mcgpll1clk = CLOCK_HAL_GetPll1RefFreq(base);
 
-    divider = (FSL_FEATURE_MCG_PLL_PRDIV_BASE + MCG_BRD_C11_PRDIV1(base));
+	divider = (FSL_FEATURE_MCG_PLL_PRDIV_BASE + MCG_BRD_C11_PRDIV1(base));
 
-    /* Calculate the PLL reference clock*/
-    mcgpll1clk /= divider;
-    divider = (MCG_BRD_C12_VDIV1(base) + FSL_FEATURE_MCG_PLL_VDIV_BASE);
+	/* Calculate the PLL reference clock*/
+	mcgpll1clk /= divider;
+	divider = (MCG_BRD_C12_VDIV1(base) + FSL_FEATURE_MCG_PLL_VDIV_BASE);
 
-    /* Calculate the MCG output clock*/
-    mcgpll1clk = (mcgpll1clk * divider); /* divided by 2*/
+	/* Calculate the MCG output clock*/
+	mcgpll1clk = (mcgpll1clk * divider); /* divided by 2*/
 #if FSL_FEATURE_MCG_HAS_PLL_INTERNAL_DIV
-    mcgpll1clk >>= 1U;
+	mcgpll1clk >>= 1U;
 #endif
-    return mcgpll1clk;
+	return mcgpll1clk;
 }
 
 /*FUNCTION**********************************************************************
@@ -765,17 +765,17 @@ uint32_t CLOCK_HAL_GetPll1Clk(MCG_Type * base)
  *
  *END**************************************************************************/
 void CLOCK_HAL_EnablePll1InFllMode(MCG_Type * base,
-                                   uint8_t prdiv,
-                                   uint8_t vdiv,
-                                   bool enableInStop)
+								   uint8_t prdiv,
+								   uint8_t vdiv,
+								   bool enableInStop)
 {
-    MCG_WR_C12_VDIV1(base, vdiv);
-    MCG_WR_C11(base, (MCG_RD_C11(base)
-                  & ~(MCG_C11_PLLSTEN1_MASK | MCG_C11_PRDIV1_MASK))
-                  |   MCG_C11_PLLCLKEN1_MASK
-                  |   MCG_C11_PLLSTEN1(enableInStop)
-                  |   MCG_C11_PRDIV1(prdiv));
-    while(!CLOCK_HAL_IsPll1Locked(base)) {} // Wait until locked.
+	MCG_WR_C12_VDIV1(base, vdiv);
+	MCG_WR_C11(base, (MCG_RD_C11(base)
+				  & ~(MCG_C11_PLLSTEN1_MASK | MCG_C11_PRDIV1_MASK))
+				  |   MCG_C11_PLLCLKEN1_MASK
+				  |   MCG_C11_PLLSTEN1(enableInStop)
+				  |   MCG_C11_PRDIV1(prdiv));
+	while(!CLOCK_HAL_IsPll1Locked(base)) {} // Wait until locked.
 }
 #endif
 
@@ -788,7 +788,7 @@ void CLOCK_HAL_EnablePll1InFllMode(MCG_Type * base,
  *END**************************************************************************/
 uint32_t CLOCK_HAL_GetExtPllClk(MCG_Type * base)
 {
-    return g_extPllClkFreq;
+	return g_extPllClkFreq;
 }
 #endif
 
@@ -803,23 +803,23 @@ uint32_t CLOCK_HAL_GetExtPllClk(MCG_Type * base)
  *END**************************************************************************/
 uint32_t CLOCK_HAL_GetInternalRefClk(MCG_Type * base)
 {
-    uint32_t mcgirclk;
+	uint32_t mcgirclk;
 
-    if (!MCG_BRD_C1_IRCLKEN(base))
-    {
-        return 0U;
-    }
+	if (!MCG_BRD_C1_IRCLKEN(base))
+	{
+		return 0U;
+	}
 
-    if (MCG_BRD_C2_IRCS(base) == kMcgIrcSlow)
-    {
-        /* Slow internal reference clock selected*/
-        mcgirclk = g_slowInternalRefClkFreq;
-    }
-    else
-    {
-        mcgirclk = g_fastInternalRefClkFreq >> MCG_BRD_SC_FCRDIV(base);
-    }
-    return mcgirclk;
+	if (MCG_BRD_C2_IRCS(base) == kMcgIrcSlow)
+	{
+		/* Slow internal reference clock selected*/
+		mcgirclk = g_slowInternalRefClkFreq;
+	}
+	else
+	{
+		mcgirclk = g_fastInternalRefClkFreq >> MCG_BRD_SC_FCRDIV(base);
+	}
+	return mcgirclk;
 }
 
 /*FUNCTION**********************************************************************
@@ -832,17 +832,17 @@ uint32_t CLOCK_HAL_GetInternalRefClk(MCG_Type * base)
  *END**************************************************************************/
 uint32_t CLOCK_HAL_GetFixedFreqClk(MCG_Type * base)
 {
-    uint32_t freq = CLOCK_HAL_GetFllRefClk(base);
+	uint32_t freq = CLOCK_HAL_GetFllRefClk(base);
 
-    /* MCGFFCLK must be no more than MCGOUTCLK/8. */
-    if ((freq) && (freq <= (CLOCK_HAL_GetOutClk(base)/8U)))
-    {
-        return freq;
-    }
-    else
-    {
-        return 0U;
-    }
+	/* MCGFFCLK must be no more than MCGOUTCLK/8. */
+	if ((freq) && (freq <= (CLOCK_HAL_GetOutClk(base)/8U)))
+	{
+		return freq;
+	}
+	else
+	{
+		return 0U;
+	}
 }
 
 /*FUNCTION**********************************************************************
@@ -856,46 +856,46 @@ uint32_t CLOCK_HAL_GetFixedFreqClk(MCG_Type * base)
  *END**************************************************************************/
 uint32_t CLOCK_HAL_GetOutClk(MCG_Type * base)
 {
-    uint32_t mcgoutclk;
-    mcg_clkout_stat_t src = CLOCK_HAL_GetClkOutStat(base);
+	uint32_t mcgoutclk;
+	mcg_clkout_stat_t src = CLOCK_HAL_GetClkOutStat(base);
 
-    switch (src)
-    {
+	switch (src)
+	{
 #if FSL_FEATURE_MCG_HAS_PLL
-        case kMcgClkOutStatPll:
+		case kMcgClkOutStatPll:
 #if FSL_FEATURE_MCG_HAS_PLL1
-            if (CLOCK_HAL_GetPllClkSelMode(base) == kMcgPllClkSelPll1)
-            {
-                mcgoutclk = CLOCK_HAL_GetPll1Clk(base);
-            }
-            else
+			if (CLOCK_HAL_GetPllClkSelMode(base) == kMcgPllClkSelPll1)
+			{
+				mcgoutclk = CLOCK_HAL_GetPll1Clk(base);
+			}
+			else
 #endif
 #if FSL_FEATURE_MCG_HAS_EXTERNAL_PLL
-            if (CLOCK_HAL_GetPllClkSelMode(base) == kMcgPllClkSelExtPll)
-            {
-                mcgoutclk = CLOCK_HAL_GetExtPllClk(base);
-            }
-            else
+			if (CLOCK_HAL_GetPllClkSelMode(base) == kMcgPllClkSelExtPll)
+			{
+				mcgoutclk = CLOCK_HAL_GetExtPllClk(base);
+			}
+			else
 #endif
-            {
-                mcgoutclk = CLOCK_HAL_GetPll0Clk(base);
-            }
-            break;
-#endif                                
-        case kMcgClkOutStatFll:
-            mcgoutclk = CLOCK_HAL_GetFllClk(base);
-            break;
-        case kMcgClkOutStatInternal:  /* Internal clock. */
-            mcgoutclk = CLOCK_HAL_GetInternalRefClk(base);
-            break;
-        case kMcgClkOutStatExternal:  /* External clock. */
-            mcgoutclk = CLOCK_HAL_GetMcgExternalClkFreq(base);
-            break;
-        default:
-            mcgoutclk = 0U;
-            break;
-    }
-    return mcgoutclk;
+			{
+				mcgoutclk = CLOCK_HAL_GetPll0Clk(base);
+			}
+			break;
+#endif
+		case kMcgClkOutStatFll:
+			mcgoutclk = CLOCK_HAL_GetFllClk(base);
+			break;
+		case kMcgClkOutStatInternal:  /* Internal clock. */
+			mcgoutclk = CLOCK_HAL_GetInternalRefClk(base);
+			break;
+		case kMcgClkOutStatExternal:  /* External clock. */
+			mcgoutclk = CLOCK_HAL_GetMcgExternalClkFreq(base);
+			break;
+		default:
+			mcgoutclk = 0U;
+			break;
+	}
+	return mcgoutclk;
 }
 
 /*FUNCTION**********************************************************************
@@ -907,17 +907,17 @@ uint32_t CLOCK_HAL_GetOutClk(MCG_Type * base)
  *
  *END**************************************************************************/
 void CLOCK_HAL_SetOsc0Mode(MCG_Type * base,
-                           osc_range_t range,
-                           osc_gain_t hgo,
-                           osc_src_t erefs)
+						   osc_range_t range,
+						   osc_gain_t hgo,
+						   osc_src_t erefs)
 {
-    MCG_WR_C2(base, (MCG_RD_C2(base)
-                  & ~(MCG_C2_RANGE_MASK  |
-                      MCG_C2_HGO_MASK    |
-                      MCG_C2_EREFS_MASK))
-                  |  (MCG_C2_RANGE(range)|
-                      MCG_C2_HGO(hgo)    |
-                      MCG_C2_EREFS(erefs)));
+	MCG_WR_C2(base, (MCG_RD_C2(base)
+				  & ~(MCG_C2_RANGE_MASK  |
+					  MCG_C2_HGO_MASK    |
+					  MCG_C2_EREFS_MASK))
+				  |  (MCG_C2_RANGE(range)|
+					  MCG_C2_HGO(hgo)    |
+					  MCG_C2_EREFS(erefs)));
 }
 
 /*FUNCTION**********************************************************************
@@ -928,8 +928,8 @@ void CLOCK_HAL_SetOsc0Mode(MCG_Type * base,
  *END**************************************************************************/
 void CLOCK_HAL_EnableOsc0Monitor(MCG_Type * base, mcg_osc_monitor_mode_t mode)
 {
-    MCG_BWR_C2_LOCRE0(base, mode);
-    MCG_BWR_C6_CME0(base, 1U);
+	MCG_BWR_C2_LOCRE0(base, mode);
+	MCG_BWR_C6_CME0(base, 1U);
 }
 
 #if FSL_FEATURE_MCG_HAS_RTC_32K
@@ -941,8 +941,8 @@ void CLOCK_HAL_EnableOsc0Monitor(MCG_Type * base, mcg_osc_monitor_mode_t mode)
  *END**************************************************************************/
 void CLOCK_HAL_EnableRtcOscMonitor(MCG_Type * base, mcg_osc_monitor_mode_t mode)
 {
-    MCG_BWR_C8_LOCRE1(base, mode);
-    MCG_BWR_C8_CME1(base, 1U);
+	MCG_BWR_C8_LOCRE1(base, mode);
+	MCG_BWR_C8_CME1(base, 1U);
 }
 #endif
 
@@ -956,17 +956,17 @@ void CLOCK_HAL_EnableRtcOscMonitor(MCG_Type * base, mcg_osc_monitor_mode_t mode)
  *
  *END**************************************************************************/
 void CLOCK_HAL_SetOsc1Mode(MCG_Type * base,
-                           osc_range_t range,
-                           osc_gain_t hgo,
-                           osc_src_t erefs)
+						   osc_range_t range,
+						   osc_gain_t hgo,
+						   osc_src_t erefs)
 {
-    MCG_WR_C10(base, (MCG_RD_C10(base)
-                  & ~(MCG_C10_RANGE1_MASK  |
-                      MCG_C10_HGO1_MASK    |
-                      MCG_C10_EREFS1_MASK))
-                  |  (MCG_C10_RANGE1(range)|
-                      MCG_C10_HGO1(hgo)    |
-                      MCG_C10_EREFS1(erefs)));
+	MCG_WR_C10(base, (MCG_RD_C10(base)
+				  & ~(MCG_C10_RANGE1_MASK  |
+					  MCG_C10_HGO1_MASK    |
+					  MCG_C10_EREFS1_MASK))
+				  |  (MCG_C10_RANGE1(range)|
+					  MCG_C10_HGO1(hgo)    |
+					  MCG_C10_EREFS1(erefs)));
 }
 
 /*FUNCTION**********************************************************************
@@ -977,8 +977,8 @@ void CLOCK_HAL_SetOsc1Mode(MCG_Type * base,
  *END**************************************************************************/
 void CLOCK_HAL_EnableOsc1Monitor(MCG_Type * base, mcg_osc_monitor_mode_t mode)
 {
-    MCG_BWR_C10_LOCRE2(base, mode);
-    MCG_BWR_C12_CME2(base, 1U);
+	MCG_BWR_C10_LOCRE2(base, mode);
+	MCG_BWR_C12_CME2(base, 1U);
 }
 #endif
 
@@ -991,8 +991,8 @@ void CLOCK_HAL_EnableOsc1Monitor(MCG_Type * base, mcg_osc_monitor_mode_t mode)
  *END**************************************************************************/
 void CLOCK_HAL_EnableExtPllMonitor(MCG_Type * base, mcg_osc_monitor_mode_t mode)
 {
-    MCG_BWR_C9_PLL_LOCRE(base, mode);
-    MCG_BWR_C9_PLL_CME(base, 1U);
+	MCG_BWR_C9_PLL_LOCRE(base, mode);
+	MCG_BWR_C9_PLL_CME(base, 1U);
 }
 #endif
 
@@ -1005,85 +1005,84 @@ void CLOCK_HAL_EnableExtPllMonitor(MCG_Type * base, mcg_osc_monitor_mode_t mode)
  *
  *END**************************************************************************/
 mcg_atm_error_t CLOCK_HAL_TrimInternalRefClk(MCG_Type* base,
-                                             uint32_t  extFreq,
-                                             uint32_t  desireFreq,
-                                             uint32_t* actualFreq,
-                                             mcg_atm_select_t atms)
+											 uint32_t  extFreq,
+											 uint32_t  desireFreq,
+											 uint32_t* actualFreq,
+											 mcg_atm_select_t atms)
 {
-    uint32_t multi;    /* extFreq / desireFreq */
-    uint32_t actv;     /* Auto trim value. */
+	uint32_t multi;    /* extFreq / desireFreq */
+	uint32_t actv;     /* Auto trim value. */
 
-    if ((extFreq > kMcgConstant16000000) ||
-        (extFreq < kMcgConstant8000000))
-    {
-        return kMcgAtmErrorBusClockRange;
-    }
+	if ((extFreq > kMcgConstant16000000) ||
+		(extFreq < kMcgConstant8000000))
+	{
+		return kMcgAtmErrorBusClockRange;
+	}
 
-    /* Check desired frequency range. */
-    if (kMcgAtmSel4m == atms)
-    {
-        if ((desireFreq < 3000000U) || (desireFreq > 5000000U))
-        {
-            return kMcgAtmErrorDesireFreqRange;
-        }
-    }
-    else
-    {
-        if ((desireFreq < 31250U) || (desireFreq > 39063U))
-        {
-            return kMcgAtmErrorDesireFreqRange;
-        }
-    }
+	/* Check desired frequency range. */
+	if (kMcgAtmSel4m == atms)
+	{
+		if ((desireFreq < 3000000U) || (desireFreq > 5000000U))
+		{
+			return kMcgAtmErrorDesireFreqRange;
+		}
+	}
+	else
+	{
+		if ((desireFreq < 31250U) || (desireFreq > 39063U))
+		{
+			return kMcgAtmErrorDesireFreqRange;
+		}
+	}
 
-    /*
-     * Make sure internal reference clock is not used to generate bus clock.
-     * Just need to check C1[IREFS].
-     */
-    if (kMcgFllSrcInternal == MCG_BRD_C1_IREFS(base))
-    {
-        return kMcgAtmErrorIrcUsed;
-    }
+	/*
+	 * Make sure internal reference clock is not used to generate bus clock.
+	 * Just need to check C1[IREFS].
+	 */
+	if (kMcgFllSrcInternal == MCG_BRD_C1_IREFS(base))
+	{
+		return kMcgAtmErrorIrcUsed;
+	}
 
-    multi  = extFreq / desireFreq;
-    actv = multi * 21U;
+	multi  = extFreq / desireFreq;
+	actv = multi * 21U;
 
-    if (kMcgAtmSel4m == atms)
-    {
-        actv *= 128U;
-    }
+	if (kMcgAtmSel4m == atms)
+	{
+		actv *= 128U;
+	}
 
-    /* Now begin to start trim. */
-    MCG_WR_ATCVL(base, (actv & 0xFFU));
-    MCG_WR_ATCVH(base, ((actv >> 8U) & 0xFFU));
+	/* Now begin to start trim. */
+	MCG_WR_ATCVL(base, (actv & 0xFFU));
+	MCG_WR_ATCVH(base, ((actv >> 8U) & 0xFFU));
 
-    MCG_BWR_SC_ATMS(base, atms);
+	MCG_BWR_SC_ATMS(base, atms);
 
-    MCG_BWR_SC_ATME(base, 1U);
+	MCG_BWR_SC_ATME(base, 1U);
 
-    while (MCG_BRD_SC_ATME(base)) {}
+	while (MCG_BRD_SC_ATME(base)) {}
 
-    /* Error occurs? */
-    if (CLOCK_HAL_IsAutoTrimMachineFailed(base))
-    {
-        return kMcgAtmErrorHardwareFail;
-    }
+	/* Error occurs? */
+	if (CLOCK_HAL_IsAutoTrimMachineFailed(base))
+	{
+		return kMcgAtmErrorHardwareFail;
+	}
 
-    *actualFreq = extFreq / multi;
+	*actualFreq = extFreq / multi;
 
-    if (kMcgAtmSel4m == atms)
-    {
-        g_fastInternalRefClkFreq = *actualFreq;
-    }
-    else
-    {
-        g_slowInternalRefClkFreq = *actualFreq;
-    }
+	if (kMcgAtmSel4m == atms)
+	{
+		g_fastInternalRefClkFreq = *actualFreq;
+	}
+	else
+	{
+		g_slowInternalRefClkFreq = *actualFreq;
+	}
 
-    return kMcgAtmErrorNone;
+	return kMcgAtmErrorNone;
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

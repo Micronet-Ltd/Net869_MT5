@@ -29,13 +29,13 @@
 /*!
  * \cond DOXYGEN_PRIVATE
  * \brief This function performs any PSP specific destruction for a task context
- * 
+ *
  * \param[in] td_ptr the task descriptor whose stack needs to be destroyed
  */
 void _psp_destroy_stack_frame
 (
-    /* [IN] the task descriptor whose stack needs to be destroyed */
-    TD_STRUCT_PTR td_ptr
+	/* [IN] the task descriptor whose stack needs to be destroyed */
+	TD_STRUCT_PTR td_ptr
 )
 {/* Body */
 }/* Endbody */

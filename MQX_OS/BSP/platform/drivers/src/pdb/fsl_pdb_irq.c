@@ -40,49 +40,49 @@
 
 void PDB0_PDB1_IRQHandler(void)
 {
-    if (CLOCK_SYS_GetPdbGateCmd(0U))
-    {
-      if ( PDB_DRV_GetTimerIntFlag(0U))
-      {
-        /* Add user-defined ISR for PDB0. */
+	if (CLOCK_SYS_GetPdbGateCmd(0U))
+	{
+	  if ( PDB_DRV_GetTimerIntFlag(0U))
+	  {
+		/* Add user-defined ISR for PDB0. */
 
-        /* Clear Flag */
-        PDB_DRV_ClearTimerIntFlag(0U);
-      }
-    }
-    if (CLOCK_SYS_GetPdbGateCmd(1U))
-    {
-      if ( PDB_DRV_GetTimerIntFlag(1U))
-      {
-        /* Add user-defined ISR for PDB1. */
-      
-        /* Clear Flag */
-         PDB_DRV_ClearTimerIntFlag(1U);
-      }
-    }
+		/* Clear Flag */
+		PDB_DRV_ClearTimerIntFlag(0U);
+	  }
+	}
+	if (CLOCK_SYS_GetPdbGateCmd(1U))
+	{
+	  if ( PDB_DRV_GetTimerIntFlag(1U))
+	  {
+		/* Add user-defined ISR for PDB1. */
+
+		/* Clear Flag */
+		 PDB_DRV_ClearTimerIntFlag(1U);
+	  }
+	}
 }
 #else
 void PDB0_IRQHandler(void)
 {
-    /* Add user-defined ISR for PDB0. */
+	/* Add user-defined ISR for PDB0. */
 
-    /* Clear Flags. */
-    if ( PDB_DRV_GetTimerIntFlag(0U))
-    {
-        PDB_DRV_ClearTimerIntFlag(0U);
-    }
+	/* Clear Flags. */
+	if ( PDB_DRV_GetTimerIntFlag(0U))
+	{
+		PDB_DRV_ClearTimerIntFlag(0U);
+	}
 }
 
 #if (PDB_INSTANCE_COUNT > 1)
 void PDB1_IRQHandler(void)
 {
-    /* Add user-defined ISR for PDB1. */
+	/* Add user-defined ISR for PDB1. */
 
-    /* Clear Flags. */
-    if ( PDB_DRV_GetTimerIntFlag(1U))
-    {
-        PDB_DRV_ClearTimerIntFlag(1U);
-    }
+	/* Clear Flags. */
+	if ( PDB_DRV_GetTimerIntFlag(1U))
+	{
+		PDB_DRV_ClearTimerIntFlag(1U);
+	}
 }
 #endif
 #endif /* FSL_FEATURE_PDB_HAS_SHARED_IRQ_HANDLER */

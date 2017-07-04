@@ -63,7 +63,9 @@ bool rtc_receive_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t 
 	}
 
 	if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (RTC_I2C_PORT, &rtc_device_g, cmd,  cmd_size, data, data_size, RTC_TIME_OUT)) != kStatus_I2C_Success)
+	{
 		printf ("rtc_receive_data: ERROR: Could not receive command 0x%X (I2C error code %d)\n", *cmd, i2c_status);
+	}
 
 	_mutex_unlock(&g_i2c0_mutex);
 	return (i2c_status == kStatus_I2C_Success);
@@ -108,11 +110,11 @@ bool rtc_check_oscillator(void)
 	if ((flags & 0x4))
 	{
 		rtc_oscillator_kick_start();
-        /* The oscillator must start and have run for at least 4 seconds before 
-        attempting to reset the OF bit to 0 pg 44 of RTC data sheet */
-        printf("rtc_check_oscillator: Sleep 4 seconds before clearing oscillator flag \n");
-        _time_delay(4100);
-        
+		/* The oscillator must start and have run for at least 4 seconds before
+		attempting to reset the OF bit to 0 pg 44 of RTC data sheet */
+		printf("rtc_check_oscillator: Sleep 4 seconds before clearing oscillator flag \n");
+		_time_delay(4100);
+
 		/* clear oscillator flag */
 		flags &= ~0x4;
 		if (!rtc_send_data (&cmd_buff,  1, &flags, 1))
@@ -212,6 +214,9 @@ void rtc_init(void)
 	{
 		printf("rtc_init: battery low bit set \n");
 	}
+#ifdef RTC_DEBUG	
+	rtc_test();
+#endif
 }
 
 /* dt_str format : year-month-day hour:minute:seconds.decisecond (Always GMT)
@@ -248,8 +253,10 @@ void rtc_convert_bcd_to_string(uint8_t * dt_bcd, char * dt_str, bool print_time)
 void rtc_get_time(uint8_t * dt_bcd)
 {
 	uint8_t cmd_buff = RTC_DECI_SEC_ADDR;
-	//char dt_str[RTC_STRING_SIZE] = {0};
-
+	uint8_t i = 0;
+#ifdef RTC_DEBUG
+	char dt_str[RTC_STRING_SIZE] = {0};
+#endif
 	if (!rtc_check_oscillator())
 	{
 		printf("rtc_get: oscillator not good \n");
@@ -264,9 +271,16 @@ void rtc_get_time(uint8_t * dt_bcd)
 	if (!rtc_receive_data (&cmd_buff,  1, dt_bcd, 8))
 	{
 		printf("rtc_get: read time failed \n");
+		/* Fill RTC return with zeros on failure */
+		for(i=0; i<8; i++)
+		{
+			dt_bcd=0x0;
+		}
 		return;
 	}
-	//rtc_convert_bcd_to_string(dt_bcd, dt_str, TRUE);
+#ifdef RTC_DEBUG
+	rtc_convert_bcd_to_string(dt_bcd, dt_str, TRUE);
+#endif
 	return;
 }
 
@@ -324,6 +338,7 @@ void rtc_set_cal_register(uint8_t *digital_cal, uint8_t *analog_cal)
 void rtc_test(void)
 {
 	uint8_t dt_bcd[RTC_BCD_SIZE] = {0};
+	char dt_str[RTC_STRING_SIZE] = {0};
 	// dt_str : 2016-03-29 19:09:06.58
 	dt_bcd[0] = 0x58; /* DeciSecond */
 	dt_bcd[1] = 0x06; /* Seconds */
@@ -333,8 +348,9 @@ void rtc_test(void)
 	dt_bcd[5] = 0x29 ; /* Day of month */
 	dt_bcd[6] = 0x03; /* Month */
 	dt_bcd[7] = 0x16; /* Year */
-	rtc_set_time(dt_bcd);
+	//rtc_set_time(dt_bcd);
 	_time_delay(1000);
 	rtc_get_time(dt_bcd);
+	rtc_convert_bcd_to_string(dt_bcd, dt_str, TRUE);
 }
 #endif

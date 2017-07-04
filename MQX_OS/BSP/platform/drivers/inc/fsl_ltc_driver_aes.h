@@ -57,14 +57,14 @@
 
 /*! @brief Type of AES key for ECB and CBC decrypt operations. */
 typedef enum _ltc_drv_aes_key_t {
-    kLtcEncryptKey      = 0U,  /*!< Input key is an encrypt key (the same key which has been used for encrypt operation) */
-    kLtcDecryptKey      = 1U,  /*!< Input key is a decrypt key (the key has been obtained from LTC_DRV_aes_generate_decrypt_key()). */
+	kLtcEncryptKey      = 0U,  /*!< Input key is an encrypt key (the same key which has been used for encrypt operation) */
+	kLtcDecryptKey      = 1U,  /*!< Input key is a decrypt key (the key has been obtained from LTC_DRV_aes_generate_decrypt_key()). */
 } ltc_drv_aes_key_t;
 
 /*******************************************************************************
  * API
  ******************************************************************************/
- 
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -84,12 +84,12 @@ extern "C" {
  * into the DPA Mask Seed register (DPAMS), or software can opt to provide the new seed earlier or
  * later, or not at all. DPA resistance continues even if the DPA mask is never reseeded.
  *
- * @param instance LTC module instance number. 
+ * @param instance LTC module instance number.
  * @param mask The DPA mask seed.
  */
 void LTC_DRV_SetDPAMaskSeed(uint32_t instance, uint32_t mask);
 #endif
-                             
+
 /*!
  * @brief Transforms an AES encrypt key (forward AES) into the decrypt key (inverse AES).
  *
@@ -97,16 +97,16 @@ void LTC_DRV_SetDPAMaskSeed(uint32_t instance, uint32_t mask);
  * The key derived by this function can be used as a direct load decrypt key
  * for AES ECB and CBC decryption operations (keyType argument).
  *
- * @param instance LTC module instance number. 
+ * @param instance LTC module instance number.
  * @param encryptKey Input key for decrypt key transformation
  * @param[out] decryptKey Output key, the decrypt form of the AES key.
  * @param keySize Size of the input key and output key in bytes. Must be 16, 24, or 32.
  * @return Status from key generation operation
  */
-ltc_status_t LTC_DRV_aes_generate_decrypt_key(uint32_t instance, 
-                                              const uint8_t *encryptKey,
-                                              uint8_t *decryptKey,
-                                              uint32_t keySize);
+ltc_status_t LTC_DRV_aes_generate_decrypt_key(uint32_t instance,
+											  const uint8_t *encryptKey,
+											  uint8_t *decryptKey,
+											  uint32_t keySize);
 
 /*!
  * @brief Encrypts AES using the ECB block mode.
@@ -116,15 +116,15 @@ ltc_status_t LTC_DRV_aes_generate_decrypt_key(uint32_t instance,
  * @param instance LTC module instance number.
  * @param plaintext Input single block (128-bits) of plain text to encrypt
  * @param key Input key to use for encryption
- * @param keySize Size of the input key, in bytes. Must be 16, 24, or 32. 
- * @param[out] ciphertext Ouput single block (128-bits) of cipher text 
+ * @param keySize Size of the input key, in bytes. Must be 16, 24, or 32.
+ * @param[out] ciphertext Ouput single block (128-bits) of cipher text
  * @return Status from encrypt/decrypt operation
  */
-ltc_status_t LTC_DRV_aes_encrypt_ecb(uint32_t instance, 
-                                     const uint8_t plaintext[16],
-                                     const uint8_t *key,
-                                     uint32_t keySize,
-                                     uint8_t ciphertext[16]);
+ltc_status_t LTC_DRV_aes_encrypt_ecb(uint32_t instance,
+									 const uint8_t plaintext[16],
+									 const uint8_t *key,
+									 uint32_t keySize,
+									 uint8_t ciphertext[16]);
 
 /*!
  * @brief Decrypts AES using ECB block mode.
@@ -140,11 +140,11 @@ ltc_status_t LTC_DRV_aes_encrypt_ecb(uint32_t instance,
  * @return Status from encrypt/decrypt operation
  */
 ltc_status_t LTC_DRV_aes_decrypt_ecb(uint32_t instance,
-                                     const uint8_t ciphertext[16],
-                                     const uint8_t *key,
-                                     uint32_t keySize,
-                                     ltc_drv_aes_key_t keyType,
-                                     uint8_t plaintext[16]);
+									 const uint8_t ciphertext[16],
+									 const uint8_t *key,
+									 uint32_t keySize,
+									 ltc_drv_aes_key_t keyType,
+									 uint8_t plaintext[16]);
 
 /*!
  * @brief Encrypts AES using CBC block mode.
@@ -161,12 +161,12 @@ ltc_status_t LTC_DRV_aes_decrypt_ecb(uint32_t instance,
  * @return Status from encrypt/decrypt operation
  */
 ltc_status_t LTC_DRV_aes_encrypt_cbc(uint32_t instance,
-                                     const uint8_t *plaintext,
-                                     uint32_t inputSize,
-                                     uint8_t iv[LTC_AES_IV_SIZE],
-                                     const uint8_t *key,
-                                     uint32_t keySize,
-                                     uint8_t *ciphertext);
+									 const uint8_t *plaintext,
+									 uint32_t inputSize,
+									 uint8_t iv[LTC_AES_IV_SIZE],
+									 const uint8_t *key,
+									 uint32_t keySize,
+									 uint8_t *ciphertext);
 
 /*!
  * @brief Decrypts AES using CBC block mode.
@@ -184,22 +184,22 @@ ltc_status_t LTC_DRV_aes_encrypt_cbc(uint32_t instance,
  * @return Status from encrypt/decrypt operation
  */
 ltc_status_t LTC_DRV_aes_decrypt_cbc(uint32_t instance,
-                                     const uint8_t *ciphertext,
-                                     uint32_t inputSize,
-                                     uint8_t iv[LTC_AES_IV_SIZE],
-                                     const uint8_t *key,
-                                     uint32_t keySize,
-                                     ltc_drv_aes_key_t keyType,
-                                     uint8_t *plaintext);
+									 const uint8_t *ciphertext,
+									 uint32_t inputSize,
+									 uint8_t iv[LTC_AES_IV_SIZE],
+									 const uint8_t *key,
+									 uint32_t keySize,
+									 ltc_drv_aes_key_t keyType,
+									 uint8_t *plaintext);
 
 /*! AES CTR decrypt is mapped to the AES CTR generic operation */
 #define LTC_DRV_aes_decrypt_ctr(instance, input, inputSize, counter, key, keySize, output, counterlast, szLeft) \
-        LTC_DRV_aes_ctr(instance, input, inputSize, counter, key, keySize, output, counterlast, szLeft)
-        
+		LTC_DRV_aes_ctr(instance, input, inputSize, counter, key, keySize, output, counterlast, szLeft)
+
 /*! AES CTR encrypt is mapped to the AES CTR generic operation */
 #define LTC_DRV_aes_encrypt_ctr(instance, input, inputSize, counter, key, keySize, output, counterlast, szLeft) \
-        LTC_DRV_aes_ctr(instance, input, inputSize, counter, key, keySize, output, counterlast, szLeft)
-                                     
+		LTC_DRV_aes_ctr(instance, input, inputSize, counter, key, keySize, output, counterlast, szLeft)
+
 /*!
  * @brief Encrypts or decrypts AES using CTR block mode.
  *
@@ -221,16 +221,16 @@ ltc_status_t LTC_DRV_aes_decrypt_cbc(uint32_t instance,
  * @return Status from encrypt/decrypt operation
  */
 ltc_status_t LTC_DRV_aes_ctr(uint32_t instance,
-                             const uint8_t *input,
-                             uint32_t inputSize,
-                             uint8_t counter[16],
-                             const uint8_t *key,
-                             uint32_t keySize,
-                             uint8_t *output,
-                             uint8_t counterlast[16],
-                             uint32_t *szLeft);
+							 const uint8_t *input,
+							 uint32_t inputSize,
+							 uint8_t counter[16],
+							 const uint8_t *key,
+							 uint32_t keySize,
+							 uint8_t *output,
+							 uint8_t counterlast[16],
+							 uint32_t *szLeft);
 
-#if FSL_FEATURE_LTC_HAS_GCM                                     
+#if FSL_FEATURE_LTC_HAS_GCM
 /*!
  * @brief Encrypts AES using GCM block mode.
  *
@@ -247,21 +247,21 @@ ltc_status_t LTC_DRV_aes_ctr(uint32_t instance,
  * @param keySize Size of the input key, in bytes. Must be 16, 24, or 32.
  * @param[out] ciphertext Output cipher text.
  * @param[out] tag Output hash tag. Set to NULL to skip tag processing.
- * @param tagSize Input size of the tag to generate, in bytes. Must be 4,8,12,13,14,15 or 16. 
+ * @param tagSize Input size of the tag to generate, in bytes. Must be 4,8,12,13,14,15 or 16.
  * @return Status from encrypt/decrypt operation
  */
-ltc_status_t LTC_DRV_aes_encrypt_tag_gcm(uint32_t instance, 
-                                         const uint8_t *plaintext,
-                                         uint32_t inputSize,
-                                         const uint8_t *iv,
-                                         uint32_t ivSize,
-                                         const uint8_t *aad,
-                                         uint32_t aadSize,
-                                         const uint8_t *key,
-                                         uint32_t keySize,
-                                         uint8_t *ciphertext,
-                                         uint8_t *tag,
-                                         uint32_t tagSize);
+ltc_status_t LTC_DRV_aes_encrypt_tag_gcm(uint32_t instance,
+										 const uint8_t *plaintext,
+										 uint32_t inputSize,
+										 const uint8_t *iv,
+										 uint32_t ivSize,
+										 const uint8_t *aad,
+										 uint32_t aadSize,
+										 const uint8_t *key,
+										 uint32_t keySize,
+										 uint8_t *ciphertext,
+										 uint8_t *tag,
+										 uint32_t tagSize);
 
 /*!
  * @brief Decrypts AES using GCM block mode.
@@ -276,24 +276,24 @@ ltc_status_t LTC_DRV_aes_encrypt_tag_gcm(uint32_t instance,
  * @param aad Input additional authentication data
  * @param aadSize Input size in bytes of AAD
  * @param key Input key to use for encryption
- * @param keySize Size of the input key, in bytes. Must be 16, 24, or 32. 
- * @param[out] plaintext Output plain text. 
+ * @param keySize Size of the input key, in bytes. Must be 16, 24, or 32.
+ * @param[out] plaintext Output plain text.
  * @param tag Input hash tag to compare. Set to NULL to skip tag processing.
  * @param tagSize Input size of the tag, in bytes. Must be 4, 8, 12, 13, 14, 15, or 16.
  * @return Status from encrypt/decrypt operation
  */
-ltc_status_t LTC_DRV_aes_decrypt_tag_gcm(uint32_t instance, 
-                                         const uint8_t *ciphertext,
-                                         uint32_t inputSize,
-                                         const uint8_t *iv,
-                                         uint32_t ivSize,
-                                         const uint8_t *aad,
-                                         uint32_t aadSize,
-                                         const uint8_t *key,
-                                         uint32_t keySize,
-                                         uint8_t *plaintext,
-                                         const uint8_t *tag,
-                                         uint32_t tagSize);
+ltc_status_t LTC_DRV_aes_decrypt_tag_gcm(uint32_t instance,
+										 const uint8_t *ciphertext,
+										 uint32_t inputSize,
+										 const uint8_t *iv,
+										 uint32_t ivSize,
+										 const uint8_t *aad,
+										 uint32_t aadSize,
+										 const uint8_t *key,
+										 uint32_t keySize,
+										 uint8_t *plaintext,
+										 const uint8_t *tag,
+										 uint32_t tagSize);
 #endif /* FSL_FEATURE_LTC_HAS_GCM */
 
 /*!
@@ -315,18 +315,18 @@ ltc_status_t LTC_DRV_aes_decrypt_tag_gcm(uint32_t instance,
  * @param tagSize Input size of the tag to generate, in bytes. Must be 4, 6, 8, 10, 12, 14, or 16.
  * @return Status from encrypt/decrypt operation
  */
-ltc_status_t LTC_DRV_aes_encrypt_tag_ccm(uint32_t instance, 
-                                         const uint8_t *plaintext,
-                                         uint32_t inputSize,
-                                         const uint8_t *iv,
-                                         uint32_t ivSize,
-                                         const uint8_t *aad,
-                                         uint32_t aadSize,
-                                         const uint8_t *key,
-                                         uint32_t keySize,
-                                         uint8_t *ciphertext,
-                                         uint8_t *tag,
-                                         uint32_t tagSize);
+ltc_status_t LTC_DRV_aes_encrypt_tag_ccm(uint32_t instance,
+										 const uint8_t *plaintext,
+										 uint32_t inputSize,
+										 const uint8_t *iv,
+										 uint32_t ivSize,
+										 const uint8_t *aad,
+										 uint32_t aadSize,
+										 const uint8_t *key,
+										 uint32_t keySize,
+										 uint8_t *ciphertext,
+										 uint8_t *tag,
+										 uint32_t tagSize);
 
 /*!
  * @brief Decrypts AES using CCM block mode.
@@ -339,26 +339,26 @@ ltc_status_t LTC_DRV_aes_encrypt_tag_ccm(uint32_t instance,
  * @param iv Nonce
  * @param ivSize Length of the Nonce in bytes. Must be 7, 8, 9, 10, 11, 12, or 13.
  * @param aad Input additional authentication data. Can be NULL if aadSize is zero.
- * @param aadSize Input size in bytes of AAD. Zero means data mode only (authentication skipped). 
+ * @param aadSize Input size in bytes of AAD. Zero means data mode only (authentication skipped).
  * @param key Input key to use for decryption
  * @param keySize Size of the input key, in bytes. Must be 16, 24, or 32.
- * @param[out] plaintext Output plain text. 
+ * @param[out] plaintext Output plain text.
  * @param tag Received tag. Set to NULL to skip tag processing.
  * @param tagSize Input size of the received tag to compare with the computed tag, in bytes. Must be 4, 6, 8, 10, 12, 14, or 16.
  * @return Status from encrypt/decrypt operation
  */
-ltc_status_t LTC_DRV_aes_decrypt_tag_ccm(uint32_t instance, 
-                                         const uint8_t *ciphertext,
-                                         uint32_t inputSize,
-                                         const uint8_t *iv,
-                                         uint32_t ivSize,
-                                         const uint8_t *aad,
-                                         uint32_t aadSize,
-                                         const uint8_t *key,
-                                         uint32_t keySize,
-                                         uint8_t *plaintext,
-                                         const uint8_t *tag,
-                                         uint32_t tagSize);
+ltc_status_t LTC_DRV_aes_decrypt_tag_ccm(uint32_t instance,
+										 const uint8_t *ciphertext,
+										 uint32_t inputSize,
+										 const uint8_t *iv,
+										 uint32_t ivSize,
+										 const uint8_t *aad,
+										 uint32_t aadSize,
+										 const uint8_t *key,
+										 uint32_t keySize,
+										 uint8_t *plaintext,
+										 const uint8_t *tag,
+										 uint32_t tagSize);
 
 #if defined(__cplusplus)
 }

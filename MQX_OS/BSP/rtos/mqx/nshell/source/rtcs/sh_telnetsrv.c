@@ -49,81 +49,81 @@ extern const SHELL_COMMAND_STRUCT Telnetsrv_shell_commands[];
 
 int32_t Shell_telnetsrv(int32_t argc, char *argv[])
 {
-    uint32_t  result;
-    bool      print_usage;
-    bool      shorthelp = FALSE;
-    bool      print_status = FALSE;
-    int32_t   return_code = SHELL_EXIT_SUCCESS;
-    char      *status_string = NULL;
-    SHELL_CONTEXT_PTR shell_ptr;
+	uint32_t  result;
+	bool      print_usage;
+	bool      shorthelp = FALSE;
+	bool      print_status = FALSE;
+	int32_t   return_code = SHELL_EXIT_SUCCESS;
+	char      *status_string = NULL;
+	SHELL_CONTEXT_PTR shell_ptr;
 
-    shell_ptr = Shell_get_context(argv);
-    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
+	shell_ptr = Shell_get_context(argv);
+	print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
-    if (print_usage)
-    {
-        if (shorthelp)
-        {
-            fprintf(shell_ptr->STDOUT, "%s [start|stop]\n", argv[0]);
-        }
-        else
-        {
-            fprintf(shell_ptr->STDOUT, "Usage: %s [start|stop]\n",argv[0]);
-        }
-        goto EXIT;
-    }
-    
-    if (argc != 2)
-    {
-        fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments.\n", argv[0]);
-        print_usage = TRUE;
-        goto EXIT;
-    }
+	if (print_usage)
+	{
+		if (shorthelp)
+		{
+			fprintf(shell_ptr->STDOUT, "%s [start|stop]\n", argv[0]);
+		}
+		else
+		{
+			fprintf(shell_ptr->STDOUT, "Usage: %s [start|stop]\n",argv[0]);
+		}
+		goto EXIT;
+	}
 
-    if (strcmp(argv[1], "start") == 0)
-    {
-        TELNETSRV_PARAM_STRUCT params = {0};
+	if (argc != 2)
+	{
+		fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments.\n", argv[0]);
+		print_usage = TRUE;
+		goto EXIT;
+	}
 
-        params.shell_commands = (void *) Telnetsrv_shell_commands;
-        params.shell = (TELNET_SHELL_FUNCTION) Shell;
-        if (telnetsrv_handle == 0)
-        {
-            telnetsrv_handle = TELNETSRV_init(&params);
-            status_string = (telnetsrv_handle == 0) ? "failed" : "successful";
-        }
-        else
-        {
-            status_string = "aborted. Telnet server already running";
-        }
-        print_status = TRUE;
-    }
-    else if (strcmp(argv[1], "stop") == 0)
-    {
-        if (telnetsrv_handle != 0)
-        {
-            result = TELNETSRV_release(telnetsrv_handle);
-            status_string = (result == RTCS_OK) ? "successful" : "failed";
-            telnetsrv_handle = 0;
-        }
-        else
-        {
-            status_string = "aborted. Telnet server is not running";
-        }
-        print_status = TRUE;
-    }
-    else
-    {
-        fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect option.\n", argv[0]);
-        print_usage = TRUE;
-    }
+	if (strcmp(argv[1], "start") == 0)
+	{
+		TELNETSRV_PARAM_STRUCT params = {0};
 
-    if (print_status)
-    {
-        fprintf(shell_ptr->STDOUT, "Telnet server %s %s.\n", argv[1], status_string);
-    }
+		params.shell_commands = (void *) Telnetsrv_shell_commands;
+		params.shell = (TELNET_SHELL_FUNCTION) Shell;
+		if (telnetsrv_handle == 0)
+		{
+			telnetsrv_handle = TELNETSRV_init(&params);
+			status_string = (telnetsrv_handle == 0) ? "failed" : "successful";
+		}
+		else
+		{
+			status_string = "aborted. Telnet server already running";
+		}
+		print_status = TRUE;
+	}
+	else if (strcmp(argv[1], "stop") == 0)
+	{
+		if (telnetsrv_handle != 0)
+		{
+			result = TELNETSRV_release(telnetsrv_handle);
+			status_string = (result == RTCS_OK) ? "successful" : "failed";
+			telnetsrv_handle = 0;
+		}
+		else
+		{
+			status_string = "aborted. Telnet server is not running";
+		}
+		print_status = TRUE;
+	}
+	else
+	{
+		fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect option.\n", argv[0]);
+		print_usage = TRUE;
+	}
 
-    EXIT:
-    return return_code;
+	if (print_status)
+	{
+		fprintf(shell_ptr->STDOUT, "Telnet server %s %s.\n", argv[1], status_string);
+	}
+
+	EXIT:
+	return return_code;
 }
 
 #endif /* SHELLCFG_USES_RTCS */

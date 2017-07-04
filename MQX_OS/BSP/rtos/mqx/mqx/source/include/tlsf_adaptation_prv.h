@@ -18,7 +18,7 @@
 *
 * Comments:
 *
-*   This file contains functions of the Two Level Segregate Fit, 
+*   This file contains functions of the Two Level Segregate Fit,
 *   based on public domain licensed implementation from http://tlsf.baisoku.org/ .
 *
 *
@@ -66,10 +66,10 @@ extern "C" {
  * \cond DOXYGEN_PRIVATE
  */
 extern void* _tlsf_alloc_internal(
-    _mem_size requested_size,
-    TD_STRUCT_PTR td_ptr,
-    tlsf_t pool_id,
-    bool zero
+	_mem_size requested_size,
+	TD_STRUCT_PTR td_ptr,
+	tlsf_t pool_id,
+	bool zero
 );
 /*! \endcond */
 
@@ -77,11 +77,11 @@ extern void* _tlsf_alloc_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void* _tlsf_alloc_align_internal(
-    _mem_size requested_size,
-    _mem_size req_align,
-    TD_STRUCT_PTR td_ptr,
-    tlsf_t pool_id,
-    bool zero
+	_mem_size requested_size,
+	_mem_size req_align,
+	TD_STRUCT_PTR td_ptr,
+	tlsf_t pool_id,
+	bool zero
 );
 /*! \endcond */
 
@@ -89,8 +89,8 @@ extern void* _tlsf_alloc_align_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern void _tlsf_transfer_internal(
-    void* memory_ptr,
-    TD_STRUCT_PTR target_td
+	void* memory_ptr,
+	TD_STRUCT_PTR target_td
 );
 /*! \endcond */
 
@@ -98,9 +98,9 @@ extern void _tlsf_transfer_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _tlsf_transfer_td_internal(
-    void* memory_ptr,
-    TD_STRUCT_PTR source_td,
-    TD_STRUCT_PTR target_td
+	void* memory_ptr,
+	TD_STRUCT_PTR source_td,
+	TD_STRUCT_PTR target_td
 );
 /*! \endcond */
 
@@ -114,8 +114,8 @@ extern _mqx_uint _tlsf_init_internal(void);
  * \cond DOXYGEN_PRIVATE
  */
 extern void* _tlsf_get_next_block_internal(
-    TD_STRUCT_PTR td_ptr,
-    void* memory_ptr
+	TD_STRUCT_PTR td_ptr,
+	void* memory_ptr
 );
 /*! \endcond */
 
@@ -124,8 +124,8 @@ extern void* _tlsf_get_next_block_internal(
  */
 void* _tlsf_pool_create_limited_internal(
 	void* tlsf_pool_ptr,
-    unsigned char* start,
-    unsigned char* end
+	unsigned char* start,
+	unsigned char* end
 );
 /*! \endcond */
 

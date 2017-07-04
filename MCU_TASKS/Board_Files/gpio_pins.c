@@ -2,6 +2,7 @@
 #if 1
 #include "gpio_pins.h"
 #include <stdbool.h>
+#include <mqx.h>
 
 const gpio_output_pin_user_config_t outputPins[] = {
 	// Power Rail Control
@@ -21,8 +22,8 @@ const gpio_output_pin_user_config_t outputPins[] = {
 	{ .pinName = LED_GREEN, 				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{ .pinName = LED_BLUE, 				    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
-	{ .pinName = ACC_ENABLE,				.config.outputLogic = 1,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
-    {.pinName = FPGA_PWR_ENABLE,			.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	{ .pinName = ACC_VIB_ENABLE,			.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	{.pinName = FPGA_PWR_ENABLE,			.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
 	// CAN BUS INTERFACE
 	{ .pinName = CAN1_J1708_PWR_ENABLE,		.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
@@ -45,7 +46,7 @@ const gpio_output_pin_user_config_t outputPins[] = {
 
 	// UART INTERFACE
 	{ .pinName = UART_ENABLE,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
-//    { .pinName = RS485_ENABLE,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+    { .pinName = RS485_ENABLE,				.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{ .pinName = FTDI_RSTN,				    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
 	{.pinName = FPGA_RSTB,					.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
@@ -76,21 +77,103 @@ const gpio_input_pin_user_config_t inputPins[] = {
 	{.pinName = VIB_SENS,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge },
 	{.pinName = FPGA_GPIO0,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge },
 	{.pinName = FPGA_DONE,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
-	{.pinName = OTG_ID   ,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
-    {.pinName = USB_OTG_PWR_REQ,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
+	{.pinName = OTG_ID   ,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = true,  .config.interrupt = kPortIntDisabled  },
+	{.pinName = USB_OTG_PWR_REQ,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 
 	{.pinName = UART_MCU2CPU_RX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = UART_MCU2CPU_TX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge  },
-	{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
+	{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
 	{.pinName = BUTTON1,     		.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
-    {.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+	{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
 
-// EYAL_0523		
-    {.pinName = CPU_RF_KILL,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled    },    
-    
+// EYAL_0523
+	{.pinName = CPU_RF_KILL,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled    },
+
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE	}
 };
+
+/* I2C_reset_bus: If the SDA line is stuck in the low state, we try to send some 
+additional clocks and generate a stop condition
+
+http://www.analog.com/media/en/technical-documentation/application-notes/54305147357414AN686_0.pdf
+
+NOTE: Since the i2c port is changed to a GPIO for bitbanging, 
+You need to manually set the port back to i2c mode and reinit the i2c port
+*/
+bool I2C_reset_bus(uint32_t sda_pin_name, uint32_t scl_pin_name)
+{
+	uint8_t i;
+	const gpio_input_pin_user_config_t input_pin_SDA =
+	{
+		  .pinName = sda_pin_name,
+		  .config.isPullEnable = true,
+		  .config.pullSelect = kPortPullUp,
+		  .config.isPassiveFilterEnabled = false,
+		  .config.interrupt = kPortIntDisabled,
+	};
+	const gpio_input_pin_user_config_t input_pin_SCL =
+	{
+		  .pinName = scl_pin_name,
+		  .config.isPullEnable = true,
+		  .config.pullSelect = kPortPullUp,
+		  .config.isPassiveFilterEnabled = false,
+		  .config.interrupt = kPortIntDisabled,
+	};
+	
+	const gpio_output_pin_user_config_t output_pin_SDA =
+	{
+		.pinName = sda_pin_name,	    
+		.config.outputLogic = 1,
+		.config.slewRate = kPortFastSlewRate,
+		.config.isOpenDrainEnabled = false,  
+		.config.driveStrength = kPortHighDriveStrength,
+	};
+	const gpio_output_pin_user_config_t output_pin_SCL =
+	{
+		.pinName = scl_pin_name,
+		.config.outputLogic = 1,
+		.config.slewRate = kPortFastSlewRate,
+		.config.isOpenDrainEnabled = false,  
+		.config.driveStrength = kPortHighDriveStrength,
+	};
+
+	/* configure i2c lines as GPInputs */
+	GPIO_DRV_InputPinInit(&input_pin_SDA);
+	GPIO_DRV_InputPinInit(&input_pin_SCL);
+  	
+	/* Check if they are already both high */ 
+	if(GPIO_DRV_ReadPinInput(sda_pin_name) && GPIO_DRV_ReadPinInput(scl_pin_name)) 
+	{
+		return true;
+	}
+
+	_time_delay (10);
+	if(!GPIO_DRV_ReadPinInput(scl_pin_name)) 
+	{
+		return false; /* SCL held low externally, nothing we can do */
+	}
+	
+	for(i = 0; i<9; i++) /* up to 9 clocks until SDA goes high */
+	{
+		GPIO_DRV_OutputPinInit(&output_pin_SCL);
+		GPIO_DRV_WritePinOutput(scl_pin_name, 0);
+		_time_delay (10);
+		GPIO_DRV_InputPinInit(&input_pin_SCL);
+		_time_delay (10);
+		if(GPIO_DRV_ReadPinInput(sda_pin_name)) 
+		{
+			break; /* finally SDA high so we can generate a STOP */
+		}
+	}
+		
+	if(!GPIO_DRV_ReadPinInput(sda_pin_name)) 
+	{
+		return false; /* after 9 clocks still nothing */
+	}
+	
+	return (GPIO_DRV_ReadPinInput(sda_pin_name) && GPIO_DRV_ReadPinInput(scl_pin_name)); /* both high then we succeeded */
+}
 
 
 void GPIO_Config( void ) {
@@ -101,7 +184,10 @@ void GPIO_Config( void ) {
 	CLOCK_SYS_EnablePortClock(PORTD_IDX);
 */
 
+	bool ret;
 	GPIO_DRV_Init(inputPins, outputPins);
+	I2C_reset_bus(I2C0_SDA, I2C0_SCL);
+	I2C_reset_bus(I2C1_SDA, I2C1_SCL);
 
 	// I2C0 configuration
 	PORT_HAL_SetMuxMode     (I2C0_SDA_GPIO_PORT, I2C0_SDA_GPIO_PIN, kPortMuxAlt2);

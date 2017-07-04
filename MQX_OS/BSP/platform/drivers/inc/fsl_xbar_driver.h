@@ -48,7 +48,7 @@
 /*! @brief Table of base addresses for XBAR instances. */
 extern XBARA_Type * const g_xbaraBase[];
 #if !defined(FSL_FEATURE_XBAR_HAS_SINGLE_MODULE)
-extern XBARB_Type * const g_xbarbBase[]; 
+extern XBARB_Type * const g_xbarbBase[];
 #endif
 
 /*! @brief Table to save XBAR IRQ enumeration numbers defined in the CMSIS header file. */
@@ -61,30 +61,30 @@ extern const IRQn_Type g_xbarIrqId[];
  */
 typedef void (*xbar_callback_t)(void * param);
 
-/*! 
+/*!
  * @brief Defines the XBAR DMA and interrupt configurations.
  */
-/*! 
+/*!
  * @brief Defines the XBAR DMA and interrupt configurations.
  */
 typedef enum _xbar_ien_den_req
 {
-    kXbarReqDis = 0U, /*!< Interrupt and DMA are disabled. */
-    kXbarReqIen = 1U, /*!< Interrupt enabled, DMA disabled. */
-    kXbarReqDen = 2U  /*!< DMA enabled, interrupt disabled. */   
+	kXbarReqDis = 0U, /*!< Interrupt and DMA are disabled. */
+	kXbarReqIen = 1U, /*!< Interrupt enabled, DMA disabled. */
+	kXbarReqDen = 2U  /*!< DMA enabled, interrupt disabled. */
 } xbar_ien_den_req_t;
 
 /*!
  * @brief Defines the configuration structure of the XBAR control register.
  *
- * This structure keeps the configuration of XBAR control register for one output. 
- * Control registers are available only for a few outputs. Not every XBAR module has 
+ * This structure keeps the configuration of XBAR control register for one output.
+ * Control registers are available only for a few outputs. Not every XBAR module has
  *  control registers.
  */
 typedef struct XbarControlConfig
 {
-    xbar_active_edge_t   activeEdge; /*!< Active edge to be detected. */
-    xbar_ien_den_req_t   intDmaReq;  /*!< Selects DMA/Interrupt request. */
+	xbar_active_edge_t   activeEdge; /*!< Active edge to be detected. */
+	xbar_ien_den_req_t   intDmaReq;  /*!< Selects DMA/Interrupt request. */
 } xbar_control_config_t;
 
 /*!
@@ -95,17 +95,17 @@ typedef struct XbarControlConfig
  */
 typedef struct XbarState
 {
-    xbar_callback_t userCallbackFunct[FSL_FEATURE_XBARA_INTERRUPT_COUNT]; /*!< Keep the user-defined callback function. */
-    void * xbarCallbackParam[FSL_FEATURE_XBARA_INTERRUPT_COUNT];          /*!< XBAR callback parameter pointer.*/    
+	xbar_callback_t userCallbackFunct[FSL_FEATURE_XBARA_INTERRUPT_COUNT]; /*!< Keep the user-defined callback function. */
+	void * xbarCallbackParam[FSL_FEATURE_XBARA_INTERRUPT_COUNT];          /*!< XBAR callback parameter pointer.*/
 } xbar_state_t;
 
-/*! 
- * @brief Macro defines XBARA module number. 
+/*!
+ * @brief Macro defines XBARA module number.
  */
 #define XBARA_MODULE    0U
 
-/*! 
- * @brief Macro defines XBARB module number. 
+/*!
+ * @brief Macro defines XBARB module number.
  */
 #define XBARB_MODULE    1U
 
@@ -119,9 +119,9 @@ extern "C" {
 
 /*!
  * @brief Initializes the XBAR modules.
- * 
- * This function initializes the XBAR module to a reset state. 
- * 
+ *
+ * This function initializes the XBAR module to a reset state.
+ *
  * @param xbarStatePtr XBAR input signal.
  * @return An error code or kStatus_XBAR_Success.
  */
@@ -129,18 +129,18 @@ xbar_status_t XBAR_DRV_Init(xbar_state_t * xbarStatePtr);
 
 /*!
  * @brief Deinitializes the XBAR module.
- * 
- * This function clears all configurations and shuts down the XBAR by disabling interrupt 
+ *
+ * This function clears all configurations and shuts down the XBAR by disabling interrupt
  * and the clock signal to the modules.
  */
 void XBAR_DRV_Deinit(void);
 
 /*!
  * @brief Configures connection between the selected XBAR_IN[*] input and the XBAR_OUT[*] output signal.
- * 
- * This function configures which XBAR input is connected to the selected XBAR output. 
- * If more than one XBAR module is available, only the inputs and outputs from the same module 
- * can be connected. 
+ *
+ * This function configures which XBAR input is connected to the selected XBAR output.
+ * If more than one XBAR module is available, only the inputs and outputs from the same module
+ * can be connected.
  *
  * Example:
    @code
@@ -150,7 +150,7 @@ void XBAR_DRV_Deinit(void);
    status = XBARA_HAL_ConfigSignalConnection(kXbaraInputVDD, kXbaraOutputCMP0);
    switch (status)
    {
-       //... 
+	   //...
    }
    @endcode
  *
@@ -162,9 +162,9 @@ xbar_status_t XBAR_DRV_ConfigSignalConnection(xbar_input_signal_t input, xbar_ou
 
 /*!
  * @brief Configures the XBAR control register.
- * 
- * This function configures an XBAR control register. The active edge detection 
- * and the DMA/IRQ function on the corresponding XBAR output can be set. 
+ *
+ * This function configures an XBAR control register. The active edge detection
+ * and the DMA/IRQ function on the corresponding XBAR output can be set.
  *
  * Example:
    @code
@@ -179,7 +179,7 @@ xbar_status_t XBAR_DRV_ConfigSignalConnection(xbar_input_signal_t input, xbar_ou
    status = XBAR_DRV_ConfigOutControl(2, controlOut2);
    switch (status)
    {
-       //... 
+	   //...
    }
    @endcode
  *
@@ -192,10 +192,10 @@ xbar_status_t XBAR_DRV_ConfigOutControl(uint32_t outIndex, const xbar_control_co
 /*!
  * @brief Gets the active edge detection status.
  *
- * This function gets the active edge detect status of the desired XBAR_OUT. If the 
- * active edge occurs, the return value is asserted. When the interrupt or the DMA 
- * functionality is enabled for the XBAR_OUTx, this field is 1 when the interrupt 
- * or DMA request is asserted and 0 when the interrupt or DMA request has been 
+ * This function gets the active edge detect status of the desired XBAR_OUT. If the
+ * active edge occurs, the return value is asserted. When the interrupt or the DMA
+ * functionality is enabled for the XBAR_OUTx, this field is 1 when the interrupt
+ * or DMA request is asserted and 0 when the interrupt or DMA request has been
  * cleared.
  *
  * @param outIndex XBAR output number.
@@ -218,7 +218,7 @@ xbar_status_t XBAR_DRV_ClearEdgeDetectionStatus(uint32_t outIndex);
  *
  * This function installs the user-defined callback.
  * When the XBAR interrupt request is configured, the callback is executed
- * inside the ISR. 
+ * inside the ISR.
  *
  * @param outIndex XBAR output number.
  * @param userCallback User-defined callback function.

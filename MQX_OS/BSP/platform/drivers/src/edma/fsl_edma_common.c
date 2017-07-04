@@ -32,9 +32,9 @@
 
 DMA_Type * const g_edmaBase[] = DMA_BASE_PTRS;
 DMAMUX_Type * const  g_dmamuxBase[] = DMAMUX_BASE_PTRS;
-const IRQn_Type g_edmaIrqId[DMA_INSTANCE_COUNT][FSL_FEATURE_EDMA_MODULE_CHANNEL] = 
+const IRQn_Type g_edmaIrqId[DMA_INSTANCE_COUNT][FSL_FEATURE_EDMA_MODULE_CHANNEL] =
 {
-    DMA_CHN_IRQS
+	DMA_CHN_IRQS
 };
 
 #if !defined FSL_FEATURE_EDMA_HAS_ERROR_IRQ
@@ -44,4 +44,3 @@ const IRQn_Type g_edmaErrIrqId[DMA_INSTANCE_COUNT] = DMA_ERROR_IRQS;
 /*******************************************************************************
 * EOF
 ******************************************************************************/
-

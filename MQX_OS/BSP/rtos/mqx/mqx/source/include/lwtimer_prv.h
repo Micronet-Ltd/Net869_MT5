@@ -57,4 +57,3 @@ extern void _lwtimer_isr_internal(void);
 
 #endif /* __lwtimer_prv_h__ */
 /* EOF */
-

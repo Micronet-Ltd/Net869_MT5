@@ -29,13 +29,13 @@
 
 /*!
  * \brief This function returns the pointer to the stack start structure on the stack.
- * 
+ *
  * \param[in] td_ptr the task descriptor whose stack start struct address is wanted
  */
 PSP_STACK_START_STRUCT_PTR _psp_get_stack_start
 (
-    /* [IN] the task descriptor whose stack start struct address is wanted */
-    TD_STRUCT_PTR td_ptr
+	/* [IN] the task descriptor whose stack start struct address is wanted */
+	TD_STRUCT_PTR td_ptr
 )
 { /* Body */
 

@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2008, 2013 - 2014 Freescale Semiconductor;
  * All Rights Reserved
  *
  * Copyright (c) 1989-2008 ARC International;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
  *
  * $FileName: usb_audio.h$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
@@ -53,7 +53,7 @@
 #define SET_REQUEST_ITF                   (0x21)
 #define SET_REQUEST_EP                    (0x22)
 #define GET_REQUEST_EP                    (0xA2)
-#define GET_REQUEST_ITF                   (0xA1) 
+#define GET_REQUEST_ITF                   (0xA1)
 
 /* class specific requests */
 #define AUDIO_CONTROL_INPUT_TERMINAL      (0x02)
@@ -114,9 +114,9 @@
 #if AUDIO_IMPLEMENT_QUEUING
 typedef struct _audio_queue_struct
 {
-    usb_device_handle handle;
-    uint8_t channel;
-    audio_app_data_t app_data;
+	usb_device_handle handle;
+	uint8_t channel;
+	audio_app_data_t app_data;
 }audio_queue_struct_t;
 #endif
 
@@ -124,25 +124,25 @@ typedef struct _audio_queue_struct
 
 typedef struct _audio_endpoint_struct
 {
-    uint8_t endpoint; /* endpoint num */
-    uint8_t type; /* type of endpoint (interrupt, bulk or isochronous) */
+	uint8_t endpoint; /* endpoint num */
+	uint8_t type; /* type of endpoint (interrupt, bulk or isochronous) */
 #if AUDIO_IMPLEMENT_QUEUING
-    uint8_t bin_consumer;/* the num of queued elements */
-    uint8_t bin_producer;/* the num of de-queued elements */
-    uint8_t queue_num; /* the num of queue */
-    audio_queue_struct_t queue[AUDIO_MAX_QUEUE_ELEMS]; /* queue data */
+	uint8_t bin_consumer;/* the num of queued elements */
+	uint8_t bin_producer;/* the num of de-queued elements */
+	uint8_t queue_num; /* the num of queue */
+	audio_queue_struct_t queue[AUDIO_MAX_QUEUE_ELEMS]; /* queue data */
 #endif
 } audio_endpoint_struct_t;
 
 /* contains the endpoint data for non control endpoints */
 typedef struct _audio_endpoint_data_struct
 {
-    audio_endpoint_struct_t ep[MAX_AUDIO_CLASS_EP_NUM];
+	audio_endpoint_struct_t ep[MAX_AUDIO_CLASS_EP_NUM];
 } audio_endpoint_data_struct_t;
 
 typedef struct _audio_ut_data_struct
 {
-    audio_ut_struct_t ut[MAX_AUDIO_CLASS_UT_NUM];
+	audio_ut_struct_t ut[MAX_AUDIO_CLASS_UT_NUM];
 } audio_ut_data_struct_t;
 
 /*****************************************************************************
@@ -157,21 +157,21 @@ usb_status USB_Audio_Requests(usb_setup_struct_t * setup_packet, uint8_t * *data
 /* Structure holding AUDIO class state information*/
 typedef struct audio_device_struct
 {
-    audio_handle_t                              audio_handle;
-    class_handle_t                              class_handle;
-    uint32_t                                    user_handle;
-    usb_device_handle                           handle;
-    usb_endpoints_t*                            usb_ep_data;
-    audio_units_struct_t*                       usb_ut_data;
-    audio_ut_data_struct_t                      audio_ut_data;
-    audio_endpoint_data_struct_t                audio_endpoint_data;
-    usb_application_callback_struct_t           audio_application_callback;
-    usb_vendor_req_callback_struct_t            vendor_req_callback;
-    usb_class_specific_callback_struct_t        class_specific_callback;
-    usb_desc_request_notify_struct_t            desc_callback;
-    uint8_t                                     current_interface;
-    uint8_t                                     controller_id;
-}audio_device_struct_t; 
+	audio_handle_t                              audio_handle;
+	class_handle_t                              class_handle;
+	uint32_t                                    user_handle;
+	usb_device_handle                           handle;
+	usb_endpoints_t*                            usb_ep_data;
+	audio_units_struct_t*                       usb_ut_data;
+	audio_ut_data_struct_t                      audio_ut_data;
+	audio_endpoint_data_struct_t                audio_endpoint_data;
+	usb_application_callback_struct_t           audio_application_callback;
+	usb_vendor_req_callback_struct_t            vendor_req_callback;
+	usb_class_specific_callback_struct_t        class_specific_callback;
+	usb_desc_request_notify_struct_t            desc_callback;
+	uint8_t                                     current_interface;
+	uint8_t                                     controller_id;
+}audio_device_struct_t;
 #endif
 
 /* EOF */

@@ -50,8 +50,8 @@
  */
 typedef enum _cmp_flag
 {
-    kCmpFlagOfCoutRising  = 0U, /*!< Identifier to indicate if the COUT change from logic zero to one. */
-    kCmpFlagOfCoutFalling = 1U  /*!< Identifier to indicate if the COUT change from logic one to zero. */
+	kCmpFlagOfCoutRising  = 0U, /*!< Identifier to indicate if the COUT change from logic zero to one. */
+	kCmpFlagOfCoutFalling = 1U  /*!< Identifier to indicate if the COUT change from logic one to zero. */
 } cmp_flag_t;
 
 /*!
@@ -63,8 +63,8 @@ typedef enum _cmp_flag
  */
 typedef struct CmpState
 {
-    bool isInUsed; /* If the CMP instance is in use. All the CMP instances share
-        * the same clock gate and are aligned to use clock.*/
+	bool isInUsed; /* If the CMP instance is in use. All the CMP instances share
+		* the same clock gate and are aligned to use clock.*/
 } cmp_state_t;
 
 /*! @brief Table of base addresses for CMP instances. */
@@ -81,9 +81,9 @@ extern "C" {
  * APIs
  ******************************************************************************/
 /*!
- * @brief Populates the initial user configuration with default settings. 
+ * @brief Populates the initial user configuration with default settings.
  *
- * This function populates the initial user configuration with default settings. 
+ * This function populates the initial user configuration with default settings.
  * The default settings enable the CMP module to operate as  a comparator.
  * The settings are :\n
  *     \li.hystersisMode = kCmpHystersisOfLevel0
@@ -105,10 +105,10 @@ extern "C" {
  * @return Execution status.
  */
 cmp_status_t CMP_DRV_StructInitUserConfigDefault(cmp_comparator_config_t *userConfigPtr,
-    cmp_chn_mux_mode_t plusInput, cmp_chn_mux_mode_t minusInput);
+	cmp_chn_mux_mode_t plusInput, cmp_chn_mux_mode_t minusInput);
 
 /*!
- * @brief Initializes the CMP module. 
+ * @brief Initializes the CMP module.
  *
  * This function initializes the CMP module, enables the clock, and
  * sets the interrupt switcher. The CMP module is
@@ -120,10 +120,10 @@ cmp_status_t CMP_DRV_StructInitUserConfigDefault(cmp_comparator_config_t *userCo
  * @return Execution status.
  */
 cmp_status_t CMP_DRV_Init(uint32_t instance, cmp_state_t *userStatePtr,
-    const cmp_comparator_config_t *userConfigPtr);
+	const cmp_comparator_config_t *userConfigPtr);
 
 /*!
- * @brief De-initializes the CMP module. 
+ * @brief De-initializes the CMP module.
  *
  * This function de-initializes the CMP module. It  shuts down the CMP
  * clock and disables the interrupt. This API should be called when CMP is no
@@ -135,7 +135,7 @@ cmp_status_t CMP_DRV_Init(uint32_t instance, cmp_state_t *userStatePtr,
 cmp_status_t CMP_DRV_Deinit(uint32_t instance);
 
 /*!
- * @brief Starts the CMP module. 
+ * @brief Starts the CMP module.
  *
  * This function starts the CMP module. The configuration does not take
  * effect until the module is started.
@@ -145,7 +145,7 @@ cmp_status_t CMP_DRV_Deinit(uint32_t instance);
 void CMP_DRV_Start(uint32_t instance);
 
 /*!
- * @brief Stops the CMP module. 
+ * @brief Stops the CMP module.
  *
  * This function stops the CMP module. Note that this function does not shut down
  * the module, but only pauses the features.
@@ -155,7 +155,7 @@ void CMP_DRV_Start(uint32_t instance);
 void CMP_DRV_Stop(uint32_t instance);
 
 /*!
- * @brief Enables the internal DAC in the CMP module. 
+ * @brief Enables the internal DAC in the CMP module.
  *
  * This function enables the internal DAC in the CMP module. It takes
  * effect only when the internal DAC has been chosen as an input
@@ -169,11 +169,11 @@ void CMP_DRV_Stop(uint32_t instance);
 cmp_status_t CMP_DRV_ConfigDacChn(uint32_t instance, const cmp_dac_config_t *dacConfigPtr);
 
 /*!
- * @brief Configures the Sample\Filter feature in the CMP module. 
+ * @brief Configures the Sample\Filter feature in the CMP module.
  *
  * This function configures the CMP working in Sample\Filter modes. These
- * modes are advanced features in addition to the basic comparator such as 
- * Window Mode, Filter Mode, etc. See  
+ * modes are advanced features in addition to the basic comparator such as
+ * Window Mode, Filter Mode, etc. See
  * "cmp_sample_filter_config_t"for detailed description.
  *
  * @param instance CMP instance ID.
@@ -184,7 +184,7 @@ cmp_status_t CMP_DRV_ConfigDacChn(uint32_t instance, const cmp_dac_config_t *dac
 cmp_status_t CMP_DRV_ConfigSampleFilter(uint32_t instance, const cmp_sample_filter_config_t *configPtr);
 
 /*!
- * @brief Gets the output of the CMP module. 
+ * @brief Gets the output of the CMP module.
  *
  * This function gets the output of the CMP module.
  * The output source depends on the configuration when initializing the comparator.
@@ -198,7 +198,7 @@ cmp_status_t CMP_DRV_ConfigSampleFilter(uint32_t instance, const cmp_sample_filt
 bool CMP_DRV_GetOutputLogic(uint32_t instance);
 
 /*!
- * @brief Gets the state of the CMP module. 
+ * @brief Gets the state of the CMP module.
  *
  * This function  gets the state of the CMP module. It returns if the indicated
  * event has been detected.
@@ -210,9 +210,9 @@ bool CMP_DRV_GetOutputLogic(uint32_t instance);
 bool CMP_DRV_GetFlag(uint32_t instance, cmp_flag_t flag);
 
 /*!
- * @brief Clears the event record of the CMP module. 
+ * @brief Clears the event record of the CMP module.
  *
- * This function clears the event record of the CMP module. 
+ * This function clears the event record of the CMP module.
  *
  * @param instance CMP instance ID.
  * @param flag Represent events or states. See "cmp_flag_t".
@@ -232,4 +232,3 @@ void CMP_DRV_ClearFlag(uint32_t instance, cmp_flag_t flag);
 /******************************************************************************
  * EOF
  *****************************************************************************/
- 

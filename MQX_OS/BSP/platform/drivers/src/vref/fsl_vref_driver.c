@@ -42,25 +42,25 @@
  *END*************************************************************************/
 vref_status_t VREF_DRV_Init(uint32_t instance, const vref_user_config_t *userConfigPtr)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = (VREF_Type *)g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = (VREF_Type *)g_vrefBase[instance];
 
-    if (!userConfigPtr)
-    {
-        return kStatus_VREF_InvalidArgument;
-    }
+	if (!userConfigPtr)
+	{
+		return kStatus_VREF_InvalidArgument;
+	}
 
-    /* Enable clock for VREF. */
-    CLOCK_SYS_EnableVrefClock(instance);
+	/* Enable clock for VREF. */
+	CLOCK_SYS_EnableVrefClock(instance);
 
-    /* Reset all the register to default state. */
-    VREF_HAL_Init(base);
-    /* Configure VREF to a known state*/
-    VREF_HAL_Configure(base, userConfigPtr);
+	/* Reset all the register to default state. */
+	VREF_HAL_Init(base);
+	/* Configure VREF to a known state*/
+	VREF_HAL_Configure(base, userConfigPtr);
 
-    VREF_HAL_WaitVoltageStable(base);
+	VREF_HAL_WaitVoltageStable(base);
 
-    return kStatus_VREF_Success;
+	return kStatus_VREF_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -73,15 +73,15 @@ vref_status_t VREF_DRV_Init(uint32_t instance, const vref_user_config_t *userCon
  *END*************************************************************************/
 vref_status_t VREF_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = (VREF_Type *)g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = (VREF_Type *)g_vrefBase[instance];
 
-    VREF_HAL_Disable(base);
+	VREF_HAL_Disable(base);
 
-    /* Disable clock for ADC. */
-    CLOCK_SYS_DisableVrefClock(instance);
+	/* Disable clock for ADC. */
+	CLOCK_SYS_DisableVrefClock(instance);
 
-    return kStatus_VREF_Success;
+	return kStatus_VREF_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -92,14 +92,14 @@ vref_status_t VREF_DRV_Deinit(uint32_t instance)
  *END*************************************************************************/
 vref_status_t VREF_DRV_SetTrimValue(uint32_t instance, uint8_t trimValue)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = (VREF_Type *)g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = (VREF_Type *)g_vrefBase[instance];
 
-    VREF_HAL_SetTrimVal(base, trimValue);
+	VREF_HAL_SetTrimVal(base, trimValue);
 
-    VREF_HAL_WaitVoltageStable(base);
+	VREF_HAL_WaitVoltageStable(base);
 
-    return kStatus_VREF_Success;
+	return kStatus_VREF_Success;
 }
 
 #if FSL_FEATURE_VREF_HAS_LOW_REFERENCE
@@ -111,14 +111,14 @@ vref_status_t VREF_DRV_SetTrimValue(uint32_t instance, uint8_t trimValue)
  *END*************************************************************************/
 vref_status_t VREF_DRV_SetLowReferenceTrimVal(uint32_t instance, uint8_t trimValue)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = (VREF_Type *)g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = (VREF_Type *)g_vrefBase[instance];
 
-    VREF_HAL_SetLowReferenceTrimVal(base, trimValue);
+	VREF_HAL_SetLowReferenceTrimVal(base, trimValue);
 
-    VREF_HAL_WaitVoltageStable(base);
+	VREF_HAL_WaitVoltageStable(base);
 
-    return kStatus_VREF_Success;
+	return kStatus_VREF_Success;
 }
 #endif
 #endif
@@ -126,4 +126,3 @@ vref_status_t VREF_DRV_SetLowReferenceTrimVal(uint32_t instance, uint8_t trimVal
 /******************************************************************************
  * EOF
  *****************************************************************************/
-

@@ -57,33 +57,33 @@
 typedef struct lwlog_header_struct
 {
 
-    /*! \brief Control flags for the log. */
-    _mqx_uint                FLAGS;
+	/*! \brief Control flags for the log. */
+	_mqx_uint                FLAGS;
 
-    /*! \brief The sequence number for next write. */
-    _mqx_uint                NUMBER;
+	/*! \brief The sequence number for next write. */
+	_mqx_uint                NUMBER;
 
-    /*! \brief The number of entries currently in use. */
-    _mqx_uint                CURRENT_ENTRIES;
+	/*! \brief The number of entries currently in use. */
+	_mqx_uint                CURRENT_ENTRIES;
 
-    /*! \brief The maximum number of log entries. */
-    _mqx_uint                MAX_ENTRIES;
+	/*! \brief The maximum number of log entries. */
+	_mqx_uint                MAX_ENTRIES;
 
-    /*! \brief How many read nexts in row have been done. */
-    _mqx_uint                READS;
+	/*! \brief How many read nexts in row have been done. */
+	_mqx_uint                READS;
 
-    /*! \brief The type of log. */
-    _mqx_uint                TYPE;
+	/*! \brief The type of log. */
+	_mqx_uint                TYPE;
 
-    /*! \brief Pointer to structure to write to. */
-    LWLOG_ENTRY_STRUCT_PTR   WRITE_PTR;
-    /*! \brief Pointer to structure to read from. */
-    LWLOG_ENTRY_STRUCT_PTR   READ_PTR;
-    /*! \brief Pointer to oldest log entry structure. */
-    LWLOG_ENTRY_STRUCT_PTR   OLDEST_PTR;
+	/*! \brief Pointer to structure to write to. */
+	LWLOG_ENTRY_STRUCT_PTR   WRITE_PTR;
+	/*! \brief Pointer to structure to read from. */
+	LWLOG_ENTRY_STRUCT_PTR   READ_PTR;
+	/*! \brief Pointer to oldest log entry structure. */
+	LWLOG_ENTRY_STRUCT_PTR   OLDEST_PTR;
 
-    /*! \brief First log entry. */
-    LWLOG_ENTRY_STRUCT       FIRST_ENTRY;
+	/*! \brief First log entry. */
+	LWLOG_ENTRY_STRUCT       FIRST_ENTRY;
 
 } LWLOG_HEADER_STRUCT, * LWLOG_HEADER_STRUCT_PTR;
 /*! \endcond */
@@ -100,11 +100,11 @@ typedef struct lwlog_header_struct
  */
 typedef struct lwlog_component_struct
 {
-    /*! \brief A validation stamp to verify structure correctness. */
-    _mqx_uint               VALID;
+	/*! \brief A validation stamp to verify structure correctness. */
+	_mqx_uint               VALID;
 
-    /*! \brief The address of the log headers. */
-    LWLOG_HEADER_STRUCT_PTR LOGS[LOG_MAXIMUM_NUMBER];
+	/*! \brief The address of the log headers. */
+	LWLOG_HEADER_STRUCT_PTR LOGS[LOG_MAXIMUM_NUMBER];
 
 } LWLOG_COMPONENT_STRUCT, * LWLOG_COMPONENT_STRUCT_PTR;
 /*! \endcond */
@@ -120,10 +120,10 @@ extern "C" {
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _lwlog_create_internal(
-    _mqx_uint log_number,
-    _mqx_uint max_size,
-    _mqx_uint flags,
-    LWLOG_HEADER_STRUCT_PTR log_header_ptr
+	_mqx_uint log_number,
+	_mqx_uint max_size,
+	_mqx_uint flags,
+	LWLOG_HEADER_STRUCT_PTR log_header_ptr
 );
 /*! \endcond */
 
@@ -131,14 +131,14 @@ extern _mqx_uint _lwlog_create_internal(
  * \cond DOXYGEN_PRIVATE
  */
 extern _mqx_uint _lwlog_write_internal(
-    _mqx_uint     log_number,
-    _mqx_max_type p1,
-    _mqx_max_type p2,
-    _mqx_max_type p3,
-    _mqx_max_type p4,
-    _mqx_max_type p5,
-    _mqx_max_type p6,
-    _mqx_max_type p7
+	_mqx_uint     log_number,
+	_mqx_max_type p1,
+	_mqx_max_type p2,
+	_mqx_max_type p3,
+	_mqx_max_type p4,
+	_mqx_max_type p5,
+	_mqx_max_type p6,
+	_mqx_max_type p7
 );
 /*! \endcond */
 

@@ -51,62 +51,62 @@ extern uint32_t g_xtal0ClkFreq;           /* EXTAL0 clock */
 /*! @brief MCG_Lite constant definitions. */
 enum _mcglite_constant
 {
-    kMcgliteConst0   =          0U,
-    kMcgliteConst2M  =    2000000U,
-    kMcgliteConst8M  =    8000000U,
-    kMcgliteConst48M =   48000000U,
+	kMcgliteConst0   =          0U,
+	kMcgliteConst2M  =    2000000U,
+	kMcgliteConst8M  =    8000000U,
+	kMcgliteConst48M =   48000000U,
 };
 
 /*! @brief MCG_Lite clock source selection. */
 typedef enum _mcglite_mcgoutclk_source
 {
-    kMcgliteClkSrcHirc,      /*!< MCGOUTCLK source is HIRC */
-    kMcgliteClkSrcLirc,      /*!< MCGOUTCLK source is LIRC */
-    kMcgliteClkSrcExt,       /*!< MCGOUTCLK source is external clock source */
-    kMcgliteClkSrcReserved
+	kMcgliteClkSrcHirc,      /*!< MCGOUTCLK source is HIRC */
+	kMcgliteClkSrcLirc,      /*!< MCGOUTCLK source is LIRC */
+	kMcgliteClkSrcExt,       /*!< MCGOUTCLK source is external clock source */
+	kMcgliteClkSrcReserved
 } mcglite_mcgoutclk_source_t;
 
 /*! @brief MCG_Lite LIRC select. */
 typedef enum _mcglite_lirc_select
 {
-    kMcgliteLircSel2M,          /*!< slow internal reference(LIRC) 2 MHz clock selected */
-    kMcgliteLircSel8M,          /*!< slow internal reference(LIRC) 8 MHz clock selected */
+	kMcgliteLircSel2M,          /*!< slow internal reference(LIRC) 2 MHz clock selected */
+	kMcgliteLircSel8M,          /*!< slow internal reference(LIRC) 8 MHz clock selected */
 } mcglite_lirc_select_t;
 
 /*! @brief MCG_Lite divider factor selection for clock source*/
 typedef enum _mcglite_lirc_div
 {
-    kMcgliteLircDivBy1 = 0U,          /*!< divider is 1 */
-    kMcgliteLircDivBy2 ,              /*!< divider is 2 */
-    kMcgliteLircDivBy4 ,              /*!< divider is 4 */
-    kMcgliteLircDivBy8 ,              /*!< divider is 8 */
-    kMcgliteLircDivBy16,              /*!< divider is 16 */
-    kMcgliteLircDivBy32,              /*!< divider is 32 */
-    kMcgliteLircDivBy64,              /*!< divider is 64 */
-    kMcgliteLircDivBy128              /*!< divider is 128 */
+	kMcgliteLircDivBy1 = 0U,          /*!< divider is 1 */
+	kMcgliteLircDivBy2 ,              /*!< divider is 2 */
+	kMcgliteLircDivBy4 ,              /*!< divider is 4 */
+	kMcgliteLircDivBy8 ,              /*!< divider is 8 */
+	kMcgliteLircDivBy16,              /*!< divider is 16 */
+	kMcgliteLircDivBy32,              /*!< divider is 32 */
+	kMcgliteLircDivBy64,              /*!< divider is 64 */
+	kMcgliteLircDivBy128              /*!< divider is 128 */
 } mcglite_lirc_div_t;
 
 /*! @brief MCG_Lite external clock Select */
 typedef enum _osc_src
 {
-    kOscSrcExt,                /*!< Selects external input clock */
-    kOscSrcOsc                 /*!< Selects Oscillator  */
+	kOscSrcExt,                /*!< Selects external input clock */
+	kOscSrcOsc                 /*!< Selects Oscillator  */
 } osc_src_t;
 
 /*! @brief MCG frequency range select */
 typedef enum _osc_range
 {
-    kOscRangeLow,         /*!< Low frequency range selected for the crystal OSC */
-    kOscRangeHigh,        /*!< High frequency range selected for the crystal OSC */
-    kOscRangeVeryHigh,    /*!< Very High frequency range selected for the crystal OSC */
-    kOscRangeVeryHigh1    /*!< Very High frequency range selected for the crystal OSC */
+	kOscRangeLow,         /*!< Low frequency range selected for the crystal OSC */
+	kOscRangeHigh,        /*!< High frequency range selected for the crystal OSC */
+	kOscRangeVeryHigh,    /*!< Very High frequency range selected for the crystal OSC */
+	kOscRangeVeryHigh1    /*!< Very High frequency range selected for the crystal OSC */
 } osc_range_t;
 
 /*! @brief MCG high gain oscillator select */
 typedef enum _osc_gain
 {
-    kOscGainLow,               /*!< Configure crystal oscillator for low-power operation */
-    kOscGainHigh               /*!< Configure crystal oscillator for high-gain operation */
+	kOscGainLow,               /*!< Configure crystal oscillator for low-power operation */
+	kOscGainHigh               /*!< Configure crystal oscillator for high-gain operation */
 } osc_gain_t;
 
 /*******************************************************************************
@@ -200,7 +200,7 @@ uint32_t CLOCK_HAL_GetOutClk(MCG_Type * base);
 */
 static inline void CLOCK_HAL_SetLircSelMode(MCG_Type * base, mcglite_lirc_select_t select)
 {
-    MCG_BWR_C2_IRCS(base, select);
+	MCG_BWR_C2_IRCS(base, select);
 }
 
 /*!
@@ -214,7 +214,7 @@ static inline void CLOCK_HAL_SetLircSelMode(MCG_Type * base, mcglite_lirc_select
 */
 static inline void CLOCK_HAL_SetLircRefDiv(MCG_Type * base, mcglite_lirc_div_t setting)
 {
-    MCG_BWR_SC_FCRDIV(base, setting);
+	MCG_BWR_SC_FCRDIV(base, setting);
 }
 
 /*!
@@ -228,7 +228,7 @@ static inline void CLOCK_HAL_SetLircRefDiv(MCG_Type * base, mcglite_lirc_div_t s
 */
 static inline void CLOCK_HAL_SetLircDiv2(MCG_Type * base, mcglite_lirc_div_t setting)
 {
-    MCG_BWR_MC_LIRC_DIV2(base, setting);
+	MCG_BWR_MC_LIRC_DIV2(base, setting);
 }
 
 /*!
@@ -244,7 +244,7 @@ static inline void CLOCK_HAL_SetLircDiv2(MCG_Type * base, mcglite_lirc_div_t set
 */
 static inline void CLOCK_HAL_SetLircCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C1_IRCLKEN(base, enable);
+	MCG_BWR_C1_IRCLKEN(base, enable);
 }
 
 /*!
@@ -262,7 +262,7 @@ before entering STOP mode.
 */
 static inline void CLOCK_HAL_SetLircStopCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_C1_IREFSTEN(base, enable);
+	MCG_BWR_C1_IREFSTEN(base, enable);
 }
 
 /*!
@@ -278,7 +278,7 @@ static inline void CLOCK_HAL_SetLircStopCmd(MCG_Type * base, bool enable)
 */
 static inline void CLOCK_HAL_SetHircCmd(MCG_Type * base, bool enable)
 {
-    MCG_BWR_MC_HIRCEN(base, enable);
+	MCG_BWR_MC_HIRCEN(base, enable);
 }
 
 /*!
@@ -295,7 +295,7 @@ static inline void CLOCK_HAL_SetHircCmd(MCG_Type * base, bool enable)
 */
 static inline void CLOCK_HAL_SetExtRefSelMode0(MCG_Type * base, osc_src_t select)
 {
-    MCG_BWR_C2_EREFS0(base, select);
+	MCG_BWR_C2_EREFS0(base, select);
 }
 
 /*!
@@ -315,7 +315,7 @@ static inline void CLOCK_HAL_SetExtRefSelMode0(MCG_Type * base, osc_src_t select
 */
 static inline mcglite_mcgoutclk_source_t CLOCK_HAL_GetClkSrcStat(MCG_Type * base)
 {
-    return (mcglite_mcgoutclk_source_t)MCG_BRD_S_CLKST(base);
+	return (mcglite_mcgoutclk_source_t)MCG_BRD_S_CLKST(base);
 }
 
 /*!
@@ -333,7 +333,7 @@ static inline mcglite_mcgoutclk_source_t CLOCK_HAL_GetClkSrcStat(MCG_Type * base
 */
 static inline bool CLOCK_HAL_IsOscStable(MCG_Type * base)
 {
-    return (bool)MCG_BRD_S_OSCINIT0(base);
+	return (bool)MCG_BRD_S_OSCINIT0(base);
 }
 
 #if FSL_FEATURE_MCGLITE_HAS_RANGE0
@@ -352,7 +352,7 @@ static inline bool CLOCK_HAL_IsOscStable(MCG_Type * base)
  */
 static inline void CLOCK_HAL_SetRange0Mode(MCG_Type * base, osc_range_t setting)
 {
-    MCG_BWR_C2_RANGE0(base, setting);
+	MCG_BWR_C2_RANGE0(base, setting);
 }
 #endif
 
@@ -369,9 +369,9 @@ static inline void CLOCK_HAL_SetRange0Mode(MCG_Type * base, osc_range_t setting)
  *                  - 1: Configure crystal oscillator for high-gain operation.
  */
 static inline void CLOCK_HAL_SetHighGainOsc0Mode(MCG_Type * base,
-                                                 osc_gain_t setting)
+												 osc_gain_t setting)
 {
-    MCG_BWR_C2_HGO0(base, setting);
+	MCG_BWR_C2_HGO0(base, setting);
 }
 #endif
 
@@ -386,7 +386,7 @@ static inline void CLOCK_HAL_SetHighGainOsc0Mode(MCG_Type * base,
  */
 static inline uint8_t CLOCK_HAL_GetHircCoarseTrim(MCG_Type * base)
 {
-    return MCG_BRD_HCTRIM_COARSE_TRIM(base);
+	return MCG_BRD_HCTRIM_COARSE_TRIM(base);
 }
 #endif
 
@@ -401,7 +401,7 @@ static inline uint8_t CLOCK_HAL_GetHircCoarseTrim(MCG_Type * base)
  */
 static inline uint8_t CLOCK_HAL_GetHircTempcoTrim(MCG_Type * base)
 {
-    return MCG_BRD_HTTRIM_TEMPCO_TRIM(base);
+	return MCG_BRD_HTTRIM_TEMPCO_TRIM(base);
 }
 #endif
 
@@ -416,7 +416,7 @@ static inline uint8_t CLOCK_HAL_GetHircTempcoTrim(MCG_Type * base)
  */
 static inline uint8_t CLOCK_HAL_GetHircFineTrim(MCG_Type * base)
 {
-    return MCG_BRD_HFTRIM_FINE_TRIM(base);
+	return MCG_BRD_HFTRIM_FINE_TRIM(base);
 }
 #endif
 
@@ -431,7 +431,7 @@ static inline uint8_t CLOCK_HAL_GetHircFineTrim(MCG_Type * base)
  */
 static inline uint8_t CLOCK_HAL_GetLirc8MTrimRange(MCG_Type * base)
 {
-    return MCG_BRD_LTRIMRNG_FTRIMRNG(base);
+	return MCG_BRD_LTRIMRNG_FTRIMRNG(base);
 }
 
 /*!
@@ -444,7 +444,7 @@ static inline uint8_t CLOCK_HAL_GetLirc8MTrimRange(MCG_Type * base)
  */
 static inline uint8_t CLOCK_HAL_GetLirc2MTrimRange(MCG_Type * base)
 {
-    return MCG_BRD_LTRIMRNG_STRIMRNG(base);
+	return MCG_BRD_LTRIMRNG_STRIMRNG(base);
 }
 #endif
 
@@ -459,7 +459,7 @@ static inline uint8_t CLOCK_HAL_GetLirc2MTrimRange(MCG_Type * base)
  */
 static inline uint8_t CLOCK_HAL_GetLirc8MTrim(MCG_Type * base)
 {
-    return MCG_BRD_LFTRIM_LIRC_FTRIM(base);
+	return MCG_BRD_LFTRIM_LIRC_FTRIM(base);
 }
 #endif
 
@@ -474,7 +474,7 @@ static inline uint8_t CLOCK_HAL_GetLirc8MTrim(MCG_Type * base)
  */
 static inline uint8_t CLOCK_HAL_GetLirc2MTrim(MCG_Type * base)
 {
-    return MCG_BRD_LSTRIM_LIRC_STRIM(base);
+	return MCG_BRD_LSTRIM_LIRC_STRIM(base);
 }
 #endif
 
@@ -492,4 +492,3 @@ static inline uint8_t CLOCK_HAL_GetLirc2MTrim(MCG_Type * base)
 /*******************************************************************************
 * EOF
 ******************************************************************************/
-

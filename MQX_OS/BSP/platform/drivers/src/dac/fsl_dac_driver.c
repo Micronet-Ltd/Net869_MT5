@@ -38,7 +38,7 @@
 /*FUNCTION*********************************************************************
  *
  * Function Name : DAC_DRV_StructInitUserConfigNormal
- * Description   : Fill the initial user configuration for DAC module 
+ * Description   : Fill the initial user configuration for DAC module
  * without the feature of interrupt and buffer. Then call initialization
  * function with the filled parameter would configure
  * the DAC module work as a common and simple converter.
@@ -46,13 +46,13 @@
  *END*************************************************************************/
 dac_status_t DAC_DRV_StructInitUserConfigNormal(dac_converter_config_t *userConfigPtr)
 {
-    if (!userConfigPtr)
-    {
-        return kStatus_DAC_InvalidArgument;
-    }
-    userConfigPtr->dacRefVoltSrc = kDacRefVoltSrcOfVref2; /* Vdda */
-    userConfigPtr->lowPowerEnable = false;
-    return kStatus_DAC_Success;
+	if (!userConfigPtr)
+	{
+		return kStatus_DAC_InvalidArgument;
+	}
+	userConfigPtr->dacRefVoltSrc = kDacRefVoltSrcOfVref2; /* Vdda */
+	userConfigPtr->lowPowerEnable = false;
+	return kStatus_DAC_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -61,26 +61,26 @@ dac_status_t DAC_DRV_StructInitUserConfigNormal(dac_converter_config_t *userConf
  * Description   : Initialize the converter in DAC module. It will just
  * configure the DAC converter itself but not including advanced features like
  * interrupt and internal buffer. This API should be called before any
- * operation to DAC module. After initialized, the DAC module can work at 
+ * operation to DAC module. After initialized, the DAC module can work at
  * least as a common simple DAC converter.
  *
  *END*************************************************************************/
 dac_status_t DAC_DRV_Init(uint32_t instance, const dac_converter_config_t *userConfigPtr)
 {
-    assert(instance < DAC_INSTANCE_COUNT);
-    DAC_Type * base = g_dacBase[instance];
+	assert(instance < DAC_INSTANCE_COUNT);
+	DAC_Type * base = g_dacBase[instance];
 
-    CLOCK_SYS_EnableDacClock(instance);
+	CLOCK_SYS_EnableDacClock(instance);
 
-    /* Reset the registers for DAC module to reset state. */
-    DAC_HAL_Init(base);
-    DAC_HAL_Enable(base);
-    DAC_HAL_ConfigConverter(base, userConfigPtr);
+	/* Reset the registers for DAC module to reset state. */
+	DAC_HAL_Init(base);
+	DAC_HAL_Enable(base);
+	DAC_HAL_ConfigConverter(base, userConfigPtr);
 
-    /* Enable DAC interrupt in NVIC level.*/
-    INT_SYS_EnableIRQ(g_dacIrqId[instance] );
+	/* Enable DAC interrupt in NVIC level.*/
+	INT_SYS_EnableIRQ(g_dacIrqId[instance] );
 
-    return kStatus_DAC_Success;
+	return kStatus_DAC_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -92,33 +92,33 @@ dac_status_t DAC_DRV_Init(uint32_t instance, const dac_converter_config_t *userC
  *END*************************************************************************/
 dac_status_t DAC_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < DAC_INSTANCE_COUNT);
-    DAC_Type * base = g_dacBase[instance];
+	assert(instance < DAC_INSTANCE_COUNT);
+	DAC_Type * base = g_dacBase[instance];
 
-    INT_SYS_DisableIRQ(g_dacIrqId[instance] );
-    DAC_HAL_Disable(base);
-    DAC_HAL_Init(base);
-    CLOCK_SYS_DisableDacClock(instance);
+	INT_SYS_DisableIRQ(g_dacIrqId[instance] );
+	DAC_HAL_Disable(base);
+	DAC_HAL_Init(base);
+	CLOCK_SYS_DisableDacClock(instance);
 
-    return kStatus_DAC_Success;
+	return kStatus_DAC_Success;
 }
 
 /*FUNCTION*********************************************************************
  *
  * Function Name : DAC_DRV_Output
  * Description   : Drive the converter to output DAC value. It will force
- * the buffer index to be the first one, load the setting value to this item. 
+ * the buffer index to be the first one, load the setting value to this item.
  * Then the converter will output the voltage indicated by the indicated value
- * immediately. 
+ * immediately.
  *
  *END*************************************************************************/
 void DAC_DRV_Output(uint32_t instance, uint16_t value)
 {
-    assert(instance < DAC_INSTANCE_COUNT);
-    DAC_Type * base = g_dacBase[instance];
+	assert(instance < DAC_INSTANCE_COUNT);
+	DAC_Type * base = g_dacBase[instance];
 
-    DAC_HAL_SetBuffValue(base, 0U, value);
-    DAC_HAL_SetBuffCurIdx(base, 0U);
+	DAC_HAL_SetBuffValue(base, 0U, value);
+	DAC_HAL_SetBuffCurIdx(base, 0U);
 }
 
 /*FUNCTION*********************************************************************
@@ -131,16 +131,16 @@ void DAC_DRV_Output(uint32_t instance, uint16_t value)
  *END*************************************************************************/
 dac_status_t DAC_DRV_ConfigBuffer(uint32_t instance, const dac_buffer_config_t *configPtr)
 {
-    assert(instance < DAC_INSTANCE_COUNT);
-    DAC_Type * base = g_dacBase[instance];
+	assert(instance < DAC_INSTANCE_COUNT);
+	DAC_Type * base = g_dacBase[instance];
 
-    if (!configPtr)
-    {
-        return kStatus_DAC_InvalidArgument;
-    }
-    DAC_HAL_ConfigBuffer(base, configPtr);
+	if (!configPtr)
+	{
+		return kStatus_DAC_InvalidArgument;
+	}
+	DAC_HAL_ConfigBuffer(base, configPtr);
 
-    return kStatus_DAC_Success;
+	return kStatus_DAC_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -153,22 +153,22 @@ dac_status_t DAC_DRV_ConfigBuffer(uint32_t instance, const dac_buffer_config_t *
  *END*************************************************************************/
 dac_status_t DAC_DRV_SetBuffValue(uint32_t instance, uint8_t start, uint8_t offset, uint16_t arr[])
 {
-    assert(instance < DAC_INSTANCE_COUNT);
-    DAC_Type * base = g_dacBase[instance];
+	assert(instance < DAC_INSTANCE_COUNT);
+	DAC_Type * base = g_dacBase[instance];
 
-    uint8_t i;
+	uint8_t i;
 
-    if (  (!arr) || (start + offset > DAC_DATL_COUNT) )
-    {
-        return kStatus_DAC_InvalidArgument;
-    }
+	if (  (!arr) || (start + offset > DAC_DATL_COUNT) )
+	{
+		return kStatus_DAC_InvalidArgument;
+	}
 
-    for (i = 0; i < offset; i++)
-    {
-        DAC_HAL_SetBuffValue(base, start+i, arr[i]);
-    }
+	for (i = 0; i < offset; i++)
+	{
+		DAC_HAL_SetBuffValue(base, start+i, arr[i]);
+	}
 
-    return kStatus_DAC_Success;
+	return kStatus_DAC_Success;
 }
 
 /*FUNCTION*********************************************************************
@@ -181,10 +181,10 @@ dac_status_t DAC_DRV_SetBuffValue(uint32_t instance, uint8_t start, uint8_t offs
  *END*************************************************************************/
 void DAC_DRV_SoftTriggerBuffCmd(uint32_t instance)
 {
-    assert(instance < DAC_INSTANCE_COUNT);
-    DAC_Type * base = g_dacBase[instance];
+	assert(instance < DAC_INSTANCE_COUNT);
+	DAC_Type * base = g_dacBase[instance];
 
-    DAC_HAL_SetSoftTriggerCmd(base);
+	DAC_HAL_SetSoftTriggerCmd(base);
 }
 
 /*FUNCTION*********************************************************************
@@ -195,10 +195,10 @@ void DAC_DRV_SoftTriggerBuffCmd(uint32_t instance)
  *END*************************************************************************/
 void DAC_DRV_SetBuffCurIdx(uint32_t instance, uint8_t idx)
 {
-    assert(instance < DAC_INSTANCE_COUNT);
-    DAC_Type * base = g_dacBase[instance];
+	assert(instance < DAC_INSTANCE_COUNT);
+	DAC_Type * base = g_dacBase[instance];
 
-    DAC_HAL_SetBuffCurIdx(base, idx);
+	DAC_HAL_SetBuffCurIdx(base, idx);
 }
 
 /*FUNCTION*********************************************************************
@@ -209,10 +209,10 @@ void DAC_DRV_SetBuffCurIdx(uint32_t instance, uint8_t idx)
  *END*************************************************************************/
 uint8_t DAC_DRV_GetBuffCurIdx(uint32_t instance)
 {
-    assert(instance < DAC_INSTANCE_COUNT);
-    DAC_Type * base = g_dacBase[instance];
-    
-    return DAC_HAL_GetBuffCurIdx(base);
+	assert(instance < DAC_INSTANCE_COUNT);
+	DAC_Type * base = g_dacBase[instance];
+
+	return DAC_HAL_GetBuffCurIdx(base);
 
 }
 
@@ -224,30 +224,30 @@ uint8_t DAC_DRV_GetBuffCurIdx(uint32_t instance)
  *END*************************************************************************/
 void DAC_DRV_ClearBuffFlag(uint32_t instance, dac_flag_t flag)
 {
-    assert(instance < DAC_INSTANCE_COUNT);
-    DAC_Type * base = g_dacBase[instance];
+	assert(instance < DAC_INSTANCE_COUNT);
+	DAC_Type * base = g_dacBase[instance];
 
-    switch (flag)
-    {
-    case kDacBuffIndexStartFlag:
-        DAC_HAL_ClearBuffIdxStartFlag(base);
-        break;
+	switch (flag)
+	{
+	case kDacBuffIndexStartFlag:
+		DAC_HAL_ClearBuffIdxStartFlag(base);
+		break;
 #if FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION
-    case kDacBuffIndexWatermarkFlag:
-        DAC_HAL_ClearBuffIdxWatermarkFlag(base);
-        break;
+	case kDacBuffIndexWatermarkFlag:
+		DAC_HAL_ClearBuffIdxWatermarkFlag(base);
+		break;
 #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION */
-    case kDacBuffIndexUpperFlag:
-        DAC_HAL_ClearBuffIdxUpperFlag(base);
-        break;
-    default:
-        DAC_HAL_ClearBuffIdxStartFlag(base);
+	case kDacBuffIndexUpperFlag:
+		DAC_HAL_ClearBuffIdxUpperFlag(base);
+		break;
+	default:
+		DAC_HAL_ClearBuffIdxStartFlag(base);
 #if FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION
-        DAC_HAL_ClearBuffIdxWatermarkFlag(base);
+		DAC_HAL_ClearBuffIdxWatermarkFlag(base);
 #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION */
-        DAC_HAL_ClearBuffIdxUpperFlag(base);
-        break;
-    }
+		DAC_HAL_ClearBuffIdxUpperFlag(base);
+		break;
+	}
 }
 
 /*FUNCTION*********************************************************************
@@ -259,28 +259,28 @@ void DAC_DRV_ClearBuffFlag(uint32_t instance, dac_flag_t flag)
  *END*************************************************************************/
 bool DAC_DRV_GetBuffFlag(uint32_t instance, dac_flag_t flag)
 {
-    assert(instance < DAC_INSTANCE_COUNT);
-    DAC_Type * base = g_dacBase[instance];
-    bool bRet = true;
+	assert(instance < DAC_INSTANCE_COUNT);
+	DAC_Type * base = g_dacBase[instance];
+	bool bRet = true;
 
-    switch (flag)
-    {
-    case kDacBuffIndexStartFlag:
-        bRet = DAC_HAL_GetBuffIdxStartFlag(base);
-        break;
+	switch (flag)
+	{
+	case kDacBuffIndexStartFlag:
+		bRet = DAC_HAL_GetBuffIdxStartFlag(base);
+		break;
 #if FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION
-    case kDacBuffIndexWatermarkFlag:
-        bRet = DAC_HAL_GetBuffIdxWatermarkFlag(base);
-        break;
+	case kDacBuffIndexWatermarkFlag:
+		bRet = DAC_HAL_GetBuffIdxWatermarkFlag(base);
+		break;
 #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION */
-    case kDacBuffIndexUpperFlag:
-        bRet = DAC_HAL_GetBuffIdxUpperFlag(base);
-        break;
-    default:
-        bRet = false;
-        break;
-    }
-    return bRet;
+	case kDacBuffIndexUpperFlag:
+		bRet = DAC_HAL_GetBuffIdxUpperFlag(base);
+		break;
+	default:
+		bRet = false;
+		break;
+	}
+	return bRet;
 }
 
 /******************************************************************************

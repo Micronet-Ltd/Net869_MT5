@@ -37,36 +37,36 @@
  */
 int fgetc(FILE* stream)
 {
-    unsigned char c;
-    int result;
+	unsigned char c;
+	int result;
 
-    if (NULL == stream)
-    {
-        return EOF;
-    }
+	if (NULL == stream)
+	{
+		return EOF;
+	}
 
-    if (stream->_MODE & _MODE_EOF) /* if end of file indicator is set */
-    {
-        return EOF;
-    }
-    else
-    {
-        result = _buf_read(&c, 1, stream);
-        if (0 > result)
-        {
-            stream->_MODE |= _MODE_ERR;
-            return EOF;
-        }
-        else if (1 > result)
-        {
-            stream->_MODE |= _MODE_EOF;
-            return EOF;
-        }
-        else
-        {
-            return (int)c;
-        }
-    }
+	if (stream->_MODE & _MODE_EOF) /* if end of file indicator is set */
+	{
+		return EOF;
+	}
+	else
+	{
+		result = _buf_read(&c, 1, stream);
+		if (0 > result)
+		{
+			stream->_MODE |= _MODE_ERR;
+			return EOF;
+		}
+		else if (1 > result)
+		{
+			stream->_MODE |= _MODE_EOF;
+			return EOF;
+		}
+		else
+		{
+			return (int)c;
+		}
+	}
 }
 
 /*!
@@ -79,7 +79,7 @@ int fgetc(FILE* stream)
  */
 int getc(FILE* stream)
 {
-    return fgetc(stream);
+	return fgetc(stream);
 }
 
 /*!
@@ -90,7 +90,7 @@ int getc(FILE* stream)
  */
 int getchar()
 {
-    return fgetc(stdin);
+	return fgetc(stdin);
 }
 
 /*!
@@ -108,51 +108,51 @@ int getchar()
  */
 char *fgets(char *s, int n, FILE* stream)
 {
-    int i = 0;
-    int result;
+	int i = 0;
+	int result;
 
-    if ((NULL == stream) || (NULL == s) || (1 > n))
-    {
-        return NULL;
-    }
+	if ((NULL == stream) || (NULL == s) || (1 > n))
+	{
+		return NULL;
+	}
 
-    /* if end-of-file flag is set */
-    if (stream->_MODE & _MODE_EOF)
-    {
-        return NULL;
-    }
+	/* if end-of-file flag is set */
+	if (stream->_MODE & _MODE_EOF)
+	{
+		return NULL;
+	}
 
-    for (i = 0; i < n - 1; i++)
-    {
-        result = _buf_read((unsigned char *)&s[i], 1, stream);
-        /* if read error occurs */
-        if (0 > result)
-        {
-            /* Mark error flag */
-            stream->_MODE |= _MODE_ERR;
-            return NULL;
-        }
-        /* If end-of-file is obtained */
-        if (0 == result)
-        {
-            stream->_MODE |= _MODE_EOF;
-            return NULL;
-        }
-        /* If newline character is obtained */
-        if ('\r' == s[i])
-        {
-            /* indicate CR flag for case that next read is LF */
-            stdin->_MODE |= _MODE_LASTCR;
-            break;
-        }
-        /* If newline character is obtained */
-        if ('\n' == s[i])
-        {
-            break;
-        }
-    }
-    s[i + 1] = '\0';
-    return s;
+	for (i = 0; i < n - 1; i++)
+	{
+		result = _buf_read((unsigned char *)&s[i], 1, stream);
+		/* if read error occurs */
+		if (0 > result)
+		{
+			/* Mark error flag */
+			stream->_MODE |= _MODE_ERR;
+			return NULL;
+		}
+		/* If end-of-file is obtained */
+		if (0 == result)
+		{
+			stream->_MODE |= _MODE_EOF;
+			return NULL;
+		}
+		/* If newline character is obtained */
+		if ('\r' == s[i])
+		{
+			/* indicate CR flag for case that next read is LF */
+			stdin->_MODE |= _MODE_LASTCR;
+			break;
+		}
+		/* If newline character is obtained */
+		if ('\n' == s[i])
+		{
+			break;
+		}
+	}
+	s[i + 1] = '\0';
+	return s;
 }
 
 /*!
@@ -167,47 +167,47 @@ char *fgets(char *s, int n, FILE* stream)
  */
 char *gets(char *s)
 {
-    int i = 0;
-    int result;
-    if (NULL == s)
-    {
-        return NULL;
-    }
+	int i = 0;
+	int result;
+	if (NULL == s)
+	{
+		return NULL;
+	}
 
-    /* if end-of-file flag is set */
-    if (stdin->_MODE & _MODE_EOF)
-    {
-        return NULL;
-    }
+	/* if end-of-file flag is set */
+	if (stdin->_MODE & _MODE_EOF)
+	{
+		return NULL;
+	}
 
-    /* Read bytes until newline character is obtained */
-    do
-    {
-        result = _buf_read((unsigned char *)&s[i], 1, stdin);
-        /* if read error occurs */
-        if (0 > result)
-        {
-            /* Mark error flag */
-            stdin->_MODE |= _MODE_ERR;
-            return NULL;
-        }
-        /* If end-of-file is obtained */
-        if (0 == result)
-        {
-            stdin->_MODE |= _MODE_EOF;
-            return NULL;
-        }
-        if (s[i] == '\r')
-        {
-            /* indicate CR flag for case that next read is LF */
-            stdin->_MODE |= _MODE_LASTCR;
-            break;
-        }
-    }
-    while (s[i++] != '\n');
+	/* Read bytes until newline character is obtained */
+	do
+	{
+		result = _buf_read((unsigned char *)&s[i], 1, stdin);
+		/* if read error occurs */
+		if (0 > result)
+		{
+			/* Mark error flag */
+			stdin->_MODE |= _MODE_ERR;
+			return NULL;
+		}
+		/* If end-of-file is obtained */
+		if (0 == result)
+		{
+			stdin->_MODE |= _MODE_EOF;
+			return NULL;
+		}
+		if (s[i] == '\r')
+		{
+			/* indicate CR flag for case that next read is LF */
+			stdin->_MODE |= _MODE_LASTCR;
+			break;
+		}
+	}
+	while (s[i++] != '\n');
 
-    s[i - 1] = '\0'; /* Rewrite new-line with zero character */
-    return s;
+	s[i - 1] = '\0'; /* Rewrite new-line with zero character */
+	return s;
 }
 
 /*!
@@ -222,22 +222,22 @@ char *gets(char *s)
  */
 int ungetc(int c, FILE *stream)
 {
-    int result;
+	int result;
 
-    if ((NULL == stream) || (EOF == c))
-    {
-        return EOF;
-    }
+	if ((NULL == stream) || (EOF == c))
+	{
+		return EOF;
+	}
 
-    result = _buf_unget_byte((unsigned char) c, stream);
-    if (0 > result)
-    {
-        return EOF;
-    }
-    else
-    {
-        /* Clear end of file indicator */
-        stream->_MODE &= ~_MODE_EOF;
-        return c;
-    }
+	result = _buf_unget_byte((unsigned char) c, stream);
+	if (0 > result)
+	{
+		return EOF;
+	}
+	else
+	{
+		/* Clear end of file indicator */
+		stream->_MODE &= ~_MODE_EOF;
+		return c;
+	}
 }

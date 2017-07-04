@@ -39,23 +39,23 @@
 /* CMP IRQ handler that would cover the same name's APIs in startup code. */
 void CMP0_CMP1_CMP2_IRQHandler(void)
 {
-    for(uint32_t i=0; i < CMP_INSTANCE_COUNT; i++)
-    {
-        if (CLOCK_SYS_GetCmpGateCmd(i))
-        {
-            /* Add user-defined ISR for CMP. */
+	for(uint32_t i=0; i < CMP_INSTANCE_COUNT; i++)
+	{
+		if (CLOCK_SYS_GetCmpGateCmd(i))
+		{
+			/* Add user-defined ISR for CMP. */
 
-            /* Clear flags. */
-            if ( CMP_DRV_GetFlag(i, kCmpFlagOfCoutRising) )
-            {
-                CMP_DRV_ClearFlag(i, kCmpFlagOfCoutRising);
-            }
-            if ( CMP_DRV_GetFlag(i, kCmpFlagOfCoutFalling) )
-            {
-                CMP_DRV_ClearFlag(i, kCmpFlagOfCoutFalling);
-            }
-        }
-    }
+			/* Clear flags. */
+			if ( CMP_DRV_GetFlag(i, kCmpFlagOfCoutRising) )
+			{
+				CMP_DRV_ClearFlag(i, kCmpFlagOfCoutRising);
+			}
+			if ( CMP_DRV_GetFlag(i, kCmpFlagOfCoutFalling) )
+			{
+				CMP_DRV_ClearFlag(i, kCmpFlagOfCoutFalling);
+			}
+		}
+	}
 }
 
 #else
@@ -63,51 +63,51 @@ void CMP0_CMP1_CMP2_IRQHandler(void)
 #if CMP_INSTANCE_COUNT > 0
 void CMP0_IRQHandler(void)
 {
-    /* Add user-defined ISR for CMP0. */
+	/* Add user-defined ISR for CMP0. */
 
-    /* Clear flags. */
-    if ( CMP_DRV_GetFlag(0U, kCmpFlagOfCoutRising) )
-    {
-        CMP_DRV_ClearFlag(0U, kCmpFlagOfCoutRising);
-    }
-    if ( CMP_DRV_GetFlag(0U, kCmpFlagOfCoutFalling) )
-    {
-        CMP_DRV_ClearFlag(0U, kCmpFlagOfCoutFalling);
-    }
+	/* Clear flags. */
+	if ( CMP_DRV_GetFlag(0U, kCmpFlagOfCoutRising) )
+	{
+		CMP_DRV_ClearFlag(0U, kCmpFlagOfCoutRising);
+	}
+	if ( CMP_DRV_GetFlag(0U, kCmpFlagOfCoutFalling) )
+	{
+		CMP_DRV_ClearFlag(0U, kCmpFlagOfCoutFalling);
+	}
 }
 #endif /* CMP_INSTANCE_COUNT > 0 */
 
 #if CMP_INSTANCE_COUNT > 1
 void CMP1_IRQHandler(void)
 {
-    /* Add user-defined ISR for CMP1. */
+	/* Add user-defined ISR for CMP1. */
 
-    /* Clear flags. */
-    if ( CMP_DRV_GetFlag(1U, kCmpFlagOfCoutRising) )
-    {
-        CMP_DRV_ClearFlag(1U, kCmpFlagOfCoutRising);
-    }
-    if ( CMP_DRV_GetFlag(1U, kCmpFlagOfCoutFalling) )
-    {
-        CMP_DRV_ClearFlag(1U, kCmpFlagOfCoutFalling);
-    }
+	/* Clear flags. */
+	if ( CMP_DRV_GetFlag(1U, kCmpFlagOfCoutRising) )
+	{
+		CMP_DRV_ClearFlag(1U, kCmpFlagOfCoutRising);
+	}
+	if ( CMP_DRV_GetFlag(1U, kCmpFlagOfCoutFalling) )
+	{
+		CMP_DRV_ClearFlag(1U, kCmpFlagOfCoutFalling);
+	}
 }
 #endif /* CMP_INSTANCE_COUNT > 1 */
 
 #if CMP_INSTANCE_COUNT > 2
 void CMP2_IRQHandler(void)
 {
-    /* Add user-defined ISR for CMP2. */
+	/* Add user-defined ISR for CMP2. */
 
-    /* Clear flags. */
-    if ( CMP_DRV_GetFlag(2U, kCmpFlagOfCoutRising) )
-    {
-        CMP_DRV_ClearFlag(2U, kCmpFlagOfCoutRising);
-    }
-    if ( CMP_DRV_GetFlag(2U, kCmpFlagOfCoutFalling) )
-    {
-        CMP_DRV_ClearFlag(2U, kCmpFlagOfCoutFalling);
-    }
+	/* Clear flags. */
+	if ( CMP_DRV_GetFlag(2U, kCmpFlagOfCoutRising) )
+	{
+		CMP_DRV_ClearFlag(2U, kCmpFlagOfCoutRising);
+	}
+	if ( CMP_DRV_GetFlag(2U, kCmpFlagOfCoutFalling) )
+	{
+		CMP_DRV_ClearFlag(2U, kCmpFlagOfCoutFalling);
+	}
 }
 #endif /* CMP_INSTANCE_COUNT > 2 */
 #endif /* defined (KM34Z7_SERIES) */
@@ -116,4 +116,3 @@ void CMP2_IRQHandler(void)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
- 

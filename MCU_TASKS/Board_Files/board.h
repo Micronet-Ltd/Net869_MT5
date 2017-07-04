@@ -81,11 +81,11 @@
 #define BOARD_RTC_CLK_FREQUENCY     32768U;
 /* The UART to use for debug messages. */
 #ifndef BOARD_DEBUG_UART_INSTANCE
-    #define BOARD_DEBUG_UART_INSTANCE  4
-    #define BOARD_DEBUG_UART_BASEADDR   UART4
+	#define BOARD_DEBUG_UART_INSTANCE  4
+	#define BOARD_DEBUG_UART_BASEADDR   UART4
 #endif
 #ifndef BOARD_DEBUG_UART_BAUD
-    #define BOARD_DEBUG_UART_BAUD       115200
+	#define BOARD_DEBUG_UART_BAUD       115200
 #endif
 
 #define	UART_UPDATE_FW_IDX				UART3_IDX
@@ -233,10 +233,10 @@
 #define LED_CLOCK_TOGGLE   LED2_TOGGLE
 
 #define OFF_ALL_LEDS  \
-                           LED1_OFF;\
-                           LED2_OFF;\
-                           LED3_OFF;\
-                           LED4_OFF;
+						   LED1_OFF;\
+						   LED2_OFF;\
+						   LED3_OFF;\
+						   LED4_OFF;
 
 /* The SDHC instance/channel used for board */
 #define BOARD_SDHC_INSTANCE                   0
@@ -258,6 +258,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 void hardware_init(void);
+void post_bsp_hardware_init (void);
 void dbg_uart_init(void);
 /*This function to used for power manager demo*/
 void disable_unused_pins(void);

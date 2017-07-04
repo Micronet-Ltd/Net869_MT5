@@ -92,12 +92,12 @@ vref_status_t VREF_DRV_Deinit(uint32_t instance);
  */
 static inline vref_status_t VREF_DRV_SetChopOsc(uint32_t instance, bool enable)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = g_vrefBase[instance];
 
-    VREF_HAL_SetChopOscillatorCmd(base, enable);
+	VREF_HAL_SetChopOscillatorCmd(base, enable);
 
-    return kStatus_VREF_Success;
+	return kStatus_VREF_Success;
 }
 #endif
 
@@ -123,10 +123,10 @@ vref_status_t VREF_DRV_SetTrimValue(uint32_t instance, uint8_t trimValue);
  */
 static inline uint8_t VREF_DRV_GetTrimValue(uint32_t instance)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = g_vrefBase[instance];
 
-    return VREF_HAL_GetTrimVal(base);
+	return VREF_HAL_GetTrimVal(base);
 }
 
 /*!
@@ -148,12 +148,12 @@ static inline uint8_t VREF_DRV_GetTrimValue(uint32_t instance)
  */
 static inline vref_status_t VREF_DRV_SetRegulator(uint32_t instance, bool enable)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = g_vrefBase[instance];
 
-    VREF_HAL_SetInternalRegulatorCmd(base, enable);
+	VREF_HAL_SetInternalRegulatorCmd(base, enable);
 
-    return kStatus_VREF_Success;
+	return kStatus_VREF_Success;
 }
 
 #if FSL_FEATURE_VREF_HAS_COMPENSATION
@@ -172,12 +172,12 @@ static inline vref_status_t VREF_DRV_SetRegulator(uint32_t instance, bool enable
  */
 static inline vref_status_t VREF_DRV_SetIcomp(uint32_t instance, bool enable)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = g_vrefBase[instance];
 
-    VREF_HAL_SetSecondOrderCurvatureCompensationCmd(base, enable);
+	VREF_HAL_SetSecondOrderCurvatureCompensationCmd(base, enable);
 
-    return kStatus_VREF_Success;
+	return kStatus_VREF_Success;
 }
 #endif
 
@@ -207,12 +207,12 @@ static inline vref_status_t VREF_DRV_SetIcomp(uint32_t instance, bool enable)
  */
 static inline vref_status_t VREF_DRV_SetBufferMode(uint32_t instance, vref_buffer_mode_t bufferMode)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = g_vrefBase[instance];
 
-    VREF_HAL_SetBufferMode(base, bufferMode);
+	VREF_HAL_SetBufferMode(base, bufferMode);
 
-    return kStatus_VREF_Success;
+	return kStatus_VREF_Success;
 }
 
 #if FSL_FEATURE_VREF_HAS_LOW_REFERENCE
@@ -229,12 +229,12 @@ static inline vref_status_t VREF_DRV_SetBufferMode(uint32_t instance, vref_buffe
 
 static inline vref_status_t VREF_DRV_SetVoltageReference(uint32_t instance, vref_voltage_reference_t ref)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = g_vrefBase[instance];
 
-    VREF_HAL_SetVoltageReference(base, ref);
+	VREF_HAL_SetVoltageReference(base, ref);
 
-    return kStatus_VREF_Success;
+	return kStatus_VREF_Success;
 }
 
 /*!
@@ -249,12 +249,12 @@ static inline vref_status_t VREF_DRV_SetVoltageReference(uint32_t instance, vref
  */
 static inline vref_status_t VREF_DRV_SetLowReference(uint32_t instance, bool enable)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = g_vrefBase[instance];
 
-    VREF_HAL_SetLowReference(base, enable);
+	VREF_HAL_SetLowReference(base, enable);
 
-    return kStatus_VREF_Success;
+	return kStatus_VREF_Success;
 }
 
 /*!
@@ -275,10 +275,10 @@ vref_status_t VREF_DRV_SetLowReferenceTrimVal(uint32_t instance, uint8_t trimVal
  */
 static inline uint8_t VREF_DRV_GetLowReferenceTrimVal(uint32_t instance)
 {
-    assert(instance < VREF_INSTANCE_COUNT);
-    VREF_Type * base = g_vrefBase[instance];
+	assert(instance < VREF_INSTANCE_COUNT);
+	VREF_Type * base = g_vrefBase[instance];
 
-    return VREF_HAL_GetLowReferenceTrimVal(base);
+	return VREF_HAL_GetLowReferenceTrimVal(base);
 }
 #endif /* FSL_FEATURE_VREF_HAS_LOW_REFERENCE */
 
@@ -293,4 +293,3 @@ static inline uint8_t VREF_DRV_GetLowReferenceTrimVal(uint32_t instance)
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

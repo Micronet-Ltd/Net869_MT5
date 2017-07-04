@@ -65,8 +65,8 @@ extern const IRQn_Type g_pitIrqId[];
  * @internal gui name="PIT configuration" id="pitCfg"
  */
 typedef struct PitUserConfig {
-    bool isInterruptEnabled;  /*!< Timer interrupt 0-disable/1-enable @internal gui name="Interrupt" id="Interrupt" default="true" */
-    uint32_t periodUs;        /*!< Timer period in unit of microseconds @internal gui name="Period" id="Period" */
+	bool isInterruptEnabled;  /*!< Timer interrupt 0-disable/1-enable @internal gui name="Interrupt" id="Interrupt" default="true" */
+	uint32_t periodUs;        /*!< Timer period in unit of microseconds @internal gui name="Period" id="Period" */
 } pit_user_config_t;
 
 /*******************************************************************************
@@ -119,9 +119,9 @@ pit_status_t PIT_DRV_Deinit(uint32_t instance);
  * This is an example demonstrating how to define a PIT channel configuration structure:
    @code
    pit_user_config_t pitTestInit = {
-        .isInterruptEnabled = true,
-        // In unit of microseconds.
-        .periodUs = 1000,
+		.isInterruptEnabled = true,
+		// In unit of microseconds.
+		.periodUs = 1000,
    };
    @endcode
  *
@@ -358,4 +358,3 @@ bool PIT_DRV_IsIntPending(uint32_t instance, uint32_t channel);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

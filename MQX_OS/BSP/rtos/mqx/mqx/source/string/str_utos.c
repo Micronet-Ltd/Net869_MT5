@@ -34,16 +34,16 @@ const char _str_hex_array_internal[] = "0123456789ABCDEF";
 /*!
  * \cond DOXYGEN_PRIVATE
  * \brief Converts the _mqx_uint value to a hexadecimal string.
- * 
+ *
  * \param[in]  num    The number to convert.
  * \param[out] string The address of the string to write to.
- * 
+ *
  * \see _strnlen
- */ 
+ */
 void _str_mqx_uint_to_hex_string
    (
-      register _mqx_uint num,
-      register char  *string
+	  register _mqx_uint num,
+	  register char  *string
    )
 { /* Body */
 

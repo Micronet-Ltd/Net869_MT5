@@ -37,7 +37,7 @@
   #include "fsl_gpio_driver.h"
   #include "fsl_hwtimer_pit.h"
   #ifdef HW_ENET_INSTANCE_COUNT
-    #include "fsl_enet_hal.h"
+	#include "fsl_enet_hal.h"
   #endif
 #endif
 
@@ -54,7 +54,7 @@
   #error BOARD_DEBUG_UART_INSTANCE should be defined in board.h file.
 #endif
 #ifndef BOARD_DEBUG_UART_BAUD
-    #error BOARD_DEBUG_UART_BAUD should be defined in board.h file.
+	#error BOARD_DEBUG_UART_BAUD should be defined in board.h file.
 #endif
 
 /* Define BSP_DEFAULT_IO_CHANNEL for MQX_init_struct */
@@ -62,7 +62,7 @@
 #define BSP_MACRO_TO_STRING(x) BSP_MACRO_TO_STRING_(x)
 
 #ifndef BSP_DEFAULT_IO_CHANNEL
-    #define BSP_DEFAULT_IO_CHANNEL                              "nio_ser" BSP_MACRO_TO_STRING(BOARD_DEBUG_UART_INSTANCE) ":"
+	#define BSP_DEFAULT_IO_CHANNEL                              "nio_ser" BSP_MACRO_TO_STRING(BOARD_DEBUG_UART_INSTANCE) ":"
 #endif
 
 

@@ -56,27 +56,27 @@ int32_t  Shell_exit(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      shell_ptr = Shell_get_context( argv );
-      shell_ptr->EXIT = TRUE;
-      if(active_ptr->STDIN_STREAM)
-      {
-        this_stdin = active_ptr->STDIN_STREAM;
-      }
-      else
-      {
-        this_stdin = stdin;
-      }
-      if (shell_ptr->COMMAND_FP != this_stdin)  {
-         fclose(shell_ptr->COMMAND_FP);
-      }
+	  shell_ptr = Shell_get_context( argv );
+	  shell_ptr->EXIT = TRUE;
+	  if(active_ptr->STDIN_STREAM)
+	  {
+		this_stdin = active_ptr->STDIN_STREAM;
+	  }
+	  else
+	  {
+		this_stdin = stdin;
+	  }
+	  if (shell_ptr->COMMAND_FP != this_stdin)  {
+		 fclose(shell_ptr->COMMAND_FP);
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s\n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s\n", argv[0]);
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s\n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s\n", argv[0]);
+	  }
    }
    return return_code;
 } /* Endbody */

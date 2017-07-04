@@ -81,36 +81,36 @@
  */
 typedef   struct
 {
-    /*! \brief */
-    unsigned int _MODE;
-    /*! \brief */
-    int _FD;
+	/*! \brief */
+	unsigned int _MODE;
+	/*! \brief */
+	int _FD;
 
-    /*! \brief Pointer to start of stream buffer. */
-    unsigned char *_BUF;
-    /*! \brief Pointer  to one beyond last byte in buffer. */
+	/*! \brief Pointer to start of stream buffer. */
+	unsigned char *_BUF;
+	/*! \brief Pointer  to one beyond last byte in buffer. */
 //    unsigned char *_BEND;
-    /*! \brief  _Next points to next character to read or write. */
+	/*! \brief  _Next points to next character to read or write. */
 //    unsigned char *_NEXT;
-    /*! \brief  _Rend points to one beyond last byte that can be read. */
+	/*! \brief  _Rend points to one beyond last byte that can be read. */
 //    unsigned char *_REND;
-    /*! \brief _Rsave holds _Rend if characters have been pushed back. */
+	/*! \brief _Rsave holds _Rend if characters have been pushed back. */
 //    unsigned char *_RSAVE;
-    /*! \brief  _Wend points to one beyond last byte that can be written. */
+	/*! \brief  _Wend points to one beyond last byte that can be written. */
 //    unsigned char *_WEND;
-    /*! \brief  _Rback points to last pushed back character in _Back. If it has value
-       one beyond the _Back array no pushed back chars exists. */
+	/*! \brief  _Rback points to last pushed back character in _Back. If it has value
+	   one beyond the _Back array no pushed back chars exists. */
 //    unsigned char *_RBACK;
-    /*! \brief  One character buffer if no other buffer is available*/
-    unsigned char _CBUF;
-    /*! \brief  _WRback points to last pushed back wchar_t in _WBack. If it has value
-       one beyond the _WBack array no pushed back wchar_ts exists. */
-    /*! \brief */
+	/*! \brief  One character buffer if no other buffer is available*/
+	unsigned char _CBUF;
+	/*! \brief  _WRback points to last pushed back wchar_t in _WBack. If it has value
+	   one beyond the _WBack array no pushed back wchar_ts exists. */
+	/*! \brief */
 //    unsigned char _BACK[2];
-    /*! \brief */
+	/*! \brief */
 //    unsigned char _NBACK;
 
-    /*! \brief */
+	/*! \brief */
 //    char *_TMPNAM;
 } FILE;
 
@@ -120,7 +120,7 @@ typedef   struct
  */
 typedef   struct
 {
-    unsigned long _OFF;
+	unsigned long _OFF;
 } fpos_t;
 
 

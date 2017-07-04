@@ -37,7 +37,7 @@
 #include "fsl_os_abstraction.h"
 
 #if FSL_FEATURE_SOC_RNG_COUNT
-/*! 
+/*!
  * @addtogroup rnga_driver
  * @{
  */
@@ -57,7 +57,7 @@ extern RNG_Type * const g_rngaBase[];
 /*! @brief Table to save RNGA IRQ enumeration numbers defined in the CMSIS header file. */
 extern const IRQn_Type g_rngaIrqId[RNG_INSTANCE_COUNT];
 
-/*! 
+/*!
  * @brief Data structure for the RNGA initialization
  *
  * This structure initializes the RNGA by calling the the rnga_init function.
@@ -67,7 +67,7 @@ extern const IRQn_Type g_rngaIrqId[RNG_INSTANCE_COUNT];
 typedef struct _rnga_user_config
 {
    bool isIntMasked; /*!< Masks the triggering of error interrupt @internal gui name="Interrupt mask" id="isIntMasked" */
-   bool highAssuranceEnable; /*!< Enables notification of security violations @internal gui name="High assurance" id="highAssurance" */  
+   bool highAssuranceEnable; /*!< Enables notification of security violations @internal gui name="High assurance" id="highAssurance" */
 } rnga_user_config_t;
 
 
@@ -112,7 +112,7 @@ void RNGA_DRV_Deinit(uint32_t instance);
  */
 static inline void RNGA_DRV_SetMode(uint32_t instance, rnga_mode_t mode)
 {
-    RNGA_HAL_SetWorkModeCmd(g_rngaBase[instance], mode);
+	RNGA_HAL_SetWorkModeCmd(g_rngaBase[instance], mode);
 }
 
 
@@ -126,7 +126,7 @@ static inline void RNGA_DRV_SetMode(uint32_t instance, rnga_mode_t mode)
  */
 static inline rnga_mode_t RNGA_DRV_GetMode(uint32_t instance)
 {
-    return RNGA_HAL_GetWorkMode(g_rngaBase[instance]);
+	return RNGA_HAL_GetWorkMode(g_rngaBase[instance]);
 }
 
 /*!
@@ -152,7 +152,7 @@ rnga_status_t RNGA_DRV_GetRandomData(uint32_t instance, void *data, uint32_t dat
  */
 static inline void RNGA_DRV_Seed(uint32_t instance, uint32_t seed)
 {
-    RNGA_HAL_WriteSeed(g_rngaBase[instance], seed);
+	RNGA_HAL_WriteSeed(g_rngaBase[instance], seed);
 }
 
 /*!
@@ -175,4 +175,3 @@ void RNGA_DRV_IRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

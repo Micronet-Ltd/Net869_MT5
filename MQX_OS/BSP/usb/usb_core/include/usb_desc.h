@@ -1,30 +1,30 @@
 /**HEADER********************************************************************
-* 
+*
 * Copyright (c) 2008, 2013 Freescale Semiconductor;
 * All Rights Reserved
 *
 * Copyright (c) 1989-2008 ARC International;
 * All Rights Reserved
 *
-*************************************************************************** 
+***************************************************************************
 *
-* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
-* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
-* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+* THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+* INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+* IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 * THE POSSIBILITY OF SUCH DAMAGE.
 *
 **************************************************************************
 *
 * $FileName: usb_desc.h$
-* $Version : 
-* $Date    : 
+* $Version :
+* $Date    :
 *
 * Comments:
 *
@@ -194,20 +194,20 @@
 #define USB_DEV_REQ_STD_REQUEST_SET_INTERFACE      (11)
 #define USB_DEV_REQ_STD_REQUEST_SYNCH_FRAME        (12)
 
-#define GET_STATUS_DEVICE_MASK           (0x0003)  
-#define REMOTE_WAKEUP_STATUS_MASK        (0x0002) 
+#define GET_STATUS_DEVICE_MASK           (0x0003)
+#define REMOTE_WAKEUP_STATUS_MASK        (0x0002)
 /* identification values and masks to identify request types  */
-//#define USB_REQUEST_CLASS_MASK   (0x60) 
-//#define USB_REQUEST_CLASS_STRD   (0x00) 
-//#define USB_REQUEST_CLASS_CLASS  (0x20) 
-//#define USB_REQUEST_CLASS_VENDOR (0x40) 
+//#define USB_REQUEST_CLASS_MASK   (0x60)
+//#define USB_REQUEST_CLASS_STRD   (0x00)
+//#define USB_REQUEST_CLASS_CLASS  (0x20)
+//#define USB_REQUEST_CLASS_VENDOR (0x40)
 #define USB_GET_STATUS_ATTRIBUTES_SELF_POWERED_SHIFT (0)
 #define USB_GET_STATUS_ATTRIBUTES_REMOTE_WAKEUP_SHIFT (1)
 /* Configuration bmAttributes fields */
 #define USB_DESC_CFG_ATTRIBUTES_D7_MASK  (0x1)
 #define USB_DESC_CFG_ATTRIBUTES_D7_SHIFT (7)
 #define USB_DESC_CFG_ATTRIBUTES_D7_POS   (USB_DESC_CFG_ATTRIBUTES_D7_MASK << USB_DESC_CFG_ATTRIBUTES_D7_SHIFT)
-                                                         
+
 #define USB_DESC_CFG_ATTRIBUTES_SELF_POWERED_MASK  (0x1)
 #define USB_DESC_CFG_ATTRIBUTES_SELF_POWERED_SHIFT (6)
 #define USB_DESC_CFG_ATTRIBUTES_SELF_POWERED_POS   (USB_DESC_CFG_ATTRIBUTES_SELF_POWERED_MASK << USB_DESC_CFG_ATTRIBUTES_SELF_POWERED_SHIFT)
@@ -256,20 +256,20 @@
 #define USB_DEV_REQ_STD_FEATURE_B_HNP_ENABLE       (0x0003) /* B HNP enable  SET/CLEAR feature value */
 #define USB_DEV_REQ_STD_FEATURE_A_HNP_SUPPORT      (0x0004) /* A HNP support SET/CLEAR feature value */
 
- typedef struct _usb_language 
+ typedef struct _usb_language
 {
-    uint16_t language_id;
-    uint8_t ** lang_desc;
-    uint8_t * lang_desc_size;    
+	uint16_t language_id;
+	uint8_t ** lang_desc;
+	uint8_t * lang_desc_size;
 } usb_language_t;
- 
+
 typedef struct _usb_all_languages
 {
-    uint8_t *languages_supported_string;
-    uint8_t  languages_supported_size;
-    uint8_t  languages_number;
-    /*Allocate Memory In App Layer*/
-    usb_language_t *usb_language;
+	uint8_t *languages_supported_string;
+	uint8_t  languages_supported_size;
+	uint8_t  languages_number;
+	/*Allocate Memory In App Layer*/
+	usb_language_t *usb_language;
 } usb_all_languages_t;
 
 PACKED_STRUCT_BEGIN
@@ -288,7 +288,7 @@ struct usb_device_descriptor
    uint8_t   iManufacturer;    /* Index to manufacturer string */
    uint8_t   iProduct;         /* Index to product string */
    uint8_t   iSerialNumber;    /* Index to serial number string */
-   uint8_t   bNumConfigurations; /* Number of possible configurations */ 
+   uint8_t   bNumConfigurations; /* Number of possible configurations */
 } PACKED_STRUCT_END;
 typedef struct usb_device_descriptor device_descriptor_t;
 
@@ -299,7 +299,7 @@ struct usb_configuration_descriptor
    uint8_t   bDescriptorType;  /* CONFIGURATION type = 2 or 7 */
    uint8_t   wTotalLength[2];  /* Length of concatenated descriptors */
    uint8_t   bNumInterfaces;   /* Number of interfaces, this config. */
-   uint8_t   bConfigurationValue;  /* Value to set this config. */ 
+   uint8_t   bConfigurationValue;  /* Value to set this config. */
    uint8_t   iConfig;          /* Index to configuration string */
    uint8_t   bmAttributes;     /* Config. characteristics */
    #define  CONFIG_RES7       (0x80)  /* Reserved, always = 1 */
@@ -307,7 +307,7 @@ struct usb_configuration_descriptor
    #define  CONFIG_WAKEUP     (0x20)  /* Remote wakeup */
    uint8_t   bMaxPower;        /* Max.power from bus, 2mA units */
 } PACKED_STRUCT_END;
-typedef struct usb_configuration_descriptor usb_configuration_descriptor_t;  
+typedef struct usb_configuration_descriptor usb_configuration_descriptor_t;
 
 PACKED_STRUCT_BEGIN
 struct usb_interface_descriptor
@@ -322,7 +322,7 @@ struct usb_interface_descriptor
    uint8_t   bInterfaceProtocol;  /* Protocol, 0xFF = vendor */
    uint8_t   iInterface;       /* Index to interface string */
 } PACKED_STRUCT_END;
-typedef struct usb_interface_descriptor interface_descriptor_t;  
+typedef struct usb_interface_descriptor interface_descriptor_t;
 
 PACKED_STRUCT_BEGIN
 struct usb_endpoint_descriptor
@@ -356,10 +356,10 @@ struct usb_endpoint_descriptor
    #define  ONE_ADDITIONAL    (0x0800)   /* 2 / microframe */
    #define  TWO_ADDITIONAL    (0x1000)   /* 3 / microframe */
    #define  ADDITIONAL_MASK   (ONE_ADDITIONAL | TWO_ADDITIONAL)
-   #define  ADDITIONAL_POWER  (11)   
+   #define  ADDITIONAL_POWER  (11)
    uint8_t   iInterval;        /* Polling interval in (micro) frames */
 } PACKED_STRUCT_END;
-typedef struct usb_endpoint_descriptor endpoint_descriptor_t;  
+typedef struct usb_endpoint_descriptor endpoint_descriptor_t;
 
 PACKED_STRUCT_BEGIN
 struct usb_qualifier_descriptor
@@ -372,9 +372,9 @@ struct usb_qualifier_descriptor
    uint8_t   bDeviceProtocol;  /* Protocol, if 0 see interface */
    uint8_t   bMaxPacketSize;   /* Endpoint 0 max. size */
    uint8_t   bNumConfigurations; /* Number of possible configurations */
-   uint8_t   bReserved;        /* Reserved = 0 */ 
+   uint8_t   bReserved;        /* Reserved = 0 */
 } PACKED_STRUCT_END;
-typedef struct usb_qualifier_descriptor qualifier_descriptor_t;  
+typedef struct usb_qualifier_descriptor qualifier_descriptor_t;
 
 /* Other-Config type 7 fields are identical to type 2 above */
 
@@ -389,7 +389,7 @@ struct usb_otg_descriptor
    #define  OTG_SRP_SUPPORT   (0x01)  /* Supports SRP */
    #define  OTG_HNP_SUPPORT   (0x02)  /* Supports HNP */
 } PACKED_STRUCT_END;
-typedef struct usb_otg_descriptor otg_descriptor_t;  
+typedef struct usb_otg_descriptor otg_descriptor_t;
 
 PACKED_STRUCT_BEGIN
 struct usb_common_descriptor

@@ -50,11 +50,10 @@ extern void TSI_DRV_IRQHandler(uint32_t instance);
  */
 void TSI0_IRQHandler(void)
 {
-    TSI_DRV_IRQHandler(0);
+	TSI_DRV_IRQHandler(0);
 }
 #endif
 
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

@@ -13,4 +13,3 @@ extern void MQX_UART1_RX_TX_IRQHandler (void);
 extern void MQX_UART3_RX_TX_IRQHandler (void);
 
 #endif /* _MIC_UART_CONFIGURATION_H */
-

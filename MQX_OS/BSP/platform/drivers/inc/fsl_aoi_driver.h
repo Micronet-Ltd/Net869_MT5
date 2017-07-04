@@ -51,10 +51,10 @@ extern AOI_Type* const g_aoiBase[];
 /*! @brief AOI product term configuration structure  */
 typedef struct AoiProductTermConfig
 {
-    aoi_input_config_t PTAC;  /*!< PTx_AC configuration.  */
-    aoi_input_config_t PTBC;  /*!< PTx_BC configuration.  */
-    aoi_input_config_t PTCC;  /*!< PTx_CC configuration.  */
-    aoi_input_config_t PTDC;  /*!< PTx_DC configuration.  */
+	aoi_input_config_t PTAC;  /*!< PTx_AC configuration.  */
+	aoi_input_config_t PTBC;  /*!< PTx_BC configuration.  */
+	aoi_input_config_t PTCC;  /*!< PTx_CC configuration.  */
+	aoi_input_config_t PTDC;  /*!< PTx_DC configuration.  */
 } aoi_product_term_config_t;
 
 /*!
@@ -65,22 +65,22 @@ typedef struct AoiProductTermConfig
  */
 typedef struct AoiEventConfig
 {
-    aoi_input_config_t PT1DC; /*!< PT1_DC configuration.  */
-    aoi_input_config_t PT1CC; /*!< PT1_CC configuration.  */
-    aoi_input_config_t PT1BC; /*!< PT1_BC configuration.  */
-    aoi_input_config_t PT1AC; /*!< PT1_AC configuration.  */
-    aoi_input_config_t PT0DC; /*!< PT0_DC configuration.  */
-    aoi_input_config_t PT0CC; /*!< PT0_CC configuration.  */
-    aoi_input_config_t PT0BC; /*!< PT0_BC configuration.  */
-    aoi_input_config_t PT0AC; /*!< PT0_AC configuration.  */
-    aoi_input_config_t PT3DC; /*!< PT3_DC configuration.  */
-    aoi_input_config_t PT3CC; /*!< PT3_CC configuration.  */
-    aoi_input_config_t PT3BC; /*!< PT3_BC configuration.  */
-    aoi_input_config_t PT3AC; /*!< PT3_AC configuration.  */
-    aoi_input_config_t PT2DC; /*!< PT2_DC configuration.  */
-    aoi_input_config_t PT2CC; /*!< PT2_CC configuration.  */
-    aoi_input_config_t PT2BC; /*!< PT2_BC configuration.  */
-    aoi_input_config_t PT2AC; /*!< PT2_AC configuration.  */
+	aoi_input_config_t PT1DC; /*!< PT1_DC configuration.  */
+	aoi_input_config_t PT1CC; /*!< PT1_CC configuration.  */
+	aoi_input_config_t PT1BC; /*!< PT1_BC configuration.  */
+	aoi_input_config_t PT1AC; /*!< PT1_AC configuration.  */
+	aoi_input_config_t PT0DC; /*!< PT0_DC configuration.  */
+	aoi_input_config_t PT0CC; /*!< PT0_CC configuration.  */
+	aoi_input_config_t PT0BC; /*!< PT0_BC configuration.  */
+	aoi_input_config_t PT0AC; /*!< PT0_AC configuration.  */
+	aoi_input_config_t PT3DC; /*!< PT3_DC configuration.  */
+	aoi_input_config_t PT3CC; /*!< PT3_CC configuration.  */
+	aoi_input_config_t PT3BC; /*!< PT3_BC configuration.  */
+	aoi_input_config_t PT3AC; /*!< PT3_AC configuration.  */
+	aoi_input_config_t PT2DC; /*!< PT2_DC configuration.  */
+	aoi_input_config_t PT2CC; /*!< PT2_CC configuration.  */
+	aoi_input_config_t PT2BC; /*!< PT2_BC configuration.  */
+	aoi_input_config_t PT2AC; /*!< PT2_AC configuration.  */
 } aoi_event_config_t;
 
 /*******************************************************************************
@@ -99,11 +99,11 @@ extern "C" {
  *
  * This is an example to initialize the AOI module:
    @code
-    status = AOI_DRV_Init();
-    switch (status)
-    {
-        //...
-    }
+	status = AOI_DRV_Init();
+	switch (status)
+	{
+		//...
+	}
    @endcode
  *
  * @param   instance The instance number of the AOI peripheral
@@ -132,35 +132,35 @@ aoi_status_t AOI_DRV_Deinit(uint32_t instance);
  *
    @code
 
-    aoi_event_config_t aoiEventConfig;
+	aoi_event_config_t aoiEventConfig;
 
-    aoiEventConfig.PT0AC =  kAoiConfigInputSignal;
-    aoiEventConfig.PT0BC =  kAoiConfigLogicZero;
-    aoiEventConfig.PT0CC =  kAoiConfigLogicZero;
-    aoiEventConfig.PT0DC =  kAoiConfigLogicZero;
+	aoiEventConfig.PT0AC =  kAoiConfigInputSignal;
+	aoiEventConfig.PT0BC =  kAoiConfigLogicZero;
+	aoiEventConfig.PT0CC =  kAoiConfigLogicZero;
+	aoiEventConfig.PT0DC =  kAoiConfigLogicZero;
 
-    aoiEventConfig.PT1AC =  kAoiConfigInvInputSignal;
-    aoiEventConfig.PT1BC =  kAoiConfigLogicZero;
-    aoiEventConfig.PT1CC =  kAoiConfigLogicZero;
-    aoiEventConfig.PT1DC =  kAoiConfigInputSignal;
+	aoiEventConfig.PT1AC =  kAoiConfigInvInputSignal;
+	aoiEventConfig.PT1BC =  kAoiConfigLogicZero;
+	aoiEventConfig.PT1CC =  kAoiConfigLogicZero;
+	aoiEventConfig.PT1DC =  kAoiConfigInputSignal;
 
-    aoiEventConfig.PT2AC =  kAoiConfigInputSignal;
-    aoiEventConfig.PT2BC =  kAoiConfigInputSignal;
-    aoiEventConfig.PT2CC =  kAoiConfigInputSignal;
-    aoiEventConfig.PT2DC =  kAoiConfigLogicOne;
+	aoiEventConfig.PT2AC =  kAoiConfigInputSignal;
+	aoiEventConfig.PT2BC =  kAoiConfigInputSignal;
+	aoiEventConfig.PT2CC =  kAoiConfigInputSignal;
+	aoiEventConfig.PT2DC =  kAoiConfigLogicOne;
 
-    aoiEventConfig.PT3AC =  kAoiConfigLogicOne;
-    aoiEventConfig.PT3BC =  kAoiConfigLogicOne;
-    aoiEventConfig.PT3CC =  kAoiConfigLogicOne;
-    aoiEventConfig.PT3DC =  kAoiConfigLogicOne;
+	aoiEventConfig.PT3AC =  kAoiConfigLogicOne;
+	aoiEventConfig.PT3BC =  kAoiConfigLogicOne;
+	aoiEventConfig.PT3CC =  kAoiConfigLogicOne;
+	aoiEventConfig.PT3DC =  kAoiConfigLogicOne;
 
-    aoi_status_t status;
-    // In the function call below, the value of "2" indicates event #2 is being used.
-    status = AOI_DRV_ConfigEventLogic(0, 2, &aoiEventConfig);
-    switch (status)
-    {
-        //...
-    }
+	aoi_status_t status;
+	// In the function call below, the value of "2" indicates event #2 is being used.
+	status = AOI_DRV_ConfigEventLogic(0, 2, &aoiEventConfig);
+	switch (status)
+	{
+		//...
+	}
    @endcode
  *
  * @param   instance The instance number of the AOI peripheral
@@ -170,8 +170,8 @@ aoi_status_t AOI_DRV_Deinit(uint32_t instance);
  * @return  An error code or kStatus_AOI_Success.
  */
 aoi_status_t AOI_DRV_ConfigEventLogic(uint32_t instance,
-                                      aoi_event_index_t event,
-                                      const aoi_event_config_t * eventConfigPtr);
+									  aoi_event_index_t event,
+									  const aoi_event_config_t * eventConfigPtr);
 
 /*!
  * @brief Configures an AOI module product term in a specific event.
@@ -183,20 +183,20 @@ aoi_status_t AOI_DRV_ConfigEventLogic(uint32_t instance,
  * Example:
    @code
 
-    aoi_product_term_config_t productTermConfigStruct;
-    aoi_status_t status;
+	aoi_product_term_config_t productTermConfigStruct;
+	aoi_status_t status;
 
-    productTermConfigStruct.PTAC = kAoiConfigLogicZero;
-    productTermConfigStruct.PTBC = kAoiConfigInputSignal;
-    productTermConfigStruct.PTCC = kAoiConfigInvInputSignal;
-    productTermConfigStruct.PTDC = kAoiConfigLogicOne;
+	productTermConfigStruct.PTAC = kAoiConfigLogicZero;
+	productTermConfigStruct.PTBC = kAoiConfigInputSignal;
+	productTermConfigStruct.PTCC = kAoiConfigInvInputSignal;
+	productTermConfigStruct.PTDC = kAoiConfigLogicOne;
 
-    // Configure product term 1 of event 3
-    status = AOI_DRV_ConfigProductTermLogic(0, 3, kAoiTerm1, &productTermConfigStruct);
-    switch (status)
-    {
-        //...
-    }
+	// Configure product term 1 of event 3
+	status = AOI_DRV_ConfigProductTermLogic(0, 3, kAoiTerm1, &productTermConfigStruct);
+	switch (status)
+	{
+		//...
+	}
    @endcode
  *
  * @param   instance The instance number of the AOI peripheral
@@ -208,9 +208,9 @@ aoi_status_t AOI_DRV_ConfigEventLogic(uint32_t instance,
  * @return  An error code or kStatus_AOI_Success.
  */
 aoi_status_t AOI_DRV_ConfigProductTermLogic(uint32_t instance,
-                                            aoi_event_index_t event,
-                                            aoi_product_term_t productTerm,
-                                            const aoi_product_term_config_t * productTermConfigPtr);
+											aoi_event_index_t event,
+											aoi_product_term_t productTerm,
+											const aoi_product_term_config_t * productTermConfigPtr);
 
 #if defined(__cplusplus)
 }
@@ -225,4 +225,3 @@ aoi_status_t AOI_DRV_ConfigProductTermLogic(uint32_t instance,
 /******************************************************************************
  * EOF
  *****************************************************************************/
-

@@ -7,9 +7,16 @@ module NBOARD869V1_TOP (
   input  J1708_UART_rx ,				// FPGA J1708 Rx - J1708 transiver Tx
   output J1708_UART_tx ,				// FPGA J1708 Tx - J1708 transiver Rx
          
-  input  CPU_I2C_scl   ,				// I2C clock
-  inout  CPU_I2C_sda   ,				// I2C data
-         
+  input  CPU_I2C0_scl   ,				// I2C0 clock
+  inout  CPU_I2C0_sda   ,				// I2C0 data
+
+  input  CPU_I2C1_scl   ,				// I2C1 clock
+  inout  CPU_I2C1_sda   ,				// I2C1 data
+  
+  output led1_red      ,
+  output led1_green    ,
+  output led1_blue     ,
+
   output led2_red      ,
   output led2_green    ,
   output led2_blue     ,
@@ -32,10 +39,10 @@ localparam	CLK_FRQ_MHZ          = 26     ,
 			FPGA_I2C_ADDR        = 7'h5E  ;
           
 
-localparam	FPGA_VERSION_TYPE    = "A"    ,
-			FPGA_VERSION_MAJOR   =  9     ,
-			FPGA_VERSION_MINOR   =  9     ,
-			FPGA_VERSION_DEBUG   =  8     ;
+localparam	FPGA_VERSION_TYPE    = "Z"    ,
+			FPGA_VERSION_MAJOR   =  0     ,
+			FPGA_VERSION_MINOR   =  0     ,
+			FPGA_VERSION_DEBUG   =  2     ;
         
 wire irq_int      ;
 
@@ -68,18 +75,19 @@ wire [31:0] register_data_in               ;
 wire        register_data_in_valid         ;
 wire        data_from_register_rd          ;
 
-wire [ 7:0] led2_dutycycle_value ,  led3_dutycycle_value ;
-wire [ 7:0] led2_red_value       ,  led3_red_value       ;
-wire [ 7:0] led2_green_value     ,  led3_green_value     ;
-wire [ 7:0] led2_blue_value      ,  led3_blue_value      ;
-wire        led2_write_value     ,  led3_write_value     ;
+wire [ 7:0] led1_dutycycle_value ,  led2_dutycycle_value ,  led3_dutycycle_value ;
+wire [ 7:0] led1_red_value       ,  led2_red_value       ,  led3_red_value       ;
+wire [ 7:0] led1_green_value     ,  led2_green_value     ,  led3_green_value     ;
+wire [ 7:0] led1_blue_value      ,  led2_blue_value      ,  led3_blue_value      ;
+
 
 IO_OUTPUT IO_IRQ         (.IO_pin (irq), .data (irq_int), .clk (clk) );
 
 reg  [3:0]  rst_int = 0;
 reg         rst = 0;
 
-assign gpio_test = &gpio_in;		// for now, ignore GPIO inputs but they must be defined as inputs
+assign gpio_test    = (&gpio_in) & CPU_I2C0_scl;		// for now, ignore GPIO inputs and I2C0_scl but they must be defined as inputs
+assign CPU_I2C0_sda = 1'bz;
 
 always @(posedge clk)
 begin
@@ -96,8 +104,8 @@ MCU_INTERFACE #(
 ) MCU_INTERFACE (
 	.uart_rx                 (CPU_UART_rx                  ),
 	.uart_tx                 (CPU_UART_tx                  ),			
-	.I2C_sda                 (CPU_I2C_sda                  ),	
-	.I2C_scl                 (CPU_I2C_scl                  ),
+	.I2C_sda                 (CPU_I2C1_sda                 ),	
+	.I2C_scl                 (CPU_I2C1_scl                 ),
 	
 	.uart_rx_data_out        (J1708_tx_message_byte        ),
 	.uart_rx_data_out_valid  (J1708_tx_message_byte_valid  ),
@@ -159,6 +167,11 @@ REGISTERS #(
 	.data_out                (register_data_out            ),
 	.interrupt               (irq_int                      ),
 	.register_read           (data_from_register_rd        ),
+
+	.led1_dutycycle          (led1_dutycycle_value         ),
+	.led1_red                (led1_red_value               ),
+	.led1_green              (led1_green_value             ),
+	.led1_blue               (led1_blue_value              ),
                                                          
 	.led2_dutycycle          (led2_dutycycle_value         ),
 	.led2_red                (led2_red_value               ),
@@ -187,6 +200,18 @@ REGISTERS #(
 );
 
 LEDS LEDS (                            
+
+	// LED1 control         
+	.led1_DC_value           (led1_dutycycle_value         ),
+	.led1_red_value          (led1_red_value               ),
+	.led1_green_value        (led1_green_value             ),
+	.led1_blue_value         (led1_blue_value              ),
+                                                          
+	// LED1 output                                        
+	.led1_red                (led1_red                     ),
+	.led1_green              (led1_green                   ),
+	.led1_blue               (led1_blue                    ),
+
 	// LED2 control         
 	.led2_DC_value           (led2_dutycycle_value         ),
 	.led2_red_value          (led2_red_value               ),

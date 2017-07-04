@@ -54,9 +54,9 @@ void __main(void);
  */
 __asm void __user_setup_stackheap(void)
 {
-    movs r0, #0
-    movs r2, #0
-    bx lr
+	movs r0, #0
+	movs r2, #0
+	bx lr
 }
 /*! \endcond */
 
@@ -73,7 +73,7 @@ __asm void __user_setup_stackheap(void)
  */
 int __aeabi_atexit(void *object_ptr, void *destructor_ptr, void *__dso_handle_ptr)
 {
-    return (1);
+	return (1);
 }
 /*! \endcond */
 
@@ -87,7 +87,7 @@ int __aeabi_atexit(void *object_ptr, void *destructor_ptr, void *__dso_handle_pt
  */
 void *malloc(_mem_size bytes)
 {
-    return _mem_alloc_system(bytes);
+	return _mem_alloc_system(bytes);
 }
 
 /*!
@@ -100,7 +100,7 @@ void *malloc(_mem_size bytes)
  */
 void *calloc(_mem_size n, _mem_size z)
 {
-    return _mem_alloc_system_zero(n*z);
+	return _mem_alloc_system_zero(n*z);
 }
 
 /*!
@@ -110,7 +110,7 @@ void *calloc(_mem_size n, _mem_size z)
  */
 void free(void *p)
 {
-    _mem_free(p);
+	_mem_free(p);
 }
 #endif /* MQXCFG_ALLOCATOR */
 
@@ -125,7 +125,7 @@ void free(void *p)
  */
 int $Sub$$_initio(void)
 {
-    return 0;
+	return 0;
 }
 /*! \endcond */
 
@@ -137,7 +137,7 @@ int $Sub$$_initio(void)
  */
 void * freopen( const char * filename, const char * mode, void * stream )
 {
-    return NULL;
+	return NULL;
 }
 /*! \endcond */
 
@@ -149,10 +149,10 @@ void * freopen( const char * filename, const char * mode, void * stream )
  */
 int _fclose_internal(void * stream )
 {
-    volatile int i = 1;
-    __asm("cpsid i");
-    while(i);
-    return -1;
+	volatile int i = 1;
+	__asm("cpsid i");
+	while(i);
+	return -1;
 }
 /*! \endcond */
 
@@ -162,6 +162,6 @@ int _fclose_internal(void * stream )
  */
 void toolchain_startup(void)
 {
-    __main();
+	__main();
 }
 /*! \endcond */

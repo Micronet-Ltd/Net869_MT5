@@ -21,8 +21,8 @@
  **************************************************************************
  *
  * $FileName: compiler.h$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments:
  *
@@ -86,7 +86,7 @@ extern "C"
 #ifndef _WEAK_SYMBOL
 #define _WEAK_SYMBOL(x)     __weak x
 #endif
-    
+
 #elif (defined __CC_ARM)
 
 #ifndef PACKED_STRUCT_BEGIN
@@ -112,8 +112,8 @@ extern "C"
 #ifndef _WEAK_SYMBOL
 #define _WEAK_SYMBOL(x)     __weak x
 #endif
-    
-#endif  
+
+#endif
 
 #ifdef __cplusplus
 }

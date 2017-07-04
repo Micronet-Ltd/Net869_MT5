@@ -1,31 +1,31 @@
 /**HEADER********************************************************************
- * 
+ *
  * Copyright (c) 2010, 2015 Freescale Semiconductor;
  * All Rights Reserved
  *
- *************************************************************************** 
+ ***************************************************************************
  *
- * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR 
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THIS SOFTWARE IS PROVIDED BY FREESCALE "AS IS" AND ANY EXPRESSED OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL FREESCALE OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  **************************************************************************
  *
  * $FileName: usb_otg_main.h$
- * $Version : 
- * $Date    : 
+ * $Version :
+ * $Date    :
  *
  * Comments : This is the header file for the OTG driver
  *
- *         
+ *
  *****************************************************************************/
 
 #ifndef USB_OTG_MAIN_H_
@@ -103,7 +103,7 @@ typedef void (*otg_event_callback)(usb_otg_handle handle, otg_event event);
 /*
 ** OTG task priority if use RTOS
 ** MGCT: <option type="number"/>
-*/  
+*/
 #define USBCFG_OTG_TASK_PRIORITY          4
 
 /* OTG initialization structure type */
@@ -137,43 +137,43 @@ typedef void (_CODE_PTR_ otg_peripheral_interrupt_pin_flag_clear)(void);
 typedef struct otg_init_struct
 {
 
-    otg_event_callback app_otg_callback; /*!< Application callback*/
-    otg_load_usb_stack load_usb_host; /*!< load function for host*/
-    otg_load_usb_stack load_usb_device; /*!< load function for device*/
-    otg_unload_usb_stack unload_usb_host; /*!< unload function for host*/
-    otg_unload_usb_stack unload_usb_device;/*!< unload function for device*/
+	otg_event_callback app_otg_callback; /*!< Application callback*/
+	otg_load_usb_stack load_usb_host; /*!< load function for host*/
+	otg_load_usb_stack load_usb_device; /*!< load function for device*/
+	otg_unload_usb_stack unload_usb_host; /*!< unload function for host*/
+	otg_unload_usb_stack unload_usb_device;/*!< unload function for device*/
 } otg_int_struct_t;
 
 typedef struct usb_otg_max3353_init_struct
 {
-    void*                                   int_port;
-    otg_peripheral_interrupt_pin_init       interrupt_pin_init;
-    otg_peripheral_interrupt_pin_flag_clear interrupt_pin_flag_clear;
-    uint8_t                                 int_pin;
-    uint8_t                                 int_vector;
-    uint8_t                                 priority;
-    uint8_t                                 i2c_channel;
-    uint8_t                                 i2c_vector;
-    uint8_t                                 i2c_address;
+	void*                                   int_port;
+	otg_peripheral_interrupt_pin_init       interrupt_pin_init;
+	otg_peripheral_interrupt_pin_flag_clear interrupt_pin_flag_clear;
+	uint8_t                                 int_pin;
+	uint8_t                                 int_vector;
+	uint8_t                                 priority;
+	uint8_t                                 i2c_channel;
+	uint8_t                                 i2c_vector;
+	uint8_t                                 i2c_address;
 } usb_otg_max3353_init_struct_t;
 
 typedef union usb_otg_peripheral_union
 {
-    usb_otg_max3353_init_struct_t max3353_init;
+	usb_otg_max3353_init_struct_t max3353_init;
 } usb_otg_peripheral_union_t;
 
 typedef enum
 {
-    USB_STACK_TYPE_DEVICE = 1,
-    USB_STACK_TYPE_HOST,
-    USB_STACK_TYPE_OTG
+	USB_STACK_TYPE_DEVICE = 1,
+	USB_STACK_TYPE_HOST,
+	USB_STACK_TYPE_OTG
 } usb_stack_type_t;
 
 enum
 {
-    USB_ACTIVE_STACK_NONE,
-    USB_ACTIVE_STACK_DEVICE,
-    USB_ACTIVE_STACK_HOST
+	USB_ACTIVE_STACK_NONE,
+	USB_ACTIVE_STACK_DEVICE,
+	USB_ACTIVE_STACK_HOST
 };
 
 #define USB_OTG_PERIPHERAL_MAX3353  0
@@ -186,10 +186,10 @@ enum
  */
 typedef struct usb_otg_if_struct
 {
-    const struct usb_otg_callback_functions_struct *otg_if; /*!< Interface for operation*/
-    void* otg_init_param;/*!< Initialization parameter*/
-    void* otg_handle; /*!< Handle of OTG*/
-    usb_stack_type_t stack_type; /*!< Type of stack*/
+	const struct usb_otg_callback_functions_struct *otg_if; /*!< Interface for operation*/
+	void* otg_init_param;/*!< Initialization parameter*/
+	void* otg_handle; /*!< Handle of OTG*/
+	usb_stack_type_t stack_type; /*!< Type of stack*/
 } usb_otg_if_struct_t;
 /*!
  * @brief OTG board initialization function.
@@ -232,7 +232,7 @@ extern usb_status usb_otg_shut_down(usb_otg_handle otg_handle);
  * The USB OTG session request function is used to start the SRP protocol from the
  * B-Device side with the target of requesting the Vbus from the A-Device.
  * The function is used to send a SRP signal and can only be called by the B role device.
- 
+
  * @param handle OTG handle
  * @return USB_OK-Success/Others-Fail
  */
@@ -335,7 +335,7 @@ extern uint8_t usb_otg_get_state(usb_otg_handle otg_handle);
  * Function Name    : usb_otg_set_peripheral_init_param
  * Returned Value   :
  * Comments         : Set USB OTG perepheral param
- *                  
+ *
  *END*----------------------------------------------------------------------*/
 extern usb_status usb_otg_set_peripheral_init_param(uint8_t peripheral_id, usb_otg_peripheral_union_t *peripheral_param);
 

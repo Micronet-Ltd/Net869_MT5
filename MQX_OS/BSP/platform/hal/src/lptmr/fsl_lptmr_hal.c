@@ -56,25 +56,25 @@
  *END**************************************************************************/
 void LPTMR_HAL_Init(LPTMR_Type * base)
 {
-    lptmr_working_mode_user_config_t working_mode_config;
-    lptmr_prescaler_user_config_t prescaler_config;
-    
-    LPTMR_HAL_Disable(base);
-    LPTMR_HAL_ClearIntFlag(base);
+	lptmr_working_mode_user_config_t working_mode_config;
+	lptmr_prescaler_user_config_t prescaler_config;
 
-    working_mode_config.timerModeSelect = kLptmrTimerModeTimeCounter;
-    working_mode_config.freeRunningEnable = false;
-    working_mode_config.pinPolarity = kLptmrPinPolarityActiveHigh;
-    working_mode_config.pinSelect = kLptmrPinSelectInput0;
-    LPTMR_HAL_SetTimerWorkingMode(base, working_mode_config);
-    
-    prescaler_config.prescalerValue = kLptmrPrescalerDivide2;
-    prescaler_config.prescalerBypass = true;
-    prescaler_config.prescalerClockSelect = kLptmrPrescalerClock0;
-    LPTMR_HAL_SetPrescalerMode(base, prescaler_config);
-    
-    LPTMR_HAL_SetCompareValue(base, 0U);
-    LPTMR_HAL_SetIntCmd(base, false);
+	LPTMR_HAL_Disable(base);
+	LPTMR_HAL_ClearIntFlag(base);
+
+	working_mode_config.timerModeSelect = kLptmrTimerModeTimeCounter;
+	working_mode_config.freeRunningEnable = false;
+	working_mode_config.pinPolarity = kLptmrPinPolarityActiveHigh;
+	working_mode_config.pinSelect = kLptmrPinSelectInput0;
+	LPTMR_HAL_SetTimerWorkingMode(base, working_mode_config);
+
+	prescaler_config.prescalerValue = kLptmrPrescalerDivide2;
+	prescaler_config.prescalerBypass = true;
+	prescaler_config.prescalerClockSelect = kLptmrPrescalerClock0;
+	LPTMR_HAL_SetPrescalerMode(base, prescaler_config);
+
+	LPTMR_HAL_SetCompareValue(base, 0U);
+	LPTMR_HAL_SetIntCmd(base, false);
 }
 
  /*FUNCTION**********************************************************************
@@ -85,17 +85,17 @@ void LPTMR_HAL_Init(LPTMR_Type * base)
  *END**************************************************************************/
 void LPTMR_HAL_SetTimerWorkingMode(LPTMR_Type * base,  lptmr_working_mode_user_config_t timerMode)
 {
-    uint32_t csr;
-    
-    csr = LPTMR_RD_CSR(base);
-    csr &= ~(LPTMR_CSR_TCF_MASK | LPTMR_CSR_TMS_MASK | LPTMR_CSR_TFC_MASK 
-             | LPTMR_CSR_TPP_MASK | LPTMR_CSR_TPS_MASK);
-    csr |= LPTMR_CSR_TMS(timerMode.timerModeSelect) 
-        | LPTMR_CSR_TFC(timerMode.freeRunningEnable)
-        | LPTMR_CSR_TPP(timerMode.pinPolarity) 
-        | LPTMR_CSR_TPS(timerMode.pinSelect); 
-    
-    LPTMR_WR_CSR(base, csr);
+	uint32_t csr;
+
+	csr = LPTMR_RD_CSR(base);
+	csr &= ~(LPTMR_CSR_TCF_MASK | LPTMR_CSR_TMS_MASK | LPTMR_CSR_TFC_MASK
+			 | LPTMR_CSR_TPP_MASK | LPTMR_CSR_TPS_MASK);
+	csr |= LPTMR_CSR_TMS(timerMode.timerModeSelect)
+		| LPTMR_CSR_TFC(timerMode.freeRunningEnable)
+		| LPTMR_CSR_TPP(timerMode.pinPolarity)
+		| LPTMR_CSR_TPS(timerMode.pinSelect);
+
+	LPTMR_WR_CSR(base, csr);
 }
 
  /*FUNCTION**********************************************************************
@@ -106,13 +106,13 @@ void LPTMR_HAL_SetTimerWorkingMode(LPTMR_Type * base,  lptmr_working_mode_user_c
  *END**************************************************************************/
 void LPTMR_HAL_SetPrescalerMode(LPTMR_Type * base,  lptmr_prescaler_user_config_t prescaler_config)
 {
-    uint32_t psr;
-    
-    psr = LPTMR_PSR_PCS(prescaler_config.prescalerClockSelect)
-        | LPTMR_PSR_PBYP(prescaler_config.prescalerBypass)
-        | LPTMR_PSR_PRESCALE(prescaler_config.prescalerValue);
+	uint32_t psr;
 
-    LPTMR_WR_PSR(base, psr);
+	psr = LPTMR_PSR_PCS(prescaler_config.prescalerClockSelect)
+		| LPTMR_PSR_PBYP(prescaler_config.prescalerBypass)
+		| LPTMR_PSR_PRESCALE(prescaler_config.prescalerValue);
+
+	LPTMR_WR_PSR(base, psr);
 }
 
  /*FUNCTION**********************************************************************
@@ -123,6 +123,6 @@ void LPTMR_HAL_SetPrescalerMode(LPTMR_Type * base,  lptmr_prescaler_user_config_
  *END**************************************************************************/
 uint32_t LPTMR_HAL_GetCounterValue(LPTMR_Type * base)
 {
-    LPTMR_BWR_CNR_COUNTER(base, 0);  /* Must first write to the CNR with any value */
-    return (uint32_t)(LPTMR_BRD_CNR_COUNTER(base));
+	LPTMR_BWR_CNR_COUNTER(base, 0);  /* Must first write to the CNR with any value */
+	return (uint32_t)(LPTMR_BRD_CNR_COUNTER(base));
 }

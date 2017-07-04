@@ -40,8 +40,8 @@
 
 static const FTPSRV_AUTH_STRUCT ftpsrv_users[] =
 {
-    {"developer", "freescale", NULL},
-    {0, 0, 0}
+	{"developer", "freescale", NULL},
+	{0, 0, 0}
 };
 
 uint32_t ftpsrv_handle;
@@ -57,81 +57,81 @@ uint32_t ftpsrv_handle;
 
 int32_t  Shell_ftpsrv(int32_t argc, char *argv[] )
 {
-    bool              print_usage;
-    bool              shorthelp = FALSE;
-    int32_t           return_code = SHELL_EXIT_SUCCESS;
-    SHELL_CONTEXT_PTR shell_ptr = Shell_get_context(argv);
+	bool              print_usage;
+	bool              shorthelp = FALSE;
+	int32_t           return_code = SHELL_EXIT_SUCCESS;
+	SHELL_CONTEXT_PTR shell_ptr = Shell_get_context(argv);
 
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
-    if (argc < 2)
-    {
-        fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
-        print_usage = TRUE;
-    }
-    if (print_usage)
-    {
-        if (shorthelp)
-        {
-            fprintf(shell_ptr->STDOUT, "%s [start|stop]\n", argv[0]);
-        }
-        else
-        {
-            fprintf(shell_ptr->STDOUT, "Usage: %s [start|stop]\n",argv[0]);
-        }
-        return return_code;
-    }
-    if (strcmp(argv[1], "start") == 0)
-    {
-        FTPSRV_PARAM_STRUCT  params = {0};
-        uint32_t old_handle = ftpsrv_handle;
-        #if RTCSCFG_ENABLE_IP4
-        params.af |= AF_INET;
-        #endif
-        #if RTCSCFG_ENABLE_IP6
-        params.af |= AF_INET6;
-        #endif
-        params.auth_table = (FTPSRV_AUTH_STRUCT*) ftpsrv_users;
-        params.root_dir = "a:";
-        ftpsrv_handle = FTPSRV_init(&params);
-        if (ftpsrv_handle != 0)
-        {
-            fprintf(shell_ptr->STDOUT, "FTP Server Started. Root directory is set to \"%s\", login: \"%s\", password: \"%s\".\n", 
-                params.root_dir,
-                ftpsrv_users[0].uid, 
-                ftpsrv_users[0].pass);
-        }
-        else
-        {
-            char *message = "";
+	if (argc < 2)
+	{
+		fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
+		print_usage = TRUE;
+	}
+	if (print_usage)
+	{
+		if (shorthelp)
+		{
+			fprintf(shell_ptr->STDOUT, "%s [start|stop]\n", argv[0]);
+		}
+		else
+		{
+			fprintf(shell_ptr->STDOUT, "Usage: %s [start|stop]\n",argv[0]);
+		}
+		return return_code;
+	}
+	if (strcmp(argv[1], "start") == 0)
+	{
+		FTPSRV_PARAM_STRUCT  params = {0};
+		uint32_t old_handle = ftpsrv_handle;
+		#if RTCSCFG_ENABLE_IP4
+		params.af |= AF_INET;
+		#endif
+		#if RTCSCFG_ENABLE_IP6
+		params.af |= AF_INET6;
+		#endif
+		params.auth_table = (FTPSRV_AUTH_STRUCT*) ftpsrv_users;
+		params.root_dir = "a:";
+		ftpsrv_handle = FTPSRV_init(&params);
+		if (ftpsrv_handle != 0)
+		{
+			fprintf(shell_ptr->STDOUT, "FTP Server Started. Root directory is set to \"%s\", login: \"%s\", password: \"%s\".\n",
+				params.root_dir,
+				ftpsrv_users[0].uid,
+				ftpsrv_users[0].pass);
+		}
+		else
+		{
+			char *message = "";
 
-            ftpsrv_handle = old_handle;
-            if (old_handle != 0)
-            {
-                message = "Server is already running.\n";
-            }
-            fprintf(shell_ptr->STDOUT, "Unable to start FTP Server.\n%s", message);
-            return_code = SHELL_EXIT_ERROR;
-        }
-    }
-    else if (strcmp(argv[1], "stop") == 0)
-    {
-        uint32_t result;
-        result = FTPSRV_release(ftpsrv_handle);
-        if (result == FTPSRV_OK)
-        {
-            fprintf(shell_ptr->STDOUT, "FTP server stopped.\n");
-        }
-        else
-        {
-            fprintf(shell_ptr->STDOUT, "Unable to stop FTP Server, error = 0x%x\n",result);
-            return_code = SHELL_EXIT_ERROR;
-        }
-    }
-    else
-    {
-        fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect option\n", argv[0]);
-    }
-    return return_code;
+			ftpsrv_handle = old_handle;
+			if (old_handle != 0)
+			{
+				message = "Server is already running.\n";
+			}
+			fprintf(shell_ptr->STDOUT, "Unable to start FTP Server.\n%s", message);
+			return_code = SHELL_EXIT_ERROR;
+		}
+	}
+	else if (strcmp(argv[1], "stop") == 0)
+	{
+		uint32_t result;
+		result = FTPSRV_release(ftpsrv_handle);
+		if (result == FTPSRV_OK)
+		{
+			fprintf(shell_ptr->STDOUT, "FTP server stopped.\n");
+		}
+		else
+		{
+			fprintf(shell_ptr->STDOUT, "Unable to stop FTP Server, error = 0x%x\n",result);
+			return_code = SHELL_EXIT_ERROR;
+		}
+	}
+	else
+	{
+		fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect option\n", argv[0]);
+	}
+	return return_code;
 }
 #endif /* SHELLCFG_USES_RTCS */

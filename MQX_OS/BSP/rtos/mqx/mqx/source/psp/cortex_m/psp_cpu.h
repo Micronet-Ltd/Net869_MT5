@@ -26,16 +26,16 @@
 *END************************************************************************/
 
 #ifndef __psp_cpu_h__
-    #define __psp_cpu_h__
+	#define __psp_cpu_h__
 
 #include "mqx_cpudef.h"
 
 #if PSP_MQX_CPU_IS_KINETIS
-    #include <kinetis.h>
+	#include <kinetis.h>
 #elif PSP_MQX_CPU_IS_VYBRID
-    #include <vybrid.h>
+	#include <vybrid.h>
 #else
-    #error INCORRECT MQX_CPU SETTING
+	#error INCORRECT MQX_CPU SETTING
 #endif
 
 #include <cortex.h>

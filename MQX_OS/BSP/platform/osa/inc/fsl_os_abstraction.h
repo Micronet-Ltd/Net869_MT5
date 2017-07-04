@@ -46,25 +46,25 @@
 /*! @brief Defines the return status of OSA's functions */
 typedef enum _osa_status_t
 {
-    kStatus_OSA_Success = 0U, /*!< Success */
-    kStatus_OSA_Error   = 1U, /*!< Failed */
-    kStatus_OSA_Timeout = 2U, /*!< Timeout occurs while waiting */
-    kStatus_OSA_Idle    = 3U  /*!< Used for bare metal only, the wait object is not ready
-                                and timeout still not occur */
+	kStatus_OSA_Success = 0U, /*!< Success */
+	kStatus_OSA_Error   = 1U, /*!< Failed */
+	kStatus_OSA_Timeout = 2U, /*!< Timeout occurs while waiting */
+	kStatus_OSA_Idle    = 3U  /*!< Used for bare metal only, the wait object is not ready
+								and timeout still not occur */
 } osa_status_t;
 
 /*! @brief The event flags are cleared automatically or manually.*/
 typedef enum _osa_event_clear_mode_t
 {
-    kEventAutoClear    = 0U,  /*!< The flags of the event will be cleared automatically. */
-    kEventManualClear  = 1U   /*!< The flags of the event will be cleared manually.      */
+	kEventAutoClear    = 0U,  /*!< The flags of the event will be cleared automatically. */
+	kEventManualClear  = 1U   /*!< The flags of the event will be cleared manually.      */
 } osa_event_clear_mode_t;
 
 /*! @brief Locks the task scheduler or disables interrupt in critical section. */
 typedef enum _osa_critical_section_mode_t
 {
-    kCriticalLockSched     = 0U,  /*!< Lock scheduler in critical section.      */
-    kCriticalDisableInt  = 1U   /*!< Disable interrupt in critical selection. */
+	kCriticalLockSched     = 0U,  /*!< Lock scheduler in critical section.      */
+	kCriticalDisableInt  = 1U   /*!< Disable interrupt in critical selection. */
 } osa_critical_section_mode_t;
 
 /*! @brief OSA interrupt handler. */
@@ -72,24 +72,24 @@ typedef void (*osa_int_handler_t)(void);
 
 /* Include required header file based on RTOS selection */
 #if defined (FSL_RTOS_MQX)
-    #define USE_RTOS 1
-    #include "fsl_os_abstraction_mqx.h"
+	#define USE_RTOS 1
+	#include "fsl_os_abstraction_mqx.h"
 
 #elif defined (FSL_RTOS_FREE_RTOS)
-    #define USE_RTOS 1
-    #include "fsl_os_abstraction_free_rtos.h"
+	#define USE_RTOS 1
+	#include "fsl_os_abstraction_free_rtos.h"
 
 #elif defined (FSL_RTOS_UCOSII)
-    #define USE_RTOS 1
-    #include "fsl_os_abstraction_ucosii.h"
+	#define USE_RTOS 1
+	#include "fsl_os_abstraction_ucosii.h"
 
 #elif defined (FSL_RTOS_UCOSIII)
-    #define USE_RTOS 1
-    #include "fsl_os_abstraction_ucosiii.h"
+	#define USE_RTOS 1
+	#include "fsl_os_abstraction_ucosiii.h"
 
 #else
-    #define USE_RTOS 0
-    #include "fsl_os_abstraction_bm.h"
+	#define USE_RTOS 0
+	#include "fsl_os_abstraction_bm.h"
 #endif
 
 /*******************************************************************************
@@ -153,7 +153,7 @@ osa_status_t OSA_SemaCreate(semaphore_t *pSem, uint8_t initValue);
    status = OSA_SemaWait(&mySem, 100);
    switch(status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -177,7 +177,7 @@ osa_status_t OSA_SemaWait(semaphore_t *pSem, uint32_t timeout);
    status = OSA_SemaPost(&mySem);
    switch(status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -198,7 +198,7 @@ osa_status_t OSA_SemaPost(semaphore_t *pSem);
    status = OSA_SemaDestroy(&mySem);
    switch(status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -229,7 +229,7 @@ osa_status_t OSA_SemaDestroy(semaphore_t *pSem);
    status = OSA_MutexCreate(&myMutex);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -262,7 +262,7 @@ osa_status_t OSA_MutexCreate(mutex_t *pMutex);
    status = OSA_MutexLock(&myMutex, 100);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -283,7 +283,7 @@ osa_status_t OSA_MutexLock(mutex_t *pMutex, uint32_t timeout);
    status = OSA_MutexUnlock(&myMutex);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  */
@@ -303,7 +303,7 @@ osa_status_t OSA_MutexUnlock(mutex_t *pMutex);
    status = OSA_MutexDestroy(&myMutex);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -375,16 +375,16 @@ osa_status_t OSA_EventCreate(event_t *pEvent, osa_event_clear_mode_t clearMode);
    status = OSA_EventWait(&myEvent, 0x01, true, 100, &setFlags);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
  */
 osa_status_t OSA_EventWait(event_t       *pEvent,
-                        event_flags_t  flagsToWait,
-                        bool           waitAll,
-                        uint32_t       timeout,
-                        event_flags_t *setFlags);
+						event_flags_t  flagsToWait,
+						bool           waitAll,
+						uint32_t       timeout,
+						event_flags_t *setFlags);
 
 /*!
  * @brief Sets one or more event flags.
@@ -403,7 +403,7 @@ osa_status_t OSA_EventWait(event_t       *pEvent,
    status = OSA_EventSet(&myEvent, 0x01);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -427,7 +427,7 @@ osa_status_t OSA_EventSet(event_t *pEvent, event_flags_t flagsToSet);
    status = OSA_EventClear(&myEvent, 0x01);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -466,7 +466,7 @@ event_flags_t OSA_EventGetFlags(event_t *pEvent);
    status = OSA_EventDestroy(&myEvent);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -502,16 +502,16 @@ osa_status_t OSA_EventDestroy(event_t *pEvent);
    osa_status_t status;
    OSA_TASK_DEFINE(task_func, stackSize);
    status = OSA_TaskCreate(task_func,
-                        "task_name",
-                        stackSize,
-                        task_func_stack,
-                        prio,
-                        param,
-                        false,
-                        &task_func_task_handler);
+						"task_name",
+						stackSize,
+						task_func_stack,
+						prio,
+						param,
+						false,
+						&task_func_task_handler);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -520,13 +520,13 @@ osa_status_t OSA_EventDestroy(event_t *pEvent);
  *       handler is not NULL even if the task creation has failed.
  */
 osa_status_t OSA_TaskCreate(task_t          task,
-                         uint8_t        *name,
-                         uint16_t        stackSize,
-                         task_stack_t   *stackMem,
-                         uint16_t        priority,
-                         task_param_t    param,
-                         bool            usesFloat,
-                         task_handler_t *handler);
+						 uint8_t        *name,
+						 uint16_t        stackSize,
+						 task_stack_t   *stackMem,
+						 uint16_t        priority,
+						 task_param_t    param,
+						 bool            usesFloat,
+						 task_handler_t *handler);
 
 /*!
  * @brief Destroys a previously created task.
@@ -542,7 +542,7 @@ osa_status_t OSA_TaskCreate(task_t          task,
    status = OSA_TaskDestroy(myTaskHandler);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -564,7 +564,7 @@ osa_status_t OSA_TaskDestroy(task_handler_t handler);
    status = OSA_TaskYield();
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -614,7 +614,7 @@ uint16_t OSA_TaskGetPriority(task_handler_t handler);
    status = OSA_TaskSetPriority(taskHandler, newPrio);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -647,8 +647,8 @@ osa_status_t OSA_TaskSetPriority(task_handler_t handler, uint16_t priority);
  *         created failed, return 0.
  */
 msg_queue_handler_t OSA_MsgQCreate(msg_queue_t *queue,
-                                        uint16_t  message_number,
-                                        uint16_t  message_size);
+										uint16_t  message_number,
+										uint16_t  message_size);
 
 /*!
  * @brief Puts a message at the end of the queue.
@@ -669,7 +669,7 @@ msg_queue_handler_t OSA_MsgQCreate(msg_queue_t *queue,
    status = OSA_MsgQPut(queueHandler, &messageToPut);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -703,14 +703,14 @@ osa_status_t OSA_MsgQPut(msg_queue_handler_t handler, void* pMessage);
    status = OSA_MsgQGet(queueHandler, &messageToGet, 100);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
  */
 osa_status_t OSA_MsgQGet(msg_queue_handler_t handler,
-                           void               *pMessage,
-                           uint32_t            timeout);
+						   void               *pMessage,
+						   uint32_t            timeout);
 
 /*!
  * @brief Destroys a previously created queue.
@@ -726,7 +726,7 @@ osa_status_t OSA_MsgQGet(msg_queue_handler_t handler,
    status = OSA_MsgQDestroy(queueHandler);
    switch (status)
    {
-       //...
+	   //...
    }
    @endcode
  *
@@ -808,7 +808,7 @@ uint32_t OSA_TimeGetMsec(void);
  *         detect whether this is the first interrupt handler installed.
  */
 osa_int_handler_t OSA_InstallIntHandler(int32_t IRQNumber,
-                                        osa_int_handler_t handler);
+										osa_int_handler_t handler);
 
 /* @} */
 
@@ -875,4 +875,3 @@ osa_status_t OSA_Start(void);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

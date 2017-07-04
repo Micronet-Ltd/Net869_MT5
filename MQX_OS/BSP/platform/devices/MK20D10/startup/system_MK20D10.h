@@ -115,30 +115,30 @@ extern "C" {
 
 /* Predefined clock setups
    0 ... Default part configuration
-         Multipurpose Clock Generator (MCG) in FEI mode.
-         Reference clock source for MCG module: Slow internal reference clock
-         Core clock = 20.97152MHz
-         Bus clock  = 20.97152MHz
+		 Multipurpose Clock Generator (MCG) in FEI mode.
+		 Reference clock source for MCG module: Slow internal reference clock
+		 Core clock = 20.97152MHz
+		 Bus clock  = 20.97152MHz
    1 ... Maximum achievable clock frequency configuration
-         Multipurpose Clock Generator (MCG) in PEE mode.
-         Reference clock source for MCG module: System oscillator 0 reference clock
-         Core clock = 100MHz
-         Bus clock  = 50MHz
+		 Multipurpose Clock Generator (MCG) in PEE mode.
+		 Reference clock source for MCG module: System oscillator 0 reference clock
+		 Core clock = 100MHz
+		 Bus clock  = 50MHz
    2 ... Chip internally clocked, ready for Very Low Power Run mode
-         Multipurpose Clock Generator (MCG) in BLPI mode.
-         Reference clock source for MCG module: Fast internal reference clock
-         Core clock = 4MHz
-         Bus clock  = 4MHz
+		 Multipurpose Clock Generator (MCG) in BLPI mode.
+		 Reference clock source for MCG module: Fast internal reference clock
+		 Core clock = 4MHz
+		 Bus clock  = 4MHz
    3 ... Chip externally clocked, ready for Very Low Power Run mode
-         Multipurpose Clock Generator (MCG) in BLPE mode.
-         Reference clock source for MCG module: System oscillator 0 reference clock
-         Core clock = 4MHz
-         Bus clock  = 4MHz
+		 Multipurpose Clock Generator (MCG) in BLPE mode.
+		 Reference clock source for MCG module: System oscillator 0 reference clock
+		 Core clock = 4MHz
+		 Bus clock  = 4MHz
    4 ... USB clock setup
-         Multipurpose Clock Generator (MCG) in PEE mode.
-         Reference clock source for MCG module: System oscillator 0 reference clock
-         Core clock = 96MHz
-         Bus clock  = 48MHz
+		 Multipurpose Clock Generator (MCG) in PEE mode.
+		 Reference clock source for MCG module: System oscillator 0 reference clock
+		 Core clock = 96MHz
+		 Bus clock  = 48MHz
 */
 
 /* Define clock source values */

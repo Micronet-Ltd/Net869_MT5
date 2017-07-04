@@ -38,6 +38,6 @@
 *END**************************************************************************/
 void TSI_HAL_DisableLowPower(TSI_Type * base)
 {
-    TSI_HAL_DisableStop(base);
+	TSI_HAL_DisableStop(base);
 }
 #endif

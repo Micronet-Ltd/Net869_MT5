@@ -27,8 +27,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-    - 14/12/2015 Ruslan Sirota Micronet
-        -- Add support for multiple MB recieve operation
+	- 14/12/2015 Ruslan Sirota Micronet
+		-- Add support for multiple MB recieve operation
  */
 #ifndef __FSL_FLEXCAN_DRIVER_H__
 #define __FSL_FLEXCAN_DRIVER_H__
@@ -63,11 +63,11 @@ extern const IRQn_Type g_flexcanBusOffIrqId[];
 extern const IRQn_Type g_flexcanOredMessageBufferIrqId[];
 
 typedef struct FLEXCAN_MailboxConfig {
-    uint8_t                    	iD;             // MB id
-    bool                        isEnable;       // Is MB configured as RX and enabled
-                                                //bool                        isTXConfigure;
-    flexcan_msgbuff_id_type_t   iD_type;        // Standard or extended
-    uint32_t                    iD_Mask;        // Mask configuration
+	uint8_t                    	iD;             // MB id
+	bool                        isEnable;       // Is MB configured as RX and enabled
+												//bool                        isTXConfigure;
+	flexcan_msgbuff_id_type_t   iD_type;        // Standard or extended
+	uint32_t                    iD_Mask;        // Mask configuration
 }FLEXCAN_MailboxConfig_t, *pFLEXCAN_MailboxConfig_t;
 
 /*!
@@ -78,62 +78,62 @@ typedef struct FLEXCAN_MailboxConfig {
  *      future releases.
  */
 typedef struct FlexCANState {
-    //flexcan_msgbuff_t   *fifo_message;                    /*!< The FlexCAN receive FIFO data*/
-    //flexcan_msgbuff_t   *mb_message[CAN_CS_COUNT];	    /*!< The FlexCAN receive MB data*/
-    volatile uint32_t       rx_mb_idx;                      /*!< Index of the message buffer for receiving*/
-    volatile uint32_t       tx_mb_idx;                      /*!< Index of the message buffer for transmitting*/
-    semaphore_t             txIrqSync;                      /*!< Used to wait for ISR to complete its TX business.*/
-    semaphore_t             rxIrqSync;                      /*!< Used to wait for ISR to complete its RX business.*/
-    volatile bool           isTxBusy;                       /*!< True if there is an active transmit. */
-    volatile bool           isRxBusyFIFO;                   /*!< True if there is an active receive on FIFO. */
-    volatile bool           isRxBusyMB[CAN_CS_COUNT];       /*!< True if there is an active receive on MB. */
-    volatile bool           isTxBlocking;                   /*!< True if transmit is blocking transaction. */
-    volatile bool           isRxBlockingFIFO;               /*!< True if receive is blocking transaction on FIFO. */
-    volatile bool           isRxBlockingMB[CAN_CS_COUNT];   /*!< True if receive is blocking transaction on MB. */
-    FLEXCAN_MailboxConfig_t MB_config[CAN_CS_COUNT];        /*!< MB configuration */
-    bool                    FIFO_ISR_busy;                  /*!< ISR FIFO busy flag */
+	//flexcan_msgbuff_t   *fifo_message;                    /*!< The FlexCAN receive FIFO data*/
+	//flexcan_msgbuff_t   *mb_message[CAN_CS_COUNT];	    /*!< The FlexCAN receive MB data*/
+	volatile uint32_t       rx_mb_idx;                      /*!< Index of the message buffer for receiving*/
+	volatile uint32_t       tx_mb_idx;                      /*!< Index of the message buffer for transmitting*/
+	semaphore_t             txIrqSync;                      /*!< Used to wait for ISR to complete its TX business.*/
+	semaphore_t             rxIrqSync;                      /*!< Used to wait for ISR to complete its RX business.*/
+	volatile bool           isTxBusy;                       /*!< True if there is an active transmit. */
+	volatile bool           isRxBusyFIFO;                   /*!< True if there is an active receive on FIFO. */
+	volatile bool           isRxBusyMB[CAN_CS_COUNT];       /*!< True if there is an active receive on MB. */
+	volatile bool           isTxBlocking;                   /*!< True if transmit is blocking transaction. */
+	volatile bool           isRxBlockingFIFO;               /*!< True if receive is blocking transaction on FIFO. */
+	volatile bool           isRxBlockingMB[CAN_CS_COUNT];   /*!< True if receive is blocking transaction on MB. */
+	FLEXCAN_MailboxConfig_t MB_config[CAN_CS_COUNT];        /*!< MB configuration */
+	bool                    FIFO_ISR_busy;                  /*!< ISR FIFO busy flag */
 //    LWEVENT_STRUCT          event_ISR;                     /*!< Event signaling interrupt occure. */
 	QUEUE_STRUCT_PTR	    fifo_free_messages;				/*!< Queue of available FIFO data elements. */
-	QUEUE_STRUCT_PTR	    fifo_ready_messages;			/*!< Queue of ready FIFO data elements. */ 
+	QUEUE_STRUCT_PTR	    fifo_ready_messages;			/*!< Queue of ready FIFO data elements. */
 } flexcan_state_t;
 
 /*! @brief FlexCAN data info from user*/
 typedef struct FlexCANDataInfo {
-    flexcan_msgbuff_id_type_t msg_id_type;            /*!< Type of message ID (standard or extended)*/
-    uint32_t data_length;                        /*!< Length of Data in Bytes*/
+	flexcan_msgbuff_id_type_t msg_id_type;            /*!< Type of message ID (standard or extended)*/
+	uint32_t data_length;                        /*!< Length of Data in Bytes*/
 } flexcan_data_info_t;
 
 /*! @brief FlexCAN configuration
  * @internal gui name="Common configuration" id="flexcanCfg"
  */
 typedef struct FLEXCANUserConfig {
-    uint32_t max_num_mb;                            /*!< The maximum number of Message Buffers @internal gui name="Maximum number of message buffers" id="max_num_mb" */
-    flexcan_rx_fifo_id_filter_num_t num_id_filters; /*!< The number of RX FIFO ID filters needed @internal gui name="Number of RX FIFO ID filters" id="num_id_filters" */
-    bool is_rx_fifo_needed;                         /*!< 1 if needed; 0 if not. This controls whether the Rx FIFO feature is enabled or not. @internal gui name="Use rx fifo" id="is_rx_fifo_needed" */
-    flexcan_operation_modes_t flexcanMode;          /*!< User configurable FlexCAN operation modes. @internal gui name="Flexcan Operation Mode" id="flexcanMode"*/
+	uint32_t max_num_mb;                            /*!< The maximum number of Message Buffers @internal gui name="Maximum number of message buffers" id="max_num_mb" */
+	flexcan_rx_fifo_id_filter_num_t num_id_filters; /*!< The number of RX FIFO ID filters needed @internal gui name="Number of RX FIFO ID filters" id="num_id_filters" */
+	bool is_rx_fifo_needed;                         /*!< 1 if needed; 0 if not. This controls whether the Rx FIFO feature is enabled or not. @internal gui name="Use rx fifo" id="is_rx_fifo_needed" */
+	flexcan_operation_modes_t flexcanMode;          /*!< User configurable FlexCAN operation modes. @internal gui name="Flexcan Operation Mode" id="flexcanMode"*/
 } flexcan_user_config_t;
 
 typedef struct FLEXCAN_queue_element_struct {
-    QUEUE_ELEMENT_STRUCT    HEADER;
-    flexcan_msgbuff_t       msg_buff;
+	QUEUE_ELEMENT_STRUCT    HEADER;
+	flexcan_msgbuff_t       msg_buff;
 }FLEXCAN_queue_element_t, *pFLEXCAN_queue_element_t;
 
 typedef struct FLEXCAN_Debug {
-    uint32_t acceptRX_IRQ;
-    uint32_t rejectRX_FifoEmpty;
-    uint32_t sendUSB;
-    uint32_t IRQ_FIFOOverflow;
-    uint32_t IRQ_FIFOWarning;
-    flexcan_buserr_counter_t errorCount;
-    uint32_t TrInterrCount;
-    uint32_t DataInterrCount_0;
-    uint32_t ErrorCount_0;
-    uint32_t WakeUpCount_0;
-    uint32_t BusOffCount_0;
-    uint32_t DataInterrCount_1;
-    uint32_t ErrorCount_1;
-    uint32_t WakeUpCountCount_1;
-    uint32_t BusOffCount_1;
+	uint32_t acceptRX_IRQ;
+	uint32_t rejectRX_FifoEmpty;
+	uint32_t sendUSB;
+	uint32_t IRQ_FIFOOverflow;
+	uint32_t IRQ_FIFOWarning;
+	flexcan_buserr_counter_t errorCount;
+	uint32_t TrInterrCount;
+	uint32_t DataInterrCount_0;
+	uint32_t ErrorCount_0;
+	uint32_t WakeUpCount_0;
+	uint32_t BusOffCount_0;
+	uint32_t DataInterrCount_1;
+	uint32_t ErrorCount_1;
+	uint32_t WakeUpCountCount_1;
+	uint32_t BusOffCount_1;
 }FLEXCAN_Debug_t;
 
 extern FLEXCAN_Debug_t g_Flexdebug;
@@ -198,9 +198,9 @@ void FLEXCAN_DRV_SetRxMaskType(uint8_t instance, flexcan_rx_mask_type_t type);
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t FLEXCAN_DRV_SetRxFifoGlobalMask(
-    uint8_t instance,
-    flexcan_msgbuff_id_type_t id_type,
-    uint32_t mask);
+	uint8_t instance,
+	flexcan_msgbuff_id_type_t id_type,
+	uint32_t mask);
 
 /*!
  * @brief Sets the FlexCAN RX MB global standard or extended mask.
@@ -211,9 +211,9 @@ flexcan_status_t FLEXCAN_DRV_SetRxFifoGlobalMask(
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t FLEXCAN_DRV_SetRxMbGlobalMask(
-    uint8_t instance,
-    flexcan_msgbuff_id_type_t id_type,
-    uint32_t mask);
+	uint8_t instance,
+	flexcan_msgbuff_id_type_t id_type,
+	uint32_t mask);
 
 /*!
  * @brief Sets the FlexCAN RX individual standard or extended mask.
@@ -226,10 +226,10 @@ flexcan_status_t FLEXCAN_DRV_SetRxMbGlobalMask(
  * @return  0 if successful; non-zero failed.
  */
 flexcan_status_t FLEXCAN_DRV_SetRxIndividualMask(
-    uint8_t instance,
-    flexcan_msgbuff_id_type_t id_type,
-    uint32_t mb_idx,
-    uint32_t mask);
+	uint8_t instance,
+	flexcan_msgbuff_id_type_t id_type,
+	uint32_t mb_idx,
+	uint32_t mask);
 
 /*@}*/
 
@@ -277,10 +277,10 @@ uint32_t FLEXCAN_DRV_Deinit(uint8_t instance);
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t FLEXCAN_DRV_ConfigTxMb(
-    uint8_t instance,
-    uint32_t mb_idx,
-    flexcan_data_info_t *tx_info,
-    uint32_t msg_id);
+	uint8_t instance,
+	uint32_t mb_idx,
+	flexcan_data_info_t *tx_info,
+	uint32_t msg_id);
 
 /*!
  * @brief Sends FlexCAN messages.
@@ -294,12 +294,13 @@ flexcan_status_t FLEXCAN_DRV_ConfigTxMb(
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t FLEXCAN_DRV_SendBlocking(
-    uint8_t instance,
-    uint32_t mb_idx,
-    flexcan_data_info_t *tx_info,
-    uint32_t msg_id,
-    uint8_t *mb_data,
-    uint32_t timeout_ms);
+	uint8_t instance,
+	uint32_t mb_idx,
+	flexcan_data_info_t *tx_info,
+	uint32_t msg_id,
+	uint8_t *mb_data,
+	uint32_t timeout_ms, 
+	bool is_remote_frame);
 
 /*!
  * @brief Sends FlexCAN messages.
@@ -312,11 +313,12 @@ flexcan_status_t FLEXCAN_DRV_SendBlocking(
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t FLEXCAN_DRV_Send(
-    uint8_t instance,
-    uint32_t mb_idx,
-    flexcan_data_info_t *tx_info,
-    uint32_t msg_id,
-    uint8_t *mb_data);
+	uint8_t instance,
+	uint32_t mb_idx,
+	flexcan_data_info_t *tx_info,
+	uint32_t msg_id,
+	uint8_t *mb_data,
+	bool is_remote_frame);
 
 
 /*@}*/
@@ -336,10 +338,10 @@ flexcan_status_t FLEXCAN_DRV_Send(
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t FLEXCAN_DRV_ConfigRxMb(
-    uint8_t instance,
-    uint32_t mb_idx,
-    flexcan_data_info_t *rx_info,
-    uint32_t msg_id);
+	uint8_t instance,
+	uint32_t mb_idx,
+	flexcan_data_info_t *rx_info,
+	uint32_t msg_id);
 
 /*!
  * @brief FlexCAN RX FIFO field configuration
@@ -351,9 +353,9 @@ flexcan_status_t FLEXCAN_DRV_ConfigRxMb(
  * @return  0 if successful; non-zero failed.
  */
 flexcan_status_t FLEXCAN_DRV_ConfigRxFifo(
-    uint8_t instance,
-    flexcan_rx_fifo_id_element_format_t id_format,
-    flexcan_id_table_t *id_filter_table);
+	uint8_t instance,
+	flexcan_rx_fifo_id_element_format_t id_format,
+	flexcan_id_table_t *id_filter_table);
 
 /*!
  * @brief FlexCAN is waiting to receive data from the message buffer.
@@ -365,10 +367,10 @@ flexcan_status_t FLEXCAN_DRV_ConfigRxFifo(
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t FLEXCAN_DRV_RxMessageBufferBlocking(
-    uint8_t instance,
-    uint32_t mb_idx,
-    flexcan_msgbuff_t *data,
-    uint32_t timeout_ms);
+	uint8_t instance,
+	uint32_t mb_idx,
+	flexcan_msgbuff_t *data,
+	uint32_t timeout_ms);
 
 /*!
  * @brief FlexCAN is waiting to receive data from the message buffer.
@@ -379,9 +381,9 @@ flexcan_status_t FLEXCAN_DRV_RxMessageBufferBlocking(
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t FLEXCAN_DRV_RxMessageBuffer(
-    uint8_t instance,
-    uint32_t mb_idx,
-    flexcan_msgbuff_t *data);
+	uint8_t instance,
+	uint32_t mb_idx,
+	flexcan_msgbuff_t *data);
 
 /*!
  * @brief FlexCAN is waiting to receive data from the message FIFO.
@@ -392,9 +394,9 @@ flexcan_status_t FLEXCAN_DRV_RxMessageBuffer(
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t FLEXCAN_DRV_RxFifoBlocking(
-    uint8_t instance,
-    flexcan_msgbuff_t *data,
-    uint32_t timeout_ms);
+	uint8_t instance,
+	flexcan_msgbuff_t *data,
+	uint32_t timeout_ms);
 
 /*!
  * @brief FlexCAN is waiting to receive data from the message FIFO.
@@ -404,8 +406,8 @@ flexcan_status_t FLEXCAN_DRV_RxFifoBlocking(
  * @return  0 if successful; non-zero failed
  */
 flexcan_status_t FLEXCAN_DRV_RxFifo(
-    uint8_t instance,
-    flexcan_msgbuff_t *data);
+	uint8_t instance,
+	flexcan_msgbuff_t *data);
 
 /*@}*/
 
@@ -474,4 +476,3 @@ flexcan_status_t FLEXCAN_DRV_GetReceiveStatusBlocking(uint32_t instance, uint32_
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

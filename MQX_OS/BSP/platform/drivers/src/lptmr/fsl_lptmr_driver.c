@@ -56,74 +56,74 @@
  *END**************************************************************************/
 lptmr_status_t LPTMR_DRV_Init(uint32_t instance, lptmr_state_t *userStatePtr, const lptmr_user_config_t* userConfigPtr)
 {
-    assert(instance < LPTMR_INSTANCE_COUNT);
+	assert(instance < LPTMR_INSTANCE_COUNT);
 
-    LPTMR_Type * base = g_lptmrBase[instance];
-    lptmr_prescaler_user_config_t prescalerUserConfig;
-    lptmr_working_mode_user_config_t workingModeUserConfig;
+	LPTMR_Type * base = g_lptmrBase[instance];
+	lptmr_prescaler_user_config_t prescalerUserConfig;
+	lptmr_working_mode_user_config_t workingModeUserConfig;
 
-    if ((!userConfigPtr) || (!userStatePtr))
-    {
-        return kStatus_LPTMR_NullArgument;
-    }
+	if ((!userConfigPtr) || (!userStatePtr))
+	{
+		return kStatus_LPTMR_NullArgument;
+	}
 
-    /* prescaler value 0 is invalid while working as pulse counter */
-    if ((kLptmrTimerModePulseCounter == userConfigPtr->timerMode) &&
-         (true == userConfigPtr->prescalerEnable) &&
-         (kLptmrPrescalerDivide2 == userConfigPtr->prescalerValue))
-    {
-        return kStatus_LPTMR_InvalidPrescalerValue;
-    }
+	/* prescaler value 0 is invalid while working as pulse counter */
+	if ((kLptmrTimerModePulseCounter == userConfigPtr->timerMode) &&
+		 (true == userConfigPtr->prescalerEnable) &&
+		 (kLptmrPrescalerDivide2 == userConfigPtr->prescalerValue))
+	{
+		return kStatus_LPTMR_InvalidPrescalerValue;
+	}
 
-    /* Enable clock for lptmr */
-    CLOCK_SYS_EnableLptmrClock(instance);
+	/* Enable clock for lptmr */
+	CLOCK_SYS_EnableLptmrClock(instance);
 
-    /* Disable lptmr and reset lptmr logic */
-    LPTMR_HAL_Disable(base);
+	/* Disable lptmr and reset lptmr logic */
+	LPTMR_HAL_Disable(base);
 
-    /* LPTMR prescaler configure */
-    prescalerUserConfig.prescalerClockSelect = (lptmr_prescaler_clock_select_t)userConfigPtr->prescalerClockSource;
-    prescalerUserConfig.prescalerBypass = (uint8_t)(userConfigPtr->prescalerEnable == false);
-    prescalerUserConfig.prescalerValue = userConfigPtr->prescalerValue;
-    LPTMR_HAL_SetPrescalerMode(base, prescalerUserConfig);
+	/* LPTMR prescaler configure */
+	prescalerUserConfig.prescalerClockSelect = (lptmr_prescaler_clock_select_t)userConfigPtr->prescalerClockSource;
+	prescalerUserConfig.prescalerBypass = (uint8_t)(userConfigPtr->prescalerEnable == false);
+	prescalerUserConfig.prescalerValue = userConfigPtr->prescalerValue;
+	LPTMR_HAL_SetPrescalerMode(base, prescalerUserConfig);
 
-    /* Working Mode configure */
-    workingModeUserConfig.timerModeSelect = userConfigPtr->timerMode;
-    workingModeUserConfig.freeRunningEnable = userConfigPtr->freeRunningEnable;
-    workingModeUserConfig.pinPolarity = userConfigPtr->pinPolarity;
-    workingModeUserConfig.pinSelect = userConfigPtr->pinSelect;
-    LPTMR_HAL_SetTimerWorkingMode(base,workingModeUserConfig);
+	/* Working Mode configure */
+	workingModeUserConfig.timerModeSelect = userConfigPtr->timerMode;
+	workingModeUserConfig.freeRunningEnable = userConfigPtr->freeRunningEnable;
+	workingModeUserConfig.pinPolarity = userConfigPtr->pinPolarity;
+	workingModeUserConfig.pinSelect = userConfigPtr->pinSelect;
+	LPTMR_HAL_SetTimerWorkingMode(base,workingModeUserConfig);
 
-    /* Internal context */
-    g_lptmrStatePtr[instance] = userStatePtr;
+	/* Internal context */
+	g_lptmrStatePtr[instance] = userStatePtr;
 
-    userStatePtr->userCallbackFunc = NULL;
+	userStatePtr->userCallbackFunc = NULL;
 
-    /* LPTMR interrupt */
-    if (userConfigPtr->isInterruptEnabled)
-    {
-        LPTMR_HAL_SetIntCmd(base,true);
-        INT_SYS_EnableIRQ(g_lptmrIrqId[instance]);
-    }
-    else
-    {
-        LPTMR_HAL_SetIntCmd(base,false);
-        INT_SYS_DisableIRQ(g_lptmrIrqId[instance]);
-    }
+	/* LPTMR interrupt */
+	if (userConfigPtr->isInterruptEnabled)
+	{
+		LPTMR_HAL_SetIntCmd(base,true);
+		INT_SYS_EnableIRQ(g_lptmrIrqId[instance]);
+	}
+	else
+	{
+		LPTMR_HAL_SetIntCmd(base,false);
+		INT_SYS_DisableIRQ(g_lptmrIrqId[instance]);
+	}
 
-    /* Caculate prescaler clock frequency */
-    if ( kLptmrTimerModeTimeCounter == userConfigPtr->timerMode)
-    {
-        userStatePtr->prescalerClockHz = CLOCK_SYS_GetLptmrFreq(instance,
-                userConfigPtr->prescalerClockSource);
+	/* Caculate prescaler clock frequency */
+	if ( kLptmrTimerModeTimeCounter == userConfigPtr->timerMode)
+	{
+		userStatePtr->prescalerClockHz = CLOCK_SYS_GetLptmrFreq(instance,
+				userConfigPtr->prescalerClockSource);
 
-        if (userConfigPtr->prescalerEnable)
-        {
-            userStatePtr->prescalerClockHz = (userStatePtr->prescalerClockHz >> ((uint32_t)(userConfigPtr->prescalerValue+1)));
-        }
-    }
+		if (userConfigPtr->prescalerEnable)
+		{
+			userStatePtr->prescalerClockHz = (userStatePtr->prescalerClockHz >> ((uint32_t)(userConfigPtr->prescalerValue+1)));
+		}
+	}
 
-    return kStatus_LPTMR_Success;
+	return kStatus_LPTMR_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -136,27 +136,27 @@ lptmr_status_t LPTMR_DRV_Init(uint32_t instance, lptmr_state_t *userStatePtr, co
  *END**************************************************************************/
 lptmr_status_t LPTMR_DRV_Deinit(uint32_t instance)
 {
-    assert(instance < LPTMR_INSTANCE_COUNT);
-    assert(CLOCK_SYS_GetLptmrGateCmd(instance));
+	assert(instance < LPTMR_INSTANCE_COUNT);
+	assert(CLOCK_SYS_GetLptmrGateCmd(instance));
 
-    LPTMR_Type * base = g_lptmrBase[instance];
+	LPTMR_Type * base = g_lptmrBase[instance];
 
-    /* Turn off lptmr hal */
-    LPTMR_HAL_Disable(base);
+	/* Turn off lptmr hal */
+	LPTMR_HAL_Disable(base);
 
-    /* Reset all register to reset value */
-    LPTMR_HAL_Init(base);
+	/* Reset all register to reset value */
+	LPTMR_HAL_Init(base);
 
-    /* Disable the interrupt */
-    INT_SYS_DisableIRQ(g_lptmrIrqId[instance]);
+	/* Disable the interrupt */
+	INT_SYS_DisableIRQ(g_lptmrIrqId[instance]);
 
-    /* Disable clock for lptmr */
-    CLOCK_SYS_DisableLptmrClock(instance);
+	/* Disable clock for lptmr */
+	CLOCK_SYS_DisableLptmrClock(instance);
 
-    /* Cleared state pointer */
-    g_lptmrStatePtr[instance] = NULL;
+	/* Cleared state pointer */
+	g_lptmrStatePtr[instance] = NULL;
 
-    return kStatus_LPTMR_Success;
+	return kStatus_LPTMR_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -168,14 +168,14 @@ lptmr_status_t LPTMR_DRV_Deinit(uint32_t instance)
  *END**************************************************************************/
 lptmr_status_t LPTMR_DRV_Start(uint32_t instance)
 {
-    assert(instance < LPTMR_INSTANCE_COUNT);
-    assert(CLOCK_SYS_GetLptmrGateCmd(instance));
+	assert(instance < LPTMR_INSTANCE_COUNT);
+	assert(CLOCK_SYS_GetLptmrGateCmd(instance));
 
-    LPTMR_Type * base = g_lptmrBase[instance];
+	LPTMR_Type * base = g_lptmrBase[instance];
 
-    LPTMR_HAL_Enable(base);
+	LPTMR_HAL_Enable(base);
 
-    return kStatus_LPTMR_Success;
+	return kStatus_LPTMR_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -187,14 +187,14 @@ lptmr_status_t LPTMR_DRV_Start(uint32_t instance)
  *END**************************************************************************/
 lptmr_status_t LPTMR_DRV_Stop(uint32_t instance)
 {
-    assert(instance < LPTMR_INSTANCE_COUNT);
-    assert(CLOCK_SYS_GetLptmrGateCmd(instance));
+	assert(instance < LPTMR_INSTANCE_COUNT);
+	assert(CLOCK_SYS_GetLptmrGateCmd(instance));
 
-    LPTMR_Type * base = g_lptmrBase[instance];
+	LPTMR_Type * base = g_lptmrBase[instance];
 
-    LPTMR_HAL_Disable(base);
+	LPTMR_HAL_Disable(base);
 
-    return kStatus_LPTMR_Success;
+	return kStatus_LPTMR_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -206,40 +206,40 @@ lptmr_status_t LPTMR_DRV_Stop(uint32_t instance)
  *END**************************************************************************/
 lptmr_status_t LPTMR_DRV_SetTimerPeriodUs(uint32_t instance, uint32_t us)
 {
-    assert(instance < LPTMR_INSTANCE_COUNT);
-    assert(us > 0);
-    assert(CLOCK_SYS_GetLptmrGateCmd(instance));
+	assert(instance < LPTMR_INSTANCE_COUNT);
+	assert(us > 0);
+	assert(CLOCK_SYS_GetLptmrGateCmd(instance));
 
-    LPTMR_Type * base = g_lptmrBase[instance];
-    uint32_t tick_count;
+	LPTMR_Type * base = g_lptmrBase[instance];
+	uint32_t tick_count;
 
-    if (g_lptmrStatePtr[instance]->prescalerClockHz < 1000000U)
-    {
-        tick_count = (us/(1000000U/g_lptmrStatePtr[instance]->prescalerClockHz));
-    }
-    else
-    {
-        tick_count = (us*(g_lptmrStatePtr[instance]->prescalerClockHz/1000000U));
-    }
+	if (g_lptmrStatePtr[instance]->prescalerClockHz < 1000000U)
+	{
+		tick_count = (us/(1000000U/g_lptmrStatePtr[instance]->prescalerClockHz));
+	}
+	else
+	{
+		tick_count = (us*(g_lptmrStatePtr[instance]->prescalerClockHz/1000000U));
+	}
 
-    /* CMR register is 16 Bits */
-    if (tick_count > 0xFFFFU)
-    {
-        return kStatus_LPTMR_TimerPeriodUsTooLarge;
-    }
+	/* CMR register is 16 Bits */
+	if (tick_count > 0xFFFFU)
+	{
+		return kStatus_LPTMR_TimerPeriodUsTooLarge;
+	}
 
-    /* CMR of 0 leaves the hardware trigger asserted */
-    if (tick_count <= 1)
-    {
-        return kStatus_LPTMR_TimerPeriodUsTooSmall;
-    }
+	/* CMR of 0 leaves the hardware trigger asserted */
+	if (tick_count <= 1)
+	{
+		return kStatus_LPTMR_TimerPeriodUsTooSmall;
+	}
 
-    /* We have to reduce by 1 as interrupt occurs when the CNR register equals the value of
-     * of CMR register and then increments
-     */
-    LPTMR_HAL_SetCompareValue(base, tick_count - 1);
+	/* We have to reduce by 1 as interrupt occurs when the CNR register equals the value of
+	 * of CMR register and then increments
+	 */
+	LPTMR_HAL_SetCompareValue(base, tick_count - 1);
 
-    return kStatus_LPTMR_Success;
+	return kStatus_LPTMR_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -251,23 +251,23 @@ lptmr_status_t LPTMR_DRV_SetTimerPeriodUs(uint32_t instance, uint32_t us)
  *END**************************************************************************/
 uint32_t LPTMR_DRV_GetCurrentTimeUs(uint32_t instance)
 {
-    assert(instance < LPTMR_INSTANCE_COUNT);
-    assert(CLOCK_SYS_GetLptmrGateCmd(instance));
+	assert(instance < LPTMR_INSTANCE_COUNT);
+	assert(CLOCK_SYS_GetLptmrGateCmd(instance));
 
-    LPTMR_Type * base = g_lptmrBase[instance];
+	LPTMR_Type * base = g_lptmrBase[instance];
 
-    uint32_t us;
+	uint32_t us;
 
-    if (g_lptmrStatePtr[instance]->prescalerClockHz < 1000000U)
-    {
-        us = LPTMR_HAL_GetCounterValue(base)*(1000000U/g_lptmrStatePtr[instance]->prescalerClockHz);
-    }
-    else
-    {
-        us = LPTMR_HAL_GetCounterValue(base)/(g_lptmrStatePtr[instance]->prescalerClockHz/1000000U);
-    }
+	if (g_lptmrStatePtr[instance]->prescalerClockHz < 1000000U)
+	{
+		us = LPTMR_HAL_GetCounterValue(base)*(1000000U/g_lptmrStatePtr[instance]->prescalerClockHz);
+	}
+	else
+	{
+		us = LPTMR_HAL_GetCounterValue(base)/(g_lptmrStatePtr[instance]->prescalerClockHz/1000000U);
+	}
 
-    return us;
+	return us;
 }
 
 
@@ -280,15 +280,15 @@ uint32_t LPTMR_DRV_GetCurrentTimeUs(uint32_t instance)
  *END**************************************************************************/
 lptmr_status_t LPTMR_DRV_SetPulsePeriodCount(uint32_t instance, uint32_t pulsePeriodCount)
 {
-    assert(instance < LPTMR_INSTANCE_COUNT);
-    assert(pulsePeriodCount > 0);
-    assert(CLOCK_SYS_GetLptmrGateCmd(instance));
+	assert(instance < LPTMR_INSTANCE_COUNT);
+	assert(pulsePeriodCount > 0);
+	assert(CLOCK_SYS_GetLptmrGateCmd(instance));
 
-    LPTMR_Type * base = g_lptmrBase[instance];
+	LPTMR_Type * base = g_lptmrBase[instance];
 
-    LPTMR_HAL_SetCompareValue(base, pulsePeriodCount);
+	LPTMR_HAL_SetCompareValue(base, pulsePeriodCount);
 
-    return kStatus_LPTMR_Success;
+	return kStatus_LPTMR_Success;
 }
 
 /*FUNCTION**********************************************************************
@@ -300,15 +300,15 @@ lptmr_status_t LPTMR_DRV_SetPulsePeriodCount(uint32_t instance, uint32_t pulsePe
  *END**************************************************************************/
 uint32_t LPTMR_DRV_GetCurrentPulseCount(uint32_t instance)
 {
-    assert(instance < LPTMR_INSTANCE_COUNT);
-    assert(CLOCK_SYS_GetLptmrGateCmd(instance));
+	assert(instance < LPTMR_INSTANCE_COUNT);
+	assert(CLOCK_SYS_GetLptmrGateCmd(instance));
 
-    LPTMR_Type * base = g_lptmrBase[instance];
-    uint32_t count;
+	LPTMR_Type * base = g_lptmrBase[instance];
+	uint32_t count;
 
-    count = LPTMR_HAL_GetCounterValue(base);
+	count = LPTMR_HAL_GetCounterValue(base);
 
-    return count;
+	return count;
 }
 
 
@@ -322,17 +322,17 @@ uint32_t LPTMR_DRV_GetCurrentPulseCount(uint32_t instance)
  *END*************************************************************************/
 lptmr_status_t LPTMR_DRV_InstallCallback(uint32_t instance, lptmr_callback_t userCallback)
 {
-    assert(instance < LPTMR_INSTANCE_COUNT);
+	assert(instance < LPTMR_INSTANCE_COUNT);
 
-    assert (instance < LPTMR_INSTANCE_COUNT);
-    if (!g_lptmrStatePtr[instance])
-    {
-        return kStatus_LPTMR_NotInitlialized;
-    }
-    /* Fill callback function into state structure. */
-    g_lptmrStatePtr[instance]->userCallbackFunc = userCallback;
+	assert (instance < LPTMR_INSTANCE_COUNT);
+	if (!g_lptmrStatePtr[instance])
+	{
+		return kStatus_LPTMR_NotInitlialized;
+	}
+	/* Fill callback function into state structure. */
+	g_lptmrStatePtr[instance]->userCallbackFunc = userCallback;
 
-    return kStatus_LPTMR_Success;
+	return kStatus_LPTMR_Success;
 }
 
 
@@ -346,25 +346,24 @@ lptmr_status_t LPTMR_DRV_InstallCallback(uint32_t instance, lptmr_callback_t use
  *END*************************************************************************/
 void LPTMR_DRV_IRQHandler(uint32_t instance)
 {
-    assert(instance < LPTMR_INSTANCE_COUNT);
-    assert(CLOCK_SYS_GetLptmrGateCmd(instance));
+	assert(instance < LPTMR_INSTANCE_COUNT);
+	assert(CLOCK_SYS_GetLptmrGateCmd(instance));
 
-    LPTMR_Type * base = g_lptmrBase[instance];
+	LPTMR_Type * base = g_lptmrBase[instance];
 
-    /* Clear interrupt flag */
-    LPTMR_HAL_ClearIntFlag(base);
+	/* Clear interrupt flag */
+	LPTMR_HAL_ClearIntFlag(base);
 
-    if (g_lptmrStatePtr[instance])
-    {
-        if (g_lptmrStatePtr[instance]->userCallbackFunc)
-        {
-            /* Execute user-defined callback function. */
-            (*(g_lptmrStatePtr[instance]->userCallbackFunc))();
-        }
-    }
+	if (g_lptmrStatePtr[instance])
+	{
+		if (g_lptmrStatePtr[instance]->userCallbackFunc)
+		{
+			/* Execute user-defined callback function. */
+			(*(g_lptmrStatePtr[instance]->userCallbackFunc))();
+		}
+	}
 }
 #endif
 /*******************************************************************************
  * EOF
  *******************************************************************************/
-

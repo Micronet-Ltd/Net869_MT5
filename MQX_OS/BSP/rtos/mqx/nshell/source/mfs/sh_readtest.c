@@ -178,81 +178,81 @@ int32_t  Shell_read_test(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc != 2) {
-         fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
-         return_code = SHELL_EXIT_ERROR;
-         print_usage=TRUE;
-      } else  {
-         if (MFS_alloc_path(&abs_path) != MFS_NO_ERROR) {
-            fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
-            return_code = SHELL_EXIT_ERROR;
-         }
-         else
-         {
-            error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[1],PATHNAME_SIZE,shell_ptr->CURRENT_DEVICE_NAME);
-            if(!error)
-            {
-               fd = open(abs_path, O_WRONLY);
-               if (0 <= fd) {
-                   write(fd, (void *)MFS_File_test_data, test_size);
-                   close(fd);
-               }
+	  if (argc != 2) {
+		 fprintf(shell_ptr->STDOUT, "Error, invalid number of parameters\n");
+		 return_code = SHELL_EXIT_ERROR;
+		 print_usage=TRUE;
+	  } else  {
+		 if (MFS_alloc_path(&abs_path) != MFS_NO_ERROR) {
+			fprintf(shell_ptr->STDOUT, "Error, unable to allocate memory for paths\n" );
+			return_code = SHELL_EXIT_ERROR;
+		 }
+		 else
+		 {
+			error = _io_rel2abs(abs_path,shell_ptr->CURRENT_DIR,(char *) argv[1],PATHNAME_SIZE,shell_ptr->CURRENT_DEVICE_NAME);
+			if(!error)
+			{
+			   fd = open(abs_path, O_WRONLY);
+			   if (0 <= fd) {
+				   write(fd, (void *)MFS_File_test_data, test_size);
+				   close(fd);
+			   }
 
-               fd = open(abs_path, O_RDONLY);
-               if (0 <= fd) {
-                   read_buffer = _mem_alloc(test_size + 1);
-                   if (read_buffer)
-                      _mem_zero (read_buffer, test_size + 1);
-               }
-            }
-            if ((0 <= fd) && read_buffer)  {
-               for (read_size=1;read_size<test_size;read_size++) {
-                  fprintf(shell_ptr->STDOUT, "Test Iteration #%d ", read_size);
-                  lseek(fd, 0, SEEK_SET);
-                  bytes_read = 0;
-                  while ( bytes_read<test_size) {
-                     size = min(read_size,test_size-bytes_read);
-                     num = read(fd, &read_buffer[bytes_read],size);
-                     if (num) {
-                        bytes_read+=num;
-                     } else {
-                        fprintf(shell_ptr->STDOUT, "Read failed, offset = %d", bytes_read);
-                       break;
-                     }
-                  }
-                  for (i = 0; i < test_size; i++)
-                  {
-                     if (MFS_File_test_data[i] != read_buffer[i]) {
-                        fprintf(shell_ptr->STDOUT, "Failed %d. %d != %d\n", i, MFS_File_test_data[i], read_buffer[i]);
-                        p++;
-                        break;
-                     }
-                  }
-                  if (i == test_size)
-                  {
-                     fprintf(shell_ptr->STDOUT, "Passed, errors: %d\n", p);
-                  }
-               }
-            }
-            else
-            {
-               fprintf(shell_ptr->STDOUT, "Error, unable open file: %s\n", argv[1]);
-            }
-            if (0 <= fd)
-                close(fd);
-            if (read_buffer) _mem_free(read_buffer);
-            MFS_free_path(abs_path);
-         }
-      }
+			   fd = open(abs_path, O_RDONLY);
+			   if (0 <= fd) {
+				   read_buffer = _mem_alloc(test_size + 1);
+				   if (read_buffer)
+					  _mem_zero (read_buffer, test_size + 1);
+			   }
+			}
+			if ((0 <= fd) && read_buffer)  {
+			   for (read_size=1;read_size<test_size;read_size++) {
+				  fprintf(shell_ptr->STDOUT, "Test Iteration #%d ", read_size);
+				  lseek(fd, 0, SEEK_SET);
+				  bytes_read = 0;
+				  while ( bytes_read<test_size) {
+					 size = min(read_size,test_size-bytes_read);
+					 num = read(fd, &read_buffer[bytes_read],size);
+					 if (num) {
+						bytes_read+=num;
+					 } else {
+						fprintf(shell_ptr->STDOUT, "Read failed, offset = %d", bytes_read);
+					   break;
+					 }
+				  }
+				  for (i = 0; i < test_size; i++)
+				  {
+					 if (MFS_File_test_data[i] != read_buffer[i]) {
+						fprintf(shell_ptr->STDOUT, "Failed %d. %d != %d\n", i, MFS_File_test_data[i], read_buffer[i]);
+						p++;
+						break;
+					 }
+				  }
+				  if (i == test_size)
+				  {
+					 fprintf(shell_ptr->STDOUT, "Passed, errors: %d\n", p);
+				  }
+			   }
+			}
+			else
+			{
+			   fprintf(shell_ptr->STDOUT, "Error, unable open file: %s\n", argv[1]);
+			}
+			if (0 <= fd)
+				close(fd);
+			if (read_buffer) _mem_free(read_buffer);
+			MFS_free_path(abs_path);
+		 }
+	  }
    }
 
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s <filename> \n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s <filename> \n", argv[0]);
-         fprintf(shell_ptr->STDOUT, "   <filename>   = filename to verify\n");
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s <filename> \n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s <filename> \n", argv[0]);
+		 fprintf(shell_ptr->STDOUT, "   <filename>   = filename to verify\n");
+	  }
    }
    return return_code;
 } /* Endbody */

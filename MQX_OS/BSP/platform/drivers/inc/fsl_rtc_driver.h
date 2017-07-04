@@ -58,8 +58,8 @@ extern const IRQn_Type g_rtcSecondsIrqId[RTC_INSTANCE_COUNT];
  */
 typedef struct RtcRepeatAlarmState
 {
-    rtc_datetime_t alarmTime; /*!< Sets the RTC alarm time. */
-    rtc_datetime_t alarmRepTime;       /*!< Period for alarm to repeat, needs alarm interrupt be enabled.*/
+	rtc_datetime_t alarmTime; /*!< Sets the RTC alarm time. */
+	rtc_datetime_t alarmRepTime;       /*!< Period for alarm to repeat, needs alarm interrupt be enabled.*/
 } rtc_repeat_alarm_state_t;
 
 /*******************************************************************************
@@ -251,7 +251,7 @@ bool RTC_DRV_IsAlarmPending(uint32_t instance);
  *                           to the TCR field in RTC Time Compensation Register (TCR)
  */
 void RTC_DRV_SetTimeCompensation(uint32_t instance, uint32_t compensationInterval,
-                                            uint32_t compensationTime);
+											uint32_t compensationTime);
 
 
 /*!
@@ -264,7 +264,7 @@ void RTC_DRV_SetTimeCompensation(uint32_t instance, uint32_t compensationInterva
  *                           is read from the TCV field in RTC Time Compensation Register (TCR)
  */
 void RTC_DRV_GetTimeCompensation(uint32_t instance, uint32_t *compensationInterval,
-                                            uint32_t *compensationTime);
+											uint32_t *compensationTime);
 
 
 #if FSL_FEATURE_RTC_HAS_MONOTONIC
@@ -339,4 +339,3 @@ void RTC_DRV_SecsIntAction(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

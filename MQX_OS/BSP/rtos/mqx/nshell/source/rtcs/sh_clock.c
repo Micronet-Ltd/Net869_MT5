@@ -60,8 +60,8 @@ typedef struct clock_context_tag
 static void Clock_child_task
    (
 #if CREATE_WITH_RTCS
-      void    *param,
-      void    *creator
+	  void    *param,
+	  void    *creator
 #else
    uint32_t     sock
 #endif
@@ -83,16 +83,16 @@ static void Clock_child_task
    fprintf(fout, "Clock child: Servicing socket %x\n", sock);
 
    while (sock) {
-      _time_get(&time);
-      size = sprintf(buffer, "\r\nSeconds elapsed = %d.%03d", time.SECONDS, time.MILLISECONDS);
-      size++; // account for null byte
-      if (size != send(sock, buffer, size, 0)) {
-         fprintf(fout, "\nClock child: closing socket %x\n",sock);
-         shutdown(sock, FLAG_CLOSE_TX);
-         sock=0;
-      } else {
-         _time_delay(5000);
-      }
+	  _time_get(&time);
+	  size = sprintf(buffer, "\r\nSeconds elapsed = %d.%03d", time.SECONDS, time.MILLISECONDS);
+	  size++; // account for null byte
+	  if (size != send(sock, buffer, size, 0)) {
+		 fprintf(fout, "\nClock child: closing socket %x\n",sock);
+		 shutdown(sock, FLAG_CLOSE_TX);
+		 sock=0;
+	  } else {
+		 _time_delay(5000);
+	  }
    }
    fprintf(fout, "Clock child: Terminating\n");
 
@@ -118,7 +118,7 @@ static void Clock_server_task
    uint16_t        rlen;
    FILE *fout = unused1;
    CLOCK_CONTEXT server_cxt;
-   
+
    server_cxt.fout = fout;
 
 
@@ -131,58 +131,58 @@ static void Clock_server_task
    /* Listen on TCP port */
    listensock= socket(PF_INET, SOCK_STREAM, 0);
    if (listensock == RTCS_HANDLE_ERROR) {
-      fprintf(fout, "\nCreate stream socket failed");
-      _task_block();
-   } 
+	  fprintf(fout, "\nCreate stream socket failed");
+	  _task_block();
+   }
    error = bind(listensock, (const struct sockaddr *)&laddr, sizeof(laddr));
    if (error != RTCS_OK) {
-      fprintf(fout, "\nStream bind failed - 0x%lx", error);
-      _task_block();
-   } 
+	  fprintf(fout, "\nStream bind failed - 0x%lx", error);
+	  _task_block();
+   }
    error = listen(listensock, 0);
    if (error != RTCS_OK) {
-      fprintf(fout, "\nListen failed - 0x%lx", error);
-      _task_block();
-   } 
+	  fprintf(fout, "\nListen failed - 0x%lx", error);
+	  _task_block();
+   }
 
    fprintf(fout, "\nClock Server active on port 999\n");
 
    for (;;) {
-      /* Connection requested; accept it */
-      rlen = sizeof(raddr);
-      fprintf(fout, "Clock server: Waiting on accept\n");
-      sock = accept(listensock, (struct sockaddr *)&raddr, &rlen);
-      if (sock == RTCS_HANDLE_ERROR) {
-         fprintf(fout, "\n\n*** Clock server: Accept failed, error 0x%lx *** \n\n\n",
-            RTCS_geterror(listensock));
-      } else {
-         fprintf(fout, "Clock server: Connection from %ld.%ld.%ld.%ld, port %d, socket %x\n",
-            (raddr.sin_addr.s_addr >> 24) & 0xFF,
-            (raddr.sin_addr.s_addr >> 16) & 0xFF,
-            (raddr.sin_addr.s_addr >>  8) & 0xFF,
-             raddr.sin_addr.s_addr        & 0xFF,
-             raddr.sin_port, sock);
+	  /* Connection requested; accept it */
+	  rlen = sizeof(raddr);
+	  fprintf(fout, "Clock server: Waiting on accept\n");
+	  sock = accept(listensock, (struct sockaddr *)&raddr, &rlen);
+	  if (sock == RTCS_HANDLE_ERROR) {
+		 fprintf(fout, "\n\n*** Clock server: Accept failed, error 0x%lx *** \n\n\n",
+			RTCS_geterror(listensock));
+	  } else {
+		 fprintf(fout, "Clock server: Connection from %ld.%ld.%ld.%ld, port %d, socket %x\n",
+			(raddr.sin_addr.s_addr >> 24) & 0xFF,
+			(raddr.sin_addr.s_addr >> 16) & 0xFF,
+			(raddr.sin_addr.s_addr >>  8) & 0xFF,
+			 raddr.sin_addr.s_addr        & 0xFF,
+			 raddr.sin_port, sock);
 
-         /* Create a task to look after it */
-         fprintf(fout, "Clock server: detaching socket %x\n",sock);
-         fprintf(fout, "Clock server: spawning child task\n");
-         #if CREATE_WITH_RTCS
-         RTCS_task_create("Clock_child", SHELL_CLOCK_CHILD_PRIO,
-             SHELL_CLOCK_CHILD_STACK, Clock_child_task, (void *) &server_cxt);
-         #else
-            {
-               TASK_TEMPLATE_STRUCT    task_template = {0};
-               task_template.TASK_NAME          = "Clock_child";
-               task_template.TASK_PRIORITY      = SHELL_CLOCK_CHILD_PRIO;
-               task_template.TASK_STACKSIZE     = SHELL_CLOCK_CHILD_STACK;
-               task_template.TASK_ADDRESS       = Clock_child_task;
-               task_template.CREATION_PARAMETER = (uint32_t) &server_cxt;
-               if (_task_create(0, 0, (uint32_t)&task_template) == MQX_NULL_TASK_ID) {
-                  fprintf(shell_ptr->STDOUT, "Clock server: failed to spawn child task\n");
-               } 
-            }
-         #endif
-      } 
+		 /* Create a task to look after it */
+		 fprintf(fout, "Clock server: detaching socket %x\n",sock);
+		 fprintf(fout, "Clock server: spawning child task\n");
+		 #if CREATE_WITH_RTCS
+		 RTCS_task_create("Clock_child", SHELL_CLOCK_CHILD_PRIO,
+			 SHELL_CLOCK_CHILD_STACK, Clock_child_task, (void *) &server_cxt);
+		 #else
+			{
+			   TASK_TEMPLATE_STRUCT    task_template = {0};
+			   task_template.TASK_NAME          = "Clock_child";
+			   task_template.TASK_PRIORITY      = SHELL_CLOCK_CHILD_PRIO;
+			   task_template.TASK_STACKSIZE     = SHELL_CLOCK_CHILD_STACK;
+			   task_template.TASK_ADDRESS       = Clock_child_task;
+			   task_template.CREATION_PARAMETER = (uint32_t) &server_cxt;
+			   if (_task_create(0, 0, (uint32_t)&task_template) == MQX_NULL_TASK_ID) {
+				  fprintf(shell_ptr->STDOUT, "Clock server: failed to spawn child task\n");
+			   }
+			}
+		 #endif
+	  }
    }
 } /* Endbody */
 
@@ -193,7 +193,7 @@ static void Clock_server_task
 *  Function Name :  Shell_Clock_server_start
 *  Returned Value:  none
 *  Comments  :  SHELL utility to start clock server
-*  Usage:  Clock_server 
+*  Usage:  Clock_server
 *
 *END*-----------------------------------------------------------------*/
 
@@ -207,27 +207,27 @@ int32_t  Shell_Clock_server_start(int32_t argc, char *argv[] )
    print_usage = Shell_check_help_request(argc, argv, &shorthelp );
 
    if (!print_usage)  {
-      if (argc == 1)  {
-         result =RTCS_task_create("Clock_server", SHELL_CLOCK_SERVER_PRIO, 
-            SHELL_CLOCK_SERVER_STACK, Clock_server_task, shell_ptr);
-         if (result ==  0)  {
-            fprintf(shell_ptr->STDOUT, "Clock Server Started.\n");
-         } else  {
-            fprintf(shell_ptr->STDOUT, "Unable to start Clock Server, error = 0x%x\n",result);
-            return_code = SHELL_EXIT_ERROR;
-         }
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
-         print_usage = TRUE;
-      }
+	  if (argc == 1)  {
+		 result =RTCS_task_create("Clock_server", SHELL_CLOCK_SERVER_PRIO,
+			SHELL_CLOCK_SERVER_STACK, Clock_server_task, shell_ptr);
+		 if (result ==  0)  {
+			fprintf(shell_ptr->STDOUT, "Clock Server Started.\n");
+		 } else  {
+			fprintf(shell_ptr->STDOUT, "Unable to start Clock Server, error = 0x%x\n",result);
+			return_code = SHELL_EXIT_ERROR;
+		 }
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Error, %s invoked with incorrect number of arguments\n", argv[0]);
+		 print_usage = TRUE;
+	  }
    }
-   
+
    if (print_usage)  {
-      if (shorthelp)  {
-         fprintf(shell_ptr->STDOUT, "%s \n", argv[0]);
-      } else  {
-         fprintf(shell_ptr->STDOUT, "Usage: %s\n",argv[0]);
-      }
+	  if (shorthelp)  {
+		 fprintf(shell_ptr->STDOUT, "%s \n", argv[0]);
+	  } else  {
+		 fprintf(shell_ptr->STDOUT, "Usage: %s\n",argv[0]);
+	  }
    }
    return return_code;
 } /* Endbody */

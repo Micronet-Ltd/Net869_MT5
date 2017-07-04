@@ -45,28 +45,28 @@
 const MQX_TICK_STRUCT _mqx_zero_tick_struct = {{0},0};
 
 #if MQXCFG_PREALLOCATED_SYSTEM_STACKS
-    /* Define preallocated stack sizes */
-    #if PSP_STACK_ALIGNMENT
-        #if MQXCFG_INIT_TASK
-            #define STACK_SIZE_INIT           (sizeof(TD_STRUCT) + PSP_INIT_STACK_SIZE + PSP_STACK_ALIGNMENT + 1)
-        #endif /* MQXCFG_INIT_TASK */
-    #else
-        #if MQXCFG_INIT_TASK
-            #define STACK_SIZE_INIT           (sizeof(TD_STRUCT) + PSP_INIT_STACK_SIZE + 1)
-        #endif /* MQXCFG_INIT_TASK */
-    #endif
+	/* Define preallocated stack sizes */
+	#if PSP_STACK_ALIGNMENT
+		#if MQXCFG_INIT_TASK
+			#define STACK_SIZE_INIT           (sizeof(TD_STRUCT) + PSP_INIT_STACK_SIZE + PSP_STACK_ALIGNMENT + 1)
+		#endif /* MQXCFG_INIT_TASK */
+	#else
+		#if MQXCFG_INIT_TASK
+			#define STACK_SIZE_INIT           (sizeof(TD_STRUCT) + PSP_INIT_STACK_SIZE + 1)
+		#endif /* MQXCFG_INIT_TASK */
+	#endif
 
-    /* Preallocated stack definitions */
+	/* Preallocated stack definitions */
 #if MQXCFG_INIT_TASK
-    static uint8_t    mqx_init_task_stack[STACK_SIZE_INIT];
+	static uint8_t    mqx_init_task_stack[STACK_SIZE_INIT];
 #endif /* MQXCFG_INIT_TASK */
 #endif /* MQXCFG_PREALLOCATED_SYSTEM_STACKS */
 
 /* Define idle stack sizes */
 #if PSP_STACK_ALIGNMENT
-    #define STACK_SIZE_IDLE           (sizeof(TD_STRUCT) + PSP_IDLE_STACK_SIZE + PSP_STACK_ALIGNMENT + 1)
+	#define STACK_SIZE_IDLE           (sizeof(TD_STRUCT) + PSP_IDLE_STACK_SIZE + PSP_STACK_ALIGNMENT + 1)
 #else
-    #define STACK_SIZE_IDLE           (sizeof(TD_STRUCT) + PSP_IDLE_STACK_SIZE + 1)
+	#define STACK_SIZE_IDLE           (sizeof(TD_STRUCT) + PSP_IDLE_STACK_SIZE + 1)
 #endif
 
 /* Idle task stack is allways preallocated */
@@ -116,10 +116,10 @@ volatile _WEAK_SYMBOL(_mqx_uint _mqx_monitor_type) = MQX_MONITOR_TYPE_NONE;
  * \cond DOXYGEN_PRIVATE
  */
 _WEAK_FUNCTION(int _bsp_post_init(void)) {
-    /* User hook function.
-    ** This function is called with disabled preemption!!!
-    */
-    return 0;
+	/* User hook function.
+	** This function is called with disabled preemption!!!
+	*/
+	return 0;
 }
 
 #endif  /* MQXCFG_INIT_TASK */
@@ -192,96 +192,96 @@ _mqx_uint _mqx_init_wfi(KERNEL_DATA_STRUCT_PTR kernel_data);
 
 _mqx_uint mqx_init
 (
-    register const MQX_INITIALIZATION_STRUCT *mqx_init // MQX_INITIALIZATION_STRUCT_PTR has been replaced by MQX_INITIALIZATION_STRUCT * because of MISRA(11.5) control in fsl_os_abstraction_mqx.c.
+	register const MQX_INITIALIZATION_STRUCT *mqx_init // MQX_INITIALIZATION_STRUCT_PTR has been replaced by MQX_INITIALIZATION_STRUCT * because of MISRA(11.5) control in fsl_os_abstraction_mqx.c.
 )
 {
-    KERNEL_DATA_STRUCT_PTR kernel_data = NULL;
-    uint32_t result = 0;
-    _GET_KERNEL_DATA(kernel_data);
+	KERNEL_DATA_STRUCT_PTR kernel_data = NULL;
+	uint32_t result = 0;
+	_GET_KERNEL_DATA(kernel_data);
 
-    assert(kernel_data != NULL);
+	assert(kernel_data != NULL);
 
-    // Copy the MQX initialization structure into kernel data.
-    kernel_data->INIT = *mqx_init;
+	// Copy the MQX initialization structure into kernel data.
+	kernel_data->INIT = *mqx_init;
 
-    _mqx_init_cripple_evaluation(kernel_data);
-    _mqx_init_tad(kernel_data);
-    _mqx_init_internals(kernel_data);
-    _mqx_init_allocators(kernel_data);
-    _mqx_init_interrupt_stack(kernel_data);
-    _mqx_init_lwsem(kernel_data);
-    _mqx_init_wfi(kernel_data);
+	_mqx_init_cripple_evaluation(kernel_data);
+	_mqx_init_tad(kernel_data);
+	_mqx_init_internals(kernel_data);
+	_mqx_init_allocators(kernel_data);
+	_mqx_init_interrupt_stack(kernel_data);
+	_mqx_init_lwsem(kernel_data);
+	_mqx_init_wfi(kernel_data);
 
-    // initialize TD_LIST queue
-    _QUEUE_INIT(&kernel_data->TD_LIST, 0);
+	// initialize TD_LIST queue
+	_QUEUE_INIT(&kernel_data->TD_LIST, 0);
 
-    // kernel_data->LOWEST_TASK_PRIORITY need to be known
-    // before first call of _task_create_XXX functions.
-    kernel_data->LOWEST_TASK_PRIORITY = MQXCFG_LOWEST_TASK_PRIORITY;
+	// kernel_data->LOWEST_TASK_PRIORITY need to be known
+	// before first call of _task_create_XXX functions.
+	kernel_data->LOWEST_TASK_PRIORITY = MQXCFG_LOWEST_TASK_PRIORITY;
 
-    // ready queues need to be created
-    // before first call of _task_create_XXX functions.
-    result = _psp_init_readyqs();
-    assert(result == MQX_OK);
+	// ready queues need to be created
+	// before first call of _task_create_XXX functions.
+	result = _psp_init_readyqs();
+	assert(result == MQX_OK);
 
-    result = _bsp_pre_init();        // only basic init - timer, int
-    if ( result != MQX_OK ) {
-        _mqx_exit(result);
-    }
+	result = _bsp_pre_init();        // only basic init - timer, int
+	if ( result != MQX_OK ) {
+		_mqx_exit(result);
+	}
 
-    // FIXME: return value must respect errors !!!
-    return 0;
+	// FIXME: return value must respect errors !!!
+	return 0;
 }
 
 _mqx_uint _mqx_init_cripple_evaluation
 (
-    KERNEL_DATA_STRUCT_PTR kernel_data
+	KERNEL_DATA_STRUCT_PTR kernel_data
 )
 {
 #   if MQX_EXIT_ENABLED || MQX_CRIPPLED_EVALUATION
-    /* Setup a longjmp buffer using setjmp, so that if an error occurs
-     * in mqx initialization, we can perform a longjmp to this location.
-     *
-     * Also _mqx_exit will use this jumpbuffer to longjmp to here in order
-     * to cleanly exit MQX.
-     */
-    if ( MQX_SETJMP( _mqx_exit_jump_buffer_internal ) ) {
-        _int_set_vector_table(kernel_data->USERS_VBR);
-        return kernel_data->USERS_ERROR;
-    } /* Endif */
+	/* Setup a longjmp buffer using setjmp, so that if an error occurs
+	 * in mqx initialization, we can perform a longjmp to this location.
+	 *
+	 * Also _mqx_exit will use this jumpbuffer to longjmp to here in order
+	 * to cleanly exit MQX.
+	 */
+	if ( MQX_SETJMP( _mqx_exit_jump_buffer_internal ) ) {
+		_int_set_vector_table(kernel_data->USERS_VBR);
+		return kernel_data->USERS_ERROR;
+	} /* Endif */
 #   endif /* MQX_EXIT_ENABLED || MQX_CRIPPLED_EVALUATION */
-    return 0;
+	return 0;
 }
 
 _mqx_uint _mqx_init_tad
 (
-    KERNEL_DATA_STRUCT_PTR kernel_data
+	KERNEL_DATA_STRUCT_PTR kernel_data
 )
 {
-    /* The following assignments are done to force the linker to include
-     * the symbols, which are required by TAD.
-     * Note that we should use address of the variable so it is not optimized
-     * as direct constant assignment when optimization level is high.
-     * Note that counter will be immediately reset to zero on the subsequent
-     * _mem_zero call. */
-    *(volatile  void **) kernel_data = (void *) & _mqx_version_number;
-    *(volatile  void **) kernel_data = (void *) & _mqx_vendor;
-    return 0;
+	/* The following assignments are done to force the linker to include
+	 * the symbols, which are required by TAD.
+	 * Note that we should use address of the variable so it is not optimized
+	 * as direct constant assignment when optimization level is high.
+	 * Note that counter will be immediately reset to zero on the subsequent
+	 * _mem_zero call. */
+	*(volatile  void **) kernel_data = (void *) & _mqx_version_number;
+	*(volatile  void **) kernel_data = (void *) & _mqx_vendor;
+	return 0;
 }
 
 _mqx_uint _mqx_init_allocators
 (
-    KERNEL_DATA_STRUCT_PTR kernel_data
+	KERNEL_DATA_STRUCT_PTR kernel_data
 )
 {
 #if MQXCFG_ALLOCATOR
-    uint32_t result;
+	uint32_t result;
 // TODO: remove !!!!!
 #   if MQX_CHECK_ERRORS && MQX_VERIFY_KERNEL_DATA
-    /* Verify that kernel data can be read and written correcly without
-     * errors.  This is necessary during BSP development to validate the
-     * DRAM controller is initialized properly.
-     */
+	/* Verify that kernel data can be read and written correcly without
+	 * errors.  This is necessary during BSP development to validate the
+	 * DRAM controller is initialized properly.
+	 */
 
 #       ifndef PSP_KERNEL_DATA_VERIFY_ENABLE
 #           define PSP_KERNEL_DATA_VERIFY_ENABLE   0
@@ -289,31 +289,31 @@ _mqx_uint _mqx_init_allocators
 #   endif /* MQX_CHECK_ERRORS && MQX_VERIFY_KERNEL_DATA */
 
 
-    kernel_data->INIT.END_OF_HEAP = (void *) _ALIGN_ADDR_TO_LOWER_MEM(kernel_data->INIT.END_OF_HEAP);
+	kernel_data->INIT.END_OF_HEAP = (void *) _ALIGN_ADDR_TO_LOWER_MEM(kernel_data->INIT.END_OF_HEAP);
 
-    result = _mem_init_internal();
+	result = _mem_init_internal();
 #endif /* MQXCFG_ALLOCATOR */
-    return 0;
+	return 0;
 }
 
 #endif /* MQX_CUSTOM_MAIN */
 
 uint32_t _mqx_init_interrupt_stack
 (
-    KERNEL_DATA_STRUCT_PTR kernel_data
+	KERNEL_DATA_STRUCT_PTR kernel_data
 )
 {
-    _mqx_uint  stack_ptr;
-    _mqx_uint  stack_limit;
+	_mqx_uint  stack_ptr;
+	_mqx_uint  stack_limit;
 
-    stack_ptr = *(_mqx_uint*)_int_get_vector_table(); /* Get stack base address located on interrupt vector 0. */
-    kernel_data->INTERRUPT_STACK_PTR = _GET_STACK_BASE((_mqx_uint)__HEAP_END, (_mqx_uint)stack_ptr-(_mqx_uint)__HEAP_END); /* Save interrupt stack address to KD, _psp_int_install set this walue to MSP. */
-    //_mem_set_type(kernel_data->INTERRUPT_STACK_PTR, MEM_TYPE_INTERRUPT_STACK); /* For TAD. */
-    stack_limit = (_mqx_uint)_GET_STACK_LIMIT((_mqx_uint)__HEAP_END, 0);
-    kernel_data->INIT.INTERRUPT_STACK_SIZE = (_mqx_uint)kernel_data->INTERRUPT_STACK_PTR - (_mqx_uint)stack_limit;  /* Calculate size of available stack and save it for TAD. */
-    //_psp_int_install();
+	stack_ptr = *(_mqx_uint*)_int_get_vector_table(); /* Get stack base address located on interrupt vector 0. */
+	kernel_data->INTERRUPT_STACK_PTR = _GET_STACK_BASE((_mqx_uint)__HEAP_END, (_mqx_uint)stack_ptr-(_mqx_uint)__HEAP_END); /* Save interrupt stack address to KD, _psp_int_install set this walue to MSP. */
+	//_mem_set_type(kernel_data->INTERRUPT_STACK_PTR, MEM_TYPE_INTERRUPT_STACK); /* For TAD. */
+	stack_limit = (_mqx_uint)_GET_STACK_LIMIT((_mqx_uint)__HEAP_END, 0);
+	kernel_data->INIT.INTERRUPT_STACK_SIZE = (_mqx_uint)kernel_data->INTERRUPT_STACK_PTR - (_mqx_uint)stack_limit;  /* Calculate size of available stack and save it for TAD. */
+	//_psp_int_install();
 
-    return 0;
+	return 0;
 }
 
 
@@ -321,47 +321,47 @@ uint32_t _mqx_init_interrupt_stack
 
 _mqx_uint _mqx_init_lwsem
 (
-    KERNEL_DATA_STRUCT_PTR kernel_data
+	KERNEL_DATA_STRUCT_PTR kernel_data
 )
 {
 
 #   if MQX_USE_COMPONENTS
 
-    /* Create a light wait semaphore for component creation */
-    _lwsem_create((LWSEM_STRUCT_PTR)&kernel_data->COMPONENT_CREATE_LWSEM, 1);
+	/* Create a light wait semaphore for component creation */
+	_lwsem_create((LWSEM_STRUCT_PTR)&kernel_data->COMPONENT_CREATE_LWSEM, 1);
 #   endif /* MQX_USE_COMPONENTS */
 
-    /* Create a light wait semaphore for task creation/destruction creation */
-    _lwsem_create((LWSEM_STRUCT_PTR) & kernel_data->TASK_CREATE_LWSEM, 1);
-    return 0;
+	/* Create a light wait semaphore for task creation/destruction creation */
+	_lwsem_create((LWSEM_STRUCT_PTR) & kernel_data->TASK_CREATE_LWSEM, 1);
+	return 0;
 }
 
 _mqx_uint _mqx_init_wfi
 (
-    KERNEL_DATA_STRUCT_PTR kernel_data
+	KERNEL_DATA_STRUCT_PTR kernel_data
 )
 {
 // TODO: verify TLSF allocators and supported boards
 #   if PSP_BYPASS_P3_WFI
-    {
-        extern uint32_t _sleep_p3_start[];
-        extern uint32_t _sleep_p3_end[];
-        extern uint32_t _sleep_p3_loop[];
-        extern uint32_t _sleep_p3_wfi[];
-        void *p;
+	{
+		extern uint32_t _sleep_p3_start[];
+		extern uint32_t _sleep_p3_end[];
+		extern uint32_t _sleep_p3_loop[];
+		extern uint32_t _sleep_p3_wfi[];
+		void *p;
 
-        /* allocate uncached memory for task code */
-        p = _mem_alloc_uncached(((uint32_t)_sleep_p3_end & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe));
-        assert(p != NULL);
-        _sleep_p3_ram = (void(*)(uint32_t*))( ( ((uint32_t)_sleep_p3 & 0xfffffffe)- ((uint32_t)_sleep_p3_start  & 0xfffffffe) + ((uint32_t)p  & 0xfffffffe) ) | 1);
-        _sleep_p3_loop_ram = ((uint32_t)_sleep_p3_loop & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe) + (uint32_t)p;
-        _sleep_p3_wfi_ram = ((uint32_t)_sleep_p3_wfi & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe) + (uint32_t)p;
+		/* allocate uncached memory for task code */
+		p = _mem_alloc_uncached(((uint32_t)_sleep_p3_end & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe));
+		assert(p != NULL);
+		_sleep_p3_ram = (void(*)(uint32_t*))( ( ((uint32_t)_sleep_p3 & 0xfffffffe)- ((uint32_t)_sleep_p3_start  & 0xfffffffe) + ((uint32_t)p  & 0xfffffffe) ) | 1);
+		_sleep_p3_loop_ram = ((uint32_t)_sleep_p3_loop & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe) + (uint32_t)p;
+		_sleep_p3_wfi_ram = ((uint32_t)_sleep_p3_wfi & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe) + (uint32_t)p;
 
-        /* copy idle task to mem */
-        _mem_copy((void*)((uint32_t)_sleep_p3_start & 0xfffffffe), p, ((uint32_t)_sleep_p3_end & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe));
-    }
+		/* copy idle task to mem */
+		_mem_copy((void*)((uint32_t)_sleep_p3_start & 0xfffffffe), p, ((uint32_t)_sleep_p3_end & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe));
+	}
 #   endif /* PSP_BYPASS_P3_WFI */
-    return 0;
+	return 0;
 }
 
 /*!
@@ -375,49 +375,49 @@ _mqx_uint _mqx_init_wfi
  */
 _mqx_uint _mqx_init_internals
 (
-    KERNEL_DATA_STRUCT_PTR kernel_data
+	KERNEL_DATA_STRUCT_PTR kernel_data
 )
 { /* Body */
-    TD_STRUCT_PTR td_ptr;
+	TD_STRUCT_PTR td_ptr;
 
-    //_GET_KERNEL_DATA(kernel_data);
+	//_GET_KERNEL_DATA(kernel_data);
 
-    /* Store the configuration used when the kernel was compiled */
-    kernel_data->CONFIG1 = MQX_CNFG1;
-    kernel_data->CONFIG2 = MQX_CNFG2;
+	/* Store the configuration used when the kernel was compiled */
+	kernel_data->CONFIG1 = MQX_CNFG1;
+	kernel_data->CONFIG2 = MQX_CNFG2;
 
-    /* Store the addressability of the processor. How many bits in a byte. */
-    kernel_data->ADDRESSING_CAPABILITY = PSP_MEMORY_ADDRESSING_CAPABILITY;
+	/* Store the addressability of the processor. How many bits in a byte. */
+	kernel_data->ADDRESSING_CAPABILITY = PSP_MEMORY_ADDRESSING_CAPABILITY;
 
-    /* Indicate the endianess of the target */
-    kernel_data->ENDIANESS = PSP_ENDIAN;
+	/* Indicate the endianess of the target */
+	kernel_data->ENDIANESS = PSP_ENDIAN;
 
-    /* Store PSP memory alignment information */
+	/* Store PSP memory alignment information */
 
 #   if PSP_MEM_STOREBLOCK_ALIGNMENT != 0
-    kernel_data->PSP_CFG_MEM_STOREBLOCK_ALIGNMENT = PSP_MEM_STOREBLOCK_ALIGNMENT;
+	kernel_data->PSP_CFG_MEM_STOREBLOCK_ALIGNMENT = PSP_MEM_STOREBLOCK_ALIGNMENT;
 #   endif /* PSP_MEM_STOREBLOCK_ALIGNMENT */
 
-    kernel_data->PSP_CFG_MEMORY_ALIGNMENT = PSP_MEMORY_ALIGNMENT;
-    kernel_data->PSP_CFG_STACK_ALIGNMENT = PSP_STACK_ALIGNMENT;
+	kernel_data->PSP_CFG_MEMORY_ALIGNMENT = PSP_MEMORY_ALIGNMENT;
+	kernel_data->PSP_CFG_STACK_ALIGNMENT = PSP_STACK_ALIGNMENT;
 
-    /* Set initial task number. It cannot be 0 because 0 is reserved for fault state.*/
-    kernel_data->TASK_NUMBER = 1;
+	/* Set initial task number. It cannot be 0 because 0 is reserved for fault state.*/
+	kernel_data->TASK_NUMBER = 1;
 
-    /*
-     * Fill in fields of the kernel data structure from the initialization
-     * structure.
-     */
-    /*kernel_data->PROCESSOR_NUMBER =  kernel_data->INIT.PROCESSOR_NUMBER;*/
+	/*
+	 * Fill in fields of the kernel data structure from the initialization
+	 * structure.
+	 */
+	/*kernel_data->PROCESSOR_NUMBER =  kernel_data->INIT.PROCESSOR_NUMBER;*/
 
-    /* Set IPC id for compatibility */
+	/* Set IPC id for compatibility */
 #   if MQX_USE_IPC
-    kernel_data->MY_IPC_ID = BUILD_TASKID(kernel_data->INIT.PROCESSOR_NUMBER, 1);
+	kernel_data->MY_IPC_ID = BUILD_TASKID(kernel_data->INIT.PROCESSOR_NUMBER, 1);
 #   endif /* MQX_USE_IPC */
 
-    /* Store location of current interrupt vector table */
+	/* Store location of current interrupt vector table */
 #   if MQX_EXIT_ENABLED
-    kernel_data->USERS_VBR = (_mqx_max_type)_int_get_vector_table();
+	kernel_data->USERS_VBR = (_mqx_max_type)_int_get_vector_table();
 #   endif /* MQX_EXIT_ENABLED */
 
 //#if MQX_CHECK_ERRORS
@@ -427,168 +427,168 @@ _mqx_uint _mqx_init_internals
 //#endif
 
 #   if MQX_HAS_TIME_SLICE
-    /* Set the default scheduling policy for created tasks */
-    kernel_data->SCHED_POLICY = MQX_SCHED_FIFO;
+	/* Set the default scheduling policy for created tasks */
+	kernel_data->SCHED_POLICY = MQX_SCHED_FIFO;
 #   endif /* MQX_HAS_TIME_SLICE */
 
 #   if MQX_KD_HAS_COUNTER
-    /* Initialize the kernel counter. */
-    kernel_data->COUNTER = 1U;
+	/* Initialize the kernel counter. */
+	kernel_data->COUNTER = 1U;
 #   endif /* MQX_KD_HAS_COUNTER */
 
-    /* Set up the disable and enable priority levels */
-    _psp_set_kernel_disable_level();
+	/* Set up the disable and enable priority levels */
+	_psp_set_kernel_disable_level();
 
-    /*
-     * Initialize the system task so that functions which update the
-     * task error code can be called.
-     * The system task never runs, but it's TD is used for error codes
-     * during initialization, and for storage of memory blocks assigned
-     * to the system.
-     */
-    td_ptr = (TD_STRUCT_PTR) & kernel_data->SYSTEM_TD;
-    kernel_data->ACTIVE_PTR = td_ptr;
-    kernel_data->ACTIVE_SR = kernel_data->DISABLE_SR;
-    td_ptr->TASK_SR = kernel_data->DISABLE_SR;
-    td_ptr->TASK_ID = BUILD_TASKID(kernel_data->INIT.PROCESSOR_NUMBER, SYSTEM_TASK_NUMBER);
-    td_ptr->STATE = BLOCKED;
+	/*
+	 * Initialize the system task so that functions which update the
+	 * task error code can be called.
+	 * The system task never runs, but it's TD is used for error codes
+	 * during initialization, and for storage of memory blocks assigned
+	 * to the system.
+	 */
+	td_ptr = (TD_STRUCT_PTR) & kernel_data->SYSTEM_TD;
+	kernel_data->ACTIVE_PTR = td_ptr;
+	kernel_data->ACTIVE_SR = kernel_data->DISABLE_SR;
+	td_ptr->TASK_SR = kernel_data->DISABLE_SR;
+	td_ptr->TASK_ID = BUILD_TASKID(kernel_data->INIT.PROCESSOR_NUMBER, SYSTEM_TASK_NUMBER);
+	td_ptr->STATE = BLOCKED;
 
-    /* Initialize the light weight semaphores queue */
-    _QUEUE_INIT(&kernel_data->LWSEM, 0);
+	/* Initialize the light weight semaphores queue */
+	_QUEUE_INIT(&kernel_data->LWSEM, 0);
 
 #   if MQX_ENABLE_USER_MODE
-    _QUEUE_INIT(&kernel_data->USR_LWSEM, 0);
+	_QUEUE_INIT(&kernel_data->USR_LWSEM, 0);
 #   endif /* MQX_ENABLE_USER_MODE */
 
 #   if MQX_HAS_TICK
-    /* Set up the timeout queue */
-    _QUEUE_INIT(&kernel_data->TIMEOUT_QUEUE, 0);
+	/* Set up the timeout queue */
+	_QUEUE_INIT(&kernel_data->TIMEOUT_QUEUE, 0);
 #   endif /* MQX_HAS_TICK */
-    return 0;
+	return 0;
 }
 
 _mqx_uint mqx_start
 (
-    void
+	void
 )
 {
-    TASK_TEMPLATE_STRUCT_PTR task_template_ptr = NULL;
-    KERNEL_DATA_STRUCT_PTR kernel_data = NULL;
-    _GET_KERNEL_DATA(kernel_data);
-    TD_STRUCT_PTR td_ptr;
-    uint32_t size = 0;
+	TASK_TEMPLATE_STRUCT_PTR task_template_ptr = NULL;
+	KERNEL_DATA_STRUCT_PTR kernel_data = NULL;
+	_GET_KERNEL_DATA(kernel_data);
+	TD_STRUCT_PTR td_ptr;
+	uint32_t size = 0;
 
 #if MQXCFG_INIT_TASK
-    /*
-     * Initialize the task template for the INIT Task.
-     * NOTE that the idle task runs at 1 level lower than any user task.
-     */
-    task_template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE;
-    task_template_ptr->TASK_TEMPLATE_INDEX = INIT_TASK;
-    task_template_ptr->TASK_STACKSIZE      = PSP_INIT_STACK_SIZE;
-    task_template_ptr->TASK_NAME           = MQX_INIT_TASK_NAME;
-    task_template_ptr->TASK_ADDRESS        = _mqx_init_task;
-    task_template_ptr->TASK_PRIORITY       = kernel_data->LOWEST_TASK_PRIORITY + 1; // TODO: need to rewrite
-    /* Create the init task */
+	/*
+	 * Initialize the task template for the INIT Task.
+	 * NOTE that the idle task runs at 1 level lower than any user task.
+	 */
+	task_template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE;
+	task_template_ptr->TASK_TEMPLATE_INDEX = INIT_TASK;
+	task_template_ptr->TASK_STACKSIZE      = PSP_INIT_STACK_SIZE;
+	task_template_ptr->TASK_NAME           = MQX_INIT_TASK_NAME;
+	task_template_ptr->TASK_ADDRESS        = _mqx_init_task;
+	task_template_ptr->TASK_PRIORITY       = kernel_data->LOWEST_TASK_PRIORITY + 1; // TODO: need to rewrite
+	/* Create the init task */
 
 
 #if MQXCFG_PREALLOCATED_SYSTEM_STACKS
-    td_ptr = _task_init_internal(
-        (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE,
-        kernel_data->ACTIVE_PTR->TASK_ID,
-        MQX_INIT_TASK_PARAMETER,
-        TRUE,
-        mqx_init_task_stack,
-        STACK_SIZE_INIT
-    );
+	td_ptr = _task_init_internal(
+		(TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE,
+		kernel_data->ACTIVE_PTR->TASK_ID,
+		MQX_INIT_TASK_PARAMETER,
+		TRUE,
+		mqx_init_task_stack,
+		STACK_SIZE_INIT
+	);
 #else /* MQXCFG_PREALLOCATED_SYSTEM_STACKS */
-    td_ptr = _task_init_internal(
-        (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE,
-        kernel_data->ACTIVE_PTR->TASK_ID,
-        MQX_INIT_TASK_PARAMETER,
-        TRUE,
-        NULL,
-        0
-    );
+	td_ptr = _task_init_internal(
+		(TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE,
+		kernel_data->ACTIVE_PTR->TASK_ID,
+		MQX_INIT_TASK_PARAMETER,
+		TRUE,
+		NULL,
+		0
+	);
 #endif /* MQXCFG_PREALLOCATED_SYSTEM_STACKS */
-    if (td_ptr == NULL) {
-        _mqx_exit(MQX_OUT_OF_MEMORY);
-    }
-    _task_ready_internal(td_ptr);
+	if (td_ptr == NULL) {
+		_mqx_exit(MQX_OUT_OF_MEMORY);
+	}
+	_task_ready_internal(td_ptr);
 #endif /* MQXCFG_INIT_TASK */
 
 #   if MQX_USE_IDLE_TASK
-    /*
-     * Initialize the task template for the IDLE Task.
-     * NOTE that the idle task runs at 1 level lower than any user task.
-     */
-    task_template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->IDLE_TASK_TEMPLATE;
-    task_template_ptr->TASK_TEMPLATE_INDEX = IDLE_TASK;
-    task_template_ptr->TASK_STACKSIZE      = PSP_IDLE_STACK_SIZE;
-    task_template_ptr->TASK_NAME           = MQX_IDLE_TASK_NAME;
-    task_template_ptr->TASK_ADDRESS        = _mqx_idle_task;
+	/*
+	 * Initialize the task template for the IDLE Task.
+	 * NOTE that the idle task runs at 1 level lower than any user task.
+	 */
+	task_template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->IDLE_TASK_TEMPLATE;
+	task_template_ptr->TASK_TEMPLATE_INDEX = IDLE_TASK;
+	task_template_ptr->TASK_STACKSIZE      = PSP_IDLE_STACK_SIZE;
+	task_template_ptr->TASK_NAME           = MQX_IDLE_TASK_NAME;
+	task_template_ptr->TASK_ADDRESS        = _mqx_idle_task;
 #if MQXCFG_INIT_TASK
-    task_template_ptr->TASK_PRIORITY       = kernel_data->LOWEST_TASK_PRIORITY + 2; // TODO: need to rewrite
+	task_template_ptr->TASK_PRIORITY       = kernel_data->LOWEST_TASK_PRIORITY + 2; // TODO: need to rewrite
 #else
-    task_template_ptr->TASK_PRIORITY       = kernel_data->LOWEST_TASK_PRIORITY + 1;
+	task_template_ptr->TASK_PRIORITY       = kernel_data->LOWEST_TASK_PRIORITY + 1;
 #endif /* MQXCFG_INIT_TASK */
 
 
 #if MQXCFG_PREALLOCATED_SYSTEM_STACKS
-    td_ptr = _task_init_internal(
-        (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->IDLE_TASK_TEMPLATE,
-        kernel_data->ACTIVE_PTR->TASK_ID,
-        MQX_IDLE_TASK_PARAMETER,
-        TRUE,
-        mqx_idle_task_stack,
-        STACK_SIZE_IDLE
-    );
+	td_ptr = _task_init_internal(
+		(TASK_TEMPLATE_STRUCT_PTR)&kernel_data->IDLE_TASK_TEMPLATE,
+		kernel_data->ACTIVE_PTR->TASK_ID,
+		MQX_IDLE_TASK_PARAMETER,
+		TRUE,
+		mqx_idle_task_stack,
+		STACK_SIZE_IDLE
+	);
 #else /* MQXCFG_PREALLOCATED_SYSTEM_STACKS */
-    td_ptr = _task_init_internal(
-        (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->IDLE_TASK_TEMPLATE,
-        kernel_data->ACTIVE_PTR->TASK_ID,
-        MQX_IDLE_TASK_PARAMETER,
-        TRUE,
-        NULL,
-        0
-    );
+	td_ptr = _task_init_internal(
+		(TASK_TEMPLATE_STRUCT_PTR)&kernel_data->IDLE_TASK_TEMPLATE,
+		kernel_data->ACTIVE_PTR->TASK_ID,
+		MQX_IDLE_TASK_PARAMETER,
+		TRUE,
+		NULL,
+		0
+	);
 #endif /* MQXCFG_PREALLOCATED_SYSTEM_STACKS */
-    if (td_ptr == NULL) {
-        _mqx_exit(MQX_OUT_OF_MEMORY);
-    }
+	if (td_ptr == NULL) {
+		_mqx_exit(MQX_OUT_OF_MEMORY);
+	}
 
 #   endif /* MQX_USE_IDLE_TASK */
 
 #   if MQX_HAS_TIME_SLICE
-    /* Set the kernel default time slice value */
-    PSP_ADD_TICKS_TO_TICK_STRUCT(&kernel_data->SCHED_TIME_SLICE, MQX_DEFAULT_TIME_SLICE, &kernel_data->SCHED_TIME_SLICE);
+	/* Set the kernel default time slice value */
+	PSP_ADD_TICKS_TO_TICK_STRUCT(&kernel_data->SCHED_TIME_SLICE, MQX_DEFAULT_TIME_SLICE, &kernel_data->SCHED_TIME_SLICE);
 #   endif /* MQX_HAS_TIME_SLICE */
 
 #if MQXCFG_INIT_TASK == 0
 
-    _task_stop_preemption();
+	_task_stop_preemption();
 
-    // Set tasks to ready state
-    td_ptr = (TD_STRUCT_PTR)((unsigned char *)kernel_data->TD_LIST.NEXT - FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
-    size   = _QUEUE_GET_SIZE(&kernel_data->TD_LIST);
-    while (size--)
-    {
-        assert(td_ptr != NULL);
-        if (
-            td_ptr != kernel_data->ACTIVE_PTR
-        )
-        {
-            _task_ready_internal(td_ptr);
-        }
-        td_ptr = (TD_STRUCT_PTR)((unsigned char *)td_ptr->TD_LIST_INFO.NEXT - FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
-    }
-    _bsp_post_init(); /* User hook */
+	// Set tasks to ready state
+	td_ptr = (TD_STRUCT_PTR)((unsigned char *)kernel_data->TD_LIST.NEXT - FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
+	size   = _QUEUE_GET_SIZE(&kernel_data->TD_LIST);
+	while (size--)
+	{
+		assert(td_ptr != NULL);
+		if (
+			td_ptr != kernel_data->ACTIVE_PTR
+		)
+		{
+			_task_ready_internal(td_ptr);
+		}
+		td_ptr = (TD_STRUCT_PTR)((unsigned char *)td_ptr->TD_LIST_INFO.NEXT - FIELD_OFFSET(TD_STRUCT,TD_LIST_INFO));
+	}
+	_bsp_post_init(); /* User hook */
 #endif /* MQXCFG_INIT_TASK */
 
 
-    _sched_start_internal((_mqx_uint)kernel_data->INTERRUPT_STACK_PTR - kernel_data->INIT.INTERRUPT_STACK_SIZE, kernel_data->INIT.INTERRUPT_STACK_SIZE); /* WILL NEVER RETURN FROM HERE */
+	_sched_start_internal((_mqx_uint)kernel_data->INTERRUPT_STACK_PTR - kernel_data->INIT.INTERRUPT_STACK_SIZE, kernel_data->INIT.INTERRUPT_STACK_SIZE); /* WILL NEVER RETURN FROM HERE */
 
-    return MQX_OK; /* To satisfy lint */
+	return MQX_OK; /* To satisfy lint */
 }
 
 
@@ -650,162 +650,162 @@ _mqx_uint mqx_start
  */
 _mqx_uint _mqx
 (
-    register MQX_INITIALIZATION_STRUCT_PTR mqx_init
+	register MQX_INITIALIZATION_STRUCT_PTR mqx_init
 )
 { /* Body */
-    TASK_TEMPLATE_STRUCT_PTR template_ptr;
-    KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
-    TD_STRUCT_PTR td_ptr;
-    _mqx_uint result;
+	TASK_TEMPLATE_STRUCT_PTR template_ptr;
+	KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
+	TD_STRUCT_PTR td_ptr;
+	_mqx_uint result;
 
 #if MQX_EXIT_ENABLED || MQX_CRIPPLED_EVALUATION
-    /* Setup a longjmp buffer using setjmp, so that if an error occurs
-     * in mqx initialization, we can perform a longjmp to this location.
-     *
-     * Also _mqx_exit will use this jumpbuffer to longjmp to here in order
-     * to cleanly exit MQX.
-     */
-    if ( MQX_SETJMP( _mqx_exit_jump_buffer_internal ) ) {
-        _GET_KERNEL_DATA(kernel_data);
-        _int_set_vector_table(kernel_data->USERS_VBR);
-        return kernel_data->USERS_ERROR;
-    } /* Endif */
+	/* Setup a longjmp buffer using setjmp, so that if an error occurs
+	 * in mqx initialization, we can perform a longjmp to this location.
+	 *
+	 * Also _mqx_exit will use this jumpbuffer to longjmp to here in order
+	 * to cleanly exit MQX.
+	 */
+	if ( MQX_SETJMP( _mqx_exit_jump_buffer_internal ) ) {
+		_GET_KERNEL_DATA(kernel_data);
+		_int_set_vector_table(kernel_data->USERS_VBR);
+		return kernel_data->USERS_ERROR;
+	} /* Endif */
 #endif /* MQX_EXIT_ENABLED || MQX_CRIPPLED_EVALUATION */
 
-    /* Set the global pointer to the kernel data structure */
-    _GET_KERNEL_DATA(kernel_data);
+	/* Set the global pointer to the kernel data structure */
+	_GET_KERNEL_DATA(kernel_data);
 
-    /* The following assignments are done to force the linker to include
-     * the symbols, which are required by TAD.
-     * Note that we should use address of the variable so it is not optimized
-     * as direct constant assignment when optimization level is high.
-     * Note that counter will be immediately reset to zero on the subsequent
-     * _mem_zero call. */
-    *(volatile  void **) kernel_data = (void *) & _mqx_version_number;
-    *(volatile  void **) kernel_data = (void *) & _mqx_vendor;
+	/* The following assignments are done to force the linker to include
+	 * the symbols, which are required by TAD.
+	 * Note that we should use address of the variable so it is not optimized
+	 * as direct constant assignment when optimization level is high.
+	 * Note that counter will be immediately reset to zero on the subsequent
+	 * _mem_zero call. */
+	*(volatile  void **) kernel_data = (void *) & _mqx_version_number;
+	*(volatile  void **) kernel_data = (void *) & _mqx_vendor;
 
 #if MQX_CHECK_ERRORS && MQX_VERIFY_KERNEL_DATA
-    /* Verify that kernel data can be read and written correcly without
-     * errors.  This is necessary during BSP development to validate the
-     * DRAM controller is initialized properly.
-     */
+	/* Verify that kernel data can be read and written correcly without
+	 * errors.  This is necessary during BSP development to validate the
+	 * DRAM controller is initialized properly.
+	 */
 
 #ifndef PSP_KERNEL_DATA_VERIFY_ENABLE
 #define PSP_KERNEL_DATA_VERIFY_ENABLE   0
 #endif /* PSP_KERNEL_DATA_VERIFY_ENABLE */
 #endif /* MQX_CHECK_ERRORS && MQX_VERIFY_KERNEL_DATA */
-    /* Copy the MQX initialization structure into kernel data. */
-    kernel_data->INIT = *mqx_init;
-    kernel_data->INIT.END_OF_HEAP = (void *) _ALIGN_ADDR_TO_LOWER_MEM(kernel_data->INIT.END_OF_HEAP);
+	/* Copy the MQX initialization structure into kernel data. */
+	kernel_data->INIT = *mqx_init;
+	kernel_data->INIT.END_OF_HEAP = (void *) _ALIGN_ADDR_TO_LOWER_MEM(kernel_data->INIT.END_OF_HEAP);
 
-    /* init kernel data structures */
-    _mqx_init_kernel_data_internal();
+	/* init kernel data structures */
+	_mqx_init_kernel_data_internal();
 
-    /* Initialize the memory resource manager for the kernel */
+	/* Initialize the memory resource manager for the kernel */
 #if MQXCFG_ALLOCATOR
-    result = _mem_init_internal();
+	result = _mem_init_internal();
 #endif /* MQXCFG_ALLOCATOR */
 #if MQX_CHECK_ERRORS
-    if ( result != MQX_OK ) {
-        _mqx_exit(result); /* RETURN TO USER */
-    } /* Endif */
+	if ( result != MQX_OK ) {
+		_mqx_exit(result); /* RETURN TO USER */
+	} /* Endif */
 #endif /* MQX_CHECK_ERRORS */
 
-    /* Initialize interrupt stack */
-    result = _mqx_init_interrupt_stack(kernel_data);
-    if ( result != MQX_OK ) {
-        _mqx_exit(result);
-    }
+	/* Initialize interrupt stack */
+	result = _mqx_init_interrupt_stack(kernel_data);
+	if ( result != MQX_OK ) {
+		_mqx_exit(result);
+	}
 
-    /* Build the MQX ready to run queues */
-    result = _psp_init_readyqs();
+	/* Build the MQX ready to run queues */
+	result = _psp_init_readyqs();
 #if MQX_CHECK_MEMORY_ALLOCATION_ERRORS
-    if ( result != MQX_OK ) {
-        _mqx_exit(result); /* RETURN TO USER */
-    } /* Endif */
+	if ( result != MQX_OK ) {
+		_mqx_exit(result); /* RETURN TO USER */
+	} /* Endif */
 #endif /* MQX_CHECK_MEMORY_ALLOCATION_ERRORS */
 
 #if MQX_USE_COMPONENTS
-    /* Create a light wait semaphore for component creation */
-    _lwsem_create((LWSEM_STRUCT_PTR)&kernel_data->COMPONENT_CREATE_LWSEM, 1);
+	/* Create a light wait semaphore for component creation */
+	_lwsem_create((LWSEM_STRUCT_PTR)&kernel_data->COMPONENT_CREATE_LWSEM, 1);
 #endif /* MQX_USE_COMPONENTS */
 
-    /* Create a light wait semaphore for task creation/destruction creation */
-    _lwsem_create((LWSEM_STRUCT_PTR) & kernel_data->TASK_CREATE_LWSEM, 1);
+	/* Create a light wait semaphore for task creation/destruction creation */
+	_lwsem_create((LWSEM_STRUCT_PTR) & kernel_data->TASK_CREATE_LWSEM, 1);
 
-    result = _bsp_pre_init();        // only basic init - timer, int
-    if ( result != MQX_OK ) {
-        _mqx_exit(result);
-    }
+	result = _bsp_pre_init();        // only basic init - timer, int
+	if ( result != MQX_OK ) {
+		_mqx_exit(result);
+	}
 
-    /* Create the init task */
+	/* Create the init task */
 #if MQXCFG_PREALLOCATED_SYSTEM_STACKS == 1 /* Init task stacks is preallocated by MQX. */
-    template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE;
-    td_ptr = _task_init_internal(
-        template_ptr,
-        kernel_data->ACTIVE_PTR->TASK_ID,
-        MQX_INIT_TASK_PARAMETER,
-        TRUE, mqx_init_task_stack,
-        INIT_STACK_SIZE
-    );
+	template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE;
+	td_ptr = _task_init_internal(
+		template_ptr,
+		kernel_data->ACTIVE_PTR->TASK_ID,
+		MQX_INIT_TASK_PARAMETER,
+		TRUE, mqx_init_task_stack,
+		INIT_STACK_SIZE
+	);
 #else /* MQXCFG_PREALLOCATED_SYSTEM_STACKS Init task stack will be dynamically allocated by MQX.*/
-    td_ptr = _task_init_internal(
-        (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE,
-        kernel_data->ACTIVE_PTR->TASK_ID,
-        MQX_INIT_TASK_PARAMETER,
-        TRUE,
-        NULL,
-        0
-     );
+	td_ptr = _task_init_internal(
+		(TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE,
+		kernel_data->ACTIVE_PTR->TASK_ID,
+		MQX_INIT_TASK_PARAMETER,
+		TRUE,
+		NULL,
+		0
+	 );
 #endif /* MQXCFG_PREALLOCATED_SYSTEM_STACKS */
 
-    if (td_ptr == NULL) {
-        _mqx_exit(MQX_OUT_OF_MEMORY);
-    }
-    _task_ready_internal(td_ptr);
+	if (td_ptr == NULL) {
+		_mqx_exit(MQX_OUT_OF_MEMORY);
+	}
+	_task_ready_internal(td_ptr);
 
 #if MQX_HAS_TIME_SLICE
-    /* Set the kernel default time slice value */
-    PSP_ADD_TICKS_TO_TICK_STRUCT(&kernel_data->SCHED_TIME_SLICE,
-                    MQX_DEFAULT_TIME_SLICE, &kernel_data->SCHED_TIME_SLICE);
+	/* Set the kernel default time slice value */
+	PSP_ADD_TICKS_TO_TICK_STRUCT(&kernel_data->SCHED_TIME_SLICE,
+					MQX_DEFAULT_TIME_SLICE, &kernel_data->SCHED_TIME_SLICE);
 #endif /* MQX_HAS_TIME_SLICE */
 
-    /* Create the idle task */
+	/* Create the idle task */
 #if MQX_USE_IDLE_TASK
 
 #if PSP_BYPASS_P3_WFI
-    {
-        extern uint32_t _sleep_p3_start[];
-        extern uint32_t _sleep_p3_end[];
-        extern uint32_t _sleep_p3_loop[];
-        extern uint32_t _sleep_p3_wfi[];
-        void *p;
+	{
+		extern uint32_t _sleep_p3_start[];
+		extern uint32_t _sleep_p3_end[];
+		extern uint32_t _sleep_p3_loop[];
+		extern uint32_t _sleep_p3_wfi[];
+		void *p;
 
-        /* allocate uncached memory for task code */
-        p = _mem_alloc_uncached(((uint32_t)_sleep_p3_end & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe));
-        _sleep_p3_ram = (void(*)(uint32_t*))( ( ((uint32_t)_sleep_p3 & 0xfffffffe)- ((uint32_t)_sleep_p3_start  & 0xfffffffe) + ((uint32_t)p  & 0xfffffffe) ) | 1);
-        _sleep_p3_loop_ram = ((uint32_t)_sleep_p3_loop & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe) + (uint32_t)p;
-        _sleep_p3_wfi_ram = ((uint32_t)_sleep_p3_wfi & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe) + (uint32_t)p;
+		/* allocate uncached memory for task code */
+		p = _mem_alloc_uncached(((uint32_t)_sleep_p3_end & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe));
+		_sleep_p3_ram = (void(*)(uint32_t*))( ( ((uint32_t)_sleep_p3 & 0xfffffffe)- ((uint32_t)_sleep_p3_start  & 0xfffffffe) + ((uint32_t)p  & 0xfffffffe) ) | 1);
+		_sleep_p3_loop_ram = ((uint32_t)_sleep_p3_loop & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe) + (uint32_t)p;
+		_sleep_p3_wfi_ram = ((uint32_t)_sleep_p3_wfi & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe) + (uint32_t)p;
 
-        /* copy idle task to mem */
-        _mem_copy((void*)((uint32_t)_sleep_p3_start & 0xfffffffe), p, ((uint32_t)_sleep_p3_end & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe));
-    }
+		/* copy idle task to mem */
+		_mem_copy((void*)((uint32_t)_sleep_p3_start & 0xfffffffe), p, ((uint32_t)_sleep_p3_end & 0xfffffffe) - ((uint32_t)_sleep_p3_start & 0xfffffffe));
+	}
 #endif /* PSP_BYPASS_P3_WFI */
 
-    /* Create the idle task */
-    template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->IDLE_TASK_TEMPLATE;
-    td_ptr = _task_init_internal(template_ptr, kernel_data->ACTIVE_PTR->TASK_ID, MQX_IDLE_TASK_PARAMETER, TRUE, mqx_idle_task_stack, STACK_SIZE_IDLE);
+	/* Create the idle task */
+	template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->IDLE_TASK_TEMPLATE;
+	td_ptr = _task_init_internal(template_ptr, kernel_data->ACTIVE_PTR->TASK_ID, MQX_IDLE_TASK_PARAMETER, TRUE, mqx_idle_task_stack, STACK_SIZE_IDLE);
 
-    if (td_ptr == NULL) {
-        _mqx_exit(MQX_OUT_OF_MEMORY);
-    }
-    _task_ready_internal(td_ptr);
+	if (td_ptr == NULL) {
+		_mqx_exit(MQX_OUT_OF_MEMORY);
+	}
+	_task_ready_internal(td_ptr);
 #endif /* MQX_USE_IDLE_TASK */
 
-    /* Start scheduler, interrupt stack must be filled by pattern "stak" in asm code. */
-    _sched_start_internal((_mqx_uint)kernel_data->INTERRUPT_STACK_PTR - kernel_data->INIT.INTERRUPT_STACK_SIZE, kernel_data->INIT.INTERRUPT_STACK_SIZE); /* WILL NEVER RETURN FROM HERE */
+	/* Start scheduler, interrupt stack must be filled by pattern "stak" in asm code. */
+	_sched_start_internal((_mqx_uint)kernel_data->INTERRUPT_STACK_PTR - kernel_data->INIT.INTERRUPT_STACK_SIZE, kernel_data->INIT.INTERRUPT_STACK_SIZE); /* WILL NEVER RETURN FROM HERE */
 
-    return MQX_OK; /* To satisfy lint */
+	return MQX_OK; /* To satisfy lint */
 
 } /* Endbody */
 
@@ -821,151 +821,151 @@ _mqx_uint _mqx
  */
 void _mqx_init_kernel_data_internal
 (
-    void
+	void
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    TASK_TEMPLATE_STRUCT_PTR task_template_ptr;
-    TD_STRUCT_PTR td_ptr;
-    _mqx_uint priority_levels;
-    _mqx_uint i;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	TASK_TEMPLATE_STRUCT_PTR task_template_ptr;
+	TD_STRUCT_PTR td_ptr;
+	_mqx_uint priority_levels;
+	_mqx_uint i;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    /* Store the configuration used when the kernel was compiled */
-    kernel_data->CONFIG1 = MQX_CNFG1;
-    kernel_data->CONFIG2 = MQX_CNFG2;
+	/* Store the configuration used when the kernel was compiled */
+	kernel_data->CONFIG1 = MQX_CNFG1;
+	kernel_data->CONFIG2 = MQX_CNFG2;
 
-    /* Store the addressability of the processor. How many bits in a byte. */
-    kernel_data->ADDRESSING_CAPABILITY = PSP_MEMORY_ADDRESSING_CAPABILITY;
+	/* Store the addressability of the processor. How many bits in a byte. */
+	kernel_data->ADDRESSING_CAPABILITY = PSP_MEMORY_ADDRESSING_CAPABILITY;
 
-    /* Indicate the endianess of the target */
-    kernel_data->ENDIANESS = PSP_ENDIAN;
+	/* Indicate the endianess of the target */
+	kernel_data->ENDIANESS = PSP_ENDIAN;
 
-    /* Store PSP memory alignment information */
+	/* Store PSP memory alignment information */
 
 #if PSP_MEM_STOREBLOCK_ALIGNMENT != 0
-    kernel_data->PSP_CFG_MEM_STOREBLOCK_ALIGNMENT = PSP_MEM_STOREBLOCK_ALIGNMENT;
+	kernel_data->PSP_CFG_MEM_STOREBLOCK_ALIGNMENT = PSP_MEM_STOREBLOCK_ALIGNMENT;
 #endif /* PSP_MEM_STOREBLOCK_ALIGNMENT */
 
-    kernel_data->PSP_CFG_MEMORY_ALIGNMENT = PSP_MEMORY_ALIGNMENT;
-    kernel_data->PSP_CFG_STACK_ALIGNMENT = PSP_STACK_ALIGNMENT;
+	kernel_data->PSP_CFG_MEMORY_ALIGNMENT = PSP_MEMORY_ALIGNMENT;
+	kernel_data->PSP_CFG_STACK_ALIGNMENT = PSP_STACK_ALIGNMENT;
 
-    /*
-     * Fill in fields of the kernel data structure from the initialization
-     * structure.
-     */
-    /*kernel_data->PROCESSOR_NUMBER =  kernel_data->INIT.PROCESSOR_NUMBER;*/
+	/*
+	 * Fill in fields of the kernel data structure from the initialization
+	 * structure.
+	 */
+	/*kernel_data->PROCESSOR_NUMBER =  kernel_data->INIT.PROCESSOR_NUMBER;*/
 
-    /* Set IPC id for compatibility */
+	/* Set IPC id for compatibility */
 #if MQX_USE_IPC
-    kernel_data->MY_IPC_ID = BUILD_TASKID(kernel_data->INIT.PROCESSOR_NUMBER, 1);
+	kernel_data->MY_IPC_ID = BUILD_TASKID(kernel_data->INIT.PROCESSOR_NUMBER, 1);
 #endif /* MQX_USE_IPC */
 
-    /* Store location of current interrupt vector table */
+	/* Store location of current interrupt vector table */
 #if MQX_EXIT_ENABLED
-    kernel_data->USERS_VBR = (_mqx_max_type)_int_get_vector_table();
+	kernel_data->USERS_VBR = (_mqx_max_type)_int_get_vector_table();
 #endif /* MQX_EXIT_ENABLED */
 
 #if MQX_CHECK_ERRORS
-    if (kernel_data->INIT.TASK_TEMPLATE_LIST == NULL) {
-        _mqx_exit(MQX_INVALID_POINTER);
-    } /* Endif */
+	if (kernel_data->INIT.TASK_TEMPLATE_LIST == NULL) {
+		_mqx_exit(MQX_INVALID_POINTER);
+	} /* Endif */
 #endif /* MQX_CHECK_ERRORS */
 
 #if MQX_HAS_TIME_SLICE
-    /* Set the default scheduling policy for created tasks */
-    kernel_data->SCHED_POLICY = MQX_SCHED_FIFO;
+	/* Set the default scheduling policy for created tasks */
+	kernel_data->SCHED_POLICY = MQX_SCHED_FIFO;
 #endif /* MQX_HAS_TIME_SLICE */
 
 #if MQX_KD_HAS_COUNTER
-    /* Initialize the kernel counter. */
-    kernel_data->COUNTER = 1U;
+	/* Initialize the kernel counter. */
+	kernel_data->COUNTER = 1U;
 #endif /* MQX_KD_HAS_COUNTER */
 
-    /* Set up the disable and enable priority levels */
-    _psp_set_kernel_disable_level();
+	/* Set up the disable and enable priority levels */
+	_psp_set_kernel_disable_level();
 
-    /*
-     * Initialize the system task so that functions which update the
-     * task error code can be called.
-     * The system task never runs, but it's TD is used for error codes
-     * during initialization, and for storage of memory blocks assigned
-     * to the system.
-     */
-    td_ptr = (TD_STRUCT_PTR) & kernel_data->SYSTEM_TD;
-    kernel_data->ACTIVE_PTR = td_ptr;
-    kernel_data->ACTIVE_SR = kernel_data->DISABLE_SR;
-    td_ptr->TASK_SR = kernel_data->DISABLE_SR;
-    td_ptr->TASK_ID = BUILD_TASKID(kernel_data->INIT.PROCESSOR_NUMBER, SYSTEM_TASK_NUMBER);
-    td_ptr->STATE = BLOCKED;
+	/*
+	 * Initialize the system task so that functions which update the
+	 * task error code can be called.
+	 * The system task never runs, but it's TD is used for error codes
+	 * during initialization, and for storage of memory blocks assigned
+	 * to the system.
+	 */
+	td_ptr = (TD_STRUCT_PTR) & kernel_data->SYSTEM_TD;
+	kernel_data->ACTIVE_PTR = td_ptr;
+	kernel_data->ACTIVE_SR = kernel_data->DISABLE_SR;
+	td_ptr->TASK_SR = kernel_data->DISABLE_SR;
+	td_ptr->TASK_ID = BUILD_TASKID(kernel_data->INIT.PROCESSOR_NUMBER, SYSTEM_TASK_NUMBER);
+	td_ptr->STATE = BLOCKED;
 
-    /* Initialize the light weight semaphores queue */
-    _QUEUE_INIT(&kernel_data->LWSEM, 0);
+	/* Initialize the light weight semaphores queue */
+	_QUEUE_INIT(&kernel_data->LWSEM, 0);
 
 #if MQX_ENABLE_USER_MODE
-    _QUEUE_INIT(&kernel_data->USR_LWSEM, 0);
+	_QUEUE_INIT(&kernel_data->USR_LWSEM, 0);
 #endif /* MQX_ENABLE_USER_MODE */
 
 #if MQX_HAS_TICK
-    /* Set up the timeout queue */
-    _QUEUE_INIT(&kernel_data->TIMEOUT_QUEUE, 0);
+	/* Set up the timeout queue */
+	_QUEUE_INIT(&kernel_data->TIMEOUT_QUEUE, 0);
 #endif /* MQX_HAS_TICK */
 
-    /*
-     * Compute the number of MQX priority levels needed. This is done
-     * by determining the task that has the lowest priority (highest number)
-     */
-    priority_levels = 0;
-    task_template_ptr = kernel_data->INIT.TASK_TEMPLATE_LIST;
-    for (i = 0; task_template_ptr->TASK_TEMPLATE_INDEX && (i < MQX_MAXIMUM_NUMBER_OF_TASK_TEMPLATES); ++i, ++task_template_ptr) {
-        if (priority_levels < task_template_ptr->TASK_PRIORITY) {
-            priority_levels = task_template_ptr->TASK_PRIORITY;
-        } /* Endif */
-    } /* Endfor */
-    kernel_data->LOWEST_TASK_PRIORITY = priority_levels;
+	/*
+	 * Compute the number of MQX priority levels needed. This is done
+	 * by determining the task that has the lowest priority (highest number)
+	 */
+	priority_levels = 0;
+	task_template_ptr = kernel_data->INIT.TASK_TEMPLATE_LIST;
+	for (i = 0; task_template_ptr->TASK_TEMPLATE_INDEX && (i < MQX_MAXIMUM_NUMBER_OF_TASK_TEMPLATES); ++i, ++task_template_ptr) {
+		if (priority_levels < task_template_ptr->TASK_PRIORITY) {
+			priority_levels = task_template_ptr->TASK_PRIORITY;
+		} /* Endif */
+	} /* Endfor */
+	kernel_data->LOWEST_TASK_PRIORITY = priority_levels;
 
 #if MQXCFG_INIT_TASK
-    /*
-     * Initialize the task template for the INIT Task.
-     * NOTE that the idle task runs at 1 level lower than any user task.
-     */
-    task_template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE;
-    task_template_ptr->TASK_TEMPLATE_INDEX = INIT_TASK;
-    task_template_ptr->TASK_STACKSIZE      = PSP_INIT_STACK_SIZE;
-    task_template_ptr->TASK_NAME           = MQX_INIT_TASK_NAME;
-    task_template_ptr->TASK_ADDRESS        = _mqx_init_task;
-    task_template_ptr->TASK_PRIORITY       = priority_levels + 1;
+	/*
+	 * Initialize the task template for the INIT Task.
+	 * NOTE that the idle task runs at 1 level lower than any user task.
+	 */
+	task_template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->INIT_TASK_TEMPLATE;
+	task_template_ptr->TASK_TEMPLATE_INDEX = INIT_TASK;
+	task_template_ptr->TASK_STACKSIZE      = PSP_INIT_STACK_SIZE;
+	task_template_ptr->TASK_NAME           = MQX_INIT_TASK_NAME;
+	task_template_ptr->TASK_ADDRESS        = _mqx_init_task;
+	task_template_ptr->TASK_PRIORITY       = priority_levels + 1;
 #endif /* MQXCFG_INIT_TASK */
 
 #if MQX_USE_IDLE_TASK
-    /*
-     * Initialize the task template for the IDLE Task.
-     * NOTE that the idle task runs at 1 level lower than any user task.
-     */
-    task_template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->IDLE_TASK_TEMPLATE;
-    task_template_ptr->TASK_TEMPLATE_INDEX = IDLE_TASK;
-    task_template_ptr->TASK_STACKSIZE      = PSP_IDLE_STACK_SIZE;
-    task_template_ptr->TASK_NAME           = MQX_IDLE_TASK_NAME;
-    task_template_ptr->TASK_ADDRESS        = _mqx_idle_task;
+	/*
+	 * Initialize the task template for the IDLE Task.
+	 * NOTE that the idle task runs at 1 level lower than any user task.
+	 */
+	task_template_ptr = (TASK_TEMPLATE_STRUCT_PTR)&kernel_data->IDLE_TASK_TEMPLATE;
+	task_template_ptr->TASK_TEMPLATE_INDEX = IDLE_TASK;
+	task_template_ptr->TASK_STACKSIZE      = PSP_IDLE_STACK_SIZE;
+	task_template_ptr->TASK_NAME           = MQX_IDLE_TASK_NAME;
+	task_template_ptr->TASK_ADDRESS        = _mqx_idle_task;
 #if MQXCFG_INIT_TASK
-    task_template_ptr->TASK_PRIORITY       = priority_levels + 2;
+	task_template_ptr->TASK_PRIORITY       = priority_levels + 2;
 #else
-    task_template_ptr->TASK_PRIORITY       = priority_levels + 1;    /* TODO: We need to decrease priority level of idle task if init task is removed. */
+	task_template_ptr->TASK_PRIORITY       = priority_levels + 1;    /* TODO: We need to decrease priority level of idle task if init task is removed. */
 #endif /* MQXCFG_INIT_TASK */
 #endif /* MQX_USE_IDLE_TASK */
 
-    /*
-     * Initialize the linked list of all TDs in the system.
-     * Initially zero. Not including system TD
-     */
-    _QUEUE_INIT(&kernel_data->TD_LIST, 0);
+	/*
+	 * Initialize the linked list of all TDs in the system.
+	 * Initially zero. Not including system TD
+	 */
+	_QUEUE_INIT(&kernel_data->TD_LIST, 0);
 
-    /* Set the TD counter */
-    /* Start SPR P171-0014-02       */
-    /* kernel_data->TD_COUNTER = 1; */
-    kernel_data->TASK_NUMBER = 1;
-    /* End SPR P171-0014-02         */
+	/* Set the TD counter */
+	/* Start SPR P171-0014-02       */
+	/* kernel_data->TD_COUNTER = 1; */
+	kernel_data->TASK_NUMBER = 1;
+	/* End SPR P171-0014-02         */
 
 } /* Endbody */
 #endif /* MQX_CUSTOM_MAIN */
@@ -994,25 +994,25 @@ void _mqx_init_kernel_data_internal
  */
 void _mqx_exit
 (
-    _mqx_uint error
+	_mqx_uint error
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
-    (void)                  kernel_data; /* suppress 'unused variable' warning */
+	KERNEL_DATA_STRUCT_PTR  kernel_data = NULL;
+	(void)                  kernel_data; /* suppress 'unused variable' warning */
 
-    _int_disable();
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE2(KLOG_mqx_exit, error);
+	_int_disable();
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE2(KLOG_mqx_exit, error);
 
 #if MQX_EXIT_ENABLED || MQX_CRIPPLED_EVALUATION
-    kernel_data->USERS_ERROR = error;
-    if (kernel_data->EXIT_HANDLER) {
-        (*kernel_data->EXIT_HANDLER)();
-    }/* Endif */
-    MQX_LONGJMP( _mqx_exit_jump_buffer_internal, 1 );
+	kernel_data->USERS_ERROR = error;
+	if (kernel_data->EXIT_HANDLER) {
+		(*kernel_data->EXIT_HANDLER)();
+	}/* Endif */
+	MQX_LONGJMP( _mqx_exit_jump_buffer_internal, 1 );
 #else /* MQX_EXIT_ENABLED || MQX_CRIPPLED_EVALUATION */
-    while (TRUE) {
-    } /* Endwhile */
+	while (TRUE) {
+	} /* Endwhile */
 #endif /* MQX_EXIT_ENABLED || MQX_CRIPPLED_EVALUATION */
 } /* Endbody */
 
@@ -1030,14 +1030,14 @@ void _mqx_exit
  */
 void *_mqx_get_kernel_data
 (
-    void
+	void
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
-    return (void *) kernel_data;
+	return (void *) kernel_data;
 
 } /* Endbody */
 
@@ -1062,15 +1062,15 @@ void *_mqx_get_kernel_data
  */
 void _mqx_fatal_error
 (
-    _mqx_uint error
+	_mqx_uint error
 )
 { /* Body */
-    _KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
+	_KLOGM(KERNEL_DATA_STRUCT_PTR kernel_data);
 
-    _KLOGM(_GET_KERNEL_DATA(kernel_data));
-    _KLOGE2(KLOG_mqx_fatal_error, error);
-    _mqx_exit(error);
-    _KLOGX1( KLOG_mqx_fatal_error);
+	_KLOGM(_GET_KERNEL_DATA(kernel_data));
+	_KLOGE2(KLOG_mqx_fatal_error, error);
+	_mqx_exit(error);
+	_KLOGX1( KLOG_mqx_fatal_error);
 
 } /* Endbody */
 
@@ -1087,25 +1087,25 @@ void _mqx_fatal_error
  */
 _mqx_uint _mqx_get_counter
 (
-    void
+	void
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    _mqx_uint return_value;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	_mqx_uint return_value;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _INT_DISABLE();
+	_GET_KERNEL_DATA(kernel_data);
+	_INT_DISABLE();
 
-    /*
-     * Increment counter, and ensure it is not zero.
-     * If it is zero, set it to one.
-     */
-    if ( ++kernel_data->COUNTER == 0 ) {
-        kernel_data->COUNTER = 1;
-    } /* Endif */
-    return_value = kernel_data->COUNTER;
-    _INT_ENABLE();
-    return (return_value);
+	/*
+	 * Increment counter, and ensure it is not zero.
+	 * If it is zero, set it to one.
+	 */
+	if ( ++kernel_data->COUNTER == 0 ) {
+		kernel_data->COUNTER = 1;
+	} /* Endif */
+	return_value = kernel_data->COUNTER;
+	_INT_ENABLE();
+	return (return_value);
 
 } /* Endbody */
 #endif /* MQX_KD_HAS_COUNTER */
@@ -1120,17 +1120,17 @@ _mqx_uint _mqx_get_counter
  */
 _mqx_uint _mqx_get_idle_loop_count
 (
-    IDLE_LOOP_STRUCT_PTR loop
+	IDLE_LOOP_STRUCT_PTR loop
 )
 {
 #if MQX_USE_IDLE_TASK
-    register KERNEL_DATA_STRUCT_PTR  kernel_data;
-    _GET_KERNEL_DATA(kernel_data);
+	register KERNEL_DATA_STRUCT_PTR  kernel_data;
+	_GET_KERNEL_DATA(kernel_data);
 
-    *loop = kernel_data->IDLE_LOOP;
-    return MQX_OK;
+	*loop = kernel_data->IDLE_LOOP;
+	return MQX_OK;
 #else /* MQX_USE_IDLE_TASK */
-    return MQX_IO_OPERATION_NOT_AVAILABLE;
+	return MQX_IO_OPERATION_NOT_AVAILABLE;
 #endif /* MQX_USE_IDLE_TASK */
 }
 
@@ -1146,13 +1146,13 @@ _mqx_uint _mqx_get_idle_loop_count
  */
 _mqx_uint _mqx_get_cpu_type
 (
-    void
+	void
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    return kernel_data->CPU_TYPE;
+	_GET_KERNEL_DATA(kernel_data);
+	return kernel_data->CPU_TYPE;
 } /* Endbody */
 
 /*!
@@ -1171,13 +1171,13 @@ _mqx_uint _mqx_get_cpu_type
  */
 void _mqx_set_cpu_type
 (
-    _mqx_uint cpu_type
+	_mqx_uint cpu_type
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    kernel_data->CPU_TYPE = cpu_type;
+	_GET_KERNEL_DATA(kernel_data);
+	kernel_data->CPU_TYPE = cpu_type;
 
 } /* Endbody */
 
@@ -1191,13 +1191,13 @@ void _mqx_set_cpu_type
  */
 MQX_INITIALIZATION_STRUCT_PTR _mqx_get_initialization
 (
-    void
+	void
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    return ((MQX_INITIALIZATION_STRUCT_PTR) & kernel_data->INIT);
+	_GET_KERNEL_DATA(kernel_data);
+	return ((MQX_INITIALIZATION_STRUCT_PTR) & kernel_data->INIT);
 
 } /* Endbody */
 
@@ -1213,12 +1213,12 @@ MQX_INITIALIZATION_STRUCT_PTR _mqx_get_initialization
  */
 void *_mqx_get_tad_data
 (
-    void   *td
+	void   *td
 )
 { /* Body */
-    TD_STRUCT_PTR td_ptr = (TD_STRUCT_PTR)td;
+	TD_STRUCT_PTR td_ptr = (TD_STRUCT_PTR)td;
 
-    return td_ptr->TAD_RESERVED;
+	return td_ptr->TAD_RESERVED;
 
 } /* Endbody */
 
@@ -1232,13 +1232,13 @@ void *_mqx_get_tad_data
  */
 void _mqx_set_tad_data
 (
-    void   *td,
-    void   *tad_data
+	void   *td,
+	void   *tad_data
 )
 { /* Body */
-    TD_STRUCT_PTR td_ptr = (TD_STRUCT_PTR)td;
+	TD_STRUCT_PTR td_ptr = (TD_STRUCT_PTR)td;
 
-    td_ptr->TAD_RESERVED = tad_data;
+	td_ptr->TAD_RESERVED = tad_data;
 
 } /* Endbody */
 
@@ -1256,13 +1256,13 @@ void _mqx_set_tad_data
 MQX_EXIT_FPTR _mqx_get_exit_handler (void)
 { /* Body */
 #if MQX_EXIT_ENABLED
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    return (kernel_data->EXIT_HANDLER);
+	_GET_KERNEL_DATA(kernel_data);
+	return (kernel_data->EXIT_HANDLER);
 
 #else
-    return NULL;
+	return NULL;
 #endif /* MQX_EXIT_ENABLED */
 } /* Endbody */
 
@@ -1276,16 +1276,16 @@ MQX_EXIT_FPTR _mqx_get_exit_handler (void)
  */
 void _mqx_set_exit_handler
 (
-    MQX_EXIT_FPTR entry
+	MQX_EXIT_FPTR entry
 )
 { /* Body */
 #if MQX_EXIT_ENABLED
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    _KLOGE2(KLOG_mqx_set_exit_handler, entry);
-    kernel_data->EXIT_HANDLER = entry;
-    _KLOGX1(KLOG_mqx_set_exit_handler);
+	_GET_KERNEL_DATA(kernel_data);
+	_KLOGE2(KLOG_mqx_set_exit_handler, entry);
+	kernel_data->EXIT_HANDLER = entry;
+	_KLOGX1(KLOG_mqx_set_exit_handler);
 
 #endif /* MQX_EXIT_ENABLED */
 } /* Endbody */
@@ -1308,21 +1308,21 @@ void _mqx_set_exit_handler
  */
 void *_mqx_get_io_component_handle
 (
-    _mqx_uint component
+	_mqx_uint component
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
 #if MQX_CHECK_ERRORS
-    if (component >= MAX_IO_COMPONENTS) {
-        _task_set_error(MQX_INVALID_PARAMETER);
-        return(NULL);
-    } /* Endif */
+	if (component >= MAX_IO_COMPONENTS) {
+		_task_set_error(MQX_INVALID_PARAMETER);
+		return(NULL);
+	} /* Endif */
 #endif /* MQX_CHECK_ERRORS */
 
-    return kernel_data->IO_COMPONENTS[component];
+	return kernel_data->IO_COMPONENTS[component];
 
 } /* Endbody */
 
@@ -1344,34 +1344,34 @@ void *_mqx_get_io_component_handle
  */
 void *_mqx_set_io_component_handle
 (
-    _mqx_uint component,
-    void     *handle
+	_mqx_uint component,
+	void     *handle
 )
 { /* Body */
-    register KERNEL_DATA_STRUCT_PTR kernel_data;
-    void   *old_handle;
+	register KERNEL_DATA_STRUCT_PTR kernel_data;
+	void   *old_handle;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
 #if MQX_CHECK_ERRORS
-    if (component >= MAX_IO_COMPONENTS) {
-        _task_set_error(MQX_INVALID_PARAMETER);
-        return(NULL);
-    } /* Endif */
+	if (component >= MAX_IO_COMPONENTS) {
+		_task_set_error(MQX_INVALID_PARAMETER);
+		return(NULL);
+	} /* Endif */
 #endif /* MQX_CHECK_ERRORS */
 
-    _int_disable();
-    old_handle = kernel_data->IO_COMPONENTS[component];
-    if (old_handle == NULL) {
-        kernel_data->IO_COMPONENTS[component] = handle;
-    }
-    else {
-        if (handle == NULL) {
-            kernel_data->IO_COMPONENTS[component] = handle;
-        } /* Endif */
-    } /* Endif */
-    _int_enable();
-    return old_handle;
+	_int_disable();
+	old_handle = kernel_data->IO_COMPONENTS[component];
+	if (old_handle == NULL) {
+		kernel_data->IO_COMPONENTS[component] = handle;
+	}
+	else {
+		if (handle == NULL) {
+			kernel_data->IO_COMPONENTS[component] = handle;
+		} /* Endif */
+	} /* Endif */
+	_int_enable();
+	return old_handle;
 
 } /* Endbody */
 
@@ -1386,13 +1386,13 @@ void *_mqx_set_io_component_handle
  */
 _task_id _mqx_get_system_task_id
 (
-    void
+	void
 )
 { /* Body */
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 
-    _GET_KERNEL_DATA(kernel_data);
-    return(kernel_data->SYSTEM_TD.TASK_ID);
+	_GET_KERNEL_DATA(kernel_data);
+	return(kernel_data->SYSTEM_TD.TASK_ID);
 
 } /* Endbody */
 
@@ -1414,57 +1414,57 @@ _task_id _mqx_get_system_task_id
  */
 _mqx_uint _mqx_link_io_component_handle
 (
-    _mqx_uint component,
-    void     *handle,
-    void    **next_field_ptr
+	_mqx_uint component,
+	void     *handle,
+	void    **next_field_ptr
 )
 {
-    void   *old_handle;
-    KERNEL_DATA_STRUCT_PTR kernel_data;
+	void   *old_handle;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
 #if MQX_CHECK_ERRORS
-    void   **prev_ptr, **next_ptr;
-    uint32_t offset = (uint32_t) next_field_ptr - (uint32_t) handle;
+	void   **prev_ptr, **next_ptr;
+	uint32_t offset = (uint32_t) next_field_ptr - (uint32_t) handle;
 #endif /* MQX_CHECK_ERRORS */
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
 #if MQX_CHECK_ERRORS
-    if ((component >= MAX_IO_COMPONENTS) || (handle==NULL) || (next_field_ptr==NULL)) {
-        _task_set_error(MQX_INVALID_PARAMETER);
-        return(MQX_INVALID_PARAMETER);
-    } /* Endif */
+	if ((component >= MAX_IO_COMPONENTS) || (handle==NULL) || (next_field_ptr==NULL)) {
+		_task_set_error(MQX_INVALID_PARAMETER);
+		return(MQX_INVALID_PARAMETER);
+	} /* Endif */
 #endif /* MQX_CHECK_ERRORS */
 
-    _int_disable();
+	_int_disable();
 
 #if MQX_CHECK_ERRORS
-    if (kernel_data->IO_COMPONENTS[component] == handle) {
-        _int_enable();
-        return MQX_INVALID_COMPONENT_HANDLE;
-    }
-    else {
+	if (kernel_data->IO_COMPONENTS[component] == handle) {
+		_int_enable();
+		return MQX_INVALID_COMPONENT_HANDLE;
+	}
+	else {
 
-        prev_ptr = kernel_data->IO_COMPONENTS[component];
+		prev_ptr = kernel_data->IO_COMPONENTS[component];
 
-        while (prev_ptr) {
-            next_ptr = *((void **)((uint32_t)prev_ptr + offset));
-            if (next_ptr == handle) {
-                _int_enable();
-                return MQX_INVALID_COMPONENT_HANDLE;
-            }
-            else {
-                prev_ptr = next_ptr;
-            }
-        }
-    }
+		while (prev_ptr) {
+			next_ptr = *((void **)((uint32_t)prev_ptr + offset));
+			if (next_ptr == handle) {
+				_int_enable();
+				return MQX_INVALID_COMPONENT_HANDLE;
+			}
+			else {
+				prev_ptr = next_ptr;
+			}
+		}
+	}
 
 #endif /* MQX_CHECK_ERRORS */
 
-    old_handle = kernel_data->IO_COMPONENTS[component];
-    kernel_data->IO_COMPONENTS[component] = handle;
-    *next_field_ptr = old_handle;
-    _int_enable();
-    return MQX_OK;
+	old_handle = kernel_data->IO_COMPONENTS[component];
+	kernel_data->IO_COMPONENTS[component] = handle;
+	*next_field_ptr = old_handle;
+	_int_enable();
+	return MQX_OK;
 }
 
 /*!
@@ -1485,52 +1485,52 @@ _mqx_uint _mqx_link_io_component_handle
  */
 _mqx_uint _mqx_unlink_io_component_handle
 (
-    _mqx_uint component,
-    void     *handle,
-    void   ** next_field_ptr
+	_mqx_uint component,
+	void     *handle,
+	void   ** next_field_ptr
 )
 {
-    uint32_t offset = (uint32_t) next_field_ptr - (uint32_t) handle;
-    void   *prev_ptr,*next_ptr;
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    _mqx_uint result = MQX_INVALID_COMPONENT_HANDLE;
+	uint32_t offset = (uint32_t) next_field_ptr - (uint32_t) handle;
+	void   *prev_ptr,*next_ptr;
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	_mqx_uint result = MQX_INVALID_COMPONENT_HANDLE;
 
-    _GET_KERNEL_DATA(kernel_data);
+	_GET_KERNEL_DATA(kernel_data);
 
 #if MQX_CHECK_ERRORS
-    if ((component >= MAX_IO_COMPONENTS) || (handle==NULL) || (next_field_ptr==NULL)) {
-        _task_set_error(MQX_INVALID_PARAMETER);
-        return(MQX_INVALID_PARAMETER);
-    } /* Endif */
+	if ((component >= MAX_IO_COMPONENTS) || (handle==NULL) || (next_field_ptr==NULL)) {
+		_task_set_error(MQX_INVALID_PARAMETER);
+		return(MQX_INVALID_PARAMETER);
+	} /* Endif */
 #endif /* MQX_CHECK_ERRORS */
 
-    _int_disable();
+	_int_disable();
 
-    if (kernel_data->IO_COMPONENTS[component] == handle) {
-        kernel_data->IO_COMPONENTS[component] = *((void **)((uint32_t)handle + offset));
-        *((void **) ((uint32_t)handle + offset)) = NULL;
-        result = MQX_OK;
-    }
-    else {
+	if (kernel_data->IO_COMPONENTS[component] == handle) {
+		kernel_data->IO_COMPONENTS[component] = *((void **)((uint32_t)handle + offset));
+		*((void **) ((uint32_t)handle + offset)) = NULL;
+		result = MQX_OK;
+	}
+	else {
 
-        prev_ptr = kernel_data->IO_COMPONENTS[component];
+		prev_ptr = kernel_data->IO_COMPONENTS[component];
 
-        while (prev_ptr) {
-            next_ptr = *((void **)((uint32_t)prev_ptr + offset));
-            if (next_ptr == handle) {
-                *((void **) ((uint32_t)prev_ptr + offset)) = *((void **)((uint32_t)next_ptr + offset));
-                *((void **) ((uint32_t)next_ptr + offset)) = NULL;
-                result = MQX_OK;
-                break;
-            }
-            else {
-                prev_ptr = next_ptr;
-            }
-        }
-    }
+		while (prev_ptr) {
+			next_ptr = *((void **)((uint32_t)prev_ptr + offset));
+			if (next_ptr == handle) {
+				*((void **) ((uint32_t)prev_ptr + offset)) = *((void **)((uint32_t)next_ptr + offset));
+				*((void **) ((uint32_t)next_ptr + offset)) = NULL;
+				result = MQX_OK;
+				break;
+			}
+			else {
+				prev_ptr = next_ptr;
+			}
+		}
+	}
 
-    _int_enable();
-    return result;
+	_int_enable();
+	return result;
 }
 #endif /* MQX_USE_IO_COMPONENTS */
 
@@ -1543,16 +1543,16 @@ _mqx_uint _mqx_unlink_io_component_handle
 void *_crt_tls_reference(void)
 { /* Body */
 #if MQX_THREAD_LOCAL_STORAGE_ENABLE
-    KERNEL_DATA_STRUCT_PTR kernel_data;
-    _GET_KERNEL_DATA(kernel_data);
+	KERNEL_DATA_STRUCT_PTR kernel_data;
+	_GET_KERNEL_DATA(kernel_data);
 
-    if (kernel_data->IN_ISR)
-    {
-        return NULL;
-    } /* Endif */
+	if (kernel_data->IN_ISR)
+	{
+		return NULL;
+	} /* Endif */
 
-    return &kernel_data->ACTIVE_PTR->CRT_TLS;
+	return &kernel_data->ACTIVE_PTR->CRT_TLS;
 #else /* MQX_THREAD_LOCAL_STORAGE_ENABLE */
-    return NULL;
+	return NULL;
 #endif /* MQX_THREAD_LOCAL_STORAGE_ENABLE */
 } /* Endbody */

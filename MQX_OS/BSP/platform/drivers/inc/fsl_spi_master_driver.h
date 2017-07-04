@@ -50,8 +50,8 @@ extern const IRQn_Type g_spiIrqId[SPI_INSTANCE_COUNT];
 
 enum _spi_timeouts
 {
-    /*! Waits forever for a transfer to complete.*/
-    kSpiWaitForever = 0x7fffffff
+	/*! Waits forever for a transfer to complete.*/
+	kSpiWaitForever = 0x7fffffff
 };
 
 /*!
@@ -59,14 +59,14 @@ enum _spi_timeouts
  * @internal gui name="Master configuration" id="spiMasterCfg"
  */
 typedef struct SPIUserConfig {
-    uint32_t bitsPerSec;    /*!< SPI baud rate in bits per sec @internal gui name="Clock rate" id="MasterBaudRate" */
-    spi_clock_polarity_t polarity; /*!< Active high or low clock polarity @internal gui name="Polarity" id="MasterPolarity" */
-    spi_clock_phase_t phase; /*!< Clock phase setting to change and capture data @internal gui name="Phase" id="MasterPhase" */
-    spi_shift_direction_t direction; /*!< MSB or LSB data shift direction @internal gui name="Direction" id="MasterDirection" */
+	uint32_t bitsPerSec;    /*!< SPI baud rate in bits per sec @internal gui name="Clock rate" id="MasterBaudRate" */
+	spi_clock_polarity_t polarity; /*!< Active high or low clock polarity @internal gui name="Polarity" id="MasterPolarity" */
+	spi_clock_phase_t phase; /*!< Clock phase setting to change and capture data @internal gui name="Phase" id="MasterPhase" */
+	spi_shift_direction_t direction; /*!< MSB or LSB data shift direction @internal gui name="Direction" id="MasterDirection" */
 
-    /* 16-bit support related members */
+	/* 16-bit support related members */
 #if FSL_FEATURE_SPI_16BIT_TRANSFERS
-    spi_data_bitcount_mode_t bitCount;  /*!< Number of bits (8 or 16) in a transfer @internal gui name="Bit count" id="MasterBitCount" */
+	spi_data_bitcount_mode_t bitCount;  /*!< Number of bits (8 or 16) in a transfer @internal gui name="Bit count" id="MasterBitCount" */
 #endif
 } spi_master_user_config_t;
 
@@ -78,16 +78,16 @@ typedef struct SPIUserConfig {
  * interrupt handler also uses this information to keep track of its progress.
  */
 typedef struct SPIMasterState {
-    uint32_t spiSourceClock;              /*!< Module source clock*/
-    volatile bool isTransferInProgress;     /*!< True if there is an active transfer.*/
-    const uint8_t * sendBuffer;    /*!< The buffer being sent.*/
-    uint8_t * receiveBuffer;       /*!< The buffer into which received bytes are placed.*/
-    volatile size_t remainingSendByteCount; /*!< Number of bytes remaining to send.*/
-    volatile size_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
-    volatile size_t transferredByteCount;   /*!< Number of bytes transferred so far.*/
-    volatile bool isTransferBlocking;    /*!< True if transfer is a blocking transaction. */
-    semaphore_t irqSync;                    /*!< Used to wait for ISR to complete its business.*/
-    bool extraByte;    /*!< Flag used for 16-bit transfers with odd byte count */
+	uint32_t spiSourceClock;              /*!< Module source clock*/
+	volatile bool isTransferInProgress;     /*!< True if there is an active transfer.*/
+	const uint8_t * sendBuffer;    /*!< The buffer being sent.*/
+	uint8_t * receiveBuffer;       /*!< The buffer into which received bytes are placed.*/
+	volatile size_t remainingSendByteCount; /*!< Number of bytes remaining to send.*/
+	volatile size_t remainingReceiveByteCount; /*!< Number of bytes remaining to receive.*/
+	volatile size_t transferredByteCount;   /*!< Number of bytes transferred so far.*/
+	volatile bool isTransferBlocking;    /*!< True if transfer is a blocking transaction. */
+	semaphore_t irqSync;                    /*!< Used to wait for ISR to complete its business.*/
+	bool extraByte;    /*!< Flag used for 16-bit transfers with odd byte count */
 } spi_master_state_t;
 
 /*******************************************************************************
@@ -158,8 +158,8 @@ spi_status_t SPI_DRV_MasterDeinit(uint32_t instance);
  *  which case the minimum baud rate is returned.
  */
 void SPI_DRV_MasterConfigureBus(uint32_t instance,
-                                const spi_master_user_config_t * device,
-                                uint32_t * calculatedBaudRate);
+								const spi_master_user_config_t * device,
+								uint32_t * calculatedBaudRate);
 
 /*@}*/
 
@@ -190,11 +190,11 @@ void SPI_DRV_MasterConfigureBus(uint32_t instance,
  *         #kStatus_SPI_Timeout The transfer timed out and was aborted.
  */
 spi_status_t SPI_DRV_MasterTransferBlocking(uint32_t instance,
-                                const spi_master_user_config_t * device,
-                                const uint8_t * sendBuffer,
-                                uint8_t * receiveBuffer,
-                                size_t transferByteCount,
-                                uint32_t timeout);
+								const spi_master_user_config_t * device,
+								const uint8_t * sendBuffer,
+								uint8_t * receiveBuffer,
+								size_t transferByteCount,
+								uint32_t timeout);
 
 /*@}*/
 
@@ -224,10 +224,10 @@ spi_status_t SPI_DRV_MasterTransferBlocking(uint32_t instance,
  *         #kStatus_SPI_Timeout The transfer timed out and was aborted.
  */
 spi_status_t SPI_DRV_MasterTransfer(uint32_t instance,
-                                const spi_master_user_config_t * device,
-                                const uint8_t * sendBuffer,
-                                uint8_t * receiveBuffer,
-                                size_t transferByteCount);
+								const spi_master_user_config_t * device,
+								const uint8_t * sendBuffer,
+								uint8_t * receiveBuffer,
+								size_t transferByteCount);
 
 /*!
  * @brief Returns whether the previous transfer is completed.
@@ -246,7 +246,7 @@ spi_status_t SPI_DRV_MasterTransfer(uint32_t instance,
  *         with the number of bytes that have been transferred so far.
  */
 spi_status_t SPI_DRV_MasterGetTransferStatus(uint32_t instance,
-                                             uint32_t * bytesTransferred);
+											 uint32_t * bytesTransferred);
 
 /*!
  * @brief Terminates an asynchronous transfer early.
@@ -281,4 +281,3 @@ void SPI_DRV_MasterIRQHandler(uint32_t instance);
 /*******************************************************************************
  * EOF
  ******************************************************************************/
-

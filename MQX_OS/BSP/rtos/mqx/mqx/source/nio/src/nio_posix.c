@@ -37,95 +37,94 @@
 _Pragma ("diag_suppress= Pm101,Pm049")
 #endif
 
-int open(const char *name, int flags, ...) 
+int open(const char *name, int flags, ...)
 {
-    int error;
-    int rv;
-    int flgs;
+	int error;
+	int rv;
+	int flgs;
 
-    /* translate flags to flgs, depending on toolchain used */
-    flgs = flags;
-    if (0 > (rv = _nio_open(name, flgs, &error)))
-    {
-        /* translate error to errno */
-        errno = error;
-    }
+	/* translate flags to flgs, depending on toolchain used */
+	flgs = flags;
+	if (0 > (rv = _nio_open(name, flgs, &error)))
+	{
+		/* translate error to errno */
+		errno = error;
+	}
 
-    return rv;
+	return rv;
 }
 
 int close(int fd)
 {
-    int error;
-    int rv;
+	int error;
+	int rv;
 
-    if (0 > (rv = _nio_close(fd, &error)))
-    {
-        /* translate error to errno */
-        errno = error;
-    }
+	if (0 > (rv = _nio_close(fd, &error)))
+	{
+		/* translate error to errno */
+		errno = error;
+	}
 
-    return rv;
+	return rv;
 }
 
 
 ssize_t read(int fd, void *buf, size_t nbytes)
 {
-    int error;
-    ssize_t rv;
+	int error;
+	ssize_t rv;
 
-    if (0 > (rv = _nio_read(fd, buf, nbytes, &error)))
-    {
-        /* translate error to errno */
-        errno = error;
-    }
+	if (0 > (rv = _nio_read(fd, buf, nbytes, &error)))
+	{
+		/* translate error to errno */
+		errno = error;
+	}
 
-    return rv;
+	return rv;
 }
 
 ssize_t write(int fd, const void *buf, size_t nbytes)
 {
-    int error;
-    ssize_t rv;
+	int error;
+	ssize_t rv;
 
-    if (0 > (rv = _nio_write(fd, buf, nbytes, &error)))
-    {
-        /* translate error to errno */
-        errno = error;
-    }
+	if (0 > (rv = _nio_write(fd, buf, nbytes, &error)))
+	{
+		/* translate error to errno */
+		errno = error;
+	}
 
-    return rv;
+	return rv;
 }
 
 int ioctl(int fd, unsigned long int request, ...)
 {
-    int error;
-    ssize_t rv;
-    va_list ap;
+	int error;
+	ssize_t rv;
+	va_list ap;
 
-    va_start(ap, request);
+	va_start(ap, request);
 
-    if (0 > (rv = _nio_vioctl(fd, &error, request, ap)))
-    {
-        /* translate error to errno */
-        errno = error;
-    }
+	if (0 > (rv = _nio_vioctl(fd, &error, request, ap)))
+	{
+		/* translate error to errno */
+		errno = error;
+	}
 
-    va_end(ap);
+	va_end(ap);
 
-    return rv;
+	return rv;
 }
 
 off_t lseek(int fd, off_t offset, int whence)
 {
-    int error;
-    ssize_t rv;
+	int error;
+	ssize_t rv;
 
-    if (0 > (rv = _nio_lseek(fd, offset, whence, &error)))
-    {
-         errno = error;
-    }
-    
-    return rv;
+	if (0 > (rv = _nio_lseek(fd, offset, whence, &error)))
+	{
+		 errno = error;
+	}
+
+	return rv;
 }
-

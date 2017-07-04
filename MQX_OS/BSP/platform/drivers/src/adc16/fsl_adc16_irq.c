@@ -39,27 +39,27 @@
 /* ADC16 IRQ handler that would cover the same name's APIs in startup code */
 void ADC0_IRQHandler(void)
 {
-    /* Add user-defined ISR for ADC0. */
+	/* Add user-defined ISR for ADC0. */
 }
 
 #if (ADC_INSTANCE_COUNT > 1U)
 void ADC1_IRQHandler(void)
 {
-    /* Add user-defined ISR for ADC1. */
+	/* Add user-defined ISR for ADC1. */
 }
 #endif
 
 #if (ADC_INSTANCE_COUNT > 2U)
 void ADC2_IRQHandler(void)
 {
-    /* Add user-defined ISR for ADC2. */
+	/* Add user-defined ISR for ADC2. */
 }
 #endif
 
 #if (ADC_INSTANCE_COUNT > 3U)
 void ADC3_IRQHandler(void)
 {
-    /* Add user-defined ISR for ADC3. */
+	/* Add user-defined ISR for ADC3. */
 }
 #endif
 #endif
@@ -67,4 +67,3 @@ void ADC3_IRQHandler(void)
 /******************************************************************************
  * EOF
  *****************************************************************************/
-
