@@ -203,6 +203,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 	char get_resp[50]= {0};
 	uint32_t resp_msg_size = 0;
 	uint8_t bytes_read = 0;
+	uint8_t swc_can_tx_count = 0;
 
 	if ( NULL == (pcan) || BOARD_CAN_INSTANCE <= (pcan)->instance ) {
 		printf( "%s:thread wrong param %u\n", __func__, (pcan)->instance );
@@ -569,6 +570,8 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				msg_type = kFlexCanMsgIdStd;
 			case 'T':
 			case 'R':
+				swc_can_tx_count++;
+				printf("\n%s:INFO, SWC/CAN Receive, count=%d, msg_size=%d, data=%s \n", __func__, swc_can_tx_count, msg_size, pbuff);
 				do {
 					if (fdFlexCanListenOnlyMode == initCan.flexcanMode) {
 						printf("%s:ERROR, case trTR, CAN in listener mode\n", __func__);
@@ -593,6 +596,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 					}
 					pbuff++;
 					msg_size--;
+
 					if ( fcStatus_FLEXCAN_Success == DecodeSendTxMessage ( (const char*) pbuff, msg_size, &Tx_data , msg_type, is_remote_frame) ) {
 						if ( fcStatus_FLEXCAN_Success != FlexCanDevice_TxMessage (pcan, 14, &Tx_data, is_remote_frame) ) {
 							printf("%s:ERROR, case trTR, FlexCanDevice_TxMessage failed\n", __func__);
@@ -1030,6 +1034,7 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 	uint32_t                    idx, i;
 	int32_t                     curr_msg_len;
 	pcdc_mic_queue_element_t    pqMemElem;
+	uint8_t 					swc_can_rx_count = 0;
 	
 	pflexcanInstance_t pcan = (pflexcanInstance_t)param_in;
 
@@ -1116,6 +1121,9 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 								}
 								app_msg->header.SIZE = pcan->flowcontrol.resp_size[pcan->flowcontrol.match_position] + APP_MESSAGE_NO_ARRAY_SIZE;
 								app_msg->portNum = MIC_CDC_USB_3;
+
+								swc_can_rx_count++;
+								printf("\n%s:INFO, SWC/CAN Transmit count=%d, flow control size=%d, bytes:%s\n", __func__, swc_can_rx_count, app_msg->header.SIZE, app_msg->data);
 								_msgq_send (app_msg);
 							} while (0);
 						}
@@ -1939,9 +1947,9 @@ int32_t ParseCanMessToString (pFLEXCAN_queue_element_t pCanMess, const uint8_t *
 				break;
 			}
 			if (pCanMess->msg_buff.msgId == flowcontrol->msg_id[ind]){
-				//printf("\nflow control found at index %d, msgid %d\n", ind, flowcontrol->msg_id[ind]);
+				printf("\nflow control found at index %d, msgid %d\n", ind, flowcontrol->msg_id[ind]);
 				flowcontrol->match_position = ind;
-
+				//printf("\nSWC message response %s \n",  flowcontrol->p_response[0]);
 				FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /*Red LED */
 				_time_delay(20); /* Delay just in case the response is sent to fast */
 				FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0, 0, 0); /*Clear LED */
