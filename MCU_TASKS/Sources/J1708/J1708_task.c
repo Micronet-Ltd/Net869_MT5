@@ -118,10 +118,11 @@ void J1708_Rx_Tx_task_loopback (uint32_t initial_data)
 	bool                        J1708_rx_status;
 	uint8_t                     J1708_rx_len;
 	uint8_t						count = 0;
+	uint8_t 					i = 0;
 
 	_event_create ("event.J1708_RX");
 	_event_open   ("event.J1708_RX", &g_J1708_event_h);
-	printf ("\nJ1708_Rx Task: Start \n");
+	printf ("\n%s: INFO: Start \n", __func__);
 	
 	/* Enable J1708 power by default for tester */
 	GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
@@ -143,18 +144,19 @@ void J1708_Rx_Tx_task_loopback (uint32_t initial_data)
 
 		// read J1708 package length
 		if (!FPGA_read_J1708_rx_register (&J1708_rx_status, &J1708_rx_len)) {
+			printf("%s: ERROR: could not read packet length", __func__);
 			J1708_reset ();
 			continue;
 		}
 
 		// check if this is a real new message
 		if (J1708_rx_status == false) {
-			printf ("\nJ1708_Rx: ERROR: Received interrupt without register bit indication\n");
+			printf ("\n%s: ERROR: Received interrupt without register bit indication\n", __func__);
 			continue;
 		}
 
         if (J1708_MAX_MESSAGE_SIZE < J1708_rx_len ) {
-            printf("%s: Wrong max msg size %d", __func__, J1708_rx_len);
+            printf("%s: ERROR: Wrong max msg size %d", __func__, J1708_rx_len);
             continue;
         }
         // send buffer - Since the buffer is cyclic, it might be needed to split buffer to 2 buffers
@@ -168,9 +170,14 @@ void J1708_Rx_Tx_task_loopback (uint32_t initial_data)
 		// add header size to message length
 		//pqMemElem->send_size = J1708_rx_len;
 
+        /* Reinit readbuff on every read */
+        for (i = 0; i < J1708_MAX_MESSAGE_SIZE; i++ ){
+        	readbuff[i] = 0;
+        }
+
 		// calculate actual buffer size
 		if (!FPGA_read_J1708_packet (readbuff, J1708_rx_len)) {
-			printf ("\nJ1708_Rx: ERROR: Could not read UART message buffer\n");
+			printf ("\n%s: ERROR: Could not read UART message buffer, len=%d\n", __func__, J1708_rx_len);
 			J1708_reset ();
             //SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_5);
             continue;
@@ -186,18 +193,19 @@ void J1708_Rx_Tx_task_loopback (uint32_t initial_data)
 				// send message via UART channel
 		if (!FPGA_write_J1708_packet  (readbuff, J1708_rx_len)) {
 			//_msg_free   (msg);
+			printf ("\n%s: ERROR: Could not write UART message buffer, len=%d\n", __func__, J1708_rx_len);
 			J1708_reset ();
 			continue;
 		}
 		
-		printf("j1708 request received %d\n", ++count);
+		printf("%s: INFO: count= %d\n", __func__, ++count);
 		
 		FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0xFF, 0x0, 0x0); /*Red LED */
-		_time_delay(90); /* Delay just in case the response is sent to fast */
+		_time_delay(90); /* Delay just in case the response is sent too fast */
 		FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0, 0, 0); /*Clear LED */
-		_time_delay(10); /* Delay just in case the response is sent to fast */
+		_time_delay(10); /* Delay just in case the response is sent too fast */
 		
-		printf("j1708 resp %x , %x , %x, %x , %x , %x length = %d \n", readbuff[0], readbuff[1], readbuff[2], readbuff[3], readbuff[4], readbuff[5], J1708_rx_len);
+		printf("%s: INFO: j1708 resp %x , %x , %x, %x , %x , %x ... length = %d \n", __func__, readbuff[0], readbuff[1], readbuff[2], readbuff[3], readbuff[4], readbuff[5], J1708_rx_len);
 		
 
 		//_msg_free   (msg);
@@ -220,6 +228,7 @@ void J1708_Rx_Tx_task_loopback (uint32_t initial_data)
 
 void J1708_reset (void)
 {
+	printf("\n %s \n", __func__);
 	J1708_disable ();
 	J1708_enable (J1708_priority);
 }
