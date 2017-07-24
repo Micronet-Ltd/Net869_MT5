@@ -297,22 +297,41 @@ void Device_update_state (uint32_t * time_diff)
 			event_result = _event_get_value(cpu_int_suspend_event_g, &event_bits)  ;
 			if (event_result == MQX_OK)
 			{
-				if (event_bits & EVENT_CPU_INT_SUSPEND_HIGH)
+
+#ifdef SUSPEND_DEBUG
+				static uint32_t time_in_on_state = 0;
+				time_in_on_state += *time_diff;
+				if ((event_bits & EVENT_CPU_INT_SUSPEND_HIGH) || (time_in_on_state > 10000))
+					time_in_on_state = 0;
+#else
+				if ((event_bits & EVENT_CPU_INT_SUSPEND_HIGH) )	
+#endif
 				{
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
 					printf("%s: cpu_int_suspend_event_g high \n", __func__);
 
-					/* Go into lower power mode */
-
 					/* Disable OS watchdog */
+
+					/* Pause tasks that capture data */
+					/* Go into lower power mode */
+					CLOCK_SYS_GetFreq(kCoreClock, &freq);
+					switch_power_mode(kPowerManagerVlpr);
+					/* Start off with the peripherals disabled */
+					peripherals_disable (false);
+					disable_peripheral_clocks();
+					_bsp_MQX_tick_timer_init ();
+					/* Enable power to the vibration sensor and accelerometer */
+					GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 
 					/* Enable Wake Source monitoring */
 					Wiggle_sensor_start();
 					Wiggle_sensor_restart();
+
 					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
 					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
 					configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE); /* Needs to be done after changing state */
+					printf("\n%s: Switched to DEVICE_STATE_ON_OS_SUSPENDED  \n", __func__);
 				}
 			}
 			break;
@@ -756,7 +775,7 @@ void peripherals_enable (void)
 	//J1708_enable  (7);
 
 }
-	
+
 void peripherals_disable (bool WithFpga)
 {
   	// disable FPGA based resources
@@ -772,7 +791,7 @@ void peripherals_disable (bool WithFpga)
 		GPIO_DRV_ClearPinOutput(FPGA_RSTB);
 		GPIO_DRV_ClearPinOutput(FPGA_PWR_ENABLE);
 	}
-	
+
 	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
 	GPIO_DRV_ClearPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
@@ -781,6 +800,7 @@ void peripherals_disable (bool WithFpga)
 	GPIO_DRV_ClearPinOutput (FTDI_RSTN);
 	GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
+	//GPIO_DRV_ClearPinOutput   (FTDI_RSTN);
 	GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
