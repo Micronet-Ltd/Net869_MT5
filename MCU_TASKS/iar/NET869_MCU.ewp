@@ -2391,6 +2391,9 @@
       <name>$PROJ_DIR$\..\Sources\main_tasks.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\Sources\main_tasks.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\Sources\mic_typedef.h</name>
     </file>
     <file>

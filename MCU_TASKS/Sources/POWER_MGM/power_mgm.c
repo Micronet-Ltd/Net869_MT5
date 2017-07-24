@@ -4,6 +4,7 @@
 #include <message.h>
 #include <lwmsgq.h>
 #include <lwtimer.h>
+#include <mqx_prv.h>
 
 #include "MK20D10_extension.h"
 #include "fsl_power_manager.h"
@@ -67,6 +68,12 @@
 #define SYSTICK_DISABLE()       (SYSTICK_CM4_CSR_REG &= (~1))
 #define SYSTICK_ENABLE()        (SYSTICK_CM4_CSR_REG |= 1)
 #define SYSTICK_RELOAD(tps)     (SYSTICK_CM4_RVR_REG = tps)
+
+#define CHECK_RET_VAL(ret, mode) \
+if (ret != kPowerManagerSuccess) \
+{ \
+    PRINTF("POWER_SYS_SetMode(%u) returned unexpected status : %u\r\n",mode,ret); \
+}
 
 clock_manager_error_code_t dbg_console_cm_callback(clock_notify_struct_t *notify, void* callbackData);
 power_manager_error_code_t rtos_pm_callback(power_manager_notify_struct_t * notify,  power_manager_callback_data_t * dataPtr);
@@ -178,15 +185,32 @@ power_manager_user_config_t const runConfig =
 	.mode = kPowerManagerRun
 };
 
+/* keep the order of these configs the same as _power_manager_modes
+ * only K20 supported power modes have valid pointers.
+ * NOTE: If an ifdef is changed in the k20 header file, the pointers could be null and cause issues */
 power_manager_user_config_t const *powerConfigs[] =
 {
+#if FSL_FEATURE_SMC_HAS_HIGH_SPEED_RUN_MODE
+	null,            /*!< High-speed run mode. All Kinetis chips. @internal gui name="High speed run mode" */
+#endif
 	&runConfig,
-	&waitConfig,
-	&stopConfig,
 	&vlprConfig,
+	&waitConfig,
 	&vlpwConfig,
+	&stopConfig,
 	&vlpsConfig,
+#if FSL_FEATURE_SMC_HAS_PSTOPO
+	null,           /*!< Partial stop 1 mode. Chip-specific. @internal gui name="Partial stop 1 mode" */
+	null,           /*!< Partial stop 2 mode. Chip-specific. @internal gui name="Partial stop 2 mode" */
+#endif
 	&llsConfig,
+#if FSL_FEATURE_SMC_HAS_LLS_SUBMODE
+	null,             /*!< Low leakage stop 2 mode. Chip-specific. @internal gui name="Low leakage stop 2 mode" */
+	null,             /*!< Low leakage stop 3 mode. Chip-specific. @internal gui name="Low leakage stop 3 mode" */
+#endif
+#if FSL_FEATURE_SMC_HAS_STOP_SUBMODE0
+	null,            /*!< Very low leakage stop 0 mode. All Kinetis chips. @internal gui name="Very low leakage stop 0 mode" */
+#endif
 	&vlls1Config,
 	&vlls2Config,
 	&vlls3Config,
@@ -263,12 +287,23 @@ const clock_manager_user_config_t * g_defaultClockConfigurations[] =
 void wait_finish_uart(void)
 {
 	uint32_t bytesRemaining = 0;
+	uint32_t wait_time = 0;
 	volatile bool isLastByteTranmistComplete = false;
 	do
 	{
 		UART_DRV_GetTransmitStatus(BOARD_DEBUG_UART_INSTANCE, &bytesRemaining);
 		isLastByteTranmistComplete = UART_HAL_GetStatusFlag(BOARD_DEBUG_UART_BASEADDR,kUartTxComplete);
+		if ((bytesRemaining != 0) || (!isLastByteTranmistComplete))
+		{
+			_time_delay(10);
+			wait_time += 10;
+			if (wait_time > 5000)
+			{
+				break;
+			}
+		}	
 	} while ((bytesRemaining != 0) || (!isLastByteTranmistComplete));
+	//printf("%s: wait_time = %d ms", __func__, wait_time);
 }
 
 /* Update clock.*/
@@ -343,7 +378,6 @@ clock_manager_error_code_t rtos_cm_callback(clock_notify_struct_t *notify,
 //                    lptmrStr->lptmrState.prescalerClockHz = (lptmrStr->lptmrState.prescalerClockHz >> ((uint32_t)(lptmrStr->lptmrUserConfig.prescalerValue+1)));
 //                }
 //            }
-
 			SYSTICK_RELOAD((CLOCK_SYS_GetCoreClockFreq()/TICK_PER_SEC)-1UL);
 			SYSTICK_ENABLE();
 			break;
@@ -499,6 +533,7 @@ void switch_power_mode(power_manager_modes_t mode)
 			{
 				update_clock_mode(CLOCK_VLPR);
 				ret = POWER_SYS_SetMode(kPowerManagerVlpr, kPowerManagerPolicyAgreement); //kPowerManagerPolicyForcible
+				CHECK_RET_VAL(ret, mode);
 			}
 			else
 			{
@@ -514,18 +549,17 @@ void switch_power_mode(power_manager_modes_t mode)
 			{
 				printf("\nPower Management Task: cannot go from RUN to VLPW directly \n");
 			}
-			else
+
+			setWakeUpSource(wakeUpSourceSwBtn);
+
+			ret = POWER_SYS_SetMode(kPowerManagerVlpw, kPowerManagerPolicyAgreement);
+
+			if (POWER_SYS_GetCurrentMode() == kPowerManagerRun)
 			{
-				setWakeUpSource(wakeUpSourceSwBtn);
-
-				ret = POWER_SYS_SetMode(kPowerManagerVlpw, kPowerManagerPolicyAgreement);
-
-				if (POWER_SYS_GetCurrentMode() == kPowerManagerRun)
-				{
-					/* update Clock Mode to Run */
-					update_clock_mode(CLOCK_RUN);
-				}
+				/* update Clock Mode to Run */
+				update_clock_mode(CLOCK_RUN);
 			}
+			CHECK_RET_VAL(ret, mode);
 			break;
 
 		case kPowerManagerVlps:
@@ -539,6 +573,7 @@ void switch_power_mode(power_manager_modes_t mode)
 				/* update Clock Mode to Run */
 				update_clock_mode(CLOCK_RUN);
 			}
+			CHECK_RET_VAL(ret, mode);
 			break;
 
 		case kPowerManagerRun:
@@ -547,7 +582,7 @@ void switch_power_mode(power_manager_modes_t mode)
 			ret = POWER_SYS_SetMode(kPowerManagerRun, kPowerManagerPolicyAgreement);
 			if (ret != kPowerManagerSuccess)
 			{
-				printf("POWER_SYS_SetMode(runmode) returned unexpected status : \r\n",ret);
+				printf("POWER_SYS_SetMode(%u) returned unexpected status : %u\r\n",mode, ret);
 			}
 			else
 			{
@@ -637,8 +672,9 @@ void Power_MGM_task (uint32_t initial_data )
 #endif
 
 	/* Start off with the peripherals disabled */
-	peripherals_disable ();
+	peripherals_disable (true);
 	disable_peripheral_clocks();
+	_bsp_MQX_tick_timer_init ();
 	/* Enable power to the vibration sensor and accelerometer */
 	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 
