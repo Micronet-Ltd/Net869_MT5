@@ -82,6 +82,7 @@
 #include "mqx_prv.h"
 #include "watchdog_mgmt.h"
 #include <lwtimer.h>
+#include "main_tasks.h"
 
 #define DEVICE_CONTROL_TIME_ON_TH				 3200		// number of mili-seconds pulse for turning device on
 #define DEVICE_CONTROL_TIME_OFF_TH				 3200		// number of mili-seconds pulse for turning device off
@@ -99,6 +100,7 @@
 #define MCU_AND_CPU_BOARD_CONNECTED
 
 #define TEMPERATURE_DBG_PRINT
+//#define SUSPEND_DEBUG
 
 typedef struct
 {
@@ -192,14 +194,14 @@ void Device_update_state (uint32_t * time_diff)
 	static bool print_backup_power = FALSE;
 	_mqx_uint event_bits = 0;
 	_mqx_uint event_result = MQX_OK;
+	uint32_t freq = 0;
 
 	Device_control_GPIO(time_diff);
 
 #ifdef TEMPERATURE_DBG_PRINT
 	static uint16_t time_since_temp_print = 0;
 	time_since_temp_print += *time_diff;
-	if ((device_state_g == DEVICE_STATE_OFF && time_since_temp_print > 45000) //about 10 seconds, coz running @ slower clock
-		|| (device_state_g != DEVICE_STATE_OFF && time_since_temp_print > 30000)) // 30 seconds
+	if (time_since_temp_print > 30000) // 30 seconds
 	{
 		printf("temp x 10 : %d c \n", temperature-500);
 		time_since_temp_print = 0;
@@ -291,22 +293,41 @@ void Device_update_state (uint32_t * time_diff)
 			event_result = _event_get_value(cpu_int_suspend_event_g, &event_bits)  ;
 			if (event_result == MQX_OK)
 			{
-				if (event_bits & EVENT_CPU_INT_SUSPEND_HIGH)
+
+#ifdef SUSPEND_DEBUG
+				static uint32_t time_in_on_state = 0;
+				time_in_on_state += *time_diff;
+				if ((event_bits & EVENT_CPU_INT_SUSPEND_HIGH) || (time_in_on_state > 10000))
+					time_in_on_state = 0;
+#else
+				if ((event_bits & EVENT_CPU_INT_SUSPEND_HIGH) )	
+#endif
 				{
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
 					printf("%s: cpu_int_suspend_event_g high \n", __func__);
 
-					/* Go into lower power mode */
-
 					/* Disable OS watchdog */
+
+					/* Pause tasks that capture data */
+					/* Go into lower power mode */
+					CLOCK_SYS_GetFreq(kCoreClock, &freq);
+					switch_power_mode(kPowerManagerVlpr);
+					/* Start off with the peripherals disabled */
+					peripherals_disable (false);
+					disable_peripheral_clocks();
+					_bsp_MQX_tick_timer_init ();
+					/* Enable power to the vibration sensor and accelerometer */
+					GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 
 					/* Enable Wake Source monitoring */
 					Wiggle_sensor_start();
 					Wiggle_sensor_restart();
+
 					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
 					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
 					configure_USB(); /* Needs to be done after changing state */
+					printf("\n%s: Switched to DEVICE_STATE_ON_OS_SUSPENDED  \n", __func__);
 				}
 			}
 			break;
@@ -350,9 +371,18 @@ void Device_update_state (uint32_t * time_diff)
 			{
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
+
+				/* Go into full power mode */
+				switch_power_mode(kPowerManagerRun);
+				enable_peripheral_clocks();
+				peripherals_enable ();
+				_bsp_MQX_tick_timer_init ();
+				FPGA_init ();
+
 				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 				device_state_g = DEVICE_STATE_ON;
 				configure_USB(); /* Needs to be done after changing state */
+				printf("\n%s: Switched to DEVICE_STATE_ON  \n", __func__);
 			}
 			break;
 
@@ -708,20 +738,26 @@ void peripherals_enable (void)
 }
 
 
-void peripherals_disable (void)
+void peripherals_disable (bool turn_off_5V_rail)
 {
-	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
-
 	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
 	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
 
 	GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
+	//GPIO_DRV_ClearPinOutput   (FTDI_RSTN);
 	GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
 	//AccDisable();
+
+	if (turn_off_5V_rail)
+	{
+		GPIO_DRV_ClearPinOutput   (FPGA_RSTB);
+		GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
+		GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn on 5V0 power rail
+	}
 }
 
 
