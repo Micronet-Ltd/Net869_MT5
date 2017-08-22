@@ -74,7 +74,6 @@ enum _gpio_pins_pinNames {
 	USB_HUB_RSTN						= GPIO_MAKE_PIN(GPIOC_IDX, 18),
 	USB_OTG_OE							= GPIO_MAKE_PIN(GPIOE_IDX,  6),
 	USB_OTG_SEL							= GPIO_MAKE_PIN(GPIOE_IDX,  7),
-	CPU_INT								= GPIO_MAKE_PIN(GPIOE_IDX, 28),
 	//	USB_DN							(USB0_DM),;
 	//	USB_DP							(USB0_DP),;
 
@@ -118,6 +117,9 @@ enum _gpio_pins_pinNames {
 	CPU_STATUS							= GPIO_MAKE_PIN(GPIOC_IDX,  2),
 	CPU_POWER_LOSS					    = GPIO_MAKE_PIN(GPIOE_IDX, 25), //swapped CPU_SPKR_EN with CPU_POWER_LOSS in schematic
 	CPU_MIC_EN						    = GPIO_MAKE_PIN(GPIOE_IDX, 26),
+	
+	CPU_INT								= GPIO_MAKE_PIN(GPIOE_IDX, 28), //called USB_INT_P in the A8 schematic. Needs to be low for smart cradle
+	
 
 
 
@@ -175,6 +177,9 @@ enum _gpio_pins_pinNames {
 #define EXTAL0_PORT   				PORTA
 #define EXTAL0_PIN    				18
 
+
+#define PWM_CPU_CRADLE_DET_PORT		PORTD
+#define PWM_CPU_CRADLE_DET_PIN		4
 
 // ANALOG INPUTS
 #define ADC_POWER_IN					kAdc16Chn17

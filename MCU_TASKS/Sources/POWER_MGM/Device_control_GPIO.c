@@ -241,6 +241,30 @@ void Device_update_state (uint32_t * time_diff)
 
 			turn_on_condition_g = get_turn_on_reason(&ignition_voltage);
 
+			if (Wiggle_sensor_cross_TH ())
+			{
+				//printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
+				printf ("\nPOWER_MGM: Since smartcradle, Not turning ON \n");
+				Wiggle_sensor_restart();
+				//turn_on_condition_g |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
+			}
+
+			if(RCM_BRD_SRS1_LOCKUP((RCM_Type*)RCM_BASE))
+			{
+				printf ("\nPOWER_MGM: TURNING ON DEVICE due to ARM LOCKUP \n");
+				turn_on_condition_g |= POWER_MGM_DEVICE_ARM_LOCKUP;
+			}
+
+			if(RCM_BRD_SRS0_WDOG((RCM_Type*)RCM_BASE))
+			{
+				printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
+				turn_on_condition_g |= POWER_MGM_DEVICE_WATCHDOG_RESET;
+			}
+
+			//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
+			//{
+			//  	turn_on_condition_g |= POWER_MGM_DEVICE_SW_RESET_REQ;
+			//}
 
 			if (turn_on_condition_g != 0)
 			{
@@ -630,9 +654,9 @@ void Device_turn_on  (void)
 
 	/* Create a timer that calls a watchdog reset if the A8 does NOT turn ON in MAX_CPU_TICKS_TAKEN_TO_BOOT */
 	/* NOTE: This timer NEEDs to be cancelled if a successful bootup happens */
-//	_lwtimer_create_periodic_queue(&lwtimer_period_a8_turn_on_g, MAX_CPU_TICKS_TAKEN_TO_BOOT, MAX_CPU_TICKS_TAKEN_TO_BOOT);
-//	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_turn_on_g, &lwtimer_a8_turn_on_g, 0, \
-//		(LWTIMER_ISR_FPTR)handle_watchdog_expiry, 0);
+	//_lwtimer_create_periodic_queue(&lwtimer_period_a8_turn_on_g, MAX_CPU_TICKS_TAKEN_TO_BOOT, MAX_CPU_TICKS_TAKEN_TO_BOOT);
+	//_lwtimer_add_timer_to_queue(&lwtimer_period_a8_turn_on_g, &lwtimer_a8_turn_on_g, 0, \
+	//	(LWTIMER_ISR_FPTR)handle_watchdog_expiry, 0);
 }
 
 void Device_turn_off (void)
