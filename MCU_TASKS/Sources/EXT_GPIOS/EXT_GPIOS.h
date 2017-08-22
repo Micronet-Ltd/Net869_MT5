@@ -42,6 +42,11 @@ typedef enum {
 	NUM_OF_OUTPUT_GPIOS
 } KGPIOS_OUTPUT_CHANNELS;
 
+typedef struct ignition_state_s{
+	bool state; //false = low, true = high
+	bool OS_notify;
+}ignition_state_t;
+
 #define EVENT_GPIO_IN(x)		(1 << (x))
 
 #ifdef __cplusplus

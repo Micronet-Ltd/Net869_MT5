@@ -74,7 +74,6 @@ enum _gpio_pins_pinNames {
 	USB_HUB_RSTN						= GPIO_MAKE_PIN(GPIOC_IDX, 18),
 	USB_OTG_OE							= GPIO_MAKE_PIN(GPIOE_IDX,  6),
 	USB_OTG_SEL							= GPIO_MAKE_PIN(GPIOE_IDX,  7),
-	CPU_INT								= GPIO_MAKE_PIN(GPIOE_IDX, 28),
 	//	USB_DN							(USB0_DM),;
 	//	USB_DP							(USB0_DP),;
 
@@ -120,6 +119,7 @@ enum _gpio_pins_pinNames {
 	CPU_MIC_EN						    = GPIO_MAKE_PIN(GPIOE_IDX, 26),
 	
 	EXT_GPS_EN							= GPIO_MAKE_PIN(GPIOD_IDX, 10), //used to control power to the external GPS antenna (only routed in NET869 V6 and greater boards)
+	CPU_INT								= GPIO_MAKE_PIN(GPIOE_IDX, 28), //called USB_INT_P in the A8 schematic. Needs to be low for smart cradle
 
 	PORT_D_SPARE1						= GPIO_MAKE_PIN(GPIOD_IDX,  0),
 	PORT_D_SPARE2						= GPIO_MAKE_PIN(GPIOD_IDX,  1),
@@ -175,6 +175,9 @@ enum _gpio_pins_pinNames {
 #define EXTAL0_PORT   				PORTA
 #define EXTAL0_PIN    				18
 
+
+#define PWM_CPU_CRADLE_DET_PORT		PORTD
+#define PWM_CPU_CRADLE_DET_PIN		4
 
 // ANALOG INPUTS
 #define ADC_POWER_IN					kAdc16Chn17

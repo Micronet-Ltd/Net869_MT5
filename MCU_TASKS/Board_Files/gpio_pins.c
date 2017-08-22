@@ -81,8 +81,6 @@ const gpio_input_pin_user_config_t inputPins[] = {
 	{.pinName = FPGA_GPIO0,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled },
 	{.pinName = FPGA_DONE,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = OTG_ID   ,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = true,  .config.interrupt = kPortIntDisabled  },
-	{.pinName = CPU_INT,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
-
 	{.pinName = UART_MCU2CPU_RX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = UART_MCU2CPU_TX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
@@ -102,6 +100,7 @@ void configure_msm_gpio_input_pins(bool interrupt_disable)
 		{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge  },
 		{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
 		{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+		{.pinName = CPU_INT,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
 		{ .pinName = GPIO_PINS_OUT_OF_RANGE	}
 	};
 
@@ -249,6 +248,11 @@ void GPIO_Config( void ) {
 
 	// config EXTAL0 to be input clock
 	PORT_HAL_SetMuxMode(EXTAL0_PORT,       EXTAL0_PIN,       kPortPinDisabled);
+	
+	// Setup PWM for CPU_CRADLE_DET (using Flex timer module)
+	PORT_HAL_SetDriveStrengthMode(PWM_CPU_CRADLE_DET_PORT, PWM_CPU_CRADLE_DET_PIN,kPortLowDriveStrength);
+	PORT_HAL_SetMuxMode(PWM_CPU_CRADLE_DET_PORT, PWM_CPU_CRADLE_DET_PIN, kPortMuxAlt4);
+	PORT_HAL_SetSlewRateMode(PWM_CPU_CRADLE_DET_PORT, PWM_CPU_CRADLE_DET_PIN,kPortSlowSlewRate);
 }
 
 /*FUNCTION*-------------------------------------------------------------------

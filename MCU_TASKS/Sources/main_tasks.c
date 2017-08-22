@@ -30,6 +30,8 @@
 #include "version.h"
 #include "main_tasks.h"
 
+#include "fsl_ftm_driver.h"
+
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
 #define DEBUG_A8_WATCHOG_DISABLED 1
@@ -60,6 +62,7 @@ extern void * power_up_event_g;
 extern void * a8_watchdog_event_g;
 extern void * cpu_status_event_g;
 extern void * cpu_int_suspend_event_g;
+extern ignition_state_t ignition_state_g;
 tick_measure_t cpu_status_time_g = {0, 0, 0};
 extern bool a8_booted_up_correctly_g;
 extern DEVICE_STATE_t device_state_g;
@@ -280,6 +283,8 @@ void Main_task( uint32_t initial_data ) {
 	if(MQX_OK != event_result){
 			printf("Main_task: Could not open PowerUp event \n");
 	}
+	
+
 
     printf("\nbefore power on event\n");
     while (1)
@@ -304,6 +309,47 @@ void Main_task( uint32_t initial_data ) {
 	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
+	
+	ftm_user_config_t ftmInfo;
+	// Configure ftm params with frequency 500HZ
+    ftm_pwm_param_t ftmParam = {
+        .mode                   = kFtmEdgeAlignedPWM,
+        .edgeMode               = kFtmHighTrue,
+        .uFrequencyHZ           = 100u,
+        .uDutyCyclePercent      = 50,
+        .uFirstEdgeDelayPercent = 0,
+    };
+	
+	memset(&ftmInfo, 0, sizeof(ftmInfo));
+	ftmInfo.syncMethod = kFtmUseSoftwareTrig;
+	FTM_DRV_Init(0, &ftmInfo);
+	FTM_DRV_SetClock(0, kClock_source_FTM_FixedClk, kFtmDividedBy1);
+	
+//	_time_delay(MAIN_TASK_SLEEP_PERIOD);
+//	
+//	//NO change signal low/inactive
+//	ftmParam.uFrequencyHZ = 1u;
+//	ftmParam.uDutyCyclePercent = 0;
+//	FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
+//	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
+//	
+//	_time_delay(MAIN_TASK_SLEEP_PERIOD);
+//
+//	//Ignition Low
+//	ftmParam.uFrequencyHZ = 100u;
+//	ftmParam.uDutyCyclePercent = 50;
+//	FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
+//	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
+//	
+//	_time_delay(MAIN_TASK_SLEEP_PERIOD);
+//	
+//	//NO change signal high
+//	ftmParam.uFrequencyHZ = 1;
+//	ftmParam.uDutyCyclePercent = 100;
+//	FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
+//	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
+	
+	_time_delay(MAIN_TASK_SLEEP_PERIOD);
 
 	// turn on device
 	enable_msm_power(TRUE);		// turn on 5V0 power rail
@@ -464,20 +510,48 @@ void Main_task( uint32_t initial_data ) {
 				otg_reset_time = otg_check_time + OTG_CTLEP_RECOVERY_TO;
 			}
 		}
+
+		if (ignition_state_g.OS_notify)
+		{
+			ignition_state_g.OS_notify = false;
+			if (ignition_state_g.state)
+			{
+				//Ignition high
+				ftmParam.uFrequencyHZ = 500u;
+				ftmParam.uDutyCyclePercent = 50;
+				FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
+				FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
+				_time_delay(100);
+			}
+			else
+			{
+				//Ignition Low
+				ftmParam.uFrequencyHZ = 100u;
+				ftmParam.uDutyCyclePercent = 50;
+				FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
+				FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
+				_time_delay(100);
+			}
+			
+			//NO change signal high
+			ftmParam.uFrequencyHZ = 1;
+			ftmParam.uDutyCyclePercent = 100;
+			FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
+			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);	
+		}
 #undef DEBUG_BLINKING_RIGHT_LED
-
 #ifdef DEBUG_BLINKING_RIGHT_LED
-	if(!g_flag_Exit)
-	{
-		static int bri = 0;
-		
-		bri = (bri)?0:LED_DEFAULT_BRIGHTESS;
-		FPGA_write_led_status(LED_MIDDLE, bri, 0, 0, 0xFF); /*Blue LED */
-//		FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
+		if(!g_flag_Exit)
+		{
+			static int bri = 0;
+			
+			bri = (bri)?0:LED_DEFAULT_BRIGHTESS;
+			FPGA_write_led_status(LED_MIDDLE, bri, 0, 0, 0xFF); /*Blue LED */
+	//		FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
 
-//		_time_delay(MAIN_TASK_SLEEP_PERIOD);
-//		FPGA_write_led_status(LED_MIDDLE, 0, 0, 0, 0); /*Blue LED */
-	}
+	//		_time_delay(MAIN_TASK_SLEEP_PERIOD);
+	//		FPGA_write_led_status(LED_MIDDLE, 0, 0, 0, 0); /*Blue LED */
+		}
 #endif
 	}
 

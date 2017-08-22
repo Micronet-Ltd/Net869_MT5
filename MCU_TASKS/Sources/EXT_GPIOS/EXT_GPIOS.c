@@ -48,6 +48,8 @@ static const uint32_t gp_out_mapping[] = {
 };
 
 void *g_GPIO_event_h;
+ignition_state_t ignition_state_g = {.state =false, .OS_notify = false};
+
 
 KINPUT_LOGIC_LEVEL GPIO_INPUT_convert_voltage_to_level (uint32_t voltage);
 
@@ -73,6 +75,12 @@ void GPIO_all_check_for_change (void)
 		if (state_current != state_prev) {
 			printf ("GPIO_IN %d level became %d\n", i, state_current);
 			gpio_event |= (1 << i);
+			
+			if (i == kANALOG_EXT_IN)
+			{
+				ignition_state_g.state = state_current;
+				ignition_state_g.OS_notify = true;
+			}
 		}
 	}
 
