@@ -294,7 +294,7 @@ void Main_task( uint32_t initial_data ) {
 	// Configure ftm params with frequency 500HZ
     ftm_pwm_param_t ftmParam = {
         .mode                   = kFtmEdgeAlignedPWM,
-        .edgeMode               = kFtmHighTrue,
+        .edgeMode               = kFtmLowTrue, //kFtmHighTrue,
         .uFrequencyHZ           = 100u,
         .uDutyCyclePercent      = 50,
         .uFirstEdgeDelayPercent = 0,
