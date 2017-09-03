@@ -177,7 +177,7 @@ enum _gpio_pins_pinNames {
 
 
 #define PWM_CPU_CRADLE_DET_PORT		PORTD
-#define PWM_CPU_CRADLE_DET_PIN		4
+#define PWM_CPU_CRADLE_DET_PIN		6
 
 // ANALOG INPUTS
 #define ADC_POWER_IN					kAdc16Chn17
