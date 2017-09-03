@@ -439,7 +439,7 @@ void Main_task( uint32_t initial_data ) {
     while ( 1 ) 
     {
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
-        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+//        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
 		configure_USB();
 		if (ignition_state_g.OS_notify)
@@ -450,7 +450,7 @@ void Main_task( uint32_t initial_data ) {
 				//Ignition high
 				ftmParam.uFrequencyHZ = 500u;
 				ftmParam.uDutyCyclePercent = 50;
-				FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
+				FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
 				FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
 				_time_delay(100);
 			}
@@ -459,7 +459,7 @@ void Main_task( uint32_t initial_data ) {
 				//Ignition Low
 				ftmParam.uFrequencyHZ = 100u;
 				ftmParam.uDutyCyclePercent = 50;
-				FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
+				FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
 				FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
 				_time_delay(100);
 			}
@@ -467,7 +467,7 @@ void Main_task( uint32_t initial_data ) {
 			//NO change signal high
 			ftmParam.uFrequencyHZ = 1;
 			ftmParam.uDutyCyclePercent = 100;
-			FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
+			FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
 			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);	
 		}
 		
