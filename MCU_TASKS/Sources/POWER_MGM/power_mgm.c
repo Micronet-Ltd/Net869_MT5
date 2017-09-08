@@ -122,6 +122,12 @@ typedef enum wakeUpSource
 	wakeUpSourceSwBtn =  4,
 } wakeUpSource_t;
 
+typedef enum MT5_power_states {
+	MT5_suspend, //cpu_watchdog signal 0
+	MT5_charging, //cpu_watchdog signal 1
+	MT5_active,  //cpu_watchdog signal toggling at 0.5Hz
+}MT5_power_states_t;
+
 /*--------------------------------MODE---------------------------------------*/
 power_manager_user_config_t const vlprConfig =
 {
@@ -272,6 +278,8 @@ extern LWTIMER_STRUCT lwtimer_a8_turn_on_g;
 
 extern tick_measure_t cpu_status_time_g;
 bool a8_booted_up_correctly_g = false;
+extern void * cpu_int_suspend_event_g;
+extern ignition_state_t ignition_state_g;
 
 const clock_manager_user_config_t * g_defaultClockConfigurations[] =
 {
@@ -592,6 +600,76 @@ void switch_power_mode(power_manager_modes_t mode)
 	}
 }
 
+// MT5_power_state_monitor: Monitors the watchdog signal for 2 seconds, and based on it's 
+// state it posts an event whether the MT5 is in suspend or out of suspend 
+// If signal is low for 2 seconds -> MT5 suspend
+// If signal is high for 2 seconds -> MT5 Charging
+// If signal is toggling at 0.5Hz -> MT5 Active
+static void MT5_power_state_monitor(uint32_t * time_diff)
+{
+	static MT5_power_states_t MT5_current_power_state = MT5_charging;
+	static MT5_power_states_t MT5_previous_power_state = MT5_charging;
+	static uint32_t time_since_watchdog_sig_read = 0;
+	static uint8_t watchdog_signal_states = 0x0c; //0b1100
+	static uint8_t watchdog_signal_states_pos = 0;
+	uint8_t current_watchdog_signal_val = 0;
+
+	time_since_watchdog_sig_read += *time_diff;
+	//read watchdog signal about every 500 second and append array
+	if (time_since_watchdog_sig_read >= 500)
+	{
+		time_since_watchdog_sig_read = 0;
+		current_watchdog_signal_val = GPIO_DRV_ReadPinInput(CPU_WATCHDOG);
+		if (current_watchdog_signal_val)
+		{
+			watchdog_signal_states |= 1<<watchdog_signal_states_pos;	
+		}
+		else
+		{
+			watchdog_signal_states &= ~(1<<watchdog_signal_states_pos);	
+		}
+		
+		watchdog_signal_states_pos = (watchdog_signal_states_pos + 1)%4;
+
+		//update powerstate
+		if (watchdog_signal_states == 0x0F) //signal high for more that 2 sec
+		{
+			MT5_current_power_state = MT5_charging;
+		}
+		else if (watchdog_signal_states == 0x00) //signal low for more that 2 sec
+		{
+			MT5_current_power_state = MT5_suspend;
+		}
+		else //signal toggling
+		{
+			MT5_current_power_state = MT5_active;
+		}
+
+		//determine it powerstate has changed and notify device_control via event
+		if (MT5_current_power_state != MT5_previous_power_state)
+		{
+			ignition_state_g.OS_notify = true;
+			if (MT5_current_power_state == MT5_suspend)
+			{
+				_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+				_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
+				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH); //in suspend
+				printf("\n%s: event set, in suspend \n", __func__);
+			}
+			else if (MT5_current_power_state == MT5_active || MT5_current_power_state == MT5_charging)
+			{
+				_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+				_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
+				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW); //out of suspend
+				printf("\n%s: event set, out of suspend \n", __func__);
+			}
+			printf("\n%s: MT5 state changed, prev_state=%d, curr_state=%d\n", __func__, MT5_previous_power_state, MT5_current_power_state);
+			
+			MT5_previous_power_state = MT5_current_power_state;
+		}
+	}	
+}
+
 void Power_MGM_task (uint32_t initial_data )
 {
 	KADC_CHANNELS_t adc_input = kADC_ANALOG_IN1;
@@ -712,6 +790,8 @@ void Power_MGM_task (uint32_t initial_data )
 			printf("Power_MGM_task: timediff -ve!");
 		}
 		time_diff_milli_u = (uint32_t) time_diff_milli;
+
+		MT5_power_state_monitor(&time_diff_milli_u);
 
 		Device_update_state(&time_diff_milli_u);
 		
