@@ -166,8 +166,8 @@ uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
 
 	if (Wiggle_sensor_cross_TH ())
 	{
-		printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
-		turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
+		//printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
+		//turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
 	}
 
 	if(RCM_BRD_SRS1_LOCKUP((RCM_Type*)RCM_BASE))
@@ -178,8 +178,8 @@ uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
 
 	if(RCM_BRD_SRS0_WDOG((RCM_Type*)RCM_BASE))
 	{
-		printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
-		turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
+		//printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
+		//turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
 	}
 
 	//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
@@ -315,11 +315,11 @@ void Device_update_state (uint32_t * time_diff)
 					/* Pause tasks that capture data */
 					/* Go into lower power mode */
 					CLOCK_SYS_GetFreq(kCoreClock, &freq);
-					switch_power_mode(kPowerManagerVlpr);
+					//switch_power_mode(kPowerManagerVlpr);
 					/* Start off with the peripherals disabled */
-					peripherals_disable (false);
-					disable_peripheral_clocks();
-					_bsp_MQX_tick_timer_init ();
+					//peripherals_disable (false);
+					//disable_peripheral_clocks();
+					//_bsp_MQX_tick_timer_init ();
 					/* Enable power to the vibration sensor and accelerometer */
 					GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 
@@ -327,9 +327,10 @@ void Device_update_state (uint32_t * time_diff)
 					Wiggle_sensor_start();
 					Wiggle_sensor_restart();
 
-					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
+					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xAB); /*Green Blue LED */
 					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
 					configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE); /* Needs to be done after changing state */
+					GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */ //!!!! REMOVE !!!
 					printf("\n%s: Switched to DEVICE_STATE_ON_OS_SUSPENDED  \n", __func__);
 				}
 			}
@@ -384,6 +385,7 @@ void Device_update_state (uint32_t * time_diff)
 				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 				device_state_g = DEVICE_STATE_ON;
 				configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE); /* Needs to be done after changing state */
+				GPIO_DRV_ClearPinOutput (USB_OTG_OE); /* Enable USB */ //!!!! REMOVE !!!
 				printf("\n%s: Switched to DEVICE_STATE_ON  \n", __func__);
 			}
 			break;

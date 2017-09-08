@@ -514,6 +514,7 @@ void Main_task( uint32_t initial_data ) {
 		if (ignition_state_g.OS_notify)
 		{
 			ignition_state_g.OS_notify = false;
+			printf("%s: ignition state updated, %d \n", __func__, ignition_state_g.state);
 			if (ignition_state_g.state)
 			{
 				//Ignition high
@@ -758,13 +759,13 @@ void MQX_PORTE_IRQHandler(void)
 			{
 				/* OS/MSM requested a suspend */
 				//GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
-				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
+				//_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 			}
 			else
 			{
 				/*OS/MSM out of suspend */
 				//GPIO_DRV_ClearPinIntFlag (USB_OTG_OE); /* Enable USB */
-				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+				//_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
 			}
 		}
 	}
