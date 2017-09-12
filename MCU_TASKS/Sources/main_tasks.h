@@ -1,0 +1,6 @@
+#ifndef __main_tasks_h_
+#define __main_tasks_h_
+
+void configure_USB(void);
+
+#endif /* __main_tasks_h_*/
