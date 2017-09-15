@@ -733,8 +733,8 @@ void Power_MGM_task (uint32_t initial_data )
 #endif
 
 	/* Start off with the peripherals disabled */
-	peripherals_disable (true);
 	disable_peripheral_clocks();
+	peripherals_disable (true);
 	_bsp_MQX_tick_timer_init ();
 	/* Enable power to the vibration sensor and accelerometer */
 	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);

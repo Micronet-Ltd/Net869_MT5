@@ -26,8 +26,8 @@ extern "C"
 #define EVENT_CPU_STATUS_HIGH 1
 #define EVENT_CPU_STATUS_LOW 2
 
-#define EVENT_CPU_INT_SUSPEND_HIGH 1
-#define EVENT_CPU_INT_SUSPEND_LOW 2
+#define EVENT_CPU_INT_SUSPEND_HIGH (1 << 0)
+#define EVENT_CPU_INT_SUSPEND_LOW (1 << 1)
 
 typedef struct tick_measure_s{
 	MQX_TICK_STRUCT start_ticks;

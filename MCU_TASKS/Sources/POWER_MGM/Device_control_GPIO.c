@@ -308,6 +308,8 @@ void Device_update_state (uint32_t * time_diff)
 				{
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+					//Changing the device_state_g to OS suspended early because other tasks use this flag to go to a dormant state
+					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
 					printf("%s: cpu_int_suspend_event_g high \n", __func__);
 
 					/* Disable OS watchdog */
@@ -317,8 +319,9 @@ void Device_update_state (uint32_t * time_diff)
 					CLOCK_SYS_GetFreq(kCoreClock, &freq);
 					switch_power_mode(kPowerManagerVlpr);
 					/* Start off with the peripherals disabled */
-					peripherals_disable (false);
+					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
 					disable_peripheral_clocks();
+					peripherals_disable (false);
 					_bsp_MQX_tick_timer_init ();
 					/* Enable power to the vibration sensor and accelerometer */
 					GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
@@ -338,14 +341,6 @@ void Device_update_state (uint32_t * time_diff)
 		case DEVICE_STATE_ON_OS_SUSPENDED: /* has DEVICE_STATE_ON and DEVICE_STATE_OFF code */
 			turn_on_condition_g = 0;
 			Wiggle_sensor_update();
-			// if power drops below threshold - shutdown
-			if (power_in_voltage < POWER_IN_SHUTDOWN_TH)
-			{
-				printf ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - SHUTING DOWN !!! \n", power_in_voltage);
-				device_state_g = DEVICE_STATE_BACKUP_RECOVERY;
-				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
-				break;
-			}
 
 			// if temperature is out of range - turn off device
 			if ((temperature < TEMPERATURE_SHUTDOWN_MIN_TH)   ||
@@ -357,6 +352,12 @@ void Device_update_state (uint32_t * time_diff)
 			}
 
 			turn_on_condition_g = get_turn_on_reason(&ignition_voltage);
+
+			// if power drops below threshold - get out of suspend and follow normal shutdown process
+			if (power_in_voltage < POWER_IN_SHUTDOWN_TH)
+			{
+				printf ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - waking up from suspend !!! \n", power_in_voltage);
+			}
 
 			event_result = _event_get_value(cpu_int_suspend_event_g, &event_bits)  ;
 			if (event_result == MQX_OK)
@@ -370,7 +371,7 @@ void Device_update_state (uint32_t * time_diff)
 				}
 			}
 
-			if (turn_on_condition_g != 0)
+			if ((turn_on_condition_g != 0) || (power_in_voltage < POWER_IN_SHUTDOWN_TH))
 			{
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
