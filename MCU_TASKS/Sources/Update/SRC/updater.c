@@ -43,6 +43,7 @@
 #include "fsl_interrupt_manager.h"
 #include "Device_control_GPIO.h"
 #include "mic_typedef.h"
+#include "main_tasks.h"
 
 
 extern int32_t	Set_IRQHandler_spec(void);
@@ -52,7 +53,6 @@ extern void Device_reset_req(int32_t wait_time);
 extern void cancel_a8_timers(void);
 extern void J1708_disable (void);
 extern void UART_Disable  (uint8_t port);
-extern void configure_otg_for_host_or_device(int);
 
 uint8_t g_flag_Exit = 0; 
 
@@ -743,6 +743,9 @@ void updater_task(uint32_t param)
 	while(true)
 	{
 		id = UNN;
+		
+		task_sleep_if_OS_suspended();
+		
 		error = 0;
 		memset(bbb, 0, sizeof(bbb));
 		// Wait to receive input data

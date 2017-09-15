@@ -28,6 +28,7 @@
 #include "watchdog_mgmt.h"
 #include "power_mgm.h"
 #include "version.h"
+#include "main_tasks.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
@@ -39,7 +40,6 @@ void MQX_PORTA_IRQHandler(void);
 void MQX_PORTB_IRQHandler(void);
 void MQX_PORTC_IRQHandler(void);
 void MQX_PORTE_IRQHandler(void);
-void configure_otg_for_host_or_device(int);
 
 void HardFault_Handler_asm(void);
 
@@ -188,6 +188,14 @@ void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 
 int g_a8_sw_reboot = -1;
 int g_otg_ctl_port_active = 0;
+
+void task_sleep_if_OS_suspended(void)
+{
+	while (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED)
+	{
+		_time_delay (500);
+	}
+}
 
 void Main_task( uint32_t initial_data ) {
 

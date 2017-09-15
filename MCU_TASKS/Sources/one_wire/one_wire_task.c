@@ -5,6 +5,7 @@
 #include "mic_typedef.h"
 #include "protocol.h"
 #include "control_task.h"
+#include "main_tasks.h"
 
 //#define ONE_WIRE_DEBUG 1
 #define ONE_WIRE_DEFAULT_TIME_DELAY 500
@@ -40,6 +41,7 @@ void one_wire_task (uint32_t initial_data)
 
 	while (!g_flag_Exit) 
 	{
+		task_sleep_if_OS_suspended();
 		_time_delay (wait_time);
 		
 		FPGA_one_wire_reset ();

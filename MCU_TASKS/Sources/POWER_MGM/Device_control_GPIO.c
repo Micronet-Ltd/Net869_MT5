@@ -83,6 +83,7 @@
 #include "watchdog_mgmt.h"
 #include <lwtimer.h>
 #include "main_tasks.h"
+#include "mic_typedef.h"
 
 #define DEVICE_CONTROL_TIME_ON_TH				 3200		// number of mili-seconds pulse for turning device on
 #define DEVICE_CONTROL_TIME_OFF_TH				 3200		// number of mili-seconds pulse for turning device off
@@ -332,7 +333,7 @@ void Device_update_state (uint32_t * time_diff)
 
 					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
 					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
-					configure_otg_for_host_or_device(); /* Needs to be done after changing state */
+					configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE); /* Needs to be done after changing state */
 					printf("\n%s: Switched to DEVICE_STATE_ON_OS_SUSPENDED  \n", __func__);
 				}
 			}
@@ -385,7 +386,7 @@ void Device_update_state (uint32_t * time_diff)
 
 				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 				device_state_g = DEVICE_STATE_ON;
-				configure_otg_for_host_or_device(); /* Needs to be done after changing state */
+				configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE); /* Needs to be done after changing state */
 				printf("\n%s: Switched to DEVICE_STATE_ON  \n", __func__);
 			}
 			break;

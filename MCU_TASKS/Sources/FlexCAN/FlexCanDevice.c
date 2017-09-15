@@ -26,6 +26,7 @@
 #include "FlexCanDevice.h"
 #include "mic_typedef.h"
 #include "FlexCanMsg_queue.h"
+#include "main_tasks.h"
 
 /* Definition */
 
@@ -266,6 +267,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 	printf("%s:INFO Task: Loop instance %u \n", __func__, pcan->instance);
 
 	do {
+		task_sleep_if_OS_suspended();
 		msg_ptr = _msgq_receive(msg_qid, 1);
 		if(NULL == msg_ptr) { _time_delay(1); continue; }
 
@@ -1052,6 +1054,7 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 	printf("%s:INFO Loop instance %u \n", __func__, ((pflexcanInstance_t)pcan)->instance);
 
 	do {
+		task_sleep_if_OS_suspended();
 		if (false == pcan->bScanInstanceStarted )
 		{
 			_time_delay(2);

@@ -61,6 +61,7 @@
 #include "mic_typedef.h"
 
 #include "virtual_com.h"
+#include "main_tasks.h"
 
 /*****************************************************************************
  * Constant and Macro's - None
@@ -807,6 +808,7 @@ void Usb_task(uint32_t arg)
 	}
 
 	do {
+		task_sleep_if_OS_suspended();
 		stTime.SECONDS = 0;
 		stTime.MILLISECONDS = 100;
 		if (!_time_to_ticks(&stTime, &stTick)) {

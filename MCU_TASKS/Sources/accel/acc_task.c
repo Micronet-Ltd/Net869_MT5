@@ -17,6 +17,7 @@
 #include "i2c_configuration.h"
 
 #include "frame.h"
+#include "main_tasks.h"
 
 #define ACC_DEVICE_ADDRESS 			0x1D
 #define	I2C_BAUD_RATE				400
@@ -162,6 +163,7 @@ void Acc_task (uint32_t initial_data)
 	{
 		res = 0;
 		do {
+			task_sleep_if_OS_suspended();
 			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
 			if (res) {
 				acc_data_buff.timestamp = ms_from_start();
