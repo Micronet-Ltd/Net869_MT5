@@ -6,6 +6,7 @@
 
 #include "uart_configuration.h"
 #include <mutex.h>
+#include "main_tasks.h"
 
 #define FPGA_UART_PORT						UART1_IDX
 #define FPGA_UART_BAUDRATE					115200
@@ -469,6 +470,7 @@ void FPGA_UART_Rx_task (uint32_t initial_data)
 	printf ("\nFPGA_UART_Rx Task: Start \n");
 
 	while (0 == g_flag_Exit) {
+		task_sleep_if_OS_suspended();
 		// get message via UART channel
 		uart_rx_status = UART_DRV_ReceiveDataBlocking (FPGA_UART_PORT, &fpga_uart_rx_buf [fpga_uart_rx_buf_wr_idx], 1, 1000);
 

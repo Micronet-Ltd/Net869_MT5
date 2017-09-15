@@ -13,6 +13,7 @@
 
 #include "frame.h"
 #include "Device_control_GPIO.h"
+#include "main_tasks.h"
 
 //extern _pool_id   g_out_message_pool;
 extern void *g_GPIO_event_h;
@@ -93,6 +94,7 @@ void control_task (uint32_t initial_data)
 
 	while (0 == g_flag_Exit)
 	{
+		task_sleep_if_OS_suspended();
 		/* wait forever for interrupt message */
 		ctl_rx_msg = _msgq_receive(control_rx_qid, 0);
 		do {

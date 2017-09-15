@@ -30,6 +30,7 @@
 #include "gpio_pins.h"
 
 #include "mic_typedef.h"
+#include "main_tasks.h"
 
 #define J1708_DISABLED							0
 #define J1708_ENABLED							1
@@ -60,6 +61,7 @@ void J1708_Tx_task (uint32_t initial_data)
 	printf ("\nJ1708_Tx Task: Start \n");
 
 	while (0 == g_flag_Exit) {
+		task_sleep_if_OS_suspended();
 		while (J1708_state == J1708_DISABLED)
 			_time_delay (10000);
 
@@ -123,6 +125,7 @@ void J1708_Rx_task (uint32_t initial_data)
 	printf ("\nJ1708_Rx Task: Start \n");
 
 	while (0 == g_flag_Exit) {
+		task_sleep_if_OS_suspended();
 		while (J1708_state == J1708_DISABLED)
 			_time_delay (10000);
 

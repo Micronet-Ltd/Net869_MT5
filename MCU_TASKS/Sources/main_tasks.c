@@ -182,6 +182,14 @@ void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 	WDG_RESET_MCU();
 }
 
+void task_sleep_if_OS_suspended(void)
+{
+	while (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED)
+	{
+		_time_delay (500);
+	}
+}
+
 void Main_task( uint32_t initial_data ) {
 
 	_queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;

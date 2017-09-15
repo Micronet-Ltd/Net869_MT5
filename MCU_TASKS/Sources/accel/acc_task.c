@@ -17,6 +17,7 @@
 #include "i2c_configuration.h"
 
 #include "frame.h"
+#include "main_tasks.h"
 
 #define ACC_DEVICE_ADDRESS 			0x1D
 #define	I2C_BAUD_RATE				400
@@ -154,6 +155,7 @@ void Acc_task (uint32_t initial_data)
 	//acc_msg = &test_acc_msg;
 	while (0 == g_flag_Exit)
 	{
+		task_sleep_if_OS_suspended();
         _event_wait_all(g_acc_event_h, 1, 0);
 		_event_clear(g_acc_event_h, 1);
 
