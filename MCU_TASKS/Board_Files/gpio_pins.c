@@ -82,16 +82,53 @@ const gpio_input_pin_user_config_t inputPins[] = {
 
 	{.pinName = UART_MCU2CPU_RX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = UART_MCU2CPU_TX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
-	{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge  },
-	{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+	{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
+	{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
 	{.pinName = BUTTON1,     		.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
-	{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+	{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
 
 // EYAL_0523
 	{.pinName = CPU_RF_KILL,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled    },
 
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE	}
 };
+
+void configure_msm_gpio_input_pins(bool interrupt_disable)
+{
+	gpio_input_pin_user_config_t input_pins_msm[] = {
+		{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge  },
+		{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+		{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+		{ .pinName = GPIO_PINS_OUT_OF_RANGE	}
+	};
+
+	gpio_input_pin_user_config_t * inputPins = input_pins_msm;
+	/* Initialize input pins.*/
+	while (inputPins->pinName != GPIO_PINS_OUT_OF_RANGE)
+	{
+		if (interrupt_disable)
+		{
+			inputPins->config.interrupt = kPortIntDisabled;
+		}
+		GPIO_DRV_InputPinInit(inputPins++);
+	}
+}
+
+/* Enables or disables the MSM/A8 power rail */
+/* IO pin interrupts from the MSM have to be disabled when the MSM power rail is turned off */
+void enable_msm_power(bool enable)
+{
+	if (enable)
+	{
+		GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
+		configure_msm_gpio_input_pins(false);
+	}
+	else
+	{
+		GPIO_DRV_ClearPinOutput(POWER_5V0_ENABLE);
+		configure_msm_gpio_input_pins(true);
+	}
+}
 
 /* I2C_reset_bus: If the SDA line is stuck in the low state, we try to send some 
 additional clocks and generate a stop condition

@@ -5,6 +5,7 @@
 #include "fsl_gpio_driver.h"
 
 void GPIO_Config( void );
+void enable_msm_power(bool enable);
 
 enum _gpio_pins_pinNames {
 	// SWD signals

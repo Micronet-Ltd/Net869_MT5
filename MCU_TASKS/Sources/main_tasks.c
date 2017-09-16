@@ -280,7 +280,7 @@ void Main_task( uint32_t initial_data ) {
     printf("\nAfter power on event\n");
 
 	// turn on device
-	GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
+	enable_msm_power(TRUE);		// turn on 5V0 power rail
 
 
 
