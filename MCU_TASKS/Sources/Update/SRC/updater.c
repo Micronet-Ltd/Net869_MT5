@@ -40,6 +40,7 @@
 #include "spi_settings.h"
 #include "W25X40CL.h"
 #include "fsl_power_manager.h"
+#include "main_tasks.h"
 
 
 extern int32_t	Set_IRQHandler_spec(void);
@@ -707,6 +708,9 @@ void updater_task(uint32_t param)
 	while(true)
 	{
 		id = UNN;
+		
+		task_sleep_if_OS_suspended();
+		
 		error = 0;
 		memset(bbb, 0, sizeof(bbb));
 		// Wait to receive input data

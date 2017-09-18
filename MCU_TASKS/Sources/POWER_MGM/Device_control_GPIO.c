@@ -161,8 +161,8 @@ uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
 
 	if (Wiggle_sensor_cross_TH ())
 	{
-		//printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
-		//turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
+		printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
+		turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
 	}
 
 	if(RCM_BRD_SRS1_LOCKUP((RCM_Type*)RCM_BASE))
@@ -173,8 +173,8 @@ uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
 
 	if(RCM_BRD_SRS0_WDOG((RCM_Type*)RCM_BASE))
 	{
-		//printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
-		//turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
+		printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
+		turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
 	}
 
 	//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
@@ -241,31 +241,6 @@ void Device_update_state (uint32_t * time_diff)
 
 			turn_on_condition_g = get_turn_on_reason(&ignition_voltage);
 
-			if (Wiggle_sensor_cross_TH ())
-			{
-				//printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
-				printf ("\nPOWER_MGM: Since smartcradle, Not turning ON \n");
-				Wiggle_sensor_restart();
-				//turn_on_condition_g |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
-			}
-
-			if(RCM_BRD_SRS1_LOCKUP((RCM_Type*)RCM_BASE))
-			{
-				printf ("\nPOWER_MGM: TURNING ON DEVICE due to ARM LOCKUP \n");
-				turn_on_condition_g |= POWER_MGM_DEVICE_ARM_LOCKUP;
-			}
-
-			if(RCM_BRD_SRS0_WDOG((RCM_Type*)RCM_BASE))
-			{
-				printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
-				turn_on_condition_g |= POWER_MGM_DEVICE_WATCHDOG_RESET;
-			}
-
-			//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
-			//{
-			//  	turn_on_condition_g |= POWER_MGM_DEVICE_SW_RESET_REQ;
-			//}
-
 			if (turn_on_condition_g != 0)
 			{
 				led_blink_cnt_g = 0;
@@ -314,6 +289,7 @@ void Device_update_state (uint32_t * time_diff)
 				device_state_g = DEVICE_STATE_OFF;
 				Device_off_req(FALSE, 0);
 			}
+
 			event_result = _event_get_value(cpu_int_suspend_event_g, &event_bits)  ;
 			if (event_result == MQX_OK)
 			{
@@ -329,6 +305,8 @@ void Device_update_state (uint32_t * time_diff)
 				{
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+					//Changing the device_state_g to OS suspended early because other tasks use this flag to go to a dormant state
+					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
 					printf("%s: cpu_int_suspend_event_g high \n", __func__);
 
 					/* Disable OS watchdog */
@@ -336,11 +314,12 @@ void Device_update_state (uint32_t * time_diff)
 					/* Pause tasks that capture data */
 					/* Go into lower power mode */
 					CLOCK_SYS_GetFreq(kCoreClock, &freq);
-					//switch_power_mode(kPowerManagerVlpr);
+					switch_power_mode(kPowerManagerVlpr);
 					/* Start off with the peripherals disabled */
-					//peripherals_disable (false);
-					//disable_peripheral_clocks();
-					//_bsp_MQX_tick_timer_init ();
+					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
+					disable_peripheral_clocks();
+					peripherals_disable (false);
+					_bsp_MQX_tick_timer_init ();
 					/* Enable power to the vibration sensor and accelerometer */
 					GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 
@@ -348,11 +327,7 @@ void Device_update_state (uint32_t * time_diff)
 					Wiggle_sensor_start();
 					Wiggle_sensor_restart();
 
-					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xAB); /*Green Blue LED */
-					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
 					configure_USB(); /* Needs to be done after changing state */
-					GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */ //!!!! REMOVE !!!
-					
 					printf("\n%s: Switched to DEVICE_STATE_ON_OS_SUSPENDED  \n", __func__);
 				}
 			}
@@ -361,14 +336,6 @@ void Device_update_state (uint32_t * time_diff)
 		case DEVICE_STATE_ON_OS_SUSPENDED: /* has DEVICE_STATE_ON and DEVICE_STATE_OFF code */
 			turn_on_condition_g = 0;
 			Wiggle_sensor_update();
-			// if power drops below threshold - shutdown
-			if (power_in_voltage < POWER_IN_SHUTDOWN_TH)
-			{
-				printf ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - SHUTING DOWN !!! \n", power_in_voltage);
-				device_state_g = DEVICE_STATE_BACKUP_RECOVERY;
-				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
-				break;
-			}
 
 			// if temperature is out of range - turn off device
 			if ((temperature < TEMPERATURE_SHUTDOWN_MIN_TH)   ||
@@ -380,6 +347,12 @@ void Device_update_state (uint32_t * time_diff)
 			}
 
 			turn_on_condition_g = get_turn_on_reason(&ignition_voltage);
+
+			// if power drops below threshold - get out of suspend and follow normal shutdown process
+			if (power_in_voltage < POWER_IN_SHUTDOWN_TH)
+			{
+				printf ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - waking up from suspend !!! \n", power_in_voltage);
+			}
 
 			event_result = _event_get_value(cpu_int_suspend_event_g, &event_bits)  ;
 			if (event_result == MQX_OK)
@@ -393,7 +366,7 @@ void Device_update_state (uint32_t * time_diff)
 				}
 			}
 
-			if (turn_on_condition_g != 0)
+			if ((turn_on_condition_g != 0) || (power_in_voltage < POWER_IN_SHUTDOWN_TH))
 			{
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
@@ -407,9 +380,7 @@ void Device_update_state (uint32_t * time_diff)
 
 				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 				device_state_g = DEVICE_STATE_ON;
-				GPIO_DRV_ClearPinOutput (USB_OTG_OE); /* Enable USB */ //!!!! REMOVE !!!
 				configure_USB(); /* Needs to be done after changing state */
-				
 				printf("\n%s: Switched to DEVICE_STATE_ON  \n", __func__);
 			}
 			break;
@@ -658,9 +629,9 @@ void Device_turn_on  (void)
 
 	/* Create a timer that calls a watchdog reset if the A8 does NOT turn ON in MAX_CPU_TICKS_TAKEN_TO_BOOT */
 	/* NOTE: This timer NEEDs to be cancelled if a successful bootup happens */
-	//_lwtimer_create_periodic_queue(&lwtimer_period_a8_turn_on_g, MAX_CPU_TICKS_TAKEN_TO_BOOT, MAX_CPU_TICKS_TAKEN_TO_BOOT);
-	//_lwtimer_add_timer_to_queue(&lwtimer_period_a8_turn_on_g, &lwtimer_a8_turn_on_g, 0, \
-	//	(LWTIMER_ISR_FPTR)handle_watchdog_expiry, 0);
+//	_lwtimer_create_periodic_queue(&lwtimer_period_a8_turn_on_g, MAX_CPU_TICKS_TAKEN_TO_BOOT, MAX_CPU_TICKS_TAKEN_TO_BOOT);
+//	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_turn_on_g, &lwtimer_a8_turn_on_g, 0, \
+//		(LWTIMER_ISR_FPTR)handle_watchdog_expiry, 0);
 }
 
 void Device_turn_off (void)

@@ -63,6 +63,7 @@ extern void * a8_watchdog_event_g;
 extern void * cpu_status_event_g;
 extern void * cpu_int_suspend_event_g;
 extern ignition_state_t ignition_state_g;
+
 tick_measure_t cpu_status_time_g = {0, 0, 0};
 extern bool a8_booted_up_correctly_g;
 extern DEVICE_STATE_t device_state_g;
@@ -183,6 +184,14 @@ void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 #endif
 	);
 	WDG_RESET_MCU();
+}
+
+void task_sleep_if_OS_suspended(void)
+{
+	while (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED)
+	{
+		_time_delay (500);
+	}
 }
 
 void Main_task( uint32_t initial_data ) {
@@ -471,7 +480,7 @@ void Main_task( uint32_t initial_data ) {
 			FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
 			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);	
 		}
-		
+
 #ifdef DEBUG_BLINKING_RIGHT_LED
 		FPGA_write_led_status(LED_RIGHT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
 
@@ -644,13 +653,13 @@ void MQX_PORTE_IRQHandler(void)
 			{
 				/* OS/MSM requested a suspend */
 				//GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
-				//_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
+				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 			}
 			else
 			{
 				/*OS/MSM out of suspend */
 				//GPIO_DRV_ClearPinIntFlag (USB_OTG_OE); /* Enable USB */
-				//_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
 			}
 		}
 	}
