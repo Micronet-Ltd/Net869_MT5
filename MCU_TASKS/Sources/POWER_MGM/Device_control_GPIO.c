@@ -265,7 +265,7 @@ void Device_update_state (uint32_t * time_diff)
 				enable_peripheral_clocks();
 				peripherals_enable ();
 				//Board_SetFastClk ();
-				Device_turn_on     ();
+				//Device_turn_on     ();
 				device_state_g = DEVICE_STATE_ON;
 				printf ("\nPOWER_MGM: DEVICE RUNNING\n");
 				FPGA_init ();
@@ -309,6 +309,7 @@ void Device_update_state (uint32_t * time_diff)
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
 					printf("%s: cpu_int_suspend_event_g high \n", __func__);
+					printf("\n%s: Switched to DEVICE_STATE_ON_OS_SUSPENDED  \n", __func__);
 
 					/* Disable OS watchdog */
 

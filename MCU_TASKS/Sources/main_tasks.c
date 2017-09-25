@@ -739,13 +739,13 @@ void MQX_PORTE_IRQHandler(void)
 			{
 				/* OS/MSM requested a suspend */
 				//GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
-				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
+				//_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 			}
 			else
 			{
 				/*OS/MSM out of suspend */
 				//GPIO_DRV_ClearPinIntFlag (USB_OTG_OE); /* Enable USB */
-				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+				//_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
 			}
 		}
 	}
