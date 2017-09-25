@@ -750,8 +750,8 @@ void peripherals_disable (bool turn_off_5V_rail)
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
-	GPIO_DRV_ClearPinOutput   (FPGA_RSTB);
-	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
+	//GPIO_DRV_ClearPinOutput   (FPGA_RSTB);
+	//GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
 	//AccDisable();
 
 	if (turn_off_5V_rail)
