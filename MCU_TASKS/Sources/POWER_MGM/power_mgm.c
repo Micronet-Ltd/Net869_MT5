@@ -646,24 +646,24 @@ static void MT5_power_state_monitor(uint32_t * time_diff)
 		}
 
 		//determine it powerstate has changed and notify device_control via event
-		if (MT5_current_power_state != MT5_previous_power_state)
+		//if (MT5_current_power_state != MT5_previous_power_state)
 		{
-			ignition_state_g.OS_notify = true;
-			if (MT5_current_power_state == MT5_suspend)
+			//ignition_state_g.OS_notify = true;
+			if ((MT5_current_power_state == MT5_suspend || MT5_current_power_state == MT5_charging)  && (device_state_g == DEVICE_STATE_ON))
 			{
 				_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
 				_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH); //in suspend
 				printf("\n%s: event set, in suspend \n", __func__);
 			}
-			else if (MT5_current_power_state == MT5_active || MT5_current_power_state == MT5_charging)
+			else if ((MT5_current_power_state == MT5_active ) && (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED))
 			{
 				_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
 				_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW); //out of suspend
 				printf("\n%s: event set, out of suspend \n", __func__);
 			}
-			printf("\n%s: MT5 state changed, prev_state=%d, curr_state=%d\n", __func__, MT5_previous_power_state, MT5_current_power_state);
+			//printf("\n%s: MT5 state changed, prev_state=%d, curr_state=%d\n", __func__, MT5_previous_power_state, MT5_current_power_state);
 			
 			MT5_previous_power_state = MT5_current_power_state;
 		}
@@ -791,7 +791,10 @@ void Power_MGM_task (uint32_t initial_data )
 		}
 		time_diff_milli_u = (uint32_t) time_diff_milli;
 
-		MT5_power_state_monitor(&time_diff_milli_u);
+		if ((device_state_g == DEVICE_STATE_ON) ||  (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED))
+		{
+			MT5_power_state_monitor(&time_diff_milli_u);
+		}
 
 		Device_update_state(&time_diff_milli_u);
 		
