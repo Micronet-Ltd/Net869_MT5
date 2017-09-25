@@ -318,9 +318,11 @@ void Device_update_state (uint32_t * time_diff)
 					CLOCK_SYS_GetFreq(kCoreClock, &freq);
 					//switch_power_mode(kPowerManagerVlpr);
 					/* Start off with the peripherals disabled */
-					//peripherals_disable (false);
-					//disable_peripheral_clocks();
-					//_bsp_MQX_tick_timer_init ();
+					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
+					disable_peripheral_clocks();
+					CLOCK_SYS_EnablePortClock (PORTB_IDX); //Enable PortB clock so we can still read the WD signal in MSM suspend
+					peripherals_disable (false);
+					_bsp_MQX_tick_timer_init ();
 					/* Enable power to the vibration sensor and accelerometer */
 					GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 
