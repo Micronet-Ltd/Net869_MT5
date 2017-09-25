@@ -319,6 +319,7 @@ void Device_update_state (uint32_t * time_diff)
 					/* Start off with the peripherals disabled */
 					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
 					disable_peripheral_clocks();
+					CLOCK_SYS_EnablePortClock (PORTB_IDX); //Enable PortB clock so we can still read the WD signal in MSM suspend
 					peripherals_disable (false);
 					_bsp_MQX_tick_timer_init ();
 					/* Enable power to the vibration sensor and accelerometer */
