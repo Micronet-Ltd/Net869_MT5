@@ -102,11 +102,13 @@
 
 typedef struct
 {
-	uint32_t time_threshold;								// pulse time period
-	uint32_t time;											// time er
-	uint32_t delay_period;									// time duration that needs to be added to counter
-	bool     enable;										// pulse enable control
-	bool     status;										// pulse status - TRUE as long as pulse is generated
+    // 64-bit time_threshold works for 300 thousands years since MCU started 
+	uint64_t 	time_threshold;								// pulse time period
+	uint64_t 	time;											// time er
+	uint64_t	delay_period;									// time duration that needs to be added to counter
+	bool    	enable;										// pulse enable control
+	bool    	status;										// pulse status - TRUE as long as pulse is generated
+	bool		spare[6];
 } DEVICE_CONTROL_GPIO_t;
 
 
@@ -504,8 +506,11 @@ void Device_reset_req(int32_t wait_time)
 void Device_init (uint32_t delay_period)
 {
 	device_state_g = DEVICE_STATE_OFF;
+	TIME_STRUCT ticks_now;
 
-	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_ON_TH;
+	_time_get_elapsed(&ticks_now);
+
+	device_control_gpio_g.time_threshold = 1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.delay_period   = delay_period;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = false;
@@ -517,7 +522,11 @@ void Device_init (uint32_t delay_period)
 
 void Device_turn_on  (void)
 {
-	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_ON_TH;
+	TIME_STRUCT ticks_now;
+
+	_time_get_elapsed(&ticks_now);
+
+	device_control_gpio_g.time_threshold = 1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = true;
 
@@ -530,31 +539,42 @@ void Device_turn_on  (void)
 
 void Device_turn_off (void)
 {
-	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_OFF_TH;
+	TIME_STRUCT ticks_now;
+
+	_time_get_elapsed(&ticks_now);
+
+	device_control_gpio_g.time_threshold = 1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_OFF_TH;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = true;
 }
 
 void Device_reset (void)
 {
-	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_RESET_TH;
+	TIME_STRUCT ticks_now;
+
+	_time_get_elapsed(&ticks_now);
+
+	device_control_gpio_g.time_threshold = 1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_RESET_TH;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = true;
 }
 
 void Device_control_GPIO (uint32_t * time_diff)
 {
+	TIME_STRUCT ticks_now;
+	uint64_t ms;
+
+	_time_get_elapsed(&ticks_now);
+	ms = 1000*ticks_now.SECONDS + ticks_now.MILLISECONDS;
+
 	if (device_control_gpio_g.enable == false)
 		return;
 
-	if (device_control_gpio_g.time <	device_control_gpio_g.time_threshold)
-	{
+	if (ms < device_control_gpio_g.time_threshold) {
 		GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
 		device_control_gpio_g.status = true;
 		device_control_gpio_g.time  += *time_diff;
-	}
-	else
-	{
+	} else {
 		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
 		device_control_gpio_g.status = false;
 		device_control_gpio_g.time   = 0;
