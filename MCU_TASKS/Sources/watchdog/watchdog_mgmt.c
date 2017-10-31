@@ -107,7 +107,7 @@ void handle_watchdog_expiry(void * td_ptr)
 	}
 #endif
 	
-	GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
+	enable_msm_power(FALSE);		// turn off 5V0 power rail
 	delay_1s();
 	
 	WDG_RESET_MCU();

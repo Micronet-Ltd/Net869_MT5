@@ -370,7 +370,7 @@ void Device_off_req_immediate(bool clean_reset)
 	/* Shut off power to the accelerometer */
 	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
 
-	GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
+	enable_msm_power(FALSE);		// turn off 5V0 power rail
 
 	if (clean_reset)
 	{
@@ -434,7 +434,7 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 	if (cpu_off_wait_time >= MAX_CPU_OFF_CHECK_TIME)
 	{
 		printf ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
-		GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
+		enable_msm_power(FALSE);		// turn off 5V0 power rail
 	}
 #endif
 	}
@@ -484,7 +484,7 @@ void Device_reset_req(int32_t wait_time)
 
 	/* turning off the 5V rail always. */
 	//printf ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
-	//GPIO_DRV_ClearPinOutput(POWER_5V0_ENABLE);	// turn off 5V0 power rail
+	//enable_msm_power(FALSE);		// turn off 5V0 power rail
 #endif
 	//GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 	printf ("\nPOWER_MGM: DEVICE reset through Device_reset_req\n");
@@ -572,7 +572,7 @@ void peripherals_enable (void)
 
 	GPIO_DRV_ClearPinOutput (FPGA_RSTB);
 
-	GPIO_DRV_SetPinOutput   (POWER_5V0_ENABLE);	// turn on 5V0 power rail
+	enable_msm_power(TRUE);		// turn on 5V0 power rail
 	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
 	GPIO_DRV_SetPinOutput   (FPGA_RSTB);
 
