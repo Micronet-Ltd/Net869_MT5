@@ -67,7 +67,10 @@ const gpio_output_pin_user_config_t outputPins[] = {
 	{.pinName = SPKR_LEFT_EN,                   .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{.pinName = SPKR_RIGHT_EN,                  .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{.pinName = SPKR_EXT_EN,                    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
-
+	
+	// GPS (only routed in NET869 V6 and greater boards)
+	{.pinName = EXT_GPS_EN,                    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE                                                                                                                                                               }
 };
 

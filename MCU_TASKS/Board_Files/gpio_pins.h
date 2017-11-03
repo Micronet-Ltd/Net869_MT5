@@ -118,8 +118,8 @@ enum _gpio_pins_pinNames {
 	CPU_STATUS							= GPIO_MAKE_PIN(GPIOC_IDX,  2),
 	CPU_POWER_LOSS					    = GPIO_MAKE_PIN(GPIOE_IDX, 25), //swapped CPU_SPKR_EN with CPU_POWER_LOSS in schematic
 	CPU_MIC_EN						    = GPIO_MAKE_PIN(GPIOE_IDX, 26),
-
-
+	
+	EXT_GPS_EN							= GPIO_MAKE_PIN(GPIOD_IDX, 10), //used to control power to the external GPS antenna (only routed in NET869 V6 and greater boards)
 
 	PORT_D_SPARE1						= GPIO_MAKE_PIN(GPIOD_IDX,  0),
 	PORT_D_SPARE2						= GPIO_MAKE_PIN(GPIOD_IDX,  1),
@@ -131,7 +131,7 @@ enum _gpio_pins_pinNames {
 	PORT_D_SPARE8						= GPIO_MAKE_PIN(GPIOD_IDX,  7),
 	PORT_D_SPARE9						= GPIO_MAKE_PIN(GPIOD_IDX,  8),
 	PORT_D_SPARE10						= GPIO_MAKE_PIN(GPIOD_IDX,  9),
-	PORT_D_SPARE11						= GPIO_MAKE_PIN(GPIOD_IDX, 10),
+	
 	PORT_D_SPARE12						= GPIO_MAKE_PIN(GPIOD_IDX, 11),
 	PORT_D_SPARE13						= GPIO_MAKE_PIN(GPIOD_IDX, 12),
 	PORT_D_SPARE14						= GPIO_MAKE_PIN(GPIOD_IDX, 13),

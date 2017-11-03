@@ -633,8 +633,10 @@ void peripherals_enable (void)
 		GPIO_DRV_ClearPinOutput(SPKR_RIGHT_EN);
 		GPIO_DRV_ClearPinOutput(SPKR_LEFT_EN);
 	}
+	
 //	GPIO_DRV_SetPinOutput (SPKR_EXT_EN);
 //	GPIO_DRV_SetPinOutput (CPU_MIC_EN);
+	GPIO_DRV_SetPinOutput (EXT_GPS_EN);
 
 	// wait till FPGA is loaded
 	printf("%s: wait for fpga ready %d ms\n", __func__, total_wait_time);
@@ -693,6 +695,7 @@ void peripherals_disable (uint32_t WithFpga)
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
+	GPIO_DRV_ClearPinOutput (EXT_GPS_EN);
 	//AccDisable();
     GPIO_DRV_SetPinOutput (USB_OTG_OE);		//Disable OTG/MCU switch
 }
