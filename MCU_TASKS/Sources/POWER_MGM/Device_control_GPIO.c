@@ -510,7 +510,7 @@ void Device_init (uint32_t delay_period)
 
 	_time_get_elapsed(&ticks_now);
 
-	device_control_gpio_g.time_threshold = 1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_ON_TH;
+	device_control_gpio_g.time_threshold = (uint64_t)1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.delay_period   = delay_period;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = false;
@@ -526,7 +526,7 @@ void Device_turn_on  (void)
 
 	_time_get_elapsed(&ticks_now);
 
-	device_control_gpio_g.time_threshold = 1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_ON_TH;
+	device_control_gpio_g.time_threshold = (uint64_t)1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = true;
 
@@ -543,7 +543,7 @@ void Device_turn_off (void)
 
 	_time_get_elapsed(&ticks_now);
 
-	device_control_gpio_g.time_threshold = 1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_OFF_TH;
+	device_control_gpio_g.time_threshold = (uint64_t)1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_OFF_TH;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = true;
 }
@@ -554,7 +554,7 @@ void Device_reset (void)
 
 	_time_get_elapsed(&ticks_now);
 
-	device_control_gpio_g.time_threshold = 1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_RESET_TH;
+	device_control_gpio_g.time_threshold = (uint64_t)1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_RESET_TH;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = true;
 }
@@ -565,7 +565,7 @@ void Device_control_GPIO (uint32_t * time_diff)
 	uint64_t ms;
 
 	_time_get_elapsed(&ticks_now);
-	ms = 1000*ticks_now.SECONDS + ticks_now.MILLISECONDS;
+	ms = (uint64_t)1000*ticks_now.SECONDS + ticks_now.MILLISECONDS;
 
 	if (device_control_gpio_g.enable == false)
 		return;
