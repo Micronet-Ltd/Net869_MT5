@@ -40,6 +40,7 @@
 #include "spi_settings.h"
 #include "W25X40CL.h"
 #include "fsl_power_manager.h"
+#include "fsl_interrupt_manager.h"
 
 
 extern int32_t	Set_IRQHandler_spec(void);
@@ -234,7 +235,9 @@ void tasks_kill(void)
 	uint32_t i = 0;
 
 	g_flag_Exit = 1;
-		
+
+	INT_SYS_DisableIRQ(PORTA_IRQn);
+	
 	while(i < NUM_TASKS)
 	{
 		if(	0					!= g_TASK_ids[i] &&
