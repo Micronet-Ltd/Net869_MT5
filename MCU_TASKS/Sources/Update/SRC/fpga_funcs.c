@@ -52,15 +52,19 @@ void disable_others(uint32_t WithFpga)
 	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
 	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
 
+    GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
 	GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
 	GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
+
+    GPIO_DRV_SetPinOutput (USB_OTG_OE);		//Disable OTG/MCU switch
 	
 	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);
 }
+
 void disable_spi(void)
 {
 	PORT_HAL_SetMuxMode(PORTB,20u,kPortPinDisabled);
