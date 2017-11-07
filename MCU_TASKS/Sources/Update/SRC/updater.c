@@ -636,6 +636,7 @@ void fpga_data(uint8_t* buf, uint32_t len)
 	disable_spi();	
 	printf("update: %s end (%d)\n", __func__, err);
 }
+
 void updater_task(uint32_t param)
 {
 /*

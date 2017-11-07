@@ -43,35 +43,52 @@ dspi_master_state_t 		dspiMasterState;
 #define CRC32_POLINOMIAL 0xEDB88320
 void disable_others(uint32_t WithFpga)
 {
-  	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
+//  	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
 
-	if(WithFpga)
-	{
-		GPIO_DRV_ClearPinOutput (FPGA_RSTB);//fpga disable
-	}
+//	if(WithFpga)
+//	{
+//		GPIO_DRV_ClearPinOutput (FPGA_RSTB);//fpga disable
+//	}
 	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
 	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
 
+    GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
 	GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
 	GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
+
+    GPIO_DRV_SetPinOutput (USB_OTG_OE);		//Disable OTG/MCU switch
 	
-	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);
+//	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);
 }
+
 void disable_spi(void)
 {
-	PORT_HAL_SetMuxMode(PORTB,20u,kPortPinDisabled);
+    int i = 400;
+
+    GPIO_DRV_ClearPinOutput (FPGA_RSTB);
+
+    PORT_HAL_SetMuxMode(PORTB,20u,kPortPinDisabled);
 	/* Affects register PCS0 */
 	PORT_HAL_SetMuxMode(PORTB,21u,kPortPinDisabled);
 	/* Affects register MOSI */
 	PORT_HAL_SetMuxMode(PORTB,22u,kPortPinDisabled);
 	/* Affects register MISO */
 	PORT_HAL_SetMuxMode(PORTB,23u,kPortPinDisabled);
-	GPIO_DRV_SetPinOutput (FPGA_RSTB);
+
+    // delay should m=be at least 200 n-sec
+    for (;i > 0; i--) {
+    }
+
+    GPIO_DRV_SetPinOutput(FPGA_RSTB);
+
+    // TODO: Vladimir
+    // Wait for done will high
 }
+
 uint32_t crc_32(uint8_t *page, int len) {
    int i, j;
    uint32_t crc, m;
@@ -117,6 +134,8 @@ int32_t fpga_update_init(uint32_t instance)
 	uint32_t delayInNanosec = 200;
 	uint32_t calculatedDelay;
 
+    GPIO_DRV_ClearPinOutput (FPGA_RSTB);
+
 	calculatedDelay = GPIO_DRV_ReadPinInput (FPGA_DONE);//temp!!!maybe check - must be 0
 	printf ("updater:FPGA_DONE = %d\n", calculatedDelay);
 
@@ -140,7 +159,6 @@ int32_t fpga_update_init(uint32_t instance)
 	spiDevice.dataBusConfig.direction = kDspiMsbFirst;
 	spiDevice.bitsPerSec =  500000;
 
-//	GPIO_DRV_ClearPinOutput (FPGA_RSTB);
 	disable_others(1);
 	
 	status = DSPI_DRV_MasterConfigureBus(instance, &spiDevice, &calculatedBaudRate);
@@ -159,7 +177,7 @@ int32_t fpga_update_init(uint32_t instance)
 
 	configure_spi_pins(instance);// Configure pins for SPI
 
-	/* SPI use interrupt, must be installed in MQX and file fsl_dspi_irq.c must not be included in project */
+    /* SPI use interrupt, must be installed in MQX and file fsl_dspi_irq.c must not be included in project */
 	_int_install_isr(IRQNumber, (INT_ISR_FPTR)DSPI_DRV_MasterIRQHandler, (void*)instance);
 
 	return 0;
@@ -332,7 +350,7 @@ void fpga_get_version(char* buf)
 void fpga_deinit(void)
 {
 	DSPI_DRV_MasterDeinit(SPI_INSTANCE);
-	GPIO_DRV_SetPinOutput(FPGA_RSTB);
+//	GPIO_DRV_SetPinOutput(FPGA_RSTB);
 }
 	/* Deinit the SPI */
 /*    DSPI_DRV_MasterDeinit(SPI_INSTANCE);
