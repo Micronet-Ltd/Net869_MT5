@@ -112,6 +112,7 @@ void Acc_task (uint32_t initial_data)
 	uint64_t                    time_diff;
 	acc_data_messg              acc_data_buff;
 	pcdc_mic_queue_element_t    pqMemElem;
+	int res;
 
 	//APPLICATION_MESSAGE_T *msg;
 	//const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
@@ -157,37 +158,41 @@ void Acc_task (uint32_t initial_data)
         _event_wait_all(g_acc_event_h, 1, 0);
 		_event_clear(g_acc_event_h, 1);
 
-		_time_get(&new_time);
-		time_diff = ((new_time.SECONDS * 1000) +  new_time.MILLISECONDS) - ((time.SECONDS * 1000) +  time.MILLISECONDS);
-		/* Add delay on back to back reads to avoid overwhelming the USB */
-		if (time_diff == 0)
-		{
-			_time_delay (1);
-		}
-
-		if(acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE)))
-		{
-			_time_get(&time);
-			acc_data_buff.timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
-
-			pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
-			if (NULL == pqMemElem)
+		res = 0;
+		do {
+			_time_get(&new_time);
+			time_diff = ((new_time.SECONDS * 1000) +  new_time.MILLISECONDS) - ((time.SECONDS * 1000) +  time.MILLISECONDS);
+			/* Add delay on back to back reads to avoid overwhelming the USB */
+			if (time_diff == 0)
 			{
-				printf("%s: Error get mem for USB drop\n", __func__);
-				continue;
+				_time_delay (1);
 			}
 
-			pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
+			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
+			if (res) {
+				PORT_HAL_SetPinIntMode (PORTA, ACC_INT, kPortIntFallingEdge);
+				
+				_time_get(&time);
+				acc_data_buff.timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
 
-			if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2))
-			{
-				printf("%s: Error send data to CDC1\n", __func__);
+				pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
+				if (NULL == pqMemElem)
+				{
+					printf("%s: Error get mem for USB drop\n", __func__);
+					continue;
+				}
+
+				pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
+
+				if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2))
+				{
+					printf("%s: Error send data to CDC1\n", __func__);
+				}
+				break;
+			} else	{
+				_time_delay(1000);//delay after read error 
 			}
-		}
-		else
-		{
-		  	_time_delay(1000);//delay after read error 
-		}
+		} while (!res);
 	}
 
 	// should never get here

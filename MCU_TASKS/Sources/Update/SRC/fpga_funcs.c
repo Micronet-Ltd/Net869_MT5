@@ -133,10 +133,8 @@ int32_t fpga_update_init(uint32_t instance)
 	/* Configure timing delays 200ns, it is optional, useful for slower peripheral diveces or "fine tune" SPI timings */
 	uint32_t delayInNanosec = 200;
 	uint32_t calculatedDelay;
-    int i = 400;
 
     GPIO_DRV_ClearPinOutput (FPGA_RSTB);
-    // delay should m=be at least 200 n-sec
 
 	calculatedDelay = GPIO_DRV_ReadPinInput (FPGA_DONE);//temp!!!maybe check - must be 0
 	printf ("updater:FPGA_DONE = %d\n", calculatedDelay);
@@ -178,12 +176,6 @@ int32_t fpga_update_init(uint32_t instance)
 	DSPI_DRV_MasterSetDelay(instance, kDspiAfterTransfer, delayInNanosec, &calculatedDelay);
 
 	configure_spi_pins(instance);// Configure pins for SPI
-
-    for (i = 400; i > 0; i--) {
-    }
-
-    GPIO_DRV_SetPinOutput(FPGA_RSTB);
-
 
     /* SPI use interrupt, must be installed in MQX and file fsl_dspi_irq.c must not be included in project */
 	_int_install_isr(IRQNumber, (INT_ISR_FPTR)DSPI_DRV_MasterIRQHandler, (void*)instance);
@@ -358,7 +350,7 @@ void fpga_get_version(char* buf)
 void fpga_deinit(void)
 {
 	DSPI_DRV_MasterDeinit(SPI_INSTANCE);
-	GPIO_DRV_SetPinOutput(FPGA_RSTB);
+//	GPIO_DRV_SetPinOutput(FPGA_RSTB);
 }
 	/* Deinit the SPI */
 /*    DSPI_DRV_MasterDeinit(SPI_INSTANCE);

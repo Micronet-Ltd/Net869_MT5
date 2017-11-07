@@ -477,6 +477,7 @@ void MQX_PORTA_IRQHandler(void)
 
 	if (GPIO_DRV_IsPinIntPending (ACC_INT)) {
 		GPIO_DRV_ClearPinIntFlag(ACC_INT);
+		PORT_HAL_SetPinIntMode (PORTA, ACC_INT, kPortIntDisabled);
 		// Signal main task to read acc
 		_event_set(g_acc_event_h, 1);
 	}
