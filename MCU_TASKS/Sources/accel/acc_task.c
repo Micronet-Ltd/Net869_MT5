@@ -170,7 +170,7 @@ void Acc_task (uint32_t initial_data)
 
 			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
 			if (res) {
-				PORT_HAL_SetPinIntMode (PORTA, ACC_INT, kPortIntFallingEdge);
+				PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntFallingEdge);
 				
 				_time_get(&time);
 				acc_data_buff.timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
@@ -260,7 +260,14 @@ bool accInit (void)
 	_mqx_uint ret = MQX_OK;
 	i2c_status_t ret_i2c;
 
+	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+	{
+		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
+		_task_block();
+	}
 	I2C_Enable(ACC_I2C_PORT); /* Note:Both accelerometer and accel are on the same bus*/
+
+	_mutex_unlock(&g_i2c0_mutex);
 
 	// read recognition device ID
 	write_data[0] = ACC_REG_WHO_AM_I   ;
@@ -320,12 +327,10 @@ bool accInit (void)
 	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_CONFIG_FAIL;
 
 	printf ("ACC Task: Device Configured \n");
-	_mutex_unlock(&g_i2c0_mutex);
 	return true;
 
 _ACC_CONFIG_FAIL:
 	printf ("ACC Task: ERROR: Device NOT Configured \n");
-	_mutex_unlock(&g_i2c0_mutex);
 	return false;
 }
 
