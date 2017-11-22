@@ -494,7 +494,7 @@ void MQX_PORTB_IRQHandler(void)
 	if (GPIO_DRV_IsPinIntPending(CPU_SPKR_EN))
 	{
 		GPIO_DRV_ClearPinIntFlag(CPU_SPKR_EN);
-		if (GPIO_DRV_ReadPinInput(CPU_SPKR_EN))
+		if (1)          //GPIO_DRV_ReadPinInput(CPU_SPKR_EN))
 		{
 			GPIO_DRV_SetPinOutput (SPKR_RIGHT_EN);
 			GPIO_DRV_SetPinOutput (SPKR_LEFT_EN);

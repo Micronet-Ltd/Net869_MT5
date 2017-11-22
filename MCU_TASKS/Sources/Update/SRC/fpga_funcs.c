@@ -54,8 +54,8 @@ void disable_others(uint32_t WithFpga)
 
 	GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
-	GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
-	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
+	//GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
+	//GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
 	
