@@ -280,6 +280,7 @@ void Device_update_state (uint32_t * time_diff)
 			break;
 
 		case DEVICE_STATE_BACKUP_RECOVERY:
+                        NVIC_SystemReset();
 			backup_power_cnt_g += *time_diff;
 
 			// if recovery period has passed - generate power loss interrupt to CPU and close peripherals
