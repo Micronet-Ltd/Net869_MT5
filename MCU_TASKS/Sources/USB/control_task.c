@@ -20,6 +20,7 @@ extern DEVICE_STATE_t device_state_g;
 
 void send_control_msg(packet_t * msg, uint8_t msg_size)
 {
+#if 1	
 #if (DEBUG_LOG == 1)
   	uint64_t current_time;
 	TIME_STRUCT time;
