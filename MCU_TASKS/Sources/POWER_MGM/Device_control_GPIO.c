@@ -131,7 +131,9 @@ void send_power_change          (uint8_t *power_mask);
 
 void enable_peripheral_clocks(void)
 {
-  uint8_t i;
+  	uint8_t i;
+	printf ("%s: enable ports clocks\n", __func__);
+	
   for (i = 1; i < PORT_INSTANCE_COUNT; i++)
   {
 	CLOCK_SYS_EnablePortClock (i);
@@ -225,17 +227,17 @@ void Device_update_state (uint32_t * time_diff)
 				turn_on_condition_g |= POWER_MGM_DEVICE_WATCHDOG_RESET;
 			}
 
-			//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
-			//{
-			//  	turn_on_condition_g |= POWER_MGM_DEVICE_SW_RESET_REQ;
-			//}
+//			if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
+//			{
+//			  	turn_on_condition_g |= POWER_MGM_DEVICE_SW_RESET_REQ;
+//			}
 
 			if (turn_on_condition_g != 0)
 			{
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
 				//send_power_change  (&turn_on_condition);
-				printf("%s: device turn on temperature: %d mV", __func__, temperature);
+				printf("%s: device turn on temperature: %d mV\n", __func__, temperature);
 				printed_temp_error = FALSE;
 				device_state_g = DEVICE_STATE_TURNING_ON;
 			}
@@ -246,9 +248,9 @@ void Device_update_state (uint32_t * time_diff)
 			if (!Device_control_GPIO_status())
 			{
 				switch_power_mode(kPowerManagerRun);
+				_bsp_MQX_tick_timer_init ();
 				enable_peripheral_clocks();
 				peripherals_enable ();
-				_bsp_MQX_tick_timer_init ();
 				//Board_SetFastClk ();
 				Device_turn_on     ();
 				device_state_g = DEVICE_STATE_ON;
@@ -467,29 +469,36 @@ void Device_reset_req(int32_t wait_time)
 	_time_delay(cpu_off_wait_time);
 
 #ifdef MCU_AND_CPU_BOARD_CONNECTED
+	cpu_status_pin = GPIO_DRV_ReadPinInput (CPU_STATUS);
 	while (cpu_off_wait_time) {
-		/* Turn device off */
-		GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
-		_time_delay (100);
-		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
-
 	  	/* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
-		cpu_status_pin = GPIO_DRV_ReadPinInput (CPU_STATUS);
-		if (0 == cpu_status_pin) {
+		if (cpu_status_pin != GPIO_DRV_ReadPinInput (CPU_STATUS)) {
 			printf ("Device_off_req: CPU_status pin %d, wait_time %d ms\n", cpu_status_pin, cpu_off_wait_time);
+			_time_delay(200);
+			cpu_status_pin = 2;
 			break;
 		}
 		
-		_time_delay(CPU_OFF_CHECK_TIME);
-		cpu_off_wait_time -= CPU_OFF_CHECK_TIME;
+		_time_delay(5);
+		cpu_off_wait_time -= 5;
 	}
-
-	/* turning off the 5V rail always. */
-	//printf ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
-	//enable_msm_power(FALSE);		// turn off 5V0 power rail
 #endif
+	
+	// turning off the 5V rail always.
+	// printf ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
+	// Turn device off
+	if (2 != cpu_status_pin) {
+		printf ("%s: try shutdown A8 by power button\n", __func__);
+		GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+		_time_delay (DEVICE_CONTROL_TIME_OFF_TH);
+		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+	}
+	
+	enable_msm_power(FALSE);		// turn off 5V0 power rail
+
 	//GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 	printf ("\nPOWER_MGM: DEVICE reset through Device_reset_req\n");
+	peripherals_disable (1);
 	device_state_g = DEVICE_STATE_OFF;
 
 	// Vladimir
@@ -592,7 +601,7 @@ void peripherals_enable (void)
 
 	GPIO_DRV_ClearPinOutput (FPGA_RSTB);
 
-	enable_msm_power(TRUE);		// turn on 5V0 power rail
+//	enable_msm_power(TRUE);		// turn on 5V0 power rail
 	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
 	GPIO_DRV_SetPinOutput   (FPGA_RSTB);
 
@@ -628,6 +637,7 @@ void peripherals_enable (void)
 //	GPIO_DRV_SetPinOutput (CPU_MIC_EN);
 
 	// wait till FPGA is loaded
+	printf("%s: wait for fpga ready %d ms\n", __func__, total_wait_time);
 	while(1)
 	{
 		if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1)
@@ -645,20 +655,40 @@ void peripherals_enable (void)
 		}
 	}
 
+	printf("%s: fpga ready %d ms\n", __func__, total_wait_time);
+	if (0 == GPIO_DRV_ReadPinInput (FPGA_DONE)) {
+		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntDisabled);
+		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+	}
+	PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntFallingEdge);
+	GPIO_DRV_ClearPinIntFlag(ACC_INT);
 	// TODO: need to be removed after tasks enable will be set fro USB protocol
 	//J1708_enable  (7);
 
 }
 
 
-void peripherals_disable (void)
+void peripherals_disable (uint32_t WithFpga)
 {
-	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
+  	// disable FPGA based resources
+	PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntDisabled);
+	GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+	GPIO_DRV_ClearPinIntFlag(ACC_INT);
+	PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntDisabled);
+	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
 
+	if(WithFpga)
+	{  
+		// Down FPGA
+		GPIO_DRV_ClearPinOutput(FPGA_RSTB);
+		GPIO_DRV_ClearPinOutput(FPGA_PWR_ENABLE);
+	}
+	
 	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
 	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
 
     GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
+	GPIO_DRV_ClearPinOutput (FTDI_RSTN);
 	GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
 	GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);

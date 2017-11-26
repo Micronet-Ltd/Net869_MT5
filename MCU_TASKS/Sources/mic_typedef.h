@@ -35,6 +35,14 @@ typedef enum {
 	PORT_NVIC_IRQ_Priority = 0x0CU,
 	UART_NVIC_IRQ_Priority = 0x0CU,
 }NVIC_Priority_table_enum;
+
+enum OTG_ID_CFG{
+	//USB_NVIC_IRQ_Priority = (BSP_SYSTIMER_ISR_PRIOR + 2),
+	OTG_ID_CFG_FORCE_NONE = 0,
+	OTG_ID_CFG_FORCE_MCU_A8 = 1,
+	OTG_ID_CFG_FORCE_BYPASS = 2,
+};
+
 /******************************************************************************
  * Macro's
  *****************************************************************************/
@@ -45,6 +53,7 @@ typedef enum {
 #define MIC_CDC_USB_4			(3) // ttyACM3 CAN1
 #define MIC_CDC_USB_5			(4) // ttyACM4 J1708
 
+#define DEBUG_LOG				0
 /****************************************************************************
  * Global Variables
  ****************************************************************************/

@@ -301,8 +301,8 @@ static int nio_serial_read(void *dev_context, void *fp_context, void *buf, size_
 					}
 					return -1;
 				}
-				return readed;
 			}
+			return readed;
 		}
 		/* Read data from rx buffer */
 		/* If read_id is smaller than write_id (write_id doesn't reach the top),

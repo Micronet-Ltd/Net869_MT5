@@ -41,29 +41,6 @@ dspi_master_user_config_t 	userConfig;
 dspi_master_state_t 		dspiMasterState;
 
 #define CRC32_POLINOMIAL 0xEDB88320
-void disable_others(uint32_t WithFpga)
-{
-//  	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
-
-//	if(WithFpga)
-//	{
-//		GPIO_DRV_ClearPinOutput (FPGA_RSTB);//fpga disable
-//	}
-	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
-	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
-
-    GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
-	GPIO_DRV_ClearPinOutput (USB_ENABLE);
-	GPIO_DRV_ClearPinOutput (UART_ENABLE);
-	GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
-	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
-	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
-	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
-
-    GPIO_DRV_SetPinOutput (USB_OTG_OE);		//Disable OTG/MCU switch
-	
-//	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);
-}
 
 void disable_spi(void)
 {
@@ -159,8 +136,6 @@ int32_t fpga_update_init(uint32_t instance)
 	spiDevice.dataBusConfig.direction = kDspiMsbFirst;
 	spiDevice.bitsPerSec =  500000;
 
-	disable_others(1);
-	
 	status = DSPI_DRV_MasterConfigureBus(instance, &spiDevice, &calculatedBaudRate);
 	if(status != kStatus_DSPI_Success)
 	{
@@ -285,14 +260,29 @@ int32_t fpga_erase_sector(uint32_t addr)
 {
 	dspi_status_t spiStatus;
 	uint8_t send_buffer[8] = {0};
+	uint64_t current_time, timeout;
+	TIME_STRUCT time;
 
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	timeout = current_time + 5000;
 
-	while(!is_fpga_flash_ready());
+	do {
+		_time_delay(1);
+		_time_get(&time);
+		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		if(current_time > timeout)
+		{
+			printf("%s: is_fpga_flash_ready failed\n", __func__);
+			return -1;
+		}
+	}while(!is_fpga_flash_ready());
+	
 	send_buffer[0] = WREN;//0x06 - Write Enable
 	spiStatus = DSPI_DRV_MasterTransferBlocking(SPI_INSTANCE, NULL, send_buffer, 0, 1, SPI_TRANSFER_TIMEOUT);
 	if(spiStatus != kStatus_DSPI_Success)
 	{
-	  printf ("updater: %s: SPI WREN Error %d\n", __func__, spiStatus);
+	  	printf ("updater: %s: SPI WREN Error %d\n", __func__, spiStatus);
 		return spiStatus;
 	}
 
@@ -304,7 +294,21 @@ int32_t fpga_erase_sector(uint32_t addr)
 		printf("updater: %s err %d\n", __func__, spiStatus);
 		return -1;
 	}
-	while(is_fpga_flash_WEL());
+	
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	timeout = current_time + 10000;
+
+	do {
+		_time_delay(1);
+		_time_get(&time);
+		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		if(current_time > timeout)
+		{
+			printf("%s: is_fpga_flash_WEL failed\n", __func__);
+			return -1;
+		}
+	}while(is_fpga_flash_WEL());
 
 	return 0;
 }
@@ -312,8 +316,25 @@ int32_t fpga_write_data(uint32_t addr, uint8_t* buf, uint32_t length)
 {
 	uint8_t send_buffer[2] = {0};
 	dspi_status_t spiStatus;
+	uint64_t current_time, timeout;
+	TIME_STRUCT time;
 
-	while(!is_fpga_flash_ready());
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	timeout = current_time + 5000;
+
+	do
+	{
+		_time_delay(1);
+		_time_get(&time);
+		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		if(current_time > timeout)
+		{
+			printf("%s: is_fpga_flash_ready failed\n", __func__);
+			return -1;
+		}
+	}while(!is_fpga_flash_ready());
+		
 	send_buffer[0] = WREN;//0x06 - Write Enable
 	spiStatus = DSPI_DRV_MasterTransferBlocking(SPI_INSTANCE, NULL, send_buffer, 0, 1, SPI_TRANSFER_TIMEOUT);
 	if(spiStatus != kStatus_DSPI_Success)
@@ -330,7 +351,23 @@ int32_t fpga_write_data(uint32_t addr, uint8_t* buf, uint32_t length)
 		printf("updater: %s err %d\n", __func__, spiStatus);
 		return -1;
 	}
-	while(is_fpga_flash_WEL());
+	
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	timeout = current_time + 10000;
+
+	do
+	{
+		_time_delay(1);
+		_time_get(&time);
+		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		if(current_time > timeout)
+		{
+			printf("%s: is_fpga_flash_WEL failed\n", __func__);
+			return -1;
+		}
+	}while(is_fpga_flash_WEL());
+		
 	return 0;
 }
 
