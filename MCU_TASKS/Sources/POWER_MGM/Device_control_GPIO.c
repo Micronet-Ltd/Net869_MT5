@@ -628,6 +628,7 @@ void peripherals_enable (void)
 //	GPIO_DRV_SetPinOutput (CPU_MIC_EN);
 
 	// wait till FPGA is loaded
+	printf("%s: wait for fpga ready %d ms\n", __func__, total_wait_time);
 	while(1)
 	{
 		if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1)
@@ -645,20 +646,40 @@ void peripherals_enable (void)
 		}
 	}
 
+	printf("%s: fpga ready %d ms\n", __func__, total_wait_time);
+	if (0 == GPIO_DRV_ReadPinInput (FPGA_DONE)) {
+		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntDisabled);
+		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+	}
+	PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntFallingEdge);
+	GPIO_DRV_ClearPinIntFlag(ACC_INT);
 	// TODO: need to be removed after tasks enable will be set fro USB protocol
 	//J1708_enable  (7);
 
 }
 
 
-void peripherals_disable (void)
+void peripherals_disable (uint32_t WithFpga)
 {
-	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
+  	// disable FPGA based resources
+	PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntDisabled);
+	GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+	GPIO_DRV_ClearPinIntFlag(ACC_INT);
+	PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntDisabled);
+	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
 
+	if(WithFpga)
+	{  
+		// Down FPGA
+		GPIO_DRV_ClearPinOutput(FPGA_RSTB);
+		GPIO_DRV_ClearPinOutput(FPGA_PWR_ENABLE);
+	}
+	
 	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
 	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
 
     GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
+	GPIO_DRV_ClearPinOutput (FTDI_RSTN);
 	GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
 	GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
