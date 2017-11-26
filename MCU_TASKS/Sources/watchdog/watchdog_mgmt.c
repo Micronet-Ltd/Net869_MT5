@@ -202,3 +202,11 @@ void check_a8_watchdog_expiry_isr(void)
 		handle_watchdog_expiry(&color);
 	}
 }
+
+void cancel_a8_timers(void)
+{
+	_lwtimer_cancel_timer(&lwtimer_a8_check_g);
+	_lwtimer_cancel_period(&lwtimer_period_a8_check_g);
+	_lwtimer_cancel_timer(&lwtimer_a8_pet_g);
+	_lwtimer_cancel_period(&lwtimer_period_a8_pet_g);
+}
