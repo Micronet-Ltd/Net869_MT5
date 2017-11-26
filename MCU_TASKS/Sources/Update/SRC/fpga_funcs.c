@@ -41,29 +41,6 @@ dspi_master_user_config_t 	userConfig;
 dspi_master_state_t 		dspiMasterState;
 
 #define CRC32_POLINOMIAL 0xEDB88320
-void disable_others(uint32_t WithFpga)
-{
-//  	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
-
-//	if(WithFpga)
-//	{
-//		GPIO_DRV_ClearPinOutput (FPGA_RSTB);//fpga disable
-//	}
-	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
-	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
-
-    GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
-	GPIO_DRV_ClearPinOutput (USB_ENABLE);
-	GPIO_DRV_ClearPinOutput (UART_ENABLE);
-	GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
-	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
-	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
-	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
-
-    GPIO_DRV_SetPinOutput (USB_OTG_OE);		//Disable OTG/MCU switch
-	
-//	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);
-}
 
 void disable_spi(void)
 {
@@ -159,8 +136,6 @@ int32_t fpga_update_init(uint32_t instance)
 	spiDevice.dataBusConfig.direction = kDspiMsbFirst;
 	spiDevice.bitsPerSec =  500000;
 
-	disable_others(1);
-	
 	status = DSPI_DRV_MasterConfigureBus(instance, &spiDevice, &calculatedBaudRate);
 	if(status != kStatus_DSPI_Success)
 	{
