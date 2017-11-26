@@ -108,10 +108,10 @@ uint32_t acc_time_diff_non_zero = 0;
 void Acc_task (uint32_t initial_data)
 {
 	TIME_STRUCT                 time;
-	TIME_STRUCT                 new_time;
-	uint64_t                    time_diff;
+	uint64_t                    time_diff, prev_time;
 	acc_data_messg              acc_data_buff;
 	pcdc_mic_queue_element_t    pqMemElem;
+	int res;
 
 	//APPLICATION_MESSAGE_T *msg;
 	//const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
@@ -122,7 +122,13 @@ void Acc_task (uint32_t initial_data)
 
 	/* */
 	_mqx_uint event_result;
+//#if (DEBUG_LOG)
+	uint64_t current_time;
 
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	printf("%s: started %llu\n", __func__, current_time);
+//#endif
 
 	event_result = _event_create("event.AccInt");
 	if(MQX_OK != event_result){
@@ -152,42 +158,45 @@ void Acc_task (uint32_t initial_data)
 	//test_acc_msg.header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
 	//test_acc_msg.header.SIZE = sizeof(MESSAGE_HEADER_STRUCT) + strlen((char *)msg->data) + 1;
 	//acc_msg = &test_acc_msg;
+	_time_get(&time);
+	prev_time = time_diff = (uint64_t)1000*time.SECONDS +  time.MILLISECONDS;
+	
 	while (0 == g_flag_Exit)
 	{
         _event_wait_all(g_acc_event_h, 1, 0);
 		_event_clear(g_acc_event_h, 1);
 
-		_time_get(&new_time);
-		time_diff = ((new_time.SECONDS * 1000) +  new_time.MILLISECONDS) - ((time.SECONDS * 1000) +  time.MILLISECONDS);
-		/* Add delay on back to back reads to avoid overwhelming the USB */
-		if (time_diff == 0)
-		{
-			_time_delay (1);
-		}
+		res = 0;
+		do {
+			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
+			if (res) {
+				_time_get(&time);
+				acc_data_buff.timestamp = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+				time_diff = acc_data_buff.timestamp;
+				
+				/* Add delay on back to back reads to avoid overwhelming the USB */
+				if (time_diff - prev_time == 0)
+				{
+					_time_delay (1);
+				}
 
-		if(acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE)))
-		{
-			_time_get(&time);
-			acc_data_buff.timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
+				prev_time = time_diff;
+				pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
+				if (pqMemElem) {
+					pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
 
-			pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
-			if (NULL == pqMemElem)
-			{
-				printf("%s: Error get mem for USB drop\n", __func__);
-				continue;
+					if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2))
+					{
+						printf("%s: Error send data to CDC1\n", __func__);
+					}
+				}
+				PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntFallingEdge);
+				break;
+			} else	{
+				printf("%s: fifo error timeout\n", __func__);
+				_time_delay(1000);//delay after read error 
 			}
-
-			pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
-
-			if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2))
-			{
-				printf("%s: Error send data to CDC1\n", __func__);
-			}
-		}
-		else
-		{
-		  	_time_delay(1000);//delay after read error 
-		}
+		} while (!res);
 	}
 
 	// should never get here
@@ -207,18 +216,18 @@ bool acc_receive_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t 
 	}
 
 	/* Get i2c0 mutex */
-	if ((ret =_mutex_lock(&g_i2c0_mutex)) != MQX_OK)
-	{
-		printf("acc_receive_data: i2c mutex lock failed, ret %d \n", ret);
-		_task_block();
-	}
+//	if ((ret =_mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+//	{
+//		printf("acc_receive_data: i2c mutex lock failed, ret %d \n", ret);
+//		_task_block();
+//	}
 
 	if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device_g, cmd,  cmd_size, data, data_size, ACC_TIME_OUT*data_size)) != kStatus_I2C_Success)
 	{
 		printf ("acc_receive_data: ERROR: Could not receive command 0x%X (I2C error code %d)\n", *cmd, i2c_status);
 	}
 
-	_mutex_unlock(&g_i2c0_mutex);
+//	_mutex_unlock(&g_i2c0_mutex);
 	return (i2c_status == kStatus_I2C_Success);
 }
 
@@ -234,16 +243,16 @@ bool acc_send_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t dat
 	}
 
 	/* Get i2c0 mutex */
-	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
-	{
-		printf("accel_send_data: i2c mutex lock failed, ret %d \n", ret);
-		_task_block();
-	}
+//	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+//	{
+//		printf("accel_send_data: i2c mutex lock failed, ret %d \n", ret);
+//		_task_block();
+//	}
 
 	if ((i2c_status = I2C_DRV_MasterSendDataBlocking (ACC_I2C_PORT, &acc_device_g, cmd,  cmd_size, data, data_size, ACC_TIME_OUT)) != kStatus_I2C_Success)
 		printf ("accel_send_data: ERROR: Could not send command 0x%X (I2C error code %d)\n", *cmd, i2c_status);
 
-	_mutex_unlock(&g_i2c0_mutex);
+//	_mutex_unlock(&g_i2c0_mutex);
 	return (i2c_status == kStatus_I2C_Success);
 }
 
@@ -255,6 +264,11 @@ bool accInit (void)
 	_mqx_uint ret = MQX_OK;
 	i2c_status_t ret_i2c;
 
+	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+	{
+		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
+		_task_block();
+	}
 	I2C_Enable(ACC_I2C_PORT); /* Note:Both accelerometer and accel are on the same bus*/
 
 	// read recognition device ID
@@ -314,13 +328,13 @@ bool accInit (void)
 	write_data[1] = 0x02 ;
 	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_CONFIG_FAIL;
 
-	printf ("ACC Task: Device Configured \n");
 	_mutex_unlock(&g_i2c0_mutex);
+	printf ("ACC Task: Device Configured \n");
 	return true;
 
 _ACC_CONFIG_FAIL:
-	printf ("ACC Task: ERROR: Device NOT Configured \n");
 	_mutex_unlock(&g_i2c0_mutex);
+	printf ("ACC Task: ERROR: Device NOT Configured \n");
 	return false;
 }
 
@@ -328,7 +342,13 @@ void AccEnable (void)
 {
 	uint8_t read_data      =  0 ;
 	uint8_t write_data [2] = {0};
+	_mqx_uint ret = MQX_OK;
 
+	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+	{
+		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
+		_task_block();
+	}
 	// read recognition register
 	write_data[0] = ACC_REG_CTRL_REG1;
 	if (!acc_receive_data(&write_data[0], 1, &read_data, 1))	goto _ACC_ENABLE_FAIL;
@@ -337,9 +357,11 @@ void AccEnable (void)
 	if (!acc_send_data(&write_data[0], 1, &write_data[1], 1))	goto _ACC_ENABLE_FAIL;
 	printf ("ACC Task: Accelerometer Enabled \n");
 	acc_enabled_g = TRUE;
+	_mutex_unlock(&g_i2c0_mutex);
 	return;
 
 _ACC_ENABLE_FAIL:
+	_mutex_unlock(&g_i2c0_mutex);
 	printf ("ACC Task: ERROR: Accelerometer NOT enabled \n");
 
 }
@@ -348,7 +370,13 @@ void AccDisable (void)
 {
 	uint8_t read_data      =  0 ;
 	uint8_t write_data [2] = {0};
+	_mqx_uint ret = MQX_OK;
 
+	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+	{
+		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
+		_task_block();
+	}
 	// read control register
 	write_data[0] = ACC_REG_CTRL_REG1;
 	if (!acc_receive_data(&write_data[0], 1, &read_data, 1))	goto _ACC_DISABLE_FAIL;
@@ -362,28 +390,51 @@ void AccDisable (void)
 
 	printf ("ACC Task: Accelerometer Disabled \n");
 	acc_enabled_g = FALSE;
+
+	_mutex_unlock(&g_i2c0_mutex);
+
 	return;
 
 _ACC_DISABLE_FAIL:
+	_mutex_unlock(&g_i2c0_mutex);
 	printf ("ACC Task: ERROR: Accelerometer NOT disabled \n");
 }
 
 /* AccReadRegister: Helper function to read 1 byte from a register */
 void AccReadRegister(uint8_t address, uint8_t * read_data)
 {
+	_mqx_uint ret = MQX_OK;
+
+	printf("%s: read address: %X\n", __func__, address);
+	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+	{
+		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
+		_task_block();
+	}
 	if (!acc_receive_data(&address, 1, read_data, 1))
 	{
 		printf("%s: read address: %d failed\n", __func__, address);
 	}
+	_mutex_unlock(&g_i2c0_mutex);
 }
 
 /* AccWriteRegister: Helper function to read 1 byte from a register */
 void AccWriteRegister(uint8_t address, uint8_t write_data)
 {
+	_mqx_uint ret = MQX_OK;
+
+	printf("%s: address: %X\n", __func__, address);
+
+	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+	{
+		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
+		_task_block();
+	}
 	if (!acc_send_data(&address, 1, &write_data, 1))
 	{
 		printf("%s: write address: %d with data %d failed\n", __func__, address, write_data);
 	}
+	_mutex_unlock(&g_i2c0_mutex);
 }
 
 bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
@@ -391,7 +442,13 @@ bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 	uint8_t u8ByteCnt      =  0 ;
 	uint8_t read_data      =  0 ;
 	uint8_t write_data [2] = {0};
+	_mqx_uint ret = MQX_OK;
 
+	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+	{
+		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
+		_task_block();
+	}
 	// read status register
 	write_data[0] = ACC_REG_STATUS;
 	//if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT*10) != kStatus_I2C_Success)		goto _ACC_FIFO_READ_FAIL;
@@ -408,9 +465,11 @@ bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 	//if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, buffer, u8ByteCnt, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_FIFO_READ_FAIL;
 	if (!acc_receive_data(&write_data[0], 1, buffer, u8ByteCnt))		goto _ACC_FIFO_READ_FAIL;
 
+	_mutex_unlock(&g_i2c0_mutex);
 	return TRUE;
 
 _ACC_FIFO_READ_FAIL:
+	_mutex_unlock(&g_i2c0_mutex);
 	printf ("ACC Task: ERROR: Accelerometer read failure \n");
 	return FALSE;
 }
