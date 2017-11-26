@@ -72,6 +72,7 @@ clock_manager_error_code_t dbg_console_cm_callback(clock_notify_struct_t *notify
 power_manager_error_code_t rtos_pm_callback(power_manager_notify_struct_t * notify,  power_manager_callback_data_t * dataPtr);
 clock_manager_error_code_t rtos_cm_callback(clock_notify_struct_t *notify, void* callbackData);
 extern void MQX_PORTA_IRQHandler(void);
+extern uint8_t g_flag_Exit;
 
 typedef enum demo_power_modes {
 	kDemoMin  = 0,
@@ -571,6 +572,7 @@ void Power_MGM_task (uint32_t initial_data )
 	bool time_diff_overflow = false;
     _mqx_uint event_bits;
 	_mqx_uint event_result;
+	uint64_t current_time;
 	
 	_time_get_elapsed_ticks_fast(&ticks_prev);
 
@@ -626,19 +628,23 @@ void Power_MGM_task (uint32_t initial_data )
 #endif
 
 	/* Start off with the peripherals disabled */
-	peripherals_disable ();
+	peripherals_disable (1);
 	disable_peripheral_clocks();
 	/* Enable power to the vibration sensor and accelerometer */
 	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 
 	printf ("\nPower Management Task: Start \n");
 
-	while (1)
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	printf("%s: started %llu\n", __func__, current_time);
+
+	while (!g_flag_Exit)
 	{
 		ADC_sample_input (adc_input);
 		if (++adc_input >= (kADC_CHANNELS - 1))
 		{
-			//printf ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
+//			printf ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
 			GPIO_all_check_for_change();
 			adc_input = kADC_ANALOG_IN1;
 		}
@@ -667,6 +673,7 @@ void Power_MGM_task (uint32_t initial_data )
 		time_diff_milli_u = (uint32_t) time_diff_milli;
 
 		Device_update_state(&time_diff_milli_u);
+
 		
         if (_event_get_value(cpu_status_event_g, &event_bits) == MQX_OK) 
         {
