@@ -108,8 +108,7 @@ uint32_t acc_time_diff_non_zero = 0;
 void Acc_task (uint32_t initial_data)
 {
 	TIME_STRUCT                 time;
-	TIME_STRUCT                 new_time;
-	uint64_t                    time_diff;
+	uint64_t                    time_diff, prev_time;
 	acc_data_messg              acc_data_buff;
 	pcdc_mic_queue_element_t    pqMemElem;
 	int res;
@@ -123,7 +122,13 @@ void Acc_task (uint32_t initial_data)
 
 	/* */
 	_mqx_uint event_result;
+//#if (DEBUG_LOG)
+	uint64_t current_time;
 
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	printf("%s: started %llu\n", __func__, current_time);
+//#endif
 
 	event_result = _event_create("event.AccInt");
 	if(MQX_OK != event_result){
@@ -153,6 +158,9 @@ void Acc_task (uint32_t initial_data)
 	//test_acc_msg.header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
 	//test_acc_msg.header.SIZE = sizeof(MESSAGE_HEADER_STRUCT) + strlen((char *)msg->data) + 1;
 	//acc_msg = &test_acc_msg;
+	_time_get(&time);
+	prev_time = time_diff = (uint64_t)1000*time.SECONDS +  time.MILLISECONDS;
+	
 	while (0 == g_flag_Exit)
 	{
         _event_wait_all(g_acc_event_h, 1, 0);
@@ -160,36 +168,32 @@ void Acc_task (uint32_t initial_data)
 
 		res = 0;
 		do {
-			_time_get(&new_time);
-			time_diff = ((new_time.SECONDS * 1000) +  new_time.MILLISECONDS) - ((time.SECONDS * 1000) +  time.MILLISECONDS);
-			/* Add delay on back to back reads to avoid overwhelming the USB */
-			if (time_diff == 0)
-			{
-				_time_delay (1);
-			}
-
 			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
 			if (res) {
-				PORT_HAL_SetPinIntMode (PORTA, ACC_INT, kPortIntFallingEdge);
-				
 				_time_get(&time);
-				acc_data_buff.timestamp = time.SECONDS * 1000 + time.MILLISECONDS;
+				acc_data_buff.timestamp = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+				time_diff = acc_data_buff.timestamp;
+				
+				/* Add delay on back to back reads to avoid overwhelming the USB */
+				if (time_diff - prev_time == 0)
+				{
+					_time_delay (1);
+				}
 
+				prev_time = time_diff;
 				pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
-				if (NULL == pqMemElem)
-				{
-					printf("%s: Error get mem for USB drop\n", __func__);
-					continue;
-				}
+				if (pqMemElem) {
+					pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
 
-				pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
-
-				if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2))
-				{
-					printf("%s: Error send data to CDC1\n", __func__);
+					if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2))
+					{
+						printf("%s: Error send data to CDC1\n", __func__);
+					}
 				}
+				PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntFallingEdge);
 				break;
 			} else	{
+				printf("%s: fifo error timeout\n", __func__);
 				_time_delay(1000);//delay after read error 
 			}
 		} while (!res);

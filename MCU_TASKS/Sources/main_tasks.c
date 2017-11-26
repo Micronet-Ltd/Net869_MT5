@@ -307,6 +307,10 @@ void Main_task( uint32_t initial_data ) {
 
 	J1708_enable  (7);
 
+	if (GPIO_DRV_ReadPinInput (FPGA_DONE)) {
+		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntRisingEdge);
+		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+	}
 	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
 	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
 	{
@@ -477,7 +481,7 @@ void MQX_PORTA_IRQHandler(void)
 
 	if (GPIO_DRV_IsPinIntPending (ACC_INT)) {
 		GPIO_DRV_ClearPinIntFlag(ACC_INT);
-		PORT_HAL_SetPinIntMode (PORTA, ACC_INT, kPortIntDisabled);
+		PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntDisabled);
 		// Signal main task to read acc
 		_event_set(g_acc_event_h, 1);
 	}
