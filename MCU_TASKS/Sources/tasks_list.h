@@ -8,7 +8,8 @@
 #include <stdio.h>
 
 #define MAX_MSG_DATA_LEN	 0x40
-#define NUM_CLIENTS			 (10)
+#define NUM_CLIENTS			 (16)
+
 
 //#define USB_CAN_MAX_USABLE      (NUM_CLIENTS-10)
 

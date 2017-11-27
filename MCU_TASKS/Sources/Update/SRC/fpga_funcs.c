@@ -41,37 +41,31 @@ dspi_master_user_config_t 	userConfig;
 dspi_master_state_t 		dspiMasterState;
 
 #define CRC32_POLINOMIAL 0xEDB88320
-void disable_others(uint32_t WithFpga)
-{
-  	GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
 
-	if(WithFpga)
-	{
-		GPIO_DRV_ClearPinOutput (FPGA_RSTB);//fpga disable
-	}
-	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
-	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
-
-	GPIO_DRV_ClearPinOutput (USB_ENABLE);
-	GPIO_DRV_ClearPinOutput (UART_ENABLE);
-	GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
-	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
-	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
-	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
-	
-	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);
-}
 void disable_spi(void)
 {
-	PORT_HAL_SetMuxMode(PORTB,20u,kPortPinDisabled);
+    int i = 400;
+
+    GPIO_DRV_ClearPinOutput (FPGA_RSTB);
+
+    PORT_HAL_SetMuxMode(PORTB,20u,kPortPinDisabled);
 	/* Affects register PCS0 */
 	PORT_HAL_SetMuxMode(PORTB,21u,kPortPinDisabled);
 	/* Affects register MOSI */
 	PORT_HAL_SetMuxMode(PORTB,22u,kPortPinDisabled);
 	/* Affects register MISO */
 	PORT_HAL_SetMuxMode(PORTB,23u,kPortPinDisabled);
-	GPIO_DRV_SetPinOutput (FPGA_RSTB);
+
+    // delay should m=be at least 200 n-sec
+    for (;i > 0; i--) {
+    }
+
+    GPIO_DRV_SetPinOutput(FPGA_RSTB);
+
+    // TODO: Vladimir
+    // Wait for done will high
 }
+
 uint32_t crc_32(uint8_t *page, int len) {
    int i, j;
    uint32_t crc, m;
@@ -117,6 +111,8 @@ int32_t fpga_update_init(uint32_t instance)
 	uint32_t delayInNanosec = 200;
 	uint32_t calculatedDelay;
 
+    GPIO_DRV_ClearPinOutput (FPGA_RSTB);
+
 	calculatedDelay = GPIO_DRV_ReadPinInput (FPGA_DONE);//temp!!!maybe check - must be 0
 	printf ("updater:FPGA_DONE = %d\n", calculatedDelay);
 
@@ -140,9 +136,6 @@ int32_t fpga_update_init(uint32_t instance)
 	spiDevice.dataBusConfig.direction = kDspiMsbFirst;
 	spiDevice.bitsPerSec =  500000;
 
-//	GPIO_DRV_ClearPinOutput (FPGA_RSTB);
-	disable_others(1);
-	
 	status = DSPI_DRV_MasterConfigureBus(instance, &spiDevice, &calculatedBaudRate);
 	if(status != kStatus_DSPI_Success)
 	{
@@ -159,7 +152,7 @@ int32_t fpga_update_init(uint32_t instance)
 
 	configure_spi_pins(instance);// Configure pins for SPI
 
-	/* SPI use interrupt, must be installed in MQX and file fsl_dspi_irq.c must not be included in project */
+    /* SPI use interrupt, must be installed in MQX and file fsl_dspi_irq.c must not be included in project */
 	_int_install_isr(IRQNumber, (INT_ISR_FPTR)DSPI_DRV_MasterIRQHandler, (void*)instance);
 
 	return 0;
@@ -267,14 +260,29 @@ int32_t fpga_erase_sector(uint32_t addr)
 {
 	dspi_status_t spiStatus;
 	uint8_t send_buffer[8] = {0};
+	uint64_t current_time, timeout;
+	TIME_STRUCT time;
 
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	timeout = current_time + 5000;
 
-	while(!is_fpga_flash_ready());
+	do {
+		_time_delay(1);
+		_time_get(&time);
+		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		if(current_time > timeout)
+		{
+			printf("%s: is_fpga_flash_ready failed\n", __func__);
+			return -1;
+		}
+	}while(!is_fpga_flash_ready());
+	
 	send_buffer[0] = WREN;//0x06 - Write Enable
 	spiStatus = DSPI_DRV_MasterTransferBlocking(SPI_INSTANCE, NULL, send_buffer, 0, 1, SPI_TRANSFER_TIMEOUT);
 	if(spiStatus != kStatus_DSPI_Success)
 	{
-	  printf ("updater: %s: SPI WREN Error %d\n", __func__, spiStatus);
+	  	printf ("updater: %s: SPI WREN Error %d\n", __func__, spiStatus);
 		return spiStatus;
 	}
 
@@ -286,7 +294,21 @@ int32_t fpga_erase_sector(uint32_t addr)
 		printf("updater: %s err %d\n", __func__, spiStatus);
 		return -1;
 	}
-	while(is_fpga_flash_WEL());
+	
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	timeout = current_time + 10000;
+
+	do {
+		_time_delay(1);
+		_time_get(&time);
+		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		if(current_time > timeout)
+		{
+			printf("%s: is_fpga_flash_WEL failed\n", __func__);
+			return -1;
+		}
+	}while(is_fpga_flash_WEL());
 
 	return 0;
 }
@@ -294,8 +316,25 @@ int32_t fpga_write_data(uint32_t addr, uint8_t* buf, uint32_t length)
 {
 	uint8_t send_buffer[2] = {0};
 	dspi_status_t spiStatus;
+	uint64_t current_time, timeout;
+	TIME_STRUCT time;
 
-	while(!is_fpga_flash_ready());
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	timeout = current_time + 5000;
+
+	do
+	{
+		_time_delay(1);
+		_time_get(&time);
+		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		if(current_time > timeout)
+		{
+			printf("%s: is_fpga_flash_ready failed\n", __func__);
+			return -1;
+		}
+	}while(!is_fpga_flash_ready());
+		
 	send_buffer[0] = WREN;//0x06 - Write Enable
 	spiStatus = DSPI_DRV_MasterTransferBlocking(SPI_INSTANCE, NULL, send_buffer, 0, 1, SPI_TRANSFER_TIMEOUT);
 	if(spiStatus != kStatus_DSPI_Success)
@@ -312,7 +351,23 @@ int32_t fpga_write_data(uint32_t addr, uint8_t* buf, uint32_t length)
 		printf("updater: %s err %d\n", __func__, spiStatus);
 		return -1;
 	}
-	while(is_fpga_flash_WEL());
+	
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	timeout = current_time + 10000;
+
+	do
+	{
+		_time_delay(1);
+		_time_get(&time);
+		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		if(current_time > timeout)
+		{
+			printf("%s: is_fpga_flash_WEL failed\n", __func__);
+			return -1;
+		}
+	}while(is_fpga_flash_WEL());
+		
 	return 0;
 }
 
@@ -332,7 +387,7 @@ void fpga_get_version(char* buf)
 void fpga_deinit(void)
 {
 	DSPI_DRV_MasterDeinit(SPI_INSTANCE);
-	GPIO_DRV_SetPinOutput(FPGA_RSTB);
+//	GPIO_DRV_SetPinOutput(FPGA_RSTB);
 }
 	/* Deinit the SPI */
 /*    DSPI_DRV_MasterDeinit(SPI_INSTANCE);
