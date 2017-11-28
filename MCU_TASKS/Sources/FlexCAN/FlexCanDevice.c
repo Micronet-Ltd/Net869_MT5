@@ -203,6 +203,13 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 	uint32_t resp_msg_size = 0;
 	uint8_t bytes_read = 0;
 
+	uint64_t current_time;
+	TIME_STRUCT time;
+
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	printf("%s: started %llu\n", __func__, current_time);
+
 	if ( NULL == (pcan) || BOARD_CAN_INSTANCE <= (pcan)->instance ) {
 		printf( "%s:thread wrong param %u\n", __func__, (pcan)->instance );
 		return;
@@ -1031,6 +1038,13 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 	pcdc_mic_queue_element_t    pqMemElem;
 	
 	pflexcanInstance_t pcan = (pflexcanInstance_t)param_in;
+
+	uint64_t current_time;
+	TIME_STRUCT time;
+
+	_time_get(&time);
+	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	printf("%s: started %llu\n", __func__, current_time);
 
 	if ( (NULL == pcan) || (BOARD_CAN_INSTANCE <= pcan->instance) ) {
 		printf( "%s:ERROR,CAN_RX thread incorrect param %u\n", __func__, pcan->instance );
