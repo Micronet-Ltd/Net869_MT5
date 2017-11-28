@@ -204,10 +204,8 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 	uint8_t bytes_read = 0;
 
 	uint64_t current_time;
-	TIME_STRUCT time;
 
-	_time_get(&time);
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	current_time = ms_from_start();
 	printf("%s: started %llu\n", __func__, current_time);
 
 	if ( NULL == (pcan) || BOARD_CAN_INSTANCE <= (pcan)->instance ) {
@@ -1040,10 +1038,8 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 	pflexcanInstance_t pcan = (pflexcanInstance_t)param_in;
 
 	uint64_t current_time;
-	TIME_STRUCT time;
 
-	_time_get(&time);
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	current_time = ms_from_start();
 	printf("%s: started %llu\n", __func__, current_time);
 
 	if ( (NULL == pcan) || (BOARD_CAN_INSTANCE <= pcan->instance) ) {

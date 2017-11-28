@@ -286,6 +286,13 @@ void update_fw_uart_init(void);
 void Board_SetVerySlowClk  (void);
 void Board_SetFastClk (void);
 void Board_SetSlowClk (void);
+inline uint64_t ms_from_start()
+{
+    TIME_STRUCT time;
+
+    _time_get(&time);
+    return (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+}
 
 #if defined(__cplusplus)
 }
