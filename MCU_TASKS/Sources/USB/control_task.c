@@ -105,9 +105,9 @@ void control_task (uint32_t initial_data)
 
 		  	if (ctl_rx_msg != NULL && ctl_rx_msg->header.SIZE >= 2)
 			{
+#if (DEBUG_LOG == 1)
 				//TODO: For debug only
 				current_time = ms_from_start();
-#if (DEBUG_LOG == 1)
 				printf("%s: time: %llu ms, data : %x,%x, \t ,%x,%x, size %d \n", __func__, current_time,
 					   ctl_rx_msg->data[0], ctl_rx_msg->data[1], ctl_rx_msg->data[ctl_rx_msg->header.SIZE -2],
 						ctl_rx_msg->data[ctl_rx_msg->header.SIZE -1], ctl_rx_msg->header.SIZE);
@@ -119,8 +119,8 @@ void control_task (uint32_t initial_data)
 		} while (0);
 
 		if (NULL != ctl_rx_msg) {
-			current_time = ms_from_start();
 #if (DEBUG_LOG == 1)
+			current_time = ms_from_start();
 			printf("%s: time: %llu ms, data free msg\n", __func__, current_time);
 #endif
 			_msg_free   (ctl_rx_msg);

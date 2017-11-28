@@ -42,6 +42,10 @@ dspi_master_state_t 		dspiMasterState;
 
 #define CRC32_POLINOMIAL 0xEDB88320
 
+#define SPI_FLASH_SECTOR_WR_EN_TO 5000
+#define SPI_FLASH_SECTOR_ERASE_TO 10000
+#define SPI_FLASH_PAGE_PROG_TO 10000
+
 void disable_spi(void)
 {
     int i = 400;
@@ -263,7 +267,7 @@ int32_t fpga_erase_sector(uint32_t addr)
 	uint64_t current_time, timeout;
 
 	current_time = ms_from_start();
-	timeout = current_time + 5000;
+	timeout = current_time + SPI_FLASH_SECTOR_WR_EN_TO;
 
 	do {
 		_time_delay(1);
@@ -293,7 +297,7 @@ int32_t fpga_erase_sector(uint32_t addr)
 	}
 	
 	current_time = ms_from_start();
-	timeout = current_time + 10000;
+	timeout = current_time + SPI_FLASH_SECTOR_ERASE_TO;
 
 	do {
 		_time_delay(1);
@@ -314,7 +318,7 @@ int32_t fpga_write_data(uint32_t addr, uint8_t* buf, uint32_t length)
 	uint64_t current_time, timeout;
 
 	current_time = ms_from_start();
-	timeout = current_time + 5000;
+	timeout = current_time + SPI_FLASH_SECTOR_WR_EN_TO;
 
 	do
 	{
@@ -345,7 +349,7 @@ int32_t fpga_write_data(uint32_t addr, uint8_t* buf, uint32_t length)
 	}
 	
 	current_time = ms_from_start();
-	timeout = current_time + 10000;
+	timeout = current_time + SPI_FLASH_PAGE_PROG_TO;
 
 	do
 	{

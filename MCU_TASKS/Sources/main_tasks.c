@@ -197,7 +197,6 @@ void Main_task( uint32_t initial_data ) {
 	uint32_t cdc_recovery_count = -1;
 	uint64_t otg_reset_time;
 	uint64_t otg_check_time;
-	TIME_STRUCT time_now;
 
 	printf("\n%s: Start\n", __func__);
 #if 0
@@ -399,8 +398,7 @@ void Main_task( uint32_t initial_data ) {
 #endif
 	printf("\nMain Task: Loop \n");
 	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
-	_time_get(&time_now);
-	otg_reset_time = (uint64_t)1000*time_now.SECONDS + time_now.MILLISECONDS + OTG_CTLEP_RECOVERY_TO;
+	otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
 
     while ( 1 ) 
     {
@@ -419,16 +417,14 @@ void Main_task( uint32_t initial_data ) {
 			} else {
 			  	cdc_recovery_count = -1;
 				g_a8_sw_reboot = 0;
-				_time_get(&time_now);
-				otg_reset_time = (uint64_t)1000*time_now.SECONDS + time_now.MILLISECONDS + OTG_CTLEP_RECOVERY_TO;
+				otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
 				if (GPIO_DRV_ReadPinInput(OTG_ID)) {
 					GPIO_DRV_SetPinOutput (USB_HUB_RSTN);
 					configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_MCU_A8);
 				}
 			}
 		} else {
-			_time_get(&time_now);
-			otg_check_time = (uint64_t)1000*time_now.SECONDS + time_now.MILLISECONDS;
+			otg_check_time = ms_from_start();
 			if (!g_flag_Exit && (g_a8_sw_reboot == 0)) {
 				if (otg_reset_time < otg_check_time) {
 					if (GPIO_DRV_ReadPinInput(OTG_ID)) {
