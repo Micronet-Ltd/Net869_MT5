@@ -31,12 +31,9 @@ void one_wire_task (uint32_t initial_data)
 #endif        
     uint8_t data_rx [10] = {0};
 
-	//printf ("\n1-WIRE Task: Start \n");
 	uint64_t current_time;
-	TIME_STRUCT time;
 
-	_time_get(&time);
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	current_time = ms_from_start();
 	printf("%s: started %llu\n", __func__, current_time);
 
 	FPGA_one_wire_enable();

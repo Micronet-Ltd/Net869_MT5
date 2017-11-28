@@ -42,6 +42,10 @@ dspi_master_state_t 		dspiMasterState;
 
 #define CRC32_POLINOMIAL 0xEDB88320
 
+#define SPI_FLASH_SECTOR_WR_EN_TO 5000
+#define SPI_FLASH_SECTOR_ERASE_TO 10000
+#define SPI_FLASH_PAGE_PROG_TO 10000
+
 void disable_spi(void)
 {
     int i = 400;
@@ -261,16 +265,13 @@ int32_t fpga_erase_sector(uint32_t addr)
 	dspi_status_t spiStatus;
 	uint8_t send_buffer[8] = {0};
 	uint64_t current_time, timeout;
-	TIME_STRUCT time;
 
-	_time_get(&time);
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
-	timeout = current_time + 5000;
+	current_time = ms_from_start();
+	timeout = current_time + SPI_FLASH_SECTOR_WR_EN_TO;
 
 	do {
 		_time_delay(1);
-		_time_get(&time);
-		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		current_time = ms_from_start();
 		if(current_time > timeout)
 		{
 			printf("%s: is_fpga_flash_ready failed\n", __func__);
@@ -295,14 +296,12 @@ int32_t fpga_erase_sector(uint32_t addr)
 		return -1;
 	}
 	
-	_time_get(&time);
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
-	timeout = current_time + 10000;
+	current_time = ms_from_start();
+	timeout = current_time + SPI_FLASH_SECTOR_ERASE_TO;
 
 	do {
 		_time_delay(1);
-		_time_get(&time);
-		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		current_time = ms_from_start();
 		if(current_time > timeout)
 		{
 			printf("%s: is_fpga_flash_WEL failed\n", __func__);
@@ -317,17 +316,14 @@ int32_t fpga_write_data(uint32_t addr, uint8_t* buf, uint32_t length)
 	uint8_t send_buffer[2] = {0};
 	dspi_status_t spiStatus;
 	uint64_t current_time, timeout;
-	TIME_STRUCT time;
 
-	_time_get(&time);
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
-	timeout = current_time + 5000;
+	current_time = ms_from_start();
+	timeout = current_time + SPI_FLASH_SECTOR_WR_EN_TO;
 
 	do
 	{
 		_time_delay(1);
-		_time_get(&time);
-		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		current_time = ms_from_start();
 		if(current_time > timeout)
 		{
 			printf("%s: is_fpga_flash_ready failed\n", __func__);
@@ -352,15 +348,13 @@ int32_t fpga_write_data(uint32_t addr, uint8_t* buf, uint32_t length)
 		return -1;
 	}
 	
-	_time_get(&time);
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
-	timeout = current_time + 10000;
+	current_time = ms_from_start();
+	timeout = current_time + SPI_FLASH_PAGE_PROG_TO;
 
 	do
 	{
 		_time_delay(1);
-		_time_get(&time);
-		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		current_time = ms_from_start();
 		if(current_time > timeout)
 		{
 			printf("%s: is_fpga_flash_WEL failed\n", __func__);

@@ -642,7 +642,7 @@ void peripherals_enable (void)
 	{
 		if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1)
 		{
-			printf ("\nPOWER_MGM: INFO: FPGA is loaded, wait_time: %d ms\n", total_wait_time );
+			printf ("%s: FPGA is loaded on %d ms\n", __func__, total_wait_time );
 			break;
 		}
 		_time_delay(1);
@@ -650,16 +650,14 @@ void peripherals_enable (void)
 		/* Measured to take 71ms typically (tested on 1 board, 10 reboot cycles) - Abid */
 		if(total_wait_time > 10000)
 		{
-			printf("\nPOWER_MGM: INFO: FPGA FAILED TO LOAD!, wait_time: %d ms\n", total_wait_time);
+            PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntDisabled);
+            GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+			printf("%s: FPGA FAILED TO LOAD!... %d ms\n", total_wait_time);
 			break;
 		}
 	}
 
-	printf("%s: fpga ready %d ms\n", __func__, total_wait_time);
-	if (0 == GPIO_DRV_ReadPinInput (FPGA_DONE)) {
-		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntDisabled);
-		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
-	}
+	printf("%s: enable acc interrupts %d ms\n", __func__, total_wait_time);
 	PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntFallingEdge);
 	GPIO_DRV_ClearPinIntFlag(ACC_INT);
 	// TODO: need to be removed after tasks enable will be set fro USB protocol

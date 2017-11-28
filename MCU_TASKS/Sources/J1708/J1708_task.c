@@ -59,10 +59,8 @@ void J1708_Tx_task (uint32_t initial_data)
 
 //	printf ("\nJ1708_Tx Task: Start \n");
 	uint64_t current_time;
-	TIME_STRUCT time;
 
-	_time_get(&time);
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	current_time = ms_from_start();
 	printf("%s: started %llu\n", __func__, current_time);
 
 	while (0 == g_flag_Exit) {
@@ -125,10 +123,8 @@ void J1708_Rx_task (uint32_t initial_data)
 	uint8_t                     J1708_rx_len;
 
 	uint64_t current_time;
-	TIME_STRUCT time;
 
-	_time_get(&time);
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	current_time = ms_from_start();
 	printf("%s: started %llu\n", __func__, current_time);
 
 	_event_create ("event.J1708_RX");
