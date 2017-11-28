@@ -143,11 +143,10 @@ void ADC_Compare_enable (KADC_CHANNELS_t channel)
 {
 	ADC_Type *base = g_adcBase[ADC16_INSTANCE0];
 
+    ADC_WR_SC2_ACFE  (base, 1);
 	// trigger the conversion with IRQ enable
 	adc_input[channel].chnConfig.convCompletedIntEnable = true;
 	ADC16_DRV_ConfigConvChn (ADC16_INSTANCE0, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);
-
-	ADC_WR_SC2_ACFE  (base, 1);
 	ADC_WR_SC1_AIEN (base, ADC16_CHN_GROUP_0, 1);
 }
 

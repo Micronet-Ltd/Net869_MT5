@@ -23,11 +23,8 @@ void send_control_msg(packet_t * msg, uint8_t msg_size)
 #if 1	
 #if (DEBUG_LOG == 1)
   	uint64_t current_time;
-	TIME_STRUCT time;
 	
-	_time_get(&time);
-
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	current_time = ms_from_start();
 	printf("%s: %llu ms, %x\n", __func__, current_time, msg->pkt_type);
 #endif
 	
@@ -94,7 +91,6 @@ void control_task (uint32_t initial_data)
 	APPLICATION_MESSAGE_T *ctl_rx_msg;
 	const _queue_id     control_rx_qid = _msgq_open (CONTROL_RX_QUEUE, 0);
 	uint64_t current_time = 0;
-	TIME_STRUCT time;
 
 	printf ("\n %s: Start \n", __func__);
 
@@ -109,11 +105,9 @@ void control_task (uint32_t initial_data)
 
 		  	if (ctl_rx_msg != NULL && ctl_rx_msg->header.SIZE >= 2)
 			{
-				//TODO: For debug only
-				_time_get(&time);
-
-				current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
 #if (DEBUG_LOG == 1)
+				//TODO: For debug only
+				current_time = ms_from_start();
 				printf("%s: time: %llu ms, data : %x,%x, \t ,%x,%x, size %d \n", __func__, current_time,
 					   ctl_rx_msg->data[0], ctl_rx_msg->data[1], ctl_rx_msg->data[ctl_rx_msg->header.SIZE -2],
 						ctl_rx_msg->data[ctl_rx_msg->header.SIZE -1], ctl_rx_msg->header.SIZE);
@@ -125,10 +119,8 @@ void control_task (uint32_t initial_data)
 		} while (0);
 
 		if (NULL != ctl_rx_msg) {
-			_time_get(&time);
-
-			current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
 #if (DEBUG_LOG == 1)
+			current_time = ms_from_start();
 			printf("%s: time: %llu ms, data free msg\n", __func__, current_time);
 #endif
 			_msg_free   (ctl_rx_msg);

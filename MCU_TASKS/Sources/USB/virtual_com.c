@@ -726,7 +726,6 @@ uint8_t USB_App_Class_Callback
 	case USB_DEV_EVENT_DATA_RECEIVED:
 		if ((phandle->start_app == TRUE) && (phandle->start_transactions == TRUE)) {
 //			uint64_t current_time;
-//			TIME_STRUCT time;
 			phandle->recv_size = *size;
 
 			if ((0 != phandle->recv_size) && (0xFFFFFFFF != phandle->recv_size))
@@ -734,9 +733,8 @@ uint8_t USB_App_Class_Callback
 				USB_Recive_Data ( phandle );
 				/* Schedule buffer for next receive event */
 				USB_Class_CDC_Recv_Data(handle, phandle->out_endpoint, phandle->curr_recv_buf, g_bulk_out_max_packet_size);
-//				_time_get(&time);
 
-//				current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+//				current_time = ms_from_start();
 //				printf("%s: %llu ms\n", __func__, current_time);
 			}
 		}

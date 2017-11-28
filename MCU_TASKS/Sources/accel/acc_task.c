@@ -107,8 +107,7 @@ uint32_t acc_time_diff_non_zero = 0;
 
 void Acc_task (uint32_t initial_data)
 {
-	TIME_STRUCT                 time;
-	uint64_t                    time_diff, prev_time;
+	uint64_t                    usb_access_time, prev_time;
 	acc_data_messg              acc_data_buff;
 	pcdc_mic_queue_element_t    pqMemElem;
 	int res;
@@ -125,8 +124,7 @@ void Acc_task (uint32_t initial_data)
 //#if (DEBUG_LOG)
 	uint64_t current_time;
 
-	_time_get(&time);
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	current_time = ms_from_start();
 	printf("%s: started %llu\n", __func__, current_time);
 //#endif
 
@@ -158,8 +156,7 @@ void Acc_task (uint32_t initial_data)
 	//test_acc_msg.header.TARGET_QID = _msgq_get_id(0, USB_QUEUE);
 	//test_acc_msg.header.SIZE = sizeof(MESSAGE_HEADER_STRUCT) + strlen((char *)msg->data) + 1;
 	//acc_msg = &test_acc_msg;
-	_time_get(&time);
-	prev_time = time_diff = (uint64_t)1000*time.SECONDS +  time.MILLISECONDS;
+	prev_time = usb_access_time = ms_from_start();
 	
 	while (0 == g_flag_Exit)
 	{
@@ -170,17 +167,16 @@ void Acc_task (uint32_t initial_data)
 		do {
 			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
 			if (res) {
-				_time_get(&time);
-				acc_data_buff.timestamp = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
-				time_diff = acc_data_buff.timestamp;
+				acc_data_buff.timestamp = ms_from_start();
+				usb_access_time = acc_data_buff.timestamp;
 				
 				/* Add delay on back to back reads to avoid overwhelming the USB */
-				if (time_diff - prev_time == 0)
+				if (usb_access_time - prev_time == 0)
 				{
 					_time_delay (1);
 				}
 
-				prev_time = time_diff;
+				prev_time = usb_access_time;
 				pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
 				if (pqMemElem) {
 					pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );

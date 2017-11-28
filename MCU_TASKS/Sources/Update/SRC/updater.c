@@ -561,8 +561,6 @@ int32_t fpga_data(uint8_t* buf, uint32_t len)
 	uint8_t* 	ptr = (uint8_t*)OK_str;
 	uint32_t*	pTmp;
 	uint64_t current_time, timeout;
-	TIME_STRUCT time;
-//	TIME_STRUCT tt;
 
 	g_start_flag = 2;
 	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
@@ -583,8 +581,7 @@ int32_t fpga_data(uint8_t* buf, uint32_t len)
 	
 	printf("update: %s len %d\n", __func__, len);
 
-	_time_get(&time);
-	timeout = (uint64_t)1000*time.SECONDS + time.MILLISECONDS + 8000;
+	timeout = ms_from_start() + 8000;
 
 	do
 	{
@@ -592,8 +589,7 @@ int32_t fpga_data(uint8_t* buf, uint32_t len)
 		ptr = (uint8_t*)OK_str;
 		diff = (SPI_FLASH_SECTOR_SIZE < len - wr_len) ? SPI_FLASH_SECTOR_SIZE : len - wr_len;
 
-		_time_get(&time);
-		current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+		current_time = ms_from_start();
 		if (current_time > timeout) {
 			printf("%s: update too long, reboot device\n", __func__);
 			Device_reset_req(2000);
@@ -635,8 +631,7 @@ int32_t fpga_data(uint8_t* buf, uint32_t len)
 					ptr = (uint8_t*)ERR_str;
 					err = 4;
 				}
-				_time_get(&time);
-				timeout = (uint64_t)1000*time.SECONDS + time.MILLISECONDS + 8000;
+				timeout = ms_from_start() + 8000;
 				
 #if (DEBUG_LOG == 1)
 				printf("%s: block %d erased ajust timeout\n", __func__, wr_len/ERASABLE_BLOCK_SIZE);
@@ -650,8 +645,7 @@ int32_t fpga_data(uint8_t* buf, uint32_t len)
 				ptr = (uint8_t*)ERR_str;
 				err = 5;
 			}
-			_time_get(&time);
-			timeout = (uint64_t)1000*time.SECONDS + time.MILLISECONDS + 8000;
+			timeout = ms_from_start() + 8000;
 #if (DEBUG_LOG == 1)
 			if ((ERASABLE_BLOCK_SIZE - SPI_FLASH_SECTOR_SIZE) == (wr_len % ERASABLE_BLOCK_SIZE))
 				printf("%s: page %d flashed ajust timeout\n", __func__, wr_len/SPI_FLASH_SECTOR_SIZE);
@@ -710,10 +704,8 @@ void updater_task(uint32_t param)
 	int32_t 	error;
 	NIO_DEV_STRUCT*	pNio = 0;
 	uint64_t current_time;
-	TIME_STRUCT time;
 
-	_time_get(&time);
-	current_time = (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+	current_time = ms_from_start();
 	printf("%s: started %llu\n", __func__, current_time);
 
 	update_fw_uart_init();//muxing
