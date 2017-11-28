@@ -161,8 +161,8 @@ uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
 
 	if (Wiggle_sensor_cross_TH ())
 	{
-		printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
-		turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
+		//printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
+		//turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
 	}
 
 	if(RCM_BRD_SRS1_LOCKUP((RCM_Type*)RCM_BASE))
@@ -173,8 +173,8 @@ uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
 
 	if(RCM_BRD_SRS0_WDOG((RCM_Type*)RCM_BASE))
 	{
-		printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
-		turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
+		//printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
+		//turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
 	}
 
 	//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
@@ -261,7 +261,7 @@ void Device_update_state (uint32_t * time_diff)
 				peripherals_enable ();
 				_bsp_MQX_tick_timer_init ();
 				//Board_SetFastClk ();
-				Device_turn_on     ();
+				//Device_turn_on     ();
 				device_state_g = DEVICE_STATE_ON;
 				printf ("\nPOWER_MGM: DEVICE RUNNING\n");
 				FPGA_init ();
@@ -308,6 +308,7 @@ void Device_update_state (uint32_t * time_diff)
 					//Changing the device_state_g to OS suspended early because other tasks use this flag to go to a dormant state
 					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
 					printf("%s: cpu_int_suspend_event_g high \n", __func__);
+					printf("\n%s: Switched to DEVICE_STATE_ON_OS_SUSPENDED  \n", __func__);
 
 					/* Disable OS watchdog */
 
@@ -318,6 +319,7 @@ void Device_update_state (uint32_t * time_diff)
 					/* Start off with the peripherals disabled */
 					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
 					disable_peripheral_clocks();
+					CLOCK_SYS_EnablePortClock (PORTB_IDX); //Enable PortB clock so we can still read the WD signal in MSM suspend
 					peripherals_disable (false);
 					_bsp_MQX_tick_timer_init ();
 					/* Enable power to the vibration sensor and accelerometer */
@@ -328,7 +330,6 @@ void Device_update_state (uint32_t * time_diff)
 					Wiggle_sensor_restart();
 
 					configure_USB(); /* Needs to be done after changing state */
-					printf("\n%s: Switched to DEVICE_STATE_ON_OS_SUSPENDED  \n", __func__);
 				}
 			}
 			break;
@@ -749,12 +750,12 @@ void peripherals_disable (bool turn_off_5V_rail)
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
+	//GPIO_DRV_ClearPinOutput   (FPGA_RSTB);
+	//GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
 	//AccDisable();
 
 	if (turn_off_5V_rail)
 	{
-		GPIO_DRV_ClearPinOutput   (FPGA_RSTB);
-		GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
 		GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn on 5V0 power rail
 	}
 }
