@@ -443,7 +443,7 @@ void Main_task( uint32_t initial_data ) {
 				otg_reset_time = otg_check_time + OTG_CTLEP_RECOVERY_TO;
 			}
 		}
-#define DEBUG_BLINKING_RIGHT_LED
+#undef DEBUG_BLINKING_RIGHT_LED
 #ifdef DEBUG_BLINKING_RIGHT_LED
 	if(!g_flag_Exit)
 	{
