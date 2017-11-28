@@ -599,7 +599,7 @@ void check_a8_power_events(int *already_on)
                         _lwtimer_cancel_timer(&lwtimer_a8_turn_on_g);
                         _lwtimer_cancel_period(&lwtimer_period_a8_turn_on_g);
                         printf("%s: a8 booted %llu\n", __func__, current_time);
-                        *already_on++;
+                        (*already_on)++;
                         g_a8_sw_reboot = 0;
                     }
                 } else {
