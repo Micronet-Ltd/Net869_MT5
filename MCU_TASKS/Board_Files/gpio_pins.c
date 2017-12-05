@@ -73,9 +73,9 @@ const gpio_output_pin_user_config_t outputPins[] = {
 
 
 const gpio_input_pin_user_config_t inputPins[] = {
-	{.pinName = ACC_INT,			.config.isPullEnable = true,	.config.pullSelect = kPortPullUp,	.config.isPassiveFilterEnabled = false,	.config.interrupt = kPortIntFallingEdge },
+	{.pinName = ACC_INT,			.config.isPullEnable = true,	.config.pullSelect = kPortPullUp,	.config.isPassiveFilterEnabled = false,	.config.interrupt = kPortIntDisabled },//debugkPortIntFallingEdge },
 	{.pinName = VIB_SENS,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge },
-	{.pinName = FPGA_GPIO0,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge },
+	{.pinName = FPGA_GPIO0,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled },
 	{.pinName = FPGA_DONE,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = OTG_ID   ,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = true,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = USB_OTG_PWR_REQ,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
