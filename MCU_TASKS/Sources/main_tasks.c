@@ -405,6 +405,12 @@ void Main_task( uint32_t initial_data ) {
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
+		// MCU starts with OTG ID disabled for monitoring
+		// Main task starts monitor this one only after Power task powers on the A8 and gets PON pulse from it
+		// The Main task monitors OTG ID and switch USB according it.
+		// If MCU usb routed to A8 and CDC driver is not getting messages about control lines change during timeout the main task routs the USB to bypass, resets all devices connected to USB (HUB, FTDI...) and stops monitor for recover time that eq 10 main task periods (10 secs), after this main task back to OTG ID monitoring.
+		// The USB sub-system also goes to recovery if SW reboot/WD of A8 occurs.
+		// This workaround completely debugged and tested by 48 hours resets and A8 always connects to MCU. Sure it will retested by QA together with functional tests. Moreover I want that Roman will include also some stress tests
 		if (g_a8_sw_reboot > 0) {
 		  	if (-1 == cdc_recovery_count) {
 				if (GPIO_DRV_ReadPinInput(OTG_ID)) {
