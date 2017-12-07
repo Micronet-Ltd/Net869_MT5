@@ -186,7 +186,7 @@ void Acc_task (uint32_t initial_data)
 						printf("%s: Error send data to CDC1\n", __func__);
 					}
 				}
-				PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntFallingEdge);
+				PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntLogicZero);
 				break;
 			} else	{
 				printf("%s: fifo error timeout\n", __func__);
