@@ -160,9 +160,6 @@ void Acc_task (uint32_t initial_data)
 	
 	while (0 == g_flag_Exit)
 	{
-        _event_wait_all(g_acc_event_h, 1, 0);
-		_event_clear(g_acc_event_h, 1);
-
 		res = 0;
 		do {
 			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
@@ -186,13 +183,16 @@ void Acc_task (uint32_t initial_data)
 						printf("%s: Error send data to CDC1\n", __func__);
 					}
 				}
-				PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntFallingEdge);
+				PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntLogicZero);
 				break;
 			} else	{
 				printf("%s: fifo error timeout\n", __func__);
 				_time_delay(1000);//delay after read error 
 			}
 		} while (!res);
+
+        _event_wait_all(g_acc_event_h, 1, 0);
+        _event_clear(g_acc_event_h, 1);
 	}
 
 	// should never get here
