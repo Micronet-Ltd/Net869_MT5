@@ -609,6 +609,7 @@ void peripherals_enable (void)
 	/* keep CAN1, J1708, CAN2 and SWC disabled by default. A software command
 	will enable it once the OS boots up */
 	GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE);
+	GPIO_DRV_ClearPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 	GPIO_DRV_ClearPinOutput(CAN2_SWC_PWR_ENABLE);
 
 //    GPIO_DRV_ClearPinOutput (USB_OTG_SEL);		// Connect D1 <-> D MCU or HUB
@@ -685,6 +686,7 @@ void peripherals_disable (uint32_t WithFpga)
 	}
 	
 	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
+	GPIO_DRV_ClearPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
 
     GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
