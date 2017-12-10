@@ -6,7 +6,6 @@
 
 const gpio_output_pin_user_config_t outputPins[] = {
 	// Power Rail Control
-	{ .pinName = POWER_3V3_ENABLE, 		    .config.outputLogic = 1,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
 	{ .pinName = POWER_5V0_ENABLE, 		    .config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
 	{ .pinName = POWER_CHARGE_ENABLE, 		.config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
 	{ .pinName = POWER_DISCHARGE_ENABLE, 	.config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
@@ -26,6 +25,7 @@ const gpio_output_pin_user_config_t outputPins[] = {
 	{.pinName = FPGA_PWR_ENABLE,			.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
 	// CAN BUS INTERFACE
+	{ .pinName = CAN1_PWR_EN, 		    	.config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  }, //only present of NET869V6 and greater boards
 	{ .pinName = CAN1_J1708_PWR_ENABLE,		.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{ .pinName = CAN2_SWC_PWR_ENABLE,		.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
@@ -67,7 +67,10 @@ const gpio_output_pin_user_config_t outputPins[] = {
 	{.pinName = SPKR_LEFT_EN,                   .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{.pinName = SPKR_RIGHT_EN,                  .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{.pinName = SPKR_EXT_EN,                    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
-
+	
+	// GPS (only routed in NET869 V6 and greater boards)
+	{.pinName = EXT_GPS_EN,                    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE                                                                                                                                                               }
 };
 

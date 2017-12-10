@@ -609,6 +609,7 @@ void peripherals_enable (void)
 	/* keep CAN1, J1708, CAN2 and SWC disabled by default. A software command
 	will enable it once the OS boots up */
 	GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE);
+	GPIO_DRV_ClearPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 	GPIO_DRV_ClearPinOutput(CAN2_SWC_PWR_ENABLE);
 
 //    GPIO_DRV_ClearPinOutput (USB_OTG_SEL);		// Connect D1 <-> D MCU or HUB
@@ -633,8 +634,10 @@ void peripherals_enable (void)
 		GPIO_DRV_ClearPinOutput(SPKR_RIGHT_EN);
 		GPIO_DRV_ClearPinOutput(SPKR_LEFT_EN);
 	}
+	
 //	GPIO_DRV_SetPinOutput (SPKR_EXT_EN);
 //	GPIO_DRV_SetPinOutput (CPU_MIC_EN);
+	GPIO_DRV_SetPinOutput (EXT_GPS_EN);
 
 	// wait till FPGA is loaded
 	printf("%s: wait for fpga ready %d ms\n", __func__, total_wait_time);
@@ -683,6 +686,7 @@ void peripherals_disable (uint32_t WithFpga)
 	}
 	
 	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
+	GPIO_DRV_ClearPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
 
     GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
@@ -693,6 +697,7 @@ void peripherals_disable (uint32_t WithFpga)
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
+	GPIO_DRV_ClearPinOutput (EXT_GPS_EN);
 	//AccDisable();
     GPIO_DRV_SetPinOutput (USB_OTG_OE);		//Disable OTG/MCU switch
 }
