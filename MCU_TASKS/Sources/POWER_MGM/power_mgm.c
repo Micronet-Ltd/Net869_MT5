@@ -79,6 +79,7 @@ clock_manager_error_code_t dbg_console_cm_callback(clock_notify_struct_t *notify
 power_manager_error_code_t rtos_pm_callback(power_manager_notify_struct_t * notify,  power_manager_callback_data_t * dataPtr);
 clock_manager_error_code_t rtos_cm_callback(clock_notify_struct_t *notify, void* callbackData);
 extern void MQX_PORTA_IRQHandler(void);
+extern uint8_t g_flag_Exit;
 
 typedef enum demo_power_modes {
 	kDemoMin  = 0,
@@ -600,6 +601,7 @@ void switch_power_mode(power_manager_modes_t mode)
 	}
 }
 
+<<<<<<< HEAD
 // MT5_power_state_monitor: Monitors the watchdog signal for 2 seconds, and based on it's 
 // state it posts an event whether the MT5 is in suspend or out of suspend 
 // If signal is low for 2 seconds -> MT5 suspend
@@ -668,6 +670,66 @@ static void MT5_power_state_monitor(uint32_t * time_diff)
 			MT5_previous_power_state = MT5_current_power_state;
 		}
 	}	
+=======
+extern int g_a8_sw_reboot;
+
+void check_a8_power_events(int *already_on)
+{
+    uint64_t current_time;
+    uint64_t h_tick;
+    uint64_t l_tick;
+    _mqx_uint event_bits;
+
+    if (_event_get_value(cpu_status_event_g, &event_bits) == MQX_OK) {
+        if (event_bits)
+            _event_clear(cpu_status_event_g, event_bits);
+        if (event_bits & EVENT_CPU_STATUS_LOW) {
+            h_tick = (((uint64_t)cpu_status_time_g.start_ticks.TICKS[1]) << 32) + cpu_status_time_g.start_ticks.TICKS[0];
+            l_tick = (((uint64_t)cpu_status_time_g.end_ticks.TICKS[1]) << 32) + cpu_status_time_g.end_ticks.TICKS[0];
+            cpu_status_time_g.time_diff = (int32_t)((l_tick - h_tick) * MS_PER_TICK);
+            current_time = ms_from_start();
+            if (cpu_status_time_g.time_diff <= 0) {
+                printf("%s: cpu_status_event_g starts with low state %llu \n", __func__, current_time);
+                return;
+            }
+            printf("%s: cpu_status_event_g low, high time %d %llu\n", __func__, cpu_status_time_g.time_diff, current_time);
+
+            /* A8 sent a shutdown request */
+            if (cpu_status_time_g.time_diff > (CPU_STATUS_SHUTDOWN_DURATION - 10) &&
+                cpu_status_time_g.time_diff < (CPU_STATUS_SHUTDOWN_DURATION + 30)) {
+                if (*already_on) {
+                    printf ("\n%s : DEVICE shutdown request by A8\n", __func__);
+                    _time_delay(100); /* give some time for the print statement */
+                    Device_off_req_immediate(true);
+                } else {
+                    printf ("%s : sporadic pulse, skip it\n", __func__);
+                }
+            }
+            /* A8 booted up correctly, cancel the incorrect-a8-bootup timer */
+            else if (cpu_status_time_g.time_diff > 0) {
+                if (!(*already_on)) {
+                    // a8 is off - switch it on
+                    if (cpu_status_time_g.time_diff > (CPU_STATUS_TURNON_DURATION - 10) &&
+                        cpu_status_time_g.time_diff < (CPU_STATUS_TURNON_DURATION + 30)) {
+                        _lwtimer_cancel_timer(&lwtimer_a8_turn_on_g);
+                        _lwtimer_cancel_period(&lwtimer_period_a8_turn_on_g);
+                        printf("%s: a8 booted %llu\n", __func__, current_time);
+                        (*already_on)++;
+                        g_a8_sw_reboot = 0;
+                    }
+                } else {
+                    // a8 already started, additional pulse is reason of SW restart, reset usb hub
+                    g_a8_sw_reboot = 1;
+                    if (GPIO_DRV_ReadPinInput(OTG_ID)) {
+                        configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
+                        GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
+                    }
+//							GPIO_DRV_ClearPinOutput (USB_ENABLE);
+                }
+            }
+        }
+    }
+>>>>>>> github/updater_fix
 }
 
 void Power_MGM_task (uint32_t initial_data )
@@ -682,10 +744,10 @@ void Power_MGM_task (uint32_t initial_data )
 	MQX_TICK_STRUCT ticks_prev;
 	int32_t time_diff_milli = 0;
 	uint32_t time_diff_milli_u = 0;
-	int32_t time_diff_micro = 0;
 	bool time_diff_overflow = false;
-    _mqx_uint event_bits;
 	_mqx_uint event_result;
+	uint64_t current_time;
+	int32_t a8_on = 0;
 	
 	_time_get_elapsed_ticks_fast(&ticks_prev);
 
@@ -750,6 +812,10 @@ void Power_MGM_task (uint32_t initial_data )
 #endif
 
 	/* Start off with the peripherals disabled */
+<<<<<<< HEAD
+=======
+	peripherals_disable (1);
+>>>>>>> github/updater_fix
 	disable_peripheral_clocks();
 	peripherals_disable (true);
 	_bsp_MQX_tick_timer_init ();
@@ -758,12 +824,15 @@ void Power_MGM_task (uint32_t initial_data )
 
 	printf ("\nPower Management Task: Start \n");
 
-	while (1)
+	current_time = ms_from_start();
+	printf("%s: started %llu\n", __func__, current_time);
+
+	while (!g_flag_Exit)
 	{
 		ADC_sample_input (adc_input);
 		if (++adc_input >= (kADC_CHANNELS - 1))
 		{
-			//printf ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
+//			printf ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
 			GPIO_all_check_for_change();
 			adc_input = kADC_ANALOG_IN1;
 		}
@@ -773,7 +842,6 @@ void Power_MGM_task (uint32_t initial_data )
 		{
 			ADC_sample_input(kADC_POWER_VCAP);
 		}
-
 
 #ifdef SUPERCAP_CHRG_DISCHRG_ENABLE
 		Supercap_charge_state    ();
@@ -797,6 +865,7 @@ void Power_MGM_task (uint32_t initial_data )
 		}
 
 		Device_update_state(&time_diff_milli_u);
+<<<<<<< HEAD
 		
         if (_event_get_value(cpu_status_event_g, &event_bits) == MQX_OK) 
         {
@@ -827,6 +896,10 @@ void Power_MGM_task (uint32_t initial_data )
 				}
             }
         }
+=======
+
+        check_a8_power_events(&a8_on);
+>>>>>>> github/updater_fix
 	}
 }
 

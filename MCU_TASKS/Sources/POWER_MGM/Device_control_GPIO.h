@@ -40,7 +40,7 @@ void Device_off_req_immediate(bool clean_reset);
 
 DEVICE_STATE_t Device_get_status   (void);
 void peripherals_enable         (void);
-void peripherals_disable        (bool turn_off_5V_rail);
+void peripherals_disable        (uint32_t);
 void disable_peripheral_clocks(void);
 
 #ifdef __cplusplus

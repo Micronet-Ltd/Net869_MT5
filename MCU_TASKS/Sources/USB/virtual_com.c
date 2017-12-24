@@ -670,6 +670,7 @@ void USB_App_Device_Callback(uint8_t event_type, void* val, void* arg)
  *                  else return error
  *
  *****************************************************************************/
+extern int g_otg_ctl_port_active;
 uint8_t USB_App_Class_Callback
 (
 	uint8_t event,
@@ -707,6 +708,8 @@ uint8_t USB_App_Class_Callback
 		if (phandle->start_app == TRUE)
 		{
 			printf("Port%d activated\n", phandle->portNum);
+			if (0 == phandle->portNum)
+				g_otg_ctl_port_active = 1;
 			phandle->start_transactions = TRUE;
 			phandle->send_ready = TRUE;
 		}
@@ -715,12 +718,15 @@ uint8_t USB_App_Class_Callback
 		if (phandle->start_app == TRUE)
 		{
 			printf("Port%d deactivated\n", phandle->portNum);
+			if (0 == phandle->portNum)
+				g_otg_ctl_port_active = 0;
 			phandle->start_transactions = FALSE;
 			phandle->send_ready = FALSE;
 		}
 		break;
 	case USB_DEV_EVENT_DATA_RECEIVED:
 		if ((phandle->start_app == TRUE) && (phandle->start_transactions == TRUE)) {
+//			uint64_t current_time;
 			phandle->recv_size = *size;
 
 			if ((0 != phandle->recv_size) && (0xFFFFFFFF != phandle->recv_size))
@@ -728,6 +734,9 @@ uint8_t USB_App_Class_Callback
 				USB_Recive_Data ( phandle );
 				/* Schedule buffer for next receive event */
 				USB_Class_CDC_Recv_Data(handle, phandle->out_endpoint, phandle->curr_recv_buf, g_bulk_out_max_packet_size);
+
+//				current_time = ms_from_start();
+//				printf("%s: %llu ms\n", __func__, current_time);
 			}
 		}
 		break;
@@ -910,7 +919,7 @@ void CDC0_resv ( cdc_struct_t *handle )
 #ifdef MIC_USB_DEBUG
 	if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
 	{
-		printf("CDC0_resv USB Task: ERROR: message allocation failed\n");
+		printf("CDC0_resv USB Task D: ERROR: message allocation failed\n");
 		return;
 	}
 	_mem_copy ( handle->curr_recv_buf, msg->data, handle->recv_size );
@@ -934,8 +943,22 @@ void CDC0_resv ( cdc_struct_t *handle )
 
 	if ( (msg = (APPLICATION_MESSAGE_PTR_T) _msg_alloc (g_in_message_pool)) == NULL )
 	{
-		printf("CDC0_resv USB Task: ERROR: message allocation failed\n");
+	  	_mqx_uint c, c2;
+	  	c = _msgq_get_count(_msgq_get_id( 0, USB_QUEUE ));
+	  	c2 = _msgq_get_count(_msgq_get_id( 0, CONTROL_RX_QUEUE ));
+		printf("CDC0_resv USB Task: ERROR[%u]: message allocation failed %u[%u]\n", _task_get_error(), c, c2);
 		handle->recv_size = 0;
+//		msg = (APPLICATION_MESSAGE_PTR_T)_mem_alloc(sizeof(APPLICATION_MESSAGE_T);
+//		if(0 == msg)
+//		{
+//			printf("CDC0_resv USB Task: ERROR[%u]: _mem_alloc failed\n", _task_get_error());
+//			return;		  
+//		}
+//		msg->header.SOURCE_QID = _msgq_get_id( 0, USB_QUEUE );
+//		msg->header.TARGET_QID = _msgq_get_id( 0, CONTROL_RX_QUEUE );
+//		msg->header.SIZE = 0;
+//		msg->portNum = MIC_CDC_USB_1;
+//		_msgq_send_urgent(msg);
 		return;
 	}
 
@@ -945,6 +968,9 @@ void CDC0_resv ( cdc_struct_t *handle )
 	msg->header.TARGET_QID = _msgq_get_id( 0, CONTROL_RX_QUEUE );
 	msg->header.SIZE = handle->recv_size;
 	msg->portNum = MIC_CDC_USB_1;
+#if (DEBUG_LOG == 1)
+	printf("%s: %u[%u]\n", __func__, msg->header.SOURCE_QID, msg->header.TARGET_QID);
+#endif
 	_msgq_send (msg);
 	handle->recv_size = 0;
 
