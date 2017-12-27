@@ -107,7 +107,7 @@ void handle_watchdog_expiry(void * td_ptr)
 	}
 #endif
 	
-	GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn off 5V0 power rail
+	enable_msm_power(FALSE);		// turn off 5V0 power rail
 	delay_1s();
 	
 	WDG_RESET_MCU();
@@ -201,4 +201,12 @@ void check_a8_watchdog_expiry_isr(void)
 		printf("%s: A8 Watchdog Expired, resetting MCU! \r\n", __func__);
 		handle_watchdog_expiry(&color);
 	}
+}
+
+void cancel_a8_timers(void)
+{
+	_lwtimer_cancel_timer(&lwtimer_a8_check_g);
+	_lwtimer_cancel_period(&lwtimer_period_a8_check_g);
+	_lwtimer_cancel_timer(&lwtimer_a8_pet_g);
+	_lwtimer_cancel_period(&lwtimer_period_a8_pet_g);
 }

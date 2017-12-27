@@ -19,6 +19,7 @@ typedef struct
 
 bool crc_check (uint8_t *pdata);
 void send_one_wire_data (uint8_t *one_wire_data, uint8_t size);
+extern uint8_t g_flag_Exit;
 
 void one_wire_task (uint32_t initial_data)
 {
@@ -30,11 +31,14 @@ void one_wire_task (uint32_t initial_data)
 #endif        
     uint8_t data_rx [10] = {0};
 
-	printf ("\n1-WIRE Task: Start \n");
+	uint64_t current_time;
+
+	current_time = ms_from_start();
+	printf("%s: started %llu\n", __func__, current_time);
 
 	FPGA_one_wire_enable();
 
-	while (1) 
+	while (!g_flag_Exit) 
 	{
 		_time_delay (wait_time);
 		
