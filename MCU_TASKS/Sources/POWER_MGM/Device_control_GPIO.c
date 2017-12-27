@@ -628,11 +628,13 @@ void peripherals_enable (void)
 	{
 		GPIO_DRV_SetPinOutput (SPKR_RIGHT_EN);
 		GPIO_DRV_SetPinOutput (SPKR_LEFT_EN);
+		GPIO_DRV_SetPinOutput (SPKR_EXT_EN);
 	}
 	else
 	{
 		GPIO_DRV_ClearPinOutput(SPKR_RIGHT_EN);
 		GPIO_DRV_ClearPinOutput(SPKR_LEFT_EN);
+		GPIO_DRV_ClearPinOutput(SPKR_EXT_EN);
 	}
 	
 //	GPIO_DRV_SetPinOutput (SPKR_EXT_EN);
