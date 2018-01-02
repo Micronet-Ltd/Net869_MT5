@@ -791,10 +791,11 @@ void Power_MGM_task (uint32_t initial_data )
 		}
 		time_diff_milli_u = (uint32_t) time_diff_milli;
 
-		if ((device_state_g == DEVICE_STATE_ON) ||  (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED))
+/*		if ((device_state_g == DEVICE_STATE_ON) ||  (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED))
 		{
 			MT5_power_state_monitor(&time_diff_milli_u);
 		}
+*/
 
 		Device_update_state(&time_diff_milli_u);
 		
