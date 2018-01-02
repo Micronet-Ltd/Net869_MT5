@@ -642,6 +642,7 @@ void configure_otg_for_host_or_device(int force)
 	else
 	{
 		GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
+		GPIO_DRV_SetPinOutput (CPU_OTG_ID);
 		usb_disabled = true;
 	}
 }
@@ -719,6 +720,26 @@ void MQX_PORTC_IRQHandler(void)
 //		l = (((uint64_t)cpu_status_time_g.end_ticks.TICKS[1]) << 32) + cpu_status_time_g.end_ticks.TICKS[0];
 		
 //		printf("%s: CPU staus change %llu[%llu] ms  \n", __func__, h, l);
+	}
+
+	if (GPIO_DRV_IsPinIntPending(CPU_RF_KILL))
+	{
+		GPIO_DRV_ClearPinIntFlag(CPU_RF_KILL);
+		if (a8_booted_up_correctly_g)
+		{
+			if (GPIO_DRV_ReadPinInput(CPU_RF_KILL) == 0)
+			{
+				/* OS/MSM requested a suspend */
+				//GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
+				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
+			}
+			else
+			{
+				/*OS/MSM out of suspend */
+				//GPIO_DRV_ClearPinIntFlag (USB_OTG_OE); /* Enable USB */
+				_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+			}
+		}
 	}
 }
 

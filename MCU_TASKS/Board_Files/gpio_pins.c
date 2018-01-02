@@ -90,7 +90,7 @@ const gpio_input_pin_user_config_t inputPins[] = {
 	{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
 
 // EYAL_0523
-	{.pinName = CPU_RF_KILL,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled    },
+	{.pinName = CPU_RF_KILL,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge    },
 
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE	}
 };
