@@ -59,7 +59,7 @@ enum OTG_ID_CFG{
  ****************************************************************************/
 
 //extern _pool_id         g_out_message_pool;	// msg pool for send information USB out
-extern _pool_id         g_in_message_pool;	// msg pool for recieve USB information
+//extern _pool_id         g_in_message_pool;	// msg pool for recieve USB information
 extern const uint16_t   g_CanCDCPacketsize;
 
 /*****************************************************************************

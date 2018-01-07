@@ -99,6 +99,8 @@ extern usb_desc_request_notify_struct_t desc_callback;
 app_composite_device_struct_t g_app_composite_device;
 extern uint8_t USB_Desc_Set_Speed(uint32_t handle, uint16_t speed);
 
+extern _pool_id         g_in_message_pool;	// msg pool for recieve USB information
+
 /*****************************************************************************
  * Local Types - None
  *****************************************************************************/

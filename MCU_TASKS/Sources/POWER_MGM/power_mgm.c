@@ -4,7 +4,6 @@
 #include <message.h>
 #include <lwmsgq.h>
 #include <lwtimer.h>
-#include <mqx_prv.h>
 
 #include "MK20D10_extension.h"
 #include "fsl_power_manager.h"
@@ -30,10 +29,10 @@
 #include "fsl_debug_console.h"
 #include "fsl_lptmr_driver.h"
 #include "fsl_interrupt_manager.h"
-#include "board.h"
 #include "bsp.h"
 #include "mic_typedef.h"
 #include "watchdog_mgmt.h"
+#include "mqx_prv.h"
 
 #define SUPERCAP_CHRG_DISCHRG_ENABLE   1
 //#define DEBUGGING_ENABLED                1
@@ -78,8 +77,12 @@ if (ret != kPowerManagerSuccess) \
 clock_manager_error_code_t dbg_console_cm_callback(clock_notify_struct_t *notify, void* callbackData);
 power_manager_error_code_t rtos_pm_callback(power_manager_notify_struct_t * notify,  power_manager_callback_data_t * dataPtr);
 clock_manager_error_code_t rtos_cm_callback(clock_notify_struct_t *notify, void* callbackData);
+extern void configure_otg_for_host_or_device(int);
+
 extern void MQX_PORTA_IRQHandler(void);
 extern uint8_t g_flag_Exit;
+extern uint64_t g_wd_fall_time;
+extern uint64_t g_wd_rise_time;
 
 typedef enum demo_power_modes {
 	kDemoMin  = 0,
@@ -123,11 +126,16 @@ typedef enum wakeUpSource
 	wakeUpSourceSwBtn =  4,
 } wakeUpSource_t;
 
+#if 0
 typedef enum MT5_power_states {
 	MT5_suspend, //cpu_watchdog signal 0
 	MT5_charging, //cpu_watchdog signal 1
 	MT5_active,  //cpu_watchdog signal toggling at 0.5Hz
+	MT5_unknown
 }MT5_power_states_t;
+#endif
+
+int32_t g_MT5_present = 0;
 
 /*--------------------------------MODE---------------------------------------*/
 power_manager_user_config_t const vlprConfig =
@@ -387,6 +395,7 @@ clock_manager_error_code_t rtos_cm_callback(clock_notify_struct_t *notify,
 //                    lptmrStr->lptmrState.prescalerClockHz = (lptmrStr->lptmrState.prescalerClockHz >> ((uint32_t)(lptmrStr->lptmrUserConfig.prescalerValue+1)));
 //                }
 //            }
+
 			SYSTICK_RELOAD((CLOCK_SYS_GetCoreClockFreq()/TICK_PER_SEC)-1UL);
 			SYSTICK_ENABLE();
 			break;
@@ -558,17 +567,19 @@ void switch_power_mode(power_manager_modes_t mode)
 			{
 				printf("\nPower Management Task: cannot go from RUN to VLPW directly \n");
 			}
-
-			setWakeUpSource(wakeUpSourceSwBtn);
-
-			ret = POWER_SYS_SetMode(kPowerManagerVlpw, kPowerManagerPolicyAgreement);
-
-			if (POWER_SYS_GetCurrentMode() == kPowerManagerRun)
+			else
 			{
-				/* update Clock Mode to Run */
-				update_clock_mode(CLOCK_RUN);
+				setWakeUpSource(wakeUpSourceSwBtn);
+
+				ret = POWER_SYS_SetMode(kPowerManagerVlpw, kPowerManagerPolicyAgreement);
+
+				if (POWER_SYS_GetCurrentMode() == kPowerManagerRun)
+				{
+					/* update Clock Mode to Run */
+					update_clock_mode(CLOCK_RUN);
+				}
+				CHECK_RET_VAL(ret, mode);
 			}
-			CHECK_RET_VAL(ret, mode);
 			break;
 
 		case kPowerManagerVlps:
@@ -601,12 +612,80 @@ void switch_power_mode(power_manager_modes_t mode)
 	}
 }
 
-<<<<<<< HEAD
+static void MT5_state_monitor(void)
+{
+//	static uint64_t time_since_watchdog_sig_read = 0;
+	uint32_t current_watchdog_signal_val; 
+
+	static int count_act = 0;
+	static uint64_t now = 0, big_time = 0, less_time = 0, last_btime = 0;
+	
+//	time_since_watchdog_sig_read += time_diff;
+
+//	if(time_since_watchdog_sig_read < 200)
+//		return;
+//	time_since_watchdog_sig_read = 0;
+	
+	now = ms_from_start();
+	
+	if(g_wd_rise_time > g_wd_fall_time)
+	{
+		big_time = g_wd_rise_time;
+		less_time = g_wd_fall_time;
+	}
+	else
+	{
+		less_time = g_wd_rise_time;
+		big_time = g_wd_fall_time;
+	}
+	current_watchdog_signal_val = GPIO_DRV_ReadPinInput(CPU_WATCHDOG);
+
+	if(last_btime != big_time)
+	{
+		printf("%s: level=%d delta %llu [%llu] \n", __func__, current_watchdog_signal_val, (big_time - less_time), now);//now - last_btime);
+	}
+	
+	if((now - big_time) > 1700)
+	{
+//		current_watchdog_signal_val = GPIO_DRV_ReadPinInput(CPU_WATCHDOG);
+		if(!count_act || (count_act && ((now - big_time) > 3000)) )
+		{
+			count_act = 0;
+			if(0 == current_watchdog_signal_val)
+			{
+				g_MT5_present = MT5_inside;
+			}
+			else
+			{
+				g_MT5_present = MT5_out;
+			}
+		}
+	}
+	//else 
+	if((last_btime != big_time) && (0 != less_time) && ((now - big_time) < 3000))
+	{
+		if( (((big_time - less_time) > 1200) || ((big_time - less_time) < 800)) && (MT5_active != g_MT5_present) )   
+		{
+			//g_MT5_present = MT5_unknown;
+		}
+		else
+		{
+			if(0 < count_act)//count_act++)			
+			{
+				g_MT5_present = MT5_active;
+			}
+			else
+				count_act = 1;//1st
+		}
+	}
+	last_btime = big_time;
+}
 // MT5_power_state_monitor: Monitors the watchdog signal for 2 seconds, and based on it's 
 // state it posts an event whether the MT5 is in suspend or out of suspend 
 // If signal is low for 2 seconds -> MT5 suspend
 // If signal is high for 2 seconds -> MT5 Charging
 // If signal is toggling at 0.5Hz -> MT5 Active
+#if 0
 static void MT5_power_state_monitor(uint32_t * time_diff)
 {
 	static MT5_power_states_t MT5_current_power_state = MT5_charging;
@@ -670,8 +749,10 @@ static void MT5_power_state_monitor(uint32_t * time_diff)
 			MT5_previous_power_state = MT5_current_power_state;
 		}
 	}	
-=======
+}
+#endif //0
 extern int g_a8_sw_reboot;
+
 
 void check_a8_power_events(int *already_on)
 {
@@ -729,7 +810,6 @@ void check_a8_power_events(int *already_on)
             }
         }
     }
->>>>>>> github/updater_fix
 }
 
 void Power_MGM_task (uint32_t initial_data )
@@ -746,7 +826,8 @@ void Power_MGM_task (uint32_t initial_data )
 	uint32_t time_diff_milli_u = 0;
 	bool time_diff_overflow = false;
 	_mqx_uint event_result;
-	uint64_t current_time;
+    _mqx_uint event_bits;
+//	uint64_t current_time;
 	int32_t a8_on = 0;
 	
 	_time_get_elapsed_ticks_fast(&ticks_prev);
@@ -812,20 +893,18 @@ void Power_MGM_task (uint32_t initial_data )
 #endif
 
 	/* Start off with the peripherals disabled */
-<<<<<<< HEAD
-=======
 	peripherals_disable (1);
->>>>>>> github/updater_fix
 	disable_peripheral_clocks();
-	peripherals_disable (true);
+	CLOCK_SYS_EnablePortClock (PORTB_IDX); //PortB clock to read the WD signal
+	//CLOCK_SYS_EnablePortClock (PORTC_IDX); //to read the RF_KILL signal
+	
 	_bsp_MQX_tick_timer_init ();
 	/* Enable power to the vibration sensor and accelerometer */
-	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
+	//GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 
-	printf ("\nPower Management Task: Start \n");
+//	printf ("\nPower Management Task: Start \n");
 
-	current_time = ms_from_start();
-	printf("%s: started %llu\n", __func__, current_time);
+	printf("%s: started %llu\n", __func__, ms_from_start());
 
 	while (!g_flag_Exit)
 	{
@@ -859,47 +938,16 @@ void Power_MGM_task (uint32_t initial_data )
 		}
 		time_diff_milli_u = (uint32_t) time_diff_milli;
 
-		if ((device_state_g == DEVICE_STATE_ON) ||  (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED))
+//		if ((device_state_g == DEVICE_STATE_ON)||  (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED))
+		if ((device_state_g == DEVICE_STATE_ON) || (device_state_g == DEVICE_STATE_OFF) )
 		{
-			MT5_power_state_monitor(&time_diff_milli_u);
+			//MT5_power_state_monitor(&time_diff_milli_u);
+			MT5_state_monitor();
 		}
 
 		Device_update_state(&time_diff_milli_u);
-<<<<<<< HEAD
-		
-        if (_event_get_value(cpu_status_event_g, &event_bits) == MQX_OK) 
-        {
-            if (event_bits & EVENT_CPU_STATUS_HIGH) 
-            {
-				_event_clear(cpu_status_event_g, 1);
-				printf("%s: cpu_status_event_g high \n", __func__);
-            }
-			if (event_bits & EVENT_CPU_STATUS_LOW) 
-            {
-				_event_clear(cpu_status_event_g, 2);
-				cpu_status_time_g.time_diff = (int32_t)((cpu_status_time_g.end_ticks.TICKS[0] - cpu_status_time_g.start_ticks.TICKS[0])* MS_PER_TICK);
-				printf("%s: cpu_status_event_g low, high time %d \n", __func__, cpu_status_time_g.time_diff);
-				
-				/* A8 sent a shutdown request */
-				if (cpu_status_time_g.time_diff > (CPU_STATUS_SHUTDOWN_DURATION - 10) && cpu_status_time_g.time_diff < (CPU_STATUS_SHUTDOWN_DURATION + 30))
-				{
-					printf ("\n%s : DEVICE shutdown request by A8\n", __func__);
-					_time_delay(100); /* give some time for the print statement */
-					Device_off_req_immediate(true);
-				}
-				/* A8 booted up correctly, cancel the incorrect-a8-bootup timer */
-				else if (cpu_status_time_g.time_diff > (CPU_STATUS_TURNON_DURATION - 10) && cpu_status_time_g.time_diff < (CPU_STATUS_TURNON_DURATION + 30))
-				{
-					_lwtimer_cancel_timer(&lwtimer_a8_turn_on_g);
-					_lwtimer_cancel_period(&lwtimer_period_a8_turn_on_g);
-					a8_booted_up_correctly_g = true;
-				}
-            }
-        }
-=======
-
-        check_a8_power_events(&a8_on);
->>>>>>> github/updater_fix
+        
+		check_a8_power_events(&a8_on);
 	}
 }
 
@@ -911,7 +959,7 @@ void supercap_charge_discarge(uint32_t min_threshold, uint32_t max_threshold)
 		/* send a message only once */
 		if (GPIO_DRV_ReadPinInput (POWER_CHARGE_ENABLE) == 1)
 		{
-			printf ("\nPOWER_MGM: SUPERCAP full Charged %d mV\n", supercap_voltage);
+			//printf ("\nPOWER_MGM: SUPERCAP full Charged %d mV\n", supercap_voltage);
 		}
 		GPIO_DRV_ClearPinOutput (POWER_CHARGE_ENABLE);
 	}
@@ -920,7 +968,7 @@ void supercap_charge_discarge(uint32_t min_threshold, uint32_t max_threshold)
 		/* send a message only once */
 		if (GPIO_DRV_ReadPinInput (POWER_CHARGE_ENABLE) == 0)
 		{
-			printf ("\nPOWER_MGM: SUPERCAP low %d mV - Start Charging\n", supercap_voltage);
+			//printf ("\nPOWER_MGM: SUPERCAP low %d mV - Start Charging\n", supercap_voltage);
 		}
 		GPIO_DRV_SetPinOutput (POWER_CHARGE_ENABLE);
 	}

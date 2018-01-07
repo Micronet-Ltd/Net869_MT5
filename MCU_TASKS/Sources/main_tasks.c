@@ -75,6 +75,11 @@ void _test_CANFLEX( void );
 MUTEX_STRUCT g_i2c0_mutex;
 
 extern uint8_t g_flag_Exit;
+extern int32_t g_MT5_present;
+extern int32_t	g_on_flag;
+uint64_t g_wd_fall_time = 0;
+uint64_t g_wd_rise_time = 0;
+
 
 
 /* induce_hard_fault: Induce divide by zero hard fault(used for debugging) */
@@ -190,16 +195,17 @@ void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 	WDG_RESET_MCU();
 }
 
+int g_a8_sw_reboot = -1;
+int g_otg_ctl_port_active = 0;
+
 void task_sleep_if_OS_suspended(void)
 {
-	while (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED)
+	while(0 == g_on_flag)//(DEVICE_STATE_ON != device_state_g)// || device_state_g == DEVICE_STATE_ON_OS_SUSPENDED)
 	{
 		_time_delay (500);
 	}
 }
 
-int g_a8_sw_reboot = -1;
-int g_otg_ctl_port_active = 0;
 
 void Main_task( uint32_t initial_data ) {
 
@@ -212,6 +218,8 @@ void Main_task( uint32_t initial_data ) {
 	uint32_t cdc_recovery_count = -1;
 	uint64_t otg_reset_time;
 	uint64_t otg_check_time;
+	int32_t MT5_present_last = 0;
+	uint32_t active_count = 0, notify = 0;
 
 	printf("\n%s: Start\n", __func__);
 #if 0
@@ -247,6 +255,11 @@ void Main_task( uint32_t initial_data ) {
 
 	NVIC_SetPriority(PORTA_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
+
+	
+	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
+	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
+
 
 	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
@@ -303,7 +316,9 @@ void Main_task( uint32_t initial_data ) {
         }
     }
     printf("\nAfter power on event\n");
-<<<<<<< HEAD
+
+	NVIC_SetPriority(PORTC_IRQn, PORT_NVIC_IRQ_Priority);
+	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 	
 	ftm_user_config_t ftmInfo;
 	// Configure ftm params with frequency 500HZ
@@ -320,42 +335,10 @@ void Main_task( uint32_t initial_data ) {
 	FTM_DRV_Init(0, &ftmInfo);
 	FTM_DRV_SetClock(0, kClock_source_FTM_FixedClk, kFtmDividedBy1);
 	
-//	_time_delay(MAIN_TASK_SLEEP_PERIOD);
-//	
-//	//NO change signal low/inactive
-//	ftmParam.uFrequencyHZ = 1u;
-//	ftmParam.uDutyCyclePercent = 0;
-//	FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
-//	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
-//	
-//	_time_delay(MAIN_TASK_SLEEP_PERIOD);
-//
-//	//Ignition Low
-//	ftmParam.uFrequencyHZ = 100u;
-//	ftmParam.uDutyCyclePercent = 50;
-//	FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
-//	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
-//	
-//	_time_delay(MAIN_TASK_SLEEP_PERIOD);
-//	
-//	//NO change signal high
-//	ftmParam.uFrequencyHZ = 1;
-//	ftmParam.uDutyCyclePercent = 100;
-//	FTM_DRV_PwmStart(0, &ftmParam, CHAN4_IDX);
-//	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
-	
 	_time_delay(MAIN_TASK_SLEEP_PERIOD);
 	
-=======
-
-	NVIC_SetPriority(PORTC_IRQn, PORT_NVIC_IRQ_Priority);
-	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
-	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
-	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
-
->>>>>>> github/updater_fix
 	// turn on device
-	enable_msm_power(TRUE);		// turn on 5V0 power rail
+	//enable_msm_power(TRUE);		// turn on 5V0 power rail
 
 
 
@@ -461,18 +444,37 @@ void Main_task( uint32_t initial_data ) {
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
 	a8_watchdog_init();
 #endif
-	configure_USB();
+//	configure_USB();
 	printf("\nMain Task: Loop \n");
 	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
 	otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
 
+	//NO change signal high
+	
+	ftmParam.uFrequencyHZ = 1;
+	ftmParam.uDutyCyclePercent = 100;
+	FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
+	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);	
     while ( 1 ) 
     {
+	
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
-        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+//        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
-		if (ignition_state_g.OS_notify)
+
+		if(MT5_active == g_MT5_present)
 		{
+			active_count++;
+		}
+		else
+			active_count = 0;
+
+		if(ignition_state_g.OS_notify || (MT5_present_last != g_MT5_present))
+		   notify = 1;
+		
+		if(notify && (2 < active_count))
+		{
+			notify = 0;
 			ignition_state_g.OS_notify = false;
 			printf("%s: ignition state updated, %d \n", __func__, ignition_state_g.state);
 			if (ignition_state_g.state)
@@ -499,7 +501,13 @@ void Main_task( uint32_t initial_data ) {
 			ftmParam.uDutyCyclePercent = 100;
 			FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
 			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);	
+			
 		}
+//		if(1 == g_on_flag)
+		if(2 == MT5_present_last && (1 == g_on_flag))
+			configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
+		
+		MT5_present_last = g_MT5_present;
 
 		// MCU starts with OTG ID disabled for monitoring
 		// Main task starts monitor this one only after Power task powers on the A8 and gets PON pulse from it
@@ -507,44 +515,44 @@ void Main_task( uint32_t initial_data ) {
 		// If MCU usb routed to A8 and CDC driver is not getting messages about control lines change during timeout the main task routs the USB to bypass, resets all devices connected to USB (HUB, FTDI...) and stops monitor for recover time that eq 10 main task periods (10 secs), after this main task back to OTG ID monitoring.
 		// The USB sub-system also goes to recovery if SW reboot/WD of A8 occurs.
 		// This workaround completely debugged and tested by 48 hours resets and A8 always connects to MCU. Sure it will retested by QA together with functional tests. Moreover I want that Roman will include also some stress tests
-		if (g_a8_sw_reboot > 0) {
-		  	if (-1 == cdc_recovery_count) {
-				if (GPIO_DRV_ReadPinInput(OTG_ID)) {
-			  		cdc_recovery_count = 10;
-				} else {
-					g_a8_sw_reboot = 0;
-				}
-			} else if (cdc_recovery_count) {
-			  	cdc_recovery_count--;
-			} else {
-			  	cdc_recovery_count = -1;
-				g_a8_sw_reboot = 0;
-				otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
-				if (GPIO_DRV_ReadPinInput(OTG_ID)) {
-					GPIO_DRV_SetPinOutput (USB_HUB_RSTN);
-					configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_MCU_A8);
-				}
-			}
-		} else {
-			otg_check_time = ms_from_start();
-			if (!g_flag_Exit && (g_a8_sw_reboot == 0)) {
-				if (otg_reset_time < otg_check_time) {
-					if (GPIO_DRV_ReadPinInput(OTG_ID)) {
-						if (!g_otg_ctl_port_active) {
-							configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
-							GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
-							g_a8_sw_reboot = 1;
-							otg_reset_time = otg_check_time;
-							continue;
-						}
-					}
-					otg_reset_time = otg_check_time + OTG_CTLEP_RECOVERY_TO;
-				}
-				configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
-			} else {
-				otg_reset_time = otg_check_time + OTG_CTLEP_RECOVERY_TO;
-			}
-		}
+//temp!!! remarks				if (g_a8_sw_reboot > 0) {
+//		  	if (-1 == cdc_recovery_count) {
+//				if (GPIO_DRV_ReadPinInput(OTG_ID)) {
+//			  		cdc_recovery_count = 10;
+//				} else {
+//					g_a8_sw_reboot = 0;
+//				}
+//			} else if (cdc_recovery_count) {
+//			  	cdc_recovery_count--;
+//			} else {
+//			  	cdc_recovery_count = -1;
+//				g_a8_sw_reboot = 0;
+//				otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
+//				if (GPIO_DRV_ReadPinInput(OTG_ID)) {
+//					GPIO_DRV_SetPinOutput (USB_HUB_RSTN);
+//					configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_MCU_A8);
+//				}
+//			}
+//		} else {
+//			otg_check_time = ms_from_start();
+//			if (!g_flag_Exit && (g_a8_sw_reboot == 0)) {
+//				if (otg_reset_time < otg_check_time) {
+//					if (GPIO_DRV_ReadPinInput(OTG_ID)) {
+//						if (!g_otg_ctl_port_active) {
+//							configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
+//							GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
+//							g_a8_sw_reboot = 1;
+//							otg_reset_time = otg_check_time;
+//							continue;
+//						}
+//					}
+//					otg_reset_time = otg_check_time + OTG_CTLEP_RECOVERY_TO;
+//				}
+//				configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
+//			} else {
+//				otg_reset_time = otg_check_time + OTG_CTLEP_RECOVERY_TO;
+//			}
+//		}
 #undef DEBUG_BLINKING_RIGHT_LED
 #ifdef DEBUG_BLINKING_RIGHT_LED
 	if(!g_flag_Exit)
@@ -636,11 +644,6 @@ void configure_otg_for_host_or_device(int force)
 			g_otg_ctl_port_active = 0;
 		}
 	}
-	else
-	{
-		GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
-		usb_disabled = true;
-	}
 }
 
 void MQX_PORTA_IRQHandler(void)
@@ -663,10 +666,22 @@ void MQX_PORTA_IRQHandler(void)
 
 void MQX_PORTB_IRQHandler(void)
 {
+	uint64_t time;
+	
 	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG))
 	{
 		GPIO_DRV_ClearPinIntFlag(CPU_WATCHDOG);
-		_event_set(a8_watchdog_event_g, WATCHDOG_A8_CPU_WATCHDOG_BIT); 
+		time = ms_from_start_fast();
+
+		if(GPIO_DRV_ReadPinInput(CPU_WATCHDOG))
+		{
+			_event_set(a8_watchdog_event_g, WATCHDOG_A8_CPU_WATCHDOG_BIT); 
+			g_wd_rise_time = time;
+		}
+		else
+		{
+			g_wd_fall_time = time;
+		}	
 	}
 
 	if (GPIO_DRV_IsPinIntPending(CPU_SPKR_EN))
@@ -723,6 +738,26 @@ void MQX_PORTE_IRQHandler(void)
 	{
 		GPIO_DRV_ClearPinIntFlag(OTG_ID);
 		configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
+	}
+
+	if (GPIO_DRV_IsPinIntPending(CPU_INT))
+	{
+		GPIO_DRV_ClearPinIntFlag(CPU_INT);
+		if (a8_booted_up_correctly_g)
+		{
+			if (GPIO_DRV_ReadPinInput(CPU_INT) == 1)
+			{
+				/* OS/MSM requested a suspend */
+				//GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
+				//_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
+			}
+			else
+			{
+				/*OS/MSM out of suspend */
+				//GPIO_DRV_ClearPinIntFlag (USB_OTG_OE); /* Enable USB */
+				//_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+			}
+		}
 	}
 }
 

@@ -34,6 +34,7 @@
 #define CAN_ERROR_RESPONCE	0x07
 
 //#define FLEXCAN_DEVICE_DEBUG_
+extern _pool_id         g_in_message_pool;	// msg pool for recieve USB information
 
 /* The following tables are the CAN bit timing parameters that are calculated by using the method
  * outlined in AN1798, section 4.1.

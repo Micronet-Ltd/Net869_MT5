@@ -53,6 +53,8 @@ bool acc_enabled_g = false;
 
 extern MUTEX_STRUCT g_i2c0_mutex;
 
+extern int32_t	g_on_flag;
+
 __packed typedef struct{
 	uint64_t timestamp;
 	uint8_t buff[ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE];
@@ -161,6 +163,8 @@ void Acc_task (uint32_t initial_data)
 	
 	while (0 == g_flag_Exit)
 	{
+		task_sleep_if_OS_suspended();
+		
 		res = 0;
 		do {
 			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
@@ -189,6 +193,8 @@ void Acc_task (uint32_t initial_data)
 			} else	{
 				printf("%s: fifo error timeout\n", __func__);
 				_time_delay(1000);//delay after read error 
+				if(!g_on_flag)//temp!!! maybe
+					break;
 			}
 		} while (!res);
 

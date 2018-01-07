@@ -294,6 +294,16 @@ inline uint64_t ms_from_start()
     _time_get(&time);
     return (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
 }
+inline uint64_t ms_from_start_fast()
+{
+    TIME_STRUCT		time;
+	MQX_TICK_STRUCT	ticks;
+
+	_time_get_elapsed_ticks_fast(&ticks);
+	_ticks_to_time(&ticks, &time);
+	
+    return (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+}
 
 #if defined(__cplusplus)
 }
