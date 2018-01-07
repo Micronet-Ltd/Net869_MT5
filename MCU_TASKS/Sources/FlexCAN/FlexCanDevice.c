@@ -34,6 +34,7 @@
 #define CAN_ERROR_RESPONCE	0x07
 
 //#define FLEXCAN_DEVICE_DEBUG_
+extern _pool_id         g_in_message_pool;	// msg pool for recieve USB information
 
 /* The following tables are the CAN bit timing parameters that are calculated by using the method
  * outlined in AN1798, section 4.1.
@@ -203,6 +204,11 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 	char get_resp[50]= {0};
 	uint32_t resp_msg_size = 0;
 	uint8_t bytes_read = 0;
+
+	uint64_t current_time;
+
+	current_time = ms_from_start();
+	printf("%s: started %llu\n", __func__, current_time);
 
 	if ( NULL == (pcan) || BOARD_CAN_INSTANCE <= (pcan)->instance ) {
 		printf( "%s:thread wrong param %u\n", __func__, (pcan)->instance );
@@ -1033,6 +1039,11 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 	pcdc_mic_queue_element_t    pqMemElem;
 	
 	pflexcanInstance_t pcan = (pflexcanInstance_t)param_in;
+
+	uint64_t current_time;
+
+	current_time = ms_from_start();
+	printf("%s: started %llu\n", __func__, current_time);
 
 	if ( (NULL == pcan) || (BOARD_CAN_INSTANCE <= pcan->instance) ) {
 		printf( "%s:ERROR,CAN_RX thread incorrect param %u\n", __func__, pcan->instance );

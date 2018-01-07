@@ -32,6 +32,7 @@
 #define __BOARD_H__
 
 #include <stdint.h>
+#include <mqx.h>
 #include "pin_mux.h"
 #include "gpio_pins.h"
 
@@ -286,6 +287,23 @@ void update_fw_uart_init(void);
 void Board_SetVerySlowClk  (void);
 void Board_SetFastClk (void);
 void Board_SetSlowClk (void);
+inline uint64_t ms_from_start()
+{
+    TIME_STRUCT time;
+
+    _time_get(&time);
+    return (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+}
+inline uint64_t ms_from_start_fast()
+{
+    TIME_STRUCT		time;
+	MQX_TICK_STRUCT	ticks;
+
+	_time_get_elapsed_ticks_fast(&ticks);
+	_ticks_to_time(&ticks, &time);
+	
+    return (uint64_t)1000*time.SECONDS + time.MILLISECONDS;
+}
 
 #if defined(__cplusplus)
 }

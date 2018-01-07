@@ -82,7 +82,7 @@
 #include "mqx_prv.h"
 #include "watchdog_mgmt.h"
 #include <lwtimer.h>
-#include "main_tasks.h"
+#include "mic_typedef.h"
 
 #define DEVICE_CONTROL_TIME_ON_TH				 3200		// number of mili-seconds pulse for turning device on
 #define DEVICE_CONTROL_TIME_OFF_TH				 3200		// number of mili-seconds pulse for turning device off
@@ -104,17 +104,19 @@
 
 typedef struct
 {
-	uint32_t time_threshold;								// pulse time period
-	uint32_t time;											// time er
-	uint32_t delay_period;									// time duration that needs to be added to counter
-	bool     enable;										// pulse enable control
-	bool     status;										// pulse status - TRUE as long as pulse is generated
+    // 64-bit time_threshold works for 300 thousands years since MCU started 
+	uint64_t 	time_threshold;								// pulse time period
+	uint64_t 	time;											// time er
+	uint64_t	delay_period;									// time duration that needs to be added to counter
+	bool    	enable;										// pulse enable control
+	bool    	status;										// pulse status - TRUE as long as pulse is generated
+	bool		spare[6];
 } DEVICE_CONTROL_GPIO_t;
 
 
 DEVICE_CONTROL_GPIO_t device_control_gpio_g;
 DEVICE_STATE_t        device_state_g;
-static uint8_t turn_on_condition_g = 0;
+static uint32_t turn_on_condition_g = 0;
 
 uint32_t backup_power_cnt_g = 0 ;
 uint8_t led_blink_cnt_g     = 0 ;
@@ -127,13 +129,23 @@ LWTIMER_STRUCT lwtimer_a8_turn_on_g;
 
 extern void * cpu_int_suspend_event_g;
 
+extern int32_t g_MT5_present;
+
 void Device_control_GPIO        (uint32_t * time_diff);
 bool Device_control_GPIO_status (void);
 void send_power_change          (uint8_t *power_mask);
 
+extern void configure_otg_for_host_or_device(int);
+extern uint64_t g_wd_fall_time;
+extern uint64_t g_wd_rise_time;
+
+int32_t	g_on_flag = 0;
+
 void enable_peripheral_clocks(void)
 {
-  uint8_t i;
+  	uint8_t i;
+	printf ("%s: enable ports clocks\n", __func__);
+	
   for (i = 1; i < PORT_INSTANCE_COUNT; i++)
   {
 	CLOCK_SYS_EnablePortClock (i);
@@ -150,19 +162,19 @@ void disable_peripheral_clocks(void)
   }
 }
 
-uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
+uint32_t get_turn_on_reason(uint32_t * ignition_voltage)
 {
-	uint8_t turn_on_condition = 0;
+	uint32_t turn_on_condition = 0;
 	if (*ignition_voltage >= ignition_threshold_g)
 	{
-		printf ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
+		//printf ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
 		turn_on_condition |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;
 	}
 
 	if (Wiggle_sensor_cross_TH ())
 	{
-		//printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
-		//turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
+		printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
+		turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
 	}
 
 	if(RCM_BRD_SRS1_LOCKUP((RCM_Type*)RCM_BASE))
@@ -173,17 +185,57 @@ uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
 
 	if(RCM_BRD_SRS0_WDOG((RCM_Type*)RCM_BASE))
 	{
-		//printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
-		//turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
+		printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
+		turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
 	}
 
 	//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
 	//{
 	//  	turn_on_condition |= POWER_MGM_DEVICE_SW_RESET_REQ;
 	//}
+
 	return turn_on_condition;
 }
+void set_run_mode(int32_t fOn, int32_t fForce)
+{
+	uint32_t freq = 0;
+	static int32_t last_tst = 0;
+	if( (fOn == last_tst) && !fForce)
+		return;
+	
+	printf("%s: %d - %d\n", __func__, fOn, fForce);//temp
+	if(fOn)
+	{
+		switch_power_mode(kPowerManagerRun);
+		_bsp_MQX_tick_timer_init ();
+		enable_msm_power(1);
+		enable_peripheral_clocks();
+		peripherals_enable ();
+		FPGA_init ();
+		FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
+	}
+	else
+	{
+		g_on_flag = 0;
+		configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
 
+		switch_power_mode(kPowerManagerVlpr);
+		_bsp_MQX_tick_timer_init ();
+		if(fOn	== last_tst)
+			FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
+		peripherals_disable(1);
+		disable_peripheral_clocks();
+		enable_msm_power(0);
+
+		CLOCK_SYS_EnablePortClock (PORTB_IDX); //Enable PortB clock so we can still read the WD signal in MSM suspend
+		//CLOCK_SYS_EnablePortClock (PORTC_IDX);
+		// Enable power to the vibration sensor and accelerometer
+		//GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
+		Wiggle_sensor_start();
+		Wiggle_sensor_restart();
+	}
+	last_tst = fOn;					
+}
 void Device_update_state (uint32_t * time_diff)
 {
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
@@ -195,13 +247,20 @@ void Device_update_state (uint32_t * time_diff)
 	_mqx_uint event_bits = 0;
 	_mqx_uint event_result = MQX_OK;
 	uint32_t freq = 0;
-
+	static uint64_t wait_on_timeout = 0;
+	static uint64_t wait_off_timeout = 0;
+	
+	static int	start_count = 0;
+	int dev_present = 0;
+	static uint32_t last_wiggle_condition = 0;
+	
 	Device_control_GPIO(time_diff);
 
 #ifdef TEMPERATURE_DBG_PRINT
 	static uint16_t time_since_temp_print = 0;
 	time_since_temp_print += *time_diff;
-	if (time_since_temp_print > 30000) // 30 seconds
+	if ((device_state_g == DEVICE_STATE_OFF && time_since_temp_print > 45000) //about 10 seconds, coz running @ slower clock
+		|| (device_state_g != DEVICE_STATE_OFF && time_since_temp_print > 30000)) // 30 seconds
 	{
 		printf("temp x 10 : %d c \n", temperature-500);
 		time_since_temp_print = 0;
@@ -238,17 +297,46 @@ void Device_update_state (uint32_t * time_diff)
 				}
 				break;
 			}
-
+			if(ms_from_start() < wait_off_timeout)
+			{
+				break;
+			}
 			turn_on_condition_g = get_turn_on_reason(&ignition_voltage);
 
-			if (turn_on_condition_g != 0)
+			dev_present = GPIO_DRV_ReadPinInput(CPU_RF_KILL);
+			//temp!!! remark - need for suspended device
+			if((turn_on_condition_g != 0) && (0 == start_count++) && MT5_inside == g_MT5_present)//short pulse for suspended device
 			{
+				GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+				_time_delay(40);
+				GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+				wait_off_timeout = ms_from_start() + 2100;
+				last_wiggle_condition = (turn_on_condition_g & POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER);//store
+				break;
+			}
+			turn_on_condition_g |= last_wiggle_condition;
+			last_wiggle_condition = 0;
+			
+			if( ((turn_on_condition_g != 0) && (0 < g_MT5_present)) || (MT5_active == g_MT5_present) )
+			//if( (turn_on_condition_g && (dev_present || (0 < g_MT5_present))) || (MT5_active == g_MT5_present) )
+			{
+				
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
 				//send_power_change  (&turn_on_condition);
-				printf("%s: device turn on temperature: %d mV", __func__, temperature);
+				printf("%s: device turn on[%llu]: temperature %d mV, present %d [%d], condition %d\n", __func__, 
+					   ms_from_start(), temperature, dev_present, g_MT5_present, turn_on_condition_g);
 				printed_temp_error = FALSE;
 				device_state_g = DEVICE_STATE_TURNING_ON;
+				if(MT5_inside == g_MT5_present)//(MT5_active != g_MT5_present)
+					Device_turn_on();
+				start_count = 0;
+			}
+			else if( (MT5_out == g_MT5_present) || ((turn_on_condition_g == 0) && (MT5_inside == g_MT5_present)))
+			//else if( !dev_present || turn_on_condition_g == 0)
+			{
+				set_run_mode(0, 0);
+				start_count = 0;
 			}
 			break;
 
@@ -256,22 +344,19 @@ void Device_update_state (uint32_t * time_diff)
 			// wait while pulse is still generated (time period didn't reach threshold)
 			if (!Device_control_GPIO_status())
 			{
-				switch_power_mode(kPowerManagerRun);
-				enable_peripheral_clocks();
-				peripherals_enable ();
-				_bsp_MQX_tick_timer_init ();
-				//Board_SetFastClk ();
-				//Device_turn_on     ();
-				device_state_g = DEVICE_STATE_ON;
-				printf ("\nPOWER_MGM: DEVICE RUNNING\n");
-				FPGA_init ();
-				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 				GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
-				_event_set(power_up_event_g, 1);
+				set_run_mode(1, 0);
+//				if(MT5_inside == g_MT5_present)
+//					Device_turn_on     ();
+				device_state_g = DEVICE_STATE_ON;
+				printf ("\nPOWER_MGM: DEVICE RUNNING %llu ms\n", ms_from_start());
+				_event_set(power_up_event_g, 1);//for the 1st on only
+				wait_on_timeout = ms_from_start() + 21000;
 			}
 			break;
 
 		case DEVICE_STATE_ON:
+		{	
 			// if power drops below threshold - shutdown
 			if (power_in_voltage < POWER_IN_SHUTDOWN_TH)
 			{
@@ -289,7 +374,39 @@ void Device_update_state (uint32_t * time_diff)
 				device_state_g = DEVICE_STATE_OFF;
 				Device_off_req(FALSE, 0);
 			}
-
+			if(0 == (dev_present = GPIO_DRV_ReadPinInput(CPU_RF_KILL)))
+			{
+				device_state_g = DEVICE_STATE_OFF;
+				set_run_mode(0, 0);
+				wait_off_timeout = ms_from_start() + 3100;
+				printf("%s: dev off - delay to %llu\n", __func__, wait_off_timeout );
+				break;
+			}
+			if(MT5_active == g_MT5_present)
+			{
+				if(wait_on_timeout)//1st temp!!! debug
+				{
+					uint64_t cur_time =  ms_from_start();
+					printf("%s: from power on %llu [%llu]\n", __func__, (cur_time - (wait_on_timeout - 21000)), cur_time);
+				}
+				//1st configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE)
+				wait_on_timeout = 0;
+				g_on_flag = 1;
+			}
+			else if(MT5_out == g_MT5_present || MT5_inside == g_MT5_present)
+			{
+				if(ms_from_start() > wait_on_timeout) 
+				{
+					device_state_g = DEVICE_STATE_OFF;
+					set_run_mode(0, 0);
+					printf("%s: dev not present cmp %llu - %llu\n", __func__, wait_on_timeout, ms_from_start() );//temp!!!
+					wait_off_timeout = ms_from_start() + 3100;
+					break;
+				}
+			}
+			break;
+		}
+#if 0			
 			event_result = _event_get_value(cpu_int_suspend_event_g, &event_bits)  ;
 			if (event_result == MQX_OK)
 			{
@@ -333,7 +450,7 @@ void Device_update_state (uint32_t * time_diff)
 				}
 			}
 			break;
-
+		}
 		case DEVICE_STATE_ON_OS_SUSPENDED: /* has DEVICE_STATE_ON and DEVICE_STATE_OFF code */
 			turn_on_condition_g = 0;
 			Wiggle_sensor_update();
@@ -385,7 +502,7 @@ void Device_update_state (uint32_t * time_diff)
 				printf("\n%s: Switched to DEVICE_STATE_ON  \n", __func__);
 			}
 			break;
-
+#endif //SUSPEND state
 		case DEVICE_STATE_BACKUP_RECOVERY:
 			backup_power_cnt_g += *time_diff;
 
@@ -572,29 +689,36 @@ void Device_reset_req(int32_t wait_time)
 	_time_delay(cpu_off_wait_time);
 
 #ifdef MCU_AND_CPU_BOARD_CONNECTED
+	cpu_status_pin = GPIO_DRV_ReadPinInput (CPU_STATUS);
 	while (cpu_off_wait_time) {
-		/* Turn device off */
-		GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
-		_time_delay (100);
-		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
-
 	  	/* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
-		cpu_status_pin = GPIO_DRV_ReadPinInput (CPU_STATUS);
-		if (0 == cpu_status_pin) {
+		if (cpu_status_pin != GPIO_DRV_ReadPinInput (CPU_STATUS)) {
 			printf ("Device_off_req: CPU_status pin %d, wait_time %d ms\n", cpu_status_pin, cpu_off_wait_time);
+			_time_delay(200);
+			cpu_status_pin = 2;
 			break;
 		}
 		
-		_time_delay(CPU_OFF_CHECK_TIME);
-		cpu_off_wait_time -= CPU_OFF_CHECK_TIME;
+		_time_delay(5);
+		cpu_off_wait_time -= 5;
 	}
-
-	/* turning off the 5V rail always. */
-	//printf ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
-	//enable_msm_power(FALSE);		// turn off 5V0 power rail
 #endif
+	
+	// turning off the 5V rail always.
+	// printf ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
+	// Turn device off
+	if (2 != cpu_status_pin) {
+		printf ("%s: try shutdown A8 by power button\n", __func__);
+		GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+		_time_delay (DEVICE_CONTROL_TIME_OFF_TH);
+		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+	}
+	
+	enable_msm_power(FALSE);		// turn off 5V0 power rail
+
 	//GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 	printf ("\nPOWER_MGM: DEVICE reset through Device_reset_req\n");
+	peripherals_disable (1);
 	device_state_g = DEVICE_STATE_OFF;
 
 	// Vladimir
@@ -612,7 +736,7 @@ void Device_init (uint32_t delay_period)
 {
 	device_state_g = DEVICE_STATE_OFF;
 
-	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_ON_TH;
+	device_control_gpio_g.time_threshold = ms_from_start() + DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.delay_period   = delay_period;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = false;
@@ -624,7 +748,7 @@ void Device_init (uint32_t delay_period)
 
 void Device_turn_on  (void)
 {
-	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_ON_TH;
+	device_control_gpio_g.time_threshold = ms_from_start() + DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = true;
 
@@ -637,31 +761,33 @@ void Device_turn_on  (void)
 
 void Device_turn_off (void)
 {
-	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_OFF_TH;
+	device_control_gpio_g.time_threshold = ms_from_start() + DEVICE_CONTROL_TIME_OFF_TH;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = true;
 }
 
 void Device_reset (void)
 {
-	device_control_gpio_g.time_threshold = DEVICE_CONTROL_TIME_RESET_TH;
+
+	device_control_gpio_g.time_threshold = ms_from_start() + DEVICE_CONTROL_TIME_RESET_TH;
 	device_control_gpio_g.time           = 0;
 	device_control_gpio_g.enable         = true;
 }
 
 void Device_control_GPIO (uint32_t * time_diff)
 {
+	uint64_t ms;
+
 	if (device_control_gpio_g.enable == false)
 		return;
 
-	if (device_control_gpio_g.time <	device_control_gpio_g.time_threshold)
-	{
+	ms = ms_from_start();
+
+	if (ms < device_control_gpio_g.time_threshold) {
 		GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
 		device_control_gpio_g.status = true;
 		device_control_gpio_g.time  += *time_diff;
-	}
-	else
-	{
+	} else {
 		GPIO_DRV_SetPinOutput(CPU_ON_OFF);
 		device_control_gpio_g.status = false;
 		device_control_gpio_g.time   = 0;
@@ -679,7 +805,7 @@ void peripherals_enable (void)
 
 	GPIO_DRV_ClearPinOutput (FPGA_RSTB);
 
-	enable_msm_power(TRUE);		// turn on 5V0 power rail
+//	enable_msm_power(TRUE);		// turn on 5V0 power rail
 	GPIO_DRV_SetPinOutput   (FPGA_PWR_ENABLE);	// FPGA Enable
 	GPIO_DRV_SetPinOutput   (FPGA_RSTB);
 
@@ -715,11 +841,12 @@ void peripherals_enable (void)
 //	GPIO_DRV_SetPinOutput (CPU_MIC_EN);
 
 	// wait till FPGA is loaded
+	printf("%s: wait for fpga ready %d ms\n", __func__, total_wait_time);
 	while(1)
 	{
 		if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1)
 		{
-			printf ("\nPOWER_MGM: INFO: FPGA is loaded, wait_time: %d ms\n", total_wait_time );
+			printf ("%s: FPGA is loaded on %d ms\n", __func__, total_wait_time );
 			break;
 		}
 		_time_delay(1);
@@ -727,22 +854,43 @@ void peripherals_enable (void)
 		/* Measured to take 71ms typically (tested on 1 board, 10 reboot cycles) - Abid */
 		if(total_wait_time > 10000)
 		{
-			printf("\nPOWER_MGM: INFO: FPGA FAILED TO LOAD!, wait_time: %d ms\n", total_wait_time);
+            PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntDisabled);
+            GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+			printf("%s: FPGA FAILED TO LOAD!... %d ms\n", total_wait_time);
 			break;
 		}
 	}
 
+	printf("%s: enable acc interrupts %d ms\n", __func__, total_wait_time);
+	PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntLogicZero);
+	GPIO_DRV_ClearPinIntFlag(ACC_INT);
 	// TODO: need to be removed after tasks enable will be set fro USB protocol
 	//J1708_enable  (7);
 
 }
 
 
-void peripherals_disable (bool turn_off_5V_rail)
+void peripherals_disable (uint32_t WithFpga)
 {
+  	// disable FPGA based resources
+	PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntDisabled);
+	GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+	GPIO_DRV_ClearPinIntFlag(ACC_INT);
+	PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntDisabled);
+	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
+
+	if(WithFpga)
+	{  
+		// Down FPGA
+		GPIO_DRV_ClearPinOutput(FPGA_RSTB);
+		GPIO_DRV_ClearPinOutput(FPGA_PWR_ENABLE);
+	}
+	
 	GPIO_DRV_ClearPinOutput (CAN1_J1708_PWR_ENABLE);
 	GPIO_DRV_ClearPinOutput (CAN2_SWC_PWR_ENABLE);
 
+    GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
+	GPIO_DRV_ClearPinOutput (FTDI_RSTN);
 	GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
 	//GPIO_DRV_ClearPinOutput   (FTDI_RSTN);
@@ -753,11 +901,7 @@ void peripherals_disable (bool turn_off_5V_rail)
 	//GPIO_DRV_ClearPinOutput   (FPGA_RSTB);
 	//GPIO_DRV_ClearPinOutput (FPGA_PWR_ENABLE);
 	//AccDisable();
-
-	if (turn_off_5V_rail)
-	{
-		GPIO_DRV_ClearPinOutput   (POWER_5V0_ENABLE);	// turn on 5V0 power rail
-	}
+    GPIO_DRV_SetPinOutput (USB_OTG_OE);		//Disable OTG/MCU switch
 }
 
 

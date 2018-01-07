@@ -35,6 +35,13 @@ typedef struct tick_measure_s{
 	int32_t time_diff; //ms
 }tick_measure_t;
 
+typedef enum MT5_presence_state {
+	MT5_unknown	= -1,
+	MT5_out		= 0, 	//cpu_watchdog signal 0
+	MT5_inside, 		//cpu_watchdog signal 1
+	MT5_active,  		//cpu_watchdog signal toggling at 0.5Hz
+}MT5_presence_state;
+
 void get_ignition_threshold(uint32_t * p_ignition_threshold);
 void set_ignition_threshold(uint32_t ignition_threshold);
 void switch_power_mode(power_manager_modes_t mode);
