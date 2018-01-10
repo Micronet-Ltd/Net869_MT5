@@ -34,6 +34,7 @@
 #include "bsp.h"
 #include "mic_typedef.h"
 #include "watchdog_mgmt.h"
+#include "main_tasks.h"
 
 #define SUPERCAP_CHRG_DISCHRG_ENABLE   1
 //#define DEBUGGING_ENABLED                1
@@ -278,7 +279,7 @@ extern LWTIMER_PERIOD_STRUCT lwtimer_period_a8_turn_on_g;
 extern LWTIMER_STRUCT lwtimer_a8_turn_on_g;
 
 extern tick_measure_t cpu_status_time_g;
-bool a8_booted_up_correctly_g = false;
+bool a8_booted_up_correctly_g = true;
 extern void * cpu_int_suspend_event_g;
 extern ignition_state_t ignition_state_g;
 
@@ -811,8 +812,8 @@ void Power_MGM_task (uint32_t initial_data )
 #endif
 
 	/* Start off with the peripherals disabled */
-	disable_peripheral_clocks();
 	peripherals_disable (true);
+	disable_peripheral_clocks();
 	_bsp_MQX_tick_timer_init ();
 	/* Enable power to the vibration sensor and accelerometer */
 	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);

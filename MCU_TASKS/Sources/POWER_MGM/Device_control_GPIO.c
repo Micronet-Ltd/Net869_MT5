@@ -261,9 +261,9 @@ void Device_update_state (uint32_t * time_diff)
 			if (!Device_control_GPIO_status())
 			{
 				switch_power_mode(kPowerManagerRun);
-				_bsp_MQX_tick_timer_init ();
 				enable_peripheral_clocks();
 				peripherals_enable ();
+				_bsp_MQX_tick_timer_init ();
 				//Board_SetFastClk ();
 				//Device_turn_on     ();
 				device_state_g = DEVICE_STATE_ON;
@@ -308,6 +308,8 @@ void Device_update_state (uint32_t * time_diff)
 				{
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
 					_event_clear(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
+					//Changing the device_state_g to OS suspended early because other tasks use this flag to go to a dormant state
+					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
 					printf("%s: cpu_int_suspend_event_g high \n", __func__);
 					printf("\n%s: Switched to DEVICE_STATE_ON_OS_SUSPENDED  \n", __func__);
 
@@ -316,11 +318,12 @@ void Device_update_state (uint32_t * time_diff)
 					/* Pause tasks that capture data */
 					/* Go into lower power mode */
 					CLOCK_SYS_GetFreq(kCoreClock, &freq);
-					//switch_power_mode(kPowerManagerVlpr);
+					switch_power_mode(kPowerManagerVlpr);
 					/* Start off with the peripherals disabled */
 					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xFF); /*Green Blue LED */
 					disable_peripheral_clocks();
-					CLOCK_SYS_EnablePortClock (PORTB_IDX); //Enable PortB clock so we can still read the WD signal in MSM suspend
+					//CLOCK_SYS_EnablePortClock (PORTB_IDX); //Enable PortB clock so we can still read the WD signal in MSM suspend
+					CLOCK_SYS_EnablePortClock (PORTC_IDX); //Enable PortB clock so we can still read the WD signal in MSM suspend
 					peripherals_disable (false);
 					_bsp_MQX_tick_timer_init ();
 					/* Enable power to the vibration sensor and accelerometer */
@@ -329,12 +332,7 @@ void Device_update_state (uint32_t * time_diff)
 					/* Enable Wake Source monitoring */
 					Wiggle_sensor_start();
 					Wiggle_sensor_restart();
-
-					FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0xAB); /*Green Blue LED */
-					device_state_g = DEVICE_STATE_ON_OS_SUSPENDED;
 					configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE); /* Needs to be done after changing state */
-					GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */ //!!!! REMOVE !!!
-					printf("\n%s: Switched to DEVICE_STATE_ON_OS_SUSPENDED  \n", __func__);
 				}
 			}
 			break;
@@ -359,8 +357,6 @@ void Device_update_state (uint32_t * time_diff)
 			{
 				printf ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - waking up from suspend !!! \n", power_in_voltage);
 			}
-
-			turn_on_condition_g = get_turn_on_reason(&ignition_voltage);
 
 			event_result = _event_get_value(cpu_int_suspend_event_g, &event_bits)  ;
 			if (event_result == MQX_OK)
@@ -388,7 +384,6 @@ void Device_update_state (uint32_t * time_diff)
 				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 				device_state_g = DEVICE_STATE_ON;
 				configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE); /* Needs to be done after changing state */
-				GPIO_DRV_ClearPinOutput (USB_OTG_OE); /* Enable USB */ //!!!! REMOVE !!!
 				printf("\n%s: Switched to DEVICE_STATE_ON  \n", __func__);
 			}
 			break;
@@ -811,7 +806,7 @@ void peripherals_disable (bool WithFpga)
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
 	GPIO_DRV_ClearPinOutput (EXT_GPS_EN);
 	//AccDisable();
-    GPIO_DRV_SetPinOutput (USB_OTG_OE);		//Disable OTG/MCU switch
+    //GPIO_DRV_SetPinOutput (USB_OTG_OE);		//Disable OTG/MCU switch
 }
 
 

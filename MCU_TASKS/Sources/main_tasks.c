@@ -609,7 +609,7 @@ void configure_otg_for_host_or_device(int force)
 	{
 		curr_otg_id_state = GPIO_DRV_ReadPinInput (OTG_ID);
 
-		if (curr_otg_id_state != prev_otg_id_state || force){
+		if ((curr_otg_id_state != prev_otg_id_state) || force || usb_disabled){
 			if (OTG_ID_CFG_FORCE_MCU_A8 == force) {
 				curr_otg_id_state = 1;
 			} else if (OTG_ID_CFG_FORCE_BYPASS == force) {
@@ -637,6 +637,7 @@ void configure_otg_for_host_or_device(int force)
 				GPIO_DRV_ClearPinOutput (FTDI_RSTN);
 				g_otg_ctl_port_active = 0;
 			}
+			usb_disabled = false;
 		}
 	}
 	else
@@ -749,26 +750,6 @@ void MQX_PORTE_IRQHandler(void)
 	{
 		GPIO_DRV_ClearPinIntFlag(OTG_ID);
 		configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
-	}
-
-	if (GPIO_DRV_IsPinIntPending(CPU_INT))
-	{
-		GPIO_DRV_ClearPinIntFlag(CPU_INT);
-		if (a8_booted_up_correctly_g)
-		{
-			if (GPIO_DRV_ReadPinInput(CPU_INT) == 1)
-			{
-				/* OS/MSM requested a suspend */
-				//GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
-				//_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_HIGH);
-			}
-			else
-			{
-				/*OS/MSM out of suspend */
-				//GPIO_DRV_ClearPinIntFlag (USB_OTG_OE); /* Enable USB */
-				//_event_set(cpu_int_suspend_event_g, EVENT_CPU_INT_SUSPEND_LOW);
-			}
-		}
 	}
 
 	if (GPIO_DRV_IsPinIntPending(CPU_INT))
