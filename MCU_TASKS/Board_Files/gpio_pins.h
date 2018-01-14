@@ -14,7 +14,6 @@ enum _gpio_pins_pinNames {
 	//SWD_RST								(RESET_B),
 
 	// POWRE RAIL CONTROL
-	POWER_3V3_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX, 14),
 	POWER_5V0_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX, 11),
 	POWER_CHARGE_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX, 15),
 	POWER_DISCHARGE_ENABLE				= GPIO_MAKE_PIN(GPIOB_IDX,  8),
@@ -54,6 +53,7 @@ enum _gpio_pins_pinNames {
 	SPI_MEM_DO							= GPIO_MAKE_PIN(GPIOB_IDX, 23),
 
 	// CAN BUS INTERFACE
+	CAN1_PWR_EN							= GPIO_MAKE_PIN(GPIOA_IDX, 14), //only present of NET869V6 and greater boards
 	CAN1_J1708_PWR_ENABLE				= GPIO_MAKE_PIN(GPIOC_IDX,  0),
 	CAN2_SWC_PWR_ENABLE					= GPIO_MAKE_PIN(GPIOC_IDX,  4),
 	CAN1_TERM_ENABLE					= GPIO_MAKE_PIN(GPIOE_IDX, 24),
@@ -118,10 +118,8 @@ enum _gpio_pins_pinNames {
 	CPU_POWER_LOSS					    = GPIO_MAKE_PIN(GPIOE_IDX, 25), //swapped CPU_SPKR_EN with CPU_POWER_LOSS in schematic
 	CPU_MIC_EN						    = GPIO_MAKE_PIN(GPIOE_IDX, 26),
 	
+	EXT_GPS_EN							= GPIO_MAKE_PIN(GPIOD_IDX, 10), //used to control power to the external GPS antenna (only routed in NET869 V6 and greater boards)
 	CPU_INT								= GPIO_MAKE_PIN(GPIOE_IDX, 28), //called USB_INT_P in the A8 schematic. Needs to be low for smart cradle
-	
-
-
 
 	PORT_D_SPARE1						= GPIO_MAKE_PIN(GPIOD_IDX,  0),
 	PORT_D_SPARE2						= GPIO_MAKE_PIN(GPIOD_IDX,  1),
@@ -133,7 +131,7 @@ enum _gpio_pins_pinNames {
 	PORT_D_SPARE8						= GPIO_MAKE_PIN(GPIOD_IDX,  7),
 	PORT_D_SPARE9						= GPIO_MAKE_PIN(GPIOD_IDX,  8),
 	PORT_D_SPARE10						= GPIO_MAKE_PIN(GPIOD_IDX,  9),
-	PORT_D_SPARE11						= GPIO_MAKE_PIN(GPIOD_IDX, 10),
+	
 	PORT_D_SPARE12						= GPIO_MAKE_PIN(GPIOD_IDX, 11),
 	PORT_D_SPARE13						= GPIO_MAKE_PIN(GPIOD_IDX, 12),
 	PORT_D_SPARE14						= GPIO_MAKE_PIN(GPIOD_IDX, 13),

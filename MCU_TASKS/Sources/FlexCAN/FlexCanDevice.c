@@ -477,6 +477,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				//Enable CAN
 				if ( BSP_CAN_DEVICE_0 == pcan->instance ){
 					GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
+					GPIO_DRV_SetPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 				}
 				else {
 					if ( fdBitrate_33_kHz == initCan.instanceBitrate) {
@@ -533,6 +534,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				Baudrate_notSet = 1;
 				if ( BSP_CAN_DEVICE_0 == pcan->instance ) {
 					GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE);
+					GPIO_DRV_ClearPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 				}
 				else {
 					GPIO_DRV_ClearPinOutput(CAN2_SWC_PWR_ENABLE);
