@@ -4,6 +4,7 @@
 #include <message.h>
 #include <lwmsgq.h>
 #include <lwtimer.h>
+#include <mqx_prv.h>
 
 #include "MK20D10_extension.h"
 #include "fsl_power_manager.h"
@@ -29,10 +30,11 @@
 #include "fsl_debug_console.h"
 #include "fsl_lptmr_driver.h"
 #include "fsl_interrupt_manager.h"
+#include "board.h"
 #include "bsp.h"
 #include "mic_typedef.h"
 #include "watchdog_mgmt.h"
-#include "mqx_prv.h"
+#include "main_tasks.h"
 
 #define SUPERCAP_CHRG_DISCHRG_ENABLE   1
 //#define DEBUGGING_ENABLED                1
@@ -77,8 +79,6 @@ if (ret != kPowerManagerSuccess) \
 clock_manager_error_code_t dbg_console_cm_callback(clock_notify_struct_t *notify, void* callbackData);
 power_manager_error_code_t rtos_pm_callback(power_manager_notify_struct_t * notify,  power_manager_callback_data_t * dataPtr);
 clock_manager_error_code_t rtos_cm_callback(clock_notify_struct_t *notify, void* callbackData);
-extern void configure_otg_for_host_or_device(int);
-
 extern void MQX_PORTA_IRQHandler(void);
 extern uint8_t g_flag_Exit;
 extern uint64_t g_wd_fall_time;
@@ -126,14 +126,12 @@ typedef enum wakeUpSource
 	wakeUpSourceSwBtn =  4,
 } wakeUpSource_t;
 
-#if 0
 typedef enum MT5_power_states {
 	MT5_suspend, //cpu_watchdog signal 0
 	MT5_charging, //cpu_watchdog signal 1
 	MT5_active,  //cpu_watchdog signal toggling at 0.5Hz
 	MT5_unknown
 }MT5_power_states_t;
-#endif
 
 int32_t g_MT5_present = 0;
 
@@ -395,7 +393,6 @@ clock_manager_error_code_t rtos_cm_callback(clock_notify_struct_t *notify,
 //                    lptmrStr->lptmrState.prescalerClockHz = (lptmrStr->lptmrState.prescalerClockHz >> ((uint32_t)(lptmrStr->lptmrUserConfig.prescalerValue+1)));
 //                }
 //            }
-
 			SYSTICK_RELOAD((CLOCK_SYS_GetCoreClockFreq()/TICK_PER_SEC)-1UL);
 			SYSTICK_ENABLE();
 			break;

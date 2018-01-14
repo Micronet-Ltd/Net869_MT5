@@ -163,10 +163,9 @@ void Acc_task (uint32_t initial_data)
 	
 	while (0 == g_flag_Exit)
 	{
-		task_sleep_if_OS_suspended();
-		
 		res = 0;
 		do {
+			task_sleep_if_OS_suspended();
 			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
 			if (res) {
 				acc_data_buff.timestamp = ms_from_start();
