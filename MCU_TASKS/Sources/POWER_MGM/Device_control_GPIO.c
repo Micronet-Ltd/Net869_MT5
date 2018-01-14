@@ -318,8 +318,8 @@ void Device_update_state (uint32_t * time_diff)
 			turn_on_condition_g |= last_wiggle_condition;
 			last_wiggle_condition = 0;
 			
-			if( ((turn_on_condition_g != 0) && (0 < g_MT5_present)) || (MT5_active == g_MT5_present) )
-			//if( (turn_on_condition_g && (dev_present || (0 < g_MT5_present))) || (MT5_active == g_MT5_present) )
+			if( ((turn_on_condition_g != 0) && (0 < g_MT5_present)) || (MT5_active_on == g_MT5_present) )
+			//if( (turn_on_condition_g && (dev_present || (0 < g_MT5_present))) || (MT5_active_on == g_MT5_present) )
 			{
 				
 				led_blink_cnt_g = 0;
@@ -329,7 +329,7 @@ void Device_update_state (uint32_t * time_diff)
 					   ms_from_start(), temperature, dev_present, g_MT5_present, turn_on_condition_g);
 				printed_temp_error = FALSE;
 				device_state_g = DEVICE_STATE_TURNING_ON;
-				if(MT5_inside == g_MT5_present)//(MT5_active != g_MT5_present)
+				if(MT5_inside == g_MT5_present)//(MT5_active_on != g_MT5_present)
 					Device_turn_on();
 				start_count = 0;
 			}
@@ -383,7 +383,7 @@ void Device_update_state (uint32_t * time_diff)
 				printf("%s: dev off - delay to %llu\n", __func__, wait_off_timeout );
 				break;
 			}
-			if(MT5_active == g_MT5_present)
+			if(MT5_active_on == g_MT5_present)
 			{
 				if(wait_on_timeout)//1st temp!!! debug
 				{
@@ -405,8 +405,8 @@ void Device_update_state (uint32_t * time_diff)
 					break;
 				}
 			}
-			break;
-		}
+//			break;
+//		}	
 			event_result = _event_get_value(cpu_int_suspend_event_g, &event_bits)  ;
 			if (event_result == MQX_OK)
 			{
@@ -446,8 +446,7 @@ void Device_update_state (uint32_t * time_diff)
 					/* Enable Wake Source monitoring */
 					Wiggle_sensor_start();
 					Wiggle_sensor_restart();
-
-					configure_USB(); /* Needs to be done after changing state */
+					configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE); /* Needs to be done after changing state */
 				}
 			}
 			break;
