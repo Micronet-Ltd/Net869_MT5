@@ -661,7 +661,7 @@ static void MT5_state_monitor(void)
 	//else 
 	if((last_btime != big_time) && (0 != less_time) && ((now - big_time) < 3000))
 	{
-		if( (((big_time - less_time) > 1200) || ((big_time - less_time) < 800)) && (MT5_active != g_MT5_present) )   
+		if( (((big_time - less_time) > 1200) || ((big_time - less_time) < 800)) && (MT5_active_on != g_MT5_present) )   
 		{
 			//g_MT5_present = MT5_unknown;
 		}
@@ -669,7 +669,7 @@ static void MT5_state_monitor(void)
 		{
 			if(0 < count_act)//count_act++)			
 			{
-				g_MT5_present = MT5_active;
+				g_MT5_present = MT5_active_on;
 			}
 			else
 				count_act = 1;//1st

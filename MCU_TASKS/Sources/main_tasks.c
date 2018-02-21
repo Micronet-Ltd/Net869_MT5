@@ -201,7 +201,7 @@ int g_otg_ctl_port_active = 0;
 
 void task_sleep_if_OS_suspended(void)
 {
-	while (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED)
+	while((0 == g_on_flag) || (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED))
 	{
 		_time_delay (500);
 	}
@@ -256,6 +256,8 @@ void Main_task( uint32_t initial_data ) {
 	NVIC_SetPriority(PORTA_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
 
+	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
+	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
 //    // I2C0 Initialization
 //    NVIC_SetPriority(I2C0_IRQn, I2C_NVIC_IRQ_Priority);
@@ -313,8 +315,8 @@ void Main_task( uint32_t initial_data ) {
 	NVIC_SetPriority(PORTC_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
-	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
-	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
+//	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
+//	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
 	
 	ftm_user_config_t ftmInfo;
@@ -464,7 +466,7 @@ void Main_task( uint32_t initial_data ) {
 		// The USB sub-system also goes to recovery if SW reboot/WD of A8 occurs.
 		// This workaround completely debugged and tested by 48 hours resets and A8 always connects to MCU. Sure it will retested by QA together with functional tests. Moreover I want that Roman will include also some stress tests
 
-		if(MT5_active == g_MT5_present)
+		if(MT5_active_on == g_MT5_present)
 		{
 			active_count++;
 		}
@@ -505,7 +507,7 @@ void Main_task( uint32_t initial_data ) {
 			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);	
 			
 		}
-		if(2 == MT5_present_last && (1 == g_on_flag))
+		if(MT5_active_on == MT5_present_last && (1 == g_on_flag))
 			configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
 		
 		MT5_present_last = g_MT5_present;
@@ -636,23 +638,23 @@ void MQX_PORTA_IRQHandler(void)
 
 }
 
+uint64_t g_portb_time;
+
 void MQX_PORTB_IRQHandler(void)
 {
-	uint64_t time;
-	
 	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG))
 	{
 		GPIO_DRV_ClearPinIntFlag(CPU_WATCHDOG);
-		time = ms_from_start_fast();
+		g_portb_time = ms_from_start_fast();
 
 		if(GPIO_DRV_ReadPinInput(CPU_WATCHDOG))
 		{
 			_event_set(a8_watchdog_event_g, WATCHDOG_A8_CPU_WATCHDOG_BIT); 
-			g_wd_rise_time = time;
+			g_wd_rise_time = g_portb_time;
 		}
 		else
 		{
-			g_wd_fall_time = time;
+			g_wd_fall_time = g_portb_time;
 		}	
 	}
 
