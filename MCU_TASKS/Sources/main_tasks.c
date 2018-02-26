@@ -455,6 +455,7 @@ void Main_task( uint32_t initial_data ) {
 	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);	
     while ( 1 ) 
     {
+		uint32_t power_in_voltage;
 	
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
 //        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
@@ -466,6 +467,16 @@ void Main_task( uint32_t initial_data ) {
 		// The USB sub-system also goes to recovery if SW reboot/WD of A8 occurs.
 		// This workaround completely debugged and tested by 48 hours resets and A8 always connects to MCU. Sure it will retested by QA together with functional tests. Moreover I want that Roman will include also some stress tests
 
+//temp!!!!! ???
+		power_in_voltage  = ADC_get_value (kADC_POWER_IN);
+		if(power_in_voltage < POWER_IN_SHUTDOWN_TH)
+		{
+			ftmParam.uFrequencyHZ = 1;
+			ftmParam.uDutyCyclePercent = 0;
+			FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
+			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);			
+			continue;
+		}
 		if(MT5_active_on == g_MT5_present)
 		{
 			active_count++;
@@ -507,7 +518,7 @@ void Main_task( uint32_t initial_data ) {
 			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);	
 			
 		}
-		if(MT5_active_on == MT5_present_last && (1 == g_on_flag))
+		if(MT5_active_on == MT5_present_last && (1 == g_on_flag) && (3 < active_count))
 			configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
 		
 		MT5_present_last = g_MT5_present;
@@ -587,6 +598,10 @@ void configure_otg_for_host_or_device(int force)
 			} else if (OTG_ID_CFG_FORCE_BYPASS == force) {
 				curr_otg_id_state = 0;
 			}
+			if(usb_disabled)
+			{
+				GPIO_DRV_SetPinOutput   (USB_HUB_RSTN);
+			}	
 			prev_otg_id_state =  curr_otg_id_state;
 			if (curr_otg_id_state == true)
 			{
@@ -612,7 +627,7 @@ void configure_otg_for_host_or_device(int force)
 			usb_disabled = false;
 		}
 	}
-	else
+	else if(false == usb_disabled)
 	{
 		GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
 		GPIO_DRV_SetPinOutput (CPU_OTG_ID);

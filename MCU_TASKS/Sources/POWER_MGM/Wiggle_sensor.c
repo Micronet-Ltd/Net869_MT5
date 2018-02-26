@@ -76,6 +76,7 @@ void Wiggle_sensor_start (void)
 
 	sensor_g.enable = true;
 	PORT_HAL_SetPinIntMode (portBase, pin, kPortIntFallingEdge);
+	GPIO_DRV_ClearPinIntFlag(VIB_SENS);
 }
 
 void Wiggle_sensor_stop (void)

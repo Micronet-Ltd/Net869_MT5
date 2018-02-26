@@ -74,14 +74,15 @@ void GPIO_all_check_for_change (void)
 
 		if (state_current != state_prev) {
 			printf ("GPIO_IN %d level became %d\n", i, state_current);
-			gpio_event |= (1 << i);
-			
-			if (i == kANALOG_EXT_IN)
-			{
-				ignition_state_g.state = state_current;
-				ignition_state_g.OS_notify = true;
-			}
+			gpio_event |= (1 << i);		
 		}
+
+		if( (i == kANALOG_EXT_IN) && (ignition_state_g.state != (state_current & 1) ) )
+		{
+			ignition_state_g.state = state_current;
+			ignition_state_g.OS_notify = true;
+		}
+		
 	}
 
 	//send the control message from within the GPIO driver
