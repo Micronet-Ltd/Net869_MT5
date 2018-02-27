@@ -35,7 +35,7 @@
 #include "mic_typedef.h"
 #include "watchdog_mgmt.h"
 #include "main_tasks.h"
-#include "wiggle_sensor.h"
+//#include "wiggle_sensor.h"
 
 #define SUPERCAP_CHRG_DISCHRG_ENABLE   1
 //#define DEBUGGING_ENABLED                1
@@ -502,15 +502,15 @@ void gpioEnableWakeUp(void)
 	//LLWU_HAL_ClearExternalPinWakeupFlag(LLWU_BASE_PTR, (llwu_wakeup_pin_t)BOARD_SW_LLWU_EXT_PIN);
 	//LLWU_HAL_SetExternalInputPinMode(LLWU_BASE_PTR,kLlwuExternalPinFallingEdge, (llwu_wakeup_pin_t)BOARD_SW_LLWU_EXT_PIN);
 
-	uint32_t port = GPIO_EXTRACT_PORT(VIB_SENS);
-	uint32_t pin  = GPIO_EXTRACT_PIN(VIB_SENS);
-	PORT_Type *portBase = g_portBase[port];
-	PORT_HAL_SetPinIntMode (portBase, pin, kPortIntFallingEdge);
-	INT_SYS_EnableIRQ(PORTA_IRQn);
-
-	NVIC_SetPriority(PORTA_IRQn, PORT_NVIC_IRQ_Priority);
-	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
-	GPIO_DRV_ClearPinIntFlag(VIB_SENS);
+//	uint32_t port = GPIO_EXTRACT_PORT(VIB_SENS);
+//	uint32_t pin  = GPIO_EXTRACT_PIN(VIB_SENS);
+//	PORT_Type *portBase = g_portBase[port];
+//	PORT_HAL_SetPinIntMode (portBase, pin, kPortIntFallingEdge);
+//	INT_SYS_EnableIRQ(PORTA_IRQn);
+//
+//	NVIC_SetPriority(PORTA_IRQn, PORT_NVIC_IRQ_Priority);
+//	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
+//	GPIO_DRV_ClearPinIntFlag(VIB_SENS);
 
 	//LLWU_HAL_ClearExternalPinWakeupFlag(LLWU_BASE_PTR, (llwu_wakeup_pin_t)BOARD_SW_LLWU_EXT_PIN);
 	//LLWU_HAL_SetExternalInputPinMode(LLWU_BASE_PTR,kLlwuExternalPinFallingEdge, (llwu_wakeup_pin_t)BOARD_SW_LLWU_EXT_PIN);
@@ -969,7 +969,7 @@ void supercap_charge_discarge(uint32_t min_threshold, uint32_t max_threshold)
 		{
 			//printf ("\nPOWER_MGM: SUPERCAP low %d mV - Start Charging\n", supercap_voltage);
 		}
-		GPIO_DRV_SetPinOutput (POWER_CHARGE_ENABLE);
+		//GPIO_DRV_SetPinOutput (POWER_CHARGE_ENABLE);
 	}
 }
 

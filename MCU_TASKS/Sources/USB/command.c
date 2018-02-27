@@ -13,7 +13,7 @@
 #include "version.h"
 #include "fpga_API.h"
 #include "Device_control_GPIO.h"
-#include "Wiggle_sensor.h"
+//#include "Wiggle_sensor.h"
 #include "power_mgm.h"
 #include "rtc.h"
 #include "watchdog_mgmt.h"
@@ -222,7 +222,7 @@ static void  get_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t 
 	uint32_t vibration_threshold = 0;
 	uint32_t duration_threshold = 0;
 	uint32_t ignition_threshold = 0;
-	Wiggle_sensor_get_vibration_TH  (&vibration_threshold, &duration_threshold);
+//	Wiggle_sensor_get_vibration_TH  (&vibration_threshold, &duration_threshold);
 	get_ignition_threshold(&ignition_threshold);
 	/*litte Endian */
 	ppower_on_threshold[0] = (uint8_t) (vibration_threshold&0xFF);
@@ -239,7 +239,7 @@ static void  set_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t 
 	uint32_t vibration_threshold = (uint32_t)((data[1]<<8)|data[0]);
 	uint32_t duration_threshold = (uint32_t)((data[3]<<8)|data[2]);
 	uint32_t ignition_threshold = (uint32_t)((data[5]<<8)|data[4]);
-	Wiggle_sensor_set_vibration_TH  (vibration_threshold, duration_threshold);
+//	Wiggle_sensor_set_vibration_TH  (vibration_threshold, duration_threshold);
 	set_ignition_threshold(ignition_threshold);
 }
 
@@ -255,32 +255,32 @@ static void set_device_off(uint8_t * data, uint16_t data_size, uint8_t * pdevice
 
 static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
 {
-	rtc_get_time(pdate_time);
+//	rtc_get_time(pdate_time);
 }
 
 static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
 {
-	rtc_set_time(&data[0]);
+//	rtc_set_time(&data[0]);
 }
 
 static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg)
 {
-	rtc_get_cal_register(&pcal_reg[0], &pcal_reg[1]);
+//	rtc_get_cal_register(&pcal_reg[0], &pcal_reg[1]);
 }
 
 static void set_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg)
 {
-	rtc_set_cal_register(&data[0], &data[1]);
+//	rtc_set_cal_register(&data[0], &data[1]);
 }
 
 static void get_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg)
 {
-	rtc_receive_data (&data[0], 1, &p_reg[0], 1);
+//	rtc_receive_data (&data[0], 1, &p_reg[0], 1);
 }
 
 static void set_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg)
 {
-	rtc_send_data (&data[0], 1, &data[1], 1);
+//	rtc_send_data (&data[0], 1, &data[1], 1);
 }
 
 static void get_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_gpio)
@@ -318,53 +318,53 @@ static void set_app_watchdog_req(uint8_t * data, uint16_t data_size, uint8_t * p
 
 static void set_wiggle_en_req(uint8_t * data, uint16_t data_size, uint8_t * p_wig_en)
 {
-	uint8_t wiggle_en = data[0];
-	if (wiggle_en)
-	{
-		Wiggle_sensor_start();
-		Wiggle_sensor_restart();
-	}
-	else
-	{
-		Wiggle_sensor_stop();
-	}
+//	uint8_t wiggle_en = data[0];
+//	if (wiggle_en)
+//	{
+//		Wiggle_sensor_start();
+//		Wiggle_sensor_restart();
+//	}
+//	else
+//	{
+//		Wiggle_sensor_stop();
+//	}
 }
 
 static void get_wiggle_sensor_count_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_wig_cnt)
 {
-	uint32_t wiggle_count = 0;
-	wiggle_count = get_wiggle_sensor_count();
-	/*little endian */
-	p_wig_cnt[0] = (uint8_t) (wiggle_count&0xFF);
-	p_wig_cnt[1] = (uint8_t) ((wiggle_count>>8)&0xFF);
-	p_wig_cnt[2] = (uint8_t) ((wiggle_count>>16)&0xFF);
-	p_wig_cnt[3] = (uint8_t) ((wiggle_count>>24)&0xFF);
+//	uint32_t wiggle_count = 0;
+//	wiggle_count = get_wiggle_sensor_count();
+//	/*little endian */
+//	p_wig_cnt[0] = (uint8_t) (wiggle_count&0xFF);
+//	p_wig_cnt[1] = (uint8_t) ((wiggle_count>>8)&0xFF);
+//	p_wig_cnt[2] = (uint8_t) ((wiggle_count>>16)&0xFF);
+//	p_wig_cnt[3] = (uint8_t) ((wiggle_count>>24)&0xFF);
 }
 
 /* 0: Accel standby, 1: Accel Active, fifo enabled */
 static void set_accel_standby_active_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_accel_active)
 {
-	uint8_t accel_active = data[0];
-	if (accel_active)
-	{
-		AccDisable();
-		_time_delay(10);
-		accInit(); /* Reenable Fifo */
-		_time_delay(10);
-		AccEnable(); /* Go into accelorometer active mode */
-	}
-	else
-	{
-		AccDisable();
-	}
+//	uint8_t accel_active = data[0];
+//	if (accel_active)
+//	{
+//		AccDisable();
+//		_time_delay(10);
+//		accInit(); /* Reenable Fifo */
+//		_time_delay(10);
+//		AccEnable(); /* Go into accelorometer active mode */
+//	}
+//	else
+//	{
+//		AccDisable();
+//	}
 }
 
 static void get_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg)
 {
-	AccReadRegister (data[0], &p_reg[0]);
+//	AccReadRegister (data[0], &p_reg[0]);
 }
 
 static void set_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg)
 {
-	AccWriteRegister (data[0], data[1]);
+//	AccWriteRegister (data[0], data[1]);
 }

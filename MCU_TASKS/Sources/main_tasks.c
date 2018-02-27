@@ -57,7 +57,7 @@ void HardFault_Handler_asm(void);
 _pool_id   g_in_message_pool;
 
 _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
-extern WIGGLE_SENSOR_t sensor_g;
+//extern WIGGLE_SENSOR_t sensor_g;
 
 extern void * g_acc_event_h;
 extern void * power_up_event_g;
@@ -253,8 +253,8 @@ void Main_task( uint32_t initial_data ) {
 	
 	OSA_InstallIntHandler(HardFault_IRQn, HardFault_Handler_asm);
 
-	NVIC_SetPriority(PORTA_IRQn, PORT_NVIC_IRQ_Priority);
-	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
+//	NVIC_SetPriority(PORTA_IRQn, PORT_NVIC_IRQ_Priority);
+//	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
 
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
@@ -317,6 +317,7 @@ void Main_task( uint32_t initial_data ) {
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 //	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 //	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
+	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
 	
 	ftm_user_config_t ftmInfo;
@@ -353,9 +354,9 @@ void Main_task( uint32_t initial_data ) {
 	//GPIO_DRV_SetPinOutput(RS485_ENABLE);
 	/*Note: rtc_init() is intentionally placed before accelerometer init 
 	because I was seeing  i2c arbitration errors - Abid */
-	rtc_init();
+//	rtc_init();
 
-	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
+	//GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 	_time_delay (1000);
 
 	FlexCanDevice_InitHW();
@@ -407,11 +408,11 @@ void Main_task( uint32_t initial_data ) {
 			printf("Could not create CAN_TASK_TX for inst %u \n", can_Device_1->instance);
 	}
 
-	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
-	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create ACC_TASK\n");
-	}
+//	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
+//	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create ACC_TASK\n");
+//	}
 
 	g_TASK_ids[UPDATER_TASK] = _task_create(0, UPDATER_TASK, 0);
 	if (g_TASK_ids[UPDATER_TASK] == MQX_NULL_TASK_ID)
@@ -427,11 +428,11 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create CONTROL_TASK\n");
 	}
 	
-	g_TASK_ids[ONE_WIRE_TASK] = _task_create(0, ONE_WIRE_TASK, 0);
-	if (g_TASK_ids[ONE_WIRE_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create 1-wire task\n");
-	}
+//	g_TASK_ids[ONE_WIRE_TASK] = _task_create(0, ONE_WIRE_TASK, 0);
+//	if (g_TASK_ids[ONE_WIRE_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create 1-wire task\n");
+//	}
 
 	_event_create ("event.EXTERNAL_GPIOS");
 	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
@@ -444,8 +445,10 @@ void Main_task( uint32_t initial_data ) {
 	a8_watchdog_init();
 #endif
 	printf("\nMain Task: Loop \n");
-	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
-	otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
+	GPIO_DRV_ClearPinOutput   (USB_HUB_RSTN);
+	GPIO_DRV_SetPinOutput (USB_OTG_OE);
+	//configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
+	//otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
 
 	//NO change signal high
 	
@@ -477,6 +480,7 @@ void Main_task( uint32_t initial_data ) {
 			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);			
 			continue;
 		}
+/////////		
 		if(MT5_active_on == g_MT5_present)
 		{
 			active_count++;
@@ -637,19 +641,19 @@ void configure_otg_for_host_or_device(int force)
 
 void MQX_PORTA_IRQHandler(void)
 {
-	if (GPIO_DRV_IsPinIntPending (VIB_SENS)) {
-		GPIO_DRV_ClearPinIntFlag(VIB_SENS);
-		//Wiggle_sensor_stop ();
-		sensor_g.wiggle_sensor_cnt++;
-		//_event_set(g_WIGGLE_SENSOR_event_h, EVENT_WIGGLE_SENSOR_IRQ);
-	}
+//	if (GPIO_DRV_IsPinIntPending (VIB_SENS)) {
+//		GPIO_DRV_ClearPinIntFlag(VIB_SENS);
+//		//Wiggle_sensor_stop ();
+//		sensor_g.wiggle_sensor_cnt++;
+//		//_event_set(g_WIGGLE_SENSOR_event_h, EVENT_WIGGLE_SENSOR_IRQ);
+//	}
 
-	if (GPIO_DRV_IsPinIntPending (ACC_INT)) {
-		GPIO_DRV_ClearPinIntFlag(ACC_INT);
-		PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntDisabled);
-		// Signal main task to read acc
-		_event_set(g_acc_event_h, 1);
-	}
+//	if (GPIO_DRV_IsPinIntPending (ACC_INT)) {
+//		GPIO_DRV_ClearPinIntFlag(ACC_INT);
+//		PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntDisabled);
+//		// Signal main task to read acc
+//		_event_set(g_acc_event_h, 1);
+//	}
 
 }
 
