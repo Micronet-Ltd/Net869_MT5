@@ -35,6 +35,7 @@
 #include "mic_typedef.h"
 #include "watchdog_mgmt.h"
 #include "main_tasks.h"
+#include "wiggle_sensor.h"
 
 #define SUPERCAP_CHRG_DISCHRG_ENABLE   1
 //#define DEBUGGING_ENABLED                1
@@ -509,6 +510,7 @@ void gpioEnableWakeUp(void)
 
 	NVIC_SetPriority(PORTA_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTA_IRQn, MQX_PORTA_IRQHandler);
+	GPIO_DRV_ClearPinIntFlag(VIB_SENS);
 
 	//LLWU_HAL_ClearExternalPinWakeupFlag(LLWU_BASE_PTR, (llwu_wakeup_pin_t)BOARD_SW_LLWU_EXT_PIN);
 	//LLWU_HAL_SetExternalInputPinMode(LLWU_BASE_PTR,kLlwuExternalPinFallingEdge, (llwu_wakeup_pin_t)BOARD_SW_LLWU_EXT_PIN);
@@ -893,7 +895,7 @@ void Power_MGM_task (uint32_t initial_data )
 	peripherals_disable (1);
 	disable_peripheral_clocks();
 	CLOCK_SYS_EnablePortClock (PORTB_IDX); //PortB clock to read the WD signal
-	//CLOCK_SYS_EnablePortClock (PORTC_IDX); //to read the RF_KILL signal
+	CLOCK_SYS_EnablePortClock (PORTC_IDX); //to read the RF_KILL signal
 	
 	_bsp_MQX_tick_timer_init ();
 	/* Enable power to the vibration sensor and accelerometer */
