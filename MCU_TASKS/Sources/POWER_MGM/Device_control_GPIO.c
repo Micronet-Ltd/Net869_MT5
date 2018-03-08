@@ -390,7 +390,7 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 {
 	uint32_t cpu_off_wait_time = 0;
 	uint8_t cpu_status_pin = 0;
-	volatile static bool device_off_req_in_progress;
+	volatile static bool device_off_req_in_progress = 0;
 
 	/* If this command is called from a different thread, it will not execute
 	again while it is already being performed */
