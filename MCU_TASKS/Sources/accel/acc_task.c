@@ -368,7 +368,10 @@ void AccDisable (void)
 	uint8_t write_data [2] = {0};
 	_mqx_uint ret = MQX_OK;
 
-	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
+    if (!acc_enabled_g) {
+        return;
+    }
+    if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
 	{
 		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
 		_task_block();
@@ -401,6 +404,9 @@ void AccReadRegister(uint8_t address, uint8_t * read_data)
 {
 	_mqx_uint ret = MQX_OK;
 
+    if (!acc_enabled_g) {
+        return;
+    }
 	printf("%s: read address: %X\n", __func__, address);
 	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
 	{
@@ -421,6 +427,9 @@ void AccWriteRegister(uint8_t address, uint8_t write_data)
 
 	printf("%s: address: %X\n", __func__, address);
 
+    if (!acc_enabled_g) {
+        return;
+    }
 	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
 	{
 		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
@@ -439,6 +448,10 @@ bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 	uint8_t read_data      =  0 ;
 	uint8_t write_data [2] = {0};
 	_mqx_uint ret = MQX_OK;
+
+    if (!acc_enabled_g) {
+        return 0;
+    }
 
 	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
 	{
