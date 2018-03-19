@@ -548,6 +548,9 @@ void MQX_PORTA_IRQHandler(void)
 		//Wiggle_sensor_stop ();
 		sensor_g.wiggle_sensor_cnt++;
 		//_event_set(g_WIGGLE_SENSOR_event_h, EVENT_WIGGLE_SENSOR_IRQ);
+        if (sensor_g.wiggle_sensor_cnt > 1000) {
+			PORT_HAL_SetPinIntMode(PORTA, GPIO_EXTRACT_PIN(VIB_SENS), kPortIntDisabled);
+        }
 	}
 
 	if (GPIO_DRV_IsPinIntPending (ACC_INT)) {

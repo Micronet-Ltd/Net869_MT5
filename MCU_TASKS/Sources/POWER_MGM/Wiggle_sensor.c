@@ -131,6 +131,7 @@ void Wiggle_sensor_update (void)
 	sensor_g.status     = (sensor_g.wiggle_sensor_cnt > sensor_g.vibration_threshold);
 	sensor_g.movement_period = 0;
 	sensor_g.wiggle_sensor_cnt = 0;
+    PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(VIB_SENS), kPortIntFallingEdge);
 #else
 	uint32_t g_WIGGLE_SENSOR_event_bit;
 

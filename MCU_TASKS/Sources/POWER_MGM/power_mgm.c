@@ -699,7 +699,7 @@ void Power_MGM_task (uint32_t initial_data )
 
 	while (!g_flag_Exit)
 	{
-		ADC_sample_input (adc_input);
+        ADC_sample_input(adc_input);
 		if (++adc_input >= (kADC_CHANNELS - 1))
 		{
 //			printf ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
