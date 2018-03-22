@@ -11,6 +11,7 @@
 #include <event.h>
 #include "watchdog_mgmt.h"
 #include "gpio_pins.h"
+#include "board.h"
 
 //#define WATCHDOG_DEBUG
 
@@ -27,7 +28,9 @@ void *a8_watchdog_event_g;
 static inline void delay_1s(void)
 {
 	unsigned long i = 0;
-	for (i = 0; i< 20000000; i++)
+	/* change count based on clock frequency: Loop takes 3 cyles, but experimental results showed 6 worked better */
+	unsigned long count = SystemCoreClock/6;
+	for (i = 0; i< count; i++)
 	{
 		__asm("nop");	
 	}
