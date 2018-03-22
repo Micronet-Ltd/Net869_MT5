@@ -82,7 +82,7 @@ void shutdown_fpga_accel(void)
 
 void handle_watchdog_expiry(void * td_ptr)
 {
-	uint8_t i;
+	uint8_t i, color;
 	
 	/* if in Debug mode, do not reset the MCU */
 	if (GPIO_DRV_ReadPinInput (OTG_ID) == 0)
@@ -93,25 +93,26 @@ void handle_watchdog_expiry(void * td_ptr)
 	}
 	
 	printf("\r\n watchdog Expired, resetting MCU! \r\n");
-	for (i=0; i < 3; i++)
-	{
-		delay_1s();
-	}
 	shutdown_fpga_accel();
 
 #ifdef WATCHDOG_DEBUG
 	if (td_ptr == NULL)
 	{
-		blink_led(20, LED_RED_GPIO_NUM);
+		blink_led(10, LED_RED_GPIO_NUM);
 	}
 	else
 	{
-		blink_led(20, *((uint8_t * )(td_ptr)));		
+		color = *((uint8_t * )(td_ptr));
+		if (color == LED_RED_GPIO_NUM ||
+			color == LED_BLUE_GPIO_NUM ||
+			color == LED_GREEN_GPIO_NUM)
+			blink_led(10, color);
+		else
+			blink_led(10, LED_RED_GPIO_NUM);
 	}
 #endif
 	
 	enable_msm_power(FALSE);		// turn off 5V0 power rail
-	delay_1s();
 	
 	WDG_RESET_MCU();
 }
