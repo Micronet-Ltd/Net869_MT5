@@ -853,8 +853,6 @@ void updater_task(uint32_t param)
 		//	printf("updater: r1 %d (0x%x)\n", stat, bbb[0]);
 		//}
 	}
-
-	return;
 }
 ////////////////////////////////////////////////////////////////////////////////
 // EOF
