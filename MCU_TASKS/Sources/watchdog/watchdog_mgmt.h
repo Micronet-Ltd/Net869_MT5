@@ -26,9 +26,10 @@ typedef struct watchdog_a8_s
 }watchdog_a8_t;
 
 void handle_watchdog_expiry(void * td_ptr);
-bool watchdog_mcu_init(void);
+bool watchdog_rtos_init(void);
 void a8_watchdog_init(void);
 void pet_a8_watchdog_isr(void);
 void check_a8_watchdog_expiry_isr(void);
+bool watchdog_mcu_init(void);
 
 #endif /* _WATCHDOG_WATCHDOG_MGMT_H_ */

@@ -12,6 +12,7 @@
 #include "watchdog_mgmt.h"
 #include "gpio_pins.h"
 #include "board.h"
+#include "fsl_wdog_driver.h"
 
 //#define WATCHDOG_DEBUG
 
@@ -118,6 +119,16 @@ void handle_watchdog_expiry(void * td_ptr)
 }
 
 bool watchdog_mcu_init()
+{
+	const wdog_config_t watchdog_config = {.wdogEnable = 1,
+											.winEnable = 0,
+											.workMode = 0,
+											.updateEnable = 1,
+											.timeoutValue = 20000}; //20 sec.
+	return (kStatus_WDOG_Success == WDOG_DRV_Init(&watchdog_config));
+}
+
+bool watchdog_rtos_init()
 {
 	_mqx_uint result;
 	result = _watchdog_create_component(BSP_SYSTIMER_INTERRUPT_VECTOR,
