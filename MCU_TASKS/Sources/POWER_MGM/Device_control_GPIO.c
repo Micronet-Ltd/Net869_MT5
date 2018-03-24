@@ -184,7 +184,7 @@ void Device_update_state (uint32_t * time_diff)
 			// check amount of vibrations sensed by the wiggle sensor
 			// if amount of vibrations is more than TH, it will turn on the device
 			// and stop the interrupts for better running efficiency
-			Wiggle_sensor_update ();
+			Wiggle_sensor_update (time_diff);
 
 			if (power_in_voltage < POWER_IN_TURN_ON_TH )
 			{
@@ -250,8 +250,7 @@ void Device_update_state (uint32_t * time_diff)
                 printf ("%s: DEVICE_STATE_TURNING_ON a8 already/yet down - restart %llu\n", __func__, ms_from_start());
                 backup_power_cnt_g = 0;
                 led_blink_cnt_g = 0;
-                device_state_g = DEVICE_STATE_TURN_OFF;
-                Device_off_req(1, 0);
+                Device_off_req(TRUE, 0);
                 break;
             }
 			if (!Device_control_GPIO_status())
@@ -403,18 +402,11 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 	uint8_t cpu_status_pin = 0;
 	volatile static bool device_off_req_in_progress = 0;
 
-	/* If this command is called from a different thread, it will not execute again while it is already being performed */
-
     printf("%s: [%d, %d] %llu\n", __func__, skip_a8_shutdown, wait_time, ms_from_start());
+    /* If this command is called from a different thread, it will not execute again while it is already being performed */
     while (device_off_req_in_progress) {
-        // this function shouldn't return;
+    	_time_delay(1000);
     }
-#if 0
-    if (device_off_req_in_progress == TRUE)
-	{
-		return;
-	}
-#endif
 
 	device_off_req_in_progress = TRUE;
 
@@ -433,10 +425,10 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
     // the defuault power lost configuration of a8 is 20 secs, it will fail w/o shutdown in any case
     //
 	if (skip_a8_shutdown) {
-//        GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
+        GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
     } else {
 #ifdef MCU_AND_CPU_BOARD_CONNECTED
-    	printf ("Device_off_req: shutting down A8\n");
+    	printf ("%s: shutting down A8\n", __func__);
     	/* Turn A8 device off */
     	GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
     	_time_delay (DEVICE_CONTROL_TIME_OFF_TH);
@@ -449,23 +441,17 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
             cpu_status_pin = GPIO_DRV_ReadPinInput (CPU_STATUS);
             if (cpu_status_pin == 0)
             {
-                printf ("Device_off_req: CPU_status pin %d, wait_time %d ms\n", cpu_status_pin, cpu_off_wait_time);
+                printf ("%s: CPU_status pin %d, wait_time %d ms\n", __func__, cpu_status_pin, cpu_off_wait_time);
                 break;
             }
         }
-#if 0
-    /* if the CPU/A8 does not end up being powered off kill the power by manually
-     * turning off the 5V rail. Note, this ends up turning off the LED and Audio
-     * power
-     */
-    if (cpu_off_wait_time >= MAX_CPU_OFF_CHECK_TIME)
-    {
-        printf ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
-        enable_msm_power(FALSE);		// turn off 5V0 power rail
-    }
-#endif
 #endif
 	}
+
+	if (cpu_off_wait_time >= MAX_CPU_OFF_CHECK_TIME)
+    {
+        printf ("%s: WARNING, cpu_off_wait_time expired %d\n", __func__, cpu_off_wait_time);
+    }
 
     printf ("%s: TURNED OFF 5V0 power rail\n", __func__);
 
@@ -475,9 +461,6 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
     backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
 	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
-	/* Shut off power to the accelerometer */
-	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
-	//Board_SetSlowClk ();
 	printf ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
 
     // for debug outpt only, should be removed
