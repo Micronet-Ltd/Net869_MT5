@@ -33,6 +33,7 @@
 #include "bsp.h"
 #include "mic_typedef.h"
 #include "watchdog_mgmt.h"
+#include "main_tasks.h"
 
 #define SUPERCAP_CHRG_DISCHRG_ENABLE   1
 //#define DEBUGGING_ENABLED                1
