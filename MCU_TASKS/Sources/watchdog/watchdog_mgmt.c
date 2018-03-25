@@ -120,7 +120,8 @@ void handle_watchdog_expiry(void * td_ptr)
 
 bool watchdog_mcu_init()
 {
-	const wdog_config_t watchdog_config = {.wdogEnable = 1,
+	const wdog_config_t watchdog_config = { .wdogEnable = 1,
+											.clkSrc = kWdogLpoClkSrc,
 											.winEnable = 0,
 											.workMode = 0,
 											.updateEnable = 1,
