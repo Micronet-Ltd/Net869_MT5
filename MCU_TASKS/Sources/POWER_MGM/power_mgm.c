@@ -238,6 +238,7 @@ void check_supercap_voltage (void);
 
 void * power_up_event_g;
 void * cpu_status_event_g;
+void * g_a8_pwr_state_event;
 
 uint32_t ignition_threshold_g = IGNITION_TURN_ON_TH_DEFAULT;
 
@@ -584,6 +585,8 @@ void check_a8_power_events(int *already_on)
             if (cpu_status_time_g.time_diff > (CPU_STATUS_SHUTDOWN_DURATION - 10) &&
                 cpu_status_time_g.time_diff < (CPU_STATUS_SHUTDOWN_DURATION + 30)) {
                 if (*already_on) {
+					_event_clear(g_a8_pwr_state_event, EVENT_A8_PWR_UP);
+					_event_set(g_a8_pwr_state_event, EVENT_A8_PWR_DOWN);
                     printf ("\n%s : DEVICE shutdown request by A8\n", __func__);
                     _time_delay(100); /* give some time for the print statement */
                     Device_off_req_immediate(true);
@@ -601,6 +604,8 @@ void check_a8_power_events(int *already_on)
                         _lwtimer_cancel_period(&lwtimer_period_a8_turn_on_g);
                         printf("%s: a8 booted %llu\n", __func__, current_time);
                         (*already_on)++;
+						_event_clear(g_a8_pwr_state_event, EVENT_A8_PWR_DOWN);
+						_event_set(g_a8_pwr_state_event, EVENT_A8_PWR_UP);
                         g_a8_sw_reboot = 0;
                     }
                 } else {
@@ -654,6 +659,16 @@ void Power_MGM_task (uint32_t initial_data )
 	event_result = _event_open("event.cpuStatusEvent", &cpu_status_event_g);
 	if(MQX_OK != event_result){
 		printf("Power_MGM_task: Could not open cpuStatusEvent \n");
+	}
+
+	event_result = _event_create("event.a8_pwr_state");
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not create a8_pwr_state \n");
+	}
+
+	event_result = _event_open("event.a8_pwr_state", &g_a8_pwr_state_event);
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not open a8_pwr_state \n");
 	}
 
 	Device_init (POWER_MGM_TIME_DELAY);

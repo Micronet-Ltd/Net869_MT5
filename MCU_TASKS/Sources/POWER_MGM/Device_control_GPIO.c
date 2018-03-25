@@ -121,6 +121,7 @@ uint8_t led_blink_cnt_g     = 0 ;
 extern uint32_t ignition_threshold_g;
 extern volatile uint32_t a8_watchdog_count_g;
 extern void * power_up_event_g;
+extern void * g_a8_pwr_state_event;
 
 LWTIMER_PERIOD_STRUCT lwtimer_period_a8_turn_on_g;
 LWTIMER_STRUCT lwtimer_a8_turn_on_g;
@@ -158,6 +159,7 @@ void Device_update_state (uint32_t * time_diff)
 	uint32_t supercap_voltage;
 	static bool printed_temp_error = FALSE;
 	static bool print_backup_power = FALSE;
+	uint32_t a8_s;
 
 	Device_control_GPIO(time_diff);
 
@@ -172,7 +174,19 @@ void Device_update_state (uint32_t * time_diff)
 	}
 #endif
 
-	switch (device_state_g)
+	if (MQX_OK != _event_get_value(g_a8_pwr_state_event, &a8_s))
+		a8_s = EVENT_A8_PWR_DOWN;
+
+    if (a8_s&EVENT_A8_PWR_DOWN) {
+		uint64_t reset_timeout = ms_from_start() + 1000;
+        while (ms_from_start() < reset_timeout) {
+			// WDOG reset
+        }
+		Device_off_req(1, 0);
+		return;
+    }
+
+    switch (device_state_g)
 	{
 		case DEVICE_STATE_OFF:
 			turn_on_condition_g = 0;
@@ -308,6 +322,12 @@ void Device_update_state (uint32_t * time_diff)
 				break;
 			}
 
+			if (!(a8_s&EVENT_A8_PWR_UP)) {
+				backup_power_cnt_g = 0;
+				led_blink_cnt_g = 0;
+				Device_off_req(1, 0);
+				break;
+			}
 			// if power is back during recovery period - return to DEVICE_ON state, like nothing happen
 			if (power_in_voltage >= POWER_IN_TURN_ON_TH)
 			{
@@ -325,6 +345,12 @@ void Device_update_state (uint32_t * time_diff)
 				print_backup_power = TRUE; /*only print power returned once */
 			}
 
+			if (!(a8_s&EVENT_A8_PWR_UP)) {
+				backup_power_cnt_g = 0;
+				led_blink_cnt_g = 0;
+				Device_off_req(1, 0);
+				break;
+			}
             backup_power_cnt_g += *time_diff;
 			if (backup_power_cnt_g > BACKUP_POWER_TIME_TH) {
 //				GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
