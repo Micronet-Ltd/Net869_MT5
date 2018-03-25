@@ -122,8 +122,10 @@ bool watchdog_mcu_init()
 {
 	const wdog_config_t watchdog_config = { .wdogEnable = 1,
 											.clkSrc = kWdogLpoClkSrc,
+											.prescaler = kWdogClkPrescalerDivide1,
 											.winEnable = 0,
 											.workMode = 0,
+											.intEnable = 0,
 											.updateEnable = 1,
 											.timeoutValue = 20000}; //20 sec.
 	return (kStatus_WDOG_Success == WDOG_DRV_Init(&watchdog_config));
