@@ -26,7 +26,7 @@ void Wiggle_sensor_restart  (void);
 void Wiggle_sensor_start    (void);
 void Wiggle_sensor_stop     (void);
 bool Wiggle_sensor_cross_TH (void);
-void Wiggle_sensor_update   (void);
+void Wiggle_sensor_update (uint32_t * time_diff);
 void Wiggle_sensor_set_vibration_TH  (uint32_t vibration_threshold, uint32_t duration_threshold);
 void Wiggle_sensor_get_vibration_TH  (uint32_t * vibration_threshold, uint32_t *duration_threshold);
 uint32_t get_wiggle_sensor_count(void);

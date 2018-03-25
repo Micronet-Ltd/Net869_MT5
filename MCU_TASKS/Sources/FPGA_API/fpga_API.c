@@ -371,24 +371,27 @@ bool FPGA_one_wire_ready_status (void)
 *****************************************************************/
 bool FPGA_GetData (uint8_t register_addr, uint32_t *register_data)
 {
-	i2c_status_t  i2c_status ;
+	i2c_status_t  i2c_status = kStatus_I2C_Fail;
 	uint8_t       i2c_cmd  = register_addr;
 
-	if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (FPGA_I2C_PORT, &fpga_device, &i2c_cmd,  1, (uint8_t *)register_data, 4, FPGA_I2C_TIMEOUT)) != kStatus_I2C_Success)
-	{
-		printf ("\nFPGA API GetData: ERROR: Could not read Address 0x%X (I2C error code %d)\n", register_addr, i2c_status);
-	}
+    if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1) {
+        if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (FPGA_I2C_PORT, &fpga_device, &i2c_cmd,  1, (uint8_t *)register_data, 4, FPGA_I2C_TIMEOUT)) != kStatus_I2C_Success)
+        {
+            printf ("\nFPGA API GetData: ERROR: Could not read Address 0x%X (I2C error code %d)\n", register_addr, i2c_status);
+        }
+    }
 	return (i2c_status == kStatus_I2C_Success);
 }
 
 bool FPGA_SetData (uint8_t register_addr, uint32_t *register_data)
 {
-	i2c_status_t  i2c_status ;
+	i2c_status_t  i2c_status = kStatus_I2C_Fail;
 	uint8_t       i2c_cmd  = register_addr;
 
-	if ((i2c_status = I2C_DRV_MasterSendDataBlocking (FPGA_I2C_PORT, &fpga_device, &i2c_cmd,  1, (uint8_t *)register_data, 4, FPGA_I2C_TIMEOUT)) != kStatus_I2C_Success)
-		printf ("\nFPGA API SetData: ERROR: Could not write Address 0x%X (I2C error code %d)\n", register_addr, i2c_status);
-
+    if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1) {
+    	if ((i2c_status = I2C_DRV_MasterSendDataBlocking (FPGA_I2C_PORT, &fpga_device, &i2c_cmd,  1, (uint8_t *)register_data, 4, FPGA_I2C_TIMEOUT)) != kStatus_I2C_Success)
+    		printf ("\nFPGA API SetData: ERROR: Could not write Address 0x%X (I2C error code %d)\n", register_addr, i2c_status);
+    }
 	return (i2c_status == kStatus_I2C_Success);
 }
 

@@ -31,7 +31,7 @@
 
 #include "wiggle_sensor.h"
 
-//#define WIGGLE_DEBUG 1
+#define WIGGLE_DEBUG 1
 #define WIGGLE_SENSOR_SAMPLE_PERIOD					500
 
 #define WIGGLE_SENSOR_MOTION_DETECTION_PERIOD_TH	1000
@@ -113,24 +113,36 @@ void Wiggle_sensor_get_vibration_TH  (uint32_t * vibration_threshold, uint32_t *
 	*duration_threshold = sensor_g.duration_threshold;
 }
 
-void Wiggle_sensor_update (void)
+static uint16_t timediff_test[50][2];
+static uint16_t timediff_i= 0;
+void Wiggle_sensor_update (uint32_t * time_diff)
 {
 #if 1
-	sensor_g.status = false;
-
+	
+	//sensor_g.status = false;
+	timediff_test[timediff_i][0]=*time_diff;
+	timediff_test[timediff_i++][1]=sensor_g.wiggle_sensor_cnt;
+	timediff_i = timediff_i%50;
 	if (sensor_g.enable == false)
 		return;
 
 	if (sensor_g.movement_period < sensor_g.duration_threshold) {
-		sensor_g.movement_period  += sensor_g.delay_period;
+		sensor_g.movement_period  += *time_diff;
 		return;
 	}
 #ifdef WIGGLE_DEBUG
 	printf("%s wiggle count = %d\n", __func__, sensor_g.wiggle_sensor_cnt);
 #endif
 	sensor_g.status     = (sensor_g.wiggle_sensor_cnt > sensor_g.vibration_threshold);
-	sensor_g.movement_period = 0;
-	sensor_g.wiggle_sensor_cnt = 0;
+	if (sensor_g.status == 1)
+	{
+		PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(VIB_SENS), kPortIntDisabled);
+	}
+	else{
+		sensor_g.movement_period = 0;
+		sensor_g.wiggle_sensor_cnt = 0;
+    	PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(VIB_SENS), kPortIntFallingEdge);
+	}
 #else
 	uint32_t g_WIGGLE_SENSOR_event_bit;
 

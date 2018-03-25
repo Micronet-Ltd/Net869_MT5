@@ -184,7 +184,7 @@ void Device_update_state (uint32_t * time_diff)
 			// check amount of vibrations sensed by the wiggle sensor
 			// if amount of vibrations is more than TH, it will turn on the device
 			// and stop the interrupts for better running efficiency
-			Wiggle_sensor_update ();
+			Wiggle_sensor_update (time_diff);
 
 			if (power_in_voltage < POWER_IN_TURN_ON_TH )
 			{
@@ -237,7 +237,7 @@ void Device_update_state (uint32_t * time_diff)
 				led_blink_cnt_g = 0;
 				Wiggle_sensor_stop ();						// disable interrupt
 				//send_power_change  (&turn_on_condition);
-				printf("%s: device turn on temperature: %d mV\n", __func__, temperature);
+				printf("%s: device turn on temperature: %d mV %llu\n", __func__, temperature, ms_from_start());
 				printed_temp_error = FALSE;
 				device_state_g = DEVICE_STATE_TURNING_ON;
 			}
@@ -245,6 +245,14 @@ void Device_update_state (uint32_t * time_diff)
 
 		case DEVICE_STATE_TURNING_ON:
 			// wait while pulse is still generated (time period didn't reach threshold)
+            printf ("%s: DEVICE_STATE_TURNING_ON %llu\n", __func__, ms_from_start());
+            if (power_in_voltage < POWER_IN_SHUTDOWN_TH) {
+                printf ("%s: DEVICE_STATE_TURNING_ON a8 already/yet down - restart %llu\n", __func__, ms_from_start());
+                backup_power_cnt_g = 0;
+                led_blink_cnt_g = 0;
+                Device_off_req(TRUE, 0);
+                break;
+            }
 			if (!Device_control_GPIO_status())
 			{
 				switch_power_mode(kPowerManagerRun);
@@ -254,7 +262,7 @@ void Device_update_state (uint32_t * time_diff)
 				//Board_SetFastClk ();
 				Device_turn_on     ();
 				device_state_g = DEVICE_STATE_ON;
-				printf ("\nPOWER_MGM: DEVICE RUNNING\n");
+				printf ("\nPOWER_MGM: DEVICE RUNNING %llu\n", ms_from_start());
 				FPGA_init ();
 				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 				GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
@@ -287,8 +295,9 @@ void Device_update_state (uint32_t * time_diff)
 			backup_power_cnt_g += *time_diff;
 
 			// if recovery period has passed - generate power loss interrupt to CPU and close peripherals
-			if (backup_power_cnt_g > BACKUP_RECOVER_TIME_TH)
-			{
+			if (backup_power_cnt_g > BACKUP_RECOVER_TIME_TH) {
+                GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
+                _time_delay(1);
 				GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
 				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0xFF, 0); /* Yellow LED*/
 				//peripherals_disable ();
@@ -304,8 +313,8 @@ void Device_update_state (uint32_t * time_diff)
 			{
 				printf ("\nPOWER_MGM: INPUT POWER OK %d\n", power_in_voltage);
 				backup_power_cnt_g = 0;
-				device_state_g = DEVICE_STATE_ON;
-				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
+                device_state_g = DEVICE_STATE_ON;
+                FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 			}
 			break;
 
@@ -316,10 +325,9 @@ void Device_update_state (uint32_t * time_diff)
 				print_backup_power = TRUE; /*only print power returned once */
 			}
 
-			backup_power_cnt_g += *time_diff;
-			if (backup_power_cnt_g > BACKUP_POWER_TIME_TH)
-			{
-				GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
+            backup_power_cnt_g += *time_diff;
+			if (backup_power_cnt_g > BACKUP_POWER_TIME_TH) {
+//				GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 				backup_power_cnt_g = 0;
 				led_blink_cnt_g = 0;
 				Device_turn_off ();
@@ -331,7 +339,9 @@ void Device_update_state (uint32_t * time_diff)
 
 		case DEVICE_STATE_TURN_OFF:
 			// wait while pulse is still generated (time period didn't reach threshold)
-			if (!Device_control_GPIO_status())
+
+            // device should be off w/o unconditionally, moreover pulse will produce inside off request
+			//if (!Device_control_GPIO_status())
 			{
 				printf ("\nPOWER_MGM: DEVICE IS about to turn OFF\n");
 				Device_off_req(FALSE, 0);
@@ -370,11 +380,11 @@ void Device_off_req_immediate(bool clean_reset)
 	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
 	backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
-	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 	/* Shut off power to the accelerometer */
 	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
 
 	enable_msm_power(FALSE);		// turn off 5V0 power rail
+    GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 
 	if (clean_reset)
 	{
@@ -390,18 +400,17 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 {
 	uint32_t cpu_off_wait_time = 0;
 	uint8_t cpu_status_pin = 0;
-	volatile static bool device_off_req_in_progress;
+	volatile static bool device_off_req_in_progress = 0;
 
-	/* If this command is called from a different thread, it will not execute
-	again while it is already being performed */
-	if (device_off_req_in_progress == TRUE)
-	{
-		return;
-	}
+    printf("%s: [%d, %d] %llu\n", __func__, skip_a8_shutdown, wait_time, ms_from_start());
+    /* If this command is called from a different thread, it will not execute again while it is already being performed */
+    while (device_off_req_in_progress) {
+    	_time_delay(1000);
+    }
 
 	device_off_req_in_progress = TRUE;
 
-	GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
+//    GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 	FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
 	_time_delay(wait_time*1000);
 	
@@ -410,47 +419,60 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 	AccDisable();
 	/* Shut off power to the accelerometer */
 	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
-	if (!skip_a8_shutdown)
-	{
-#ifdef MCU_AND_CPU_BOARD_CONNECTED
-	printf ("Device_off_req: shutting down A8\n");
-	/* Turn A8 device off */
-	GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
-	_time_delay (DEVICE_CONTROL_TIME_OFF_TH);
-	GPIO_DRV_SetPinOutput(CPU_ON_OFF);
-	/* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
-	while (cpu_off_wait_time < MAX_CPU_OFF_CHECK_TIME)
-	{
-		_time_delay(CPU_OFF_CHECK_TIME);
-		cpu_off_wait_time += CPU_OFF_CHECK_TIME;
-		cpu_status_pin = GPIO_DRV_ReadPinInput (CPU_STATUS);
-		if (cpu_status_pin == 0)
-		{
-			printf ("Device_off_req: CPU_status pin %d, wait_time %d ms\n", cpu_status_pin, cpu_off_wait_time);
-			break;
-		}
-	}
 
-	/* if the CPU/A8 does not end up being powered off kill the power by manually
-	 * turning off the 5V rail. Note, this ends up turning off the LED and Audio
-	 * power
-	 */
-	if (cpu_off_wait_time >= MAX_CPU_OFF_CHECK_TIME)
-	{
-		printf ("Device_off_req: WARNING, TURNED OFF 5V0 power rail coz cpu_off_time expired\n");
-		enable_msm_power(FALSE);		// turn off 5V0 power rail
-	}
+    // only one shutdown way should be selecteed
+    // by power button or power loss indication
+    // the defuault power lost configuration of a8 is 20 secs, it will fail w/o shutdown in any case
+    //
+	if (skip_a8_shutdown) {
+        GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
+    } else {
+#ifdef MCU_AND_CPU_BOARD_CONNECTED
+    	printf ("%s: shutting down A8\n", __func__);
+    	/* Turn A8 device off */
+    	GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+    	_time_delay (DEVICE_CONTROL_TIME_OFF_TH);
+    	GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+
+        /* monitor CPU_STATUS stop signal for MAX_CPU_OFF_CHECK_TIME */
+        while (cpu_off_wait_time < MAX_CPU_OFF_CHECK_TIME) {
+            _time_delay(CPU_OFF_CHECK_TIME);
+            cpu_off_wait_time += CPU_OFF_CHECK_TIME;
+            cpu_status_pin = GPIO_DRV_ReadPinInput (CPU_STATUS);
+            if (cpu_status_pin == 0)
+            {
+                printf ("%s: CPU_status pin %d, wait_time %d ms\n", __func__, cpu_status_pin, cpu_off_wait_time);
+                break;
+            }
+        }
 #endif
 	}
-	backup_power_cnt_g = 0;
+
+	if (cpu_off_wait_time >= MAX_CPU_OFF_CHECK_TIME)
+    {
+        printf ("%s: WARNING, cpu_off_wait_time expired %d\n", __func__, cpu_off_wait_time);
+    }
+
+    printf ("%s: TURNED OFF 5V0 power rail\n", __func__);
+
+    // a8 power should be cut in any case
+    enable_msm_power(FALSE);		// turn off 5V0 power rail
+
+    backup_power_cnt_g = 0;
 	led_blink_cnt_g = 0;
 	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
-	/* Shut off power to the accelerometer */
-	GPIO_DRV_ClearPinOutput(ACC_VIB_ENABLE);
-	//Board_SetSlowClk ();
 	printf ("\nPOWER_MGM: DEVICE IS OFF through Device_off_req\n");
+
+    // for debug outpt only, should be removed
+    //_time_delay(100);
+
 	NVIC_SystemReset();
-	device_off_req_in_progress = FALSE;
+
+    // this function shouldn't return;
+    while (1) {
+    }
+
+    device_off_req_in_progress = FALSE;
 }
 
 // delay in msec
@@ -459,6 +481,8 @@ void Device_reset_req(int32_t wait_time)
 	int32_t cpu_off_wait_time;
 	uint8_t cpu_status_pin = 0;
 
+    GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
+    _time_delay(1);
 	GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
 	FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
 
@@ -496,7 +520,7 @@ void Device_reset_req(int32_t wait_time)
 	
 	enable_msm_power(FALSE);		// turn off 5V0 power rail
 
-	//GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
+	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 	printf ("\nPOWER_MGM: DEVICE reset through Device_reset_req\n");
 	peripherals_disable (1);
 	device_state_g = DEVICE_STATE_OFF;
@@ -588,6 +612,7 @@ void Device_control_GPIO (uint32_t * time_diff)
 		device_control_gpio_g.status = false;
 		device_control_gpio_g.time   = 0;
 		device_control_gpio_g.enable = false;
+        printf("%s: power pulse done %d ms\n", __func__, ms);
 	}
 }
 

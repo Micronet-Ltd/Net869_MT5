@@ -699,7 +699,7 @@ void Power_MGM_task (uint32_t initial_data )
 
 	while (!g_flag_Exit)
 	{
-		ADC_sample_input (adc_input);
+        ADC_sample_input(adc_input);
 		if (++adc_input >= (kADC_CHANNELS - 1))
 		{
 //			printf ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
@@ -723,12 +723,22 @@ void Power_MGM_task (uint32_t initial_data )
 		time_diff_milli = _time_diff_milliseconds(&ticks_now, &ticks_prev, &time_diff_overflow);
 		_time_get_elapsed_ticks_fast(&ticks_prev);
 
-		if (time_diff_milli < 0)
+		if (time_diff_milli < 0 || time_diff_overflow)
 		{
 			printf("Power_MGM_task: timediff -ve!");
+			time_diff_milli = POWER_MGM_TIME_DELAY;
 		}
-		time_diff_milli_u = (uint32_t) time_diff_milli;
-
+		
+		/* TODO: the time calculation is incorrect in low power mode. 
+		Need to figure out the correct calculation */
+		if (SystemCoreClock == CORE_LPM_CLOCK_FREQ)
+		{
+			time_diff_milli_u = (uint32_t) (time_diff_milli/4);
+		}
+		else
+		{
+			time_diff_milli_u = (uint32_t) (time_diff_milli);
+		}
 		Device_update_state(&time_diff_milli_u);
 
         check_a8_power_events(&a8_on);
