@@ -6,7 +6,6 @@
 
 const gpio_output_pin_user_config_t outputPins[] = {
 	// Power Rail Control
-	{ .pinName = POWER_3V3_ENABLE, 		    .config.outputLogic = 1,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
 	{ .pinName = POWER_5V0_ENABLE, 		    .config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
 	{ .pinName = POWER_CHARGE_ENABLE, 		.config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
 	{ .pinName = POWER_DISCHARGE_ENABLE, 	.config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  },
@@ -26,6 +25,7 @@ const gpio_output_pin_user_config_t outputPins[] = {
 	{.pinName = FPGA_PWR_ENABLE,			.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
 	// CAN BUS INTERFACE
+	{ .pinName = CAN1_PWR_EN, 		    	.config.outputLogic = 0,    .config.slewRate = kPortSlowSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortLowDriveStrength  }, //only present of NET869V6 and greater boards
 	{ .pinName = CAN1_J1708_PWR_ENABLE,		.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{ .pinName = CAN2_SWC_PWR_ENABLE,		.config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 
@@ -67,31 +67,71 @@ const gpio_output_pin_user_config_t outputPins[] = {
 	{.pinName = SPKR_LEFT_EN,                   .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{.pinName = SPKR_RIGHT_EN,                  .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
 	{.pinName = SPKR_EXT_EN,                    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
-
+	
+	// GPS (only routed in NET869 V6 and greater boards)
+	{.pinName = EXT_GPS_EN,                    .config.outputLogic = 0,    .config.slewRate = kPortFastSlewRate,    .config.isOpenDrainEnabled = false,    .config.driveStrength = kPortHighDriveStrength  },
+	
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE                                                                                                                                                               }
 };
 
 
 const gpio_input_pin_user_config_t inputPins[] = {
-	{.pinName = ACC_INT,			.config.isPullEnable = true,	.config.pullSelect = kPortPullUp,	.config.isPassiveFilterEnabled = false,	.config.interrupt = kPortIntFallingEdge },
+	{.pinName = ACC_INT,			.config.isPullEnable = true,	.config.pullSelect = kPortPullUp,	.config.isPassiveFilterEnabled = false,	.config.interrupt = kPortIntDisabled },//kPortIntLogicZero },
 	{.pinName = VIB_SENS,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge },
-	{.pinName = FPGA_GPIO0,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge },
+	{.pinName = FPGA_GPIO0,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled },
 	{.pinName = FPGA_DONE,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = OTG_ID   ,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = true,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = USB_OTG_PWR_REQ,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 
 	{.pinName = UART_MCU2CPU_RX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = UART_MCU2CPU_TX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
-	{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge  },
-	{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+	{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
+	{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
 	{.pinName = BUTTON1,     		.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
-	{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+	{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
 
 // EYAL_0523
 	{.pinName = CPU_RF_KILL,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled    },
 
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE	}
 };
+
+void configure_msm_gpio_input_pins(bool interrupt_disable)
+{
+	gpio_input_pin_user_config_t input_pins_msm[] = {
+		{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge  },
+		{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+		{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+		{ .pinName = GPIO_PINS_OUT_OF_RANGE	}
+	};
+
+	gpio_input_pin_user_config_t * inputPins = input_pins_msm;
+	/* Initialize input pins.*/
+	while (inputPins->pinName != GPIO_PINS_OUT_OF_RANGE)
+	{
+		if (interrupt_disable)
+		{
+			inputPins->config.interrupt = kPortIntDisabled;
+		}
+		GPIO_DRV_InputPinInit(inputPins++);
+	}
+}
+
+/* Enables or disables the MSM/A8 power rail */
+/* IO pin interrupts from the MSM have to be disabled when the MSM power rail is turned off */
+void enable_msm_power(bool enable)
+{
+	if (enable)
+	{
+		GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
+		configure_msm_gpio_input_pins(false);
+	}
+	else
+	{
+		GPIO_DRV_ClearPinOutput(POWER_5V0_ENABLE);
+		configure_msm_gpio_input_pins(true);
+	}
+}
 
 /* I2C_reset_bus: If the SDA line is stuck in the low state, we try to send some 
 additional clocks and generate a stop condition

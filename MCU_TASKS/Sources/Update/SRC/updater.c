@@ -40,12 +40,19 @@
 #include "spi_settings.h"
 #include "W25X40CL.h"
 #include "fsl_power_manager.h"
+#include "fsl_interrupt_manager.h"
+#include "Device_control_GPIO.h"
+#include "mic_typedef.h"
 
 
 extern int32_t	Set_IRQHandler_spec(void);
 extern void disable_others(uint32_t WithFpga);
 extern void disable_spi(void);
 extern void Device_reset_req(int32_t wait_time);
+extern void cancel_a8_timers(void);
+extern void J1708_disable (void);
+extern void UART_Disable  (uint8_t port);
+extern void configure_otg_for_host_or_device(int);
 
 uint8_t g_flag_Exit = 0; 
 
@@ -148,7 +155,7 @@ const NIO_SERIAL_INIT_DATA_STRUCT nserial3_init =
 	.STOPBIT_COUNT       	= kNioSerialOneStopBit,
 	.BITCOUNT_PERCHAR    	= 9,
 	.MODULE					= kNioSerialUart,
-	.RXTX_PRIOR		       	= 3,
+	.RXTX_PRIOR		       	= 0xC,
 	#if defined(BOARD_USE_UART) && defined(BOARD_UART_CLOCK_SOURCE)
 	.CLK_SOURCE          = BOARD_UART_CLOCK_SOURCE,
 	#else
@@ -234,22 +241,30 @@ void tasks_kill(void)
 	uint32_t i = 0;
 
 	g_flag_Exit = 1;
-		
+
+	INT_SYS_DisableIRQ(PORTA_IRQn);
+	INT_SYS_DisableIRQ(PORTC_IRQn);
+//	cancel_a8_timers();
+
+	_time_delay (50);
 	while(i < NUM_TASKS)
 	{
 		if(	0					!= g_TASK_ids[i] &&
 			UPDATER_TASK 		!= i &&
-			UPDATER_EXEC_TASK 	!= i )
+			UPDATER_EXEC_TASK 	!= i &&
+			POWER_MGM_TASK		!= i )
 		{
 			if(MQX_INVALID_TASK_ID == _task_destroy(g_TASK_ids[i]) )
 			{
-				//printf("updater: cannot destroy task %d\n", i);
+				printf("%s: cannot destroy task %d\n", __func__, i);
 			}
 		}
 		i++;
 	}
+	J1708_disable ();
+	UART_Disable  (UART1_IDX); // FPGA UART
 	
-	POWER_SYS_SetMode(kPowerManagerRun, kPowerManagerPolicyAgreement);
+	//POWER_SYS_SetMode(kPowerManagerRun, kPowerManagerPolicyAgreement);
 }
 /*
 	KERNEL_DATA_STRUCT_PTR   kernel_data;
@@ -281,8 +296,9 @@ void tasks_kill(void)
 
 int32_t start_update(uint32_t id)
 {
+	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
 	tasks_kill();
-	disable_others(0);
+	peripherals_disable(0);
 	Upd_idTask = _task_create(0, UPDATER_EXEC_TASK, 0);
 	if(MQX_NULL_TASK_ID == Upd_idTask)
 	{
@@ -426,8 +442,8 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 			g_start_flag = 0;
 			if(g_ok)
 				end_update();
-			//NVIC_SystemReset();
-			Device_reset_req(0);
+//			NVIC_SystemReset();
+			Device_reset_req(2000);
 		}
 		break;
 		case FRE:
@@ -446,7 +462,7 @@ int32_t exec_cmd(cmd_id id, char* out_buf)
 			fpga_deinit();
 			g_start_flag = 0;
 //			NVIC_SystemReset();
-			Device_reset_req(0);
+			Device_reset_req(2000);
 		}
 		break;
 		default:
@@ -538,16 +554,18 @@ uint32_t rstr_32_dig(uint8_t* buf)
 	}
 	return dig;
 }
-void fpga_data(uint8_t* buf, uint32_t len)
+int32_t fpga_data(uint8_t* buf, uint32_t len)
 {
 	int32_t		err = 0, count = 0;
 	uint32_t 	tmp_len = 0, wr_len = 0, diff, crc;
 	uint8_t* 	ptr = (uint8_t*)OK_str;
 	uint32_t*	pTmp;
-//	TIME_STRUCT tt;
+	uint64_t current_time, timeout;
 
 	g_start_flag = 2;
+	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
 	tasks_kill();
+	peripherals_disable(0);
 
 	len = rstr_32_dig(buf);
 //	len = 135180;//temp!!!
@@ -556,18 +574,27 @@ void fpga_data(uint8_t* buf, uint32_t len)
 	{
 		ptr = (uint8_t*)ERR_str;
 		transmit_polling(ptr, strlen((char*)ptr));
-		return;
+		printf("update: %s fpga_init failed\n", __func__);
+		return 9;
 	}
 	transmit_polling((uint8_t*)OK_str, strlen((char*)OK_str));
 	
 	printf("update: %s len %d\n", __func__, len);
-	
+
+	timeout = ms_from_start() + 8000;
+
 	do
 	{
 		err = 0;
 		ptr = (uint8_t*)OK_str;
 		diff = (SPI_FLASH_SECTOR_SIZE < len - wr_len) ? SPI_FLASH_SECTOR_SIZE : len - wr_len;
 
+		current_time = ms_from_start();
+		if (current_time > timeout) {
+			printf("%s: update too long, reboot device\n", __func__);
+			Device_reset_req(2000);
+		}
+		
 		tmp_len = _nio_read(g_fd, &buf[4], diff + 4, &err);
 
 		//printf("updater: read %d (%d)\n", tmp_len, err);
@@ -604,25 +631,29 @@ void fpga_data(uint8_t* buf, uint32_t len)
 					ptr = (uint8_t*)ERR_str;
 					err = 4;
 				}
-//				_time_get(&tt);
-//				printf("erase %d:%d\n", tt.SECONDS, tt.MILLISECONDS);
+				timeout = ms_from_start() + 8000;
+				
+#if (DEBUG_LOG == 1)
+				printf("%s: block %d erased ajust timeout\n", __func__, wr_len/ERASABLE_BLOCK_SIZE);
+#endif
 			}
 		}
 		if(0 == err)
 		{
-//			_time_get(&tt);
-//			printf("fpga_write_data %d:%d\n", tt.SECONDS, tt.MILLISECONDS);
-//		  	printf("fpga_write_data 0x%x + 0x%x (count %d)\n", wr_len, diff, ++count);
 			if(0 != fpga_write_data(wr_len, buf, diff))
 			{
 				ptr = (uint8_t*)ERR_str;
 				err = 5;
 			}
-//			_time_get(&tt);
-//			printf("fpga_write_data %d:%d\n", tt.SECONDS, tt.MILLISECONDS);
+			timeout = ms_from_start() + 8000;
+#if (DEBUG_LOG == 1)
+			if ((ERASABLE_BLOCK_SIZE - SPI_FLASH_SECTOR_SIZE) == (wr_len % ERASABLE_BLOCK_SIZE))
+				printf("%s: page %d flashed ajust timeout\n", __func__, wr_len/SPI_FLASH_SECTOR_SIZE);
+#endif
 		}
 //		printf("updater: %d\n", count++);
-		transmit_polling(ptr, strlen((char*)ptr));
+		if(err < 4)
+			transmit_polling(ptr, strlen((char*)ptr));
 		
 		if(0 == err)
 			wr_len += diff;
@@ -632,7 +663,10 @@ void fpga_data(uint8_t* buf, uint32_t len)
 	
 	disable_spi();	
 	printf("update: %s end (%d)\n", __func__, err);
+	
+	return err;
 }
+
 void updater_task(uint32_t param)
 {
 /*
@@ -669,8 +703,10 @@ void updater_task(uint32_t param)
 	cmd_id 		id = UNN;
 	int32_t 	error;
 	NIO_DEV_STRUCT*	pNio = 0;
+	uint64_t current_time;
 
-	printf("updater: task started\n");
+	current_time = ms_from_start();
+	printf("%s: started %llu\n", __func__, current_time);
 
 	update_fw_uart_init();//muxing
 
@@ -781,7 +817,12 @@ void updater_task(uint32_t param)
 						{
 							len = _nio_read(g_fd, bbb, 17, &error);
 							printf("updater: read len %d (%d)\n", len, error);
-							fpga_data(bbb, len);
+							if(3 < fpga_data(bbb, len))
+							{
+								fpga_deinit();
+								g_start_flag = 0;
+								Device_reset_req(2000);
+							}
 							continue;
 						}
 					res = exec_cmd((cmd_id)id, (char*)tmp_buf);

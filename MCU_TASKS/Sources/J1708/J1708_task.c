@@ -57,7 +57,11 @@ void J1708_Tx_task (uint32_t initial_data)
 	bool          J1708TxFull   ;
 	uint8_t       uart_tx_length;
 
-	printf ("\nJ1708_Tx Task: Start \n");
+//	printf ("\nJ1708_Tx Task: Start \n");
+	uint64_t current_time;
+
+	current_time = ms_from_start();
+	printf("%s: started %llu\n", __func__, current_time);
 
 	while (0 == g_flag_Exit) {
 		while (J1708_state == J1708_DISABLED)
@@ -118,9 +122,14 @@ void J1708_Rx_task (uint32_t initial_data)
 	bool                        J1708_rx_status;
 	uint8_t                     J1708_rx_len;
 
+	uint64_t current_time;
+
+	current_time = ms_from_start();
+	printf("%s: started %llu\n", __func__, current_time);
+
 	_event_create ("event.J1708_RX");
 	_event_open   ("event.J1708_RX", &g_J1708_event_h);
-	printf ("\nJ1708_Rx Task: Start \n");
+//	printf ("\nJ1708_Rx Task: Start \n");
 
 	while (0 == g_flag_Exit) {
 		while (J1708_state == J1708_DISABLED)

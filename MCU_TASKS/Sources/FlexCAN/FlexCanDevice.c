@@ -203,6 +203,11 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 	uint32_t resp_msg_size = 0;
 	uint8_t bytes_read = 0;
 
+	uint64_t current_time;
+
+	current_time = ms_from_start();
+	printf("%s: started %llu\n", __func__, current_time);
+
 	if ( NULL == (pcan) || BOARD_CAN_INSTANCE <= (pcan)->instance ) {
 		printf( "%s:thread wrong param %u\n", __func__, (pcan)->instance );
 		return;
@@ -469,6 +474,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				//Enable CAN
 				if ( BSP_CAN_DEVICE_0 == pcan->instance ){
 					GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
+					GPIO_DRV_SetPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 				}
 				else {
 					if ( fdBitrate_33_kHz == initCan.instanceBitrate) {
@@ -525,6 +531,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				Baudrate_notSet = 1;
 				if ( BSP_CAN_DEVICE_0 == pcan->instance ) {
 					GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE);
+					GPIO_DRV_ClearPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 				}
 				else {
 					GPIO_DRV_ClearPinOutput(CAN2_SWC_PWR_ENABLE);
@@ -1031,6 +1038,11 @@ void FLEXCAN_Rx_Task( uint32_t param_in ) {
 	pcdc_mic_queue_element_t    pqMemElem;
 	
 	pflexcanInstance_t pcan = (pflexcanInstance_t)param_in;
+
+	uint64_t current_time;
+
+	current_time = ms_from_start();
+	printf("%s: started %llu\n", __func__, current_time);
 
 	if ( (NULL == pcan) || (BOARD_CAN_INSTANCE <= pcan->instance) ) {
 		printf( "%s:ERROR,CAN_RX thread incorrect param %u\n", __func__, pcan->instance );
