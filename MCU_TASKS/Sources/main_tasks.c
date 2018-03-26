@@ -206,7 +206,30 @@ void task_sleep_if_OS_suspended(void)
 		_time_delay (500);
 	}
 }
-
+void ign_pulses(ftm_pwm_param_t* ftm, int fOn)
+{
+	if (fOn)
+	{
+		//Ignition high
+		ftm->uFrequencyHZ = 500u;
+		ftm->uDutyCyclePercent = 50;
+	}
+	else
+	{
+		//Ignition Low
+		ftm->uFrequencyHZ = 100u;
+		ftm->uDutyCyclePercent = 50;
+	}
+	FTM_DRV_PwmStart(0, ftm, CHAN6_IDX);
+	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
+	_time_delay(100);
+	
+	//NO change signal high
+	ftm->uFrequencyHZ = 1;
+	ftm->uDutyCyclePercent = 100;
+	FTM_DRV_PwmStart(0, ftm, CHAN6_IDX);
+	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);	
+}
 void Main_task( uint32_t initial_data ) {
 
 	_queue_id  main_qid;    //, usb_qid, can1_qid, can2_qid, j1708_qid, acc_qid, reg_qid;
@@ -293,7 +316,9 @@ void Main_task( uint32_t initial_data ) {
 	
 
 
-    printf("\nbefore power on event\n");
+	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_DISABLE);
+
+	printf("\nbefore power on event\n");
     while (1)
     {
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
@@ -335,13 +360,8 @@ void Main_task( uint32_t initial_data ) {
 	FTM_DRV_Init(0, &ftmInfo);
 	FTM_DRV_SetClock(0, kClock_source_FTM_FixedClk, kFtmDividedBy1);
 	
-	_time_delay(MAIN_TASK_SLEEP_PERIOD);
+//	_time_delay(MAIN_TASK_SLEEP_PERIOD);
 	
-	// turn on device
-	//enable_msm_power(TRUE);		// turn on 5V0 power rail
-
-
-
 	g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
 	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
 			printf("\nMain Could not create USB_TASK\n");
@@ -445,9 +465,9 @@ void Main_task( uint32_t initial_data ) {
 	a8_watchdog_init();
 #endif
 	printf("\nMain Task: Loop \n");
-	GPIO_DRV_ClearPinOutput   (USB_HUB_RSTN);
-	GPIO_DRV_SetPinOutput (USB_OTG_OE);
-	//configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
+	
+//	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
+
 	//otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
 
 	//NO change signal high
@@ -471,15 +491,15 @@ void Main_task( uint32_t initial_data ) {
 		// This workaround completely debugged and tested by 48 hours resets and A8 always connects to MCU. Sure it will retested by QA together with functional tests. Moreover I want that Roman will include also some stress tests
 
 //temp!!!!! ???
-		power_in_voltage  = ADC_get_value (kADC_POWER_IN);
-		if(power_in_voltage < POWER_IN_SHUTDOWN_TH)
-		{
-			ftmParam.uFrequencyHZ = 1;
-			ftmParam.uDutyCyclePercent = 0;
-			FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
-			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);			
-			continue;
-		}
+//		power_in_voltage  = ADC_get_value (kADC_POWER_IN);
+//		if(power_in_voltage < POWER_IN_SHUTDOWN_TH)
+//		{
+//			ftmParam.uFrequencyHZ = 1;
+//			ftmParam.uDutyCyclePercent = 0;
+//			FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
+//			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);			
+//			continue;
+//		}
 /////////		
 		if(MT5_active_on == g_MT5_present)
 		{
@@ -491,40 +511,20 @@ void Main_task( uint32_t initial_data ) {
 		if(ignition_state_g.OS_notify || (MT5_present_last != g_MT5_present))
 		   notify = 1;
 		
-		if(notify && (2 < active_count))
+		if(1 == g_on_flag)
 		{
-			notify = 0;
-			ignition_state_g.OS_notify = false;
-			printf("%s: ignition state updated, %d \n", __func__, ignition_state_g.state);
-			if (ignition_state_g.state)
+			if(notify && (2 < active_count))
 			{
-				//Ignition high
-				ftmParam.uFrequencyHZ = 500u;
-				ftmParam.uDutyCyclePercent = 50;
-				FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
-				FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
-				_time_delay(100);
+				notify = 0;
+				ignition_state_g.OS_notify = false;
+				printf("%s: ignition state updated, %d \n", __func__, ignition_state_g.state);
+				ign_pulses(&ftmParam, ignition_state_g.state);
+				enable_msm_power(1, 0);
+				
 			}
-			else
-			{
-				//Ignition Low
-				ftmParam.uFrequencyHZ = 100u;
-				ftmParam.uDutyCyclePercent = 50;
-				FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
-				FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
-				_time_delay(100);
-			}
-			
-			//NO change signal high
-			ftmParam.uFrequencyHZ = 1;
-			ftmParam.uDutyCyclePercent = 100;
-			FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
-			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);	
-			
+			if(3 < active_count)
+				configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
 		}
-		if(MT5_active_on == MT5_present_last && (1 == g_on_flag) && (3 < active_count))
-			configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
-		
 		MT5_present_last = g_MT5_present;
 
 #undef DEBUG_BLINKING_RIGHT_LED
@@ -548,39 +548,6 @@ void Main_task( uint32_t initial_data ) {
 
 }
 
-#if 0
-void OTG_CONTROL (void)
-{
-	uint8_t user_switch_status =  (GPIO_DRV_ReadPinInput (SWITCH2) << 1) + GPIO_DRV_ReadPinInput (SWITCH1);
-
-	if (user_switch_status == user_switch)
-		return;
-
-	user_switch = user_switch_status;
-	GPIO_DRV_SetPinOutput (USB_OTG_OE);
-	_time_delay (1000);
-
-	// disable OTG Switch
-
-	case (user_switch) {
-		OTG_CPU_CONNECTION :
-
-
-			// select channel
-
-			break;
-
-		OTG_HUB_CONNECTION :
-			break;
-
-		default            : break;
-
-		// enable OTG Switch
-		GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-	}
-}
-#endif
-
 void configure_otg_for_host_or_device(int force)
 {
 /* configure_otg_for_host_or_device: monitors the USB_ID state and based on the state puts the USB switch OTG port into host or device mode
@@ -590,52 +557,52 @@ void configure_otg_for_host_or_device(int force)
 	static bool usb_disabled = true;
 	bool curr_otg_id_state = false;
 
-	if (device_state_g == DEVICE_STATE_ON |
-		device_state_g == DEVICE_STATE_BACKUP_RECOVERY |
-		device_state_g == DEVICE_STATE_BACKUP_POWER)
-	{
-		curr_otg_id_state = GPIO_DRV_ReadPinInput (OTG_ID);
+	curr_otg_id_state = GPIO_DRV_ReadPinInput (OTG_ID);
 
-		if ((curr_otg_id_state != prev_otg_id_state) || force || usb_disabled){
-			if (OTG_ID_CFG_FORCE_MCU_A8 == force) {
-				curr_otg_id_state = 1;
-			} else if (OTG_ID_CFG_FORCE_BYPASS == force) {
-				curr_otg_id_state = 0;
-			}
-			if(usb_disabled)
-			{
-				GPIO_DRV_SetPinOutput   (USB_HUB_RSTN);
-			}	
-			prev_otg_id_state =  curr_otg_id_state;
-			if (curr_otg_id_state == true)
-			{
-				/* Connect D1 <-> D MCU or HUB */
-				printf("connect D1 to MCU/hub ie clear USB_OTG_SEL\n");
-				GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+	if ((curr_otg_id_state != prev_otg_id_state) || force || usb_disabled){
 
-				GPIO_DRV_SetPinOutput 	(FTDI_RSTN);
-				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-				GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
-			}
-			else
-			{
-				/* Connect D2 <-> D A8 OTG */
-				printf("connect D2 to A8 OTG ie set USB_OTG_SEL\n");
-				GPIO_DRV_SetPinOutput (USB_OTG_SEL);
-
-				GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-				GPIO_DRV_SetPinOutput 	(CPU_OTG_ID);
-				GPIO_DRV_ClearPinOutput (FTDI_RSTN);
-				g_otg_ctl_port_active = 0;
-			}
-			usb_disabled = false;
+		if(OTG_ID_CFG_FORCE_DISABLE == force)
+		{
+			GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
+			GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+			usb_disabled = true;
+			return;
 		}
-	}
-	else if(false == usb_disabled)
-	{
-		GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
-		GPIO_DRV_SetPinOutput (CPU_OTG_ID);
-		usb_disabled = true;
+
+		
+		if (OTG_ID_CFG_FORCE_MCU_A8 == force) {
+			curr_otg_id_state = 1;
+		} else if (OTG_ID_CFG_FORCE_BYPASS == force) {
+			curr_otg_id_state = 0;
+		}
+
+		if(usb_disabled)
+		{
+			GPIO_DRV_SetPinOutput   (USB_HUB_RSTN);
+		}	
+		prev_otg_id_state =  curr_otg_id_state;
+		if (curr_otg_id_state == true)
+		{
+			/* Connect D1 <-> D MCU or HUB */
+			printf("connect D1 to MCU/hub ie clear USB_OTG_SEL\n");
+			GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
+
+			GPIO_DRV_SetPinOutput 	(FTDI_RSTN);
+			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+			GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
+		}
+		else
+		{
+			/* Connect D2 <-> D A8 OTG */
+			printf("connect D2 to A8 OTG ie set USB_OTG_SEL\n");
+			GPIO_DRV_SetPinOutput (USB_OTG_SEL);
+
+			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
+			GPIO_DRV_SetPinOutput 	(CPU_OTG_ID);
+			GPIO_DRV_ClearPinOutput (FTDI_RSTN);
+			g_otg_ctl_port_active = 0;
+		}
+		usb_disabled = false;
 	}
 }
 
@@ -668,7 +635,7 @@ void MQX_PORTB_IRQHandler(void)
 
 		if(GPIO_DRV_ReadPinInput(CPU_WATCHDOG))
 		{
-			_event_set(a8_watchdog_event_g, WATCHDOG_A8_CPU_WATCHDOG_BIT); 
+			//_event_set(a8_watchdog_event_g, WATCHDOG_A8_CPU_WATCHDOG_BIT); 
 			g_wd_rise_time = g_portb_time;
 		}
 		else
@@ -752,7 +719,7 @@ void MQX_PORTE_IRQHandler(void)
 	if (GPIO_DRV_IsPinIntPending (OTG_ID))
 	{
 		GPIO_DRV_ClearPinIntFlag(OTG_ID);
-		configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
+//		configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
 	}
 
 	if (GPIO_DRV_IsPinIntPending(CPU_INT))

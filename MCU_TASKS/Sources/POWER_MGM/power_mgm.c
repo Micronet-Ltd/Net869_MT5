@@ -84,6 +84,8 @@ extern void MQX_PORTA_IRQHandler(void);
 extern uint8_t g_flag_Exit;
 extern uint64_t g_wd_fall_time;
 extern uint64_t g_wd_rise_time;
+uint64_t g_last_rf_int_time = 0;
+uint64_t g_last_state_time = 0;
 
 typedef enum demo_power_modes {
 	kDemoMin  = 0,
@@ -618,6 +620,9 @@ static void MT5_state_monitor(void)
 
 	static int count_act = 0;
 	static uint64_t now = 0, big_time = 0, less_time = 0, last_btime = 0;
+	static int last_rf = -1;
+	int rf;
+	static int32_t last_state = -1; 
 	
 //	time_since_watchdog_sig_read += time_diff;
 
@@ -643,7 +648,13 @@ static void MT5_state_monitor(void)
 	{
 		printf("%s: level=%d delta %llu [%llu] \n", __func__, current_watchdog_signal_val, (big_time - less_time), now);//now - last_btime);
 	}
-	
+	rf = GPIO_DRV_ReadPinInput(CPU_RF_KILL);
+	if(last_rf != rf)
+	{
+		printf("%s: rf=%d delta %llu [%llu] \n", __func__, rf, (now - g_last_rf_int_time), now);//now - last_btime);
+		last_rf = rf;
+		g_last_rf_int_time = now;
+	}
 	if((now - big_time) > 1700)
 	{
 //		current_watchdog_signal_val = GPIO_DRV_ReadPinInput(CPU_WATCHDOG);
@@ -653,10 +664,20 @@ static void MT5_state_monitor(void)
 			if(0 == current_watchdog_signal_val)
 			{
 				g_MT5_present = MT5_inside;
+				if(last_state != g_MT5_present)
+				{
+					g_last_state_time = now;
+					last_state = g_MT5_present;
+				}
 			}
 			else
 			{
 				g_MT5_present = MT5_out;
+				if(last_state != g_MT5_present)
+				{
+					g_last_state_time = now;
+					last_state = g_MT5_present;
+				}
 			}
 		}
 	}
@@ -672,6 +693,11 @@ static void MT5_state_monitor(void)
 			if(0 < count_act)//count_act++)			
 			{
 				g_MT5_present = MT5_active_on;
+				if(last_state != g_MT5_present)
+				{
+					g_last_state_time = now;
+					last_state = g_MT5_present;
+				}
 			}
 			else
 				count_act = 1;//1st
@@ -801,7 +827,7 @@ void check_a8_power_events(int *already_on)
                     // a8 already started, additional pulse is reason of SW restart, reset usb hub
                     g_a8_sw_reboot = 1;
                     if (GPIO_DRV_ReadPinInput(OTG_ID)) {
-                        configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
+//                        configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
                         GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
                     }
 //							GPIO_DRV_ClearPinOutput (USB_ENABLE);
@@ -938,7 +964,7 @@ void Power_MGM_task (uint32_t initial_data )
 		time_diff_milli_u = (uint32_t) time_diff_milli;
 
 //		if ((device_state_g == DEVICE_STATE_ON)||  (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED))
-		if ((device_state_g == DEVICE_STATE_ON) || (device_state_g == DEVICE_STATE_OFF) )
+//		if ((device_state_g == DEVICE_STATE_ON) || (device_state_g == DEVICE_STATE_OFF) )
 		{
 			//MT5_power_state_monitor(&time_diff_milli_u);
 			MT5_state_monitor();

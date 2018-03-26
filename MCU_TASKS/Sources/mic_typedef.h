@@ -41,6 +41,7 @@ enum OTG_ID_CFG{
 	OTG_ID_CFG_FORCE_NONE = 0,
 	OTG_ID_CFG_FORCE_MCU_A8 = 1,
 	OTG_ID_CFG_FORCE_BYPASS = 2,
+	OTG_ID_CFG_FORCE_DISABLE = 3,
 };
 
 /******************************************************************************
