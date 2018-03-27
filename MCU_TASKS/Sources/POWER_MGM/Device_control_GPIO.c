@@ -151,6 +151,78 @@ void disable_peripheral_clocks(void)
   }
 }
 
+void device_state_stringify(DEVICE_STATE_t device_state, char * dev_state_str )
+{
+	switch 	(device_state)
+	{
+		case DEVICE_STATE_OFF:
+			sprintf(dev_state_str, "DEVICE_STATE_OFF");
+			break;
+		case DEVICE_STATE_TURNING_ON:
+			sprintf(dev_state_str, "DEVICE_STATE_TURNING_ON");
+			break;
+		case DEVICE_STATE_ON:
+			sprintf(dev_state_str, "DEVICE_STATE_ON");
+			break;
+		case DEVICE_STATE_BACKUP_RECOVERY:
+			sprintf(dev_state_str, "DEVICE_STATE_BACKUP_RECOVERY");
+			break;
+		case DEVICE_STATE_BACKUP_POWER:
+			sprintf(dev_state_str, "DEVICE_STATE_BACKUP_POWER");
+			break;
+		case DEVICE_STATE_TURN_OFF:
+			sprintf(dev_state_str, "DEVICE_STATE_TURN_OFF");
+			break;
+		case DEVICE_STATE_RESET:
+			sprintf(dev_state_str, "DEVICE_STATE_RESET");
+			break;
+		default: 
+			sprintf(dev_state_str, "DEVICE_STATE_UNDEFINED");
+	}
+}
+
+void change_device_state(DEVICE_STATE_t device_state)
+{
+	char device_state_str[30];
+	device_state_stringify(device_state, device_state_str);
+	printf("%s: %llu ms, %s\n", __func__, ms_from_start(), device_state_str);
+	device_state_g = device_state;
+}
+
+uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
+{
+	uint8_t turn_on_condition = 0;
+	if (*ignition_voltage >= ignition_threshold_g)
+	{
+		printf ("\n%s: POWER_MGM: TURNING ON DEVICE with ignition\n", __func__);
+		turn_on_condition |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;
+	}
+
+	if (Wiggle_sensor_cross_TH ())
+	{
+		printf ("\n%s: POWER_MGM: TURNING ON DEVICE with wiggle sensor \n", __func__);
+		turn_on_condition |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
+	}
+
+	if(RCM_BRD_SRS1_LOCKUP((RCM_Type*)RCM_BASE))
+	{
+		printf ("\n%s: POWER_MGM: TURNING ON DEVICE due to ARM LOCKUP \n", __func__);
+		turn_on_condition |= POWER_MGM_DEVICE_ARM_LOCKUP;
+	}
+
+	if(RCM_BRD_SRS0_WDOG((RCM_Type*)RCM_BASE))
+	{
+		printf ("\n%s: POWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n", __func__);
+		turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
+	}
+
+	//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
+	//{
+	//  	turn_on_condition |= POWER_MGM_DEVICE_SW_RESET_REQ;
+	//}
+	return turn_on_condition;
+}
+
 void Device_update_state (uint32_t * time_diff)
 {
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
@@ -179,6 +251,7 @@ void Device_update_state (uint32_t * time_diff)
 
     if (a8_s&EVENT_A8_PWR_DOWN) {
 		uint64_t reset_timeout = ms_from_start() + 1000;
+		printf("%s: WARNING EVENT_A8_PWR_DOWN 1\n", __func__);
         while (ms_from_start() < reset_timeout) {
 			// WDOG reset
         }
@@ -217,35 +290,7 @@ void Device_update_state (uint32_t * time_diff)
 				break;
 			}
 
-			if (ignition_voltage >= ignition_threshold_g)
-			{
-				printf ("\nPOWER_MGM: TURNING ON DEVICE with ignition\n");
-				turn_on_condition_g |= POWER_MGM_DEVICE_ON_IGNITION_TRIGGER;
-			}
-
-			if (Wiggle_sensor_cross_TH ())
-			{
-				printf ("\nPOWER_MGM: TURNING ON DEVICE with wiggle sensor \n");
-				turn_on_condition_g |= POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER;
-			}
-
-			if(RCM_BRD_SRS1_LOCKUP((RCM_Type*)RCM_BASE))
-			{
-				printf ("\nPOWER_MGM: TURNING ON DEVICE due to ARM LOCKUP \n");
-				turn_on_condition_g |= POWER_MGM_DEVICE_ARM_LOCKUP;
-			}
-
-			if(RCM_BRD_SRS0_WDOG((RCM_Type*)RCM_BASE))
-			{
-				printf ("\nPOWER_MGM: TURNING ON DEVICE due to WATCHDOG RESET \n");
-				turn_on_condition_g |= POWER_MGM_DEVICE_WATCHDOG_RESET;
-			}
-
-//			if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
-//			{
-//			  	turn_on_condition_g |= POWER_MGM_DEVICE_SW_RESET_REQ;
-//			}
-
+			turn_on_condition_g = get_turn_on_reason(&ignition_voltage);
 			if (turn_on_condition_g != 0)
 			{
 				led_blink_cnt_g = 0;
@@ -253,7 +298,7 @@ void Device_update_state (uint32_t * time_diff)
 				//send_power_change  (&turn_on_condition);
 				printf("%s: device turn on temperature: %d mV %llu\n", __func__, temperature, ms_from_start());
 				printed_temp_error = FALSE;
-				device_state_g = DEVICE_STATE_TURNING_ON;
+				change_device_state(DEVICE_STATE_TURNING_ON);
 			}
 			break;
 
@@ -275,7 +320,7 @@ void Device_update_state (uint32_t * time_diff)
 				peripherals_enable ();
 				//Board_SetFastClk ();
 				Device_turn_on     ();
-				device_state_g = DEVICE_STATE_ON;
+				change_device_state(DEVICE_STATE_ON);
 				printf ("\nPOWER_MGM: DEVICE RUNNING %llu\n", ms_from_start());
 				FPGA_init ();
 				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
@@ -289,8 +334,8 @@ void Device_update_state (uint32_t * time_diff)
 			// if power drops below threshold - shutdown
 			if (power_in_voltage < POWER_IN_SHUTDOWN_TH)
 			{
-				printf ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - SHUTING DOWN !!! \n", power_in_voltage);
-				device_state_g = DEVICE_STATE_BACKUP_RECOVERY;
+				printf ("\nPOWER_MGM: WARNING: INPUT POWER LOW %d - going to BACKUP_RECOVERY_STATE !!! \n", power_in_voltage);
+				change_device_state(DEVICE_STATE_BACKUP_RECOVERY);
 				FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
 				break;
 			}
@@ -300,7 +345,7 @@ void Device_update_state (uint32_t * time_diff)
 				(temperature > TEMPERATURE_SHUTDOWN_MAX_TH)    )
 			{
 				printf ("\nPOWER_MGM: TEMPERATURE OUT OF RANGE %d - SHUTING DOWN !!! \n", temperature);
-				device_state_g = DEVICE_STATE_OFF;
+				change_device_state(DEVICE_STATE_OFF);
 				Device_off_req(FALSE, 0);
 			}
 			break;
@@ -317,12 +362,13 @@ void Device_update_state (uint32_t * time_diff)
 				//peripherals_disable ();
 				//switch_power_mode(kPowerManagerVlpr);
 				//Board_SetVerySlowClk ();
-				device_state_g = DEVICE_STATE_BACKUP_POWER;
-				printf ("\nPOWER_MGM: Recovery period is over\n");
+				change_device_state(DEVICE_STATE_BACKUP_POWER);
+				printf ("\nPOWER_MGM: Recovery period is over, going to BACKUP_POWER_STATE\n");
 				break;
 			}
 
 			if (!(a8_s&EVENT_A8_PWR_UP)) {
+				printf("%s: WARNING !EVENT_A8_PWR_UP 2\n", __func__);
 				backup_power_cnt_g = 0;
 				led_blink_cnt_g = 0;
 				Device_off_req(1, 0);
@@ -331,9 +377,9 @@ void Device_update_state (uint32_t * time_diff)
 			// if power is back during recovery period - return to DEVICE_ON state, like nothing happen
 			if (power_in_voltage >= POWER_IN_TURN_ON_TH)
 			{
-				printf ("\nPOWER_MGM: INPUT POWER OK %d\n", power_in_voltage);
+				printf ("\nPOWER_MGM: INPUT POWER OK %d, going to ON_STATE\n", power_in_voltage);
 				backup_power_cnt_g = 0;
-                device_state_g = DEVICE_STATE_ON;
+				change_device_state(DEVICE_STATE_ON);
                 FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0, 0xFF, 0); /*Green LED */
 			}
 			break;
@@ -346,6 +392,7 @@ void Device_update_state (uint32_t * time_diff)
 			}
 
 			if (!(a8_s&EVENT_A8_PWR_UP)) {
+				printf("%s: WARNING !EVENT_A8_PWR_UP 3\n", __func__);
 				backup_power_cnt_g = 0;
 				led_blink_cnt_g = 0;
 				Device_off_req(1, 0);
@@ -357,7 +404,7 @@ void Device_update_state (uint32_t * time_diff)
 				backup_power_cnt_g = 0;
 				led_blink_cnt_g = 0;
 				Device_turn_off ();
-				device_state_g = DEVICE_STATE_TURN_OFF;
+				change_device_state(DEVICE_STATE_TURN_OFF);
 				supercap_voltage = ADC_get_value (kADC_POWER_VCAP);
 				printf ("\nPOWER_MGM: backup period is over - shutting down, supercap voltage = %d\n", supercap_voltage);
 			}
@@ -371,7 +418,7 @@ void Device_update_state (uint32_t * time_diff)
 			{
 				printf ("\nPOWER_MGM: DEVICE IS about to turn OFF\n");
 				Device_off_req(FALSE, 0);
-				device_state_g = DEVICE_STATE_OFF;
+				change_device_state(DEVICE_STATE_OFF);
 				//Wiggle_sensor_restart ();
 				//peripherals_disable ();
 				//Wiggle_sensor_start ();	// enable interrupt
@@ -381,7 +428,7 @@ void Device_update_state (uint32_t * time_diff)
 
 		default:
 			printf ("\nPOWER_MGM: ERROR: UNKNOWN STATE %d\n", device_state_g );
-			device_state_g = DEVICE_STATE_OFF;
+			change_device_state(DEVICE_STATE_OFF);
 			Wiggle_sensor_restart ();
 			enable_peripheral_clocks();
 
@@ -549,7 +596,7 @@ void Device_reset_req(int32_t wait_time)
 	GPIO_DRV_ClearPinOutput (CPU_POWER_LOSS);
 	printf ("\nPOWER_MGM: DEVICE reset through Device_reset_req\n");
 	peripherals_disable (1);
-	device_state_g = DEVICE_STATE_OFF;
+	change_device_state(DEVICE_STATE_OFF);
 
 	// Vladimir
 	// TODO: should be investigated influence of GPIOA11 and GPIOE25 pins during reset
@@ -564,7 +611,7 @@ void Device_reset_req(int32_t wait_time)
 
 void Device_init (uint32_t delay_period)
 {
-	device_state_g = DEVICE_STATE_OFF;
+	change_device_state(DEVICE_STATE_OFF);
 	TIME_STRUCT ticks_now;
 
 	_time_get_elapsed(&ticks_now);
