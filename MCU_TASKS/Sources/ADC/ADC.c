@@ -165,6 +165,7 @@ void ADC_sample_input (KADC_CHANNELS_t channel)
 	   assert (channel < kADC_CHANNELS);
 
 	   ADC16_DRV_ConfigConvChn (ADC16_INSTANCE1, ADC16_CHN_GROUP_0, &adc_input[channel].chnConfig);         // trigger the conversion
+       // busy-loop for sampling done
 	   ADC16_DRV_WaitConvDone  (ADC16_INSTANCE1, ADC16_CHN_GROUP_0);                                        // Wait for the conversion to be done
 
 	   if (adc_input[channel].chnConfig.diffConvEnable)

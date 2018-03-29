@@ -33,6 +33,7 @@
 #include "bsp.h"
 #include "mic_typedef.h"
 #include "watchdog_mgmt.h"
+#include "main_tasks.h"
 
 #define SUPERCAP_CHRG_DISCHRG_ENABLE   1
 //#define DEBUGGING_ENABLED                1
@@ -237,6 +238,7 @@ void check_supercap_voltage (void);
 
 void * power_up_event_g;
 void * cpu_status_event_g;
+void * g_a8_pwr_state_event;
 
 uint32_t ignition_threshold_g = IGNITION_TURN_ON_TH_DEFAULT;
 
@@ -583,6 +585,8 @@ void check_a8_power_events(int *already_on)
             if (cpu_status_time_g.time_diff > (CPU_STATUS_SHUTDOWN_DURATION - 10) &&
                 cpu_status_time_g.time_diff < (CPU_STATUS_SHUTDOWN_DURATION + 30)) {
                 if (*already_on) {
+					_event_clear(g_a8_pwr_state_event, EVENT_A8_PWR_UP);
+					_event_set(g_a8_pwr_state_event, EVENT_A8_PWR_DOWN);
                     printf ("\n%s : DEVICE shutdown request by A8\n", __func__);
                     _time_delay(100); /* give some time for the print statement */
                     Device_off_req_immediate(true);
@@ -600,6 +604,8 @@ void check_a8_power_events(int *already_on)
                         _lwtimer_cancel_period(&lwtimer_period_a8_turn_on_g);
                         printf("%s: a8 booted %llu\n", __func__, current_time);
                         (*already_on)++;
+						_event_clear(g_a8_pwr_state_event, EVENT_A8_PWR_DOWN);
+						_event_set(g_a8_pwr_state_event, EVENT_A8_PWR_UP);
                         g_a8_sw_reboot = 0;
                     }
                 } else {
@@ -655,6 +661,26 @@ void Power_MGM_task (uint32_t initial_data )
 		printf("Power_MGM_task: Could not open cpuStatusEvent \n");
 	}
 
+	event_result = _event_create("event.a8_pwr_state");
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not create a8_pwr_state \n");
+	}
+
+	event_result = _event_open("event.a8_pwr_state", &g_a8_pwr_state_event);
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not open a8_pwr_state \n");
+	}
+	
+	event_result = _event_create ("event.EXTERNAL_GPIOS");
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not create event.EXTERNAL_GPIOS \n");
+	}
+	
+	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not open event.EXTERNAL_GPIOS \n");
+	}
+
 	Device_init (POWER_MGM_TIME_DELAY);
 	ADC_init ();
 	/* Get all the initial ADC values */
@@ -685,7 +711,6 @@ void Power_MGM_task (uint32_t initial_data )
 #else
 	switch_power_mode(kPowerManagerVlpr);
 #endif
-
 	/* Start off with the peripherals disabled */
 	peripherals_disable (1);
 	disable_peripheral_clocks();
@@ -699,7 +724,7 @@ void Power_MGM_task (uint32_t initial_data )
 
 	while (!g_flag_Exit)
 	{
-		ADC_sample_input (adc_input);
+        ADC_sample_input(adc_input);
 		if (++adc_input >= (kADC_CHANNELS - 1))
 		{
 //			printf ("\nPOWER_MGM: WARNING: CABLE TYPE is not as expected (current voltage %d mV - expected %d mV\n", cable_type_voltage, CABLE_TYPE_VOLTAGE);
@@ -723,12 +748,22 @@ void Power_MGM_task (uint32_t initial_data )
 		time_diff_milli = _time_diff_milliseconds(&ticks_now, &ticks_prev, &time_diff_overflow);
 		_time_get_elapsed_ticks_fast(&ticks_prev);
 
-		if (time_diff_milli < 0)
+		if (time_diff_milli < 0 || time_diff_overflow)
 		{
 			printf("Power_MGM_task: timediff -ve!");
+			time_diff_milli = POWER_MGM_TIME_DELAY;
 		}
-		time_diff_milli_u = (uint32_t) time_diff_milli;
-
+		
+		/* TODO: the time calculation is incorrect in low power mode. 
+		Need to figure out the correct calculation */
+		if (SystemCoreClock == CORE_LPM_CLOCK_FREQ)
+		{
+			time_diff_milli_u = (uint32_t) (time_diff_milli/4);
+		}
+		else
+		{
+			time_diff_milli_u = (uint32_t) (time_diff_milli);
+		}
 		Device_update_state(&time_diff_milli_u);
 
         check_a8_power_events(&a8_on);

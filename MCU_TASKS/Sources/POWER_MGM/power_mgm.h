@@ -23,8 +23,10 @@ extern "C"
 #define TEMPERATURE_TURNON_MIN_TH		250			 /* mV = (-25 * 10) + 500 */
 #define TEMPERATURE_TURNON_MAX_TH		1400         /* mV = (90 * 10) + 500 */
 	
-#define EVENT_CPU_STATUS_HIGH 1
-#define EVENT_CPU_STATUS_LOW 2
+#define EVENT_CPU_STATUS_HIGH   1
+#define EVENT_CPU_STATUS_LOW    2
+#define EVENT_A8_PWR_UP         1
+#define EVENT_A8_PWR_DOWN       2
 
 typedef struct tick_measure_s{
 	MQX_TICK_STRUCT start_ticks;

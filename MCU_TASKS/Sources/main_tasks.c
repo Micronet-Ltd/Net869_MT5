@@ -28,6 +28,7 @@
 #include "watchdog_mgmt.h"
 #include "power_mgm.h"
 #include "version.h"
+#include "fsl_wdog_driver.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
@@ -197,7 +198,9 @@ void Main_task( uint32_t initial_data ) {
 	uint32_t cdc_recovery_count = -1;
 	uint64_t otg_reset_time;
 	uint64_t otg_check_time;
+	uint32_t pet_count = 0;
 
+	watchdog_mcu_init();
 	printf("\n%s: Start\n", __func__);
 #if 0
 	PinMuxConfig ();
@@ -210,7 +213,7 @@ void Main_task( uint32_t initial_data ) {
     // board Initialization
     post_bsp_hardware_init ();
     OSA_Init();
-	watchdog_mcu_init();
+	watchdog_rtos_init();
 	_watchdog_start(WATCHDOG_MCU_MAX_TIME);
     GPIO_Config();
 //    ADC_init ();
@@ -268,6 +271,7 @@ void Main_task( uint32_t initial_data ) {
     printf("\nbefore power on event\n");
     while (1)
     {
+		WDOG_DRV_Refresh();
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
         /* We are waiting until a wiggle event happens before starting everything up
            The main reason for this is to stay below 5mA at 12V */
@@ -281,6 +285,7 @@ void Main_task( uint32_t initial_data ) {
               break;
             }
         }
+		//printf("%s: Petting Watchdog count %d", __func__, pet_count++);
     }
     printf("\nAfter power on event\n");
 
@@ -386,9 +391,7 @@ void Main_task( uint32_t initial_data ) {
 		printf("\nMain Could not create 1-wire task\n");
 	}
 
-	_event_create ("event.EXTERNAL_GPIOS");
-	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
-
+	_time_delay(20); /* short delay to Allow UART to initialize and prints to work */
 	FPGA_read_version(&FPGA_version);
 	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
 	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
@@ -402,6 +405,7 @@ void Main_task( uint32_t initial_data ) {
 
     while ( 1 ) 
     {
+		WDOG_DRV_Refresh();
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
@@ -548,6 +552,9 @@ void MQX_PORTA_IRQHandler(void)
 		//Wiggle_sensor_stop ();
 		sensor_g.wiggle_sensor_cnt++;
 		//_event_set(g_WIGGLE_SENSOR_event_h, EVENT_WIGGLE_SENSOR_IRQ);
+        if (sensor_g.wiggle_sensor_cnt > 1000) {
+			PORT_HAL_SetPinIntMode(PORTA, GPIO_EXTRACT_PIN(VIB_SENS), kPortIntDisabled);
+        }
 	}
 
 	if (GPIO_DRV_IsPinIntPending (ACC_INT)) {
