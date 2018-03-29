@@ -79,9 +79,8 @@ void GPIO_all_check_for_change (void)
 	//send the control message from within the GPIO driver
 	if (gpio_event != 0){
 		send_gpi_change((uint8_t *)&gpio_event);
+		_event_set(g_GPIO_event_h, gpio_event);
 	}
-
-	_event_set(g_GPIO_event_h, gpio_event);
 }
 
 
