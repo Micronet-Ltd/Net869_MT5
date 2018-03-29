@@ -670,6 +670,16 @@ void Power_MGM_task (uint32_t initial_data )
 	if(MQX_OK != event_result){
 		printf("Power_MGM_task: Could not open a8_pwr_state \n");
 	}
+	
+	event_result = _event_create ("event.EXTERNAL_GPIOS");
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not create event.EXTERNAL_GPIOS \n");
+	}
+	
+	_event_open   ("event.EXTERNAL_GPIOS", &g_GPIO_event_h);
+	if(MQX_OK != event_result){
+		printf("Power_MGM_task: Could not open event.EXTERNAL_GPIOS \n");
+	}
 
 	Device_init (POWER_MGM_TIME_DELAY);
 	ADC_init ();
@@ -701,7 +711,6 @@ void Power_MGM_task (uint32_t initial_data )
 #else
 	switch_power_mode(kPowerManagerVlpr);
 #endif
-
 	/* Start off with the peripherals disabled */
 	peripherals_disable (1);
 	disable_peripheral_clocks();

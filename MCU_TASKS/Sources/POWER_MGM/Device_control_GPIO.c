@@ -82,6 +82,7 @@
 #include "mqx_prv.h"
 #include "watchdog_mgmt.h"
 #include <lwtimer.h>
+#include "EXT_GPIOS.h"
 
 #define DEVICE_CONTROL_TIME_ON_TH				 3200		// number of mili-seconds pulse for turning device on
 #define DEVICE_CONTROL_TIME_OFF_TH				 3200		// number of mili-seconds pulse for turning device off
@@ -122,6 +123,7 @@ extern uint32_t ignition_threshold_g;
 extern volatile uint32_t a8_watchdog_count_g;
 extern void * power_up_event_g;
 extern void * g_a8_pwr_state_event;
+extern void * g_GPIO_event_h;
 
 LWTIMER_PERIOD_STRUCT lwtimer_period_a8_turn_on_g;
 LWTIMER_STRUCT lwtimer_a8_turn_on_g;
@@ -232,6 +234,8 @@ void Device_update_state (uint32_t * time_diff)
 	static bool printed_temp_error = FALSE;
 	static bool print_backup_power = FALSE;
 	uint32_t a8_s;
+	uint32_t gpio_event;
+	
 
 	Device_control_GPIO(time_diff);
 
@@ -241,7 +245,8 @@ void Device_update_state (uint32_t * time_diff)
 	if ((device_state_g == DEVICE_STATE_OFF && time_since_temp_print > 45000) //about 10 seconds, coz running @ slower clock
 		|| (device_state_g != DEVICE_STATE_OFF && time_since_temp_print > 30000)) // 30 seconds
 	{
-		printf("temp x 10 : %d c \n", temperature-500);
+		printf("%s: Time: %llu ms, dev_state:%d, power_in=%d, ign_vol=%d, tempx10=%d\n", 
+			   __func__, ms_from_start(), device_state_g, power_in_voltage, ignition_voltage, temperature - 500);
 		time_since_temp_print = 0;
 	}
 #endif
@@ -272,6 +277,27 @@ void Device_update_state (uint32_t * time_diff)
 			// if amount of vibrations is more than TH, it will turn on the device
 			// and stop the interrupts for better running efficiency
 			Wiggle_sensor_update (time_diff);
+			
+			if (MQX_OK == _event_get_value(g_GPIO_event_h, &gpio_event))
+			{
+				/* To see MCU debug output in DEVICE_OFF state, 
+				to help debug, UART is enabled if GPIO7 is high */
+				if (gpio_event&(1<<kGPIO_IN7))
+				{	
+					printf("%s:gpio:%x\n",__func__, gpio_event);
+					if (GPIO_INPUT_get_logic_level(kGPIO_IN7))
+					{
+						GPIO_DRV_SetPinOutput(UART_ENABLE);
+						printf("%s:enabling UART_ENABLE\n",__func__);
+					}
+					else
+					{
+						printf("%s:disabling UART_ENABLE\n",__func__);
+						GPIO_DRV_ClearPinOutput(UART_ENABLE);
+					}
+					_event_clear(g_GPIO_event_h, gpio_event);
+				}	
+			}
 
 			if (power_in_voltage < POWER_IN_TURN_ON_TH )
 			{
