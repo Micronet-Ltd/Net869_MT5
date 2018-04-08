@@ -376,6 +376,7 @@ void AccDisable (void)
 		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
 		_task_block();
 	}
+    acc_enabled_g = FALSE;
 	// read control register
 	write_data[0] = ACC_REG_CTRL_REG1;
 	if (!acc_receive_data(&write_data[0], 1, &read_data, 1))	goto _ACC_DISABLE_FAIL;
@@ -388,7 +389,6 @@ void AccDisable (void)
 	if (!acc_receive_data(&write_data[0], 1, &read_data, 1))	goto _ACC_DISABLE_FAIL;
 
 	printf ("%s: Accelerometer Disabled \n", __func__);
-	acc_enabled_g = FALSE;
 
 	_mutex_unlock(&g_i2c0_mutex);
 
@@ -462,7 +462,8 @@ bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 	write_data[0] = ACC_REG_STATUS;
 	//if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, &read_data, 1, TIME_OUT*10) != kStatus_I2C_Success)		goto _ACC_FIFO_READ_FAIL;
 	//TODO: Why was timout set to 100*10 milliseconds??? Abid
-	if (!acc_receive_data(&write_data[0], 1, &read_data, 1))	goto _ACC_FIFO_READ_FAIL;
+	if (!acc_receive_data(&write_data[0], 1, &read_data, 1))
+        goto _ACC_FIFO_READ_FAIL;
 
 	u8ByteCnt  = (read_data & ACC_VALUE_STATUS_WATERMARK);				// get amount of samples in FIFO
 	u8ByteCnt *= 6;														// read 2 Bytes per Sample (each sample is 12 bits): Max 192 Samples
@@ -471,8 +472,10 @@ bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 		u8ByteCnt = max_buffer_size;
 
 	write_data[0] = ACC_REG_FIFO_SAMPLES;
-	//if (I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device, write_data,  1, buffer, u8ByteCnt, TIME_OUT) != kStatus_I2C_Success)		goto _ACC_FIFO_READ_FAIL;
-	if (!acc_receive_data(&write_data[0], 1, buffer, u8ByteCnt))		goto _ACC_FIFO_READ_FAIL;
+    if (u8ByteCnt > 0) {
+        if (!acc_receive_data(&write_data[0], 1, buffer, u8ByteCnt))
+            goto _ACC_FIFO_READ_FAIL;
+    }
 
 	_mutex_unlock(&g_i2c0_mutex);
 	return TRUE;
