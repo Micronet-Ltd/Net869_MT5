@@ -606,6 +606,7 @@ void check_a8_power_events(int *already_on)
                         (*already_on)++;
 						_event_clear(g_a8_pwr_state_event, EVENT_A8_PWR_DOWN);
 						_event_set(g_a8_pwr_state_event, EVENT_A8_PWR_UP);
+                        _event_set(g_a8_pwr_state_event, EVENT_A8_BOOTED);
                         g_a8_sw_reboot = 0;
                     }
                 } else {
