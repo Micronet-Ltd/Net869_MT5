@@ -186,6 +186,7 @@ void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 
 int g_a8_sw_reboot = -1;
 int g_otg_ctl_port_active = 0;
+extern void * g_a8_pwr_state_event;
 
 void Main_task( uint32_t initial_data ) {
 
@@ -200,7 +201,9 @@ void Main_task( uint32_t initial_data ) {
 	uint64_t otg_check_time;
 	uint32_t pet_count = 0;
 
+#if (!_DEBUG)
 	watchdog_mcu_init();
+#endif
 	printf("\n%s: Start\n", __func__);
 #if 0
 	PinMuxConfig ();
@@ -213,8 +216,10 @@ void Main_task( uint32_t initial_data ) {
     // board Initialization
     post_bsp_hardware_init ();
     OSA_Init();
+#if (!_DEBUG)
 	watchdog_rtos_init();
 	_watchdog_start(WATCHDOG_MCU_MAX_TIME);
+#endif
     GPIO_Config();
 //    ADC_init ();
 
@@ -268,11 +273,13 @@ void Main_task( uint32_t initial_data ) {
 			printf("Main_task: Could not open PowerUp event \n");
 	}
 
-    printf("\nbefore power on event\n");
+    printf("%s: wait for power on event\n", __func__);
     while (1)
     {
+#if (!_DEBUG)
 		WDOG_DRV_Refresh();
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+#endif
         /* We are waiting until a wiggle event happens before starting everything up
            The main reason for this is to stay below 5mA at 12V */
         _event_wait_all(power_up_event_g, 1, WATCHDOG_MCU_MAX_TIME/2);
@@ -281,13 +288,15 @@ void Main_task( uint32_t initial_data ) {
             if (event_bits & 0x01) 
             {
               _event_clear(power_up_event_g, 1);
+#if (!_DEBUG)
               _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+#endif
               break;
             }
         }
 		//printf("%s: Petting Watchdog count %d", __func__, pet_count++);
     }
-    printf("\nAfter power on event\n");
+    printf("%s: power event got, power on A8\n", __func__);
 
 	NVIC_SetPriority(PORTC_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
@@ -296,13 +305,6 @@ void Main_task( uint32_t initial_data ) {
 
 	// turn on device
 	enable_msm_power(TRUE);		// turn on 5V0 power rail
-
-
-
-	g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
-	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
-			printf("\nMain Could not create USB_TASK\n");
-	}
 
 	//Enable UART
 //	GPIO_DRV_SetPinOutput(UART_ENABLE);	
@@ -326,6 +328,28 @@ void Main_task( uint32_t initial_data ) {
 		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntRisingEdge);
 		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
 	}
+
+    otg_check_time = OTG_CTLEP_RECOVERY_TO + ms_from_start();
+    do {
+        _time_delay (1000);
+        if (otg_check_time < ms_from_start()) {
+            printf("%s: failure to power up A8\n", __func__);
+            Device_off_req(1, 0);
+        }
+#if (!_DEBUG)
+        WDOG_DRV_Refresh();
+        _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+#endif
+        if (MQX_OK != _event_get_value(g_a8_pwr_state_event, &result))
+            result &= ~EVENT_A8_BOOTED;
+    } while (!(result & EVENT_A8_BOOTED));
+    _event_clear(g_a8_pwr_state_event, EVENT_A8_BOOTED);
+
+    g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
+    if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
+            printf("\nMain Could not create USB_TASK\n");
+    }
+
 	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
 	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
 	{
@@ -397,7 +421,9 @@ void Main_task( uint32_t initial_data ) {
 	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
 
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
+#if (!_DEBUG)
 	a8_watchdog_init();
+#endif
 #endif
 	printf("\nMain Task: Loop \n");
 	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
@@ -405,9 +431,11 @@ void Main_task( uint32_t initial_data ) {
 
     while ( 1 ) 
     {
+#if (!_DEBUG)
 		WDOG_DRV_Refresh();
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+#endif
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
 		// MCU starts with OTG ID disabled for monitoring
 		// Main task starts monitor this one only after Power task powers on the A8 and gets PON pulse from it
