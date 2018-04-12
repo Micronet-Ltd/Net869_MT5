@@ -67,6 +67,7 @@ tick_measure_t cpu_status_time_g = {0, 0, 0};
 void _test_CANFLEX( void );
 
 MUTEX_STRUCT g_i2c0_mutex;
+MUTEX_STRUCT g_i2c1_mutex;
 
 extern uint8_t g_flag_Exit;
 
@@ -233,6 +234,13 @@ void Main_task( uint32_t initial_data ) {
 	if (_mutex_init(&g_i2c0_mutex, &mutexattr) != MQX_OK)
 	{
 		printf("Initializing i2c0 mutex failed.\n");
+		_task_block();
+	}
+	
+	/* Initialize the mutex: */
+	if (_mutex_init(&g_i2c1_mutex, &mutexattr) != MQX_OK)
+	{
+		printf("Initializing i2c1 mutex failed.\n");
 		_task_block();
 	}
 	
@@ -428,6 +436,8 @@ void Main_task( uint32_t initial_data ) {
 	printf("\nMain Task: Loop \n");
 	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
 	otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
+	
+	GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
 
     while ( 1 ) 
     {
