@@ -2,6 +2,7 @@
 #if 1
 #include "gpio_pins.h"
 #include <stdbool.h>
+#include <stdio.h>
 #include <mqx.h>
 
 const gpio_output_pin_user_config_t outputPins[] = {
@@ -78,9 +79,9 @@ const gpio_output_pin_user_config_t outputPins[] = {
 const gpio_input_pin_user_config_t inputPins[] = {
 	{.pinName = ACC_INT,			.config.isPullEnable = true,	.config.pullSelect = kPortPullUp,	.config.isPassiveFilterEnabled = false,	.config.interrupt = kPortIntDisabled },//kPortIntLogicZero },
 	{.pinName = VIB_SENS,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled }, //kPortIntRisingEdge },
-	{.pinName = FPGA_GPIO0,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled },
+	{.pinName = FPGA_GPIO0,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge },
 	{.pinName = FPGA_DONE,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
-	{.pinName = OTG_ID   ,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = true,  .config.interrupt = kPortIntDisabled  },
+	{.pinName = OTG_ID   ,			.config.isPullEnable = false/*true for OTG*/,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = true,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = UART_MCU2CPU_RX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = UART_MCU2CPU_TX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = CPU_INT,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
@@ -238,6 +239,9 @@ void GPIO_Config( void ) {
 //
 //	GPIO_DRV_SetPinDir(CPU_WATCHDOG, kGpioDigitalOutput);
 //	GPIO_DRV_WritePinOutput(CPU_WATCHDOG, 0);
+
+//	GPIO_DRV_SetPinDir(OTG_ID, kGpioDigitalOutput);
+//	GPIO_DRV_WritePinOutput(OTG_ID, 0);
 ///////////
 	
 	GPIO_DRV_Init(inputPins, outputPins);

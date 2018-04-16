@@ -192,7 +192,7 @@ void Acc_task (uint32_t initial_data)
 			} else	{
 				printf("%s: fifo error timeout\n", __func__);
 				_time_delay(1000);//delay after read error 
-				if(!g_on_flag)//temp!!! maybe
+				if(!g_on_flag)
 					break;
 			}
 		} while (!res);

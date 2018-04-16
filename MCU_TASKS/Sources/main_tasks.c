@@ -81,6 +81,7 @@ extern int32_t	g_on_flag;
 uint64_t g_wd_fall_time = 0;
 uint64_t g_wd_rise_time = 0;
 
+extern void a8_watchdog_set(int fOn);
 
 
 /* induce_hard_fault: Induce divide by zero hard fault(used for debugging) */
@@ -282,6 +283,11 @@ void Main_task( uint32_t initial_data ) {
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
+	NVIC_SetPriority(PORTC_IRQn, PORT_NVIC_IRQ_Priority);
+	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);   
+	PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntDisabled);
+    GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+
 //    // I2C0 Initialization
 //    NVIC_SetPriority(I2C0_IRQn, I2C_NVIC_IRQ_Priority);
 //    OSA_InstallIntHandler(I2C0_IRQn, MQX_I2C0_IRQHandler);
@@ -313,8 +319,6 @@ void Main_task( uint32_t initial_data ) {
 	if(MQX_OK != event_result){
 			printf("Main_task: Could not open PowerUp event \n");
 	}
-	
-
 
 	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_DISABLE);
 
@@ -337,11 +341,8 @@ void Main_task( uint32_t initial_data ) {
     }
     printf("\nAfter power on event\n");
 
-	NVIC_SetPriority(PORTC_IRQn, PORT_NVIC_IRQ_Priority);
-	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
-	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
+//	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 //	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
-//	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
 	NVIC_SetPriority(PORTE_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTE_IRQn, MQX_PORTE_IRQHandler);
 	
@@ -383,12 +384,12 @@ void Main_task( uint32_t initial_data ) {
 
 //	FPGA_init ();
 
-	J1708_enable  (7);
+//	J1708_enable  (7);
 
-	if (GPIO_DRV_ReadPinInput (FPGA_DONE)) {
-		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntRisingEdge);
-		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
-	}
+//	if (GPIO_DRV_ReadPinInput (FPGA_DONE)) {
+//		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntRisingEdge);
+//		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+//	}
 	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
 	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
 	{
@@ -490,17 +491,6 @@ void Main_task( uint32_t initial_data ) {
 		// The USB sub-system also goes to recovery if SW reboot/WD of A8 occurs.
 		// This workaround completely debugged and tested by 48 hours resets and A8 always connects to MCU. Sure it will retested by QA together with functional tests. Moreover I want that Roman will include also some stress tests
 
-//temp!!!!! ???
-//		power_in_voltage  = ADC_get_value (kADC_POWER_IN);
-//		if(power_in_voltage < POWER_IN_SHUTDOWN_TH)
-//		{
-//			ftmParam.uFrequencyHZ = 1;
-//			ftmParam.uDutyCyclePercent = 0;
-//			FTM_DRV_PwmStart(0, &ftmParam, CHAN6_IDX);
-//			FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);			
-//			continue;
-//		}
-/////////		
 		if(MT5_active_on == g_MT5_present)
 		{
 			active_count++;
@@ -522,7 +512,7 @@ void Main_task( uint32_t initial_data ) {
 				enable_msm_power(1, 0);
 				
 			}
-			if(3 < active_count)
+			else if(3 < active_count)//'else' - next turn from notification
 				configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
 		}
 		MT5_present_last = g_MT5_present;
@@ -563,8 +553,12 @@ void configure_otg_for_host_or_device(int force)
 
 		if(OTG_ID_CFG_FORCE_DISABLE == force)
 		{
+#ifndef DEBUG_A8_WATCHOG_DISABLED 
+			a8_watchdog_set(0);
+#endif
 			GPIO_DRV_SetPinOutput (USB_OTG_OE); /* Disable USB */
-			GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+//			GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+			GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
 			usb_disabled = true;
 			return;
 		}
@@ -584,17 +578,20 @@ void configure_otg_for_host_or_device(int force)
 		if (curr_otg_id_state == true)
 		{
 			/* Connect D1 <-> D MCU or HUB */
-			printf("connect D1 to MCU/hub ie clear USB_OTG_SEL\n");
+			printf("connect D1 to MCU/hub ie clear USB_OTG_SEL (force %d)\n", force);
 			GPIO_DRV_ClearPinOutput (USB_OTG_SEL);
 
 			GPIO_DRV_SetPinOutput 	(FTDI_RSTN);
 			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
 			GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
+#ifndef DEBUG_A8_WATCHOG_DISABLED 
+			a8_watchdog_set(1);
+#endif
 		}
 		else
 		{
 			/* Connect D2 <-> D A8 OTG */
-			printf("connect D2 to A8 OTG ie set USB_OTG_SEL\n");
+			printf("connect D2 to A8 OTG ie set USB_OTG_SEL (force %d)\n", force);
 			GPIO_DRV_SetPinOutput (USB_OTG_SEL);
 
 			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
@@ -628,6 +625,8 @@ uint64_t g_portb_time;
 
 void MQX_PORTB_IRQHandler(void)
 {
+//	static uint32_t last_wd_signal = -1; - ignore equals ???
+	
 	if (GPIO_DRV_IsPinIntPending (CPU_WATCHDOG))
 	{
 		GPIO_DRV_ClearPinIntFlag(CPU_WATCHDOG);
@@ -635,7 +634,9 @@ void MQX_PORTB_IRQHandler(void)
 
 		if(GPIO_DRV_ReadPinInput(CPU_WATCHDOG))
 		{
-			//_event_set(a8_watchdog_event_g, WATCHDOG_A8_CPU_WATCHDOG_BIT); 
+#ifndef DEBUG_A8_WATCHOG_DISABLED 
+			_event_set(a8_watchdog_event_g, WATCHDOG_A8_CPU_WATCHDOG_BIT); 
+#endif
 			g_wd_rise_time = g_portb_time;
 		}
 		else

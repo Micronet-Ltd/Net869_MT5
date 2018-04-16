@@ -615,20 +615,14 @@ void switch_power_mode(power_manager_modes_t mode)
 
 static void MT5_state_monitor(void)
 {
-//	static uint64_t time_since_watchdog_sig_read = 0;
-	uint32_t current_watchdog_signal_val; 
+	uint32_t current_wd_signal;
+	static uint32_t last_wd_signal = -1; 
 
 	static int count_act = 0;
 	static uint64_t now = 0, big_time = 0, less_time = 0, last_btime = 0;
 	static int last_rf = -1;
 	int rf;
 	static int32_t last_state = -1; 
-	
-//	time_since_watchdog_sig_read += time_diff;
-
-//	if(time_since_watchdog_sig_read < 200)
-//		return;
-//	time_since_watchdog_sig_read = 0;
 	
 	now = ms_from_start();
 	
@@ -642,11 +636,11 @@ static void MT5_state_monitor(void)
 		less_time = g_wd_rise_time;
 		big_time = g_wd_fall_time;
 	}
-	current_watchdog_signal_val = GPIO_DRV_ReadPinInput(CPU_WATCHDOG);
+	current_wd_signal = GPIO_DRV_ReadPinInput(CPU_WATCHDOG);
 
 	if(last_btime != big_time)
 	{
-		printf("%s: level=%d delta %llu [%llu] \n", __func__, current_watchdog_signal_val, (big_time - less_time), now);//now - last_btime);
+		printf("%s: level=%d delta %llu [%llu] \n", __func__, current_wd_signal, (big_time - less_time), now);//now - last_btime);
 	}
 	rf = GPIO_DRV_ReadPinInput(CPU_RF_KILL);
 	if(last_rf != rf)
@@ -657,17 +651,17 @@ static void MT5_state_monitor(void)
 	}
 	if((now - big_time) > 1700)
 	{
-//		current_watchdog_signal_val = GPIO_DRV_ReadPinInput(CPU_WATCHDOG);
+		count_act = 0;
 		if(!count_act || (count_act && ((now - big_time) > 3000)) )
 		{
-			count_act = 0;
-			if(0 == current_watchdog_signal_val)
+			if(0 == current_wd_signal)
 			{
 				g_MT5_present = MT5_inside;
 				if(last_state != g_MT5_present)
 				{
 					g_last_state_time = now;
 					last_state = g_MT5_present;
+					printf("%s: set  state %d [%llu] \n", __func__, g_MT5_present, now);//now - last_btime);
 				}
 			}
 			else
@@ -677,12 +671,13 @@ static void MT5_state_monitor(void)
 				{
 					g_last_state_time = now;
 					last_state = g_MT5_present;
+					printf("%s: set  state %d [%llu] \n", __func__, g_MT5_present, now);//now - last_btime);
 				}
 			}
 		}
 	}
-	//else 
-	if((last_btime != big_time) && (0 != less_time) && ((now - big_time) < 3000))
+	//else
+	if((last_btime != big_time) && (0 != less_time) && ((now - big_time) < 3000) && (last_wd_signal != current_wd_signal))
 	{
 		if( (((big_time - less_time) > 1200) || ((big_time - less_time) < 800)) && (MT5_active_on != g_MT5_present) )   
 		{
@@ -697,12 +692,16 @@ static void MT5_state_monitor(void)
 				{
 					g_last_state_time = now;
 					last_state = g_MT5_present;
+					printf("%s: set  state %d [%llu] \n", __func__, g_MT5_present, now);//now - last_btime);
 				}
 			}
 			else
+			{
 				count_act = 1;//1st
+			}
 		}
 	}
+	last_wd_signal = current_wd_signal;
 	last_btime = big_time;
 }
 // MT5_power_state_monitor: Monitors the watchdog signal for 2 seconds, and based on it's 

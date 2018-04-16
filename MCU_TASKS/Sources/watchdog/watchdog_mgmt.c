@@ -24,6 +24,9 @@ static LWTIMER_PERIOD_STRUCT lwtimer_period_a8_pet_g, lwtimer_period_a8_check_g;
 static LWTIMER_STRUCT lwtimer_a8_pet_g, lwtimer_a8_check_g;
 void *a8_watchdog_event_g;
 
+extern int32_t	g_on_flag;
+extern void set_run_mode(int32_t fOn, int32_t fForce);
+
 static inline void delay_1s(void)
 {
 	unsigned long i = 0;
@@ -90,11 +93,20 @@ void handle_watchdog_expiry(void * td_ptr)
 	}
 	
 	printf("\r\n watchdog Expired, resetting MCU! \r\n");
+	
+	enable_msm_power(0, 0);		// turn off 5V0 power rail
+	g_on_flag = 0;
+	set_run_mode(0, 0);
+
+	GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+	_time_delay (3200);//DEVICE_CONTROL_TIME_OFF_TH);
+	GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+
 	for (i=0; i < 3; i++)
 	{
 		delay_1s();
 	}
-	shutdown_fpga_accel();
+	//shutdown_fpga_accel();
 
 #ifdef WATCHDOG_DEBUG
 	if (td_ptr == NULL)
@@ -107,7 +119,7 @@ void handle_watchdog_expiry(void * td_ptr)
 	}
 #endif
 	
-	enable_msm_power(0, 0);		// turn off 5V0 power rail
+//	enable_msm_power(0, 0);		// turn off 5V0 power rail
 	delay_1s();
 	
 	WDG_RESET_MCU();
@@ -137,10 +149,21 @@ void a8_watchdog_init(void)
 	_event_open   ("event.WATCHDOG", &a8_watchdog_event_g);
 	_lwtimer_create_periodic_queue(&lwtimer_period_a8_pet_g, WATCHDOG_A8_PET_TICKS, 0);
 	_lwtimer_create_periodic_queue(&lwtimer_period_a8_check_g, WATCHDOG_A8_CHECK_TICKS, 0);
+//	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_pet_g, &lwtimer_a8_pet_g, 0, \
+//		(LWTIMER_ISR_FPTR)pet_a8_watchdog_isr, 0);
+//	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_check_g, &lwtimer_a8_check_g, \
+//		0, (LWTIMER_ISR_FPTR)check_a8_watchdog_expiry_isr, 0);
+//	_event_clear(a8_watchdog_event_g, WATCHDOG_A8_USB_PINGING_BIT | WATCHDOG_A8_CPU_WATCHDOG_BIT);
+//	_time_get_elapsed_ticks(&watchdog_a8_g.prev_ticks);
+//	_time_get_elapsed_ticks(&watchdog_a8_g.curr_ticks);
+}
+void a8_watchdog_config(void)
+{
 	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_pet_g, &lwtimer_a8_pet_g, 0, \
 		(LWTIMER_ISR_FPTR)pet_a8_watchdog_isr, 0);
 	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_check_g, &lwtimer_a8_check_g, \
 		0, (LWTIMER_ISR_FPTR)check_a8_watchdog_expiry_isr, 0);
+	_event_clear(a8_watchdog_event_g, WATCHDOG_A8_USB_PINGING_BIT | WATCHDOG_A8_CPU_WATCHDOG_BIT);
 	_time_get_elapsed_ticks(&watchdog_a8_g.prev_ticks);
 	_time_get_elapsed_ticks(&watchdog_a8_g.curr_ticks);
 }
@@ -206,7 +229,23 @@ void check_a8_watchdog_expiry_isr(void)
 void cancel_a8_timers(void)
 {
 	_lwtimer_cancel_timer(&lwtimer_a8_check_g);
-	_lwtimer_cancel_period(&lwtimer_period_a8_check_g);
 	_lwtimer_cancel_timer(&lwtimer_a8_pet_g);
-	_lwtimer_cancel_period(&lwtimer_period_a8_pet_g);
+//	_lwtimer_cancel_period(&lwtimer_period_a8_check_g);
+//	_lwtimer_cancel_period(&lwtimer_period_a8_pet_g);
+}
+void a8_watchdog_set(int fOn)
+{
+	static int state = 0;
+	if( state != fOn)
+	{
+		if(fOn)
+		{
+			a8_watchdog_config();
+		}
+		else
+		{
+			cancel_a8_timers();
+		}
+	}
+	state = fOn;
 }
