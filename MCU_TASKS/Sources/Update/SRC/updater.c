@@ -253,7 +253,8 @@ void tasks_kill(void)
 		if(	0					!= g_TASK_ids[i] &&
 			UPDATER_TASK 		!= i &&
 			UPDATER_EXEC_TASK 	!= i &&
-			POWER_MGM_TASK		!= i )
+			POWER_MGM_TASK		!= i &&
+			MAIN_TASK			!= i	)//MAIN_TASK - to refresh WD
 		{
 			if(MQX_INVALID_TASK_ID == _task_destroy(g_TASK_ids[i]) )
 			{

@@ -386,6 +386,8 @@ void Device_update_state (uint32_t * time_diff)
 			else if( (MT5_out == MT5_present) && (1 == dev_present) && !fCritBattery)//or out or charging
 			{
 				enable_msm_power(0, 0);
+				//if(0 == GPIO_DRV_ReadPinInput (OTG_ID))///???
+				GPIO_DRV_SetPinOutput (CPU_OTG_ID);//temp!!!???
 			}
 			break;
 
