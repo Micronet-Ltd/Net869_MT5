@@ -134,7 +134,7 @@ void enable_msm_power(int enable, int fForce)
 		else
 		{
 			//if(0 == GPIO_DRV_ReadPinInput (OTG_ID))///???
-			//GPIO_DRV_SetPinOutput (CPU_OTG_ID);//temp!!! place???
+			GPIO_DRV_SetPinOutput (CPU_OTG_ID);//temp!!! place???
 
 			GPIO_DRV_ClearPinOutput(POWER_5V0_ENABLE);
 			configure_msm_gpio_input_pins(true);
