@@ -259,13 +259,13 @@ void MQX_ADC0_IRQHandler (void)
 	uint32_t sample;
 
 	ADC_WR_SC1_AIEN  (base, ADC16_CHN_GROUP_0, 0);
-	GPIO_DRV_SetPinOutput (POWER_DISCHARGE_ENABLE);
+//	GPIO_DRV_SetPinOutput (POWER_DISCHARGE_ENABLE);
 	sample = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE0, ADC16_CHN_GROUP_0);     // get  value for single ended channel
 	adc_input[kADC_POWER_IN].sample = sample;
 	ADC_convert_sample_to_value (&adc_input[kADC_POWER_IN]);
 	if (sample < adc_irq_th.min_value)
 	{
-		GPIO_DRV_SetPinOutput (POWER_DISCHARGE_ENABLE);
+//		GPIO_DRV_SetPinOutput (POWER_DISCHARGE_ENABLE);
 		// this IRQ routine is called when POWER INPUT voltage level is less than threshold and enables supercap discharge
 		ADC_WR_CV1(base, adc_irq_th.max_value);
 		ADC_WR_SC2_ACFGT (base, 1);

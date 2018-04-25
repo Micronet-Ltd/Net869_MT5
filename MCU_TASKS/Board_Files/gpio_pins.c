@@ -2,6 +2,7 @@
 #if 1
 #include "gpio_pins.h"
 #include <stdbool.h>
+#include <stdio.h>
 #include <mqx.h>
 
 const gpio_output_pin_user_config_t outputPins[] = {
@@ -77,10 +78,10 @@ const gpio_output_pin_user_config_t outputPins[] = {
 
 const gpio_input_pin_user_config_t inputPins[] = {
 	{.pinName = ACC_INT,			.config.isPullEnable = true,	.config.pullSelect = kPortPullUp,	.config.isPassiveFilterEnabled = false,	.config.interrupt = kPortIntDisabled },//kPortIntLogicZero },
-	{.pinName = VIB_SENS,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge },
-	{.pinName = FPGA_GPIO0,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled },
+	{.pinName = VIB_SENS,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled }, //kPortIntRisingEdge },
+	{.pinName = FPGA_GPIO0,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntRisingEdge },
 	{.pinName = FPGA_DONE,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
-	{.pinName = OTG_ID   ,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = true,  .config.interrupt = kPortIntDisabled  },
+	{.pinName = OTG_ID   ,			.config.isPullEnable = false/*true for OTG*/,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = true,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = UART_MCU2CPU_RX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = UART_MCU2CPU_TX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = CPU_INT,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
@@ -90,7 +91,7 @@ const gpio_input_pin_user_config_t inputPins[] = {
 	{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
 
 // EYAL_0523
-	{.pinName = CPU_RF_KILL,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled    },
+	{.pinName = CPU_RF_KILL,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled },
 
 	{ .pinName = GPIO_PINS_OUT_OF_RANGE	}
 };
@@ -99,10 +100,10 @@ void configure_msm_gpio_input_pins(bool interrupt_disable)
 {
 	gpio_input_pin_user_config_t input_pins_msm[] = {
 //always on for smart cradle		{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = true,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },//kPortIntRisingEdge  },
-		{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+//		{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
 		{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
-		{.pinName = CPU_INT,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
-		{.pinName = CPU_RF_KILL,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+//		{.pinName = CPU_INT,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+//		{.pinName = CPU_RF_KILL,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
 		{ .pinName = GPIO_PINS_OUT_OF_RANGE	}
 	};
 
@@ -120,17 +121,26 @@ void configure_msm_gpio_input_pins(bool interrupt_disable)
 
 /* Enables or disables the MSM/A8 power rail */
 /* IO pin interrupts from the MSM have to be disabled when the MSM power rail is turned off */
-void enable_msm_power(bool enable)
+void enable_msm_power(int enable, int fForce)
 {
-	if (enable)
+	static int last = -1;
+	if(last != enable || fForce)
 	{
-		GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
-		configure_msm_gpio_input_pins(false);
-	}
-	else
-	{
-		GPIO_DRV_ClearPinOutput(POWER_5V0_ENABLE);
-		configure_msm_gpio_input_pins(true);
+		if (enable)
+		{
+			GPIO_DRV_SetPinOutput(POWER_5V0_ENABLE);
+			configure_msm_gpio_input_pins(false);
+		}
+		else
+		{
+			//if(0 == GPIO_DRV_ReadPinInput (OTG_ID))///???
+			//GPIO_DRV_SetPinOutput (CPU_OTG_ID);//temp!!! place???
+
+			GPIO_DRV_ClearPinOutput(POWER_5V0_ENABLE);
+			configure_msm_gpio_input_pins(true);
+		}
+		printf("%s: %d\n", __func__, enable);
+		last = enable;
 	}
 }
 
@@ -232,6 +242,9 @@ void GPIO_Config( void ) {
 //
 //	GPIO_DRV_SetPinDir(CPU_WATCHDOG, kGpioDigitalOutput);
 //	GPIO_DRV_WritePinOutput(CPU_WATCHDOG, 0);
+
+//	GPIO_DRV_SetPinDir(OTG_ID, kGpioDigitalOutput);
+//	GPIO_DRV_WritePinOutput(OTG_ID, 0);
 ///////////
 	
 	GPIO_DRV_Init(inputPins, outputPins);
@@ -262,7 +275,10 @@ void GPIO_Config( void ) {
 	// Setup PWM for CPU_CRADLE_DET (using Flex timer module)
 	PORT_HAL_SetDriveStrengthMode(PWM_CPU_CRADLE_DET_PORT, PWM_CPU_CRADLE_DET_PIN,kPortLowDriveStrength);
 	PORT_HAL_SetMuxMode(PWM_CPU_CRADLE_DET_PORT, PWM_CPU_CRADLE_DET_PIN, kPortMuxAlt4);
-	PORT_HAL_SetSlewRateMode(PWM_CPU_CRADLE_DET_PORT, PWM_CPU_CRADLE_DET_PIN,kPortSlowSlewRate);
+	PORT_HAL_SetSlewRateMode(PWM_CPU_CRADLE_DET_PORT, PWM_CPU_CRADLE_DET_PIN, kPortSlowSlewRate);
+	PORT_HAL_SetOpenDrainCmd(PWM_CPU_CRADLE_DET_PORT, PWM_CPU_CRADLE_DET_PIN, false);
+	PORT_HAL_SetPullCmd(PWM_CPU_CRADLE_DET_PORT, PWM_CPU_CRADLE_DET_PIN, true);
+	PORT_HAL_SetPullMode(PWM_CPU_CRADLE_DET_PORT, PWM_CPU_CRADLE_DET_PIN, kPortPullDown);
 
 	PORT_HAL_SetDriveStrengthMode(PORTB, GPIO_EXTRACT_PIN(CPU_WATCHDOG), kPortHighDriveStrength);//
 	//PORT_HAL_SetDriveStrengthMode(PORTC, GPIO_EXTRACT_PIN(CPU_RF_KILL), kPortHighDriveStrength);//
