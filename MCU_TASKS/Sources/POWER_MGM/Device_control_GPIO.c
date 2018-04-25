@@ -338,20 +338,21 @@ void Device_update_state (uint32_t * time_diff)
 				break;
 			}
 
-//			if((turn_on_condition_g == 0) && (0 == dev_present) && (MT5_inside != MT5_present))
-			if( (0 == dev_present) && (MT5_inside != MT5_present) )//undefined intermediate state
-			{
-				break;///do nothing - wait for changes
-			}
+//			if( (0 == dev_present) && (MT5_inside != MT5_present) )//undefined intermediate state
+//			{
+//				break;///do nothing - wait for changes - maybe reset after timeout
+//			}
+			
 			if((turn_on_condition_g != 0) && (0 == start_count) && MT5_inside == MT5_present)
 			{				
 				printf("%s: short pulse on[%llu]: present %d [%d], condition %d\n", __func__, 
 					   ms_from_start(), dev_present, MT5_present, turn_on_condition_g);
 
 				Pulse_Device(40);//short pulse for suspended device
-				wait_on_timeout = ms_from_start() + 5000;//wait_off_timeout = ms_from_start() + 4000;
+				wait_on_timeout = ms_from_start() + 6500;
 //				last_wiggle_condition = (turn_on_condition_g & POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER);//store
 				start_count = 1;
+                enable_msm_power(0, 0);//temp!!!???
 				break;
 			}
 			
@@ -360,16 +361,16 @@ void Device_update_state (uint32_t * time_diff)
 
 			start_count = 0;
 			
-			if( fCritBattery || ((turn_on_condition_g != 0) && (0 < MT5_present)) || (MT5_active_on == MT5_present) )
+			if( fCritBattery || ((turn_on_condition_g != 0) && (MT5_out != MT5_present)) || (MT5_active_on == MT5_present) )
 			{			
 				if( (fCritBattery && (MT5_out == MT5_present) && (1 == dev_present)) ||
-				   ((MT5_inside == MT5_present) && (0 == dev_present) && (2000 < (now_time - g_last_rf_int_time)) ) )
+				   ((MT5_inside == MT5_present) && (0 == dev_present) && ((now_time - g_last_rf_int_time) > 4000) ) )
 				{
 					printf("%s: pulse on - delta rf %llu [%llu]\n", __func__, now_time - g_last_rf_int_time, ms_from_start());
 					Pulse_Device(DEVICE_CONTROL_TIME_ON_TH);
 				}
 				else if((0 == turn_on_condition_g) && 
-						((0 == dev_present) || (5000 > (now_time - g_last_state_time))) )
+						((0 == dev_present) || ((now_time - g_last_state_time) < 4000)) )//suspend - wait to condition
 				{
 					//printf("%s: do nothing - delta state %llu [%llu]\n", __func__, now_time - g_last_state_time, ms_from_start());
 					break;
@@ -378,16 +379,11 @@ void Device_update_state (uint32_t * time_diff)
 				led_blink_cnt_g = 0;
 //				Wiggle_sensor_stop ();
 				printed_temp_error = FALSE;
-				device_state_g = DEVICE_STATE_TURNING_ON;
-				
-				//if(0 == GPIO_DRV_ReadPinInput (OTG_ID))///???
-				GPIO_DRV_SetPinOutput (CPU_OTG_ID);//temp!!!???
+				device_state_g = DEVICE_STATE_TURNING_ON;				
 			}
 			else if( (MT5_out == MT5_present) && (1 == dev_present) && !fCritBattery)//or out or charging
 			{
 				enable_msm_power(0, 0);
-				//if(0 == GPIO_DRV_ReadPinInput (OTG_ID))///???
-				GPIO_DRV_SetPinOutput (CPU_OTG_ID);//temp!!!???
 			}
 			break;
 

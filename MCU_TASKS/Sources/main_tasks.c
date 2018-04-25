@@ -342,7 +342,7 @@ void Main_task( uint32_t initial_data ) {
     {
 #if (!_DEBUG)
 		WDOG_DRV_Refresh();
-//temp!!!        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
 #endif
         /* We are waiting until a wiggle event happens before starting everything up
            The main reason for this is to stay below 5mA at 12V */
@@ -353,7 +353,7 @@ void Main_task( uint32_t initial_data ) {
             {
               _event_clear(power_up_event_g, 1);
 #if (!_DEBUG)
- //temp!!!             _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+             _watchdog_start(WATCHDOG_MCU_MAX_TIME);
 #endif
               break;
             }
@@ -412,7 +412,7 @@ void Main_task( uint32_t initial_data ) {
 //	}
 #if (!_DEBUG)
         WDOG_DRV_Refresh();
-//        _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+        _watchdog_start(WATCHDOG_MCU_MAX_TIME);
 #endif
 	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
 	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
@@ -507,7 +507,7 @@ void Main_task( uint32_t initial_data ) {
 		WDOG_DRV_Refresh();
 	
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
-//        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
 #endif
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
 		// MCU starts with OTG ID disabled for monitoring

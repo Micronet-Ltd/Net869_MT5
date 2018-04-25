@@ -649,7 +649,8 @@ static void MT5_state_monitor(void)
 		last_rf = rf;
 		g_last_rf_int_time = now;
 	}
-	if((now - big_time) > 1700)
+	
+	if( ((now - big_time) > 1700) )// || ((big_time - less_time) > 3000 ) )
 	{
 		count_act = 0;
 		if(!count_act || (count_act && ((now - big_time) > 3000)) )

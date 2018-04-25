@@ -100,6 +100,15 @@ void handle_watchdog_expiry(void * td_ptr)
 	}
 	
 	printf("\r\n watchdog Expired, resetting MCU! \r\n");
+#if 0 //temp!!!
+	enable_msm_power(0, 0);		// turn off 5V0 power rail
+	g_on_flag = 0;
+	set_run_mode(0, 0);
+
+	GPIO_DRV_ClearPinOutput(CPU_ON_OFF);
+	_time_delay (3200);//DEVICE_CONTROL_TIME_OFF_TH);
+	GPIO_DRV_SetPinOutput(CPU_ON_OFF);
+#endif
 	//shutdown_fpga_accel();
 
 #ifdef WATCHDOG_DEBUG
