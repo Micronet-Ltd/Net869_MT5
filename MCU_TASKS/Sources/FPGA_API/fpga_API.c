@@ -421,7 +421,7 @@ bool FPGA_write_J1708_packet (uint8_t *buffer, uint8_t length)
 		printf ("\nFPGA: ERROR: Message was not sent to FPGA (UART error code %d)\n", uart_status);
 
 #ifdef J1708_DEBUG
-	printf("%s: %x, %x .. %x, %x, len = %d \n", __func__, buffer[0], buffer[1], buffer[2], buffer[3], length);
+	printf("%s: %x, %x .. %x, %x, len = %d \n", __func__, buffer[0], buffer[1], buffer[length - 2], buffer[length - 1], length);
 #endif
 	return (uart_status == kStatus_UART_Success);
 }
@@ -459,7 +459,7 @@ bool FPGA_read_J1708_packet (uint8_t *buffer, uint8_t length)
 	static uint16_t count = 0;
 	count++;
 	if (count%100==0){
-		printf("%s: %x, %x .. %x, %x, len = %d \n", __func__, buffer[0], buffer[1], buffer[2], buffer[3], size);
+		printf("%s: %x, %x .. %x, %x, len = %d \n", __func__, buffer[0], buffer[1], buffer[length - 2], buffer[length - 1], length);
 		count = 0;
 	}
 #endif
