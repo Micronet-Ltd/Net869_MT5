@@ -8,6 +8,8 @@
 #include <mqx.h>
 #include <bsp.h>
 #include <mutex.h>
+#include <event.h>
+
 #include "rtc.h"
 
 #include "fsl_i2c_master_driver.h"
@@ -44,24 +46,13 @@
 
 #define RTC_STRING_SIZE 				23
 
-static bool HAS_ALARM1_BIT_BEEN_SET = FALSE; //will set to TRUE if it does
-
-/**********   The next set of MACROS returns the decimal value of the respective time period ********/
-#define GET_CENTURY(uint8_t *dt_bcd) (dt_bcd[3]>>6); //note that the third register byte in the RTC is used both for hours and centuries
-#define GET_YEAR(uint8_t *dt_bcd)  (((dt_bcd[7]>>4) * 10) + (dt_bcd[7]&0x0F))
-#define GET_MONTH(uint8_t *dt_bcd) ((((dt_bcd[6]>>4)&0x1) * 10) + (dt_bcd[6]&0x0F))
-#define GET_DAY_OF_MONTH(uint8_t *dt_bcd) ((((dt_bcd[5]>>4)&0x3) * 10) + (dt_bcd[5]&0x0F))
-#define GET_DAY_OF_WEEK(uint8_t *dt_bcd)((dt_bcd[4]&0x7))
-#define GET_HOURS(uint8_t *dt_bcd) ((((dt_bcd[3]>>4)&0x3) * 10) + (dt_bcd[3]&0x0F))
-#define GET_MINUTES(uint8_t *dt_bcd) ((((dt_bcd[2]>>4)&0x7) * 10) + (dt_bcd[2]&0x0F))
-#define GET_SECONDS(uint8_t *dt_bcd) ((((dt_bcd[1]>>4)&0x7) * 10) + (dt_bcd[1]&0x0F))
-#define GET_HUNDRETH_SEC(uint8_t *dt_bcd) (((dt_bcd[0]>>4)* 10) + (dt_bcd[0]&0x0F))
-/***********************************************************************************************************/
+#define ALARM1_EVENT_BIT                1
 
 //#define RTC_DEBUG						1
 
 extern MUTEX_STRUCT g_i2c0_mutex;
 
+void *timer_event_g;
 static i2c_device_t rtc_device_g = {.address = RTC_DEVICE_ADDRESS,    .baudRate_kbps = RTC_I2C_BAUD_RATE};
 
 bool rtc_oscillator_kick_start(void);
@@ -133,28 +124,19 @@ bool rtc_check_flags(uint8_t *flags_to_return)
 		return FALSE;
 	}
 
-    /*need to lock with mutex in case two threads will check the global variable at once as it can 
-      create some trouble with race condition;*/
-
-    /* Get i2c0 mutex */
-	if ((ret =_mutex_lock(&g_i2c0_mutex)) != MQX_OK)
-	{
-		printf("rtc_check_flags: i2c mutex lock failed, ret %d \n", ret);
-		_task_block();
-	}
-
-	HAS_ALARM1_BIT_BEEN_SET = !(flag_cmd_buff&RTC_ALRM1_FLAG_OFFSET) || HAS_ALARM1_BIT_BEEN_SET;
-
-    _mutex_unlock(&g_i2c0_mutex);
-
+	if(flags_to_return&RTC_ALRM1_FLAG_OFFSET)
+    {
+        _event_set(timer_event_g, ALARM1_EVENT_BIT);
+    }
+ 
 	return TRUE;
 }
 
 /*rtc_set_alarm1_once: det alarm to activate in the given date given in BCD*/
 bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 {
-	uint8_t alarm_data_buff[RTC_NUM_OF_ALARM_BYTES] = {0};
-	uint8_t alarm_cmd_buff = RTC_ALRM1_MONTH_ADDR; 
+	uint8_t alarm_data_buff[RTC_NUM_OF_ALARM_BYTES_BCD] = {0};
+	uint8_t alarm_cmd_buff = RTC_ALRM1_FLAG_ADDR; 
 
 	uint8_t flag_data_buff;
 
@@ -178,7 +160,7 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 		printf("rtc_set_alarm1_once: ERROR: alarm flag hasn't been nullified automatically after reading it once \n")//as it should ,at least by what is written in the manual...
 		to_return =  FALSE;
 	}
-	for(i = 0; i < RTC_NUM_OF_ALARM_BYTES; ++i)
+	for(i = 0; i < RTC_NUM_OF_ALARM_BYTES_BCD; ++i)
 	{
 		if(dt_bcd[i]&0xF0 <= RTC_10_DIGIT_LIMITS[i] && //checks wheter the 10 digits in the BCD representation of dt_bcd is legal
 			dt_bcd[i]&0x0F <= 9 && //checks wheter the 1 digit in the BCD  representation of dt_bcd is legal
@@ -194,7 +176,7 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 		}
 	}
 
-	if(!rtc_send_data(&alarm_cmd_buff,1 ,&alarm_data_buff, RTC_NUM_OF_ALARM_BYTES))
+	if(!rtc_send_data(&alarm_cmd_buff,1 ,&alarm_data_buff, RTC_NUM_OF_ALARM_BYTES_BCD))
 	{
 		printf("rtc_set_alarm1_once: ERROR: could not update the bytes related to alarm1\n")
 		return  FALSE;
@@ -206,47 +188,71 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 //check wheter the alarm was triggered
 bool rtc_check_if_alarm1_is_active()
 {
+    uint32_t timer_bits_s = 0;
+
 	uint8_t flag_data_buff;
-	bool to_return;
+	bool to_return = FALSE;
 
-	if(!check_flags(&flag_data_buff))//check flags sets the alarm bit variable: HAS_ALARM1_BIT_BEEN_SET
-	{
-		printf("rtc_is_alarm1_bit_set: ERROR: couldn't read the flags\n");
-		to_return =  FALSE;
-	}
+	//has the timer event been triggered yet?
+    if(MQX_OK != _event_get_value(timer_event_g,&timer_bits_s) 
+    {
+        printf("rtc_is_alarm1_bit_set: ERROR: timer event doesn't exist\n");
+    }
 
-	if(TRUE == HAS_ALARM1_BIT_BEEN_SET)
-	{
-		to_return = TRUE;
-		HAS_ALARM1_BIT_BEEN_SET = FALSE;
-	}
+	//if the timer event hasn't been triggered yet check the flags;
+    if(!(timer_bits_s&ALARM1_EVENT_BIT)) 
+    {
+        if(true != rtc_check_flags(&flag_data_buff))
+		{
+			 printf("rtc_is_alarm1_bit_set: ERROR: couldn't check the flags registers\n");
+		}
 
+		//has the timer event been triggered yet?
+		if(MQX_OK != _event_get_value(timer_event_g ,&timer_bits_s) 
+    	{
+    	    printf("rtc_is_alarm1_bit_set: ERROR: timer event doesn't exist\n");
+   		}
+    }
 
-	if(!rtc_receive_data(&flag_cmd_buff,1 &,flag_data_buff, 1) && 0 != (flag_data_buff&RTC_ALRM1_FLAG_OFFSET) )//check if the last read nullified the bit
-	{
-		printf("rtc_is_alarm1_bit_set: ERROR: alarm flag hasn't been nullified automatically after reading it once \n")//as it should ,at least by what is written in the manual...
-		to_return =  FALSE;
-	}
+    /*if an event has been measured clear the event loop ,check wheter the alarm bit was nullified and retuern TRUE*/
+    if(timer_bits_s & ALARM1_EVENT_BIT)
+    {
+        to_return = TRUE;
+        _event_clear(timer_event_g,ALARM1_EVENT_BIT);
+         
+        //check wheter the alarm bit was nullified
+        if(!rtc_receive_data(&flag_cmd_buff,1 ,&flag_data_buff, 1) && 0 != (flag_data_buff&RTC_ALRM1_FLAG_OFFSET) )
+        {
+            printf("rtc_is_alarm1_bit_set: ERROR:the alarm flag wasn't nullified automatically after reading the flags \n");
 
+            //nullify it manually just in case it wasn't nullified before and the last read had failed
+            flag_data_buff &= (~(uint8_t)RTC_ALRM1_FLAG_OFFSET));
+            if(!rtc_send_data(&flag_cmd_buff,1, &flag_data_buff,1))
+            {
+                printf("rtc_is_alarm1_bit_set: ERROR: couldn't nullify the alarm flag manually \n");
+            }
+        }
+    }
+	
 	return to_return;
 }
 
+/*returns the time set of the current registered alarm*/
 void rtc_get_alarm1_time(uint8_t *dt_bcd)
 {
     uint8_t rtc_alarm1_addr = RTC_ALRM1_MONTH_ADDR;
 
-    if(!rtc_receive_data(&rtc_alarm1_addr, 1, dt_bcd, RTC_NUM_OF_ALARM_BYTES))
+    if(!rtc_receive_data(&rtc_alarm1_addr, 1, dt_bcd, RTC_NUM_OF_ALARM_BYTES_BCD))
     {
         printf("fetching alarm time failed \n");
     }
 
-    dt_bcd[0] &= 0x1F;
-    dt_bcd[1] &= 0x3F;
-    dt_bcd[2] &= 0x7F;
-    dt_bcd[3] &= 0x7F;
+    dt_bcd[0] &= 0x1F;//month 
+    dt_bcd[1] &= 0x3F;//day
+    dt_bcd[2] &= 0x3F;//hour
+    dt_bcd[3] &= 0x7F;//minutes
+	dt_bcd[4] &= 0x7F;//seconds
 }
-
-
 
 /* returns TRUE if the oscillator is running fine, also clears oscil. flag if set */
 bool rtc_check_oscillator(void)
@@ -322,19 +328,22 @@ bool rtc_check_battery_good(void)
 	return TRUE;
 }
 
-/*returns TRUE if the alarm1 AF1 bit is working correctly by sending the time 0*/
-bool rtc_check_alarm_working(void)
+/*returns TRUE if the alarm1 AF1 bit is working correctly by sending a time that already passed and checking if the bit 
+  is being set*/
+bool rtc_check_alarm1_working(void)
 {	
 	uint8_t cmd_buff = RTC_FLAGS_ADDR;
 	uint8_t current_dt_bcd[0];
 	uint8_t i;
 
+     _mqx_uint event_result;
+
 	rtc_get_time(&current_dt_bcd);
 
-	try to set current_dt_bcd to a time that have already passed and then check the alarm bit
+	/*try to set current_dt_bcd to a time that have already passed and then check the alarm bit
 	   the fastest way to get time that has already passed is to nullify the first of the seconds/minutes etc...
 	    that is not zero in our currect time for example : if  the hour is 17:20:35 then 17:20:00 has passed already
-		just need to take note that miliseconds aren't included so it should start in 1 and that
+		just need to take note that miliseconds aren't included so it should start in 1 and that*/
 	for(i = 1; i < RTC_BCD_SIZE; ++i)
 	{
 		if(current_dt_bcd[i] > 0)
@@ -346,23 +355,34 @@ bool rtc_check_alarm_working(void)
 
 	if(RTC_BCD_SIZE == i)
 	{
-		printf("rtc_check_alarm_working: FAILED to retreive coerrect time, retreived arrays of zeros instead \n");
+		printf("rtc_check_alarm1_working: FAILED to retreive the correct time, retreived an array of zeros instead \n");
 		return FALSE;
 	}
 
 	if(FALSE == rtc_set_alarm1_once(&current_dt_bcd))
 	{
-		printf("rtc_check_alarm_working : FAILED to set ALARM to time zero");
+		printf("rtc_check_alarm1_working: FAILED to set ALARM to time zero");
 		return FALSE;
 	}
 
 	if(!rtc_receive_data(&flag_cmd_buff,1 &,flag_data_buff, 1) && 1 != (flag_data_buff&RTC_ALRM1_FLAG_OFFSET) )
 	{
-		printf("rtc_check_alarm_working : FAILED to measure alatm after setting it to time zero");
+		printf("rtc_check_alarm1_working: FAILED to measure alarm bit after setting it to time zero");
 		return FALSE;
 	}
+   
+   /*if timer works correctly should create an event handler for the case when someone will measure the flags and nullify the AF1 flag 
+     before the routine alarm flag check will be activated*/
+    event_result = _event_create("event.TimerEvent");
+	if(MQX_OK != event_result){
+		printf("rtc_check_alarm_working: Could not create Timer event \n");
+	}
 
-	IS_ALARM_FUNCTION_WORKING_PROPERLY = true;
+    event_result = _event_open("event.TimerEvent", &timer_event_g);
+	if(MQX_OK != event_result){
+		printf("rtc_check_alarm_working: Could not open Timer event \n");
+	}
+
 	return TRUE;
 }
 
@@ -410,7 +430,7 @@ void rtc_init(void)
 	{
 		printf("rtc_init: battery low bit set \n");
 	}
-	if(!rtc_check_alarm_working())
+	if(!rtc_check_alarm1_working())
 	{
 		printf("alarm bit doesn't work correctly \n");
 	}
@@ -427,15 +447,15 @@ void rtc_init(void)
  */
 void rtc_convert_bcd_to_string(uint8_t * dt_bcd, char * dt_str, bool print_time)
 {
-	uint8_t hundreth_sec_int = GET_HUNDRETH_SEC(dt_bcd);
-	uint8_t seconds = GET_SECONDS(dt_bcd);
-	uint8_t minutes = GET_MINUTES(dt_bcd);
-	uint8_t hours = GET_HOURS(dt_bcd);
-	uint8_t century = GET_CENTURY(dt_bcd);
+	uint8_t hundreth_sec_int = ((dt_bcd[0]>>4)* 10) + (dt_bcd[0]&0x0F);
+	uint8_t seconds = (((dt_bcd[1]>>4)&0x7) * 10) + (dt_bcd[1]&0x0F);
+	uint8_t minutes = (((dt_bcd[2]>>4)&0x7) * 10) + (dt_bcd[2]&0x0F);
+	uint8_t hours = (((dt_bcd[3]>>4)&0x3) * 10) + (dt_bcd[3]&0x0F);
+	uint8_t century = dt_bcd[3]>>6;
 	//uint8_t day_of_week = dt[4]&0x7;
-	uint8_t day_of_month = GET_DAY_OF_MONTH(dt_bcd);
-	uint8_t month = GET_MONTH(dt_bcd);
-	uint16_t year = GET_YEAR(dt_bcd);
+	uint8_t day_of_month = (((dt_bcd[5]>>4)&0x3) * 10) + (dt_bcd[5]&0x0F);
+	uint8_t month = (((dt_bcd[6]>>4)&0x1) * 10) + (dt_bcd[6]&0x0F);
+	uint16_t year = ((dt_bcd[7]>>4) * 10) + (dt_bcd[7]&0x0F);
 
 	year = 2000 + (century * 100) + year;
 
