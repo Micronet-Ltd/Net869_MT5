@@ -436,8 +436,6 @@ void Main_task( uint32_t initial_data ) {
 	printf("\nMain Task: Loop \n");
 	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
 	otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
-	
-	GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
 
     while ( 1 ) 
     {
