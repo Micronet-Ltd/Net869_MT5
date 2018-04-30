@@ -36,6 +36,7 @@ static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdat
 static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
 static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pbatt_ignition_voltage);
 static void set_gpi_update_all_values(uint8_t * data, uint16_t data_size, uint8_t * pgpi_values);
+static void set_rtc_alarm1_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
 static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
 static void set_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
 static void get_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
@@ -48,6 +49,7 @@ static void get_wiggle_sensor_count_dbg(uint8_t * data, uint16_t data_size, uint
 static void set_accel_standby_active_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_accel_active);
 static void get_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
 static void set_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
+
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -123,6 +125,13 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_SET_ACCEL_REGISTER_DBG] = {set_accel_register_dbg,
 							   SET_COMMAND,
 							   0},
+    [COMM_SET_RTC_ALARM1_TIME] = {set_rtc_alarm1_time,
+								SET_COMMAND,
+							    0},
+    [COMM_GET_RTC_ALARM1_TIME] = {get_rtc_alarm1_time,
+                                SET_COMMAND,
+                                RTC_NUM_OF_ALARM_BYTES},
+
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -262,6 +271,18 @@ static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdat
 {
 	rtc_set_time(&data[0]);
 }
+
+static void set_rtc_alarm1_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
+{
+	rtc_set_time_for_alarm1(&data[0]);
+}
+
+static void get_rtc_alarm1_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
+{
+	rtc_get_alarm1_time(pdate_time);
+}
+
+
 
 static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg)
 {

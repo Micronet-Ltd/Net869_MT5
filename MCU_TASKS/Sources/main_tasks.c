@@ -200,6 +200,11 @@ void Main_task( uint32_t initial_data ) {
 	uint64_t otg_check_time;
 	uint32_t pet_count = 0;
 
+	volatile uint32_t alarm_counter = 0;
+	bool is_there_alarm1_flag = FALSE;
+	bool is_alarm1_triggered = FALSE;
+	#define NUMBER_OF_TICKS_BETWEEN_ALARM_POLL = 60000000;	
+
 	watchdog_mcu_init();
 	printf("\n%s: Start\n", __func__);
 #if 0
@@ -467,6 +472,22 @@ void Main_task( uint32_t initial_data ) {
 //		FPGA_write_led_status(LED_MIDDLE, 0, 0, 0, 0); /*Blue LED */
 	}
 #endif
+
+		if(TRUE == is_there_alarm1_flag)
+		{
+			++alarm_counter;
+			if(NUMBER_OF_TICKS_BETWEEN_ALARM_POLL == alarm_counter)
+			{
+				alarm_counter = 0;
+				is_alarm1_triggered = rtc_check_time_for_alarm1();
+
+				if(TRUE == is_alarm1_triggered)
+				{
+					is_there_alarm1_flag = FALSE;
+				}
+			}
+		}
+
 	}
 
 	printf("\nMain Task: End \n");
