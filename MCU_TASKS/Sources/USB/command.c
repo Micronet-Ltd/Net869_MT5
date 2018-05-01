@@ -130,7 +130,7 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 							    0},
     [COMM_GET_RTC_ALARM1_TIME] = {get_rtc_alarm1_time,
                                 SET_COMMAND,
-                                RTC_NUM_OF_ALARM_BYTES},
+                                RTC_NUM_OF_ALARM_BYTES_BCD},
 
 };
 
