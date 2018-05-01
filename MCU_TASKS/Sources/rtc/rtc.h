@@ -11,6 +11,10 @@
 #define RTC_BCD_SIZE				      	8
 #define RTC_NUM_OF_ALARM_BYTES_BCD			5
 
+void *alarm_event_g;
+#define ALARM1_SET_BIT                      0X2//set this bit in alarm_event_g to activate the alarm unset it to deactivate it
+  
+
 void rtc_init(void);
 void rtc_get_time(uint8_t * dt_bcd);
 void rtc_set_time(uint8_t * dt_bcd);
@@ -30,7 +34,7 @@ bool rtc_check_flags(uint8_t *flags_to_return);
 bool rtc_set_alarm1_once(uint8_t *dt_bcd);
 
 /*returns TRUE if the time set in rtc_set_time_for_alarm1, passed, FALSE otherwise.*/
-bool rtc_check_if_alarm1_is_active();
+bool rtc_check_if_alarm1_has_been_triggered();
 
 /*returns the time of the current registered alarm*/
 void rtc_get_alarm1_time(uint8_t *dt_bcd);

@@ -201,8 +201,7 @@ void Main_task( uint32_t initial_data ) {
 	uint32_t pet_count = 0;
 
 	volatile uint32_t alarm_counter = 0;
-	bool is_there_alarm1_flag = FALSE;
-	bool is_alarm1_triggered = FALSE;
+	uint32_t is_there_alarm1_flag = 0;
 	#define NUMBER_OF_TICKS_BETWEEN_ALARM_POLL = 60000000;	
 
 	watchdog_mcu_init();
@@ -472,21 +471,23 @@ void Main_task( uint32_t initial_data ) {
 //		FPGA_write_led_status(LED_MIDDLE, 0, 0, 0, 0); /*Blue LED */
 	}
 #endif
-
-		if(TRUE == is_there_alarm1_flag)
-		{
+    
+	
 			++alarm_counter;
 			if(NUMBER_OF_TICKS_BETWEEN_ALARM_POLL == alarm_counter)
 			{
-				alarm_counter = 0;
-				is_alarm1_triggered = rtc_check_time_for_alarm1();
+                //Check if there is an alarm active. I didn't add a conditional failure printf so it won't spam the log
+                _event_get_value(alarm_event_g,&ALARM1_SET_BIT);
+                alarm_counter = 0;
 
-				if(TRUE == is_alarm1_triggered)
-				{
-					is_there_alarm1_flag = FALSE;
-				}
-			}
-		}
+                if(is_there_alarm1_flag)
+                {
+    				is_alarm1_triggered = rtc_check_if_alarm1_has_been_triggered();
+                    //not sure if there should be some check here. I haven't found any flag so I turned it own anyway
+                    enable_msm_power(TRUE);
+                    is_there_alarm1_flag = 0;
+                }
+            }
 
 	}
 
