@@ -392,9 +392,9 @@ void Device_update_state (uint32_t * time_diff)
 			if (!Device_control_GPIO_status())
 			{
 				set_run_mode(1, 0);
+				_event_set(power_up_event_g, 1);//for the 1st on only
 				device_state_g = DEVICE_STATE_ON;
 				printf ("\nPOWER_MGM: DEVICE RUNNING %llu ms\n", ms_from_start());
-				_event_set(power_up_event_g, 1);//for the 1st on only
 				wait_on_timeout = ms_from_start() + 21000;
 				fCritBattery = 0;
 			}

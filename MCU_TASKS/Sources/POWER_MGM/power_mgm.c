@@ -652,9 +652,9 @@ static void MT5_state_monitor(void)
 	
 	if( ((now - big_time) > 1700) )// || ((big_time - less_time) > 3000 ) )
 	{
-		count_act = 0;
 		if(!count_act || (count_act && ((now - big_time) > 3000)) )
 		{
+			count_act = 0;
 			if(0 == current_wd_signal)
 			{
 				g_MT5_present = MT5_inside;
@@ -680,7 +680,7 @@ static void MT5_state_monitor(void)
 	//else
 	if((last_btime != big_time) && (0 != less_time) && ((now - big_time) < 3000) && (last_wd_signal != current_wd_signal))
 	{
-		if( (((big_time - less_time) > 1200) || ((big_time - less_time) < 800)) && (MT5_active_on != g_MT5_present) )   
+		if( (((big_time - less_time) > 1250) || ((big_time - less_time) < 800)) && (MT5_active_on != g_MT5_present) )   
 		{
 			//g_MT5_present = MT5_unknown;
 		}
