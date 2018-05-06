@@ -51,7 +51,7 @@
 
 //#define RTC_DEBUG						1
 
-#define ALARM1_EVENT_BIT                1
+#define ALARM1_EVENT_BIT                0x1
 
 extern MUTEX_STRUCT g_i2c0_mutex;
 
@@ -115,25 +115,25 @@ bool rtc_send_data(uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data
   Here is an implementation of a safe flag reading function that signals to the program if the alarm flag
   was set by updating the event bit at alarm_event_g;
 */
-bool rtc_check_flags(uint8_t *flags_to_return)
+bool rtc_check_flags_in_low_pow_mode(uint8_t *flags_to_return)
 {
 	uint8_t flag_cmd_buff = RTC_FLAGS_ADDR;
 	uint32_t alarm_bits_s = 0;
 
-	if(!rtc_receive_data(&flag_cmd_buff,1 ,&flags_to_return, 1))
+	if(!rtc_receive_data(&flag_cmd_buff,1 ,flags_to_return, 1))
 	{
 		printf("rtc_check_flags: ERROR: couldn't read the flagS\n");
 		return FALSE;
 	}
 
-	if(flags_to_return&ALARM1_SET_BIT)
+	if((*flags_to_return)&RTC_ALRM1_FLAG_OFFSET)
 	{
-		if(MQX_OK != _event_get_value(alarm_event_g ,&alarm_bits_s) 
+		if(MQX_OK != _event_get_value(alarm_event_g ,&alarm_bits_s)) 
 		{
 			printf("rtc_is_alarm1_bit_set: ERROR: timer event doesn't exist\n");
 		}
 
-		if(alarm_bits_s&ALARM1_SET_BIT)
+		if(alarm_bits_s&ALARM1_ACTIVATE_BIT)
 		{
 			_event_set(alarm_event_g, ALARM1_EVENT_BIT);
 		}
@@ -142,7 +142,7 @@ bool rtc_check_flags(uint8_t *flags_to_return)
 	return TRUE;
 }
 
-/*rtc_set_alarm1_once: det alarm to activate in the given date given in BCD*/
+/*rtc_set_alarm1_once: set alarm to activate in the given date given in BCD*/
 bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 {
 	uint8_t alarm_data_buff[RTC_NUM_OF_ALARM_BYTES_BCD] = {0};
@@ -150,24 +150,21 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 
 	uint8_t flag_data_buff;
 
-	const unit8_t RTC_10_DIGIT_LIMITS 	= {0x1 /*10 months*/ ,0x11/*30 days*/ ,0x10/*20 hours*/ ,0x5/*50 minutes*/,0x5/*50 seconds*/};
-	const unit8_t RTC_TIME_RANGE_LIMITS = {12 /*months*/     ,31/*days*/      ,24/*hours*/      ,59/*minutes*/    ,59/*seconds*/};
+	const uint8_t RTC_10_DIGIT_LIMITS[RTC_NUM_OF_ALARM_BYTES_BCD] 	= {0x1 /*10 months*/ ,0x11/*30 days*/ ,0x10/*20 hours*/ ,0x5/*50 minutes*/,0x5/*50 seconds*/};
+	const uint8_t RTC_TIME_RANGE_LIMITS[RTC_NUM_OF_ALARM_BYTES_BCD] = {12 /*months*/     ,31/*days*/      ,24/*hours*/      ,59/*minutes*/    ,59/*seconds*/};
 
 	uint8_t  i;
-	bool to_return;
 
 	uint32_t alarm_bits_s = 0;
 
-	//nullify the alarm bits from previous usage
-	if(MQX_OK != _event_get_value(alarm_event_g ,&alarm_bits_s) 
+	if(MQX_OK != _event_get_value(alarm_event_g ,&alarm_bits_s)) 
 	{
 		printf("rtc_is_alarm1_bit_set: ERROR: timer event doesn't exist\n");
 	}
-	if(alarm_bits_s&ALARM1_SET_BIT)
-	{
-		_event_clear(alarm_event_g, ALARM1_EVENT_BIT);
-	}
+    //nullify the alarm event bit from previous usage
+	_event_clear(alarm_event_g, ALARM1_EVENT_BIT);
 
+    //check that the given date is legal
 	for(i = 0; i < RTC_NUM_OF_ALARM_BYTES_BCD; ++i)
 	{
 		if(dt_bcd[i]&0xF0 <= RTC_10_DIGIT_LIMITS[i] && //checks wheter the 10 digits in the BCD representation of dt_bcd is legal
@@ -175,24 +172,24 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 			((dt_bcd[i]&0xF0>>4)*10 + dt_bcd[i]&0x0F) <= RTC_TIME_RANGE_LIMITS[i]//checks wheter the whole BCD date value is legal: If there are more than 12 months, more than 24 hours etc...
 		  )
 		{
-			alarm_data_buf[i] |= dt_bcd[i];
+			alarm_data_buff[i] |= dt_bcd[i];
 		}
 		else
 		{
-			printf("rtc_set_alarm1_once: ERROR: the given date BCD format is illegal \n")
+			printf;
 			return  FALSE;
 		}
 	}
 
 	/*
-	    Before setting the timer address It seems like a good idea to
-		nullify the AF flag as well by reading it with the other flags
+	    Before setting the timer address, it seems like a good idea to
+		nullify the AF flag on the RTC by reading it with the other flags
 	*/
-	cmd_buff = RTC_ALRM1_FLAG_ADDR; 
+	cmd_buff = RTC_FLAGS_ADDR; 
 
 	if(!rtc_receive_data(&cmd_buff,1 ,&flag_data_buff, 1))
 	{
-		printf("rtc_set_alarm1_once: ERROR: could not read and nuliffy the bytes related to alarm1\n")
+		printf("rtc_set_alarm1_once: ERROR: could not read and nuliffy the bytes related to alarm1\n");
 		return FALSE;
 	}
 	/*	if(!rtc_receive_data(&cmd_buff,1 &,flag_data_buff, 1) && 0 != (flag_data_buff&RTC_ALRM1_FLAG_OFFSET) )//check if this read nullified the bit
@@ -203,16 +200,20 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 
 	cmd_buff = RTC_ALRM1_MONTH_ADDR; 
 
-	if(!rtc_send_data(&cmd_buff,1 ,&alarm_data_buff, RTC_NUM_OF_ALARM_BYTES_BCD))
+	if(!rtc_send_data(&cmd_buff,1 ,alarm_data_buff, RTC_NUM_OF_ALARM_BYTES_BCD))
 	{
-		printf("rtc_set_alarm1_once: ERROR: could not update the bytes related to alarm1\n")
+		printf("rtc_set_alarm1_once: ERROR: could not update the bytes related to alarm1\n");
 		return  FALSE;
 	}
+
+     //Activate the polling for the alarm 
+    _event_set(alarm_event_g, ALARM1_ACTIVATE_BIT);  
+    
 
 	return TRUE;
 }
 
-//check wheter the alarm was triggered ,will not work if the ALARM1_SET_BIT is not activated
+//check wheter the alarm was triggered and if it does unset the alarm
 bool rtc_check_if_alarm1_has_been_triggered()
 {
     uint32_t alarm_bits_s = 0;
@@ -220,16 +221,16 @@ bool rtc_check_if_alarm1_has_been_triggered()
 	uint8_t flag_data_buff;
 	bool has_alarm1_been_triggered_yet = FALSE;
 
-    if(MQX_OK != _event_get_value(alarm_event_g, &alarm_bits_s) 
+    if(MQX_OK != _event_get_value(alarm_event_g, &alarm_bits_s))
     {
         printf("rtc_is_alarm1_bit_set: ERROR: alarm event doesn't exist\n");
     }
-	
-	has_alarm1_been_triggered_yet = !!(alarm_bits_s&ALARM1_EVENT_BIT)
 
-	/*has the alarm been triggered yet? if not and 
-	  there is there an active alarm check if it should trigger*/
-	if(!has_alarm1_been_triggered_yet && alarm_bits_s == ALARM1_SET_BIT) 
+	//if someone polled the rtc flags it is possible that the alarm has already been triggered
+	has_alarm1_been_triggered_yet = (0 != (alarm_bits_s&ALARM1_EVENT_BIT));
+
+    /*has the alarm been triggered yet? if not check if it should trigger*/
+	if(!has_alarm1_been_triggered_yet) 
 	{
 		uint8_t flag_cmd_buff = RTC_FLAGS_ADDR;
 
@@ -239,14 +240,13 @@ bool rtc_check_if_alarm1_has_been_triggered()
 			return FALSE;
 		}
 
-
-		has_alarm1_been_triggered_yet = flag_data_buff&ALARM1_EVENT_BIT;
+		has_alarm1_been_triggered_yet = (0 != (alarm_bits_s&ALARM1_EVENT_BIT));
 	}
 	
-	/*if an event has been measured clear the events bitmap and return TRUE*/
+	/*if an event has been measured clear the events bitarray and return TRUE*/
 	if(has_alarm1_been_triggered_yet)
 	{
-		_event_clear(alarm_event_g, ALARM1_EVENT_BIT|ALARM1_SET_BIT);
+		_event_clear(alarm_event_g, ALARM1_EVENT_BIT|ALARM1_ACTIVATE_BIT);
 
 	}
 		
@@ -254,6 +254,7 @@ bool rtc_check_if_alarm1_has_been_triggered()
 }
 
 /*returns the time set of the current registered alarm*/
+/*
 void rtc_get_alarm1_time(uint8_t *dt_bcd)
 {
     uint8_t rtc_alarm1_addr = RTC_ALRM1_MONTH_ADDR;
@@ -268,7 +269,7 @@ void rtc_get_alarm1_time(uint8_t *dt_bcd)
     dt_bcd[2] &= 0x3F;//hour
     dt_bcd[3] &= 0x7F;//minutes
 	dt_bcd[4] &= 0x7F;//seconds
-}
+}*/
 
 /* returns TRUE if the oscillator is running fine, also clears oscil. flag if set */
 bool rtc_check_oscillator(void)
@@ -381,7 +382,7 @@ bool rtc_check_alarm1_working(void)
 		return FALSE;
 	}
 
-	if(!rtc_receive_data(&flag_cmd_buff,1 &,flag_data_buff, 1) && 1 != (flag_data_buff&RTC_ALRM1_FLAG_OFFSET) )
+	if(!rtc_receive_data(&flag_cmd_buff,1 &,flag_data_buff, 1) && 1 != (flag_data_buff&RTC_ALRM1_FLAG_OFFSET))
 	{
 		printf("rtc_check_alarm1_working: FAILED to measure alarm bit after setting it to past time");
 		return FALSE;
@@ -400,6 +401,24 @@ bool rtc_check_alarm1_working(void)
 	}
 
 	return TRUE;
+}
+
+//true is to activate false is to deactivate
+void rtc_activate_or_deactivate_alarm_polling(bool status)
+{
+	if(MQX_OK != _event_get_value(alarm_event_g, &alarm_bits_s) 
+    {
+        printf("rtc_is_alarm1_bit_set: ERROR: alarm event doesn't exist\n");
+    }
+
+	if(status)
+	{
+		_event_set(alarm_event_g, ALARM1_ACTIVATE_BIT);
+	}
+	else
+	{
+		_event_clear(alarm_event_g, ALARM1_ACTIVATE_BIT);
+	}
 }
 
 /* returns TRUE if successful */

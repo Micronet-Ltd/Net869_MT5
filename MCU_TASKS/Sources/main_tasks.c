@@ -471,23 +471,6 @@ void Main_task( uint32_t initial_data ) {
 //		FPGA_write_led_status(LED_MIDDLE, 0, 0, 0, 0); /*Blue LED */
 	}
 #endif
-    
-	
-			++alarm_counter;
-			if(NUMBER_OF_TICKS_BETWEEN_ALARM_POLL == alarm_counter)
-			{
-                //Check if there is an alarm active. I didn't add a conditional failure printf so it won't spam the log
-                _event_get_value(alarm_event_g,&ALARM1_SET_BIT);
-                alarm_counter = 0;
-
-                if(is_there_alarm1_flag)
-                {
-    				is_alarm1_triggered = rtc_check_if_alarm1_has_been_triggered();
-                    //not sure if there should be some check here. I haven't found any flag so I turned it own anyway
-                    enable_msm_power(TRUE);
-                    is_there_alarm1_flag = 0;
-                }
-            }
 
 	}
 

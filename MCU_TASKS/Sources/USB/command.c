@@ -36,7 +36,8 @@ static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdat
 static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
 static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pbatt_ignition_voltage);
 static void set_gpi_update_all_values(uint8_t * data, uint16_t data_size, uint8_t * pgpi_values);
-static void set_rtc_alarm1_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
+static void set_rtc_alarm1_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
+static void set_rtc_alarm_polling(uint8_t * data, uint16_t data_size, uint8_t * pstatus);
 static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
 static void set_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
 static void get_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
@@ -128,9 +129,9 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
     [COMM_SET_RTC_ALARM1_TIME] = {set_rtc_alarm1_time,
 								SET_COMMAND,
 							    0},
-    [COMM_GET_RTC_ALARM1_TIME] = {get_rtc_alarm1_time,
+    [COMM_SET_RTC_ALARM1_POLL] = {set_rtc_alarm_polling,
                                 SET_COMMAND,
-                                RTC_NUM_OF_ALARM_BYTES_BCD},
+                                0},
 
 };
 
@@ -277,9 +278,9 @@ static void set_rtc_alarm1_time(uint8_t * data, uint16_t data_size, uint8_t * pd
 	rtc_set_time_for_alarm1(&data[0]);
 }
 
-static void get_rtc_alarm1_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
+static void set_rtc_alarm_polling(uint8_t * data, uint16_t data_size, uint8_t * pstatus)
 {
-	rtc_get_alarm1_time(pdate_time);
+	rtc_get_alarm1_time(data[0]);
 }
 
 
