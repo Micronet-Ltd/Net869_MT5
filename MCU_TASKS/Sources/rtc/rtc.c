@@ -51,13 +51,14 @@
 
 //#define RTC_DEBUG						1
 
-#define ALARM1_EVENT_BIT                0x1
+#define ALARM1_TRIGGERED_BIT           0x1
 
 extern MUTEX_STRUCT g_i2c0_mutex;
 
 static i2c_device_t rtc_device_g = {.address = RTC_DEVICE_ADDRESS,    .baudRate_kbps = RTC_I2C_BAUD_RATE};
 
 bool rtc_oscillator_kick_start(void);
+
 
 bool rtc_receive_data(uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data_size)
 {
@@ -118,7 +119,6 @@ bool rtc_send_data(uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data
 bool rtc_check_flags_in_low_pow_mode(uint8_t *flags_to_return)
 {
 	uint8_t flag_cmd_buff = RTC_FLAGS_ADDR;
-	uint32_t alarm_bits_s = 0;
 
 	if(!rtc_receive_data(&flag_cmd_buff,1 ,flags_to_return, 1))
 	{
@@ -128,21 +128,15 @@ bool rtc_check_flags_in_low_pow_mode(uint8_t *flags_to_return)
 
 	if((*flags_to_return)&RTC_ALRM1_FLAG_OFFSET)
 	{
-		if(MQX_OK != _event_get_value(alarm_event_g ,&alarm_bits_s)) 
-		{
-			printf("rtc_is_alarm1_bit_set: ERROR: timer event doesn't exist\n");
-		}
-
-		if(alarm_bits_s&ALARM1_ACTIVATE_BIT)
-		{
-			_event_set(alarm_event_g, ALARM1_EVENT_BIT);
-		}
+		_event_set(alarm_event_g, ALARM1_TRIGGERED_BIT);
 	}
  
 	return TRUE;
 }
 
-/*rtc_set_alarm1_once: set alarm to activate in the given date given in BCD*/
+/* sets the alarm to activate once at the given date in dt_bcd
+ dt_bcd should be given as a binary date. Note that there is no need
+ to call rtc_activate_or_deactivate_alarm_polling after calling this function*/
 bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 {
 	uint8_t alarm_data_buff[RTC_NUM_OF_ALARM_BYTES_BCD] = {0};
@@ -155,14 +149,8 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 
 	uint8_t  i;
 
-	uint32_t alarm_bits_s = 0;
-
-	if(MQX_OK != _event_get_value(alarm_event_g ,&alarm_bits_s)) 
-	{
-		printf("rtc_is_alarm1_bit_set: ERROR: timer event doesn't exist\n");
-	}
     //nullify the alarm event bit from previous usage
-	_event_clear(alarm_event_g, ALARM1_EVENT_BIT);
+	_event_clear(alarm_event_g, ALARM1_TRIGGERED_BIT);
 
     //check that the given date is legal
 	for(i = 0; i < RTC_NUM_OF_ALARM_BYTES_BCD; ++i)
@@ -176,7 +164,7 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 		}
 		else
 		{
-			printf;
+			printf("rtc_set_alarm1_once: ERROR: the provided date had an illegal bcd format\n");
 			return  FALSE;
 		}
 	}
@@ -206,51 +194,57 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 		return  FALSE;
 	}
 
-     //Activate the polling for the alarm 
+    //Activate the polling for the alarm 
     _event_set(alarm_event_g, ALARM1_ACTIVATE_BIT);  
-    
 
 	return TRUE;
 }
 
-//check wheter the alarm was triggered and if it does unset the alarm
-bool rtc_check_if_alarm1_has_been_triggered()
+void rtc_periodically_check_alarm1(uint32_t *time_diff)
 {
+    static uint32_t time_since_last_alarm_poll;
     uint32_t alarm_bits_s = 0;
 
-	uint8_t flag_data_buff;
-	bool has_alarm1_been_triggered_yet = FALSE;
+    uint8_t flag_cmd_buff = RTC_FLAGS_ADDR;
+    uint8_t flag_data_buff;
 
     if(MQX_OK != _event_get_value(alarm_event_g, &alarm_bits_s))
     {
         printf("rtc_is_alarm1_bit_set: ERROR: alarm event doesn't exist\n");
     }
 
-	//if someone polled the rtc flags it is possible that the alarm has already been triggered
-	has_alarm1_been_triggered_yet = (0 != (alarm_bits_s&ALARM1_EVENT_BIT));
 
-    /*has the alarm been triggered yet? if not check if it should trigger*/
-	if(!has_alarm1_been_triggered_yet) 
-	{
-		uint8_t flag_cmd_buff = RTC_FLAGS_ADDR;
+    if (0 != alarm_bits_s&ALARM1_ACTIVATE_BIT && WAIT_BETWEEN_ALARM_POLL_TIME < (time_since_last_alarm_poll+=(*time_diff))) 
+    {
+       
+        time_since_last_alarm_poll = 0;
 
-		if(!rtc_receive_data(&flag_cmd_buff,1 ,&flag_data_buff, 1))
-		{
-			printf("rtc_check_flags: ERROR: couldn't read the flagS\n");
-			return FALSE;
-		}
+        if(!rtc_receive_data(&flag_cmd_buff,1 ,&flag_data_buff, 1))
+        {
+            printf("rtc_check_flags: ERROR: couldn't read the flagS\n");
+            return;
+        }
+        if(0 != flag_data_buff&RTC_ALRM1_FLAG_OFFSET)
+        {
+            _event_clear(alarm_event_g, ALARM1_ACTIVATE_BIT);
+            _event_set(alarm_event_g,ALARM1_TRIGGERED_BIT);
+        }
+    }
 
-		has_alarm1_been_triggered_yet = (0 != (alarm_bits_s&ALARM1_EVENT_BIT));
-	}
-	
-	/*if an event has been measured clear the events bitarray and return TRUE*/
-	if(has_alarm1_been_triggered_yet)
-	{
-		_event_clear(alarm_event_g, ALARM1_EVENT_BIT|ALARM1_ACTIVATE_BIT);
+    return;
+}
 
-	}
-		
-	return has_alarm1_been_triggered_yet;
+bool rtc_check_if_alarm1_has_been_triggered()
+{
+    uint32_t alarm_bits_s = 0;
+
+    if(MQX_OK != _event_get_value(alarm_event_g, &alarm_bits_s))
+    {
+        printf("rtc_is_alarm1_bit_set: ERROR: alarm event doesn't exist\n");
+        return false;
+    }
+
+    return (0 != alarm_bits_s&ALARM1_ACTIVATE_BIT);
 }
 
 /*returns the time set of the current registered alarm*/
@@ -349,13 +343,14 @@ bool rtc_check_battery_good(void)
   is being set*/
 bool rtc_check_alarm1_working(void)
 {	
-	uint8_t cmd_buff = RTC_FLAGS_ADDR;
-	uint8_t current_dt_bcd[0];
+	uint8_t flag_cmd_buff = RTC_FLAGS_ADDR;
+    uint8_t flag_data_buff = 0;
+	uint8_t current_dt_bcd[RTC_BCD_SIZE];
 	uint8_t i;
 
      _mqx_uint event_result;
 
-	rtc_get_time(&current_dt_bcd);
+	rtc_get_time(current_dt_bcd);
 
 	/*try to set current_dt_bcd to a time that have already passed and then check the alarm bit
 	   the fastest way to get time that has already passed is to nullify the first of the seconds/minutes etc...
@@ -376,21 +371,22 @@ bool rtc_check_alarm1_working(void)
 		return FALSE;
 	}
 
-	if(FALSE == rtc_set_alarm1_once(&current_dt_bcd))
+	if(FALSE == rtc_set_alarm1_once(current_dt_bcd))
 	{
-		printf("rtc_check_alarm1_working: FAILED to set ALARM to time zero");
+		printf("rtc_check_alarm1_working: FAILED to set ALARM to past time \n");
 		return FALSE;
 	}
 
-	if(!rtc_receive_data(&flag_cmd_buff,1 &,flag_data_buff, 1) && 1 != (flag_data_buff&RTC_ALRM1_FLAG_OFFSET))
+	if(!rtc_receive_data(&flag_cmd_buff,1 ,&flag_data_buff, 1) && 1 != (flag_data_buff&RTC_ALRM1_FLAG_OFFSET))
 	{
-		printf("rtc_check_alarm1_working: FAILED to measure alarm bit after setting it to past time");
+		printf("rtc_check_alarm1_working: FAILED to measure alarm bit after setting the alarm to past time");
 		return FALSE;
 	}
    
    /*if timer works correctly should create an event handler for the AF1 flag and alarm activation
      before the routine alarm flag check will be activated*/
     event_result = _event_create("event.TimerEvent");
+
 	if(MQX_OK != event_result){
 		printf("rtc_check_alarm_working: Could not create Timer event \n");
 	}
@@ -404,14 +400,9 @@ bool rtc_check_alarm1_working(void)
 }
 
 //true is to activate false is to deactivate
-void rtc_activate_or_deactivate_alarm_polling(bool status)
+void rtc_activate_or_deactivate_alarm_polling(bool should_poll)
 {
-	if(MQX_OK != _event_get_value(alarm_event_g, &alarm_bits_s) 
-    {
-        printf("rtc_is_alarm1_bit_set: ERROR: alarm event doesn't exist\n");
-    }
-
-	if(status)
+	if(should_poll)
 	{
 		_event_set(alarm_event_g, ALARM1_ACTIVATE_BIT);
 	}
