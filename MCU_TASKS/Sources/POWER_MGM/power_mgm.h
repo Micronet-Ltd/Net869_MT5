@@ -27,6 +27,7 @@ extern "C"
 #define EVENT_CPU_STATUS_LOW    2
 #define EVENT_A8_PWR_UP         1
 #define EVENT_A8_PWR_DOWN       2
+#define EVENT_A8_BOOTED         4
 
 extern void *alarm_event_g;
 

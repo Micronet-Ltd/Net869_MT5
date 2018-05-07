@@ -17,7 +17,7 @@
 /* 0xA : Application, 0xB: Bootloader */
 #define FW_VER_BTLD_OR_APP 0xA
 #define FW_VER_MAJOR 0x2
-#define FW_VER_MINOR 0x7
-#define FW_VER_BUILD 0x00
+#define FW_VER_MINOR 0x8
+#define FW_VER_BUILD 0x01
 
 #endif /* _VERSION_H_ */
