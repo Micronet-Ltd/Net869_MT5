@@ -257,6 +257,9 @@ const clock_manager_user_config_t * g_defaultClockConfigurations[] =
 	&g_defaultClockConfigRun,
 };
 
+//this event will be used at rtc.c to keep track of alarm events
+void *alarm_event_g;
+
 /*!
  * @brief wait uart finished.
  *

@@ -65,6 +65,7 @@
 #include "ADC.h"
 #include "power_mgm.h"
 #include "wiggle_sensor.h"
+#include "rtc.h"
 
 #include "board.h"
 #include "gpio_pins.h"
@@ -218,6 +219,12 @@ uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
 		turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
 	}
 
+    if(rtc_check_if_alarm1_has_been_triggered())
+    {
+        printf ("\n%s: POWER_MGM: TURNING ON DEVICE due to wakeup ALARM TRIGGERED  \n", __func__);
+        turn_on_condition |= POWER_MGM_DEVICE_TIMER_ALARM;
+    }
+
 	//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
 	//{
 	//  	turn_on_condition |= POWER_MGM_DEVICE_SW_RESET_REQ;
@@ -235,6 +242,7 @@ void Device_update_state (uint32_t * time_diff)
 	static bool print_backup_power = FALSE;
 	uint32_t a8_s;
 	uint32_t gpio_event;
+    uint32_t time_since_last_alarm_poll = 0;
 	
 
 	Device_control_GPIO(time_diff);
@@ -277,6 +285,10 @@ void Device_update_state (uint32_t * time_diff)
 			// if amount of vibrations is more than TH, it will turn on the device
 			// and stop the interrupts for better running efficiency
 			Wiggle_sensor_update (time_diff);
+
+            //check if someone have set and activated the alarm
+            rtc_periodically_check_alarm1(time_diff);
+
 			
 			if (MQX_OK == _event_get_value(g_GPIO_event_h, &gpio_event))
 			{

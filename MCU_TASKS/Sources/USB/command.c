@@ -275,15 +275,13 @@ static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdat
 
 static void set_rtc_alarm1_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
 {
-	rtc_set_time_for_alarm1(&data[0]);
+	rtc_set_alarm1_once(&data[0]);
 }
 
 static void set_rtc_alarm_polling(uint8_t * data, uint16_t data_size, uint8_t * pstatus)
 {
-	rtc_get_alarm1_time(data[0]);
+    rtc_activate_or_deactivate_alarm_polling(&data[0]);
 }
-
-
 
 static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg)
 {
