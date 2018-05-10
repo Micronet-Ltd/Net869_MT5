@@ -153,6 +153,19 @@ void disable_peripheral_clocks(void)
 	CLOCK_SYS_DisablePortClock (i);
   }
 }
+ 
+/*disables alarm polling before shut down in wake up date has already passed 
+  this function should be used only in this file so it will stay inlined and won't slow the system*/
+void inline  __attribute__((always_inline)) shut_outdated_alarm_before_turnoff()
+{
+   uint32_t timeout = WAIT_BETWEEN_ALARM_POLL_TIME;
+    //check and cancel the alarm if the date has already passed so the device won't turn on immediately after shutting down
+    rtc_periodically_check_alarm1(&timeout);
+    if(rtc_check_if_alarm1_has_been_triggered())
+    {
+        rtc_activate_or_deactivate_alarm_polling(false);
+    }
+}
 
 void device_state_stringify(DEVICE_STATE_t device_state, char * dev_state_str )
 {
@@ -289,10 +302,9 @@ void Device_update_state (uint32_t * time_diff)
 			// and stop the interrupts for better running efficiency
 			Wiggle_sensor_update (time_diff);
 
-            //check if someone have set and activated the alarm
+			//check if someone have set and activated the alarm
             rtc_periodically_check_alarm1(time_diff);
 
-			
 			if (MQX_OK == _event_get_value(g_GPIO_event_h, &gpio_event))
 			{
 				/* To see MCU debug output in DEVICE_OFF state, 
@@ -451,7 +463,7 @@ void Device_update_state (uint32_t * time_diff)
 			}
 			break;
 
-		case DEVICE_STATE_TURN_OFF:
+	case DEVICE_STATE_TURN_OFF:
 			// wait while pulse is still generated (time period didn't reach threshold)
 
             // device should be off w/o unconditionally, moreover pulse will produce inside off request
@@ -487,6 +499,9 @@ void Device_off_req_immediate(bool clean_reset)
 	uint32_t cpu_off_wait_time = 0;
 	uint8_t cpu_status_pin = 0;
 
+    //shut down alarm if it is outdated
+    shut_outdated_alarm_before_turnoff();
+
 	/* Disable the Accelerometer and RTC because we were seeing I2C issues where 
 	SCL line was stuck on boot up */
 	AccDisable();
@@ -515,6 +530,9 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 	uint32_t cpu_off_wait_time = 0;
 	uint8_t cpu_status_pin = 0;
 	volatile static bool device_off_req_in_progress = 0;
+
+    //shut down alarm if it is already outdated
+    shut_outdated_alarm_before_turnoff();
 
     printf("%s: [%d, %d] %llu\n", __func__, skip_a8_shutdown, wait_time, ms_from_start());
     /* If this command is called from a different thread, it will not execute again while it is already being performed */

@@ -239,6 +239,7 @@ void check_supercap_voltage (void);
 void * power_up_event_g;
 void * cpu_status_event_g;
 void * g_a8_pwr_state_event;
+void * rtc_flags_g;
 
 uint32_t ignition_threshold_g = IGNITION_TURN_ON_TH_DEFAULT;
 
@@ -257,8 +258,6 @@ const clock_manager_user_config_t * g_defaultClockConfigurations[] =
 	&g_defaultClockConfigRun,
 };
 
-//this event will be used at rtc.c to keep track of alarm events
-void *alarm_event_g;
 
 /*!
  * @brief wait uart finished.
@@ -684,6 +683,15 @@ void Power_MGM_task (uint32_t initial_data )
 	if(MQX_OK != event_result){
 		printf("Power_MGM_task: Could not open event.EXTERNAL_GPIOS \n");
 	}
+
+	if(MQX_OK !=  _event_create("event.TimerEvent")){
+		printf("rtc_check_alarm_working: Could not create event.TimerEvent \n");
+	}
+
+	if(MQX_OK != _event_open("event.TimerEvent", &rtc_flags_g)){
+		printf("rtc_check_alarm_working: Could not open event.TimerEvent \n");
+	}
+
 
 	Device_init (POWER_MGM_TIME_DELAY);
 	ADC_init ();

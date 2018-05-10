@@ -51,7 +51,7 @@
 
 //#define RTC_DEBUG						1
 
-#define ALARM1_TRIGGERED_BIT           0x1
+bool triggered; 
 
 extern MUTEX_STRUCT g_i2c0_mutex;
 
@@ -112,27 +112,27 @@ bool rtc_send_data(uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data
 	return (i2c_status == kStatus_I2C_Success);
 }
 
-/*Reading the flags in the rtc is unsafe as it nullifies the alarm bits(P 36 in the CD00127116 manual section 3.5).
-  Here is an implementation of a safe flag reading function that signals to the program if the alarm flag
-  was set by updating the event bit at alarm_event_g;
-*/
-bool rtc_check_flags_in_low_pow_mode(uint8_t *flags_to_return)
+//poll the flag bits from the RTC and raise the relevant bits in rtc_flags_g ,
+//for future users of this module note that any peek at the flags will nullify the alarm flags 
+//so it might be a good idea to use this function tto read the flags and not to do that directly
+bool rtc_get_flags()
 {
-	uint8_t flag_cmd_buff = RTC_FLAGS_ADDR;
+    uint8_t cmd_buff = RTC_FLAGS_ADDR; 
+	uint8_t flag_data_buff;
 
-	if(!rtc_receive_data(&flag_cmd_buff,1 ,flags_to_return, 1))
+    if(!rtc_receive_data(&cmd_buff,1 ,&flag_data_buff, 1))
 	{
-		printf("rtc_check_flags: ERROR: couldn't read the flagS\n");
+		printf("rtc_get_flags: ERROR: could not read the bytes related to the flags\n");
 		return FALSE;
 	}
 
-	if((*flags_to_return)&RTC_ALRM1_FLAG_OFFSET)
-	{
-		_event_set(alarm_event_g, ALARM1_TRIGGERED_BIT);
-	}
- 
-	return TRUE;
+    /*Activate the right bits for the alarm ,luckily adhusting the right bit order in rtc_flags_g 
+     can spare us from the user of masks: */
+    _event_set(rtc_flags_g, flag_data_buff);
+    return TRUE;
 }
+
+
 
 /* sets the alarm to activate once at the given date in dt_bcd
  dt_bcd should be given as a binary date. Note that there is no need
@@ -144,20 +144,17 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 
 	uint8_t flag_data_buff;
 
-	const uint8_t RTC_10_DIGIT_LIMITS[RTC_NUM_OF_ALARM_BYTES_BCD] 	= {0x1 /*10 months*/ ,0x11/*30 days*/ ,0x10/*20 hours*/ ,0x5/*50 minutes*/,0x5/*50 seconds*/};
-	const uint8_t RTC_TIME_RANGE_LIMITS[RTC_NUM_OF_ALARM_BYTES_BCD] = {12 /*months*/     ,31/*days*/      ,24/*hours*/      ,59/*minutes*/    ,59/*seconds*/};
+    uint8_t RTC_TIME_RANGE_LIMITS[RTC_NUM_OF_ALARM_BYTES_BCD] = {0xC /*12 months*/ ,0x1F /*31 days*/,0x18/*24 hours*/ ,0x3B/*59 minutes*/,0x3B/*59 seconds*/};
+	uint8_t RTC_10_DIGIT_LIMITS[RTC_NUM_OF_ALARM_BYTES_BCD]   = {0X10 /*(0x1<<4) 10 months*/ ,0X31/*(0x3<<4) 31 days*/ ,0X20/*(0x2<<4)20 hours*/ ,0X50/*(0x5<<4)50 minutes*/,0X50/*(0x5<<4)50 seconds*/};
 
-	uint8_t  i;
-
-    //nullify the alarm event bit from previous usage
-	_event_clear(alarm_event_g, ALARM1_TRIGGERED_BIT);
+	uint8_t  i = 0;
 
     //check that the given date is legal
 	for(i = 0; i < RTC_NUM_OF_ALARM_BYTES_BCD; ++i)
 	{
-		if(dt_bcd[i]&0xF0 <= RTC_10_DIGIT_LIMITS[i] && //checks wheter the 10 digits in the BCD representation of dt_bcd is legal
-			dt_bcd[i]&0x0F <= 9 && //checks wheter the first digit in the BCD  representation of dt_bcd is legal
-			((dt_bcd[i]&0xF0>>4)*10 + dt_bcd[i]&0x0F) <= RTC_TIME_RANGE_LIMITS[i]//checks wheter the whole BCD date value is legal: If there are more than 12 months, more than 24 hours etc...
+		if((dt_bcd[i]&0xF0) <= RTC_10_DIGIT_LIMITS[i] && //checks wheter the 10 digits in the BCD representation of dt_bcd is legal
+           (dt_bcd[i]&0x0F) <= 9 && //checks wheter the first digit in the BCD  representation of dt_bcd is legal
+           ((((dt_bcd[i]&0xF0)>>4)*10) + (dt_bcd[i]&0x0F)) <= RTC_TIME_RANGE_LIMITS[i]//checks wheter the whole BCD date value is legal: If there are more than 12 months, more than 24 hours etc...
 		  )
 		{
 			alarm_data_buff[i] |= dt_bcd[i];
@@ -170,21 +167,16 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 	}
 
 	/*
-	    Before setting the timer address, it seems like a good idea to
+	    Before setting the alarm address, it seems like a good idea to
 		nullify the AF flag on the RTC by reading it with the other flags
 	*/
 	cmd_buff = RTC_FLAGS_ADDR; 
 
-	if(!rtc_receive_data(&cmd_buff,1 ,&flag_data_buff, 1))
+    if((!rtc_receive_data(&cmd_buff,1 ,&flag_data_buff, 1)))
 	{
-		printf("rtc_set_alarm1_once: ERROR: could not read and nuliffy the bytes related to alarm1\n");
+		printf("rtc_set_alarm1_once: ERROR: alarm flag hasn't been nullified by reading it \n");
 		return FALSE;
 	}
-	/*	if(!rtc_receive_data(&cmd_buff,1 &,flag_data_buff, 1) && 0 != (flag_data_buff&RTC_ALRM1_FLAG_OFFSET) )//check if this read nullified the bit
-	{
-		printf("rtc_set_alarm1_once: ERROR: alarm flag hasn't been nullified automatically after reading it once \n")//as it should ,at least by what is written in the manual...
-		return FALSE;
-	}*/
 
 	cmd_buff = RTC_ALRM1_MONTH_ADDR; 
 
@@ -195,98 +187,58 @@ bool rtc_set_alarm1_once(uint8_t *dt_bcd)
 	}
 
     //Activate the polling for the alarm 
-    _event_set(alarm_event_g, ALARM1_ACTIVATE_BIT);  
+    _event_set(rtc_flags_g, ALARM1_POLL_BIT);
 
 	return TRUE;
 }
 
+
 void rtc_periodically_check_alarm1(uint32_t *time_diff)
 {
     static uint32_t time_since_last_alarm_poll;
-    uint32_t alarm_bits_s = 0;
 
-    uint8_t flag_cmd_buff = RTC_FLAGS_ADDR;
-    uint8_t flag_data_buff;
-
-    if(MQX_OK != _event_get_value(alarm_event_g, &alarm_bits_s))
+    if (WAIT_BETWEEN_ALARM_POLL_TIME <= (time_since_last_alarm_poll+=(*time_diff))) 
     {
-        printf("rtc_is_alarm1_bit_set: ERROR: alarm event doesn't exist\n");
-    }
-
-
-    if (0 != alarm_bits_s&ALARM1_ACTIVATE_BIT && WAIT_BETWEEN_ALARM_POLL_TIME < (time_since_last_alarm_poll+=(*time_diff))) 
-    {
-       
         time_since_last_alarm_poll = 0;
-
-        if(!rtc_receive_data(&flag_cmd_buff,1 ,&flag_data_buff, 1))
-        {
-            printf("rtc_check_flags: ERROR: couldn't read the flagS\n");
-            return;
-        }
-        if(0 != flag_data_buff&RTC_ALRM1_FLAG_OFFSET)
-        {
-            _event_clear(alarm_event_g, ALARM1_ACTIVATE_BIT);
-            _event_set(alarm_event_g,ALARM1_TRIGGERED_BIT);
-        }
+        rtc_get_flags();
     }
-
-    return;
 }
 
 bool rtc_check_if_alarm1_has_been_triggered()
 {
-    uint32_t alarm_bits_s = 0;
+    uint32_t flags;
+    _event_get_value(rtc_flags_g, &flags);
 
-    if(MQX_OK != _event_get_value(alarm_event_g, &alarm_bits_s))
+    if(0 != (flags&ALARM1_ACTIVATE_BIT)) 
     {
-        printf("rtc_is_alarm1_bit_set: ERROR: alarm event doesn't exist\n");
-        return false;
+        _event_clear(rtc_flags_g,(ALARM1_ACTIVATE_BIT|ALARM1_POLL_BIT));
+        return TRUE;
     }
 
-    return (0 != alarm_bits_s&ALARM1_ACTIVATE_BIT);
+    return FALSE;
 }
 
-/*returns the time set of the current registered alarm*/
-/*
-void rtc_get_alarm1_time(uint8_t *dt_bcd)
-{
-    uint8_t rtc_alarm1_addr = RTC_ALRM1_MONTH_ADDR;
-
-    if(!rtc_receive_data(&rtc_alarm1_addr, 1, dt_bcd, RTC_NUM_OF_ALARM_BYTES_BCD))
-    {
-        printf("fetching alarm time failed \n");
-    }
-
-    dt_bcd[0] &= 0x1F;//month 
-    dt_bcd[1] &= 0x3F;//day
-    dt_bcd[2] &= 0x3F;//hour
-    dt_bcd[3] &= 0x7F;//minutes
-	dt_bcd[4] &= 0x7F;//seconds
-}*/
 
 /* returns TRUE if the oscillator is running fine, also clears oscil. flag if set */
 bool rtc_check_oscillator(void)
 {
-	uint8_t flags = 0 ;
+	uint32_t flags = 0 ;
+    uint8_t rtc_flags = 0 ;
 	uint8_t cmd_buff = RTC_FLAGS_ADDR;
-	if (!rtc_receive_data (&cmd_buff,  1, &flags, 1))
-	{
-		printf("rtc_check_oscillator: failed i2c read \n");
-		return FALSE;
-	}
+    _event_get_value(rtc_flags_g, &flags);
+
 	/* Oscillator fail flag is high when oscil. has stopped or was stopped */
-	if ((flags & 0x4))
+	if ((flags & OCCILATOR_BIT))
 	{
 		rtc_oscillator_kick_start();
 		/* The oscillator must start and have run for at least 4 seconds before
 		attempting to reset the OF bit to 0 pg 44 of RTC data sheet */
 		printf("rtc_check_oscillator: Sleep 4 seconds before clearing oscillator flag \n");
 		_time_delay(4100);
-
+        rtc_flags = flags;
 		/* clear oscillator flag */
-		flags &= ~0x4;
-		if (!rtc_send_data (&cmd_buff,  1, &flags, 1))
+		rtc_flags &= ~OCCILATOR_BIT;
+		if (!rtc_send_data (&cmd_buff,  1, &rtc_flags, 1))
 		{
 			printf("rtc_check_oscillator: clearing oscillator bit failed \n");
 			return FALSE;
@@ -324,15 +276,11 @@ bool rtc_check_halt_bit(void)
 /* returns TRUE if the battery is good, FALSE if no battery or low battery */
 bool rtc_check_battery_good(void)
 {
-	uint8_t flags = 0 ;
-	uint8_t cmd_buff = RTC_FLAGS_ADDR;
-	if (!rtc_receive_data(&cmd_buff,  1, &flags, 1))
-	{
-		printf("rtc_check_battery_good: failed i2c read \n");
-		return FALSE;
-	}
+	uint32_t flags = 0 ;
+    _event_get_value(rtc_flags_g, &flags);
+
 	/* Oscillator fail flag is high when oscil. has stopped or was stopped */
-	if ((flags & 0x10))
+	if ((flags & BATTERY_LOW_BIT))
 	{
 		return FALSE;
 	}
@@ -346,56 +294,34 @@ bool rtc_check_alarm1_working(void)
 	uint8_t flag_cmd_buff = RTC_FLAGS_ADDR;
     uint8_t flag_data_buff = 0;
 	uint8_t current_dt_bcd[RTC_BCD_SIZE];
+    uint8_t alarm_dt_bcd[RTC_NUM_OF_ALARM_BYTES_BCD];
 	uint8_t i;
 
-     _mqx_uint event_result;
-
-	rtc_get_time(current_dt_bcd);
-
-	/*try to set current_dt_bcd to a time that have already passed and then check the alarm bit
-	   the fastest way to get time that has already passed is to nullify the first of the seconds/minutes etc...
-	    that is not zero in our currect time for example : if  the hour is 17:20:35 then 17:20:00 has passed already
-		just need to take note that miliseconds aren't included so it should start in 1 and that*/
-	for(i = 1; i < RTC_BCD_SIZE; ++i)
-	{
-		if(current_dt_bcd[i] > 0)
-		{
-			current_dt_bcd[i] = 0;
-			break;
-		}
-	}
-
-	if(RTC_BCD_SIZE == i)
-	{
-		printf("rtc_check_alarm1_working: FAILED to retreive the correct time, retreived an array of zeros instead \n");
-		return FALSE;
-	}
-
-	if(FALSE == rtc_set_alarm1_once(current_dt_bcd))
+    rtc_get_time(current_dt_bcd);
+  
+    alarm_dt_bcd[4] = current_dt_bcd[RTC_BCD_SIZE - 7] +1;//seconds
+    alarm_dt_bcd[3] = current_dt_bcd[RTC_BCD_SIZE - 6];//minutes
+    alarm_dt_bcd[2] = (current_dt_bcd[RTC_BCD_SIZE - 5]& 0x3F);//hours without the cebtury bit
+    alarm_dt_bcd[1] = current_dt_bcd[RTC_BCD_SIZE - 3];//date
+    alarm_dt_bcd[0] = current_dt_bcd[RTC_BCD_SIZE - 2]  ;//mounth  
+    
+    //set alarm for one seconds in the future 
+	if(FALSE == rtc_set_alarm1_once(&alarm_dt_bcd[0]))
 	{
 		printf("rtc_check_alarm1_working: FAILED to set ALARM to past time \n");
 		return FALSE;
 	}
 
-	if(!rtc_receive_data(&flag_cmd_buff,1 ,&flag_data_buff, 1) && 1 != (flag_data_buff&RTC_ALRM1_FLAG_OFFSET))
+     //wait for a second
+    _time_delay(1000);
+
+    //poll flags for the alarm1 bit and check if the relevant function work currectly
+	if(!rtc_get_flags() || !rtc_check_if_alarm1_has_been_triggered())
 	{
-		printf("rtc_check_alarm1_working: FAILED to measure alarm bit after setting the alarm to past time");
+		printf("rtc_check_alarm1_working: FAILED to retrieve flags from the RTC after setting the alarm to past time\n");
 		return FALSE;
 	}
    
-   /*if timer works correctly should create an event handler for the AF1 flag and alarm activation
-     before the routine alarm flag check will be activated*/
-    event_result = _event_create("event.TimerEvent");
-
-	if(MQX_OK != event_result){
-		printf("rtc_check_alarm_working: Could not create Timer event \n");
-	}
-
-    event_result = _event_open("event.TimerEvent", &alarm_event_g);
-	if(MQX_OK != event_result){
-		printf("rtc_check_alarm_working: Could not open Timer event \n");
-	}
-
 	return TRUE;
 }
 
@@ -404,11 +330,11 @@ void rtc_activate_or_deactivate_alarm_polling(bool should_poll)
 {
 	if(should_poll)
 	{
-		_event_set(alarm_event_g, ALARM1_ACTIVATE_BIT);
+		_event_set(rtc_flags_g, ALARM1_POLL_BIT);
 	}
 	else
 	{
-		_event_clear(alarm_event_g, ALARM1_ACTIVATE_BIT);
+		_event_clear(rtc_flags_g, ALARM1_POLL_BIT);
 	}
 }
 
@@ -443,6 +369,12 @@ bool rtc_oscillator_kick_start(void)
 void rtc_init(void)
 {
 	I2C_Enable(RTC_I2C_PORT); /* Note:Both accelerometer and RTC are on the same bus*/
+
+    if (rtc_get_flags())
+    {
+        printf("rtc_init: couldn't read the RTC flags \n");
+    }
+
 	if (!rtc_check_oscillator())
 	{
 		printf("rtc_init: oscillator not good \n");
@@ -569,6 +501,8 @@ void rtc_get_cal_register(uint8_t * digital_cal, uint8_t * analog_cal)
 void rtc_set_cal_register(uint8_t *digital_cal, uint8_t *analog_cal)
 {
 	uint8_t cmd_buff = RTC_DIGITAL_CAL;
+
+    rtc_get_flags();
 
 	if (!rtc_send_data(&cmd_buff,  1, digital_cal, 1))
 	{

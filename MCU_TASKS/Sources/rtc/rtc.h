@@ -11,11 +11,17 @@
 #define RTC_BCD_SIZE				      	8
 #define RTC_NUM_OF_ALARM_BYTES_BCD			5
 
-#define ALARM1_ACTIVATE_BIT                 0X2         //set this bit in alarm_event_g to activate the alarm polling unset it to deactivate it
+#define WATCH_DOG_BIT                       0X80
+#define ALARM1_ACTIVATE_BIT                 0X40         
+#define ALARM1_POLL_BIT                     0X1     //set this bit in rtc_flags_g to activate alarm poll
+#define BATTERY_LOW_BIT                     0x10    
+#define OCCILATOR_BIT                       0X4
+
+
 #define WAIT_BETWEEN_ALARM_POLL_TIME        1000        //number of mili-seconds before polling the alarm  
   
-  
-extern void *alarm_event_g;
+
+extern void *rtc_flags_g;
 
 void rtc_init(void);
 void rtc_set_time(uint8_t * dt_bcd);
@@ -26,10 +32,14 @@ bool rtc_receive_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t 
 bool rtc_send_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data_size);
 void rtc_activate_or_deactivate_alarm_polling(bool should_poll);
 void rtc_test(void);
-bool rtc_check_flags_in_low_pow_mode(uint8_t *flags_to_return);
-/*there is no need to call rtc_activate_or_deactivate_alarm_polling after setting alarm */
+//bool rtc_check_flags_in_low_pow_mode(uint8_t *flags_to_return);
+/*there is no need to call rtc_activate_or_deactivate_alarm_polling after setting the alarm */
 bool rtc_set_alarm1_once(uint8_t *dt_bcd);
+
+//for whomever that will try to extend this module:
+//Note that polling the flags in any way will nullify the alarm bits!! 
 void rtc_periodically_check_alarm1(uint32_t *time_diff);
+
 bool rtc_check_if_alarm1_has_been_triggered();
 
 #endif /* _RTC_RTC_H_ */
