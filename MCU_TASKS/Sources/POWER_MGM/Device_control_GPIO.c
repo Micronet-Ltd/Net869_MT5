@@ -154,17 +154,30 @@ void disable_peripheral_clocks(void)
   }
 }
  
-/*disables alarm polling before shut down in wake up date has already passed 
+/*disables alarm polling before shut down in case date has already passed 
   this function should be used only in this file so it will stay inlined and won't slow the system*/
-void inline  __attribute__((always_inline)) shut_outdated_alarm_before_turnoff()
+void inline rtc_clear_outdated_alarm()
 {
-   uint32_t timeout = WAIT_BETWEEN_ALARM_POLL_TIME;
-    //check and cancel the alarm if the date has already passed so the device won't turn on immediately after shutting down
-    rtc_periodically_check_alarm1(&timeout);
-    if(rtc_check_if_alarm1_has_been_triggered())
+   /*for pipeline efficency reasons I decided to access the rtc directly as this function 
+     is also called during immidiate shutdown and should be as fast as possible and there
+     is more overhead with the alternative more object oriented encapsulated implementation:
+     */
+    uint8_t cmd_buff = 0xF;//RTC_FLAGS_ADDR 
+	uint8_t flag_data_buff;
+
+    if(!rtc_receive_data(&cmd_buff,1 ,&flag_data_buff, 1))
+	{
+		printf("rtc_get_flags: ERROR: could not read the bytes related to the flags\n");
+	}
+    else if(0 != (flag_data_buff&ALARM1_ACTIVATE_BIT)) 
     {
-        rtc_activate_or_deactivate_alarm_polling(false);
+        poll_timeout_g = 0;
     }
+
+   /*alternative encapsulated implementation to design this function:
+   rtc_get_flags();
+   rtc_alarm1_is_trigered(); 
+   */ 
 }
 
 void device_state_stringify(DEVICE_STATE_t device_state, char * dev_state_str )
@@ -232,7 +245,7 @@ uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
 		turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
 	}
 
-    if(rtc_check_if_alarm1_has_been_triggered())
+    if(rtc_alarm1_is_trigered())
     {
         printf ("\n%s: POWER_MGM: TURNING ON DEVICE due to wakeup ALARM TRIGGERED  \n", __func__);
         turn_on_condition |= POWER_MGM_DEVICE_TIMER_ALARM;
@@ -255,8 +268,6 @@ void Device_update_state (uint32_t * time_diff)
 	static bool print_backup_power = FALSE;
 	uint32_t a8_s;
 	uint32_t gpio_event;
-    uint32_t time_since_last_alarm_poll = 0;
-	
 
 	Device_control_GPIO(time_diff);
 
@@ -301,9 +312,6 @@ void Device_update_state (uint32_t * time_diff)
 			// if amount of vibrations is more than TH, it will turn on the device
 			// and stop the interrupts for better running efficiency
 			Wiggle_sensor_update (time_diff);
-
-			//check if someone have set and activated the alarm
-            rtc_periodically_check_alarm1(time_diff);
 
 			if (MQX_OK == _event_get_value(g_GPIO_event_h, &gpio_event))
 			{
@@ -499,8 +507,7 @@ void Device_off_req_immediate(bool clean_reset)
 	uint32_t cpu_off_wait_time = 0;
 	uint8_t cpu_status_pin = 0;
 
-    //shut down alarm if it is outdated
-    shut_outdated_alarm_before_turnoff();
+    rtc_clear_outdated_alarm();
 
 	/* Disable the Accelerometer and RTC because we were seeing I2C issues where 
 	SCL line was stuck on boot up */
@@ -532,7 +539,7 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 	volatile static bool device_off_req_in_progress = 0;
 
     //shut down alarm if it is already outdated
-    shut_outdated_alarm_before_turnoff();
+    rtc_clear_outdated_alarm();
 
     printf("%s: [%d, %d] %llu\n", __func__, skip_a8_shutdown, wait_time, ms_from_start());
     /* If this command is called from a different thread, it will not execute again while it is already being performed */
@@ -618,6 +625,8 @@ void Device_reset_req(int32_t wait_time)
 	GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
 	FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
 
+    rtc_clear_outdated_alarm();
+
 	cpu_off_wait_time = CPU_OFF_CHECK_TIME*((wait_time + (CPU_OFF_CHECK_TIME >> 1))/CPU_OFF_CHECK_TIME);
 	if (cpu_off_wait_time > MAX_CPU_OFF_CHECK_TIME)
 	  cpu_off_wait_time = MAX_CPU_OFF_CHECK_TIME;
@@ -690,6 +699,9 @@ void Device_turn_on  (void)
 	TIME_STRUCT ticks_now;
 
 	_time_get_elapsed(&ticks_now);
+
+    //make sure alarm polling will be set off.
+    rtc_clear_outdated_alarm();
 
 	device_control_gpio_g.time_threshold = (uint64_t)1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.time           = 0;

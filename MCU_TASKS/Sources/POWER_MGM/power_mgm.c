@@ -33,6 +33,7 @@
 #include "bsp.h"
 #include "mic_typedef.h"
 #include "watchdog_mgmt.h"
+#include "rtc.h"
 #include "main_tasks.h"
 
 #define SUPERCAP_CHRG_DISCHRG_ENABLE   1
@@ -240,6 +241,8 @@ void * power_up_event_g;
 void * cpu_status_event_g;
 void * g_a8_pwr_state_event;
 void * rtc_flags_g;
+
+uint64_t poll_timeout_g = 0;
 
 uint32_t ignition_threshold_g = IGNITION_TURN_ON_TH_DEFAULT;
 
@@ -776,9 +779,16 @@ void Power_MGM_task (uint32_t initial_data )
 		{
 			time_diff_milli_u = (uint32_t) (time_diff_milli);
 		}
-		Device_update_state(&time_diff_milli_u);
 
+		Device_update_state(&time_diff_milli_u);
         check_a8_power_events(&a8_on);
+
+		if(poll_timeout_g && poll_timeout_g  < ms_from_start()) 
+		{
+			rtc_get_flags();
+			poll_timeout_g = RTC_DEFAULT_MILISEC_WAIT_POLL + ms_from_start();
+		}
+
 	}
 }
 
