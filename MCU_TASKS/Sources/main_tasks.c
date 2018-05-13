@@ -18,11 +18,8 @@
 #include "EXT_GPIOS.h"
 #include "wiggle_sensor.h"
 #include "mic_typedef.h"
-
 #include "Uart_debugTerminal.h"
-
 #include "FlexCanDevice.h"
-#include "rtc.h"
 #include "Wiggle_sensor.h"
 #include "Device_control_GPIO.h"
 #include "watchdog_mgmt.h"
