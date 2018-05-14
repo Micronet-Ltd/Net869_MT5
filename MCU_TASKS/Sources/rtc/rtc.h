@@ -12,10 +12,10 @@
 #define RTC_NUM_OF_ALARM_BYTES_BCD			5
 #define RTC_DEFAULT_MILISEC_WAIT_POLL       60000 
 
-#define WATCH_DOG_BIT                       0X80
-#define ALARM1_ACTIVATE_BIT                 0X40         
-#define BATTERY_LOW_BIT                     0x10    
-#define OCCILATOR_BIT                       0X4
+#define WATCH_DOG_BIT                       (1 << 7)
+#define ALARM1_ACTIVATE_BIT                 (1 << 6)     
+#define BATTERY_LOW_BIT                     (1 << 4)
+#define OCCILATOR_BIT                       (1 << 2)
   
 extern void *rtc_flags_g;
 extern uint64_t poll_timeout_g;
