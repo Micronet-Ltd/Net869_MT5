@@ -137,9 +137,10 @@ bool rtc_set_alarm1(uint8_t *dt_bcd)
 {
 	uint8_t alarm_data_buff[RTC_NUM_OF_ALARM_BYTES_BCD] = {0};
 	uint8_t cmd_buff; 
-	uint8_t flag_data_buff;
+	uint8_t data_buff;
 	uint8_t  i;
 
+	alarm_data_buff[0]|= 0x20;//for activating ABE bit so the alarm will work in low power mode
 	for(i = 0; i < RTC_NUM_OF_ALARM_BYTES_BCD; ++i)
 	{
 		alarm_data_buff[i] |= dt_bcd[i];
@@ -151,11 +152,22 @@ bool rtc_set_alarm1(uint8_t *dt_bcd)
 	*/
 	cmd_buff = RTC_FLAGS_ADDR; 
 
-    if((!rtc_receive_data(&cmd_buff,1 ,&flag_data_buff, 1)))
+    if((!rtc_receive_data(&cmd_buff,1 ,&data_buff, 1)))
 	{
 		printf("rtc_set_alarm1: ERROR: alarm flag hasn't been nullified by reading it \n");
 		return FALSE;
 	}
+
+	//now we'll poll the alarm bit so we can make sure we won't change it while setting the alarm
+	cmd_buff = RTC_ALRM1_HOUR_ADDR;
+	if((!rtc_receive_data(&cmd_buff,1 ,&data_buff, 1)))
+	{
+		printf("rtc_set_alarm1: ERROR: alarm flag hasn't been nullified by reading it \n");
+		return FALSE;
+	}
+
+	alarm_data_buff[3] |= (data_buff&0x40);//using the mask 01000000 to fish the halt bit out and add it to our buffer
+										   //so it won't be nulified when the alarm is set
 
 	cmd_buff = RTC_ALRM1_MONTH_ADDR; 
 

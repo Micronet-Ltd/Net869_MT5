@@ -28,7 +28,7 @@ void rtc_set_cal_register(uint8_t *digital_cal, uint8_t *analog_cal);
 bool rtc_receive_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data_size);
 bool rtc_send_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data_size);
 void rtc_test(void);
-//bool rtc_check_flags_in_low_pow_mode(uint8_t *flags_to_return);
+
 /*there is no need to call rtc_activate_or_deactivate_alarm_polling after setting the alarm */
 bool rtc_set_alarm1(uint8_t *dt_bcd);
 

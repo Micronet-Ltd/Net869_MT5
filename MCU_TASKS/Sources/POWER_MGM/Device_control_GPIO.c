@@ -154,7 +154,7 @@ void disable_peripheral_clocks(void)
   }
 }
  
-/*disables alarm polling before shut down in case date has already passed 
+/*disables alarm polling before shutting down in case date has already passed 
   this function should be used only in this file so it will stay inlined and won't slow the system*/
 void inline rtc_clear_outdated_alarm()
 {
@@ -174,9 +174,11 @@ void inline rtc_clear_outdated_alarm()
         poll_timeout_g = 0;
     }
 
+    _event_clear(rtc_flags_g, ALARM1_ACTIVATE_BIT);
    /*alternative encapsulated implementation to design this function:
    rtc_get_flags();
    rtc_alarm1_is_trigered(); 
+    _event_clear(rtc_flags_g, ALARM1_ACTIVATE_BIT); 
    */ 
 }
 
