@@ -158,28 +158,11 @@ void disable_peripheral_clocks(void)
   this function should be used only in this file so it will stay inlined and won't slow the system*/
 void inline rtc_clear_outdated_alarm()
 {
-   /*for pipeline efficency reasons I decided to access the rtc directly as this function 
-     is also called during immidiate shutdown and should be as fast as possible and there
-     is more overhead with the alternative more object oriented encapsulated implementation:
-     */
-    uint8_t cmd_buff = 0xF;//RTC_FLAGS_ADDR 
-	uint8_t flag_data_buff;
-
-    if(!rtc_receive_data(&cmd_buff,1 ,&flag_data_buff, 1))
-	{
-		printf("rtc_get_flags: ERROR: could not read the bytes related to the flags\n");
-	}
-    else if(0 != (flag_data_buff&ALARM1_ACTIVATE_BIT)) 
-    {
-        poll_timeout_g = 0;
-    }
-
-    _event_clear(rtc_flags_g, ALARM1_ACTIVATE_BIT);
-   /*alternative encapsulated implementation to design this function:
+  
    rtc_get_flags();
    rtc_alarm1_is_trigered(); 
-    _event_clear(rtc_flags_g, ALARM1_ACTIVATE_BIT); 
-   */ 
+   _event_clear(rtc_flags_g, ALARM1_ACTIVATE_BIT); 
+   
 }
 
 void device_state_stringify(DEVICE_STATE_t device_state, char * dev_state_str )

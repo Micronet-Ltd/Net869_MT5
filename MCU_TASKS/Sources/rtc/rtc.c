@@ -158,11 +158,11 @@ bool rtc_set_alarm1(uint8_t *dt_bcd)
 		return FALSE;
 	}
 
-	//now we'll poll the alarm bit so we can make sure we won't change it while setting the alarm
+	//now we'll poll the HALT bit so we can make sure we won't change it while setting the alarm
 	cmd_buff = RTC_ALRM1_HOUR_ADDR;
 	if((!rtc_receive_data(&cmd_buff,1 ,&data_buff, 1)))
 	{
-		printf("rtc_set_alarm1: ERROR: alarm flag hasn't been nullified by reading it \n");
+		printf("rtc_set_alarm1: ERROR: couldn't read flags for ABE \n");
 		return FALSE;
 	}
 
