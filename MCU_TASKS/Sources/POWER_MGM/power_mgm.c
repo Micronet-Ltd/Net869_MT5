@@ -922,7 +922,8 @@ void Power_MGM_task (uint32_t initial_data )
 	disable_peripheral_clocks();
 	CLOCK_SYS_EnablePortClock (PORTB_IDX); //PortB clock to read the WD signal
 	CLOCK_SYS_EnablePortClock (PORTC_IDX); //to read the RF_KILL signal
-	
+//	CLOCK_SYS_EnablePortClock(PORTD_IDX);
+
 	_bsp_MQX_tick_timer_init ();
 	/* Enable power to the vibration sensor and accelerometer */
 	//GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
@@ -964,7 +965,7 @@ void Power_MGM_task (uint32_t initial_data )
 		time_diff_milli_u = (uint32_t) time_diff_milli;
 
 //		if ((device_state_g == DEVICE_STATE_ON)||  (device_state_g == DEVICE_STATE_ON_OS_SUSPENDED))
-//		if ((device_state_g == DEVICE_STATE_ON) || (device_state_g == DEVICE_STATE_OFF) )
+		if ((device_state_g == DEVICE_STATE_ON) || (device_state_g == DEVICE_STATE_OFF) )
 		{
 			//MT5_power_state_monitor(&time_diff_milli_u);
 			MT5_state_monitor();

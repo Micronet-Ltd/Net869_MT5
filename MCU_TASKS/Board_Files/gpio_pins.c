@@ -84,7 +84,7 @@ const gpio_input_pin_user_config_t inputPins[] = {
 	{.pinName = OTG_ID   ,			.config.isPullEnable = false/*true for OTG*/,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = true,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = UART_MCU2CPU_RX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
 	{.pinName = UART_MCU2CPU_TX,	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
-	{.pinName = CPU_INT,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
+	{.pinName = CPU_INT,			.config.isPullEnable = true,	.config.pullSelect = kPortPullDown,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
 	{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = true,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  }, //interrupt needs to disabled by default coz MSM is not ON yet
 	{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  }, //interrupt needs to disabled by default coz MSM is not ON yet
 	{.pinName = BUTTON1,     		.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntDisabled  },
@@ -102,7 +102,7 @@ void configure_msm_gpio_input_pins(bool interrupt_disable)
 //always on for smart cradle		{.pinName = CPU_WATCHDOG,   	.config.isPullEnable = true,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },//kPortIntRisingEdge  },
 //		{.pinName = CPU_STATUS,      	.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
 		{.pinName = CPU_SPKR_EN,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
-//		{.pinName = CPU_INT,			.config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
+//		{.pinName = CPU_INT,			.config.isPullEnable = true,	.config.pullSelect = kPortPullDown,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
 //		{.pinName = CPU_RF_KILL,        .config.isPullEnable = false,	.config.pullSelect = kPortPullUp,  .config.isPassiveFilterEnabled = false,  .config.interrupt = kPortIntEitherEdge  },
 		{ .pinName = GPIO_PINS_OUT_OF_RANGE	}
 	};
@@ -246,6 +246,9 @@ void GPIO_Config( void ) {
 //	GPIO_DRV_SetPinDir(OTG_ID, kGpioDigitalOutput);
 //	GPIO_DRV_WritePinOutput(OTG_ID, 0);
 ///////////
+
+	GPIO_DRV_SetPinDir(CPU_INT, kGpioDigitalOutput);
+	GPIO_DRV_WritePinOutput(CPU_INT, 0);
 	
 	GPIO_DRV_Init(inputPins, outputPins);
 	I2C_reset_bus(I2C0_SDA, I2C0_SCL);
