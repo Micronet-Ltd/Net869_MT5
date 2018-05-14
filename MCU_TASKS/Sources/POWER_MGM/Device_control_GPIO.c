@@ -238,6 +238,39 @@ void set_run_mode(int32_t fOn, int32_t fForce)
 	}
 	last_tst = fOn;					
 }
+void set_otg_id(int32_t fOn, int32_t fForce)
+{
+	static int32_t last = -1;
+	if(last != fOn || fForce)
+	{
+		if(fOn)
+			GPIO_DRV_SetPinOutput (CPU_OTG_ID);
+		else
+			GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
+
+		printf("%s: %d\n", __func__, fOn);
+		last = fOn;
+	}
+}
+void set_credle_detect(int fOn, int fForce)
+{
+	static int32_t last = -1;
+	if(last != fOn || fForce)
+	{
+		if(fOn)
+		{
+			GPIO_DRV_SetPinDir(CPU_INT, kGpioDigitalOutput);
+			GPIO_DRV_WritePinOutput(CPU_INT, 0);
+		}
+		else
+		{
+			GPIO_DRV_SetPinDir(CPU_INT, kGpioDigitalInput);
+		}
+		printf("%s: %d\n", __func__, fOn);
+		last = fOn;
+	}
+}
+				
 void Device_update_state (uint32_t * time_diff)
 {
 	uint32_t power_in_voltage  = ADC_get_value (kADC_POWER_IN   );
@@ -352,7 +385,7 @@ void Device_update_state (uint32_t * time_diff)
 				wait_on_timeout = ms_from_start() + 6500;
 //				last_wiggle_condition = (turn_on_condition_g & POWER_MGM_DEVICE_ON_WIGGLE_TRIGGER);//store
 				start_count = 1;
-                enable_msm_power(0, 0);//temp!!!???
+                //enable_msm_power(0, 0);//temp!!!???
 				break;
 			}
 			
@@ -381,9 +414,11 @@ void Device_update_state (uint32_t * time_diff)
 				printed_temp_error = FALSE;
 				device_state_g = DEVICE_STATE_TURNING_ON;				
 			}
-			else if( (MT5_out == MT5_present) && (1 == dev_present) && !fCritBattery)//or out or charging
+			else if( (MT5_out == MT5_present) && (1 == dev_present) && !fCritBattery)
 			{
+				set_otg_id(1, 0);
 				enable_msm_power(0, 0);
+				set_credle_detect(1, 0);				
 			}
 			break;
 
@@ -392,9 +427,9 @@ void Device_update_state (uint32_t * time_diff)
 			if (!Device_control_GPIO_status())
 			{
 				set_run_mode(1, 0);
+				_event_set(power_up_event_g, 1);//for the 1st on only
 				device_state_g = DEVICE_STATE_ON;
 				printf ("\nPOWER_MGM: DEVICE RUNNING %llu ms\n", ms_from_start());
-				_event_set(power_up_event_g, 1);//for the 1st on only
 				wait_on_timeout = ms_from_start() + 21000;
 				fCritBattery = 0;
 			}

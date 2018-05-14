@@ -61,6 +61,13 @@ _pool_id   g_in_message_pool;
 _task_id   g_TASK_ids[NUM_TASKS] = { 0 };
 //extern WIGGLE_SENSOR_t sensor_g;
 
+enum ign_pulses
+{
+	kIgnitionOff,
+	kIgnitionOn,
+	kCredleDetect
+};
+
 extern void * g_acc_event_h;
 extern void * power_up_event_g;
 extern void * a8_watchdog_event_g;
@@ -84,7 +91,8 @@ uint64_t g_wd_fall_time = 0;
 uint64_t g_wd_rise_time = 0;
 
 extern void a8_watchdog_set(int fOn);
-
+extern void set_otg_id(int32_t fOn, int32_t fForce);
+extern void set_credle_detect(int fOn, int fForce);
 
 /* induce_hard_fault: Induce divide by zero hard fault(used for debugging) */
 void induce_hard_fault(void)
@@ -211,18 +219,22 @@ void task_sleep_if_OS_suspended(void)
 }
 void ign_pulses(ftm_pwm_param_t* ftm, int fOn)
 {
-	if (fOn)
+	if (1 == fOn)
 	{
 		//Ignition high
 		ftm->uFrequencyHZ = 500u;
-		ftm->uDutyCyclePercent = 50;
 	}
-	else
+	else if(2 == fOn)
+	{
+		//smart cradle detection
+		ftm->uFrequencyHZ = 1000u;
+	}
+	else// if(0 == fOn)
 	{
 		//Ignition Low
 		ftm->uFrequencyHZ = 100u;
-		ftm->uDutyCyclePercent = 50;
 	}
+	ftm->uDutyCyclePercent = 50;
 	FTM_DRV_PwmStart(0, ftm, CHAN6_IDX);
 	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);
 	_time_delay(100);
@@ -232,6 +244,8 @@ void ign_pulses(ftm_pwm_param_t* ftm, int fOn)
 	ftm->uDutyCyclePercent = 100;
 	FTM_DRV_PwmStart(0, ftm, CHAN6_IDX);
 	FTM_HAL_SetSoftwareTriggerCmd(g_ftmBase[0], true);	
+
+	printf("%s: ignition state updated %d [%llu]\n", __func__, fOn, ms_from_start());	
 }
 void Main_task( uint32_t initial_data ) {
 
@@ -246,6 +260,7 @@ void Main_task( uint32_t initial_data ) {
 	uint64_t otg_check_time;
 	int32_t MT5_present_last = 0;
 	uint32_t active_count = 0, notify = 0;
+	int32_t	on_flag_last = 0;
 	
 #if (!_DEBUG)
 	watchdog_mcu_init();
@@ -398,7 +413,7 @@ void Main_task( uint32_t initial_data ) {
 //	rtc_init();
 
 	//GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
-	_time_delay (1000);
+	//_time_delay (1000);
 
 	FlexCanDevice_InitHW();
 
@@ -509,7 +524,7 @@ void Main_task( uint32_t initial_data ) {
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
 #endif
-        _time_delay(MAIN_TASK_SLEEP_PERIOD);
+//        _time_delay(MAIN_TASK_SLEEP_PERIOD);
 		// MCU starts with OTG ID disabled for monitoring
 		// Main task starts monitor this one only after Power task powers on the A8 and gets PON pulse from it
 		// The Main task monitors OTG ID and switch USB according it.
@@ -529,19 +544,27 @@ void Main_task( uint32_t initial_data ) {
 		
 		if(1 == g_on_flag)
 		{
-			if(notify && (2 < active_count))
+			if(on_flag_last != g_on_flag)
+			{
+				ign_pulses(&ftmParam, kCredleDetect);
+				set_credle_detect(0, 1);		
+				enable_msm_power(1, 0);
+			}
+			else if(notify)// && (2 < active_count))
 			{
 				notify = 0;
 				ignition_state_g.OS_notify = false;
-				printf("%s: ignition state updated, %d \n", __func__, ignition_state_g.state);
 				ign_pulses(&ftmParam, ignition_state_g.state);
-				enable_msm_power(1, 0);
-				
+				//enable_msm_power(1, 0);
 			}
-			else if(3 < active_count)//'else' - next turn from notification
+			else //if(3 < active_count)//'else' - for next turn
 				configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
 		}
 		MT5_present_last = g_MT5_present;
+
+		on_flag_last = g_on_flag;
+
+		_time_delay(MAIN_TASK_SLEEP_PERIOD);
 
 #undef DEBUG_BLINKING_RIGHT_LED
 #ifdef DEBUG_BLINKING_RIGHT_LED
@@ -609,7 +632,7 @@ void configure_otg_for_host_or_device(int force)
 
 			GPIO_DRV_SetPinOutput 	(FTDI_RSTN);
 			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-			GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
+			set_otg_id(0, 0);//GPIO_DRV_ClearPinOutput (CPU_OTG_ID);
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
 			a8_watchdog_set(1);
 #endif
@@ -621,7 +644,7 @@ void configure_otg_for_host_or_device(int force)
 			GPIO_DRV_SetPinOutput (USB_OTG_SEL);
 
 			GPIO_DRV_ClearPinOutput (USB_OTG_OE);
-			GPIO_DRV_SetPinOutput 	(CPU_OTG_ID);
+			set_otg_id(1, 0);//GPIO_DRV_SetPinOutput 	(CPU_OTG_ID);
 			GPIO_DRV_ClearPinOutput (FTDI_RSTN);
 			g_otg_ctl_port_active = 0;
 		}
