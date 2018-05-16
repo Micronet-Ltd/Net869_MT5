@@ -128,6 +128,43 @@ bool rtc_get_flags()
     return TRUE;
 }
 
+bool rtc_check_if_alarm_date_passed()
+{
+    int32_t minutes_untill_alarm;
+	uint8_t cmd_buff = RTC_ALRM1_MONTH_ADDR; 
+	uint8_t alarm_buff[5];
+    uint8_t time_buff[8] = {0};
+
+    if((!rtc_receive_data(&cmd_buff,1 ,alarm_buff, 5)))
+	{
+		printf("rtc_check_whether_date_passed: ERROR: couldn't retrieve alarm time \n");
+		return FALSE;
+	}
+
+    cmd_buff = RTC_ALRM1_HOUR_ADDR;
+
+    if((!rtc_receive_data(&cmd_buff,1 ,time_buff, 5)))
+	{
+		printf("rtc_check_whether_date_passed: ERROR: couldn't retrieve alarm time \n");
+		return FALSE;
+	}
+
+    rtc_get_time(time_buff);
+
+    //comparing date month to month day to day etc...
+
+    minutes_untill_alarm = ((alarm_buff[0]&0x1f) - time_buff[6]) * 86400 //approx minutes in a month
+                           +
+                           ((alarm_buff[1]&0x3f) - time_buff[5]) * 1440 //minutes in a day
+                            +
+                           ((alarm_buff[2]&0x3f) - (time_buff[3]&0x3f)) * 60 //minutes in an hour
+                            +
+                           ((alarm_buff[3]&0x7f) - time_buff[2]);          // minutes*/
+
+
+    return (minutes_untill_alarm > 0);
+}
+
 
 
 /* sets the alarm to activate once at the given date in dt_bcd
@@ -145,7 +182,6 @@ bool rtc_set_alarm1(uint8_t *dt_bcd)
 	{
 		alarm_data_buff[i] |= dt_bcd[i];
 	}
-
 	/*
 	    Before setting the alarm address, it seems like a good idea to
 		nullify the AF flag on the RTC by reading it with the other flags
@@ -157,6 +193,9 @@ bool rtc_set_alarm1(uint8_t *dt_bcd)
 		printf("rtc_set_alarm1: ERROR: alarm flag hasn't been nullified by reading it \n");
 		return FALSE;
 	}
+    //now lets use the first bit to signal
+
+
 
 	//now we'll poll the HALT bit so we can make sure we won't change it while setting the alarm
 	cmd_buff = RTC_ALRM1_HOUR_ADDR;
@@ -168,7 +207,6 @@ bool rtc_set_alarm1(uint8_t *dt_bcd)
 
 	alarm_data_buff[3] |= (data_buff&0x40);//using the mask 01000000 to fish the halt bit out and add it to our buffer
 										   //so it won't be nulified when the alarm is set
-
 	cmd_buff = RTC_ALRM1_MONTH_ADDR; 
 
 	if(!rtc_send_data(&cmd_buff,1 ,alarm_data_buff, RTC_NUM_OF_ALARM_BYTES_BCD))
@@ -306,7 +344,6 @@ void rtc_init(void)
     {
         printf("rtc_init: couldn't read the RTC flags \n");
     }
-
 	if (!rtc_check_oscillator())
 	{
 		printf("rtc_init: oscillator not good \n");
@@ -324,6 +361,8 @@ void rtc_init(void)
 	{
 		printf("alarm bit doesn't work correctly \n");
 	}
+
+    poll_timeout_g = rtc_check_if_alarm_date_passed();//stays zero if date has passed becomes 1 otherwise
 
 #ifdef RTC_DEBUG	
 	rtc_test();

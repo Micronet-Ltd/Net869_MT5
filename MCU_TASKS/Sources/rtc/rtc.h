@@ -16,6 +16,7 @@
 #define ALARM1_ACTIVATE_BIT                 (1 << 6)     
 #define BATTERY_LOW_BIT                     (1 << 4)
 #define OCCILATOR_BIT                       (1 << 2)
+#define ALARM1_EXIST_BIT                    1  
   
 extern void *rtc_flags_g;
 extern uint64_t poll_timeout_g;
@@ -28,6 +29,7 @@ void rtc_set_cal_register(uint8_t *digital_cal, uint8_t *analog_cal);
 bool rtc_receive_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data_size);
 bool rtc_send_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data_size);
 void rtc_test(void);
+bool rtc_check_if_alarm_date_passed();
 
 /*there is no need to call rtc_activate_or_deactivate_alarm_polling after setting the alarm */
 bool rtc_set_alarm1(uint8_t *dt_bcd);

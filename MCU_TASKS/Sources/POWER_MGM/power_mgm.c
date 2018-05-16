@@ -644,6 +644,9 @@ void Power_MGM_task (uint32_t initial_data )
 	_mqx_uint event_result;
 	uint64_t current_time;
 	int32_t a8_on = 0;
+    //poll_timeout_g = 1;//for alarm debug purpose only, this line ensures that the protection against 
+                        //arbitrary changes in the RTC won't work so the programmer could set the date on the RTC 
+                        //manually and not using the API and the device will still poll the RTC and wake up.
 	
 	_time_get_elapsed_ticks_fast(&ticks_prev);
 

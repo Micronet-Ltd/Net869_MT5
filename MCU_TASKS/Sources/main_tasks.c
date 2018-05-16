@@ -257,6 +257,9 @@ void Main_task( uint32_t initial_data ) {
 //	I2C_DRV_MasterInit(I2C1_IDX, &i2c1_master);
 
 	Virtual_Com_MemAlloc(); // Allocate USB out buffers
+    /*Note: rtc_init() is intentionally placed before accelerometer init 
+    because I was seeing  i2c arbitration errors - Abid */
+    rtc_init();
 
 	g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
 	if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
@@ -316,9 +319,6 @@ void Main_task( uint32_t initial_data ) {
 //	GPIO_DRV_SetPinOutput(FTDI_RSTN);
 	
 	//GPIO_DRV_SetPinOutput(RS485_ENABLE);
-	/*Note: rtc_init() is intentionally placed before accelerometer init 
-	because I was seeing  i2c arbitration errors - Abid */
-	rtc_init();
 
 	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 	_time_delay (1000);
