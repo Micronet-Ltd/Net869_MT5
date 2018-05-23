@@ -35,7 +35,7 @@ uint32_t get_board_adc_value(adc16_chn_t channel){
 *						Each multiple of 0.1 increments the revision 
 *						Returns 0xff on no match
 */
-int get_board_revision(void)
+uint8_t get_board_revision(void)
 {
 	uint32_t board_rev = 0;
 	uint32_t board_adc_val = 0;

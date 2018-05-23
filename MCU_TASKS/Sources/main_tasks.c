@@ -72,7 +72,7 @@ MUTEX_STRUCT g_i2c1_mutex;
 
 extern uint8_t g_flag_Exit;
 
-int g_board_rev;
+uint8_t g_board_rev;
 char g_board_config;
 
 
