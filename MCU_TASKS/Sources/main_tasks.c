@@ -29,6 +29,7 @@
 #include "power_mgm.h"
 #include "version.h"
 #include "fsl_wdog_driver.h"
+#include "board_type.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
@@ -70,6 +71,9 @@ MUTEX_STRUCT g_i2c0_mutex;
 MUTEX_STRUCT g_i2c1_mutex;
 
 extern uint8_t g_flag_Exit;
+
+uint8_t g_board_rev;
+char g_board_config;
 
 
 /* induce_hard_fault: Induce divide by zero hard fault(used for debugging) */
@@ -281,6 +285,10 @@ void Main_task( uint32_t initial_data ) {
 			printf("Main_task: Could not open PowerUp event \n");
 	}
 
+	g_board_rev = get_board_revision();
+	g_board_config = get_board_configuration();
+	printf("board_rev = %d, board_config= %c\n", g_board_rev, g_board_config);
+
     printf("%s: wait for power on event\n", __func__);
     while (1)
     {
@@ -427,6 +435,7 @@ void Main_task( uint32_t initial_data ) {
 	FPGA_read_version(&FPGA_version);
 	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
 	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
+	printf("board_rev = %d, board_config= %c\n", g_board_rev, g_board_config);
 
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
 #if (!_DEBUG)
