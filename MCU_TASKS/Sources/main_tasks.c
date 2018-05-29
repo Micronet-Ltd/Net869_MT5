@@ -31,7 +31,7 @@
 
 #define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
-#define DEBUG_A8_WATCHOG_DISABLED 1
+//#define DEBUG_A8_WATCHOG_DISABLED 1
 
 //void MQX_I2C0_IRQHandler (void);
 //void MQX_I2C1_IRQHandler (void);
@@ -359,13 +359,13 @@ void Main_task( uint32_t initial_data ) {
 	}
 	else
 		printf("\nMain UPDATER_TASK created\n");
-/*
+
 	g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
 	if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
 	{
 		printf("\nMain Could not create CONTROL_TASK\n");
 	}
-*/
+
 /*	
 	g_TASK_ids[ONE_WIRE_TASK] = _task_create(0, ONE_WIRE_TASK, 0);
 	if (g_TASK_ids[ONE_WIRE_TASK] == MQX_NULL_TASK_ID)
