@@ -20,6 +20,7 @@ typedef enum {
 	kADC_CABLE_TYPE	   ,
 
 	kADC_POWER_IN_ISR   ,
+
 	kADC_CHANNELS
 } KADC_CHANNELS_t;
 
