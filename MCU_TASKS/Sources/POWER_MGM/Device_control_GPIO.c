@@ -245,8 +245,11 @@ void Device_update_state (uint32_t * time_diff)
 	if ((device_state_g == DEVICE_STATE_OFF && time_since_temp_print > 45000) //about 10 seconds, coz running @ slower clock
 		|| (device_state_g != DEVICE_STATE_OFF && time_since_temp_print > 30000)) // 30 seconds
 	{
-		printf("%s: Time: %llu ms, dev_state:%d, power_in=%d, ign_vol=%d, tempx10=%d\n", 
-			   __func__, ms_from_start(), device_state_g, power_in_voltage, ignition_voltage, temperature - 500);
+		printf("%s: Time: %llu ms, dev_state:%d, power_in=%d\n",
+			   __func__, ms_from_start(), device_state_g, power_in_voltage);
+		_time_delay(5);
+		printf("%s: ign_vol=%d, tempx10=%d\n",
+			   __func__, ignition_voltage, temperature - 500);
 		time_since_temp_print = 0;
 	}
 #endif
