@@ -49,7 +49,7 @@ static void get_wiggle_sensor_count_dbg(uint8_t * data, uint16_t data_size, uint
 static void set_accel_standby_active_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_accel_active);
 static void get_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
 static void set_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
-
+static void get_rtc_flags(uint8_t * data, uint16_t data_size, uint8_t * flags);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -128,6 +128,10 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
     [COMM_SET_RTC_ALARM1_TIME] = {set_rtc_alarm1_time,
 								SET_COMMAND,
 							    0},
+	[COMM_GET_RTC_ALARM1_INIT_FLAGS] = {get_rtc_flags,
+								GET_COMMAND,
+								(sizeof(uint8_t)*4)},
+
 
 };
 
@@ -248,6 +252,12 @@ static void  set_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t 
 	Wiggle_sensor_set_vibration_TH  (vibration_threshold, duration_threshold);
 	set_ignition_threshold(ignition_threshold);
 }
+
+static void get_rtc_flags(uint8_t * data, uint16_t data_size, uint8_t * flags)
+{
+	rtc_get_init_flags((uint32_t *)flags);
+}
+
 
 static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * pturn_on_reason)
 {

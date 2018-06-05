@@ -109,8 +109,10 @@ bool rtc_send_data(uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data
 }
 
 //poll the flag bits from the RTC and raise the relevant bits in rtc_flags_g ,
-//for future users of this module note that any peek at the flags will nullify the alarm flags 
-//so it might be a good idea to use this function to read the flags and not to do that directly
+//for future users of this module, note that any peek at the flags will nullify the alarm flags 
+//so you should use this function to read the flags and not do that directly so you don't mess with the 
+//alarm bits, in any case the flags are polled to rtc_flags_g events at start up so using this event
+//might suffice
 bool rtc_get_flags()
 {
     uint8_t cmd_buff = RTC_FLAGS_ADDR; 
@@ -128,6 +130,7 @@ bool rtc_get_flags()
     return TRUE;
 }
 
+/*
 bool rtc_check_if_alarm_date_passed()
 {
     int32_t minutes_untill_alarm;
@@ -159,12 +162,29 @@ bool rtc_check_if_alarm_date_passed()
                             +
                            ((alarm_buff[2]&0x3f) - (time_buff[3]&0x3f)) * 60 //minutes in an hour
                             +
-                           ((alarm_buff[3]&0x7f) - time_buff[2]);          // minutes*/
+                           ((alarm_buff[3]&0x7f) - time_buff[2]);          // minutes
 
 
     return (minutes_untill_alarm > 0);
-}
+}*/
 
+/*in case no alarm was set, the alarm months will be set to zero while turnning the device on 
+  this nulification should occur in Device_control_GPIO using rtc_set_alarm1
+  so checking the months register is a good way to check whether the alarm should be polled or not*/
+bool rtc_check_if_alarm_hours_iz_not_zero()
+{
+    int32_t minutes_untill_alarm;
+    uint8_t cmd_buff = RTC_ALRM1_MONTH_ADDR; 
+    uint8_t alarm_buff;
+
+    if((!rtc_receive_data(&cmd_buff,1 ,&alarm_buff, 1)))
+    {
+        printf("rtc_check_whether_date_passed: ERROR: couldn't retrieve alarm time \n");
+        return 0;
+    }
+
+    return (0 !=(alarm_buff&0x1f));
+}
 
 
 /* sets the alarm to activate once at the given date in dt_bcd
@@ -362,7 +382,7 @@ void rtc_init(void)
 		printf("alarm bit doesn't work correctly \n");
 	}
 
-    poll_timeout_g = rtc_check_if_alarm_date_passed();//stays zero if date has passed becomes 1 otherwise
+    poll_timeout_g = rtc_check_if_alarm_hours_iz_not_zero();//there is no need to poll the clock if there ian't an alarm
 
 #ifdef RTC_DEBUG	
 	rtc_test();
@@ -487,6 +507,12 @@ void rtc_set_cal_register(uint8_t *digital_cal, uint8_t *analog_cal)
 		printf("rtc_set_cal_register: set analog cal failed \n");
 	}
 }
+
+void rtc_get_init_flags(uint32_t *flags)
+{
+	_event_get_value(rtc_flags_g, flags);
+}
+
 
 
 #ifdef RTC_DEBUG
