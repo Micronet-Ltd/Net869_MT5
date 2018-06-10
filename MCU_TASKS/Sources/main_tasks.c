@@ -295,10 +295,6 @@ void Main_task( uint32_t initial_data ) {
 			printf("Main_task: Could not open PowerUp event \n");
 	}
 
-	//g_board_rev = get_board_revision();
-	//g_board_config = get_board_configuration();
-	printf("board_rev = %d, board_config= %c\n", g_board_rev, g_board_config);
-
     printf("%s: wait for power on event\n", __func__);
     while (1)
     {
@@ -328,6 +324,10 @@ void Main_task( uint32_t initial_data ) {
 	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
+
+	g_board_rev = get_board_revision();
+	g_board_config = get_board_configuration();
+	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
 
 	// turn on device
 	enable_msm_power(TRUE);		// turn on 5V0 power rail
@@ -442,7 +442,7 @@ void Main_task( uint32_t initial_data ) {
 	FPGA_read_version(&FPGA_version);
 	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
 	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
-	printf("board_rev = %d, board_config= %c\n", g_board_rev, g_board_config);
+	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
 
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
 #if (!_DEBUG)
