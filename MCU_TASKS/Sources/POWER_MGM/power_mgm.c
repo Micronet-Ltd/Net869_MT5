@@ -690,15 +690,6 @@ void Power_MGM_task (uint32_t initial_data )
 		printf("Power_MGM_task: Could not open event.EXTERNAL_GPIOS \n");
 	}
 
-	if(MQX_OK !=  _event_create("event.TimerEvent")){
-		printf("rtc_check_alarm_working: Could not create event.TimerEvent \n");
-	}
-
-	if(MQX_OK != _event_open("event.TimerEvent", &rtc_flags_g)){
-		printf("rtc_check_alarm_working: Could not open event.TimerEvent \n");
-	}
-
-
 	Device_init (POWER_MGM_TIME_DELAY);
 	ADC_init ();
 	/* Get all the initial ADC values */

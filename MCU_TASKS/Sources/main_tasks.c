@@ -17,6 +17,7 @@
 #include "ADC.h"
 #include "EXT_GPIOS.h"
 #include "wiggle_sensor.h"
+#include "rtc.h"
 #include "mic_typedef.h"
 #include "Uart_debugTerminal.h"
 #include "FlexCanDevice.h"
@@ -261,6 +262,15 @@ void Main_task( uint32_t initial_data ) {
 //	I2C_DRV_MasterInit(I2C1_IDX, &i2c1_master);
 
 	Virtual_Com_MemAlloc(); // Allocate USB out buffers
+
+	//rtc init is using TimerEvent so it should be initiated here
+	if(MQX_OK !=  _event_create("event.TimerEvent")){
+		printf("rtc_check_alarm_working: Could not create event.TimerEvent \n");
+	}
+
+	if(MQX_OK != _event_open("event.TimerEvent", &rtc_flags_g)){
+		printf("rtc_check_alarm_working: Could not open event.TimerEvent \n");
+	}
     /*Note: rtc_init() is intentionally placed before accelerometer init 
     because I was seeing  i2c arbitration errors - Abid */
     rtc_init();
@@ -285,8 +295,8 @@ void Main_task( uint32_t initial_data ) {
 			printf("Main_task: Could not open PowerUp event \n");
 	}
 
-	g_board_rev = get_board_revision();
-	g_board_config = get_board_configuration();
+	//g_board_rev = get_board_revision();
+	//g_board_config = get_board_configuration();
 	printf("board_rev = %d, board_config= %c\n", g_board_rev, g_board_config);
 
     printf("%s: wait for power on event\n", __func__);

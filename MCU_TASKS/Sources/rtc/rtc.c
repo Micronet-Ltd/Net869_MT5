@@ -377,10 +377,6 @@ void rtc_init(void)
 	{
 		printf("rtc_init: battery low bit set \n");
 	}
-	if(!rtc_get_flags())
-	{
-		printf("alarm bit doesn't work correctly \n");
-	}
 
     poll_timeout_g = rtc_check_if_alarm_hours_iz_not_zero();//there is no need to poll the clock if there ian't an alarm
 
