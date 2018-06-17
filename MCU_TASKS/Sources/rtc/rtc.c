@@ -116,7 +116,7 @@ bool rtc_send_data(uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data
 bool rtc_get_flags()
 {
     uint8_t cmd_buff = RTC_FLAGS_ADDR; 
-	uint8_t flag_data_buff;
+	uint8_t flag_data_buff = 0;
 
     if(!rtc_receive_data(&cmd_buff,1 ,&flag_data_buff, 1))
 	{
@@ -360,10 +360,11 @@ void rtc_init(void)
 {
 	I2C_Enable(RTC_I2C_PORT); /* Note:Both accelerometer and RTC are on the same bus*/
 
-    if (rtc_get_flags())
+    if (!rtc_get_flags())
     {
         printf("rtc_init: couldn't read the RTC flags \n");
     }
+
 	if (!rtc_check_oscillator())
 	{
 		printf("rtc_init: oscillator not good \n");
