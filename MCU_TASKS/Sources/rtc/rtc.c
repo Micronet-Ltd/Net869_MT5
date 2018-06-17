@@ -197,7 +197,7 @@ bool rtc_set_alarm1(uint8_t *dt_bcd)
 	uint8_t data_buff;
 	uint8_t  i;
 
-	alarm_data_buff[0]|= 0x20;//for activating ABE bit so the alarm will work in low power mode
+	alarm_data_buff[0] |= 0x20;//for activating ABE bit so the alarm will work in low power mode
 	for(i = 0; i < RTC_NUM_OF_ALARM_BYTES_BCD; ++i)
 	{
 		alarm_data_buff[i] |= dt_bcd[i];
@@ -206,15 +206,20 @@ bool rtc_set_alarm1(uint8_t *dt_bcd)
 	    Before setting the alarm address, it seems like a good idea to
 		nullify the AF flag on the RTC by reading it with the other flags
 	*/
+#if 0
 	cmd_buff = RTC_FLAGS_ADDR; 
 
-    if((!rtc_receive_data(&cmd_buff,1 ,&data_buff, 1)))
+    if((!rtc_receive_data(&cmd_buff, 1 ,&data_buff, 1)))
 	{
 		printf("rtc_set_alarm1: ERROR: alarm flag hasn't been nullified by reading it \n");
 		return FALSE;
 	}
     //now lets use the first bit to signal
-
+#endif
+    if (!rtc_get_flags()) {
+        return 0;
+    }
+    _event_clear(rtc_flags_g, ALARM1_ACTIVATE_BIT);
 
 
 	//now we'll poll the HALT bit so we can make sure we won't change it while setting the alarm
@@ -236,7 +241,7 @@ bool rtc_set_alarm1(uint8_t *dt_bcd)
 	}
 
 	//now clear the event bit from previous alarm activation
-    _event_clear(rtc_flags_g,ALARM1_ACTIVATE_BIT);
+    //_event_clear(rtc_flags_g, ALARM1_ACTIVATE_BIT);
 	//set polling on
 	poll_timeout_g = RTC_DEFAULT_MILISEC_WAIT_POLL + ms_from_start();
 
