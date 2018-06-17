@@ -56,7 +56,7 @@ static i2c_device_t rtc_device_g = {.address = RTC_DEVICE_ADDRESS,    .baudRate_
 bool rtc_oscillator_kick_start(void);
 
 
-bool rtc_receive_data(uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data_size)
+inline bool rtc_receive_data(uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data_size)
 {
 	i2c_status_t  i2c_status;
 	_mqx_uint ret = MQX_OK;
@@ -116,7 +116,7 @@ bool rtc_send_data(uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t data
 bool rtc_get_flags()
 {
     uint8_t cmd_buff = RTC_FLAGS_ADDR; 
-	uint8_t flag_data_buff;
+    uint8_t flag_data_buff ;
 
     if(!rtc_receive_data(&cmd_buff,1 ,&flag_data_buff, 1))
 	{

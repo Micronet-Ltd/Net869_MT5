@@ -10,7 +10,7 @@
 
 #define RTC_BCD_SIZE				      	8
 #define RTC_NUM_OF_ALARM_BYTES_BCD			5
-#define RTC_DEFAULT_MILISEC_WAIT_POLL       60000 
+#define RTC_DEFAULT_MILISEC_WAIT_POLL       100000 
 
 #define WATCH_DOG_BIT                       (1 << 7)
 #define ALARM1_ACTIVATE_BIT                 (1 << 6)     
