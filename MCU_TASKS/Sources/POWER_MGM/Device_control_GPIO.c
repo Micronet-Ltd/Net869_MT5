@@ -686,7 +686,7 @@ void Device_turn_on  (void)
 	_time_get_elapsed(&ticks_now);
 
     //make sure alarm polling will be set off.
-    rtc_clear_outdated_alarm();
+//    rtc_clear_outdated_alarm();
 
 	device_control_gpio_g.time_threshold = (uint64_t)1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.time           = 0;

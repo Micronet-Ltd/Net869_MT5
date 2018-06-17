@@ -426,6 +426,8 @@ void rtc_get_time(uint8_t * dt_bcd)
 #ifdef RTC_DEBUG
 	char dt_str[RTC_STRING_SIZE] = {0};
 #endif
+    rtc_get_flags();
+
 	if (!rtc_check_oscillator())
 	{
 		printf("rtc_get: oscillator not good \n");

@@ -369,6 +369,7 @@ void Main_task( uint32_t initial_data ) {
             result &= ~EVENT_A8_BOOTED;
     } while (!(result & EVENT_A8_BOOTED));
     _event_clear(g_a8_pwr_state_event, EVENT_A8_BOOTED);
+    rtc_clear_outdated_alarm();
 
     g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
     if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
