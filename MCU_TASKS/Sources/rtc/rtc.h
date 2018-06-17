@@ -31,6 +31,7 @@ bool rtc_send_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t dat
 void rtc_test(void);
 //bool rtc_check_if_alarm_date_passed();
 bool rtc_check_if_alarm_date_iz_zero();
+void rtc_clear_outdated_alarm(void);
 
 void rtc_get_init_flags(uint32_t *flags);
 

@@ -777,7 +777,7 @@ void Power_MGM_task (uint32_t initial_data )
 		Device_update_state(&time_diff_milli_u);
         check_a8_power_events(&a8_on);
 
-		if(poll_timeout_g && poll_timeout_g  < ms_from_start()) 
+		if(poll_timeout_g && (poll_timeout_g  < ms_from_start())) 
 		{
 			rtc_get_flags();
 			poll_timeout_g = RTC_DEFAULT_MILISEC_WAIT_POLL + ms_from_start();

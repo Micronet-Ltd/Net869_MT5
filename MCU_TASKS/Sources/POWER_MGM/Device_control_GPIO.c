@@ -156,13 +156,22 @@ void disable_peripheral_clocks(void)
  
 /*disables alarm polling before shutting down in case date has already passed 
   this function should be used only in this file so it will stay inlined and won't slow the system*/
-void inline rtc_clear_outdated_alarm()
+void rtc_clear_outdated_alarm()
 {
-  
    rtc_get_flags();
-   rtc_alarm1_is_trigered(); 
+   if(rtc_alarm1_is_trigered())
+   {
+        //in case the alarm has been triggered already 
+        //make sure the alarm will be set off from now on by setting the time to 0 
+        uint8_t zero_month = 0;
+        uint8_t cmd_buff = 0XA;//RTC_ALRM1_MONTH_ADDR
+
+    	if(!rtc_send_data(&cmd_buff,1 ,&zero_month, 1))
+    	{
+    		printf("rtc_set_alarm1: ERROR: could not update the bytes related to alarm1\n");
+    	}
+   }
    _event_clear(rtc_flags_g, ALARM1_ACTIVATE_BIT); 
-   
 }
 
 void device_state_stringify(DEVICE_STATE_t device_state, char * dev_state_str )
@@ -684,9 +693,6 @@ void Device_turn_on  (void)
 	TIME_STRUCT ticks_now;
 
 	_time_get_elapsed(&ticks_now);
-
-    //make sure alarm polling will be set off.
-//    rtc_clear_outdated_alarm();
 
 	device_control_gpio_g.time_threshold = (uint64_t)1000*ticks_now.SECONDS + ticks_now.MILLISECONDS + DEVICE_CONTROL_TIME_ON_TH;
 	device_control_gpio_g.time           = 0;
