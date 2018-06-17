@@ -203,6 +203,7 @@ void Main_task( uint32_t initial_data ) {
 	uint64_t otg_reset_time;
 	uint64_t otg_check_time;
 	uint32_t pet_count = 0;
+	uint8_t zero_date[5] = {0};
 
 #if (!_DEBUG)
 	watchdog_mcu_init();
@@ -369,7 +370,9 @@ void Main_task( uint32_t initial_data ) {
             result &= ~EVENT_A8_BOOTED;
     } while (!(result & EVENT_A8_BOOTED));
     _event_clear(g_a8_pwr_state_event, EVENT_A8_BOOTED);
-    rtc_clear_outdated_alarm();
+   //make sure the alarm will be set off from now on by setting the time to 0 
+	poll_timeout_g = 0;
+	rtc_set_alarm1(zero_date);
 
     g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
     if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
