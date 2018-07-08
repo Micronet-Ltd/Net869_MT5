@@ -17,18 +17,17 @@
 #include "ADC.h"
 #include "EXT_GPIOS.h"
 #include "wiggle_sensor.h"
-#include "mic_typedef.h"
-
-#include "Uart_debugTerminal.h"
-
-#include "FlexCanDevice.h"
 #include "rtc.h"
+#include "mic_typedef.h"
+#include "Uart_debugTerminal.h"
+#include "FlexCanDevice.h"
 #include "Wiggle_sensor.h"
 #include "Device_control_GPIO.h"
 #include "watchdog_mgmt.h"
 #include "power_mgm.h"
 #include "version.h"
 #include "fsl_wdog_driver.h"
+#include "board_type.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
@@ -70,6 +69,9 @@ MUTEX_STRUCT g_i2c0_mutex;
 MUTEX_STRUCT g_i2c1_mutex;
 
 extern uint8_t g_flag_Exit;
+
+uint8_t g_board_rev;
+char g_board_config;
 
 
 /* induce_hard_fault: Induce divide by zero hard fault(used for debugging) */
@@ -201,6 +203,7 @@ void Main_task( uint32_t initial_data ) {
 	uint64_t otg_reset_time;
 	uint64_t otg_check_time;
 	uint32_t pet_count = 0;
+	uint8_t zero_date[5] = {0};
 
 #if (!_DEBUG)
 	watchdog_mcu_init();
@@ -261,6 +264,18 @@ void Main_task( uint32_t initial_data ) {
 
 	Virtual_Com_MemAlloc(); // Allocate USB out buffers
 
+	//rtc init is using TimerEvent so it should be initiated here
+	if(MQX_OK !=  _event_create("event.TimerEvent")){
+		printf("rtc_check_alarm_working: Could not create event.TimerEvent \n");
+	}
+
+	if(MQX_OK != _event_open("event.TimerEvent", &rtc_flags_g)){
+		printf("rtc_check_alarm_working: Could not open event.TimerEvent \n");
+	}
+    /*Note: rtc_init() is intentionally placed before accelerometer init 
+    because I was seeing  i2c arbitration errors - Abid */
+    rtc_init();
+
 	g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
 	if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
 	{
@@ -311,6 +326,12 @@ void Main_task( uint32_t initial_data ) {
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
+	ADC_Compare_disable (kADC_POWER_IN_ISR);
+	g_board_rev = get_board_revision();
+	g_board_config = get_board_configuration();
+	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
+	ADC_Compare_enable (kADC_POWER_IN_ISR);
+
 	// turn on device
 	enable_msm_power(TRUE);		// turn on 5V0 power rail
 
@@ -319,9 +340,6 @@ void Main_task( uint32_t initial_data ) {
 //	GPIO_DRV_SetPinOutput(FTDI_RSTN);
 	
 	//GPIO_DRV_SetPinOutput(RS485_ENABLE);
-	/*Note: rtc_init() is intentionally placed before accelerometer init 
-	because I was seeing  i2c arbitration errors - Abid */
-	rtc_init();
 
 	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 	_time_delay (1000);
@@ -352,6 +370,9 @@ void Main_task( uint32_t initial_data ) {
             result &= ~EVENT_A8_BOOTED;
     } while (!(result & EVENT_A8_BOOTED));
     _event_clear(g_a8_pwr_state_event, EVENT_A8_BOOTED);
+   //make sure the alarm will be set off from now on by setting the time to 0 
+	poll_timeout_g = 0;
+	rtc_set_alarm1(zero_date);
 
     g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
     if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
@@ -427,6 +448,7 @@ void Main_task( uint32_t initial_data ) {
 	FPGA_read_version(&FPGA_version);
 	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
 	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
+	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
 
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
 #if (!_DEBUG)

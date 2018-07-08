@@ -2436,6 +2436,12 @@
       </file>
     </group>
   </group>
+  <file>
+    <name>$PROJ_DIR$\..\Sources\board_type.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\..\Sources\board_type.h</name>
+  </file>
 </project>
 
 
