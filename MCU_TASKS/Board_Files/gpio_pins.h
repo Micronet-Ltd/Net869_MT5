@@ -176,23 +176,26 @@ enum _gpio_pins_pinNames {
 #define EXTAL0_PIN    				18
 
 
-// ANALOG INPUTS
-#define ADC_POWER_IN					kAdc16Chn17
-#define ADC_POWER_VCAP					kAdc16Chn8
-#define ADC_TEMPERATURE					kAdc16Chn16
-#define ADC_CABLE_TYPE					kAdc16Chn10
+// ANALOG INPUTS  (Pg 116 of the datasheet defines the channel numbers)
+#define ADC_POWER_IN					kAdc16Chn17			//ADC0_SE16/ADC0_SE21
+#define ADC_POWER_VCAP					kAdc16Chn8			//ADC0_SE8/ADC1_SE8
+#define ADC_TEMPERATURE					kAdc16Chn16			//ADC1_SE16/ADC0_SE22
+#define ADC_CABLE_TYPE					kAdc16Chn10			//ADC1_SE10
+
+#define ADC_BOARD_VER					kAdc16Chn20 /* Pg 115 of the K20 reference manual ADC0_DM1*/
+#define ADC_BOARD_CONFIG				kAdc16Chn1  /* ADC0_DP1*/
 
 // TELEMETRY INPUTS (ANALOG INPUTS),
-#define ADC_ANALOG_IN1					kAdc16Chn12
-#define ADC_GPIO_IN1					kAdc16Chn20			// dm1
-#define ADC_GPIO_IN2					kAdc16Chn1			// dp1
-#define ADC_GPIO_IN3					kAdc16Chn3			// dp3 and dm3
-#define ADC_GPIO_IN4					kAdc16Chn3			// dp3
-#define ADC_GPIO_IN5					kAdc16Chn19			// dm0
-#define ADC_GPIO_IN6					kAdc16Chn0			// dp0
-#define ADC_GPIO_IN7					kAdc16Chn18
+#define ADC_ANALOG_IN1					kAdc16Chn12			// ADC1_SE12
+#define ADC_GPIO_IN1					kAdc16Chn20			// ADC1_DM1
+#define ADC_GPIO_IN2					kAdc16Chn1			// ADC1_DP1
+#define ADC_GPIO_IN3					kAdc16Chn3			// ADC1_DM3
+#define ADC_GPIO_IN4					kAdc16Chn3			// ADC1_DP3
+#define ADC_GPIO_IN5					kAdc16Chn19			// ADC1_DM0
+#define ADC_GPIO_IN6					kAdc16Chn0			// ADC1_DP0
+#define ADC_GPIO_IN7					kAdc16Chn18			// ADC1_SE18
 
-#define ADC_POWER_IN_ISR                kAdc16Chn16//kAdc16Chn3 (if GPIO6 is used)
+#define ADC_POWER_IN_ISR                kAdc16Chn16//kAdc16Chn3 (if GPIO6 is used) ADC0_SE16/ADC0_SE21
 
 #ifdef __cplusplus
 extern "C"
