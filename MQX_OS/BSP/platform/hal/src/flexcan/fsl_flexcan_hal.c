@@ -1328,14 +1328,26 @@ flexcan_status_t FLEXCAN_HAL_SetOperationMode(
 
 	if (mode == kFlexCanNormalMode)
 	{
+		/* Disable listen mode and loopback mode */
+		CAN_BWR_CTRL1_LPB(base, 0x0);
+		CAN_BWR_CTRL1_LOM(base, 0x0);
+
 		CAN_BWR_MCR_SUPV(base, 0x0);
 	}
 	else if (mode == kFlexCanListenOnlyMode)
 	{
+		/* Disable normal mode and loopback mode */
+		CAN_BWR_MCR_SUPV(base, 0x1);
+		CAN_BWR_CTRL1_LPB(base, 0x0);
+
 		CAN_BWR_CTRL1_LOM(base, 0x1);
 	}
 	else if (mode == kFlexCanLoopBackMode)
 	{
+		/* Disabled normal mode and listen mode */
+		CAN_BWR_MCR_SUPV(base, 0x1);
+		CAN_BWR_CTRL1_LOM(base, 0x0);
+
 		CAN_BWR_CTRL1_LPB(base, 0x1);
 	}
 	else

@@ -37,6 +37,7 @@ static i2c_device_t fpga_device = {
 uint8_t fpga_uart_rx_buf [FPGA_UART_RX_BUF_SIZE] = {0};
 uint8_t fpga_uart_rx_buf_wr_idx = 0;
 uint8_t fpga_uart_rx_buf_rd_idx = 0;
+extern MUTEX_STRUCT g_i2c1_mutex;
 
 bool FPGA_GetData (uint8_t Register_Addr, uint32_t *Register_Data);
 bool FPGA_SetData (uint8_t Register_Addr, uint32_t *Register_Data);
@@ -373,13 +374,20 @@ bool FPGA_GetData (uint8_t register_addr, uint32_t *register_data)
 {
 	i2c_status_t  i2c_status = kStatus_I2C_Fail;
 	uint8_t       i2c_cmd  = register_addr;
+	_mqx_uint ret = MQX_OK;
 
+	if ((ret = _mutex_lock(&g_i2c1_mutex)) != MQX_OK)
+	{
+		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
+		_task_block();
+	}
     if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1) {
         if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (FPGA_I2C_PORT, &fpga_device, &i2c_cmd,  1, (uint8_t *)register_data, 4, FPGA_I2C_TIMEOUT)) != kStatus_I2C_Success)
         {
             printf ("\nFPGA API GetData: ERROR: Could not read Address 0x%X (I2C error code %d)\n", register_addr, i2c_status);
         }
     }
+	_mutex_unlock(&g_i2c1_mutex);
 	return (i2c_status == kStatus_I2C_Success);
 }
 
@@ -387,11 +395,18 @@ bool FPGA_SetData (uint8_t register_addr, uint32_t *register_data)
 {
 	i2c_status_t  i2c_status = kStatus_I2C_Fail;
 	uint8_t       i2c_cmd  = register_addr;
+	_mqx_uint ret = MQX_OK;
 
+	if ((ret = _mutex_lock(&g_i2c1_mutex)) != MQX_OK)
+	{
+		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
+		_task_block();
+	}
     if (GPIO_DRV_ReadPinInput (FPGA_DONE) == 1) {
     	if ((i2c_status = I2C_DRV_MasterSendDataBlocking (FPGA_I2C_PORT, &fpga_device, &i2c_cmd,  1, (uint8_t *)register_data, 4, FPGA_I2C_TIMEOUT)) != kStatus_I2C_Success)
     		printf ("\nFPGA API SetData: ERROR: Could not write Address 0x%X (I2C error code %d)\n", register_addr, i2c_status);
     }
+	_mutex_unlock(&g_i2c1_mutex);
 	return (i2c_status == kStatus_I2C_Success);
 }
 
@@ -406,7 +421,7 @@ bool FPGA_write_J1708_packet (uint8_t *buffer, uint8_t length)
 		printf ("\nFPGA: ERROR: Message was not sent to FPGA (UART error code %d)\n", uart_status);
 
 #ifdef J1708_DEBUG
-	printf("%s: %x, %x .. %x, %x, len = %d \n", __func__, buffer[0], buffer[1], buffer[2], buffer[3], length);
+	printf("%s: %x, %x .. %x, %x, len = %d \n", __func__, buffer[0], buffer[1], buffer[length - 2], buffer[length - 1], length);
 #endif
 	return (uart_status == kStatus_UART_Success);
 }
@@ -441,7 +456,12 @@ bool FPGA_read_J1708_packet (uint8_t *buffer, uint8_t length)
 		fpga_uart_rx_buf_rd_idx += len;
 	}
 #ifdef J1708_DEBUG
-	printf("%s: %x, %x .. %x, %x, len = %d \n", __func__, buffer[0], buffer[1], buffer[2], buffer[3], size);
+	static uint16_t count = 0;
+	count++;
+	if (count%100==0){
+		printf("%s: %x, %x .. %x, %x, len = %d \n", __func__, buffer[0], buffer[1], buffer[length - 2], buffer[length - 1], length);
+		count = 0;
+	}
 #endif
 	return true;
 }

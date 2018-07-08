@@ -17,18 +17,17 @@
 #include "ADC.h"
 #include "EXT_GPIOS.h"
 #include "wiggle_sensor.h"
-#include "mic_typedef.h"
-
-#include "Uart_debugTerminal.h"
-
-#include "FlexCanDevice.h"
 #include "rtc.h"
+#include "mic_typedef.h"
+#include "Uart_debugTerminal.h"
+#include "FlexCanDevice.h"
 #include "Wiggle_sensor.h"
 #include "Device_control_GPIO.h"
 #include "watchdog_mgmt.h"
 #include "power_mgm.h"
 #include "version.h"
 #include "fsl_wdog_driver.h"
+#include "board_type.h"
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
@@ -67,8 +66,12 @@ tick_measure_t cpu_status_time_g = {0, 0, 0};
 void _test_CANFLEX( void );
 
 MUTEX_STRUCT g_i2c0_mutex;
+MUTEX_STRUCT g_i2c1_mutex;
 
 extern uint8_t g_flag_Exit;
+
+uint8_t g_board_rev;
+char g_board_config;
 
 
 /* induce_hard_fault: Induce divide by zero hard fault(used for debugging) */
@@ -186,6 +189,7 @@ void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 
 int g_a8_sw_reboot = -1;
 int g_otg_ctl_port_active = 0;
+extern void * g_a8_pwr_state_event;
 
 void Main_task( uint32_t initial_data ) {
 
@@ -199,8 +203,11 @@ void Main_task( uint32_t initial_data ) {
 	uint64_t otg_reset_time;
 	uint64_t otg_check_time;
 	uint32_t pet_count = 0;
+	uint8_t zero_date[5] = {0};
 
+#if (!_DEBUG)
 	watchdog_mcu_init();
+#endif
 	printf("\n%s: Start\n", __func__);
 #if 0
 	PinMuxConfig ();
@@ -213,8 +220,10 @@ void Main_task( uint32_t initial_data ) {
     // board Initialization
     post_bsp_hardware_init ();
     OSA_Init();
+#if (!_DEBUG)
 	watchdog_rtos_init();
 	_watchdog_start(WATCHDOG_MCU_MAX_TIME);
+#endif
     GPIO_Config();
 //    ADC_init ();
 
@@ -228,6 +237,13 @@ void Main_task( uint32_t initial_data ) {
 	if (_mutex_init(&g_i2c0_mutex, &mutexattr) != MQX_OK)
 	{
 		printf("Initializing i2c0 mutex failed.\n");
+		_task_block();
+	}
+	
+	/* Initialize the mutex: */
+	if (_mutex_init(&g_i2c1_mutex, &mutexattr) != MQX_OK)
+	{
+		printf("Initializing i2c1 mutex failed.\n");
 		_task_block();
 	}
 	
@@ -247,6 +263,18 @@ void Main_task( uint32_t initial_data ) {
 //	I2C_DRV_MasterInit(I2C1_IDX, &i2c1_master);
 
 	Virtual_Com_MemAlloc(); // Allocate USB out buffers
+
+	//rtc init is using TimerEvent so it should be initiated here
+	if(MQX_OK !=  _event_create("event.TimerEvent")){
+		printf("rtc_check_alarm_working: Could not create event.TimerEvent \n");
+	}
+
+	if(MQX_OK != _event_open("event.TimerEvent", &rtc_flags_g)){
+		printf("rtc_check_alarm_working: Could not open event.TimerEvent \n");
+	}
+    /*Note: rtc_init() is intentionally placed before accelerometer init 
+    because I was seeing  i2c arbitration errors - Abid */
+    rtc_init();
 
 	g_TASK_ids[POWER_MGM_TASK] = _task_create(0, POWER_MGM_TASK   , 0 );
 	if (g_TASK_ids[POWER_MGM_TASK] == MQX_NULL_TASK_ID)
@@ -268,11 +296,13 @@ void Main_task( uint32_t initial_data ) {
 			printf("Main_task: Could not open PowerUp event \n");
 	}
 
-    printf("\nbefore power on event\n");
+    printf("%s: wait for power on event\n", __func__);
     while (1)
     {
+#if (!_DEBUG)
 		WDOG_DRV_Refresh();
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+#endif
         /* We are waiting until a wiggle event happens before starting everything up
            The main reason for this is to stay below 5mA at 12V */
         _event_wait_all(power_up_event_g, 1, WATCHDOG_MCU_MAX_TIME/2);
@@ -281,37 +311,35 @@ void Main_task( uint32_t initial_data ) {
             if (event_bits & 0x01) 
             {
               _event_clear(power_up_event_g, 1);
+#if (!_DEBUG)
               _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+#endif
               break;
             }
         }
 		//printf("%s: Petting Watchdog count %d", __func__, pet_count++);
     }
-    printf("\nAfter power on event\n");
+    printf("%s: power event got, power on A8\n", __func__);
 
 	NVIC_SetPriority(PORTC_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
+	ADC_Compare_disable (kADC_POWER_IN_ISR);
+	g_board_rev = get_board_revision();
+	g_board_config = get_board_configuration();
+	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
+	ADC_Compare_enable (kADC_POWER_IN_ISR);
+
 	// turn on device
 	enable_msm_power(TRUE);		// turn on 5V0 power rail
-
-
-
-	g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
-	if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
-			printf("\nMain Could not create USB_TASK\n");
-	}
 
 	//Enable UART
 //	GPIO_DRV_SetPinOutput(UART_ENABLE);	
 //	GPIO_DRV_SetPinOutput(FTDI_RSTN);
 	
 	//GPIO_DRV_SetPinOutput(RS485_ENABLE);
-	/*Note: rtc_init() is intentionally placed before accelerometer init 
-	because I was seeing  i2c arbitration errors - Abid */
-	rtc_init();
 
 	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
 	_time_delay (1000);
@@ -326,6 +354,31 @@ void Main_task( uint32_t initial_data ) {
 		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntRisingEdge);
 		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
 	}
+
+    otg_check_time = OTG_CTLEP_RECOVERY_TO + ms_from_start();
+    do {
+        _time_delay (1000);
+        if (otg_check_time < ms_from_start()) {
+            printf("%s: failure to power up A8\n", __func__);
+            Device_off_req(1, 0);
+        }
+#if (!_DEBUG)
+        WDOG_DRV_Refresh();
+        _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+#endif
+        if (MQX_OK != _event_get_value(g_a8_pwr_state_event, &result))
+            result &= ~EVENT_A8_BOOTED;
+    } while (!(result & EVENT_A8_BOOTED));
+    _event_clear(g_a8_pwr_state_event, EVENT_A8_BOOTED);
+   //make sure the alarm will be set off from now on by setting the time to 0 
+	poll_timeout_g = 0;
+	rtc_set_alarm1(zero_date);
+
+    g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
+    if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
+            printf("\nMain Could not create USB_TASK\n");
+    }
+
 	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
 	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
 	{
@@ -395,9 +448,12 @@ void Main_task( uint32_t initial_data ) {
 	FPGA_read_version(&FPGA_version);
 	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
 	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
+	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
 
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
+#if (!_DEBUG)
 	a8_watchdog_init();
+#endif
 #endif
 	printf("\nMain Task: Loop \n");
 	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
@@ -405,9 +461,11 @@ void Main_task( uint32_t initial_data ) {
 
     while ( 1 ) 
     {
+#if (!_DEBUG)
 		WDOG_DRV_Refresh();
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
         result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+#endif
         _time_delay(MAIN_TASK_SLEEP_PERIOD);
 		// MCU starts with OTG ID disabled for monitoring
 		// Main task starts monitor this one only after Power task powers on the A8 and gets PON pulse from it

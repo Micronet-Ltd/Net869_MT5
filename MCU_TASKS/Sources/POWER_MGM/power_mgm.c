@@ -33,6 +33,7 @@
 #include "bsp.h"
 #include "mic_typedef.h"
 #include "watchdog_mgmt.h"
+#include "rtc.h"
 #include "main_tasks.h"
 
 #define SUPERCAP_CHRG_DISCHRG_ENABLE   1
@@ -239,6 +240,9 @@ void check_supercap_voltage (void);
 void * power_up_event_g;
 void * cpu_status_event_g;
 void * g_a8_pwr_state_event;
+void * rtc_flags_g;
+
+uint64_t poll_timeout_g = 0;
 
 uint32_t ignition_threshold_g = IGNITION_TURN_ON_TH_DEFAULT;
 
@@ -256,6 +260,7 @@ const clock_manager_user_config_t * g_defaultClockConfigurations[] =
 	&g_defaultClockConfigVlpr,
 	&g_defaultClockConfigRun,
 };
+
 
 /*!
  * @brief wait uart finished.
@@ -606,6 +611,7 @@ void check_a8_power_events(int *already_on)
                         (*already_on)++;
 						_event_clear(g_a8_pwr_state_event, EVENT_A8_PWR_DOWN);
 						_event_set(g_a8_pwr_state_event, EVENT_A8_PWR_UP);
+                        _event_set(g_a8_pwr_state_event, EVENT_A8_BOOTED);
                         g_a8_sw_reboot = 0;
                     }
                 } else {
@@ -638,6 +644,9 @@ void Power_MGM_task (uint32_t initial_data )
 	_mqx_uint event_result;
 	uint64_t current_time;
 	int32_t a8_on = 0;
+    //poll_timeout_g = 1;//for alarm debug purpose only, this line ensures that the protection against 
+                        //arbitrary changes in the RTC won't work so the programmer could set the date on the RTC 
+                        //manually and not using the API and the device will still poll the RTC and wake up.
 	
 	_time_get_elapsed_ticks_fast(&ticks_prev);
 
@@ -764,9 +773,16 @@ void Power_MGM_task (uint32_t initial_data )
 		{
 			time_diff_milli_u = (uint32_t) (time_diff_milli);
 		}
-		Device_update_state(&time_diff_milli_u);
 
+		Device_update_state(&time_diff_milli_u);
         check_a8_power_events(&a8_on);
+
+		if(poll_timeout_g && (poll_timeout_g  < ms_from_start())) 
+		{
+			rtc_get_flags();
+			poll_timeout_g = RTC_DEFAULT_MILISEC_WAIT_POLL + ms_from_start();
+		}
+
 	}
 }
 

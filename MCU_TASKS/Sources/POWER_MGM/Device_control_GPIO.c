@@ -65,6 +65,7 @@
 #include "ADC.h"
 #include "power_mgm.h"
 #include "wiggle_sensor.h"
+#include "rtc.h"
 
 #include "board.h"
 #include "gpio_pins.h"
@@ -152,6 +153,26 @@ void disable_peripheral_clocks(void)
 	CLOCK_SYS_DisablePortClock (i);
   }
 }
+ 
+/*disables alarm polling before shutting down in case date has already passed 
+  this function should be used only in this file so it will stay inlined and won't slow the system*/
+void rtc_clear_outdated_alarm()
+{
+   rtc_get_flags();
+   if(rtc_alarm1_is_trigered())
+   {
+        //in case the alarm has been triggered already 
+        //make sure the alarm will be set off from now on by setting the time to 0 
+        uint8_t zero_month = 0;
+        uint8_t cmd_buff = 0XA;//RTC_ALRM1_MONTH_ADDR
+
+    	if(!rtc_send_data(&cmd_buff,1 ,&zero_month, 1))
+    	{
+    		printf("rtc_set_alarm1: ERROR: could not update the bytes related to alarm1\n");
+    	}
+   }
+   _event_clear(rtc_flags_g, ALARM1_ACTIVATE_BIT); 
+}
 
 void device_state_stringify(DEVICE_STATE_t device_state, char * dev_state_str )
 {
@@ -218,6 +239,12 @@ uint8_t get_turn_on_reason(uint32_t * ignition_voltage)
 		turn_on_condition |= POWER_MGM_DEVICE_WATCHDOG_RESET;
 	}
 
+    if(rtc_alarm1_is_trigered())
+    {
+        printf ("\n%s: POWER_MGM: TURNING ON DEVICE due to wakeup ALARM TRIGGERED  \n", __func__);
+        turn_on_condition |= POWER_MGM_DEVICE_TIMER_ALARM;
+    }
+
 	//if(RCM_BRD_SRS1_SW((RCM_Type*)RCM_BASE))//SYSRESETREQ)
 	//{
 	//  	turn_on_condition |= POWER_MGM_DEVICE_SW_RESET_REQ;
@@ -235,7 +262,6 @@ void Device_update_state (uint32_t * time_diff)
 	static bool print_backup_power = FALSE;
 	uint32_t a8_s;
 	uint32_t gpio_event;
-	
 
 	Device_control_GPIO(time_diff);
 
@@ -245,8 +271,11 @@ void Device_update_state (uint32_t * time_diff)
 	if ((device_state_g == DEVICE_STATE_OFF && time_since_temp_print > 45000) //about 10 seconds, coz running @ slower clock
 		|| (device_state_g != DEVICE_STATE_OFF && time_since_temp_print > 30000)) // 30 seconds
 	{
-		printf("%s: Time: %llu ms, dev_state:%d, power_in=%d, ign_vol=%d, tempx10=%d\n", 
-			   __func__, ms_from_start(), device_state_g, power_in_voltage, ignition_voltage, temperature - 500);
+		printf("%s: Time: %llu ms, dev_state:%d, power_in=%d\n",
+			   __func__, ms_from_start(), device_state_g, power_in_voltage);
+		_time_delay(5);
+		printf("%s: ign_vol=%d, tempx10=%d\n",
+			   __func__, ignition_voltage, temperature - 500);
 		time_since_temp_print = 0;
 	}
 #endif
@@ -277,7 +306,7 @@ void Device_update_state (uint32_t * time_diff)
 			// if amount of vibrations is more than TH, it will turn on the device
 			// and stop the interrupts for better running efficiency
 			Wiggle_sensor_update (time_diff);
-			
+
 			if (MQX_OK == _event_get_value(g_GPIO_event_h, &gpio_event))
 			{
 				/* To see MCU debug output in DEVICE_OFF state, 
@@ -436,7 +465,7 @@ void Device_update_state (uint32_t * time_diff)
 			}
 			break;
 
-		case DEVICE_STATE_TURN_OFF:
+	case DEVICE_STATE_TURN_OFF:
 			// wait while pulse is still generated (time period didn't reach threshold)
 
             // device should be off w/o unconditionally, moreover pulse will produce inside off request
@@ -472,6 +501,8 @@ void Device_off_req_immediate(bool clean_reset)
 	uint32_t cpu_off_wait_time = 0;
 	uint8_t cpu_status_pin = 0;
 
+    rtc_clear_outdated_alarm();
+
 	/* Disable the Accelerometer and RTC because we were seeing I2C issues where 
 	SCL line was stuck on boot up */
 	AccDisable();
@@ -500,6 +531,9 @@ void Device_off_req(bool skip_a8_shutdown, uint8_t wait_time)
 	uint32_t cpu_off_wait_time = 0;
 	uint8_t cpu_status_pin = 0;
 	volatile static bool device_off_req_in_progress = 0;
+
+    //shut down alarm if it is already outdated
+    rtc_clear_outdated_alarm();
 
     printf("%s: [%d, %d] %llu\n", __func__, skip_a8_shutdown, wait_time, ms_from_start());
     /* If this command is called from a different thread, it will not execute again while it is already being performed */
@@ -584,6 +618,8 @@ void Device_reset_req(int32_t wait_time)
     _time_delay(1);
 	GPIO_DRV_SetPinOutput (CPU_POWER_LOSS);
 	FPGA_write_led_status(LED_LEFT, LED_DEFAULT_BRIGHTESS, 0xFF, 0, 0); /* Red LED*/
+
+    rtc_clear_outdated_alarm();
 
 	cpu_off_wait_time = CPU_OFF_CHECK_TIME*((wait_time + (CPU_OFF_CHECK_TIME >> 1))/CPU_OFF_CHECK_TIME);
 	if (cpu_off_wait_time > MAX_CPU_OFF_CHECK_TIME)
