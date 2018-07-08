@@ -42,6 +42,7 @@ static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdat
 static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
 static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pbatt_ignition_voltage);
 static void set_gpi_update_all_values(uint8_t * data, uint16_t data_size, uint8_t * pgpi_values);
+static void set_rtc_alarm1_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time);
 static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
 static void set_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg);
 static void get_rtc_data_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
@@ -54,6 +55,7 @@ static void get_wiggle_sensor_count_dbg(uint8_t * data, uint16_t data_size, uint
 static void set_accel_standby_active_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_accel_active);
 static void get_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
 static void set_accel_register_dbg(uint8_t * data, uint16_t data_size, uint8_t * p_reg);
+static void get_rtc_flags(uint8_t * data, uint16_t data_size, uint8_t * flags);
 
 static comm_t comm_g[COMM_ENUM_SIZE] =
 {
@@ -135,6 +137,14 @@ static comm_t comm_g[COMM_ENUM_SIZE] =
 	[COMM_GET_BRD_INFO_ADC_DBG] = {get_board_adc_value_dbg,
 						  GET_COMMAND,
 						  sizeof(uint32_t)},
+    [COMM_SET_RTC_ALARM1_TIME] = {set_rtc_alarm1_time,
+								SET_COMMAND,
+							    0},
+	[COMM_GET_RTC_ALARM1_INIT_FLAGS] = {get_rtc_flags,
+								GET_COMMAND,
+								(sizeof(uint8_t)*4)},
+
+
 };
 
 int8_t command_set(uint8_t * data, uint16_t data_size)
@@ -284,6 +294,12 @@ static void  set_power_on_threshold(uint8_t * data, uint16_t data_size, uint8_t 
 	set_ignition_threshold(ignition_threshold);
 }
 
+static void get_rtc_flags(uint8_t * data, uint16_t data_size, uint8_t * flags)
+{
+	rtc_get_init_flags((uint32_t *)flags);
+}
+
+
 static void get_turn_on_reason(uint8_t * data, uint16_t data_size, uint8_t * pturn_on_reason)
 {
 	Device_get_turn_on_reason(pturn_on_reason);
@@ -302,6 +318,11 @@ static void get_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdat
 static void set_rtc_date_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
 {
 	rtc_set_time(&data[0]);
+}
+
+static void set_rtc_alarm1_time(uint8_t * data, uint16_t data_size, uint8_t * pdate_time)
+{
+	rtc_set_alarm1(&data[0]);
 }
 
 static void get_rtc_cal_register(uint8_t * data, uint16_t data_size, uint8_t * pcal_reg)
