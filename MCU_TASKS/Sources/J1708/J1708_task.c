@@ -65,10 +65,10 @@ void J1708_Tx_task (uint32_t initial_data)
 
 	while (0 == g_flag_Exit) {
 		while (J1708_state == J1708_DISABLED)
-			_time_delay (10000);
+			_time_delay (1000);
 
-		// wait 10 second for interrupt message
-		msg = _msgq_receive(J1708_tx_qid, 10000);
+		// wait 1 second for interrupt message
+		msg = _msgq_receive(J1708_tx_qid, 1000);
 		if (msg == NULL) {
 			//printf ("\nJ1708_Tx: WARNING: Message not received in last 10 Seconds \n");
 			continue;
@@ -133,11 +133,11 @@ void J1708_Rx_task (uint32_t initial_data)
 
 	while (0 == g_flag_Exit) {
 		while (J1708_state == J1708_DISABLED)
-			_time_delay (10000);
+			_time_delay (1000);
 
 
-		// wait 10 second for interrupt message
-		_event_wait_all (g_J1708_event_h, EVENT_J1708_RX, 3000);
+		// wait 1 second for interrupt message
+		_event_wait_all (g_J1708_event_h, EVENT_J1708_RX, 1000);
 		_event_get_value (g_J1708_event_h, &J1708_rx_event_bit);
 		if (J1708_rx_event_bit == EVENT_J1708_RX)
 			_event_clear    (g_J1708_event_h, EVENT_J1708_RX);
@@ -219,6 +219,9 @@ void J1708_enable (uint8_t priority)
 		printf ("\nJ1708: ERROR: J1708 NOT Enabled !!!\n");
 
 	GPIO_DRV_ClearPinOutput (J1708_ENABLE);
+	
+	GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE); /* below V6 board */
+	GPIO_DRV_SetPinOutput(J1708_PWR_EN); /*V6 board */
 
 	J1708_state = J1708_ENABLED;
 	J1708_priority = priority;
@@ -238,6 +241,9 @@ void J1708_disable (void)
 	else
 		printf ("\nJ1708: ERROR: J1708 NOT Disabled !!!\n");
 
+	GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE); /* below V6 board */
+	GPIO_DRV_ClearPinOutput(J1708_PWR_EN); /*V6 board */
+	
 	J1708_state = J1708_DISABLED;
 }
 

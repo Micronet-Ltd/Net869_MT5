@@ -19,12 +19,11 @@
 #include "watchdog_mgmt.h"
 #include "acc_task.h"
 #include "board_type.h"
+#include "J1708_task.h"
+#include "board_type.h"
 
 #define GET_COMMAND 0
 #define SET_COMMAND 1
-
-extern uint8_t g_board_rev;
-extern char g_board_config;
 
 static void get_board_info(uint8_t * data, uint16_t data_size, uint8_t * pbrd_info);
 static void get_board_adc_value_dbg(uint8_t * data, uint16_t data_size, uint8_t * pbrd_adc);
@@ -198,8 +197,8 @@ int8_t command_get(uint8_t * data, uint16_t data_size,
 /* returns 4 bytes Byte1 = Board Version, Byte2 = Board Config, Byte3 = 0, Byte4 = 0 */
 static void get_board_info(uint8_t * data, uint16_t data_size, uint8_t * pbrd_info)
 {
-	pbrd_info[0] = g_board_rev;
-	pbrd_info[1] = g_board_config;
+	pbrd_info[0] = get_saved_board_revision();
+	pbrd_info[1] = get_saved_board_configuration();
 	pbrd_info[2] = 0;
 	pbrd_info[3] = 0;
 }
@@ -365,6 +364,12 @@ static void set_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t *
 	uint32_t gpio_pin_name = (uint32_t) ((data[0]<<8) | data[1]);
 	uint32_t gpio_val = (uint32_t)data[2];
 	uint8_t gpio_port = data[0];
+	
+	/* To avoid putting J1708 in a bad state, we disable J1708 if the J1708 Power is disabled */
+	if (gpio_pin_name == CAN1_J1708_PWR_ENABLE || gpio_pin_name == J1708_PWR_EN){
+		(gpio_val == 1) ? J1708_enable(7) : J1708_disable(); 
+	}
+	
 	if (gpio_port < GPIO_INSTANCE_COUNT)
 	{
 		GPIO_DRV_WritePinOutput(gpio_pin_name, gpio_val);
