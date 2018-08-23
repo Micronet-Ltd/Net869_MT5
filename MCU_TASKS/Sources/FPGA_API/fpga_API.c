@@ -20,7 +20,7 @@
 
 #define FPGA_UART_RX_BUF_SIZE 		100
 
-//#define J1708_DEBUG
+#define J1708_DEBUG
 
 const uart_user_config_t fpga_uart_config = {
 	.bitCountPerChar = kUart8BitsPerChar,

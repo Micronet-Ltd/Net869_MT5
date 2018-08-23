@@ -366,7 +366,7 @@ static void set_mcu_gpio_state_dbg(uint8_t * data, uint16_t data_size, uint8_t *
 	uint8_t gpio_port = data[0];
 	
 	/* To avoid putting J1708 in a bad state, we disable J1708 if the J1708 Power is disabled */
-	if (gpio_pin_name == CAN1_J1708_PWR_ENABLE || gpio_pin_name == J1708_PWR_EN){
+	if (gpio_pin_name == J1708_PWR_EN){
 		(gpio_val == 1) ? J1708_enable(7) : J1708_disable(); 
 	}
 	
