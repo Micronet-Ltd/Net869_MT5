@@ -372,8 +372,8 @@ void Device_update_state (uint32_t * time_diff)
 				switch_power_mode(kPowerManagerRun);
 				_bsp_MQX_tick_timer_init ();
 				//enable_peripheral_clocks();
-				//CLOCK_SYS_EnablePortClock (PORTB_IDX);
-				//CLOCK_SYS_EnablePortClock (PORTC_IDX);
+				CLOCK_SYS_EnablePortClock (PORTB_IDX);
+				CLOCK_SYS_EnablePortClock (PORTC_IDX);
 				//peripherals_enable ();
 				// Enable USB for DEBUG
 				GPIO_DRV_SetPinOutput   (USB_HUB_RSTN);
