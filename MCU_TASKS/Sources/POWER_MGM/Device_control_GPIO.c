@@ -371,8 +371,14 @@ void Device_update_state (uint32_t * time_diff)
 			{
 				switch_power_mode(kPowerManagerRun);
 				_bsp_MQX_tick_timer_init ();
-				enable_peripheral_clocks();
-				peripherals_enable ();
+				//enable_peripheral_clocks();
+				//CLOCK_SYS_EnablePortClock (PORTB_IDX);
+				//CLOCK_SYS_EnablePortClock (PORTC_IDX);
+				//peripherals_enable ();
+				// Enable USB for DEBUG
+				GPIO_DRV_SetPinOutput   (USB_HUB_RSTN);
+				GPIO_DRV_SetPinOutput   (USB_ENABLE);
+				
 				//Board_SetFastClk ();
 				Device_turn_on     ();
 				change_device_state(DEVICE_STATE_ON);
@@ -700,9 +706,9 @@ void Device_turn_on  (void)
 
 	/* Create a timer that calls a watchdog reset if the A8 does NOT turn ON in MAX_CPU_TICKS_TAKEN_TO_BOOT */
 	/* NOTE: This timer NEEDs to be cancelled if a successful bootup happens */
-	_lwtimer_create_periodic_queue(&lwtimer_period_a8_turn_on_g, MAX_CPU_TICKS_TAKEN_TO_BOOT, MAX_CPU_TICKS_TAKEN_TO_BOOT);
-	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_turn_on_g, &lwtimer_a8_turn_on_g, 0, \
-		(LWTIMER_ISR_FPTR)handle_watchdog_expiry, 0);
+//	_lwtimer_create_periodic_queue(&lwtimer_period_a8_turn_on_g, MAX_CPU_TICKS_TAKEN_TO_BOOT, MAX_CPU_TICKS_TAKEN_TO_BOOT);
+//	_lwtimer_add_timer_to_queue(&lwtimer_period_a8_turn_on_g, &lwtimer_a8_turn_on_g, 0, \
+//		(LWTIMER_ISR_FPTR)handle_watchdog_expiry, 0);
 }
 
 void Device_turn_off (void)
@@ -853,15 +859,15 @@ void peripherals_disable (uint32_t WithFpga)
 
     GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
 	GPIO_DRV_ClearPinOutput (FTDI_RSTN);
-	GPIO_DRV_ClearPinOutput (USB_ENABLE);
+	//GPIO_DRV_ClearPinOutput (USB_ENABLE);
 	GPIO_DRV_ClearPinOutput (UART_ENABLE);
 	GPIO_DRV_ClearPinOutput (SPKR_LEFT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_RIGHT_EN);
 	GPIO_DRV_ClearPinOutput (SPKR_EXT_EN);
 	GPIO_DRV_ClearPinOutput (CPU_MIC_EN);
-	GPIO_DRV_ClearPinOutput (EXT_GPS_EN);
+	//GPIO_DRV_ClearPinOutput (EXT_GPS_EN);
 	//AccDisable();
-    GPIO_DRV_SetPinOutput (USB_OTG_OE);		//Disable OTG/MCU switch
+    //GPIO_DRV_SetPinOutput (USB_OTG_OE);		//Disable OTG/MCU switch
 }
 
 

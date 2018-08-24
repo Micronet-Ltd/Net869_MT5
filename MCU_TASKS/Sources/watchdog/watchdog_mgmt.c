@@ -85,9 +85,9 @@ void handle_watchdog_expiry(void * td_ptr)
 {
 	uint8_t i, color;
 	
-#if (_DEBUG)
+//#if (_DEBUG)
     return;
-#endif
+//#endif
 	/* if in Debug mode, do not reset the MCU */
 	if (GPIO_DRV_ReadPinInput (OTG_ID) == 0)
 	{

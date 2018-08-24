@@ -31,7 +31,7 @@
 
 //#define DEBUG_BLINKING_RIGHT_LED 1
 //#define MCU_HARD_FAULT_DEBUG 1
-//#define DEBUG_A8_WATCHOG_DISABLED 1
+#define DEBUG_A8_WATCHOG_DISABLED 1
 
 //void MQX_I2C0_IRQHandler (void);
 //void MQX_I2C1_IRQHandler (void);
@@ -325,140 +325,142 @@ void Main_task( uint32_t initial_data ) {
 	OSA_InstallIntHandler(PORTC_IRQn, MQX_PORTC_IRQHandler);
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
-
-	ADC_Compare_disable (kADC_POWER_IN_ISR);
-	g_board_rev = get_board_revision();
-	g_board_config = get_board_configuration();
-	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
-	ADC_Compare_enable (kADC_POWER_IN_ISR);
+//
+//	ADC_Compare_disable (kADC_POWER_IN_ISR);
+//	g_board_rev = get_board_revision();
+//	g_board_config = get_board_configuration();
+//	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
+//	ADC_Compare_enable (kADC_POWER_IN_ISR);
 
 	// turn on device
 	enable_msm_power(TRUE);		// turn on 5V0 power rail
 
-	//Enable UART
-//	GPIO_DRV_SetPinOutput(UART_ENABLE);	
-//	GPIO_DRV_SetPinOutput(FTDI_RSTN);
+//	//Enable UART
+////	GPIO_DRV_SetPinOutput(UART_ENABLE);	
+////	GPIO_DRV_SetPinOutput(FTDI_RSTN);
+//	
+//	//GPIO_DRV_SetPinOutput(RS485_ENABLE);
+//
+//	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
+//	_time_delay (1000);
+//
+//	FlexCanDevice_InitHW();
+//
+////	FPGA_init ();
+//
+//	J1708_enable  (7);
+//
+//	if (GPIO_DRV_ReadPinInput (FPGA_DONE)) {
+//		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntRisingEdge);
+//		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
+//	}
+//
 	
-	//GPIO_DRV_SetPinOutput(RS485_ENABLE);
-
-	GPIO_DRV_SetPinOutput(ACC_VIB_ENABLE);
-	_time_delay (1000);
-
-	FlexCanDevice_InitHW();
-
-//	FPGA_init ();
-
-	J1708_enable  (7);
-
-	if (GPIO_DRV_ReadPinInput (FPGA_DONE)) {
-		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntRisingEdge);
-		GPIO_DRV_ClearPinIntFlag(FPGA_GPIO0);
-	}
-
-    otg_check_time = OTG_CTLEP_RECOVERY_TO + ms_from_start();
-    do {
-        _time_delay (1000);
-        if (otg_check_time < ms_from_start()) {
-            printf("%s: failure to power up A8\n", __func__);
-            Device_off_req(1, 0);
-        }
-#if (!_DEBUG)
-        WDOG_DRV_Refresh();
-        _watchdog_start(WATCHDOG_MCU_MAX_TIME);
-#endif
-        if (MQX_OK != _event_get_value(g_a8_pwr_state_event, &result))
-            result &= ~EVENT_A8_BOOTED;
-    } while (!(result & EVENT_A8_BOOTED));
+//    otg_check_time = OTG_CTLEP_RECOVERY_TO + ms_from_start();
+//    do {
+//        _time_delay (1000);
+//        if (otg_check_time < ms_from_start()) {
+//            printf("%s: failure to power up A8\n", __func__);
+//            Device_off_req(1, 0);
+//        }
+//#if (!_DEBUG)
+//        WDOG_DRV_Refresh();
+//        _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+//#endif
+//        if (MQX_OK != _event_get_value(g_a8_pwr_state_event, &result))
+//            result &= ~EVENT_A8_BOOTED;
+//    } while (!(result & EVENT_A8_BOOTED));
+	
     _event_clear(g_a8_pwr_state_event, EVENT_A8_BOOTED);
    //make sure the alarm will be set off from now on by setting the time to 0 
 	poll_timeout_g = 0;
-	rtc_set_alarm1(zero_date);
-
-    g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
-    if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
-            printf("\nMain Could not create USB_TASK\n");
-    }
-
-	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
-	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create J1708_TX_TASK\n");
-	}
-
-	g_TASK_ids[J1708_RX_TASK] = _task_create(0, J1708_RX_TASK, 0 );
-	if (g_TASK_ids[J1708_RX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create J1708_RX_TASK\n");
-	}
-
-	g_TASK_ids[FPGA_UART_RX_TASK] = _task_create(0, FPGA_UART_RX_TASK, 0 );
-	if (g_TASK_ids[FPGA_UART_RX_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create FPGA_UART_RX_TASK\n");
-	}
-
-	//Start CAN RX TX Tasks
-	g_TASK_ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, (uint32_t)(can_Device_0));
-	if ( g_TASK_ids[CAN_TASK_RX_0] == MQX_NULL_TASK_ID ) {
-		printf("Could not create CAN_TASK_RX for inst %u \n", can_Device_0->instance);
-	}
-
-	g_TASK_ids[CAN_TASK_RX_1] = _task_create(0, CAN_TASK_RX_1, (uint32_t)(can_Device_1));
-	if ( g_TASK_ids[CAN_TASK_RX_1] == MQX_NULL_TASK_ID ) {
-		printf("Could not create CAN_TASK_RX for inst %u \n", can_Device_1->instance);
-	}
-
-	g_TASK_ids[CAN_TASK_TX_0] = _task_create(0, CAN_TASK_TX_0, (uint32_t)(can_Device_0));
-	if ( g_TASK_ids[CAN_TASK_TX_0] == MQX_NULL_TASK_ID ) {
-		printf("Could not create CAN_TASK_TX for inst %u \n", can_Device_0->instance);
-	}
-
-	g_TASK_ids[CAN_TASK_TX_1] = _task_create(0, CAN_TASK_TX_1, (uint32_t)(can_Device_1));
-	if ( g_TASK_ids[CAN_TASK_TX_1] == MQX_NULL_TASK_ID ) {
-			printf("Could not create CAN_TASK_TX for inst %u \n", can_Device_1->instance);
-	}
-
-	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
-	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create ACC_TASK\n");
-	}
-
-	g_TASK_ids[UPDATER_TASK] = _task_create(0, UPDATER_TASK, 0);
-	if (g_TASK_ids[UPDATER_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create UPDATER_TASK\n");
-	}
-	else
-		printf("\nMain UPDATER_TASK created\n");
-
-	g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
-	if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create CONTROL_TASK\n");
-	}
-	
-	g_TASK_ids[ONE_WIRE_TASK] = _task_create(0, ONE_WIRE_TASK, 0);
-	if (g_TASK_ids[ONE_WIRE_TASK] == MQX_NULL_TASK_ID)
-	{
-		printf("\nMain Could not create 1-wire task\n");
-	}
-
-	_time_delay(20); /* short delay to Allow UART to initialize and prints to work */
-	FPGA_read_version(&FPGA_version);
-	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
-	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
-	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
-
-#ifndef DEBUG_A8_WATCHOG_DISABLED 
-#if (!_DEBUG)
-	a8_watchdog_init();
-#endif
-#endif
+//	rtc_set_alarm1(zero_date);
+//
+//    g_TASK_ids[USB_TASK] = _task_create(0, USB_TASK, 0);
+//    if ( g_TASK_ids[USB_TASK] == MQX_NULL_TASK_ID ) {
+//            printf("\nMain Could not create USB_TASK\n");
+//    }
+//
+//	g_TASK_ids[J1708_TX_TASK] = _task_create(0, J1708_TX_TASK, 0 );
+//	if (g_TASK_ids[J1708_TX_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create J1708_TX_TASK\n");
+//	}
+//
+//	g_TASK_ids[J1708_RX_TASK] = _task_create(0, J1708_RX_TASK, 0 );
+//	if (g_TASK_ids[J1708_RX_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create J1708_RX_TASK\n");
+//	}
+//
+//	g_TASK_ids[FPGA_UART_RX_TASK] = _task_create(0, FPGA_UART_RX_TASK, 0 );
+//	if (g_TASK_ids[FPGA_UART_RX_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create FPGA_UART_RX_TASK\n");
+//	}
+//
+//	//Start CAN RX TX Tasks
+//	g_TASK_ids[CAN_TASK_RX_0] = _task_create(0, CAN_TASK_RX_0, (uint32_t)(can_Device_0));
+//	if ( g_TASK_ids[CAN_TASK_RX_0] == MQX_NULL_TASK_ID ) {
+//		printf("Could not create CAN_TASK_RX for inst %u \n", can_Device_0->instance);
+//	}
+//
+//	g_TASK_ids[CAN_TASK_RX_1] = _task_create(0, CAN_TASK_RX_1, (uint32_t)(can_Device_1));
+//	if ( g_TASK_ids[CAN_TASK_RX_1] == MQX_NULL_TASK_ID ) {
+//		printf("Could not create CAN_TASK_RX for inst %u \n", can_Device_1->instance);
+//	}
+//
+//	g_TASK_ids[CAN_TASK_TX_0] = _task_create(0, CAN_TASK_TX_0, (uint32_t)(can_Device_0));
+//	if ( g_TASK_ids[CAN_TASK_TX_0] == MQX_NULL_TASK_ID ) {
+//		printf("Could not create CAN_TASK_TX for inst %u \n", can_Device_0->instance);
+//	}
+//
+//	g_TASK_ids[CAN_TASK_TX_1] = _task_create(0, CAN_TASK_TX_1, (uint32_t)(can_Device_1));
+//	if ( g_TASK_ids[CAN_TASK_TX_1] == MQX_NULL_TASK_ID ) {
+//			printf("Could not create CAN_TASK_TX for inst %u \n", can_Device_1->instance);
+//	}
+//
+//	g_TASK_ids[ACC_TASK] = _task_create(0, ACC_TASK, 0);
+//	if (g_TASK_ids[ACC_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create ACC_TASK\n");
+//	}
+//
+//	g_TASK_ids[UPDATER_TASK] = _task_create(0, UPDATER_TASK, 0);
+//	if (g_TASK_ids[UPDATER_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create UPDATER_TASK\n");
+//	}
+//	else
+//		printf("\nMain UPDATER_TASK created\n");
+//
+//	g_TASK_ids[CONTROL_TASK] = _task_create(0, CONTROL_TASK, 0);
+//	if (g_TASK_ids[CONTROL_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create CONTROL_TASK\n");
+//	}
+//	
+//	g_TASK_ids[ONE_WIRE_TASK] = _task_create(0, ONE_WIRE_TASK, 0);
+//	if (g_TASK_ids[ONE_WIRE_TASK] == MQX_NULL_TASK_ID)
+//	{
+//		printf("\nMain Could not create 1-wire task\n");
+//	}
+//
+//	_time_delay(20); /* short delay to Allow UART to initialize and prints to work */
+//	FPGA_read_version(&FPGA_version);
+//	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
+//	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
+//	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
+//
+//#ifndef DEBUG_A8_WATCHOG_DISABLED 
+//#if (!_DEBUG)
+//	a8_watchdog_init();
+//#endif
+//#endif
 	printf("\nMain Task: Loop \n");
 	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
 	otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
-
+	
     while ( 1 ) 
     {
 #if (!_DEBUG)
@@ -473,44 +475,44 @@ void Main_task( uint32_t initial_data ) {
 		// If MCU usb routed to A8 and CDC driver is not getting messages about control lines change during timeout the main task routs the USB to bypass, resets all devices connected to USB (HUB, FTDI...) and stops monitor for recover time that eq 10 main task periods (10 secs), after this main task back to OTG ID monitoring.
 		// The USB sub-system also goes to recovery if SW reboot/WD of A8 occurs.
 		// This workaround completely debugged and tested by 48 hours resets and A8 always connects to MCU. Sure it will retested by QA together with functional tests. Moreover I want that Roman will include also some stress tests
-		if (g_a8_sw_reboot > 0) {
-		  	if (-1 == cdc_recovery_count) {
-				if (GPIO_DRV_ReadPinInput(OTG_ID)) {
-			  		cdc_recovery_count = 10;
-				} else {
-					g_a8_sw_reboot = 0;
-				}
-			} else if (cdc_recovery_count) {
-			  	cdc_recovery_count--;
-			} else {
-			  	cdc_recovery_count = -1;
-				g_a8_sw_reboot = 0;
-				otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
-				if (GPIO_DRV_ReadPinInput(OTG_ID)) {
-					GPIO_DRV_SetPinOutput (USB_HUB_RSTN);
-					configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_MCU_A8);
-				}
-			}
-		} else {
-			otg_check_time = ms_from_start();
-			if (!g_flag_Exit && (g_a8_sw_reboot == 0)) {
-				if (otg_reset_time < otg_check_time) {
-					if (GPIO_DRV_ReadPinInput(OTG_ID)) {
-						if (!g_otg_ctl_port_active) {
-							configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
-							GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
-							g_a8_sw_reboot = 1;
-							otg_reset_time = otg_check_time;
-							continue;
-						}
-					}
-					otg_reset_time = otg_check_time + OTG_CTLEP_RECOVERY_TO;
-				}
-				configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
-			} else {
-				otg_reset_time = otg_check_time + OTG_CTLEP_RECOVERY_TO;
-			}
-		}
+//		if (g_a8_sw_reboot > 0) {
+//		  	if (-1 == cdc_recovery_count) {
+//				if (GPIO_DRV_ReadPinInput(OTG_ID)) {
+//			  		cdc_recovery_count = 10;
+//				} else {
+//					g_a8_sw_reboot = 0;
+//				}
+//			} else if (cdc_recovery_count) {
+//			  	cdc_recovery_count--;
+//			} else {
+//			  	cdc_recovery_count = -1;
+//				g_a8_sw_reboot = 0;
+//				otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
+//				if (GPIO_DRV_ReadPinInput(OTG_ID)) {
+//					GPIO_DRV_SetPinOutput (USB_HUB_RSTN);
+//					configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_MCU_A8);
+//				}
+//			}
+//		} else {
+//			otg_check_time = ms_from_start();
+//			if (!g_flag_Exit && (g_a8_sw_reboot == 0)) {
+//				if (otg_reset_time < otg_check_time) {
+//					if (GPIO_DRV_ReadPinInput(OTG_ID)) {
+//						if (!g_otg_ctl_port_active) {
+//							configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
+//							GPIO_DRV_ClearPinOutput (USB_HUB_RSTN);
+//							g_a8_sw_reboot = 1;
+//							otg_reset_time = otg_check_time;
+//							continue;
+//						}
+//					}
+//					otg_reset_time = otg_check_time + OTG_CTLEP_RECOVERY_TO;
+//				}
+//				configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_NONE);
+//			} else {
+//				otg_reset_time = otg_check_time + OTG_CTLEP_RECOVERY_TO;
+//			}
+//		}
 #undef DEBUG_BLINKING_RIGHT_LED
 #ifdef DEBUG_BLINKING_RIGHT_LED
 	if(!g_flag_Exit)
