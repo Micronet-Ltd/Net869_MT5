@@ -458,12 +458,12 @@ bool FPGA_read_J1708_packet (uint8_t *buffer, uint8_t length)
 #ifdef J1708_DEBUG
 	static uint16_t count = 0;
 	count++;
-	//if (count%100==0){
-		printf("%s: count %d, %x, %x .. %x, %x, len = %d \n", __func__, count, buffer[0], buffer[1], buffer[length - 2], buffer[length - 1], length);
-		if (count == 65000){
-			count = 0;
-		}
-	//}
+//	if (count%100==0){
+//		printf("%s: count %d, %x, %x .. %x, %x, len = %d \n", __func__, count, buffer[0], buffer[1], buffer[length - 2], buffer[length - 1], length);
+//		if (count == 65000){
+//			count = 0;
+//		}
+//	}
 #endif
 	return true;
 }

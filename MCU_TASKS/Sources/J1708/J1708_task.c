@@ -121,6 +121,7 @@ void J1708_Rx_task (uint32_t initial_data)
 	uint32_t                    J1708_rx_event_bit;
 	bool                        J1708_rx_status;
 	uint8_t                     J1708_rx_len;
+	uint32_t irq_status = 0;
 
 	uint64_t current_time;
 
@@ -139,6 +140,9 @@ void J1708_Rx_task (uint32_t initial_data)
 		// wait 1 second for interrupt message
 		_event_wait_all (g_J1708_event_h, EVENT_J1708_RX, 1000);
 		_event_get_value (g_J1708_event_h, &J1708_rx_event_bit);
+		
+		FPGA_read_irq_status(&irq_status);
+		//printf("irq_status=%x\n", irq_status);
 		if (J1708_rx_event_bit == EVENT_J1708_RX)
 			_event_clear    (g_J1708_event_h, EVENT_J1708_RX);
 		else {
@@ -203,6 +207,9 @@ void J1708_reset (void)
 void J1708_enable (uint8_t priority)
 {
 	uint8_t prio = priority;
+	
+	GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE); /* below V6 board */
+	GPIO_DRV_SetPinOutput(J1708_PWR_EN); /*V6 board */
 
 	if (FPGA_set_irq (FPGA_REG_J1708_RX_IRQ_BIT))
 		printf ("\nJ1708: Set FPGA J1708 Rx IRQ\n");
@@ -219,9 +226,6 @@ void J1708_enable (uint8_t priority)
 		printf ("\nJ1708: ERROR: J1708 NOT Enabled !!!\n");
 
 	GPIO_DRV_ClearPinOutput (J1708_ENABLE);
-	
-	GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE); /* below V6 board */
-	GPIO_DRV_SetPinOutput(J1708_PWR_EN); /*V6 board */
 
 	J1708_state = J1708_ENABLED;
 	J1708_priority = priority;
@@ -229,8 +233,23 @@ void J1708_enable (uint8_t priority)
 
 void J1708_disable (void)
 {
+	int ret = 0;
+	bool J1708_rx_status;
+	uint8_t J1708_rx_len;
+	uint8_t readbuff[J1708_MAX_MESSAGE_SIZE]; 		
+	uint8_t count = 0;
 	GPIO_DRV_SetPinOutput   (J1708_ENABLE);
-
+	
+	do{
+		count++;
+		ret = FPGA_read_J1708_rx_register (&J1708_rx_status, &J1708_rx_len);
+		printf("%s: FPGA_read_J1708_rx_register rx_status=%x, rx_len = %x, ret=%x, count=%d\n", __func__,  J1708_rx_status, J1708_rx_len, ret, count);
+		if (J1708_rx_status == true){
+			ret = FPGA_read_J1708_packet (readbuff, J1708_rx_len);	 /* clearing J1708 data register */
+			printf("%s: FPGA_read_J1708_packet ret=%x\n", __func__, ret);
+		}
+	}while (J1708_rx_status);
+	
 	if (FPGA_clear_irq (FPGA_REG_J1708_RX_IRQ_BIT))
 		printf ("\nJ1708: Clear FPGA J1708 Rx IRQ\n");
 	else
