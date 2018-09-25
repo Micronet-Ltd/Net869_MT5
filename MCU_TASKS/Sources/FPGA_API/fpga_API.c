@@ -178,7 +178,7 @@ bool FPGA_J1708_disable (void)
 		return false;
 
 	fpga_uart_rx_buf_wr_idx = 0;
-	fpga_uart_rx_buf_wr_idx = 0;
+	fpga_uart_rx_buf_rd_idx = 0;
 
 
 	data &= (~FPGA_REG_J1708_CONTROL_ENABLE);
