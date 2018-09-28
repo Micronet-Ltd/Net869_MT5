@@ -342,7 +342,7 @@ void Main_task( uint32_t initial_data ) {
 
 //	FPGA_init ();
 
-	J1708_enable  (7);
+//	J1708_enable  (7);
 
 	if (GPIO_DRV_ReadPinInput (FPGA_DONE)) {
 		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntRisingEdge);

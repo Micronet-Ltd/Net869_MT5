@@ -133,21 +133,27 @@ void J1708_Rx_task (uint32_t initial_data)
 //	printf ("\nJ1708_Rx Task: Start \n");
 
 	while (0 == g_flag_Exit) {
-		while (J1708_state == J1708_DISABLED)
-			_time_delay (1000);
-
-
 		// wait 1 second for interrupt message
 		_event_wait_all (g_J1708_event_h, EVENT_J1708_RX, 1000);
 		_event_get_value (g_J1708_event_h, &J1708_rx_event_bit);
 		
-		FPGA_read_irq_status(&irq_status);
-		//printf("irq_status=%x\n", irq_status);
-		if (J1708_rx_event_bit == EVENT_J1708_RX)
-			_event_clear    (g_J1708_event_h, EVENT_J1708_RX);
-		else {
-			//printf ("\nJ1708_Rx: WARNING: No interrupt in last 10 Seconds \n");
+		if (J1708_state == J1708_DISABLED && J1708_rx_event_bit == 0){
+			_time_delay (1000);
 			continue;
+		}
+
+		if (J1708_rx_event_bit&EVENT_J1708_RX){
+			_event_clear    (g_J1708_event_h, EVENT_J1708_RX);
+		}
+		if (J1708_rx_event_bit&EVENT_J1708_ENABLE){
+				J1708_enable(7);
+				_event_clear    (g_J1708_event_h, EVENT_J1708_ENABLE);
+				continue;
+		}
+		if (J1708_rx_event_bit&EVENT_J1708_DISABLE){
+				J1708_disable();
+				_event_clear    (g_J1708_event_h, EVENT_J1708_DISABLE);
+				continue;
 		}
 
 		// read J1708 package length
