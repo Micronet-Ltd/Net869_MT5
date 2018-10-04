@@ -322,9 +322,7 @@ void Main_task( uint32_t initial_data ) {
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
-	ADC_Compare_disable (kADC_POWER_IN_ISR);	
 	printf("board_rev = %u, board_config= %c\n", get_board_revision(), get_board_configuration());
-	ADC_Compare_enable (kADC_POWER_IN_ISR);
 
 	// turn on device
 	enable_msm_power(TRUE);		// turn on 5V0 power rail

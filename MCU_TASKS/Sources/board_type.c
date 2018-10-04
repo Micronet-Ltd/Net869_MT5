@@ -38,9 +38,9 @@ uint32_t get_board_adc_value(adc16_chn_t channel){
 }
 
 /* get_board_revision: returns the board number read via ADC0_DM1
-*						Below Rev 6 = 0.30V to 0.36V (Floating)
+*						Below Rev 6 = 1.3V to 1.8V (Floating)
 *						Rev 6 = 1V
-*						Rev 7 = 1.5V
+*						Rev 7 = 2.1V
 *						Returns 0xff on no match
 */
 uint8_t get_board_revision(void)
@@ -49,7 +49,7 @@ uint8_t get_board_revision(void)
 	
 	board_adc_val = get_board_adc_value(ADC_BOARD_VER);
 	
-	if (board_adc_val > 1500 && board_adc_val < 1800)  /* pin floating */
+	if (board_adc_val > 1300 && board_adc_val < 1800)  /* pin floating */
 	{
 		board_rev = 4; /* board V3 has the same value since the pin is also floating */
 	}
@@ -58,7 +58,7 @@ uint8_t get_board_revision(void)
 	{
 		board_rev = 6;
 	}
-	else if ((board_adc_val > (2000-DELTA)) && (board_adc_val < (2000+DELTA)))
+	else if ((board_adc_val > (2100-DELTA)) && (board_adc_val < (2100+DELTA)))
 	{
 		board_rev = 7;	
 	}
