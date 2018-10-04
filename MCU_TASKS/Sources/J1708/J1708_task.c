@@ -110,6 +110,21 @@ void J1708_Tx_task (uint32_t initial_data)
 	_task_block();
 }
 
+bool verify_checksum(uint8_t * readbuff, uint8_t J1708_rx_len){
+	bool valid_frame = false;
+	uint16_t sum = 0;
+	uint8_t i = 0;
+
+	for (i = 0; i < J1708_rx_len; i++){
+		sum = sum + *(readbuff + i);
+	}
+
+	if ((sum & 0xff) == 0){
+		valid_frame = true;
+	}
+	return valid_frame;
+}
+
 //#define MIC_LED_TEST
 
 void J1708_Rx_task (uint32_t initial_data)
@@ -121,7 +136,9 @@ void J1708_Rx_task (uint32_t initial_data)
 	uint32_t                    J1708_rx_event_bit;
 	bool                        J1708_rx_status;
 	uint8_t                     J1708_rx_len;
-	uint32_t irq_status = 0;
+	uint32_t session_frames_rx = 0;
+	uint32_t session_bad_checksum_cnt = 0;
+	uint32_t total_bad_checksum_cnt = 0;
 
 	uint64_t current_time;
 
@@ -145,9 +162,12 @@ void J1708_Rx_task (uint32_t initial_data)
 		if (J1708_rx_event_bit&EVENT_J1708_RX){
 			_event_clear    (g_J1708_event_h, EVENT_J1708_RX);
 		}
+
 		if (J1708_rx_event_bit&EVENT_J1708_ENABLE){
 				J1708_enable(7);
 				_event_clear    (g_J1708_event_h, EVENT_J1708_ENABLE);
+				session_bad_checksum_cnt = 0;
+				session_frames_rx = 0;
 				continue;
 		}
 		if (J1708_rx_event_bit&EVENT_J1708_DISABLE){
@@ -164,7 +184,7 @@ void J1708_Rx_task (uint32_t initial_data)
 
 		// check if this is a real new message
 		if (J1708_rx_status == false) {
-			printf ("\nJ1708_Rx: ERROR: Received interrupt without register bit indication\n");
+			//printf ("\nJ1708_Rx: ERROR: Received interrupt without register bit indication\n");
 			continue;
 		}
 
@@ -189,6 +209,17 @@ void J1708_Rx_task (uint32_t initial_data)
 			J1708_reset ();
             SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_5);
             continue;
+		}
+
+		session_frames_rx++;
+		if (!verify_checksum(readbuff, J1708_rx_len)){
+			session_bad_checksum_cnt++;
+			total_bad_checksum_cnt++;
+			printf("\n%s: session_frames_rx=%d, session_bad_checksum_cnt=%d, total_bad_checksum_cnt=%d\n",__func__, session_frames_rx, session_bad_checksum_cnt, total_bad_checksum_cnt);
+			if (session_frames_rx == 1){
+				printf("\n%s: FIRST PACKET BAD", __func__);
+				continue; /* if first packet is bad drop the packet  */
+			}
 		}
 
         pqMemElem->send_size = frame_encode((uint8_t*)readbuff, (const uint8_t*)(pqMemElem->data_buff), J1708_rx_len );

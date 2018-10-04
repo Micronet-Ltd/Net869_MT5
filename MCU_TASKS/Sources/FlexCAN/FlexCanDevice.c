@@ -484,7 +484,7 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				if ( BSP_CAN_DEVICE_0 == pcan->instance ){
 					if (get_saved_board_revision() < 6){
 						GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
-						J1708_enable(7); /* since CAN1 power and J1708 power were tied together, we need to reinitialize j1708 */
+						_event_set(g_J1708_event_h, EVENT_J1708_ENABLE); /* since CAN1 power and J1708 power were tied together, we need to reinitialize j1708 */
 					}
 					GPIO_DRV_SetPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 				}
@@ -544,7 +544,8 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				if ( BSP_CAN_DEVICE_0 == pcan->instance ) {
 					if (get_saved_board_revision() < 6){
 						GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE);
-						J1708_disable(); /* since CAN1 power and J1708 power were tied together, we need to disable j1708 */
+						GPIO_DRV_SetPinOutput   (J1708_ENABLE); //disable any more J1708 messages from coming through
+						_event_set(g_J1708_event_h, EVENT_J1708_DISABLE); /* since CAN1 power and J1708 power were tied together, we need to disable j1708 */
 					}
 
 					GPIO_DRV_ClearPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
