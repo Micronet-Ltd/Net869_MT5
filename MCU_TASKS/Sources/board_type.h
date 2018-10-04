@@ -6,5 +6,7 @@
 uint32_t get_board_adc_value(adc16_chn_t channel);
 uint8_t get_board_revision(void);
 char get_board_configuration(void);
+uint8_t get_saved_board_revision(void);
+char get_saved_board_configuration(void);
 
 #endif /* _BOARD_TYPE_H_ */

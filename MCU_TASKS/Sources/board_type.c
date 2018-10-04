@@ -2,6 +2,7 @@
 #include "fsl_adc16_driver.h"
 #include "fsl_adc16_hal.h"
 #include "gpio_pins.h"
+#include "ADC.h"
 
 #define CONFIG_FULL 			 'A'
 #define CONFIG_WINDSHIELD_OBC	 'D' 	/* Orbcomm device */
@@ -15,16 +16,24 @@
 #define ADC16_CHN_GROUP_0	0
 #define DELTA 				40 /* mV */
 
+static uint32_t board_rev = 0;
+static char board_config = 'O';
+
 uint32_t get_board_adc_value(adc16_chn_t channel){
 	uint32_t raw_adc_value = 0;	
 	uint32_t adc_value = 0;
 	
 	adc16_chn_config_t chn_config = {.chnIdx = channel, .convCompletedIntEnable = false, .diffConvEnable = false };
+	
+	ADC_Compare_disable (kADC_POWER_IN_ISR);
 
 	ADC16_DRV_ConfigConvChn (ADC16_INSTANCE0, ADC16_CHN_GROUP_0, &chn_config);     /* trigger the conversion */
 	ADC16_DRV_WaitConvDone  (ADC16_INSTANCE0, ADC16_CHN_GROUP_0);                  /* Wait for the conversion to be done */
 	raw_adc_value = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE0, ADC16_CHN_GROUP_0); /* get  value for single ended channel */
 	adc_value = (raw_adc_value * ADC_VREF)>>FSL_FEATURE_ADC16_MAX_RESOLUTION;
+	
+	ADC_Compare_enable (kADC_POWER_IN_ISR);
+	
 	return adc_value;
 }
 
@@ -36,21 +45,20 @@ uint32_t get_board_adc_value(adc16_chn_t channel){
 */
 uint8_t get_board_revision(void)
 {
-	uint32_t board_rev = 0;
 	uint32_t board_adc_val = 0;
 	
 	board_adc_val = get_board_adc_value(ADC_BOARD_VER);
 	
-	if (board_adc_val > 150 && board_adc_val < 750)  /* pin floating */
+	if (board_adc_val > 1500 && board_adc_val < 1800)  /* pin floating */
 	{
 		board_rev = 4; /* board V3 has the same value since the pin is also floating */
 	}
 	else if (((board_adc_val > (1000-DELTA)) && (board_adc_val < (1000+DELTA)))
-			 || (board_adc_val > (100-DELTA)) && (board_adc_val > (100+DELTA))) /* special case for the first few REV6 boards that were produced */
+			 || (board_adc_val > (100-DELTA)) && (board_adc_val < (100+DELTA))) /* special case for the first few REV6 boards that were produced */
 	{
 		board_rev = 6;
 	}
-	else if ((board_adc_val > (1500-DELTA)) && (board_adc_val < (1500+DELTA)))
+	else if ((board_adc_val > (2000-DELTA)) && (board_adc_val < (2000+DELTA)))
 	{
 		board_rev = 7;	
 	}
@@ -70,7 +78,6 @@ uint8_t get_board_revision(void)
 */
 char get_board_configuration(void)
 {
-	char board_config;
 	uint32_t board_adc_val = 0;
 	
 	uint8_t board_ver = get_board_revision();
@@ -109,5 +116,21 @@ char get_board_configuration(void)
 		}
 	}
 	return board_config;
+}
+
+uint8_t get_saved_board_revision(void)
+{
+	if (board_rev == 0){
+		get_board_revision();
+	}
+	return board_rev;
+}
+
+char get_saved_board_configuration(void)
+{
+	if (board_config == 'O'){
+		get_board_configuration();	
+	}
+	return board_config;	
 }
 
