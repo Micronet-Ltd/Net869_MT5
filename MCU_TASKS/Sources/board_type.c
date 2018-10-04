@@ -26,6 +26,7 @@ uint32_t get_board_adc_value(adc16_chn_t channel){
 	adc16_chn_config_t chn_config = {.chnIdx = channel, .convCompletedIntEnable = false, .diffConvEnable = false };
 	
 	ADC_Compare_disable (kADC_POWER_IN_ISR);
+	_time_delay(100); 
 
 	ADC16_DRV_ConfigConvChn (ADC16_INSTANCE0, ADC16_CHN_GROUP_0, &chn_config);     /* trigger the conversion */
 	ADC16_DRV_WaitConvDone  (ADC16_INSTANCE0, ADC16_CHN_GROUP_0);                  /* Wait for the conversion to be done */
@@ -33,12 +34,11 @@ uint32_t get_board_adc_value(adc16_chn_t channel){
 	adc_value = (raw_adc_value * ADC_VREF)>>FSL_FEATURE_ADC16_MAX_RESOLUTION;
 	
 	ADC_Compare_enable (kADC_POWER_IN_ISR);
-	
 	return adc_value;
 }
 
 /* get_board_revision: returns the board number read via ADC0_DM1
-*						Below Rev 6 = 1.3V to 1.8V (Floating)
+*						Below Rev 6 = Typically 1.3V to 1.8V (Floating)
 *						Rev 6 = 1V
 *						Rev 7 = 2.1V
 *						Returns 0xff on no match
@@ -48,6 +48,7 @@ uint8_t get_board_revision(void)
 	uint32_t board_adc_val = 0;
 	
 	board_adc_val = get_board_adc_value(ADC_BOARD_VER);
+	printf("\n%s: board_rev_adc_val %d\n", __func__, board_adc_val);
 	
 	if (board_adc_val > 1300 && board_adc_val < 1800)  /* pin floating */
 	{
@@ -62,8 +63,9 @@ uint8_t get_board_revision(void)
 	{
 		board_rev = 7;	
 	}
-	else{
-		board_rev = 0xff;	
+	else
+	{
+		board_rev = 4; /* Since Rev4 and below pin is floating, we assume that the board is Rev4 if it doesn't meet other board values */
 	}
 	return board_rev;
 }
@@ -80,7 +82,7 @@ char get_board_configuration(void)
 {
 	uint32_t board_adc_val = 0;
 	
-	uint8_t board_ver = get_board_revision();
+	uint8_t board_ver = get_saved_board_revision();
 	
 	if (board_ver == 4) /* since board_ver has a floating ADC_BOARD_CONFIG pin, we automatically assume it is CONFIG_OBC5 */
 	{
@@ -89,6 +91,7 @@ char get_board_configuration(void)
 	else
 	{
 		board_adc_val = get_board_adc_value(ADC_BOARD_CONFIG);
+		printf("\n%s: board_config_adc_val %d\n", __func__, board_adc_val);
 
 		if (board_adc_val < 50)
 		{
