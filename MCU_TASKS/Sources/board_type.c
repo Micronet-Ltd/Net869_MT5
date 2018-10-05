@@ -22,16 +22,23 @@ static char board_config = 'O';
 uint32_t get_board_adc_value(adc16_chn_t channel){
 	uint32_t raw_adc_value = 0;	
 	uint32_t adc_value = 0;
+	uint8_t i = 0;
+	uint32_t adc_sum;
 	
 	adc16_chn_config_t chn_config = {.chnIdx = channel, .convCompletedIntEnable = false, .diffConvEnable = false };
 	
 	ADC_Compare_disable (kADC_POWER_IN_ISR);
-	_time_delay(100); 
-
-	ADC16_DRV_ConfigConvChn (ADC16_INSTANCE0, ADC16_CHN_GROUP_0, &chn_config);     /* trigger the conversion */
-	ADC16_DRV_WaitConvDone  (ADC16_INSTANCE0, ADC16_CHN_GROUP_0);                  /* Wait for the conversion to be done */
-	raw_adc_value = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE0, ADC16_CHN_GROUP_0); /* get  value for single ended channel */
-	adc_value = (raw_adc_value * ADC_VREF)>>FSL_FEATURE_ADC16_MAX_RESOLUTION;
+	for (i = 0; i < 5; i++)
+	{
+		_time_delay(50);
+		ADC16_DRV_ConfigConvChn (ADC16_INSTANCE0, ADC16_CHN_GROUP_0, &chn_config);     /* trigger the conversion */
+		ADC16_DRV_WaitConvDone  (ADC16_INSTANCE0, ADC16_CHN_GROUP_0);                  /* Wait for the conversion to be done */
+		raw_adc_value = ADC16_DRV_GetConvValueRAW(ADC16_INSTANCE0, ADC16_CHN_GROUP_0); /* get  value for single ended channel */
+		adc_value = (raw_adc_value * ADC_VREF)>>FSL_FEATURE_ADC16_MAX_RESOLUTION;
+		//printf("%s: i=%d, adc_value %d\n", __func__, i, adc_value);
+		adc_sum += adc_value;
+	}
+	adc_value = adc_sum/5;
 	
 	ADC_Compare_enable (kADC_POWER_IN_ISR);
 	return adc_value;
@@ -46,22 +53,19 @@ uint32_t get_board_adc_value(adc16_chn_t channel){
 uint8_t get_board_revision(void)
 {
 	uint32_t board_adc_val = 0;
-	
+	uint16_t i = 0;
+
 	board_adc_val = get_board_adc_value(ADC_BOARD_VER);
-	printf("\n%s: board_rev_adc_val %d\n", __func__, board_adc_val);
+	//printf("\n%s: i=%d, board_rev_adc_val %d\n", __func__, i, board_adc_val);
 	
-	if (board_adc_val > 1300 && board_adc_val < 1800)  /* pin floating */
-	{
-		board_rev = 4; /* board V3 has the same value since the pin is also floating */
-	}
-	else if (((board_adc_val > (1000-DELTA)) && (board_adc_val < (1000+DELTA)))
+	if (((board_adc_val > (1000-DELTA)) && (board_adc_val < (1000+DELTA)))
 			 || (board_adc_val > (100-DELTA)) && (board_adc_val < (100+DELTA))) /* special case for the first few REV6 boards that were produced */
 	{
 		board_rev = 6;
 	}
 	else if ((board_adc_val > (2100-DELTA)) && (board_adc_val < (2100+DELTA)))
 	{
-		board_rev = 7;	
+		board_rev = 7;
 	}
 	else
 	{
