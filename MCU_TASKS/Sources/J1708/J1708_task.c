@@ -155,6 +155,7 @@ void J1708_Rx_task (uint32_t initial_data)
 		_event_get_value (g_J1708_event_h, &J1708_rx_event_bit);
 		
 		if (J1708_state == J1708_DISABLED && J1708_rx_event_bit == 0){
+			printf ("\nJ1708_Rx: J1708_DISABLED 0x%x\n", J1708_rx_event_bit);
 			_time_delay (1000);
 			continue;
 		}
@@ -163,17 +164,19 @@ void J1708_Rx_task (uint32_t initial_data)
 			_event_clear    (g_J1708_event_h, EVENT_J1708_RX);
 		}
 
-		if (J1708_rx_event_bit&EVENT_J1708_ENABLE){
-				J1708_enable(7);
-				_event_clear    (g_J1708_event_h, EVENT_J1708_ENABLE);
-				session_bad_checksum_cnt = 0;
-				session_frames_rx = 0;
-				continue;
-		}
 		if (J1708_rx_event_bit&EVENT_J1708_DISABLE){
-				J1708_disable();
-				_event_clear    (g_J1708_event_h, EVENT_J1708_DISABLE);
-				continue;
+			printf ("\nJ1708_Rx: J1708_rx_event_bit&EVENT_J1708_DISABLE 0x%x\n", J1708_rx_event_bit);
+			J1708_disable();
+			_event_clear    (g_J1708_event_h, EVENT_J1708_DISABLE);
+			continue;
+		}
+		if (J1708_rx_event_bit&EVENT_J1708_ENABLE){
+			printf ("\nJ1708_Rx: J1708_rx_event_bit&EVENT_J1708_ENABLE 0x%x\n", J1708_rx_event_bit);
+			J1708_enable(7);
+			_event_clear    (g_J1708_event_h, EVENT_J1708_ENABLE);
+			session_bad_checksum_cnt = 0;
+			session_frames_rx = 0;
+			continue;
 		}
 
 		// read J1708 package length
@@ -192,13 +195,6 @@ void J1708_Rx_task (uint32_t initial_data)
             printf("%s: Wrong max msg size %d", __func__, J1708_rx_len);
             continue;
         }
-        // send buffer - Since the buffer is cyclic, it might be needed to split buffer to 2 buffers
-		pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_5);
-		if (NULL == pqMemElem) {
-			printf("%s: Error get mem for USB drop\n", __func__);
-			continue;
-		}
-        pqMemElem->send_size = 0;
 
 		// add header size to message length
 		//pqMemElem->send_size = J1708_rx_len;
@@ -207,7 +203,7 @@ void J1708_Rx_task (uint32_t initial_data)
 		if (!FPGA_read_J1708_packet (readbuff, J1708_rx_len)) {
 			printf ("\nJ1708_Rx: ERROR: Could not read UART message buffer\n");
 			J1708_reset ();
-            SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_5);
+            //SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_5);
             continue;
 		}
 
@@ -220,6 +216,14 @@ void J1708_Rx_task (uint32_t initial_data)
 				printf("\n%s: FIRST PACKET BAD", __func__);
 				continue; /* if first packet is bad drop the packet  */
 			}
+		}
+		
+		// send buffer - Since the buffer is cyclic, it might be needed to split buffer to 2 buffers
+		pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_5);
+		if (NULL == pqMemElem) {
+			printf("%s: Error get mem for USB drop\n", __func__);
+			_time_delay (10); /* give the USB some time to send packets */
+			continue;
 		}
 
         pqMemElem->send_size = frame_encode((uint8_t*)readbuff, (const uint8_t*)(pqMemElem->data_buff), J1708_rx_len );
