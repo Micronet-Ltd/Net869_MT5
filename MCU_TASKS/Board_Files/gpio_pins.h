@@ -54,11 +54,12 @@ enum _gpio_pins_pinNames {
 
 	// CAN BUS INTERFACE
 	CAN1_PWR_EN							= GPIO_MAKE_PIN(GPIOA_IDX, 14), //only present of NET869V6 and greater boards
-	CAN1_J1708_PWR_ENABLE				= GPIO_MAKE_PIN(GPIOC_IDX,  0),
+	CAN1_J1708_PWR_ENABLE				= GPIO_MAKE_PIN(GPIOC_IDX,  0), //on NET869V4 and below only, j1708 and can power enable pin was split in v6 boards
 	CAN2_SWC_PWR_ENABLE					= GPIO_MAKE_PIN(GPIOC_IDX,  4),
 	CAN1_TERM_ENABLE					= GPIO_MAKE_PIN(GPIOE_IDX, 24),
 	CAN2_TERM_ENABLE					= GPIO_MAKE_PIN(GPIOA_IDX, 10),
 	CAN2_SWC_SELECT						= GPIO_MAKE_PIN(GPIOC_IDX,  6),
+	J1708_PWR_EN						= GPIO_MAKE_PIN(GPIOC_IDX,  0), //on NET869V6 and greater boards used as J1708_PWR_EN, on v4 and below it is CAN1_J1708_PWR_ENABLE
 	J1708_ENABLE						= GPIO_MAKE_PIN(GPIOA_IDX,  9),
 	SWC_ENABLE							= GPIO_MAKE_PIN(GPIOA_IDX,  8),
 	SWC_MODE0							= GPIO_MAKE_PIN(GPIOC_IDX, 12),

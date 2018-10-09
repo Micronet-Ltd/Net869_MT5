@@ -65,10 +65,10 @@ void J1708_Tx_task (uint32_t initial_data)
 
 	while (0 == g_flag_Exit) {
 		while (J1708_state == J1708_DISABLED)
-			_time_delay (10000);
+			_time_delay (1000);
 
-		// wait 10 second for interrupt message
-		msg = _msgq_receive(J1708_tx_qid, 10000);
+		// wait 1 second for interrupt message
+		msg = _msgq_receive(J1708_tx_qid, 1000);
 		if (msg == NULL) {
 			//printf ("\nJ1708_Tx: WARNING: Message not received in last 10 Seconds \n");
 			continue;
@@ -110,6 +110,21 @@ void J1708_Tx_task (uint32_t initial_data)
 	_task_block();
 }
 
+bool verify_checksum(uint8_t * readbuff, uint8_t J1708_rx_len){
+	bool valid_frame = false;
+	uint16_t sum = 0;
+	uint8_t i = 0;
+
+	for (i = 0; i < J1708_rx_len; i++){
+		sum = sum + *(readbuff + i);
+	}
+
+	if ((sum & 0xff) == 0){
+		valid_frame = true;
+	}
+	return valid_frame;
+}
+
 //#define MIC_LED_TEST
 
 void J1708_Rx_task (uint32_t initial_data)
@@ -121,6 +136,9 @@ void J1708_Rx_task (uint32_t initial_data)
 	uint32_t                    J1708_rx_event_bit;
 	bool                        J1708_rx_status;
 	uint8_t                     J1708_rx_len;
+	uint32_t session_frames_rx = 0;
+	uint32_t session_bad_checksum_cnt = 0;
+	uint32_t total_bad_checksum_cnt = 0;
 
 	uint64_t current_time;
 
@@ -132,17 +150,32 @@ void J1708_Rx_task (uint32_t initial_data)
 //	printf ("\nJ1708_Rx Task: Start \n");
 
 	while (0 == g_flag_Exit) {
-		while (J1708_state == J1708_DISABLED)
-			_time_delay (10000);
-
-
-		// wait 10 second for interrupt message
-		_event_wait_all (g_J1708_event_h, EVENT_J1708_RX, 3000);
+		// wait 1 second for interrupt message
+		_event_wait_all (g_J1708_event_h, EVENT_J1708_RX, 1000);
 		_event_get_value (g_J1708_event_h, &J1708_rx_event_bit);
-		if (J1708_rx_event_bit == EVENT_J1708_RX)
+		
+		if (J1708_state == J1708_DISABLED && J1708_rx_event_bit == 0){
+			printf ("\nJ1708_Rx: J1708_DISABLED 0x%x\n", J1708_rx_event_bit);
+			_time_delay (1000);
+			continue;
+		}
+
+		if (J1708_rx_event_bit&EVENT_J1708_RX){
 			_event_clear    (g_J1708_event_h, EVENT_J1708_RX);
-		else {
-			//printf ("\nJ1708_Rx: WARNING: No interrupt in last 10 Seconds \n");
+		}
+
+		if (J1708_rx_event_bit&EVENT_J1708_DISABLE){
+			printf ("\nJ1708_Rx: J1708_rx_event_bit&EVENT_J1708_DISABLE 0x%x\n", J1708_rx_event_bit);
+			J1708_disable();
+			_event_clear    (g_J1708_event_h, EVENT_J1708_DISABLE);
+			continue;
+		}
+		if (J1708_rx_event_bit&EVENT_J1708_ENABLE){
+			printf ("\nJ1708_Rx: J1708_rx_event_bit&EVENT_J1708_ENABLE 0x%x\n", J1708_rx_event_bit);
+			J1708_enable(7);
+			_event_clear    (g_J1708_event_h, EVENT_J1708_ENABLE);
+			session_bad_checksum_cnt = 0;
+			session_frames_rx = 0;
 			continue;
 		}
 
@@ -154,7 +187,7 @@ void J1708_Rx_task (uint32_t initial_data)
 
 		// check if this is a real new message
 		if (J1708_rx_status == false) {
-			printf ("\nJ1708_Rx: ERROR: Received interrupt without register bit indication\n");
+			//printf ("\nJ1708_Rx: ERROR: Received interrupt without register bit indication\n");
 			continue;
 		}
 
@@ -162,13 +195,6 @@ void J1708_Rx_task (uint32_t initial_data)
             printf("%s: Wrong max msg size %d", __func__, J1708_rx_len);
             continue;
         }
-        // send buffer - Since the buffer is cyclic, it might be needed to split buffer to 2 buffers
-		pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_5);
-		if (NULL == pqMemElem) {
-			printf("%s: Error get mem for USB drop\n", __func__);
-			continue;
-		}
-        pqMemElem->send_size = 0;
 
 		// add header size to message length
 		//pqMemElem->send_size = J1708_rx_len;
@@ -177,8 +203,27 @@ void J1708_Rx_task (uint32_t initial_data)
 		if (!FPGA_read_J1708_packet (readbuff, J1708_rx_len)) {
 			printf ("\nJ1708_Rx: ERROR: Could not read UART message buffer\n");
 			J1708_reset ();
-            SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_5);
+            //SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_5);
             continue;
+		}
+
+		session_frames_rx++;
+		if (!verify_checksum(readbuff, J1708_rx_len)){
+			session_bad_checksum_cnt++;
+			total_bad_checksum_cnt++;
+			printf("\n%s: session_frames_rx=%d, session_bad_checksum_cnt=%d, total_bad_checksum_cnt=%d\n",__func__, session_frames_rx, session_bad_checksum_cnt, total_bad_checksum_cnt);
+			if (session_frames_rx == 1){
+				printf("\n%s: FIRST PACKET BAD", __func__);
+				continue; /* if first packet is bad drop the packet  */
+			}
+		}
+		
+		// send buffer - Since the buffer is cyclic, it might be needed to split buffer to 2 buffers
+		pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_5);
+		if (NULL == pqMemElem) {
+			printf("%s: Error get mem for USB drop\n", __func__);
+			_time_delay (10); /* give the USB some time to send packets */
+			continue;
 		}
 
         pqMemElem->send_size = frame_encode((uint8_t*)readbuff, (const uint8_t*)(pqMemElem->data_buff), J1708_rx_len );
@@ -203,6 +248,9 @@ void J1708_reset (void)
 void J1708_enable (uint8_t priority)
 {
 	uint8_t prio = priority;
+	
+	GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE); /* below V6 board */
+	GPIO_DRV_SetPinOutput(J1708_PWR_EN); /*V6 board */
 
 	if (FPGA_set_irq (FPGA_REG_J1708_RX_IRQ_BIT))
 		printf ("\nJ1708: Set FPGA J1708 Rx IRQ\n");
@@ -226,8 +274,23 @@ void J1708_enable (uint8_t priority)
 
 void J1708_disable (void)
 {
+	int ret = 0;
+	bool J1708_rx_status;
+	uint8_t J1708_rx_len;
+	uint8_t readbuff[J1708_MAX_MESSAGE_SIZE]; 		
+	uint8_t count = 0;
 	GPIO_DRV_SetPinOutput   (J1708_ENABLE);
-
+	
+	do{
+		count++;
+		ret = FPGA_read_J1708_rx_register (&J1708_rx_status, &J1708_rx_len);
+		printf("%s: FPGA_read_J1708_rx_register rx_status=%x, rx_len = %x, ret=%x, count=%d\n", __func__,  J1708_rx_status, J1708_rx_len, ret, count);
+		if (J1708_rx_status == true){
+			ret = FPGA_read_J1708_packet (readbuff, J1708_rx_len);	 /* clearing J1708 data register */
+			printf("%s: FPGA_read_J1708_packet ret=%x\n", __func__, ret);
+		}
+	}while (J1708_rx_status);
+	
 	if (FPGA_clear_irq (FPGA_REG_J1708_RX_IRQ_BIT))
 		printf ("\nJ1708: Clear FPGA J1708 Rx IRQ\n");
 	else
@@ -238,6 +301,9 @@ void J1708_disable (void)
 	else
 		printf ("\nJ1708: ERROR: J1708 NOT Disabled !!!\n");
 
+	GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE); /* below V6 board */
+	GPIO_DRV_ClearPinOutput(J1708_PWR_EN); /*V6 board */
+	
 	J1708_state = J1708_DISABLED;
 }
 
