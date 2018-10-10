@@ -155,7 +155,7 @@ void J1708_Rx_task (uint32_t initial_data)
 		_event_get_value (g_J1708_event_h, &J1708_rx_event_bit);
 		
 		if (J1708_state == J1708_DISABLED && J1708_rx_event_bit == 0){
-			printf ("\nJ1708_Rx: J1708_DISABLED 0x%x\n", J1708_rx_event_bit);
+			//printf ("\nJ1708_Rx: J1708_DISABLED 0x%x\n", J1708_rx_event_bit);
 			_time_delay (1000);
 			continue;
 		}
