@@ -151,12 +151,11 @@ void J1708_Rx_task (uint32_t initial_data)
 
 	while (0 == g_flag_Exit) {
 		// wait 1 second for interrupt message
-		_event_wait_all (g_J1708_event_h, EVENT_J1708_RX, 1000);
+		_event_wait_any (g_J1708_event_h, EVENT_J1708_RX | EVENT_J1708_DISABLE | EVENT_J1708_ENABLE, 0);
 		_event_get_value (g_J1708_event_h, &J1708_rx_event_bit);
 		
 		if (J1708_state == J1708_DISABLED && J1708_rx_event_bit == 0){
 			//printf ("\nJ1708_Rx: J1708_DISABLED 0x%x\n", J1708_rx_event_bit);
-			_time_delay (1000);
 			continue;
 		}
 
