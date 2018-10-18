@@ -70,10 +70,6 @@ MUTEX_STRUCT g_i2c1_mutex;
 
 extern uint8_t g_flag_Exit;
 
-uint8_t g_board_rev;
-char g_board_config;
-
-
 /* induce_hard_fault: Induce divide by zero hard fault(used for debugging) */
 void induce_hard_fault(void)
 {
@@ -326,11 +322,7 @@ void Main_task( uint32_t initial_data ) {
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
-	ADC_Compare_disable (kADC_POWER_IN_ISR);
-	g_board_rev = get_board_revision();
-	g_board_config = get_board_configuration();
-	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
-	ADC_Compare_enable (kADC_POWER_IN_ISR);
+	printf("board_rev = %u, board_config= %c\n", get_board_revision(), get_board_configuration());
 
 	// turn on device
 	enable_msm_power(TRUE);		// turn on 5V0 power rail
@@ -348,7 +340,7 @@ void Main_task( uint32_t initial_data ) {
 
 //	FPGA_init ();
 
-	J1708_enable  (7);
+//	J1708_enable  (7);
 
 	if (GPIO_DRV_ReadPinInput (FPGA_DONE)) {
 		PORT_HAL_SetPinIntMode (PORTC, GPIO_EXTRACT_PIN(FPGA_GPIO0), kPortIntRisingEdge);
@@ -448,7 +440,7 @@ void Main_task( uint32_t initial_data ) {
 	FPGA_read_version(&FPGA_version);
 	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
 	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
-	printf("board_rev = %u, board_config= %c\n", g_board_rev, g_board_config);
+	printf("board_rev = %u, board_config= %c\n", get_saved_board_revision(), get_saved_board_configuration());
 
 #ifndef DEBUG_A8_WATCHOG_DISABLED 
 #if (!_DEBUG)
