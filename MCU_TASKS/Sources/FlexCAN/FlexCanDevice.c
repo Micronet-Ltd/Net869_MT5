@@ -26,6 +26,8 @@
 #include "FlexCanDevice.h"
 #include "mic_typedef.h"
 #include "FlexCanMsg_queue.h"
+#include "board_type.h"
+#include "J1708_task.h"
 
 /* Definition */
 
@@ -480,7 +482,10 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 
 				//Enable CAN
 				if ( BSP_CAN_DEVICE_0 == pcan->instance ){
-					GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
+					//if (get_saved_board_revision() < 6){ //commenting this out for now because the v4 version check is not consistent
+						GPIO_DRV_SetPinOutput(CAN1_J1708_PWR_ENABLE);
+						_event_set(g_J1708_event_h, EVENT_J1708_ENABLE); /* since CAN1 power and J1708 power were tied together, we need to reinitialize j1708 */
+					//}
 					GPIO_DRV_SetPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 				}
 				else {
@@ -537,7 +542,12 @@ void FLEXCAN_Tx_Task( uint32_t param_in ) {
 				//Disable CAN
 				Baudrate_notSet = 1;
 				if ( BSP_CAN_DEVICE_0 == pcan->instance ) {
-					GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE);
+					//if (get_saved_board_revision() < 6){ //commenting this out for now because the v4 version check is not consistent
+						GPIO_DRV_ClearPinOutput(CAN1_J1708_PWR_ENABLE);
+						GPIO_DRV_SetPinOutput   (J1708_ENABLE); //disable any more J1708 messages from coming through
+						_event_set(g_J1708_event_h, EVENT_J1708_DISABLE); /* since CAN1 power and J1708 power were tied together, we need to disable j1708 */
+					//}
+
 					GPIO_DRV_ClearPinOutput(CAN1_PWR_EN); //0n NET869V6 and greater boards, the J1708 and CAN1 power were split
 				}
 				else {
