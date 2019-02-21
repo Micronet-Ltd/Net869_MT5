@@ -186,6 +186,8 @@ void HardFault_Handler_asm()//(Cpu_ivINT_Hard_Fault)
 int g_a8_sw_reboot = -1;
 int g_otg_ctl_port_active = 0;
 extern void * g_a8_pwr_state_event;
+extern uint32_t board_adc_val_g;
+extern uint32_t config_adc_val_g;
 
 void Main_task( uint32_t initial_data ) {
 
@@ -200,6 +202,12 @@ void Main_task( uint32_t initial_data ) {
 	uint64_t otg_check_time;
 	uint32_t pet_count = 0;
 	uint8_t zero_date[5] = {0};
+	uint32_t board_rev_v = 0;
+	uint32_t board_rev_4c = 0;
+	uint32_t board_rev_n4c = 0;
+	char board_config_v = 'O';
+	uint32_t board_rev_vc = 4;
+
 
 #if (!_DEBUG)
 	watchdog_mcu_init();
@@ -322,8 +330,6 @@ void Main_task( uint32_t initial_data ) {
 	NVIC_SetPriority(PORTB_IRQn, PORT_NVIC_IRQ_Priority);
 	OSA_InstallIntHandler(PORTB_IRQn, MQX_PORTB_IRQHandler);
 
-	printf("board_rev = %u, board_config= %c\n", get_board_revision(), get_board_configuration());
-
 	// turn on device
 	enable_msm_power(TRUE);		// turn on 5V0 power rail
 
@@ -440,9 +446,27 @@ void Main_task( uint32_t initial_data ) {
 	FPGA_read_version(&FPGA_version);
 	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
 	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
-	printf("board_rev = %u, board_config= %c\n", get_saved_board_revision(), get_saved_board_configuration());
+#if 1
+	board_rev_v = get_board_revision();
+	board_config_v = get_board_configuration();
+    if (4 == board_rev_v) {
+		board_rev_4c++;
+    } else {
+		board_rev_n4c++;
+	}
+#else
+    do {
+#if (!_DEBUG)
+		WDOG_DRV_Refresh();
+        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
+#endif
+		_time_delay(MAIN_TASK_SLEEP_PERIOD/10);
+    } while (ADC_get_value (kADC_POWER_VCAP) < 3300);
+    printf("measure board_rev = %u, board_config= %c[%d, %d]\n", get_board_revision(), get_board_configuration(), board_adc_val_g, config_adc_val_g);
+	printf("saved   board_rev = %u, board_config= %c[%d, %d]\n", get_saved_board_revision(), get_saved_board_configuration(), board_adc_val_g, config_adc_val_g);
+#endif
 
-#ifndef DEBUG_A8_WATCHOG_DISABLED 
+#ifndef DEBUG_A8_WATCHOG_DISABLED
 #if (!_DEBUG)
 	a8_watchdog_init();
 #endif
@@ -451,8 +475,7 @@ void Main_task( uint32_t initial_data ) {
 	configure_otg_for_host_or_device(OTG_ID_CFG_FORCE_BYPASS);
 	otg_reset_time = ms_from_start() + OTG_CTLEP_RECOVERY_TO;
 
-    while ( 1 ) 
-    {
+    while (1) {
 #if (!_DEBUG)
 		WDOG_DRV_Refresh();
     	//TODO: only pet watchdog if all other MCU tasks are running fine -Abid
@@ -503,19 +526,55 @@ void Main_task( uint32_t initial_data ) {
 				otg_reset_time = otg_check_time + OTG_CTLEP_RECOVERY_TO;
 			}
 		}
+#if 1
+		if (board_rev_vc) {
+			get_board_revision();
+			get_board_configuration();
+			printf("saved   board_rev = %u, board_config= %c[%d, %d]\n", get_saved_board_revision(), get_saved_board_configuration(), board_adc_val_g, config_adc_val_g);
+			if (get_saved_board_revision() != board_rev_v || get_saved_board_configuration() != board_config_v) {
+				board_rev_v = get_saved_board_revision();
+				board_config_v = get_saved_board_configuration();
+				board_rev_vc = 4;
+			} else {
+				board_rev_vc--;
+			}
+			if (4 == board_rev_v) {
+				board_rev_4c++;
+			} else {
+				board_rev_n4c++;
+			}
+		} else if ((uint32_t)-1 != board_rev_vc) {
+			int div;
+            if (board_rev_n4c && 0 == board_rev_4c) {
+				div = 4;
+            } else if (board_rev_4c && 0 == board_rev_n4c) {
+				div = 0;
+            } else if (board_rev_n4c && board_rev_4c > board_rev_n4c) {
+				div = board_rev_4c/board_rev_n4c;
+            } else if (board_rev_4c && board_rev_n4c > board_rev_4c) {
+				div = board_rev_n4c/board_rev_4c;
+			} else {
+				div = 0;
+			}
+			if (div < 3) {
+				board_rev_vc = 4;
+			} else {
+				board_rev_vc = (uint32_t)-1;
+			}
+        }
+#endif
 #undef DEBUG_BLINKING_RIGHT_LED
 #ifdef DEBUG_BLINKING_RIGHT_LED
-	if(!g_flag_Exit)
-	{
-		static int bri = 0;
-		
-		bri = (bri)?0:LED_DEFAULT_BRIGHTESS;
-		FPGA_write_led_status(LED_MIDDLE, bri, 0, 0, 0xFF); /*Blue LED */
-//		FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
+		if(!g_flag_Exit) {
+			static int bri = 0;
+			
+			bri = (bri)?0:LED_DEFAULT_BRIGHTESS;
+			FPGA_write_led_status(LED_MIDDLE, bri, 0, 0, 0xFF); /*Blue LED */
+	//		FPGA_write_led_status(LED_MIDDLE, LED_DEFAULT_BRIGHTESS, 0, 0, 0xFF); /*Blue LED */
 
-//		_time_delay(MAIN_TASK_SLEEP_PERIOD);
-//		FPGA_write_led_status(LED_MIDDLE, 0, 0, 0, 0); /*Blue LED */
-	}
+	//		_time_delay(MAIN_TASK_SLEEP_PERIOD);
+	//		FPGA_write_led_status(LED_MIDDLE, 0, 0, 0, 0); /*Blue LED */
+		}
 #endif
 	}
 
