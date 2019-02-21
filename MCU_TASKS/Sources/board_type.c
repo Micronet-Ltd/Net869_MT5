@@ -31,6 +31,7 @@
 #define BRD_CFGF_HIGH		110     /* mV */
 #define BRD_CFGG_LOW		260     /* mV */
 #define BRD_CFGG_HIGH		340     /* mV */
+#define BRD_CFG_FLOAT		600     /* mV */
 
 static uint32_t board_rev = 0;
 static char board_config = 'O';
@@ -81,9 +82,11 @@ uint32_t board_adc_val_g = 0;
 uint8_t get_board_revision(void)
 {
 	uint32_t board_adc_val = 0;
+    uint32_t config_adc_val = 0;
 	uint16_t i = 0;
 
 	board_adc_val_g = board_adc_val = get_board_adc_value(ADC_BOARD_VER);
+    config_adc_val = get_board_adc_value(ADC_BOARD_CONFIG);
 	//printf("\n%s: i=%d, board_rev_adc_val %d\n", __func__, i, board_adc_val);
 	
 	if ((board_adc_val > BRD_REV6_LOW  && board_adc_val < BRD_REV6_HIGH) ||
@@ -97,6 +100,10 @@ uint8_t get_board_revision(void)
 	else {
 		board_rev = 4; /* Since Rev4 and below pin is floating, we assume that the board is Rev4 if it doesn't meet other board values */
 	}
+
+    if (board_rev > 4 && config_adc_val > BRD_CFG_FLOAT) {
+        board_rev = 4;
+    }
 
 	return board_rev;
 }

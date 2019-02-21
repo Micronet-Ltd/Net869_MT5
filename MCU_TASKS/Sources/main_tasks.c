@@ -203,8 +203,6 @@ void Main_task( uint32_t initial_data ) {
 	uint32_t pet_count = 0;
 	uint8_t zero_date[5] = {0};
 	uint32_t board_rev_v = 0;
-	uint32_t board_rev_4c = 0;
-	uint32_t board_rev_n4c = 0;
 	char board_config_v = 'O';
 	uint32_t board_rev_vc = 4;
 
@@ -449,11 +447,6 @@ void Main_task( uint32_t initial_data ) {
 #if 1
 	board_rev_v = get_board_revision();
 	board_config_v = get_board_configuration();
-    if (4 == board_rev_v) {
-		board_rev_4c++;
-    } else {
-		board_rev_n4c++;
-	}
 #else
     do {
 #if (!_DEBUG)
@@ -538,30 +531,7 @@ void Main_task( uint32_t initial_data ) {
 			} else {
 				board_rev_vc--;
 			}
-			if (4 == board_rev_v) {
-				board_rev_4c++;
-			} else {
-				board_rev_n4c++;
-			}
-		} else if ((uint32_t)-1 != board_rev_vc) {
-			int div;
-            if (board_rev_n4c && 0 == board_rev_4c) {
-				div = 4;
-            } else if (board_rev_4c && 0 == board_rev_n4c) {
-				div = 0;
-            } else if (board_rev_n4c && board_rev_4c > board_rev_n4c) {
-				div = board_rev_4c/board_rev_n4c;
-            } else if (board_rev_4c && board_rev_n4c > board_rev_4c) {
-				div = board_rev_n4c/board_rev_4c;
-			} else {
-				div = 0;
-			}
-			if (div < 3) {
-				board_rev_vc = 4;
-			} else {
-				board_rev_vc = (uint32_t)-1;
-			}
-        }
+		}
 #endif
 #undef DEBUG_BLINKING_RIGHT_LED
 #ifdef DEBUG_BLINKING_RIGHT_LED
