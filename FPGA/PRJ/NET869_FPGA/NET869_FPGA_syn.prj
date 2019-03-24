@@ -16,6 +16,7 @@ add_file -verilog -lib work "../../SRC/registers.v"
 add_file -verilog -lib work "../../SRC/Debounce.v" 
 add_file -verilog -lib work "../../SRC/SMALL_FIFO.v" 
 add_file -verilog -lib work "../../SRC/MCU_INTERFACE.v" 
+add_file -verilog -lib work "../../SRC/OneWireMaster.v" 
 #implementation: "NET869_FPGA_Implmnt"
 impl -add NET869_FPGA_Implmnt -type fpga
 
@@ -66,3 +67,4 @@ project -result_format "edif"
 project -result_file ./NET869_FPGA_Implmnt/NET869_FPGA.edf
 project -log_file "./NET869_FPGA_Implmnt/NET869_FPGA.srr"
 impl -active NET869_FPGA_Implmnt
+project -run synthesis -clean
