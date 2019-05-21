@@ -67,7 +67,7 @@ __packed typedef struct{
 * is read from its internal FIFO.
 **************************************************************************************/
 void ISR_accIrq    (void* param);
-bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size);
+int32_t acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size);
 
 void * g_acc_event_h;
 
@@ -160,43 +160,51 @@ void Acc_task (uint32_t initial_data)
 	
 	while (0 == g_flag_Exit)
 	{
-		res = 0;
+		res = -1;
 		do {
 			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
-			if (res) {
-				acc_data_buff.timestamp = ms_from_start();
-				usb_access_time = acc_data_buff.timestamp;
-				
-				/* Add delay on back to back reads to avoid overwhelming the USB */
-				if (usb_access_time - prev_time == 0)
-				{
-					_time_delay (1);
-				}
+            if (res < 0) {
+                printf("%s: fifo error timeout\n", __func__);
+                //delay after read error, samples will miss
+                _time_delay(1000);
+            } else {
+                // read FIFO zero length is unpredictable, see datasheet of acc
+                // the FIFO will zero when gpio spourious interrupt (see errata of k20) has occured, samples shouldn't be sent
+                // Vladimir
+                if (res > 0) {
+                    acc_data_buff.timestamp = ms_from_start();
+                    usb_access_time = acc_data_buff.timestamp;
+                    
+                    /* Add delay on back to back reads to avoid overwhelming the USB */
+                    if (usb_access_time - prev_time == 0)
+                        _time_delay (1);
 
-				prev_time = usb_access_time;
-				pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
-				if (pqMemElem) {
-					pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
+                    prev_time = usb_access_time;
+                    pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
+                    if (pqMemElem) {
+                        pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
 
-					if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2))
-					{
-						printf("%s: Error send data to CDC1\n", __func__);
-					}
-				}
+                        if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2)) {
+                            printf("%s: Error send data to CDC1\n", __func__);
+                        }
+                    }
+                }
+                // enable interrupts from acc_irq gpio
+                //
 				PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntLogicZero);
 				break;
-			} else	{
-				printf("%s: fifo error timeout\n", __func__);
-				_time_delay(1000);//delay after read error 
 			}
-		} while (!res);
+		} while (res < 0);
 
+        // wait for interrupt
+        //
         _event_wait_all(g_acc_event_h, 1, 0);
         _event_clear(g_acc_event_h, 1);
 	}
 
 	// should never get here
 	printf("\n%s: End \n", __func__);
+
 	_task_block();
 }
 
@@ -442,7 +450,7 @@ void AccWriteRegister(uint8_t address, uint8_t write_data)
 	_mutex_unlock(&g_i2c0_mutex);
 }
 
-bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
+int32_t acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 {
 	uint8_t u8ByteCnt      =  0 ;
 	uint8_t read_data      =  0 ;
@@ -450,11 +458,10 @@ bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 	_mqx_uint ret = MQX_OK;
 
     if (!acc_enabled_g) {
-        return 0;
+        return -1;
     }
 
-	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
-	{
+	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK) {
 		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
 		_task_block();
 	}
@@ -478,12 +485,12 @@ bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
     }
 
 	_mutex_unlock(&g_i2c0_mutex);
-	return TRUE;
+	return u8ByteCnt;
 
 _ACC_FIFO_READ_FAIL:
 	_mutex_unlock(&g_i2c0_mutex);
 	printf ("%s: ERROR: Accelerometer read failure \n", __func__);
-	return FALSE;
+	return -1;
 }
 
 #if 0
