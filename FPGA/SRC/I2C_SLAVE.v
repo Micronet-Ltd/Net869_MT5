@@ -128,9 +128,9 @@ begin
 		//    3. even if in read cycle, while device address (byte 0) is active
 		// SDA output forced to be LOW during acknowledge cycle according to ack_valid condtion 
 		// during read cycle, SDA output is set to data_out MSB value
-		if      (ack_cycle & ack_valid)									sda_out[0]  <= 1'b0;
+		if      (i2c_change_data)										sda_out[0]  <= data_out [35];
+		else if (ack_cycle & ack_valid)									sda_out[0]  <= 1'b0;
 		else if (~i2c_process | ~i2c_read_cycle | (byte_cnt == 0) )		sda_out[0]  <= 1'b1;
-		else if (i2c_change_data)										sda_out[0]  <= data_out [35];
 
 		sda_out [SDA_OUT_PIPE - 1 : 1] <= sda_out [SDA_OUT_PIPE - 2 : 0];
 	end

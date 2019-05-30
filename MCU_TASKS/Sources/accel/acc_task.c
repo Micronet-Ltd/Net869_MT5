@@ -67,7 +67,7 @@ __packed typedef struct{
 * is read from its internal FIFO.
 **************************************************************************************/
 void ISR_accIrq    (void* param);
-bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size);
+int32_t acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size);
 
 void * g_acc_event_h;
 
@@ -111,6 +111,7 @@ void Acc_task (uint32_t initial_data)
 	acc_data_messg              acc_data_buff;
 	pcdc_mic_queue_element_t    pqMemElem;
 	int res;
+    static int wmrk_rx;
 
 	//APPLICATION_MESSAGE_T *msg;
 	//const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
@@ -122,9 +123,10 @@ void Acc_task (uint32_t initial_data)
 	/* */
 	_mqx_uint event_result;
 //#if (DEBUG_LOG)
-	uint64_t current_time;
+	static uint64_t current_time, start_time;
+    //sttic int got = 0, sent = 0;
 
-	current_time = ms_from_start();
+	start_time = current_time = ms_from_start();
 	printf("%s: started %llu\n", __func__, current_time);
 //#endif
 
@@ -160,43 +162,83 @@ void Acc_task (uint32_t initial_data)
 	
 	while (0 == g_flag_Exit)
 	{
-		res = 0;
+		res = -1;
+        wmrk_rx = sizeof(acc_data_buff.buff);
 		do {
-			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
-			if (res) {
-				acc_data_buff.timestamp = ms_from_start();
-				usb_access_time = acc_data_buff.timestamp;
-				
-				/* Add delay on back to back reads to avoid overwhelming the USB */
-				if (usb_access_time - prev_time == 0)
-				{
-					_time_delay (1);
-				}
+			res = acc_fifo_read (&acc_data_buff.buff[sizeof(acc_data_buff.buff) - wmrk_rx], wmrk_rx);
+            if (res < 0) {
+                printf("%s: fifo error timeout\n", __func__);
+                //delay after read error, samples will miss
+                _time_delay(10);
+            } else {
+                wmrk_rx -= res;
+                if (0 != wmrk_rx) {
+                    printf("%s: not all samples read %d\n", __func__, wmrk_rx);
+                    _time_delay(1);
+                    continue;
+                }
+                // read FIFO zero length is unpredictable, see datasheet of acc
+                // the FIFO will zero when gpio spourious interrupt (see errata of k20) has occured, samples shouldn't be sent
+                // Vladimir
+                if (res > 0) {
+                #if 0
+                    // debug sample rate and watermark interrupt
+                    // Vladimir
+                    got += sizeof(acc_data_buff.buff)/6;
+                    if (got - 10*(got/10)) {
+                        printf("%s: read less of wmrk %d[%r]\n", __func__, wmrk_rx);
+                    }
+                #endif
+                    acc_data_buff.timestamp = ms_from_start();
+                    usb_access_time = acc_data_buff.timestamp;
+                #if 0
+                    // debug sequantual reachment of samples rate to host
+                    // Vladimir
+                    acc_data_buff.timestamp |= (uint64_t)got << 32;
+                    if (usb_access_time > current_time + 60000) {
+                        printf("%s: samples stat [%llu->%llu] for %llu", __func__, got, sent, usb_access_time - start_time);
+                        current_time = usb_access_time;
+                    }
+                #endif
+                    
+                    /* Add delay on back to back reads to avoid overwhelming the USB */
+                    if (usb_access_time - prev_time == 0)
+                        _time_delay (1);
 
-				prev_time = usb_access_time;
-				pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
-				if (pqMemElem) {
-					pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
+                    prev_time = usb_access_time;
+                    pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
+                    if (pqMemElem) {
+                    #if 0
+                        // debug sequantual reachment of samples rate to host
+                        // Vladimir
+                        sent += sizeof(acc_data_buff.buff)/6;
+                    #endif
+                        pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
 
-					if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2))
-					{
-						printf("%s: Error send data to CDC1\n", __func__);
-					}
-				}
-				PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntLogicZero);
-				break;
-			} else	{
-				printf("%s: fifo error timeout\n", __func__);
-				_time_delay(1000);//delay after read error 
+                        if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2)) {
+                            printf("%s: Error send data to CDC1\n", __func__);
+                        }
+                    }
+                } else {
+                    printf("%s: zero fifo %d\n", __func__, res);
+                    //break;
+                }
 			}
-		} while (!res);
+		} while (res < 0 || wmrk_rx);
 
+        // enable interrupts from acc_irq gpio
+        //
+        PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntLogicZero);
+
+        // wait for interrupt
+        //
         _event_wait_all(g_acc_event_h, 1, 0);
         _event_clear(g_acc_event_h, 1);
 	}
 
 	// should never get here
 	printf("\n%s: End \n", __func__);
+
 	_task_block();
 }
 
@@ -218,7 +260,7 @@ bool acc_receive_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t 
 //		_task_block();
 //	}
 
-	if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device_g, cmd,  cmd_size, data, data_size, ACC_TIME_OUT*data_size)) != kStatus_I2C_Success)
+	if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device_g, cmd,  cmd_size, data, data_size, ACC_TIME_OUT*(data_size+1))) != kStatus_I2C_Success)
 	{
 		printf ("%s: ERROR: Could not receive command 0x%X (I2C error code %d)\n", __func__, *cmd, i2c_status);
 	}
@@ -442,7 +484,7 @@ void AccWriteRegister(uint8_t address, uint8_t write_data)
 	_mutex_unlock(&g_i2c0_mutex);
 }
 
-bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
+int32_t acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 {
 	uint8_t u8ByteCnt      =  0 ;
 	uint8_t read_data      =  0 ;
@@ -450,11 +492,10 @@ bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
 	_mqx_uint ret = MQX_OK;
 
     if (!acc_enabled_g) {
-        return 0;
+        return -1;
     }
 
-	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK)
-	{
+	if ((ret = _mutex_lock(&g_i2c0_mutex)) != MQX_OK) {
 		printf("%s: i2c mutex lock failed, ret %d \n", __func__, ret);
 		_task_block();
 	}
@@ -478,12 +519,12 @@ bool acc_fifo_read (uint8_t *buffer, uint8_t max_buffer_size)
     }
 
 	_mutex_unlock(&g_i2c0_mutex);
-	return TRUE;
+	return u8ByteCnt;
 
 _ACC_FIFO_READ_FAIL:
 	_mutex_unlock(&g_i2c0_mutex);
 	printf ("%s: ERROR: Accelerometer read failure \n", __func__);
-	return FALSE;
+	return -1;
 }
 
 #if 0

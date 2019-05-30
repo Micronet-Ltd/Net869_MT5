@@ -1,36 +1,39 @@
 `timescale 1 ns / 1 ps
 
 module NBOARD869V1_TOP (
-  input  CPU_UART_rx   ,				// FPGA UART Rx - MCU UART Tx
-  output CPU_UART_tx   ,				// FPGA UART Tx - MCU UART Rx
-  
-  input  J1708_UART_rx ,				// FPGA J1708 Rx - J1708 transiver Tx
-  output J1708_UART_tx ,				// FPGA J1708 Tx - J1708 transiver Rx
-         
-  input  CPU_I2C0_scl   ,				// I2C0 clock
-  inout  CPU_I2C0_sda   ,				// I2C0 data
+	input  CPU_UART_rx   ,				// FPGA UART Rx - MCU UART Tx
+	output CPU_UART_tx   ,				// FPGA UART Tx - MCU UART Rx
 
-  input  CPU_I2C1_scl   ,				// I2C1 clock
-  inout  CPU_I2C1_sda   ,				// I2C1 data
-  
-  output led1_red      ,
-  output led1_green    ,
-  output led1_blue     ,
+	input  J1708_UART_rx ,				// FPGA J1708 Rx - J1708 transiver Tx
+	output J1708_UART_tx ,				// FPGA J1708 Tx - J1708 transiver Rx
+		 
+	input  CPU_I2C0_scl   ,				// I2C0 clock
+	inout  CPU_I2C0_sda   ,				// I2C0 data
 
-  output led2_red      ,
-  output led2_green    ,
-  output led2_blue     ,
-         
-  output led3_red      ,
-  output led3_green    ,
-  output led3_blue     ,
+	input  CPU_I2C1_scl   ,				// I2C1 clock
+	inout  CPU_I2C1_sda   ,				// I2C1 data
 
-  input  [7:1] gpio_in ,
-  output       gpio_test,
-         
-  output irq           ,				// CPU interrupt
-//  input  rst         ,
-  input  clk
+	output led1_red       ,
+	output led1_green     ,
+	output led1_blue      ,
+
+	output led2_red       ,
+	output led2_green     ,
+	output led2_blue      ,
+
+	output led3_red       ,
+	output led3_green     ,
+	output led3_blue      ,
+
+	input  OneWire_Rx     ,				// 1-Wire Rx
+	output OneWire_Tx     ,				// 1-Wire Tx
+
+	input  [7:1] gpio_in  ,
+	output       gpio_test,
+		 
+	output irq            ,				// CPU interrupt
+	//  input  rst        ,
+	input  clk
 );
 
 localparam	CLK_FRQ_MHZ          = 26     ,
@@ -39,10 +42,10 @@ localparam	CLK_FRQ_MHZ          = 26     ,
 			FPGA_I2C_ADDR        = 7'h5E  ;
           
 
-localparam	FPGA_VERSION_TYPE    = "Z"    ,
+localparam	FPGA_VERSION_TYPE    = "A"    ,
 			FPGA_VERSION_MAJOR   =  0     ,
 			FPGA_VERSION_MINOR   =  0     ,
-			FPGA_VERSION_DEBUG   =  2     ;
+			FPGA_VERSION_DEBUG   =  3     ;
         
 wire irq_int      ;
 
@@ -80,6 +83,17 @@ wire [ 7:0] led1_red_value       ,  led2_red_value       ,  led3_red_value      
 wire [ 7:0] led1_green_value     ,  led2_green_value     ,  led3_green_value     ;
 wire [ 7:0] led1_blue_value      ,  led2_blue_value      ,  led3_blue_value      ;
 
+// 1-Wire Signals
+wire        OneWire_dataToSend; 
+wire        OneWire_dataRecieved;
+wire        OneWire_enable;
+wire        OneWire_startResetPulse;
+wire        OneWire_startDataWrite;
+wire        OneWire_startDataRead;
+wire        OneWire_presentStatus;
+wire        OneWire_shift;
+wire        OneWire_ready;
+wire        OneWire_done;
 
 IO_OUTPUT IO_IRQ         (.IO_pin (irq), .data (irq_int), .clk (clk) );
 
@@ -194,6 +208,17 @@ REGISTERS #(
 	.J1708_RX_len            (J1708_rx_message_length      ),
 	.J1708_RX_len_valid      (J1708_rx_message_length_valid),
 	.J1708_RX_len_exist      (J1708_rx_message_length_exist),
+	
+	.OneWire_dataToSend      (OneWire_dataToSend           ),
+	.OneWire_dataRecieved    (OneWire_dataRecieved         ),  
+	.OneWire_enable          (OneWire_enable               ),       
+	.OneWire_startResetPulse (OneWire_startResetPulse      ),        
+	.OneWire_startDataWrite  (OneWire_startDataWrite       ),      
+	.OneWire_startDataRead   (OneWire_startDataRead        ),
+	.OneWire_presentStatus   (OneWire_presentStatus        ),
+	.OneWire_shift           (OneWire_shift                ),
+	.OneWire_ready           (OneWire_ready                ),
+	.OneWire_done            (OneWire_done                 ),
 
 	.rst                     (rst                          ),
 	.clk                     (clk                          )
@@ -234,6 +259,25 @@ LEDS LEDS (
 	.led3_green              (led3_green                   ),
 	.led3_blue               (led3_blue                    ),
                                          
+	.rst                     (rst                          ),
+	.clk                     (clk                          )
+);
+
+OneWireMaster #(
+	.CLK_FRQ_MHZ             (CLK_FRQ_MHZ                  )
+) OneWireMaster (
+	.dataToSend              (OneWire_dataToSend           ),
+	.dataRecieved            (OneWire_dataRecieved         ),
+	.enable                  (OneWire_enable               ),
+	.startResetPulse         (OneWire_startResetPulse      ),
+	.startDataWrite          (OneWire_startDataWrite       ),
+	.startDataRead           (OneWire_startDataRead        ),
+	.presentStatus           (OneWire_presentStatus        ),
+	.shift                   (OneWire_shift                ),
+	.ready                   (OneWire_ready                ),
+	.done                    (OneWire_done                 ),
+	.oneWireRx               (OneWire_Rx                   ),
+	.oneWireTx               (OneWire_Tx                   ),
 	.rst                     (rst                          ),
 	.clk                     (clk                          )
 );
