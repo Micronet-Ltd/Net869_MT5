@@ -111,6 +111,7 @@ void Acc_task (uint32_t initial_data)
 	acc_data_messg              acc_data_buff;
 	pcdc_mic_queue_element_t    pqMemElem;
 	int res;
+    static int wmrk_rx;
 
 	//APPLICATION_MESSAGE_T *msg;
 	//const _queue_id acc_qid        = _msgq_open ((_queue_number)ACC_QUEUE, 0);
@@ -122,9 +123,10 @@ void Acc_task (uint32_t initial_data)
 	/* */
 	_mqx_uint event_result;
 //#if (DEBUG_LOG)
-	uint64_t current_time;
+	static uint64_t current_time, start_time;
+    //sttic int got = 0, sent = 0;
 
-	current_time = ms_from_start();
+	start_time = current_time = ms_from_start();
 	printf("%s: started %llu\n", __func__, current_time);
 //#endif
 
@@ -161,19 +163,43 @@ void Acc_task (uint32_t initial_data)
 	while (0 == g_flag_Exit)
 	{
 		res = -1;
+        wmrk_rx = sizeof(acc_data_buff.buff);
 		do {
-			res = acc_fifo_read (acc_data_buff.buff, (uint8_t)(ACC_XYZ_PKT_SIZE * ACC_MAX_POOL_SIZE));
+			res = acc_fifo_read (&acc_data_buff.buff[sizeof(acc_data_buff.buff) - wmrk_rx], wmrk_rx);
             if (res < 0) {
                 printf("%s: fifo error timeout\n", __func__);
                 //delay after read error, samples will miss
-                _time_delay(1000);
+                _time_delay(10);
             } else {
+                wmrk_rx -= res;
+                if (0 != wmrk_rx) {
+                    printf("%s: not all samples read %d\n", __func__, wmrk_rx);
+                    _time_delay(1);
+                    continue;
+                }
                 // read FIFO zero length is unpredictable, see datasheet of acc
                 // the FIFO will zero when gpio spourious interrupt (see errata of k20) has occured, samples shouldn't be sent
                 // Vladimir
                 if (res > 0) {
+                #if 0
+                    // debug sample rate and watermark interrupt
+                    // Vladimir
+                    got += sizeof(acc_data_buff.buff)/6;
+                    if (got - 10*(got/10)) {
+                        printf("%s: read less of wmrk %d[%r]\n", __func__, wmrk_rx);
+                    }
+                #endif
                     acc_data_buff.timestamp = ms_from_start();
                     usb_access_time = acc_data_buff.timestamp;
+                #if 0
+                    // debug sequantual reachment of samples rate to host
+                    // Vladimir
+                    acc_data_buff.timestamp |= (uint64_t)got << 32;
+                    if (usb_access_time > current_time + 60000) {
+                        printf("%s: samples stat [%llu->%llu] for %llu", __func__, got, sent, usb_access_time - start_time);
+                        current_time = usb_access_time;
+                    }
+                #endif
                     
                     /* Add delay on back to back reads to avoid overwhelming the USB */
                     if (usb_access_time - prev_time == 0)
@@ -182,19 +208,27 @@ void Acc_task (uint32_t initial_data)
                     prev_time = usb_access_time;
                     pqMemElem = GetUSBWriteBuffer (MIC_CDC_USB_2);
                     if (pqMemElem) {
+                    #if 0
+                        // debug sequantual reachment of samples rate to host
+                        // Vladimir
+                        sent += sizeof(acc_data_buff.buff)/6;
+                    #endif
                         pqMemElem->send_size = frame_encode((uint8_t*)&acc_data_buff, (const uint8_t*)(pqMemElem->data_buff), sizeof(acc_data_buff) );
 
                         if (!SetUSBWriteBuffer(pqMemElem, MIC_CDC_USB_2)) {
                             printf("%s: Error send data to CDC1\n", __func__);
                         }
                     }
+                } else {
+                    printf("%s: zero fifo %d\n", __func__, res);
+                    //break;
                 }
-                // enable interrupts from acc_irq gpio
-                //
-				PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntLogicZero);
-				break;
 			}
-		} while (res < 0);
+		} while (res < 0 || wmrk_rx);
+
+        // enable interrupts from acc_irq gpio
+        //
+        PORT_HAL_SetPinIntMode (PORTA, GPIO_EXTRACT_PIN(ACC_INT), kPortIntLogicZero);
 
         // wait for interrupt
         //
@@ -226,7 +260,7 @@ bool acc_receive_data (uint8_t * cmd, uint8_t cmd_size, uint8_t * data, uint8_t 
 //		_task_block();
 //	}
 
-	if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device_g, cmd,  cmd_size, data, data_size, ACC_TIME_OUT*data_size)) != kStatus_I2C_Success)
+	if ((i2c_status = I2C_DRV_MasterReceiveDataBlocking (ACC_I2C_PORT, &acc_device_g, cmd,  cmd_size, data, data_size, ACC_TIME_OUT*(data_size+1))) != kStatus_I2C_Success)
 	{
 		printf ("%s: ERROR: Could not receive command 0x%X (I2C error code %d)\n", __func__, *cmd, i2c_status);
 	}
