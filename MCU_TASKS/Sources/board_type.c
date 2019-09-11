@@ -6,32 +6,38 @@
 
 #define CONFIG_FULL 			 'A'
 #define CONFIG_WINDSHIELD_OBC	 'D' 	/* Orbcomm device */
-#define CONFIG_FULL_SMART_CRADLE 'E'
+// Not sipported more
+// #define CONFIG_FULL_SMART_CRADLE 'E'
+//
 #define CONFIG_UNDER_DASH_OBC 	 'F' 	/* Orbcomm device */
 #define CONFIG_SMART_CRADLE 	 'G'
+#define CONFIG_TAB8_ECRADLE 	 'H'
 #define CONFIG_INVALID			 'Z'
 
 #define ADC_VREF 			3300 /* mV */
 #define ADC16_INSTANCE0 	0
 #define ADC16_CHN_GROUP_0	0
-#define BRD_REV6O_LOW		50      /* mV */
-#define BRD_REV6O_HIGH		200     /* mV */
 #define BRD_REV6_LOW		900     /* mV */
 #define BRD_REV6_HIGH		1200    /* mV */
-#define BRD_REV7_LOW		2000    /* mV */
-#define BRD_REV7_HIGH		2200    /* mV */
+#define BRD_REV7_LOW		1400    /* mV */
+#define BRD_REV7_HIGH		1600    /* mV */
+#define BRD_REV8_LOW		2100    /* mV */
+#define BRD_REV8_HIGH		2300    /* mV */
 
 #define BRD_CFGA_LOW		3000    /* mV */
-#define BRD_CFGA_HIGH		3400    /* mV */
+#define BRD_CFGA_HIGH		3350    /* mV */
 #define BRD_CFGD_LOW		0       /* mV */
-#define BRD_CFGD_HIGH		50      /* mV */
-#define BRD_CFGE_LOW		180     /* mV */
-#define BRD_CFGE_HIGH		220     /* mV */
-#define BRD_CFGF_LOW		90      /* mV */
-#define BRD_CFGF_HIGH		110     /* mV */
+#define BRD_CFGD_HIGH		30      /* mV */
+// Not sipported more
+// #define BRD_CFGE_LOW		180     /* mV */
+// #define BRD_CFGE_HIGH	220     /* mV */
+//
 #define BRD_CFGG_LOW		260     /* mV */
 #define BRD_CFGG_HIGH		340     /* mV */
-#define BRD_CFG_FLOAT		600     /* mV */
+#define BRD_CFGF_LOW		50      /* mV */
+#define BRD_CFGF_HIGH		150     /* mV */
+#define BRD_CFGH_LOW		360     /* mV */
+#define BRD_CFGH_HIGH		440     /* mV */
 
 static uint32_t board_rev = 0;
 static char board_config = 'O';
@@ -72,11 +78,12 @@ uint32_t get_board_adc_value(adc16_chn_t channel){
 	return adc_avar;
 }
 
-/* get_board_revision: returns the board number read via ADC0_DM1
-*						Below Rev 6 = Typically 1.3V to 1.8V (Floating)
+/* 
+* get_board_revision: returns the board number read via ADC0_DM1
+*						Below Rev 6 = not supported more (Floating)
 *						Rev 6 = 1V
-*						Rev 7 = 2.1V
-*						Returns 0xff on no match
+*						Rev 7 = 1.5V
+*						Rev 8 = 2.2V
 */
 uint32_t board_adc_val_g = 0;
 uint8_t get_board_revision(void)
@@ -89,21 +96,13 @@ uint8_t get_board_revision(void)
     config_adc_val = get_board_adc_value(ADC_BOARD_CONFIG);
 	//printf("\n%s: i=%d, board_rev_adc_val %d\n", __func__, i, board_adc_val);
 	
-	if ((board_adc_val > BRD_REV6_LOW  && board_adc_val < BRD_REV6_HIGH) ||
-        (board_adc_val > BRD_REV6O_LOW && board_adc_val < BRD_REV6O_HIGH)) /* special case for the first few REV6 boards that were produced */
-	{
+	if (board_adc_val < BRD_REV6_HIGH) {
 		board_rev = 6;
-	}
-	else if (board_adc_val > BRD_REV7_LOW && board_adc_val < BRD_REV7_HIGH) {
+	} else if (board_adc_val > BRD_REV8_LOW && board_adc_val < BRD_REV8_HIGH) {
+		board_rev = 8;
+	} else {
 		board_rev = 7;
 	}
-	else {
-		board_rev = 4; /* Since Rev4 and below pin is floating, we assume that the board is Rev4 if it doesn't meet other board values */
-	}
-
-    if (board_rev > 4 && config_adc_val > BRD_CFG_FLOAT) {
-        board_rev = 4;
-    }
 
 	return board_rev;
 }
@@ -114,6 +113,7 @@ uint8_t get_board_revision(void)
 *							E - FULL SMART CRADLE - 0.2V
 *							F - UNDER DASH OBC for Orbcomm - 0.1V
 *							G - SMART CRADLE - 0.3V
+*							H - TAB8 SMART CRADLE - 0.4V
 *							Z - no match/invalid ADC range
 */
 uint32_t config_adc_val_g  = 0;
@@ -123,44 +123,41 @@ char get_board_configuration(void)
 	
 	uint8_t board_ver = get_saved_board_revision();
 	
-	if (board_ver == 4) {
-         /* since board_ver has a floating ADC_BOARD_CONFIG pin, we automatically assume it is CONFIG_OBC5 */
-		board_config = CONFIG_WINDSHIELD_OBC;	
-	} else {
-		config_adc_val_g = board_adc_val = get_board_adc_value(ADC_BOARD_CONFIG);
-		printf("\n%s: board_config_adc_val %d\n", __func__, board_adc_val);
+    config_adc_val_g = board_adc_val = get_board_adc_value(ADC_BOARD_CONFIG);
+    printf("\n%s: board_config_adc_val %d\n", __func__, board_adc_val);
 
-		if (board_adc_val < BRD_CFGD_HIGH) {
-			board_config = CONFIG_WINDSHIELD_OBC;
-		} else if (board_adc_val > BRD_CFGF_LOW && board_adc_val < BRD_CFGF_HIGH) {
-			board_config = CONFIG_UNDER_DASH_OBC;
-		} else if (board_adc_val > BRD_CFGE_LOW && board_adc_val < BRD_CFGE_HIGH) {
-			board_config = CONFIG_FULL_SMART_CRADLE;
-		} else if (board_adc_val > BRD_CFGG_LOW && board_adc_val < BRD_CFGG_HIGH) {
-			board_config = CONFIG_SMART_CRADLE;
-		} else if (board_adc_val > BRD_CFGA_LOW) {
-			board_config = CONFIG_FULL;
-		} else {
-			board_config = CONFIG_INVALID;
-		}
-	}
+    if (board_adc_val < BRD_CFGD_HIGH) {
+        board_config = CONFIG_WINDSHIELD_OBC;
+    } else if (board_adc_val < BRD_CFGF_HIGH) {
+        board_config = CONFIG_UNDER_DASH_OBC;
+    } else if (board_adc_val < BRD_CFGG_HIGH) {
+        board_config = CONFIG_SMART_CRADLE;
+    } else if (board_adc_val < BRD_CFGH_HIGH) {
+        board_config = CONFIG_TAB8_ECRADLE;
+    } else if (board_adc_val > BRD_CFGA_LOW) {
+        board_config = CONFIG_FULL;
+    } else {
+        board_config = CONFIG_INVALID;
+    }
 
 	return board_config;
 }
 
 uint8_t get_saved_board_revision(void)
 {
-	if (board_rev == 0){
+	if (board_rev == 0) {
 		get_board_revision();
 	}
+
 	return board_rev;
 }
 
 char get_saved_board_configuration(void)
 {
-	if (board_config == 'O'){
+	if (board_config == 'O') {
 		get_board_configuration();	
 	}
+
 	return board_config;	
 }
 
