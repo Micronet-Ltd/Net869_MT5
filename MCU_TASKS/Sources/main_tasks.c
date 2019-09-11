@@ -444,20 +444,9 @@ void Main_task( uint32_t initial_data ) {
 	FPGA_read_version(&FPGA_version);
 	printf("\n%s: FPGA version, %x\n", __func__, FPGA_version);
 	printf("%s: MCU version, %x.%x.%x.%x\n", __func__, FW_VER_BTLD_OR_APP, FW_VER_MAJOR, FW_VER_MINOR, FW_VER_BUILD );
-#if 1
-	board_rev_v = get_board_revision();
+
+    board_rev_v = get_board_revision();
 	board_config_v = get_board_configuration();
-#else
-    do {
-#if (!_DEBUG)
-		WDOG_DRV_Refresh();
-        result = _watchdog_start(WATCHDOG_MCU_MAX_TIME);
-#endif
-		_time_delay(MAIN_TASK_SLEEP_PERIOD/10);
-    } while (ADC_get_value (kADC_POWER_VCAP) < 3300);
-    printf("measure board_rev = %u, board_config= %c[%d, %d]\n", get_board_revision(), get_board_configuration(), board_adc_val_g, config_adc_val_g);
-	printf("saved   board_rev = %u, board_config= %c[%d, %d]\n", get_saved_board_revision(), get_saved_board_configuration(), board_adc_val_g, config_adc_val_g);
-#endif
 
 #ifndef DEBUG_A8_WATCHOG_DISABLED
 #if (!_DEBUG)

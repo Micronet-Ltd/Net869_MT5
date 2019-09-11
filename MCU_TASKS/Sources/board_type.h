@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <fsl_adc16_hal.h>
 
-uint32_t get_board_adc_value(adc16_chn_t channel);
+uint32_t get_board_adc_value(adc16_chn_t channel, int acc);
 uint8_t get_board_revision(void);
 char get_board_configuration(void);
 uint8_t get_saved_board_revision(void);
