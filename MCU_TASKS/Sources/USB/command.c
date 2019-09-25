@@ -214,11 +214,11 @@ static void get_board_adc_value_dbg(uint8_t * data, uint16_t data_size, uint8_t 
 	uint32_t board_adc_voltage = 0;
 	if (data[0] == 0)
 	{
-		board_adc_voltage = get_board_adc_value(ADC_BOARD_VER);
+		board_adc_voltage = get_board_adc_value(ADC_BOARD_VER, 300);
 	}
 	else if (data[0] == 1)
 	{
-		board_adc_voltage = get_board_adc_value(ADC_BOARD_CONFIG);
+		board_adc_voltage = get_board_adc_value(ADC_BOARD_CONFIG, 80);
 	}
 	memcpy(pbrd_adc, (uint8_t *)&board_adc_voltage , sizeof(uint32_t));
 }
